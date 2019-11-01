@@ -1,27 +1,15 @@
 module.exports = {
   root: true,
   parser: 'babel-eslint',
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module'
-  },
-  plugins: [
-    'ember'
-  ],
-  extends: [
-    'eslint:recommended',
-    'plugin:ember/recommended'
-  ],
-  env: {
-    browser: true
-  },
-  rules: {
-  },
+  plugins: [],
+  extends: ['@neighborly/eslint-config-ember'],
+  rules: {},
   overrides: [
     // node files
     {
       files: [
         '.eslintrc.js',
+        '.prettierrc.js',
         '.template-lintrc.js',
         'packages/*/.ember-cli.js',
         'packages/*/ember-cli-build.js',
@@ -37,18 +25,8 @@ module.exports = {
         'packages/*/app/**',
         'packages/*/tests/dummy/app/**'
       ],
-      parserOptions: {
-        sourceType: 'script',
-        ecmaVersion: 2015
-      },
-      env: {
-        browser: false,
-        node: true
-      },
-      plugins: ['node'],
-      rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
-        'node/no-unpublished-require': 'off'
-      })
+      extends: ['@neighborly/eslint-config-node'],
+      rules: {}
     }
   ]
 };
