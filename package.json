@@ -1,7 +1,19 @@
 {
   "name": "root",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "lint:hbs": "ember-template-lint .",
+    "lint:js": "eslint ."
+  },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "ember-template-lint": "^1.7.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-ember": "^7.1.0",
+    "eslint-plugin-node": "^10.0.0",
     "lerna": "^3.16.4"
   }
 }
