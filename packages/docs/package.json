@@ -13,7 +13,9 @@
   "scripts": {
     "build": "ember build",
     "start": "ember serve",
-    "test": "ember test"
+    "test": "ember test",
+    "test:all": "ember test",
+    "try:one": "ember test"
   },
   "devDependencies": {
     "@ember/edition-utils": "^1.1.1",
