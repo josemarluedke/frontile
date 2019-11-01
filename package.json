@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "lint:hbs": "ember-template-lint .",
-    "lint:js": "eslint ."
+    "lint:js": "eslint .",
+    "start": "cd packages/docs && ember s"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
