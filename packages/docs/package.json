@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "Frontile docs app",
-  "repository": "",
+  "repository": "https://github.com/josemarluedke/frontile",
   "license": "MIT",
   "author": "",
   "directories": {
