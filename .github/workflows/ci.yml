@@ -76,6 +76,8 @@ jobs:
       - name: Reattach HEAD # https://github.com/actions/checkout/issues/6
         run: |
           git checkout "$(echo ${{ github.ref }} | sed -E 's|refs/[a-zA-Z]+/||')"
+      - name: Fetch Git Tags
+        run: git fetch --tags
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
