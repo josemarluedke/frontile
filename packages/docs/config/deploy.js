@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function(deployTarget) {
-  let ENV = {
+  const ENV = {
     build: {},
     git: {
       repo: 'git@github.com:josemarluedke/frontile',

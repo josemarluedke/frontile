@@ -1,9 +1,13 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parserOptions: {
+    project: './tsconfig.eslint.json'
+  },
   plugins: [],
-  extends: ['@neighborly/eslint-config-ember'],
-  rules: {},
+  extends: ['@neighborly/eslint-config-ember-typescript'],
+  rules: {
+    '@typescript-eslint/no-empty-interface': 'off'
+  },
   overrides: [
     // node files
     {
