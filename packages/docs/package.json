@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Frontile docs app",
   "repository": "https://github.com/josemarluedke/frontile",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@ember/edition-utils": "^1.1.1",
     "@ember/optional-features": "^1.0.0",
-    "@frontile/forms": "^0.0.1",
+    "@frontile/forms": "^0.0.2",
     "@glimmer/component": "^1.0.0-beta.1",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.2.20",

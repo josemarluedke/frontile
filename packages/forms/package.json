@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Small description for forms goes here",
   "keywords": [
     "ember-addon"
