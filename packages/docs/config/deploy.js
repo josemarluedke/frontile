@@ -3,8 +3,11 @@
 
 module.exports = function(deployTarget) {
   let ENV = {
-    build: {}
-    // include other plugin configuration that applies to all deploy targets here
+    build: {},
+    git: {
+      repo: 'git@github.com:josemarluedke/frontile',
+      worktreePath: '../../../../deploy-frontile-docs'
+    }
   };
 
   if (deployTarget === 'development') {
