@@ -9,6 +9,14 @@ module.exports = {
     '@typescript-eslint/no-empty-interface': 'off'
   },
   overrides: [
+    {
+      files: ['packages/**/tests/**/*.ts'],
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
+      }
+    },
+
     // node files
     {
       files: [
