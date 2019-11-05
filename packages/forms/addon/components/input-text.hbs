@@ -1,0 +1,34 @@
+<FormField
+  @hasMargin={{@hasMargin}}
+  @isSmall={{@isSmall}}
+  class="input-text
+    {{if this.showErrorFeedback "has-error"}}
+    {{if @hasButton "has-button"}}"
+  as |f|
+>
+  {{#if @label}}
+    <f.Label>{{@label}}</f.Label>
+  {{/if}}
+
+  {{#if @hint}}
+    <f.Hint>{{@hint}}</f.Hint>
+  {{/if}}
+
+  <input
+    {{on "focus" this.handleFocusIn}}
+    {{on "blur" this.handleFocusOut}}
+    {{on "input" this.handleOnInput}}
+    {{on "change" this.handleOnChange}}
+    id={{f.id}}
+    value={{@value}}
+    type={{this.type}}
+    aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"
+    ...attributes
+  >
+
+  {{yield}}
+
+  {{#if this.showErrorFeedback}}
+    <f.Feedback @errors={{@errors}} />
+  {{/if}}
+</FormField>
