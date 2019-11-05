@@ -10,6 +10,7 @@ Router.map(function() {
   docsRoute(this, function() {
     this.route('forms', function() {
       this.route('input-text');
+      this.route('input-textarea');
     });
   });
 
