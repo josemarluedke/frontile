@@ -25,7 +25,7 @@ interface InputTextArgs {
   onFocusOut?: (event: FocusEvent) => void;
 }
 
-export default class InputText extends Component<InputTextArgs> {
+export class InputTextBase extends Component<InputTextArgs> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {
@@ -79,3 +79,5 @@ export default class InputText extends Component<InputTextArgs> {
     }
   }
 }
+
+export default class InputText extends InputTextBase {}
