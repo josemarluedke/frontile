@@ -1,0 +1,24 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-input-text-standard-index.hbs"}}
+    <InputText
+      @label="First Name"
+      @value={{this.value}}
+      @onInput={{this.setValue}}
+      @errors={{this.validationErrors}}
+    />
+
+    <p>
+      You typed, "{{this.value}}"
+    </p>
+
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-input-text-standard-index.hbs"
+    @label="components/with-button.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-input-text-standard-index.js"
+    @label="components/with-button.js"
+  />
+</DocsDemo>
