@@ -1,0 +1,16 @@
+<div
+  class="form-field {{if @hasMargin "has-margin"}} {{if @isSmall "is-small"}}"
+  ...attributes
+>
+  {{yield
+    (hash
+      id=this.id
+      hintId=this.hintId
+      feedbackId=this.feedbackId
+
+      Label=(component "field-label" for=this.id)
+      Hint=(component "field-hint" id=this.hintId)
+      Feedback=(component "field-feedback" id=this.feedbackId)
+    )
+  }}
+</div>

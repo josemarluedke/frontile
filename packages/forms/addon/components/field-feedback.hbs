@@ -1,0 +1,10 @@
+<div
+  id={{@id}}
+  class="field-feedback {{if this.isError 'is-error'}}"
+  data-test-id="field-feedback"
+  aria-live={{if this.isError "assertive" "polite"}}
+  ...attributes
+>
+  {{this.errorMessage}}
+  {{yield}}
+</div>
