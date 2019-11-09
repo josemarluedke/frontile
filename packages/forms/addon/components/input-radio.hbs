@@ -1,0 +1,33 @@
+{{! template-lint-disable no-positive-tabindex}}
+<FormField
+  @hasMargin={{@hasMargin}}
+  @isSmall={{@isSmall}}
+  class="input-radio"
+  as |f|
+>
+  <input
+    {{on "focus" this.handleFocusIn}}
+    {{on "blur" this.handleFocusOut}}
+    {{on "change" this.handleChange}}
+    id={{f.id}}
+    type="radio"
+    value={{@value}}
+    checked={{this.isChecked}}
+    name={{@name}}
+    aria-describedby={{if @hint f.hintId}}
+    ...attributes
+  >
+  <f.Label
+    class={{if this.isFocused "is-focused"}}
+  >
+   {{#if hasBlock}}
+      {{yield}}
+    {{else}}
+      {{@label}}
+    {{/if}}
+  </f.Label>
+
+  {{#if @hint}}
+    <f.Hint>{{@hint}}</f.Hint>
+  {{/if}}
+</FormField>
