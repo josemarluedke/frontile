@@ -11,6 +11,8 @@ Router.map(function() {
     this.route('forms', function() {
       this.route('input-text');
       this.route('input-textarea');
+      this.route('input-radio');
+      this.route('input-radio-group');
     });
   });
 
