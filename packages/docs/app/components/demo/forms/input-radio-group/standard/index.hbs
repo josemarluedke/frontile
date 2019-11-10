@@ -1,0 +1,26 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-input-radio-group-standard-index.hbs"}}
+    <InputRadioGroup
+      @label="Grouped radio buttons"
+      @value={{this.value}}
+      @onChange={{this.setValue}}
+      @errors={{this.validationErrors}}
+      as |Radio|
+    >
+      <Radio @value={{true}} @label="Yes" />
+      <Radio @value={{false}} @label="No" />
+      <Radio @value="maybe" @label="Maybe" />
+    </InputRadioGroup>
+
+    <p>Selected Value: "{{this.value}}"</p>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-input-radio-group-standard-index.hbs"
+    @label="components/standard.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-input-radio-group-standard-index.js"
+    @label="components/standard.js"
+  />
+</DocsDemo>
