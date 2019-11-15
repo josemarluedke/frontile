@@ -1,7 +1,7 @@
 <FormField
   @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
-  class="input-radio"
+  class="input-checkbox"
   as |f|
 >
   <input
@@ -9,13 +9,13 @@
     {{on "blur" this.handleFocusOut}}
     {{on "change" this.handleChange}}
     id={{f.id}}
-    type="radio"
-    value={{@value}}
+    type="checkbox"
     checked={{this.isChecked}}
     name={{@name}}
     aria-describedby={{if @hint f.hintId}}
     ...attributes
   >
+
   <f.Label
     class={{if this.isFocused "is-focused"}}
   >

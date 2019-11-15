@@ -13,6 +13,8 @@ Router.map(function() {
       this.route('input-textarea');
       this.route('input-radio');
       this.route('input-radio-group');
+      this.route('input-checkbox');
+      this.route('input-checkbox-group');
     });
   });
 

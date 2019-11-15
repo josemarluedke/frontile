@@ -1,0 +1,32 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-input-checkbox-group-standard-index.hbs"}}
+    <InputCheckboxGroup
+      @errors={{this.validationErrors}}
+      @label="Checkbox group"
+      as |Checkbox|
+    >
+      <Checkbox
+        @name="isChecked"
+        @label="Checkbox"
+        @checked={{this.isChecked}}
+        @onChange={{this.setIsChecked}}
+      />
+
+      <Checkbox
+        @name="isChecked2"
+        @label="Checkbox 2"
+        @checked={{this.isChecked2}}
+        @onChange={{this.setIsChecked2}}
+      />
+    </InputCheckboxGroup>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-input-checkbox-group-standard-index.hbs"
+    @label="components/standard.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-input-checkbox-group-standard-index.js"
+    @label="components/standard.js"
+  />
+</DocsDemo>
