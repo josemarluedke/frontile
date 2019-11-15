@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputRadioGroupArgs {
-  value: unknown;
+interface InputCheckboxGroupArgs {
   label?: string;
   hint?: string;
   hasSubmitted?: boolean;
@@ -17,7 +16,9 @@ interface InputRadioGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class InputRadioGroup extends Component<InputRadioGroupArgs> {
+export default class InputCheckboxGroup extends Component<
+  InputCheckboxGroupArgs
+> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {
