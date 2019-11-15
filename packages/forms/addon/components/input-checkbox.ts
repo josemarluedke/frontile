@@ -2,10 +2,9 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputRadioArgs {
+interface InputCheckboxArgs {
   label?: string;
   hint?: string;
-  value?: unknown;
   checked?: unknown;
   name?: string;
   hasMargin?: boolean;
@@ -18,22 +17,24 @@ interface InputRadioArgs {
   _parentOnChange?: (value: unknown, event: Event) => void;
 }
 
-export default class InputRadio extends Component<InputRadioArgs> {
+export default class InputCheckbox extends Component<InputCheckboxArgs> {
   @tracked isFocused = false;
 
   get isChecked(): boolean {
-    return this.args.checked === this.args.value;
+    return !!this.args.checked;
   }
 
   @action handleChange(event: Event): void {
     event.preventDefault();
 
+    const value = !this.args.checked;
+
     if (typeof this.args.onChange === 'function') {
-      this.args.onChange(this.args.value, event);
+      this.args.onChange(value, event);
     }
 
     if (typeof this.args._parentOnChange === 'function') {
-      this.args._parentOnChange(this.args.value, event);
+      this.args._parentOnChange(value, event);
     }
   }
 
