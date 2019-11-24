@@ -3,30 +3,31 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, blur, focus, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | InputTextareaarea', function(hooks) {
+module('Integration | Component | FormTextarea', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    await render(hbs`<InputTextarea @label="Name" />`);
+    await render(hbs`<FormTextarea @label="Name" />`);
 
     assert.dom('label').hasText('Name');
   });
 
   test('it renders html attributes', async function(assert) {
-    await render(hbs`<InputTextarea
-                      @label="Name"
-                      name="some-name"
-                      data-test-my-input-text />`);
+    await render(hbs`<FormTextarea
+                        @label="Name"
+                        name="some-name"
+                        data-test-input
+                      />`);
 
-    assert.dom('[data-test-my-input-text]').exists();
+    assert.dom('[data-test-input]').exists();
     assert.dom('[name="some-name"]').exists();
   });
 
   test('it should have id attr with matching label attr `for`', async function(assert) {
-    await render(hbs`<InputTextarea
-                      @label="Comment"
-                      data-test-input
-                    />`);
+    await render(hbs`<FormTextarea
+                        @label="Comment"
+                        data-test-input
+                      />`);
 
     const el = find('[data-test-input]') as HTMLInputElement;
     const id = el.getAttribute('id') || '';
@@ -38,24 +39,24 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
 
   test('it renders yielded block next to input', async function(assert) {
     await render(hbs`
-    <InputTextarea
-      @label="Name"
-      data-test-my-input-text
-    >
-      <button>My Button</button>
-    </InputTextarea>`);
+      <FormTextarea
+        @label="Name"
+        data-test-input
+      >
+        <button>My Button</button>
+      </FormTextarea>`);
 
-    assert.dom('[data-test-my-input-text] + button').exists();
+    assert.dom('[data-test-input] + button').exists();
   });
 
   test('show value on input, does not mutate value by default', async function(assert) {
     this.set('myInputValue', 'Josemar');
     await render(
-      hbs`<InputTextarea class="my-input" @label="Name" @value={{this.myInputValue}} />`
+      hbs`<FormTextarea data-test-input @label="Name" @value={{this.myInputValue}} />`
     );
 
-    assert.dom('.my-input').hasValue('Josemar');
-    await fillIn('.my-input', 'Sam');
+    assert.dom('[data-test-input]').hasValue('Josemar');
+    await fillIn('[data-test-input]', 'Sam');
     assert.equal(
       this.get('myInputValue'),
       'Josemar',
@@ -66,15 +67,16 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
   test('should mutate the value using onInput action', async function(assert) {
     this.set('myInputValue', 'Josemar');
     await render(
-      hbs`<InputTextarea
-          class="my-input"
-          @label="Name"
-          @value={{this.myInputValue}}
-          @onInput={{action (mut this.myInputValue)}} />`
+      hbs`<FormTextarea
+            data-test-input
+            @label="Name"
+            @value={{this.myInputValue}}
+            @onInput={{action (mut this.myInputValue)}}
+          />`
     );
 
-    assert.dom('.my-input').hasValue('Josemar');
-    await fillIn('.my-input', 'Sam');
+    assert.dom('[data-test-input]').hasValue('Josemar');
+    await fillIn('[data-test-input]', 'Sam');
     assert.equal(
       this.get('myInputValue'),
       'Sam',
@@ -85,17 +87,17 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
   test('show error messages when errors array has items', async function(assert) {
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            class="my-input"
-            @errors={{array "This field is required"}}
-            @label="Name"
-          />
-        </div>`
+            <FormTextarea
+              data-test-input
+              @errors={{array "This field is required"}}
+              @label="Name"
+            />
+          </div>`
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await focus('.my-input');
-    await blur('.my-input');
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
     assert.dom('.my-container .has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
@@ -106,17 +108,17 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
     this.set('errors', []);
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            class="my-input"
-            @errors={{this.errors}}
-            @label="Name"
-          />
-        </div>`
+            <FormTextarea
+              data-test-input
+              @errors={{this.errors}}
+              @label="Name"
+            />
+          </div>`
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await focus('.my-input');
-    await blur('.my-input');
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
     assert.dom('.my-container .has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
@@ -124,18 +126,18 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
   test('do not show errors if hasError is false even if errors has elements', async function(assert) {
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            class="my-input"
-            @errors={{array "This field is required"}}
-            @label="Name"
-            @hasError={{false}}
-          />
-        </div>`
+            <FormTextarea
+              data-test-input
+              @errors={{array "This field is required"}}
+              @label="Name"
+              @hasError={{false}}
+            />
+          </div>`
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await focus('.my-input');
-    await blur('.my-input');
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     assert.dom('.my-container .has-error').doesNotExist();
   });
@@ -143,18 +145,18 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
   test('shows error message and adds the has-error class only when focus out', async function(assert) {
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            class="my-input"
-            @errors={{array "This field is required"}}
-            @label="Name"
-            @hasError={{true}}
-          />
-        </div>`
+            <FormTextarea
+              data-test-input
+              @errors={{array "This field is required"}}
+              @label="Name"
+              @hasError={{true}}
+            />
+          </div>`
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await focus('.my-input');
-    await blur('.my-input');
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
     assert.dom('.my-container .has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
@@ -164,33 +166,33 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
   test('it hides the has-error when input is in focus', async function(assert) {
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            class="my-input"
-            @label="Name"
-            @errors={{array "Some error"}}
-            @hasError={{true}}
-          />
-        </div>`
+            <FormTextarea
+              data-test-input
+              @label="Name"
+              @errors={{array "Some error"}}
+              @hasError={{true}}
+            />
+          </div>`
     );
 
-    await focus('.my-input');
-    await blur('.my-input');
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
     assert.dom('.my-container .has-error').exists();
 
-    await focus('.my-input');
+    await focus('[data-test-input]');
     assert.dom('.my-container .has-error').doesNotExist();
   });
 
   test('always show error messages when hasSubmitted is true', async function(assert) {
     await render(
       hbs`<div class="my-container">
-          <InputTextarea
-            @hasSubmitted={{true}}
-            class="my-input"
-            @errors={{array "This field is required"}}
-            @label="Name"
-          />
-        </div>`
+            <FormTextarea
+              @hasSubmitted={{true}}
+              data-test-input
+              @errors={{array "This field is required"}}
+              @label="Name"
+            />
+          </div>`
     );
 
     assert.dom('.my-container .has-error').exists();
@@ -215,17 +217,17 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
     });
 
     await render(
-      hbs`<InputTextarea
-          class="my-input"
-          @onFocusIn={{action this.onFocusIn}}
-          @onFocusOut={{action this.onFocusOut}}
-          @onChange={{action this.onChange}}
-        />`
+      hbs`<FormTextarea
+            data-test-input
+            @onFocusIn={{action this.onFocusIn}}
+            @onFocusOut={{action this.onFocusOut}}
+            @onChange={{action this.onChange}}
+          />`
     );
 
-    await focus('.my-input');
-    await blur('.my-input');
-    await fillIn('.my-input', 'Josemar'); // This causes focusIn to trigger as well.
+    await focus('[data-test-input]');
+    await blur('[data-test-input]');
+    await fillIn('[data-test-input]', 'Josemar'); // This causes focusIn to trigger as well.
     assert.ok(calls.includes('onFocusIn'));
     assert.ok(calls.includes('onFocusOut'));
     assert.ok(calls.includes('onFocusIn'));
@@ -236,27 +238,27 @@ module('Integration | Component | InputTextareaarea', function(hooks) {
     this.set('hasMargin', undefined);
 
     await render(
-      hbs`<InputTextarea
+      hbs`<FormTextarea
             @hasMargin={{this.hasMargin}}
           />`
     );
 
-    assert.dom('.input-textarea').doesNotHaveClass('has-margin');
+    assert.dom('.form-textarea-container').doesNotHaveClass('has-margin');
     this.set('hasMargin', true);
-    assert.dom('.input-textarea').hasClass('has-margin');
+    assert.dom('.form-textarea-container').hasClass('has-margin');
   });
 
   test('it adds has-button class if @hasButton is true', async function(assert) {
     this.set('hasButton', undefined);
 
     await render(
-      hbs`<InputTextarea
-          @hasButton={{this.hasButton}}
-        />`
+      hbs`<FormTextarea
+            @hasButton={{this.hasButton}}
+          />`
     );
 
-    assert.dom('.input-textarea').doesNotHaveClass('has-button');
+    assert.dom('.form-textarea-container').doesNotHaveClass('has-button');
     this.set('hasButton', true);
-    assert.dom('.input-textarea').hasClass('has-button');
+    assert.dom('.form-textarea-container').hasClass('has-button');
   });
 });
