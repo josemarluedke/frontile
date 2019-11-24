@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputTextArgs {
+interface FormInputArgs {
   value: unknown;
   type?: string;
   label?: string;
@@ -25,7 +25,7 @@ interface InputTextArgs {
   onFocusOut?: (event: FocusEvent) => void;
 }
 
-export class InputTextBase extends Component<InputTextArgs> {
+export class FormInputBase extends Component<FormInputArgs> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {
@@ -61,4 +61,4 @@ export class InputTextBase extends Component<InputTextArgs> {
   }
 }
 
-export default class InputText extends InputTextBase {}
+export default class FormInput extends FormInputBase {}

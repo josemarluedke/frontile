@@ -1,3 +1,3 @@
-import { InputTextBase } from './input-text';
+import { FormInputBase } from './form-input';
 
-export default class InputTextarea extends InputTextBase {}
+export default class FormTextarea extends FormInputBase {}
