@@ -1,4 +1,4 @@
-// BEGIN-SNIPPET demo-forms-input-textarea-standard-index.js
+// BEGIN-SNIPPET demo-forms-form-textarea-standard-index.js
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
