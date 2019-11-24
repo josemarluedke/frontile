@@ -5,30 +5,22 @@ import { tracked } from '@glimmer/tracking';
 interface InputCheckboxArgs {
   label?: string;
   hint?: string;
-  checked?: unknown;
+  checked?: boolean;
   name?: string;
   hasMargin?: boolean;
   isSmall?: boolean;
 
   // Callback when onchange is triggered
-  onChange?: (value: unknown, event: Event) => void;
+  onChange?: (value: boolean, event: Event) => void;
 
   // internal function for InputRadioGroup
-  _parentOnChange?: (value: unknown, event: Event) => void;
+  _parentOnChange?: (value: boolean, event: Event) => void;
 }
 
 export default class InputCheckbox extends Component<InputCheckboxArgs> {
   @tracked isFocused = false;
 
-  get isChecked(): boolean {
-    return !!this.args.checked;
-  }
-
-  @action handleChange(event: Event): void {
-    event.preventDefault();
-
-    const value = !this.args.checked;
-
+  @action handleChange(value: boolean, event: Event): void {
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);
     }
