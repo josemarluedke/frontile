@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputRadioArgs {
+interface FormRadioArgs {
   label?: string;
   hint?: string;
   value?: unknown;
@@ -14,11 +14,11 @@ interface InputRadioArgs {
   // Callback when onchange is triggered
   onChange?: (value: unknown, event: Event) => void;
 
-  // internal function for InputRadioGroup
+  // internal function for FormRadioGroup
   _parentOnChange?: (value: unknown, event: Event) => void;
 }
 
-export default class InputRadio extends Component<InputRadioArgs> {
+export default class FormRadio extends Component<FormRadioArgs> {
   @tracked isFocused = false;
 
   @action handleChange(value: unknown, event: Event): void {

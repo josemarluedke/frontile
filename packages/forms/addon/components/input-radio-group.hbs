@@ -17,7 +17,7 @@
     <f.Hint>{{@hint}}</f.Hint>
   {{/if}}
 
-  {{yield (component "input-radio"
+  {{yield (component "form-radio"
             checked=@value
             _parentOnChange=this.handleChange
             name=(concat f.id "-radio-group")

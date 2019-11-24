@@ -4,12 +4,12 @@ import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
-module('Integration | Component | InputRadio', function(hooks) {
+module('Integration | Component | FormRadio', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders the label from argument', async function(assert) {
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             @label="My Radio Input"
           />`
@@ -19,16 +19,16 @@ module('Integration | Component | InputRadio', function(hooks) {
   });
 
   test('it renders the label from block param', async function(assert) {
-    await render(hbs`<InputRadio data-test-input>My Block Label</InputRadio>`);
+    await render(hbs`<FormRadio data-test-input>My Block Label</FormRadio>`);
 
     assert.dom('[data-test-input] + label').hasText('My Block Label');
   });
 
   test('it should have id attr with matching label attr `for`', async function(assert) {
-    await render(hbs`<InputRadio
-                      @label="Something"
-                      data-test-input
-                    />`);
+    await render(hbs`<FormRadio
+                        @label="Something"
+                        data-test-input
+                      />`);
 
     const el = find('[data-test-input]') as HTMLInputElement;
     const id = el.getAttribute('id') || '';
@@ -40,7 +40,7 @@ module('Integration | Component | InputRadio', function(hooks) {
 
   test('it renders the `name` HTML attribute', async function(assert) {
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             name="my-input"
           />`
@@ -51,7 +51,7 @@ module('Integration | Component | InputRadio', function(hooks) {
 
   test('it renders the `name` from args', async function(assert) {
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             @name="my-input"
           />`
@@ -64,7 +64,7 @@ module('Integration | Component | InputRadio', function(hooks) {
     this.set('myValue', undefined);
 
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             name="my-input"
             @label="My Radio Input"
@@ -81,7 +81,7 @@ module('Integration | Component | InputRadio', function(hooks) {
     this.set('myValue', undefined);
 
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             name="my-input"
             @label="My Radio Input"
@@ -99,7 +99,7 @@ module('Integration | Component | InputRadio', function(hooks) {
     this.set('myValue', false);
 
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             @label="My Radio Input"
             @value={{true}}
@@ -117,7 +117,7 @@ module('Integration | Component | InputRadio', function(hooks) {
     this.set('myValue', false);
 
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             @label="My Radio Input"
           />`
@@ -136,12 +136,12 @@ module('Integration | Component | InputRadio', function(hooks) {
 
   test('it adds has-margin class if @hasMargin is true', async function(assert) {
     await render(
-      hbs`<InputRadio
+      hbs`<FormRadio
             data-test-input
             @hasMargin={{true}}
           />`
     );
 
-    assert.dom('.input-radio').hasClass('has-margin');
+    assert.dom('.form-radio-container').hasClass('has-margin');
   });
 });
