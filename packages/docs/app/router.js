@@ -11,7 +11,7 @@ Router.map(function() {
     this.route('forms', function() {
       this.route('form-input');
       this.route('form-textarea');
-      this.route('input-radio');
+      this.route('form-radio');
       this.route('input-radio-group');
       this.route('form-checkbox');
       this.route('form-checkbox-group');

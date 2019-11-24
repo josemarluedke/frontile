@@ -1,7 +1,7 @@
 <DocsDemo as |demo|>
-  {{#demo.example name="demo-forms-input-radio-standard-index.hbs"}}
+  {{#demo.example name="demo-forms-form-radio-standard-index.hbs"}}
 
-    <InputRadio
+    <FormRadio
       name="my-radio-input"
       @label="Yes"
       @value={{true}}
@@ -9,7 +9,7 @@
       @onChange={{this.setValue}}
     />
 
-    <InputRadio
+    <FormRadio
       name="my-radio-input"
       @label="No"
       @value={{false}}
@@ -21,11 +21,11 @@
   {{/demo.example}}
 
   <demo.snippet
-    @name="demo-forms-input-radio-standard-index.hbs"
+    @name="demo-forms-form-radio-standard-index.hbs"
     @label="components/standard.hbs"
   />
   <demo.snippet
-    @name="demo-forms-input-radio-standard-index.js"
+    @name="demo-forms-form-radio-standard-index.js"
     @label="components/standard.js"
   />
 </DocsDemo>
