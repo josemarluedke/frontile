@@ -42,8 +42,10 @@ module('Integration | Component | FormField', function(hooks) {
       .hasTextContaining('My Label');
     assert.dom('[data-test-id="form-field-label"]').hasAttribute('for', id);
 
-    assert.dom('[data-test-id="field-hint"]').hasTextContaining('My Hint');
-    assert.dom('[data-test-id="field-hint"]').hasAttribute('id', `${id}-hint`);
+    assert.dom('[data-test-id="form-field-hint"]').hasTextContaining('My Hint');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasAttribute('id', `${id}-hint`);
 
     assert
       .dom('[data-test-id="form-field-feedback"]')
