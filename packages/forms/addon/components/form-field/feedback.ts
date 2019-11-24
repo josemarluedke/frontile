@@ -1,11 +1,13 @@
 import Component from '@glimmer/component';
 
-interface FieldFeedbackArgs {
+interface FormFieldFeedbackArgs {
   isError?: boolean;
   errors?: string[] | string;
 }
 
-export default class FieldFeedback extends Component<FieldFeedbackArgs> {
+export default class FormFieldFeedback extends Component<
+  FormFieldFeedbackArgs
+> {
   get isError(): boolean {
     return (
       typeof this.args.errors !== 'undefined' || this.args.isError === true

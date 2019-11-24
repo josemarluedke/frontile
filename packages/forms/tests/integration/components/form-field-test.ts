@@ -46,10 +46,10 @@ module('Integration | Component | FormField', function(hooks) {
     assert.dom('[data-test-id="field-hint"]').hasAttribute('id', `${id}-hint`);
 
     assert
-      .dom('[data-test-id="field-feedback"]')
+      .dom('[data-test-id="form-field-feedback"]')
       .hasTextContaining('My Feedback');
     assert
-      .dom('[data-test-id="field-feedback"]')
+      .dom('[data-test-id="form-field-feedback"]')
       .hasAttribute('id', `${id}-feedback`);
   });
 
