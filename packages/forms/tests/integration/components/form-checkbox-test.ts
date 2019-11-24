@@ -4,12 +4,12 @@ import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
-module('Integration | Component | InputCheckbox', function(hooks) {
+module('Integration | Component | FormCheckbox', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders with the label from argument', async function(assert) {
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             @label="My Checkbox Input"
           />`
@@ -19,17 +19,17 @@ module('Integration | Component | InputCheckbox', function(hooks) {
 
   test('it renders the label from block param', async function(assert) {
     await render(
-      hbs`<InputCheckbox data-test-input>My Block Label</InputCheckbox>`
+      hbs`<FormCheckbox data-test-input>My Block Label</FormCheckbox>`
     );
 
     assert.dom('[data-test-input] + label').hasText('My Block Label');
   });
 
   test('it should have id attr with matching label attr `for`', async function(assert) {
-    await render(hbs`<InputCheckbox
-                      @label="Something Else"
-                      data-test-input
-                    />`);
+    await render(hbs`<FormCheckbox
+                        @label="Something Else"
+                        data-test-input
+                      />`);
 
     const el = find('[data-test-input]') as HTMLInputElement;
     const id = el.getAttribute('id') || '';
@@ -41,7 +41,7 @@ module('Integration | Component | InputCheckbox', function(hooks) {
 
   test('it renders the `name` from args', async function(assert) {
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             @name="my-input"
           />`
@@ -54,7 +54,7 @@ module('Integration | Component | InputCheckbox', function(hooks) {
     this.set('myValue', undefined);
 
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             name="my-input"
             @label="My Checkbox Input"
@@ -70,7 +70,7 @@ module('Integration | Component | InputCheckbox', function(hooks) {
     this.set('myValue', undefined);
 
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             name="my-input"
             @label="My Checkbox Input"
@@ -87,7 +87,7 @@ module('Integration | Component | InputCheckbox', function(hooks) {
     this.set('myValue', false);
 
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             @label="My Checkbox Input"
             @checked={{this.myValue}}
@@ -104,7 +104,7 @@ module('Integration | Component | InputCheckbox', function(hooks) {
     this.set('myValue', false);
 
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             @label="My Checkbox Input"
           />`
@@ -125,14 +125,14 @@ module('Integration | Component | InputCheckbox', function(hooks) {
     this.set('hasMargin', undefined);
 
     await render(
-      hbs`<InputCheckbox
+      hbs`<FormCheckbox
             data-test-input
             @hasMargin={{this.hasMargin}}
           />`
     );
 
-    assert.dom('.input-checkbox').doesNotHaveClass('has-margin');
+    assert.dom('.form-checkbox-container').doesNotHaveClass('has-margin');
     this.set('hasMargin', true);
-    assert.dom('.input-checkbox').hasClass('has-margin');
+    assert.dom('.form-checkbox-container').hasClass('has-margin');
   });
 });

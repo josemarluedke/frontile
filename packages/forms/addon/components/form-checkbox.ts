@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputCheckboxArgs {
+interface FormCheckboxArgs {
   label?: string;
   hint?: string;
   checked?: boolean;
@@ -17,7 +17,7 @@ interface InputCheckboxArgs {
   _parentOnChange?: (value: boolean, event: Event) => void;
 }
 
-export default class InputCheckbox extends Component<InputCheckboxArgs> {
+export default class FormCheckbox extends Component<FormCheckboxArgs> {
   @tracked isFocused = false;
 
   @action handleChange(value: boolean, event: Event): void {
