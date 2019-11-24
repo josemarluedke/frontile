@@ -14,7 +14,7 @@ Router.map(function() {
       this.route('input-radio');
       this.route('input-radio-group');
       this.route('form-checkbox');
-      this.route('input-checkbox-group');
+      this.route('form-checkbox-group');
     });
   });
 

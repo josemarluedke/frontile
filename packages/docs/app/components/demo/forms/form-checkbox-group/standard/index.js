@@ -1,4 +1,4 @@
-// BEGIN-SNIPPET demo-forms-input-checkbox-group-standard-index.js
+// BEGIN-SNIPPET demo-forms-form-checkbox-group-standard-index.js
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
