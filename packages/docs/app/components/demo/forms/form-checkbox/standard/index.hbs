@@ -1,0 +1,21 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-form-checkbox-standard-index.hbs"}}
+    <FormCheckbox
+      name="isChecked"
+      @label="Checkbox"
+      @checked={{this.value}}
+      @onChange={{this.setValue}}
+    />
+
+    <p>Selected Value: "{{this.value}}"</p>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-form-checkbox-standard-index.hbs"
+    @label="components/standard.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-form-checkbox-standard-index.js"
+    @label="components/standard.js"
+  />
+</DocsDemo>

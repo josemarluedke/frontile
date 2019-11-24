@@ -1,0 +1,23 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-form-input-no-label-index.hbs"}}
+    <FormInput
+      @value={{this.value}}
+      @onInput={{this.setValue}}
+      placeholder="I have no label"
+    />
+
+    <p>
+      You typed, "{{this.value}}"
+    </p>
+
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-form-input-no-label-index.hbs"
+    @label="components/with-button.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-form-input-no-label-index.js"
+    @label="components/with-button.js"
+  />
+</DocsDemo>

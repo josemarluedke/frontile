@@ -1,0 +1,35 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-form-input-with-button-index.hbs"}}
+    <FormInput
+      @value={{this.value}}
+      @onInput={{this.setValue}}
+      @label="Referral Code"
+      @errors={{this.validationErrors}}
+      @hasButton={{true}}
+      @onChange={{this.validate}}
+      placeholder="Input your URL or 6 Digit referral code"
+    >
+      <button
+        {{on "click" this.validate}}
+        class="button {{if this.isValid "is-primary" "is-secondary"}}"
+      >
+        {{#if this.isValid}}
+          <span>
+            Code Applied
+          </span>
+        {{else}}
+          Apply
+        {{/if}}
+      </button>
+    </FormInput>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-form-input-with-button-index.hbs"
+    @label="components/with-button.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-form-input-with-button-index.js"
+    @label="components/with-button.js"
+  />
+</DocsDemo>

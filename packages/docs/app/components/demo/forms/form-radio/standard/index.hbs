@@ -1,0 +1,31 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-form-radio-standard-index.hbs"}}
+
+    <FormRadio
+      name="my-radio-input"
+      @label="Yes"
+      @value={{true}}
+      @checked={{this.value}}
+      @onChange={{this.setValue}}
+    />
+
+    <FormRadio
+      name="my-radio-input"
+      @label="No"
+      @value={{false}}
+      @checked={{this.value}}
+      @onChange={{this.setValue}}
+    />
+
+    <p>Selected Value: "{{this.value}}"</p>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-form-radio-standard-index.hbs"
+    @label="components/standard.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-form-radio-standard-index.js"
+    @label="components/standard.js"
+  />
+</DocsDemo>
