@@ -4,12 +4,12 @@ import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
-module('Integration | Component | InputRadioGroup', function(hooks) {
+module('Integration | Component | FormRadioGroup', function(hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`
     <div class="my-container">
-      <InputRadioGroup
+      <FormRadioGroup
         data-test-input-group
         @hasError={{this.hasError}}
         @errors={{this.errors}}
@@ -21,7 +21,7 @@ module('Integration | Component | InputRadioGroup', function(hooks) {
       >
         <Radio @value={{true}} @label="Yes" data-test-option-yes />
         <Radio @value={{false}} @label="No" data-test-option-no />
-      </InputRadioGroup>
+      </FormRadioGroup>
     </div>`;
 
   test('option names should be all the same', async function(assert) {
