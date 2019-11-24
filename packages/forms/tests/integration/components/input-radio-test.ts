@@ -24,6 +24,20 @@ module('Integration | Component | InputRadio', function(hooks) {
     assert.dom('[data-test-input] + label').hasText('My Block Label');
   });
 
+  test('it should have id attr with matching label attr `for`', async function(assert) {
+    await render(hbs`<InputRadio
+                      @label="Something"
+                      data-test-input
+                    />`);
+
+    const el = find('[data-test-input]') as HTMLInputElement;
+    const id = el.getAttribute('id') || '';
+
+    assert.ok(/ember[1-9.]/.test(id), 'should have generated an id');
+
+    assert.dom('[data-test-id="form-field-label"]').hasAttribute('for', id);
+  });
+
   test('it renders the `name` HTML attribute', async function(assert) {
     await render(
       hbs`<InputRadio

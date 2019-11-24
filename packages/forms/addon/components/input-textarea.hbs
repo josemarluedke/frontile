@@ -14,13 +14,12 @@
     <f.Hint>{{@hint}}</f.Hint>
   {{/if}}
 
-  <FormField::Textarea
+  <f.Textarea
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
 
     @onInput={{@onInput}}
     @onChange={{@onChange}}
-    @id={{f.id}}
     @value={{@value}}
 
     aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"

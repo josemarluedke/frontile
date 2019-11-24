@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, blur, focus } from '@ember/test-helpers';
+import { render, fillIn, blur, focus, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | InputText', function(hooks) {
@@ -20,6 +20,20 @@ module('Integration | Component | InputText', function(hooks) {
 
     assert.dom('[data-test-my-input-text]').exists();
     assert.dom('[name="some-name"]').exists();
+  });
+
+  test('it should have id attr with matching label attr `for`', async function(assert) {
+    await render(hbs`<InputText
+                      @label="Name"
+                      data-test-input
+                    />`);
+
+    const el = find('[data-test-input]') as HTMLInputElement;
+    const id = el.getAttribute('id') || '';
+
+    assert.ok(/ember[1-9.]/.test(id), 'should have generated an id');
+
+    assert.dom('[data-test-id="form-field-label"]').hasAttribute('for', id);
   });
 
   test('it renders yielded block next to input', async function(assert) {

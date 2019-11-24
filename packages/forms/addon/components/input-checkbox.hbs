@@ -4,12 +4,11 @@
   class="input-checkbox"
   as |f|
 >
-  <FormField::Checkbox
+  <f.Checkbox
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
 
     @onChange={{this.handleChange}}
-    @id={{f.id}}
     @checked={{@checked}}
     @name={{@name}}
 

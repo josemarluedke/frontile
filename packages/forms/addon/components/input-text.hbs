@@ -14,7 +14,7 @@
     <f.Hint>{{@hint}}</f.Hint>
   {{/if}}
 
-  <FormField::Input
+  <f.Input
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
 
@@ -22,7 +22,6 @@
     @onChange={{@onChange}}
     @value={{@value}}
     @type={{@type}}
-    @id={{f.id}}
 
     aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"
     ...attributes

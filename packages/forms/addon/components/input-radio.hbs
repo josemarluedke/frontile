@@ -4,12 +4,11 @@
   class="input-radio"
   as |f|
 >
-  <FormField::Radio
+  <f.Radio
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
 
     @onChange={{this.handleChange}}
-    @id={{f.id}}
     @value={{@value}}
     @checked={{@checked}}
     @name={{@name}}
