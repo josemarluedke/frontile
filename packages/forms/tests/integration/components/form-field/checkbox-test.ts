@@ -81,7 +81,7 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.equal(this.get('value'), true, 'should have mutated the value');
   });
 
-  test('it set as checked if value is truthy', async function(assert) {
+  test('it sets as checked if value is truthy', async function(assert) {
     this.set('value', undefined);
 
     await render(
