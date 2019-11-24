@@ -4,17 +4,17 @@
   class="input-checkbox"
   as |f|
 >
-  <input
+  <f.Checkbox
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
-    {{on "change" this.handleChange}}
-    id={{f.id}}
-    type="checkbox"
-    checked={{this.isChecked}}
-    name={{@name}}
+
+    @onChange={{this.handleChange}}
+    @checked={{@checked}}
+    @name={{@name}}
+
     aria-describedby={{if @hint f.hintId}}
     ...attributes
-  >
+  />
 
   <f.Label
     class={{if this.isFocused "is-focused"}}

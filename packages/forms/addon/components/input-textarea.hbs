@@ -14,17 +14,17 @@
     <f.Hint>{{@hint}}</f.Hint>
   {{/if}}
 
-  <textarea
+  <f.Textarea
     {{on "focus" this.handleFocusIn}}
     {{on "blur" this.handleFocusOut}}
-    {{on "input" this.handleOnInput}}
-    {{on "change" this.handleOnChange}}
-    id={{f.id}}
-    value={{@value}}
+
+    @onInput={{@onInput}}
+    @onChange={{@onChange}}
+    @value={{@value}}
+
     aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"
     ...attributes
-  >
-  </textarea>
+  />
 
   {{yield}}
 

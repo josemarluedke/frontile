@@ -44,13 +44,6 @@ export class InputTextBase extends Component<InputTextArgs> {
     }
   }
 
-  get type(): string {
-    if (typeof this.args.type === 'string') {
-      return this.args.type;
-    }
-    return 'text';
-  }
-
   @action handleFocusIn(event: FocusEvent): void {
     this.shouldShowErrorFeedback = false;
 
@@ -64,18 +57,6 @@ export class InputTextBase extends Component<InputTextArgs> {
 
     if (typeof this.args.onFocusOut === 'function') {
       this.args.onFocusOut(event);
-    }
-  }
-
-  @action handleOnInput(event: InputEvent): void {
-    if (typeof this.args.onInput === 'function') {
-      this.args.onInput((event.target as HTMLInputElement).value, event);
-    }
-  }
-
-  @action handleOnChange(event: InputEvent): void {
-    if (typeof this.args.onChange === 'function') {
-      this.args.onChange((event.target as HTMLInputElement).value, event);
     }
   }
 }

@@ -21,19 +21,15 @@ interface InputRadioArgs {
 export default class InputRadio extends Component<InputRadioArgs> {
   @tracked isFocused = false;
 
-  get isChecked(): boolean {
-    return this.args.checked === this.args.value;
-  }
-
-  @action handleChange(event: Event): void {
+  @action handleChange(value: unknown, event: Event): void {
     event.preventDefault();
 
     if (typeof this.args.onChange === 'function') {
-      this.args.onChange(this.args.value, event);
+      this.args.onChange(value, event);
     }
 
     if (typeof this.args._parentOnChange === 'function') {
-      this.args._parentOnChange(this.args.value, event);
+      this.args._parentOnChange(value, event);
     }
   }
 

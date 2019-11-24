@@ -37,17 +37,21 @@ module('Integration | Component | FormField', function(hooks) {
     const id =
       find('[data-test-id="form-field"] .id')!.textContent || 'id-not-found';
 
-    assert.dom('[data-test-id="field-label"]').hasTextContaining('My Label');
-    assert.dom('[data-test-id="field-label"]').hasAttribute('for', id);
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasTextContaining('My Label');
+    assert.dom('[data-test-id="form-field-label"]').hasAttribute('for', id);
 
-    assert.dom('[data-test-id="field-hint"]').hasTextContaining('My Hint');
-    assert.dom('[data-test-id="field-hint"]').hasAttribute('id', `${id}-hint`);
+    assert.dom('[data-test-id="form-field-hint"]').hasTextContaining('My Hint');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasAttribute('id', `${id}-hint`);
 
     assert
-      .dom('[data-test-id="field-feedback"]')
+      .dom('[data-test-id="form-field-feedback"]')
       .hasTextContaining('My Feedback');
     assert
-      .dom('[data-test-id="field-feedback"]')
+      .dom('[data-test-id="form-field-feedback"]')
       .hasAttribute('id', `${id}-feedback`);
   });
 
