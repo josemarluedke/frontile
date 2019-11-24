@@ -3,12 +3,12 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | InputCheckboxGroup', function(hooks) {
+module('Integration | Component | FormCheckboxGroup', function(hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`
     <div class="my-container">
-      <InputCheckboxGroup
+      <FormCheckboxGroup
         data-test-input-group
         @errors={{this.errors}}
         @hasError={{this.hasError}}
@@ -30,7 +30,7 @@ module('Integration | Component | InputCheckboxGroup', function(hooks) {
           @checked={{this.myValue2}}
           @onChange={{action (mut this.myValue2)}}
         />
-      </InputCheckboxGroup>
+      </FormCheckboxGroup>
     </div>`;
 
   test('it adds the accessibility html attributes', async function(assert) {

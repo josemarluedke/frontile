@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface InputCheckboxGroupArgs {
+interface FormCheckboxGroupArgs {
   label?: string;
   hint?: string;
   hasSubmitted?: boolean;
@@ -16,8 +16,8 @@ interface InputCheckboxGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class InputCheckboxGroup extends Component<
-  InputCheckboxGroupArgs
+export default class FormCheckboxGroup extends Component<
+  FormCheckboxGroupArgs
 > {
   @tracked shouldShowErrorFeedback = false;
 
