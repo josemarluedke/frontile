@@ -1,6 +1,6 @@
 <DocsDemo as |demo|>
-  {{#demo.example name="demo-forms-input-text-with-button-index.hbs"}}
-    <InputText
+  {{#demo.example name="demo-forms-form-input-with-button-index.hbs"}}
+    <FormInput
       @value={{this.value}}
       @onInput={{this.setValue}}
       @label="Referral Code"
@@ -21,15 +21,15 @@
           Apply
         {{/if}}
       </button>
-    </InputText>
+    </FormInput>
   {{/demo.example}}
 
   <demo.snippet
-    @name="demo-forms-input-text-with-button-index.hbs"
+    @name="demo-forms-form-input-with-button-index.hbs"
     @label="components/with-button.hbs"
   />
   <demo.snippet
-    @name="demo-forms-input-text-with-button-index.js"
+    @name="demo-forms-form-input-with-button-index.js"
     @label="components/with-button.js"
   />
 </DocsDemo>

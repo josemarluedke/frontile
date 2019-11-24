@@ -1,4 +1,4 @@
-// BEGIN-SNIPPET demo-forms-input-text-with-button-index.js
+// BEGIN-SNIPPET demo-forms-form-input-with-button-index.js
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
