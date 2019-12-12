@@ -888,10 +888,10 @@
     ember-cli-typescript "^3.0.0"
     heimdalljs "^0.3.0"
 
-"@ember/edition-utils@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@ember/edition-utils/-/edition-utils-1.1.1.tgz#d5732c3da593f202e6e1ac6dbee56a758242403f"
-  integrity sha512-GEhri78jdQp/xxPpM6z08KlB0wrHfnfrJ9dmQk7JeQ4XCiMzXsJci7yooQgg/IcTKCM/PxE/IkGCQAo80adMkw==
+"@ember/edition-utils@^1.1.1", "@ember/edition-utils@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@ember/edition-utils/-/edition-utils-1.2.0.tgz#a039f542dc14c8e8299c81cd5abba95e2459cfa6"
+  integrity sha512-VmVq/8saCaPdesQmftPqbFtxJWrzxNGSQ+e8x8LLe3Hjm36pJ04Q8LeORGZkAeOhldoUX9seLGmSaHeXkIqoog==
 
 "@ember/optional-features@^1.0.0":
   version "1.1.0"
@@ -3171,9 +3171,9 @@ babel-plugin-htmlbars-inline-precompile@^1.0.0:
   integrity sha512-4jvKEHR1bAX03hBDZ94IXsYCj3bwk9vYsn6ux6JZNL2U5pvzCWjqyrGahfsGNrhERyxw8IqcirOi9Q6WCo3dkQ==
 
 babel-plugin-htmlbars-inline-precompile@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.0.0.tgz#95aa0d2379347cda9a7127c028fe35cb39179fa2"
-  integrity sha512-dR12lOqIcBLOTwgnI5iG+bSrZhR8JIZ7zAHW43YhcD5q8G8iipvSuRo8Fah6NPPh6C8cATd827bgPikphbF09w==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-htmlbars-inline-precompile/-/babel-plugin-htmlbars-inline-precompile-3.0.1.tgz#e1e38a4087f446578e419a21c112530c8df02345"
+  integrity sha512-ZiFY0nQjtdMPGIDwp/5LYOs6rCr54QfcSV5nPbrA7C++Fv4Vb2Q/qrKYx78t+dwmARJztnOBlObFk4z8veHxNA==
 
 babel-plugin-module-resolver@^3.1.1, babel-plugin-module-resolver@^3.2.0:
   version "3.2.0"
@@ -5481,9 +5481,9 @@ copy-descriptor@^0.1.0:
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
 core-js-compat@^3.4.7:
-  version "3.4.8"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.4.8.tgz#f72e6a4ed76437ea710928f44615f926a81607d5"
-  integrity sha512-l3WTmnXHV2Sfu5VuD7EHE2w7y+K68+kULKt5RJg8ZJk3YhHF1qLD4O8v8AmNq+8vbOwnPFFDvds25/AoEvMqlQ==
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.5.0.tgz#5a11a619a9e9dd2dcf1c742b2060bc4a2143e5b6"
+  integrity sha512-E7iJB72svRjJTnm9HDvujzNVMCm3ZcDYEedkJ/sDTNsy/0yooCd9Cg7GSzE7b4e0LfIkjijdB1tqg0pGwxWeWg==
   dependencies:
     browserslist "^4.8.2"
     semver "^6.3.0"
@@ -6526,7 +6526,7 @@ ember-cli-htmlbars@^3.0.0, ember-cli-htmlbars@^3.0.1:
     json-stable-stringify "^1.0.1"
     strip-bom "^3.0.0"
 
-ember-cli-htmlbars@^4.0.7, ember-cli-htmlbars@^4.2.0:
+ember-cli-htmlbars@^4.0.0, ember-cli-htmlbars@^4.0.7, ember-cli-htmlbars@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-htmlbars/-/ember-cli-htmlbars-4.2.0.tgz#a3694ab31f6d571c45786a3041b9c76e4eb30989"
   integrity sha512-YymJLg/rRiclK5jxbTFpaRNlbS+f3SY6SplnMExjcrcbSjMRsBuams50+mppENEu7iKfd6PBqH3FHVbYsukHSQ==
@@ -7026,7 +7026,7 @@ ember-keyboard@^4.0.0:
     babel-plugin-transform-object-rest-spread "^6.26.0"
     ember-cli-babel "^6.6.0"
 
-ember-load-initializers@^2.1.1:
+ember-load-initializers@^2.0.0, ember-load-initializers@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ember-load-initializers/-/ember-load-initializers-2.1.1.tgz#d1a8bead00bc44222b0ab181840869992beb30f5"
   integrity sha512-Ho5sBeaZPN3HmZkYkcLrjSBF3DTNmzC5h0DizzDj8cjpnCvaqeofphJDnH41k6kLv/QHMk4pMRISPcwc+bOceQ==
@@ -7063,7 +7063,7 @@ ember-named-arguments-polyfill@^1.0.0:
     ember-cli-babel "^6.6.0"
     ember-cli-version-checker "^2.1.2"
 
-ember-qunit@^4.6.0:
+ember-qunit@^4.4.1, ember-qunit@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-4.6.0.tgz#ad79fd3ff00073a8779400cc5a4b44829517590f"
   integrity sha512-i5VOGn0RP8XH+5qkYDOZshbqAvO6lHgF65D0gz8vRx4DszCIvJMJO+bbftBTfYMxp6rqG85etAA6pfNxE0DqsQ==
@@ -7236,10 +7236,10 @@ ember-try-config@^3.0.0:
     rsvp "^4.8.1"
     semver "^5.5.0"
 
-ember-try@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/ember-try/-/ember-try-1.3.0.tgz#394bdcd726e5acd2ebf8422c7bcf9ecf0aa2c2ac"
-  integrity sha512-XtVhBHNQVdVu5LouyNLhGeKx0f88lz9VtrSf1NYFulVlOHIQEeZCEIs3pTifGhtZJ0B7POPKMdPpNso77Z95uQ==
+ember-try@^1.2.1, ember-try@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/ember-try/-/ember-try-1.4.0.tgz#be15965bd1727c27a65a78c4c8392f03763cc565"
+  integrity sha512-o0SoCH4K8umCf8etphla8FDygKfQGkwY+w47wEuYFVKaESrOZaK63ObnAK7DTKkjJU74Fss2abf+r+pAWpX43g==
   dependencies:
     chalk "^2.4.2"
     cli-table3 "^0.5.1"
@@ -7476,7 +7476,7 @@ esdoc-ecmascript-proposal-plugin@^1.0.0:
   resolved "https://registry.yarnpkg.com/esdoc-ecmascript-proposal-plugin/-/esdoc-ecmascript-proposal-plugin-1.0.0.tgz#390dc5656ba8a2830e39dba3570d79138df2ffd9"
   integrity sha1-OQ3FZWuoooMOOdujVw15E43y/9k=
 
-"esdoc@github:pzuraq/esdoc#015a342":
+esdoc@pzuraq/esdoc#015a342:
   version "1.0.4"
   resolved "https://codeload.github.com/pzuraq/esdoc/tar.gz/015a3426b2e53b2b0270a9c00133780db3f1d144"
   dependencies:
@@ -8129,6 +8129,11 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
+focus-visible@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.0.2.tgz#4fae9cf40458b73c10701c9774c462e3ccd53caf"
+  integrity sha512-zT2fj/bmOgEBjqGbURGlowTmCwsIs3bRDMr/sFZz8Ly7VkEiwuCn9swNTL3pPuf8Oua2de7CLuKdnuNajWdDsQ==
+
 follow-redirects@^1.0.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.9.0.tgz#8d5bcdc65b7108fe1508649c79c12d732dcedb4f"
@@ -8259,9 +8264,9 @@ fs-extra@^8.0.0, fs-extra@^8.0.1, fs-extra@^8.1.0:
     universalify "^0.1.0"
 
 fs-merger@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/fs-merger/-/fs-merger-3.0.1.tgz#4fba891e1ac83ce1ea4261b91fee475aaf628cb2"
-  integrity sha512-0DDF7GDMm4roej5N6Z7ZNC2y2VdZdYQtHm32wWluSONyxUMqIAWyD73v0S12GkqO416BGqSHr2tjU4hmIlbylw==
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/fs-merger/-/fs-merger-3.0.2.tgz#bf111334b89b8d65b95580d33c587dc79620a4e3"
+  integrity sha512-63wmgjPDClP5XcTSKdIXz66X5paYy/m2Ymq5c5YpGxRQEk1HFZ8rtti3LMNSOSw1ketbBMGbSFFcQeEnpnzDpQ==
   dependencies:
     broccoli-node-api "^1.7.0"
     broccoli-node-info "^2.1.0"
