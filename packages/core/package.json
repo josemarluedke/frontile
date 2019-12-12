@@ -1,6 +1,6 @@
 {
   "name": "@frontile/core",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Small description for core goes here",
   "keywords": [
     "ember-addon"
@@ -33,6 +33,7 @@
     "focus-visible": "^5.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.5",
     "@ember/edition-utils": "^1.2.0",
     "@ember/optional-features": "^1.0.0",
     "@glimmer/component": "^1.0.0",

@@ -21,8 +21,10 @@
     "try:one": "ember test"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.5",
     "@ember/edition-utils": "^1.2.0",
     "@ember/optional-features": "^1.0.0",
+    "@frontile/core": "^0.0.2",
     "@frontile/forms": "^0.0.2",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
