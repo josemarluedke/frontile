@@ -1,0 +1,4 @@
+/* https://github.com/WICG/focus-visible */
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
