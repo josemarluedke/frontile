@@ -10,6 +10,7 @@
       placeholder="Input your URL or 6 Digit referral code"
     >
       <button
+        type="button"
         {{on "click" this.validate}}
         class="button {{if this.isValid "is-primary" "is-secondary"}}"
       >

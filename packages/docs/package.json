@@ -31,7 +31,7 @@
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.2.20",
     "ember-cli": "3.15.0-beta.3",
-    "ember-cli-addon-docs": "josemarluedke/ember-cli-addon-docs#separate-app-support",
+    "ember-cli-addon-docs": "ember-learn/ember-cli-addon-docs",
     "ember-cli-addon-docs-esdoc": "^0.2.3",
     "ember-cli-app-version": "^3.2.0",
     "ember-cli-babel": "^7.13.2",
@@ -50,7 +50,7 @@
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^6.0.0",
     "ember-source": "^3.15.0",
-    "ember-template-lint": "^1.10.0",
+    "ember-template-lint": "^1.12.1",
     "loader.js": "^4.7.0",
     "qunit-dom": "^0.9.2"
   },
