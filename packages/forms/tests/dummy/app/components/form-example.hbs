@@ -1,0 +1,82 @@
+<FormInput
+  @label="First Name"
+  @hint="Your first name"
+  @value={{this.firstName}}
+  @onChange={{fn this.setField 'firstName'}}
+  @errors={{this.firstNameErrors}}
+  placeholder="Joe"
+/>
+
+<div class="mt-4">
+  <FormInput
+    @label="Email"
+    @value={{this.email}}
+    @onChange={{fn this.setField 'email'}}
+    @errors={{this.emailErrors}}
+  />
+</div>
+
+<div class="mt-4">
+  <FormRadioGroup
+    @label="Account Type"
+    @value={{this.accountType}}
+    @onChange={{fn this.setField 'accountType'}}
+    @errors={{this.accountTypeErrors}}
+    as |Radio|
+  >
+    <Radio
+      @value="personal"
+      @label="Personal"
+    />
+    <Radio
+      @value="business"
+      @label="Business"
+      @hint="If this account is for business"
+    />
+    <Radio
+      @value="other"
+      @label="Other"
+    />
+  </FormRadioGroup>
+</div>
+
+<div class="mt-4">
+  <FormCheckboxGroup
+    @label="Interests"
+    @errors={{this.interestsErrors}}
+    as |Checkbox|
+  >
+    <Checkbox
+      @label="IoT"
+      @hint="Internet of things"
+      @checked={{this.isIoTChecked}}
+      @onChange={{fn this.setInterest "IoT"}}
+    />
+    <Checkbox
+      @label="Music"
+      @checked={{this.isMusicChecked}}
+      @onChange={{fn this.setInterest "Music"}}
+    />
+    <Checkbox
+      @label="Entertainment"
+      @hint="Movies and TV series"
+      @checked={{this.isEntertainmentTChecked}}
+      @onChange={{fn this.setInterest "Entertainment"}}
+    />
+  </FormCheckboxGroup>
+</div>
+
+<div class="mt-4">
+  <FormTextarea
+    @label="Bio"
+    @value={{this.bio}}
+    @onChange={{fn this.setField 'bio'}}
+  />
+</div>
+
+<div class="mt-4">
+  <FormCheckbox>
+    I agree to the <a href="#" class="underline">privacy policy</a>
+  </FormCheckbox>
+</div>
+
