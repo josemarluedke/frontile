@@ -80,3 +80,65 @@
   </FormCheckbox>
 </div>
 
+
+<hr class="mt-8 mb-4">
+
+<h2 class="text-2xl font-bold mb-8">Disabled styles</h2>
+
+<div class="mt-4">
+  <FormInput
+    @label="Disabled Input"
+    @value="This is a disabled content"
+    disabled={{true}}
+  />
+</div>
+
+<div class="mt-4">
+  <FormTextarea
+    @label="Disabled Textarea"
+    @value="This is a disabled content"
+    disabled={{true}}
+  />
+</div>
+
+<div class="mt-4">
+  <FormCheckbox
+    @label="Enabled unchecked"
+  />
+  <FormCheckbox
+    @label="Disabled unchecked"
+    disabled={{true}}
+  />
+  <FormCheckbox
+    @label="Enabled checked"
+    @checked={{true}}
+  />
+  <FormCheckbox
+    @label="Disabled checked"
+    @checked={{true}}
+    disabled={{true}}
+  />
+</div>
+
+<div class="mt-4">
+  <FormRadio
+    @value={{false}}
+    @label="Enabled unchecked"
+  />
+  <FormRadio
+    @value={{false}}
+    @label="Disabled unchecked"
+    disabled={{true}}
+  />
+  <FormRadio
+    @label="Enabled checked"
+    @value={{true}}
+    @checked={{true}}
+  />
+  <FormRadio
+    @label="Disabled checked"
+    @value={{true}}
+    @checked={{true}}
+    disabled={{true}}
+  />
+</div>

@@ -47,6 +47,10 @@ module.exports = function(/*{ theme }*/) {
         outline: 'none',
         borderColor: defaultTheme.colors.gray[800]
       },
+      '&:disabled': {
+        borderColor: defaultTheme.borderColor.gray[300],
+        color: defaultTheme.borderColor.gray[500]
+      },
       '&.has-error': {
         borderColor: defaultTheme.colors.red[600]
       },
@@ -74,6 +78,10 @@ module.exports = function(/*{ theme }*/) {
       '&:focus': {
         outline: 'none',
         borderColor: defaultTheme.colors.gray[800]
+      },
+      '&:disabled': {
+        borderColor: defaultTheme.borderColor.gray[300],
+        color: defaultTheme.borderColor.gray[500]
       },
       '&.has-error': {
         borderColor: defaultTheme.colors.red[600]
@@ -118,7 +126,13 @@ module.exports = function(/*{ theme }*/) {
         backgroundColor: 'currentColor',
         backgroundSize: '100% 100%',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        '&:disabled': {
+          color: defaultTheme.borderColor.gray[300]
+        }
+      },
+      '&:disabled': {
+        borderColor: defaultTheme.borderColor.gray[300]
       },
       container: {
         display: 'flex',
@@ -184,7 +198,13 @@ module.exports = function(/*{ theme }*/) {
         backgroundColor: 'currentColor',
         backgroundSize: '100% 100%',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        '&:disabled': {
+          color: defaultTheme.borderColor.gray[300]
+        }
+      },
+      '&:disabled': {
+        borderColor: defaultTheme.borderColor.gray[300]
       },
       container: {
         display: 'flex',
