@@ -2,7 +2,7 @@
   @label="First Name"
   @hint="Your first name"
   @value={{this.firstName}}
-  @onChange={{fn this.setField 'firstName'}}
+  @onChange={{fn this.setField "firstName"}}
   @errors={{this.firstNameErrors}}
   placeholder="Joe"
 />
@@ -11,7 +11,7 @@
   <FormInput
     @label="Email"
     @value={{this.email}}
-    @onChange={{fn this.setField 'email'}}
+    @onChange={{fn this.setField "email"}}
     @errors={{this.emailErrors}}
   />
 </div>
@@ -20,7 +20,7 @@
   <FormRadioGroup
     @label="Account Type"
     @value={{this.accountType}}
-    @onChange={{fn this.setField 'accountType'}}
+    @onChange={{fn this.setField "accountType"}}
     @errors={{this.accountTypeErrors}}
     as |Radio|
   >
@@ -70,7 +70,7 @@
   <FormTextarea
     @label="Bio"
     @value={{this.bio}}
-    @onChange={{fn this.setField 'bio'}}
+    @onChange={{fn this.setField "bio"}}
   />
 </div>
 
