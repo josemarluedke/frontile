@@ -96,8 +96,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
+    assert.dom('[data-test-input].has-error').exists();
     assert.dom('.my-container .has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
@@ -117,9 +121,13 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
@@ -136,8 +144,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
+    assert.dom('[data-test-input].has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     assert.dom('.my-container .has-error').doesNotExist();
   });
@@ -155,9 +167,13 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
@@ -177,10 +193,14 @@ module('Integration | Component | FormTextarea', function(hooks) {
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
 
     await focus('[data-test-input]');
+
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
   });
 
   test('always show error messages when hasSubmitted is true', async function(assert) {
@@ -196,6 +216,7 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');

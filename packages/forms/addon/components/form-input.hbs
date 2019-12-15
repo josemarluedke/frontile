@@ -23,6 +23,7 @@
     @value={{@value}}
     @type={{@type}}
 
+    class={{if this.showErrorFeedback "has-error"}}
     aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"
     ...attributes
   />
