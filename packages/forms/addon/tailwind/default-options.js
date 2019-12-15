@@ -74,6 +74,9 @@ module.exports = function(/*{ theme }*/) {
       '&:focus': {
         outline: 'none',
         borderColor: defaultTheme.colors.gray[800]
+      },
+      '&.has-error': {
+        borderColor: defaultTheme.colors.red[600]
       }
     },
     checkbox: {
