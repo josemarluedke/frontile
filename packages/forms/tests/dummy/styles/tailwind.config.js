@@ -9,5 +9,5 @@ module.exports = {
       default: {}
     }
   },
-  plugins: [require('../../../addon/tailwind/plugin.js')]
+  plugins: [require('../../../').tailwind]
 };

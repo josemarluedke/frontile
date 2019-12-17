@@ -4,5 +4,5 @@ module.exports = {
       default: {}
     }
   },
-  plugins: [require('@frontile/forms/addon/tailwind/plugin')]
+  plugins: [require('@frontile/forms').tailwind]
 };
