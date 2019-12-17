@@ -2,7 +2,7 @@
 
 @tailwind components;
 
-/* @tailwind utilities; */
+@tailwind utilities;
 
 :root {
   --brand-primary: #2c7a7b;

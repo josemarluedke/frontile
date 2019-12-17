@@ -20,6 +20,6 @@ You can pass `@hint` to the component to add hint content.
 
 ### Input with Button
 
-Pass `@hasButton={{true}}` to have an input with a button next to it.
+This is an example of how to implement an input with a button next to it.
 
 <Demo::Forms::FormInput::WithButton />
