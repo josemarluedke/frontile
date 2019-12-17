@@ -1,9 +1,8 @@
 <FormField
-  @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
   class="form-radio-group-container
     {{if this.showErrorFeedback "has-error"}}
-    {{if @isInline "input-radio-group-inline"}}"
+    {{if @isInline "input-radio-group-inline"}} {{@containerClass}}"
     role="radiogroup"
   ...attributes
   as |f|

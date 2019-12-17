@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 
 interface FormFieldArgs {
-  hasMargin?: boolean;
   isSmall?: boolean;
 }
 

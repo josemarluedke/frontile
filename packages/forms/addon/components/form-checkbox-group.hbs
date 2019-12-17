@@ -1,9 +1,8 @@
 <FormField
-  @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
   class="form-checkbox-group-container
     {{if this.showErrorFeedback "has-error"}}
-    {{if @isInline "input-checkbox-group-inline"}}"
+    {{if @isInline "input-checkbox-group-inline"}} {{@containerClass}}"
     role="group"
   ...attributes
   as |f|

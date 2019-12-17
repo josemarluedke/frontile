@@ -7,138 +7,128 @@
   placeholder="Joe"
 />
 
-<div class="mt-4">
-  <FormInput
-    @label="Email"
-    @value={{this.email}}
-    @onChange={{fn this.setField "email"}}
-    @errors={{this.emailErrors}}
+<FormInput
+  @label="Email"
+  @value={{this.email}}
+  @onChange={{fn this.setField "email"}}
+  @errors={{this.emailErrors}}
+  @containerClass="mt-4"
+/>
+
+<FormRadioGroup
+  @label="Account Type"
+  @value={{this.accountType}}
+  @onChange={{fn this.setField "accountType"}}
+  @errors={{this.accountTypeErrors}}
+  @containerClass="mt-4"
+  as |Radio|
+>
+  <Radio
+    @value="personal"
+    @label="Personal"
   />
-</div>
-
-<div class="mt-4">
-  <FormRadioGroup
-    @label="Account Type"
-    @value={{this.accountType}}
-    @onChange={{fn this.setField "accountType"}}
-    @errors={{this.accountTypeErrors}}
-    as |Radio|
-  >
-    <Radio
-      @value="personal"
-      @label="Personal"
-    />
-    <Radio
-      @value="business"
-      @label="Business"
-      @hint="If this account is for business"
-    />
-    <Radio
-      @value="other"
-      @label="Other"
-    />
-  </FormRadioGroup>
-</div>
-
-<div class="mt-4">
-  <FormCheckboxGroup
-    @label="Interests"
-    @errors={{this.interestsErrors}}
-    as |Checkbox|
-  >
-    <Checkbox
-      @label="IoT"
-      @hint="Internet of things"
-      @checked={{this.isIoTChecked}}
-      @onChange={{fn this.setInterest "IoT"}}
-    />
-    <Checkbox
-      @label="Music"
-      @checked={{this.isMusicChecked}}
-      @onChange={{fn this.setInterest "Music"}}
-    />
-    <Checkbox
-      @label="Entertainment"
-      @hint="Movies and TV series"
-      @checked={{this.isEntertainmentTChecked}}
-      @onChange={{fn this.setInterest "Entertainment"}}
-    />
-  </FormCheckboxGroup>
-</div>
-
-<div class="mt-4">
-  <FormTextarea
-    @label="Bio"
-    @value={{this.bio}}
-    @onChange={{fn this.setField "bio"}}
+  <Radio
+    @value="business"
+    @label="Business"
+    @hint="If this account is for business"
   />
-</div>
+  <Radio
+    @value="other"
+    @label="Other"
+  />
+</FormRadioGroup>
 
-<div class="mt-4">
-  <FormCheckbox>
-    I agree to the <a href="#" class="underline">privacy policy</a>
-  </FormCheckbox>
-</div>
+<FormCheckboxGroup
+  @label="Interests"
+  @errors={{this.interestsErrors}}
+  @containerClass="mt-4"
+  as |Checkbox|
+>
+  <Checkbox
+    @label="IoT"
+    @hint="Internet of things"
+    @checked={{this.isIoTChecked}}
+    @onChange={{fn this.setInterest "IoT"}}
+  />
+  <Checkbox
+    @label="Music"
+    @checked={{this.isMusicChecked}}
+    @onChange={{fn this.setInterest "Music"}}
+  />
+  <Checkbox
+    @label="Entertainment"
+    @hint="Movies and TV series"
+    @checked={{this.isEntertainmentTChecked}}
+    @onChange={{fn this.setInterest "Entertainment"}}
+  />
+</FormCheckboxGroup>
+
+<FormTextarea
+  @label="Bio"
+  @value={{this.bio}}
+  @onChange={{fn this.setField "bio"}}
+  @containerClass="mt-4"
+/>
+
+<FormCheckbox @containerClass="mt-4">
+  I agree to the <a href="#" class="underline">privacy policy</a>
+</FormCheckbox>
 
 
 <hr class="mt-8 mb-4">
 
 <h2 class="text-2xl font-bold mb-8">Disabled styles</h2>
 
-<div class="mt-4">
-  <FormInput
-    @label="Disabled Input"
-    @value="This is a disabled content"
-    disabled={{true}}
-  />
-</div>
+<FormInput
+  @label="Disabled Input"
+  @value="This is a disabled content"
+  disabled={{true}}
+  @containerClass="mt-4"
+/>
 
-<div class="mt-4">
-  <FormTextarea
-    @label="Disabled Textarea"
-    @value="This is a disabled content"
-    disabled={{true}}
-  />
-</div>
+<FormTextarea
+  @label="Disabled Textarea"
+  @value="This is a disabled content"
+  disabled={{true}}
+  @containerClass="mt-4"
+/>
 
-<div class="mt-4">
-  <FormCheckbox
-    @label="Enabled unchecked"
-  />
-  <FormCheckbox
-    @label="Disabled unchecked"
-    disabled={{true}}
-  />
-  <FormCheckbox
-    @label="Enabled checked"
-    @checked={{true}}
-  />
-  <FormCheckbox
-    @label="Disabled checked"
-    @checked={{true}}
-    disabled={{true}}
-  />
-</div>
+<FormCheckbox
+  @label="Enabled unchecked"
+  @containerClass="mt-4"
+/>
+<FormCheckbox
+  @label="Disabled unchecked"
+  disabled={{true}}
+/>
+<FormCheckbox
+  @label="Enabled checked"
+  @checked={{true}}
+/>
+<FormCheckbox
+  @label="Disabled checked"
+  @checked={{true}}
+  disabled={{true}}
+/>
 
-<div class="mt-4">
-  <FormRadio
-    @value={{false}}
-    @label="Enabled unchecked"
-  />
-  <FormRadio
-    @value={{false}}
-    @label="Disabled unchecked"
-    disabled={{true}}
-  />
-  <FormRadio
-    @label="Enabled checked"
-    @value={{true}}
-    @checked={{true}}
-  />
-  <FormRadio
-    @label="Disabled checked"
-    @value={{true}}
-    @checked={{true}}
-    disabled={{true}}
-  />
-</div>
+<FormRadio
+  @value={{false}}
+  @label="Enabled unchecked"
+  @containerClass="mt-4"
+/>
+<FormRadio
+  @value={{false}}
+  @label="Disabled unchecked"
+  disabled={{true}}
+/>
+<FormRadio
+  @label="Enabled checked"
+  @value={{true}}
+  @checked={{true}}
+/>
+<FormRadio
+  @label="Disabled checked"
+  @value={{true}}
+  @checked={{true}}
+  disabled={{true}}
+/>

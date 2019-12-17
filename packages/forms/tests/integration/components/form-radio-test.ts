@@ -134,14 +134,13 @@ module('Integration | Component | FormRadio', function(hooks) {
     );
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
+  test('it adds container class from @containerClass arg', async function(assert) {
     await render(
       hbs`<FormRadio
-            data-test-input
-            @hasMargin={{true}}
+            @containerClass="my-container-class"
           />`
     );
 
-    assert.dom('.form-radio-container').hasClass('has-margin');
+    assert.dom('.my-container-class').exists();
   });
 });

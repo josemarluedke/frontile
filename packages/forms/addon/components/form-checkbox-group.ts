@@ -8,7 +8,7 @@ interface FormCheckboxGroupArgs {
   hasSubmitted?: boolean;
   hasError?: boolean;
   errors?: string[] | string;
-  hasMargin?: boolean;
+  containerClass?: string;
   isSmall?: boolean;
   isInline?: boolean;
 

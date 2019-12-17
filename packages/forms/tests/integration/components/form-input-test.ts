@@ -258,17 +258,13 @@ module('Integration | Component | FormInput', function(hooks) {
     assert.ok(calls.includes('onChange'));
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
-    this.set('hasMargin', undefined);
-
+  test('it adds container class from @containerClass arg', async function(assert) {
     await render(
       hbs`<FormInput
-            @hasMargin={{this.hasMargin}}
+            @containerClass="my-container-class"
           />`
     );
 
-    assert.dom('.form-input-container').doesNotHaveClass('has-margin');
-    this.set('hasMargin', true);
-    assert.dom('.form-input-container').hasClass('has-margin');
+    assert.dom('.my-container-class').exists();
   });
 });

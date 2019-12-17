@@ -8,7 +8,7 @@ interface FormRadioArgs {
   value?: unknown;
   checked?: unknown;
   name?: string;
-  hasMargin?: boolean;
+  containerClass?: string;
   isSmall?: boolean;
 
   // Callback when onchange is triggered

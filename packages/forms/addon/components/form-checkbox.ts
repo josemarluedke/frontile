@@ -7,7 +7,7 @@ interface FormCheckboxArgs {
   hint?: string;
   checked?: boolean;
   name?: string;
-  hasMargin?: boolean;
+  containerClass?: string;
   isSmall?: boolean;
 
   // Callback when onchange is triggered

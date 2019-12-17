@@ -12,7 +12,7 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
         data-test-input-group
         @errors={{this.errors}}
         @hasError={{this.hasError}}
-        @hasMargin={{this.hasMargin}}
+        @containerClass={{this.containerClass}}
         @hasSubmitted={{this.hasSubmitted}}
         @isInline={{this.isInline}}
         @label="My Group"
@@ -109,13 +109,9 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
       .hasText('This field is required');
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
-    this.set('hasMargin', undefined);
-
+  test('it adds container class from @containerClass arg', async function(assert) {
+    this.set('containerClass', 'my-container-class');
     await render(template);
-
-    assert.dom('[data-test-input-group]').doesNotHaveClass('has-margin');
-    this.set('hasMargin', true);
-    assert.dom('[data-test-input-group]').hasClass('has-margin');
+    assert.dom('.my-container-class').exists();
   });
 });
