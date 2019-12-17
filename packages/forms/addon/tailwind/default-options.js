@@ -6,6 +6,7 @@ module.exports = function(/*{ theme }*/) {
   // Input styles
   const input = {
     appearance: 'none',
+    flex: defaultTheme.flex[1],
     width: defaultTheme.width.full,
     backgroundColor: defaultTheme.colors.white,
     borderColor: defaultTheme.colors.gray[500],
@@ -31,6 +32,19 @@ module.exports = function(/*{ theme }*/) {
     },
     '&.has-error': {
       borderColor: defaultTheme.colors.red[600]
+    },
+    container: {
+      display: 'flex',
+      flexFlow: 'row wrap'
+    },
+    label: {
+      flex: '1 100%'
+    },
+    hint: {
+      flex: '1 100%'
+    },
+    feedback: {
+      flex: '1 100%'
     }
   };
 

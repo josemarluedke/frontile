@@ -271,18 +271,4 @@ module('Integration | Component | FormInput', function(hooks) {
     this.set('hasMargin', true);
     assert.dom('.form-input-container').hasClass('has-margin');
   });
-
-  test('it adds has-button class if @hasButton is true', async function(assert) {
-    this.set('hasButton', undefined);
-
-    await render(
-      hbs`<FormInput
-            @hasButton={{this.hasButton}}
-          />`
-    );
-
-    assert.dom('.form-input-container').doesNotHaveClass('has-button');
-    this.set('hasButton', true);
-    assert.dom('.form-input-container').hasClass('has-button');
-  });
 });

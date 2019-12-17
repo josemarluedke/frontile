@@ -1,9 +1,7 @@
 <FormField
   @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
-  class="form-textarea-container
-    {{if this.showErrorFeedback "has-error"}}
-    {{if @hasButton "has-button"}}"
+  class="form-textarea-container {{if this.showErrorFeedback "has-error"}}"
   as |f|
 >
   {{#if @label}}

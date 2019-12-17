@@ -268,18 +268,4 @@ module('Integration | Component | FormTextarea', function(hooks) {
     this.set('hasMargin', true);
     assert.dom('.form-textarea-container').hasClass('has-margin');
   });
-
-  test('it adds has-button class if @hasButton is true', async function(assert) {
-    this.set('hasButton', undefined);
-
-    await render(
-      hbs`<FormTextarea
-            @hasButton={{this.hasButton}}
-          />`
-    );
-
-    assert.dom('.form-textarea-container').doesNotHaveClass('has-button');
-    this.set('hasButton', true);
-    assert.dom('.form-textarea-container').hasClass('has-button');
-  });
 });
