@@ -15,6 +15,7 @@ module.exports = {
   launch_in_ci: ['Chromium', 'Chrome'],
   launch_in_dev: ['Chromium'],
   ignore_missing_launchers: true,
+  browser_start_timeout: process.env.CI ? 60 : null,
   browser_args: {
     Chromium: {
       ci: CHROME_ARGS,

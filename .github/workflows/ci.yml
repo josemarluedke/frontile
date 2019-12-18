@@ -7,6 +7,9 @@ jobs:
     name: Tests
     runs-on: ${{ matrix.os }}
 
+    env:
+      CI: 'true'
+
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest]
@@ -29,10 +32,11 @@ jobs:
 
   try-scenarios:
     name: ${{ matrix.ember-try-scenario }}
-
     runs-on: ubuntu-latest
-
     needs: test
+
+    env:
+      CI: 'true'
 
     strategy:
       fail-fast: true
