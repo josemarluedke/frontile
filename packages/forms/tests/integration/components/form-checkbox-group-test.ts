@@ -57,9 +57,7 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
     this.set('isInline', true);
     await render(template);
 
-    assert
-      .dom('[data-test-input-group]')
-      .hasClass('input-checkbox-group-inline');
+    assert.dom('[data-test-input-group]').hasClass('is-inline');
   });
 
   test('show error messages when errors array has items', async function(assert) {

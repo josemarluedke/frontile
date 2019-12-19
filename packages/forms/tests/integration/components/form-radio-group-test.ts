@@ -14,6 +14,7 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
         @hasError={{this.hasError}}
         @errors={{this.errors}}
         @hasSubmitted={{this.hasSubmitted}}
+        @isInline={{this.isInline}}
         @containerClass={{this.containerClass}}
         @label="My Group"
         @value={{this.myValue}}
@@ -65,6 +66,14 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
 
     await click('[data-test-option-yes] ~ label');
     assert.equal(this.get('myValue'), true);
+  });
+
+  test('it adds inline class when isInline is true', async function(assert) {
+    this.set('myValue', false);
+    this.set('isInline', true);
+    await render(template);
+
+    assert.dom('[data-test-input-group]').hasClass('is-inline');
   });
 
   test('show error messages when errors array has items', async function(assert) {

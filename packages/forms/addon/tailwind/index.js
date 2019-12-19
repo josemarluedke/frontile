@@ -169,7 +169,7 @@ module.exports = function({ addComponents, theme }) {
       return;
     }
 
-    addComponents({ [`.form-checkbox-group${modifier}`]: options });
+    addComponents({ [`.form-checkbox-group-container${modifier}`]: options });
 
     // Make sure to remove container as group styles are the container
     delete options.container;
@@ -182,12 +182,12 @@ module.exports = function({ addComponents, theme }) {
       return;
     }
 
-    addComponents({ [`.form-radio-group${modifier}`]: options });
+    addComponents({ [`.form-radio-group-container${modifier}`]: options });
 
     // Make sure to remove container as group styles are the container
     delete options.container;
 
-    addRelatedComponents('checkbox-group', options, modifier);
+    addRelatedComponents('radio-group', options, modifier);
   }
 
   function registerComponents() {

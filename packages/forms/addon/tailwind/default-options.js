@@ -123,11 +123,20 @@ module.exports = function(/*{ theme }*/) {
 
   // Shared styles for Checkbox Group and Radio Group
   const checkboxGroupAndRadioGroupShared = {
+    '&.is-inline': {
+      display: 'flex',
+      flexFlow: 'row wrap',
+      alignItems: 'flex-start',
+      '> *': {
+        paddingRight: defaultTheme.spacing[4]
+      }
+    },
     label: {
       paddingBottom: defaultTheme.spacing[2]
     },
     feedback: {
-      paddingTop: defaultTheme.spacing[0]
+      paddingTop: defaultTheme.spacing[0],
+      flex: '1 100%'
     }
   };
 
