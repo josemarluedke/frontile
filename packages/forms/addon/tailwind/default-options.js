@@ -97,11 +97,7 @@ module.exports = function(/*{ theme }*/) {
     container: {
       display: 'flex',
       flexWrap: 'wrap',
-      alignItems: 'center',
-      paddingBottom: defaultTheme.spacing[1],
-      '&:last-child': {
-        paddingBottom: defaultTheme.spacing[0]
-      }
+      alignItems: 'center'
     },
     label: {
       fontWeight: defaultTheme.fontWeight.normal,
@@ -123,12 +119,19 @@ module.exports = function(/*{ theme }*/) {
 
   // Shared styles for Checkbox Group and Radio Group
   const checkboxGroupAndRadioGroupShared = {
+    '> *': {
+      paddingBottom: defaultTheme.spacing[1],
+      '&:last-child': {
+        paddingBottom: defaultTheme.spacing[0]
+      }
+    },
     '&.is-inline': {
       display: 'flex',
       flexFlow: 'row wrap',
       alignItems: 'flex-start',
-      '> *': {
-        paddingRight: defaultTheme.spacing[4]
+      '> *, > label': {
+        paddingRight: defaultTheme.spacing[4],
+        paddingBottom: defaultTheme.spacing[0]
       }
     },
     label: {
@@ -141,46 +144,98 @@ module.exports = function(/*{ theme }*/) {
   };
 
   return {
-    label: {
-      display: 'inline-block',
-      color: defaultTheme.colors.gray[800],
-      fontWeight: defaultTheme.fontWeight.semibold,
-      lineHeight: defaultTheme.lineHeight.tight,
-      paddingBottom: defaultTheme.spacing[1]
+    default: {
+      label: {
+        display: 'inline-block',
+        color: defaultTheme.colors.gray[800],
+        fontWeight: defaultTheme.fontWeight.semibold,
+        lineHeight: defaultTheme.lineHeight.tight,
+        paddingBottom: defaultTheme.spacing[1]
+      },
+      hint: {
+        color: defaultTheme.colors.gray[500],
+        fontSize: defaultTheme.fontSize.xs,
+        paddingBottom: defaultTheme.spacing[1],
+        '&:last-child': {
+          paddingBottom: defaultTheme.spacing[0]
+        }
+      },
+      feedback: {
+        fontSize: defaultTheme.fontSize.xs,
+        paddingTop: defaultTheme.spacing[1],
+        '&.is-error': {
+          color: defaultTheme.colors.red[600]
+        }
+      },
+      input,
+      textarea: {
+        ...input,
+        minHeight: defaultTheme.height[24]
+      },
+      checkbox: {
+        ...checkboxAndRadioShared,
+        borderRadius: defaultTheme.borderRadius.sm,
+        icon: iconColor =>
+          `<svg viewBox="0 0 16 16" fill="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path d="M5.125 7.666a1.304 1.304 0 00-.882-.328 1.3 1.3 0 00-.876.343c-.232.216-.364.51-.367.816-.003.307.124.602.352.822l2.508 2.339c.235.219.554.342.886.342.333 0 .651-.123.887-.342l5.015-4.677c.228-.22.355-.516.352-.822a1.132 1.132 0 00-.367-.817A1.301 1.301 0 0011.757 5a1.304 1.304 0 00-.882.328l-4.129 3.85-1.621-1.512z"/></svg>`
+      },
+      radio: {
+        ...checkboxAndRadioShared,
+        borderRadius: '100%',
+        icon: iconColor =>
+          `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="${iconColor}" stroke-width="3" fill="none" /></svg>`
+      },
+      checkboxGroup: checkboxGroupAndRadioGroupShared,
+      radioGroup: checkboxGroupAndRadioGroupShared
     },
-    hint: {
-      color: defaultTheme.colors.gray[500],
-      fontSize: defaultTheme.fontSize.xs,
-      paddingBottom: defaultTheme.spacing[1],
-      '&:last-child': {
-        paddingBottom: defaultTheme.spacing[0]
+    sm: {
+      input: {
+        fontSize: defaultTheme.fontSize.sm,
+        paddingTop: defaultTheme.spacing[2],
+        paddingRight: defaultTheme.spacing[2],
+        paddingBottom: defaultTheme.spacing[2],
+        paddingLeft: defaultTheme.spacing[2]
+      },
+      textarea: {
+        fontSize: defaultTheme.fontSize.sm,
+        paddingTop: defaultTheme.spacing[2],
+        paddingRight: defaultTheme.spacing[2],
+        paddingBottom: defaultTheme.spacing[2],
+        paddingLeft: defaultTheme.spacing[2],
+        minHeight: defaultTheme.height[16]
+      },
+      checkbox: {
+        fontSize: defaultTheme.fontSize.sm,
+        label: {
+          fontSize: defaultTheme.fontSize.sm
+        }
+      },
+      radio: {
+        fontSize: defaultTheme.fontSize.sm,
+        label: {
+          fontSize: defaultTheme.fontSize.sm
+        }
       }
     },
-    feedback: {
-      fontSize: defaultTheme.fontSize.xs,
-      paddingTop: defaultTheme.spacing[1],
-      '&.is-error': {
-        color: defaultTheme.colors.red[600]
+    lg: {
+      input: {
+        paddingTop: defaultTheme.spacing[4],
+        paddingRight: defaultTheme.spacing[4],
+        paddingBottom: defaultTheme.spacing[4],
+        paddingLeft: defaultTheme.spacing[4]
+      },
+      textarea: {
+        paddingTop: defaultTheme.spacing[4],
+        paddingRight: defaultTheme.spacing[4],
+        paddingBottom: defaultTheme.spacing[4],
+        paddingLeft: defaultTheme.spacing[4],
+        minHeight: defaultTheme.height[32]
+      },
+      checkbox: {
+        fontSize: defaultTheme.fontSize.lg
+      },
+      radio: {
+        fontSize: defaultTheme.fontSize.lg
       }
-    },
-    input,
-    textarea: {
-      ...input,
-      minHeight: defaultTheme.height[24]
-    },
-    checkbox: {
-      ...checkboxAndRadioShared,
-      borderRadius: defaultTheme.borderRadius.sm,
-      icon: iconColor =>
-        `<svg viewBox="0 0 16 16" fill="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path d="M5.125 7.666a1.304 1.304 0 00-.882-.328 1.3 1.3 0 00-.876.343c-.232.216-.364.51-.367.816-.003.307.124.602.352.822l2.508 2.339c.235.219.554.342.886.342.333 0 .651-.123.887-.342l5.015-4.677c.228-.22.355-.516.352-.822a1.132 1.132 0 00-.367-.817A1.301 1.301 0 0011.757 5a1.304 1.304 0 00-.882.328l-4.129 3.85-1.621-1.512z"/></svg>`
-    },
-    radio: {
-      ...checkboxAndRadioShared,
-      borderRadius: '100%',
-      icon: iconColor =>
-        `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="${iconColor}" stroke-width="3" fill="none" /></svg>`
-    },
-    checkboxGroup: checkboxGroupAndRadioGroupShared,
-    radioGroup: checkboxGroupAndRadioGroupShared
+    }
   };
 };

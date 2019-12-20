@@ -5,6 +5,10 @@ import { action } from '@ember/object';
 interface FormExampleArgs {}
 
 export default class FormExample extends Component<FormExampleArgs> {
+  @tracked isSmall = false;
+  @tracked isLarge = false;
+  @tracked isInline = false;
+
   @tracked firstName!: string;
   @tracked email!: string;
   @tracked accountType!: string;
@@ -55,10 +59,16 @@ export default class FormExample extends Component<FormExampleArgs> {
   }
 
   @action setField(
-    fieldName: 'firstName' | 'email' | 'accountType',
-    value: string
+    fieldName:
+      | 'firstName'
+      | 'email'
+      | 'accountType'
+      | 'isLarge'
+      | 'isSmall'
+      | 'isInline',
+    value: string | boolean
   ) {
-    this[fieldName] = value;
+    this[fieldName] = value as never;
   }
 
   @action setInterest(interest: string, isChecked: boolean) {

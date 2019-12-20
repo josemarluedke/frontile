@@ -6,9 +6,7 @@ const { merge, flattenOptions, replaceIconDeclarations } = require('./helpers');
 
 function resolveOptions(userOptions, theme) {
   return merge(
-    {
-      default: require('./default-options')({ theme })
-    },
+    require('./default-options')({ theme }),
     fromPairs(map(userOptions, (value, key) => [key, flattenOptions(value)]))
   );
 }
