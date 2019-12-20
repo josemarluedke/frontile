@@ -3,7 +3,7 @@
   {{on "change" this.handleOnChange}}
   id={{@id}}
   value={{@value}}
-  class="form-textarea"
+  class="form-textarea {{if @isSmall "form-textarea-sm" (if @isLarge "form-textarea-lg")}}"
   ...attributes
 >
 </textarea>

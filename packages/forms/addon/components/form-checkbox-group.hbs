@@ -1,10 +1,10 @@
 <FormField
-  @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
   class="form-checkbox-group-container
     {{if this.showErrorFeedback "has-error"}}
-    {{if @isInline "input-checkbox-group-inline"}}
-    {{if @hasButton "has-button"}}"
+    {{if @isInline "is-inline"}} {{@containerClass}}
+    {{if @isSmall "form-checkbox-group-container-sm" (if @isLarge "form-checkbox-group-container-lg")}}"
     role="group"
   ...attributes
   as |f|
@@ -19,6 +19,8 @@
 
   {{yield (component "form-checkbox"
             _parentOnChange=this.handleChange
+            isSmall=@isSmall
+            isLarge=@isLarge
           )
   }}
 

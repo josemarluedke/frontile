@@ -4,6 +4,8 @@ import { action } from '@ember/object';
 interface FormFieldInputArgs {
   id?: string;
   type?: string;
+  isSmall?: boolean;
+  isLarge?: boolean;
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;

@@ -9,8 +9,9 @@ interface FormInputArgs {
   hasSubmitted?: boolean;
   hasError?: boolean;
   errors?: string[] | string;
-  hasMargin?: boolean;
+  containerClass?: string;
   isSmall?: boolean;
+  isLarge?: boolean;
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;

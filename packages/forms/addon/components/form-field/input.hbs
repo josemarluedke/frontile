@@ -4,6 +4,6 @@
   id={{@id}}
   value={{@value}}
   type={{this.type}}
-  class="form-input"
+  class="form-input {{if @isSmall "form-input-sm" (if @isLarge "form-input-lg")}}"
   ...attributes
 >

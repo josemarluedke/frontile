@@ -1,0 +1,197 @@
+<div class="p-4 bg-gray-100 border rounded">
+  <FormCheckboxGroup
+    @isInline={{true}}
+    @label="Settings"
+    as |Checkbox|
+  >
+    <Checkbox
+      disabled={{this.isLarge}}
+      @label="@isSmall"
+      @checked={{this.isSmall}}
+      @onChange={{fn this.setField "isSmall"}}
+    />
+    <Checkbox
+      disabled={{this.isSmall}}
+      @label="@isLarge"
+      @checked={{this.isLarge}}
+      @onChange={{fn this.setField "isLarge"}}
+    />
+    <Checkbox
+      @label="@isInline"
+      @checked={{this.isInline}}
+      @onChange={{fn this.setField "isInline"}}
+    />
+  </FormCheckboxGroup>
+</div>
+
+<FormInput
+  @label="First Name"
+  @hint="Your first name"
+  @value={{this.firstName}}
+  @onChange={{fn this.setField "firstName"}}
+  @errors={{this.firstNameErrors}}
+  placeholder="Joe"
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormInput
+  @label="Email"
+  @value={{this.email}}
+  @onChange={{fn this.setField "email"}}
+  @errors={{this.emailErrors}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormRadioGroup
+  @label="Account Type"
+  @value={{this.accountType}}
+  @onChange={{fn this.setField "accountType"}}
+  @errors={{this.accountTypeErrors}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+  @isInline={{this.isInline}}
+  as |Radio|
+>
+  <Radio
+    @value="personal"
+    @label="Personal"
+  />
+  <Radio
+    @value="business"
+    @label="Business"
+    @hint="If this account is for business"
+  />
+  <Radio
+    @value="other"
+    @label="Other"
+  />
+</FormRadioGroup>
+
+<FormCheckboxGroup
+  @label="Interests"
+  @errors={{this.interestsErrors}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+  @isInline={{this.isInline}}
+  as |Checkbox|
+>
+  <Checkbox
+    @label="IoT"
+    @hint="Internet of things"
+    @checked={{this.isIoTChecked}}
+    @onChange={{fn this.setInterest "IoT"}}
+  />
+  <Checkbox
+    @label="Music"
+    @checked={{this.isMusicChecked}}
+    @onChange={{fn this.setInterest "Music"}}
+  />
+  <Checkbox
+    @label="Entertainment"
+    @hint="Movies and TV series"
+    @checked={{this.isEntertainmentTChecked}}
+    @onChange={{fn this.setInterest "Entertainment"}}
+  />
+</FormCheckboxGroup>
+
+<FormTextarea
+  @label="Bio"
+  @value={{this.bio}}
+  @onChange={{fn this.setField "bio"}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormCheckbox
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+>
+  I agree to the <a href="#" class="underline">privacy policy</a>
+</FormCheckbox>
+
+
+<hr class="mt-8 mb-4">
+
+<h2 class="text-2xl font-bold mb-8">Disabled styles</h2>
+
+<FormInput
+  @label="Disabled Input"
+  @value="This is a disabled content"
+  disabled={{true}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormTextarea
+  @label="Disabled Textarea"
+  @value="This is a disabled content"
+  disabled={{true}}
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormCheckbox
+  @label="Enabled unchecked"
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormCheckbox
+  @label="Disabled unchecked"
+  disabled={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormCheckbox
+  @label="Enabled checked"
+  @checked={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormCheckbox
+  @label="Disabled checked"
+  @checked={{true}}
+  disabled={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+
+<FormRadio
+  @value={{false}}
+  @label="Enabled unchecked"
+  @containerClass="mt-4"
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormRadio
+  @value={{false}}
+  @label="Disabled unchecked"
+  disabled={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormRadio
+  @label="Enabled checked"
+  @value={{true}}
+  @checked={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>
+<FormRadio
+  @label="Disabled checked"
+  @value={{true}}
+  @checked={{true}}
+  disabled={{true}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+/>

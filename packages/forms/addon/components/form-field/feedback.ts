@@ -3,6 +3,8 @@ import Component from '@glimmer/component';
 interface FormFieldFeedbackArgs {
   isError?: boolean;
   errors?: string[] | string;
+  isSmall?: boolean;
+  isLarge?: boolean;
 }
 
 export default class FormFieldFeedback extends Component<

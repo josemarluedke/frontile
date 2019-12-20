@@ -1,9 +1,7 @@
 <FormField
-  @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
-  class="form-textarea-container
-    {{if this.showErrorFeedback "has-error"}}
-    {{if @hasButton "has-button"}}"
+  @isLarge={{@isLarge}}
+  class="form-textarea-container {{if this.showErrorFeedback "has-error"}} {{@containerClass}} {{if @isSmall "form-textarea-container-sm" (if @isLarge "form-textarea-container-lg")}}"
   as |f|
 >
   {{#if @label}}
@@ -22,6 +20,7 @@
     @onChange={{@onChange}}
     @value={{@value}}
 
+    class={{if this.showErrorFeedback "has-error"}}
     aria-describedby="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}"
     ...attributes
   />

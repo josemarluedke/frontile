@@ -1,7 +1,7 @@
 <FormField
-  @hasMargin={{@hasMargin}}
   @isSmall={{@isSmall}}
-  class="form-checkbox-container"
+  @isLarge={{@isLarge}}
+  class="form-checkbox-container {{@containerClass}} {{if @isSmall "form-checkbox-container-sm" (if @isLarge "form-checkbox-container-lg")}}"
   as |f|
 >
   <f.Checkbox

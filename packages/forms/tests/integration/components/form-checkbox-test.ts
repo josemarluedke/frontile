@@ -121,18 +121,69 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     );
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
-    this.set('hasMargin', undefined);
+  test('it adds container class from @containerClass arg', async function(assert) {
+    await render(
+      hbs`<FormCheckbox
+            @containerClass="my-container-class"
+          />`
+    );
+
+    assert.dom('.my-container-class').exists();
+  });
+
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
 
     await render(
       hbs`<FormCheckbox
             data-test-input
-            @hasMargin={{this.hasMargin}}
+            @containerClass="my-container"
+            @label="Label"
+            @hint="Hint"
+            @isSmall={{this.isSmall}}
+            @isLarge={{this.isLarge}}
           />`
     );
 
-    assert.dom('.form-checkbox-container').doesNotHaveClass('has-margin');
-    this.set('hasMargin', true);
-    assert.dom('.form-checkbox-container').hasClass('has-margin');
+    assert.dom('.my-container').hasClass('form-checkbox-container-sm');
+    assert.dom('[data-test-input]').hasClass('form-checkbox-sm');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-sm');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-sm');
+
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('.my-container').hasClass('form-checkbox-container-lg');
+    assert.dom('[data-test-input]').hasClass('form-checkbox-lg');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-lg');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('.my-container').hasClass('form-checkbox-container-sm');
+    assert.dom('[data-test-input]').hasClass('form-checkbox-sm');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-sm');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-sm');
+    assert.dom('.my-container').doesNotHaveClass('form-checkbox-container-lg');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-checkbox-lg');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .doesNotHaveClass('form-field-label-lg');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .doesNotHaveClass('form-field-hint-lg');
   });
 });

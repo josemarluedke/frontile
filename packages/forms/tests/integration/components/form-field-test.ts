@@ -7,8 +7,7 @@ module('Integration | Component | FormField', function(hooks) {
   setupRenderingTest(hooks);
   const template = hbs`
                  <FormField
-                   @hasMargin={{this.hasMargin}}
-                   @isSmall={{this.isSmall}}
+                   @containerClass={{this.containerClass}}
                    data-test-id="form-field"
                    as |f|
                  >
@@ -53,18 +52,5 @@ module('Integration | Component | FormField', function(hooks) {
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasAttribute('id', `${id}-feedback`);
-  });
-
-  test('it adds style classes for hasMargin & isSmall', async function(assert) {
-    await render(template);
-
-    assert.dom('[data-test-id="form-field"]').hasNoClass('has-margin');
-    assert.dom('[data-test-id="form-field"]').hasNoClass('is-small');
-
-    this.set('hasMargin', true);
-    assert.dom('[data-test-id="form-field"]').hasClass('has-margin');
-
-    this.set('isSmall', true);
-    assert.dom('[data-test-id="form-field"]').hasClass('is-small');
   });
 });

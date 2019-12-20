@@ -96,8 +96,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
+    assert.dom('[data-test-input].has-error').exists();
     assert.dom('.my-container .has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
@@ -117,9 +121,13 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
@@ -136,8 +144,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
+    assert.dom('[data-test-input].has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     assert.dom('.my-container .has-error').doesNotExist();
   });
@@ -155,9 +167,13 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
+
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
@@ -177,10 +193,14 @@ module('Integration | Component | FormTextarea', function(hooks) {
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
+
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
 
     await focus('[data-test-input]');
+
     assert.dom('.my-container .has-error').doesNotExist();
+    assert.dom('[data-test-input].has-error').doesNotExist();
   });
 
   test('always show error messages when hasSubmitted is true', async function(assert) {
@@ -196,6 +216,7 @@ module('Integration | Component | FormTextarea', function(hooks) {
     );
 
     assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input].has-error').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
@@ -234,31 +255,83 @@ module('Integration | Component | FormTextarea', function(hooks) {
     assert.ok(calls.includes('onChange'));
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
-    this.set('hasMargin', undefined);
-
+  test('it adds container class from @containerClass arg', async function(assert) {
     await render(
       hbs`<FormTextarea
-            @hasMargin={{this.hasMargin}}
+            @containerClass="my-container-class"
           />`
     );
 
-    assert.dom('.form-textarea-container').doesNotHaveClass('has-margin');
-    this.set('hasMargin', true);
-    assert.dom('.form-textarea-container').hasClass('has-margin');
+    assert.dom('.my-container-class').exists();
   });
 
-  test('it adds has-button class if @hasButton is true', async function(assert) {
-    this.set('hasButton', undefined);
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
 
     await render(
       hbs`<FormTextarea
-            @hasButton={{this.hasButton}}
+            data-test-input
+            @containerClass="my-container"
+            @label="Label"
+            @hint="Hint"
+            @errors="Error"
+            @hasSubmitted={{true}}
+            @isSmall={{this.isSmall}}
+            @isLarge={{this.isLarge}}
           />`
     );
 
-    assert.dom('.form-textarea-container').doesNotHaveClass('has-button');
-    this.set('hasButton', true);
-    assert.dom('.form-textarea-container').hasClass('has-button');
+    assert.dom('.my-container').hasClass('form-textarea-container-sm');
+    assert.dom('[data-test-input]').hasClass('form-textarea-sm');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-sm');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-sm');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasClass('form-field-feedback-sm');
+
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('.my-container').hasClass('form-textarea-container-lg');
+    assert.dom('[data-test-input]').hasClass('form-textarea-lg');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-lg');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-lg');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasClass('form-field-feedback-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('.my-container').hasClass('form-textarea-container-sm');
+    assert.dom('[data-test-input]').hasClass('form-textarea-sm');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label-sm');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-field-hint-sm');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasClass('form-field-feedback-sm');
+    assert.dom('.my-container').doesNotHaveClass('form-textarea-container-lg');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-textarea-lg');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .doesNotHaveClass('form-field-label-lg');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .doesNotHaveClass('form-field-hint-lg');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .doesNotHaveClass('form-field-feedback-lg');
   });
 });

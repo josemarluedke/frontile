@@ -1,10 +1,21 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const path = require('path');
 
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, {
-    // Add options here
+    postcssOptions: {
+      compile: {
+        enabled: true,
+        plugins: [
+          require('tailwindcss')(
+            path.join('tests', 'dummy', 'styles', 'tailwind.config.js')
+          ),
+          require('autoprefixer')
+        ]
+      }
+    }
   });
 
   /*

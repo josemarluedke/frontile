@@ -48,6 +48,26 @@ module('Integration | Component | FormField::Feedback', function(hooks) {
       .hasAttribute('aria-live', 'assertive');
   });
 
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
+
+    await render(
+      hbs`<FormField::Feedback data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+    );
+
+    assert.dom('[data-test-input]').hasClass('form-field-feedback-sm');
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-feedback-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-feedback-sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-field-feedback-lg');
+  });
+
   test('it does not break if passed an undefined arg', async function(assert) {
     this.set('errors', undefined);
     await render(template);

@@ -14,7 +14,10 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
         @hasError={{this.hasError}}
         @errors={{this.errors}}
         @hasSubmitted={{this.hasSubmitted}}
-        @hasMargin={{this.hasMargin}}
+        @isInline={{this.isInline}}
+        @isSmall={{this.isSmall}}
+        @isLarge={{this.isLarge}}
+        @containerClass={{this.containerClass}}
         @label="My Group"
         @value={{this.myValue}}
         @onChange={{action (mut this.myValue)}} as |Radio|
@@ -67,6 +70,14 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     assert.equal(this.get('myValue'), true);
   });
 
+  test('it adds inline class when isInline is true', async function(assert) {
+    this.set('myValue', false);
+    this.set('isInline', true);
+    await render(template);
+
+    assert.dom('[data-test-input-group]').hasClass('is-inline');
+  });
+
   test('show error messages when errors array has items', async function(assert) {
     this.set('errors', ['This field is required']);
     await render(template);
@@ -114,13 +125,11 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
       .hasText('This field is required');
   });
 
-  test('it adds has-margin class if @hasMargin is true', async function(assert) {
-    this.set('hasMargin', undefined);
+  test('it adds container class from @containerClass arg', async function(assert) {
+    this.set('containerClass', 'my-container-class');
 
     await render(template);
 
-    assert.dom('[data-test-input-group]').doesNotHaveClass('has-margin');
-    this.set('hasMargin', true);
-    assert.dom('[data-test-input-group]').hasClass('has-margin');
+    assert.dom('.my-container-class').exists();
   });
 });

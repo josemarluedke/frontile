@@ -1,5 +1,4 @@
 <div
-  class="form-field {{if @hasMargin "has-margin"}} {{if @isSmall "is-small"}}"
   ...attributes
 >
   {{yield
@@ -8,14 +7,14 @@
       hintId=this.hintId
       feedbackId=this.feedbackId
 
-      Label=(component "form-field/label" for=this.id)
-      Hint=(component "form-field/hint" id=this.hintId)
-      Feedback=(component "form-field/feedback" id=this.feedbackId)
+      Label=(component "form-field/label" for=this.id isSmall=@isSmall isLarge=@isLarge)
+      Hint=(component "form-field/hint" id=this.hintId isSmall=@isSmall isLarge=@isLarge)
+      Feedback=(component "form-field/feedback" id=this.feedbackId isSmall=@isSmall isLarge=@isLarge)
 
-      Input=(component "form-field/input" id=this.id)
-      Textarea=(component "form-field/textarea" id=this.id)
-      Checkbox=(component "form-field/checkbox" id=this.id)
-      Radio=(component "form-field/radio" id=this.id)
+      Input=(component "form-field/input" id=this.id isSmall=@isSmall isLarge=@isLarge)
+      Textarea=(component "form-field/textarea" id=this.id isSmall=@isSmall isLarge=@isLarge)
+      Checkbox=(component "form-field/checkbox" id=this.id isSmall=@isSmall isLarge=@isLarge)
+      Radio=(component "form-field/radio" id=this.id isSmall=@isSmall isLarge=@isLarge)
     )
   }}
 </div>
