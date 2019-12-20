@@ -18,4 +18,24 @@ module('Integration | Component | FormField::Hint', function(hooks) {
     assert.dom('[data-test-id="form-field-hint"]').hasClass('something-else');
     assert.dom('[data-test-id="form-field-hint"]').hasTextContaining('Content');
   });
+
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
+
+    await render(
+      hbs`<FormField::Hint data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+    );
+
+    assert.dom('[data-test-input]').hasClass('form-field-hint-sm');
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-hint-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-hint-sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-field-hint-lg');
+  });
 });

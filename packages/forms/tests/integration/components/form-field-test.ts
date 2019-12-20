@@ -8,7 +8,6 @@ module('Integration | Component | FormField', function(hooks) {
   const template = hbs`
                  <FormField
                    @containerClass={{this.containerClass}}
-                   @isSmall={{this.isSmall}}
                    data-test-id="form-field"
                    as |f|
                  >
@@ -53,14 +52,5 @@ module('Integration | Component | FormField', function(hooks) {
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasAttribute('id', `${id}-feedback`);
-  });
-
-  test('it adds style classes for isSmall', async function(assert) {
-    await render(template);
-
-    assert.dom('[data-test-id="form-field"]').hasNoClass('is-small');
-
-    this.set('isSmall', true);
-    assert.dom('[data-test-id="form-field"]').hasClass('is-small');
   });
 });

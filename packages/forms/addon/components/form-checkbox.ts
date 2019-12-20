@@ -9,6 +9,7 @@ interface FormCheckboxArgs {
   name?: string;
   containerClass?: string;
   isSmall?: boolean;
+  isLarge?: boolean;
 
   // Callback when onchange is triggered
   onChange?: (value: boolean, event: Event) => void;

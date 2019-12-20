@@ -22,4 +22,24 @@ module('Integration | Component | FormField::Label', function(hooks) {
       .dom('[data-test-id="form-field-label"]')
       .hasTextContaining('My Label');
   });
+
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
+
+    await render(
+      hbs`<FormField::Label data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+    );
+
+    assert.dom('[data-test-input]').hasClass('form-field-label-sm');
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-label-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-field-label-sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-field-label-lg');
+  });
 });

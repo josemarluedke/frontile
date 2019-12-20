@@ -10,6 +10,7 @@ interface FormRadioArgs {
   name?: string;
   containerClass?: string;
   isSmall?: boolean;
+  isLarge?: boolean;
 
   // Callback when onchange is triggered
   onChange?: (value: unknown, event: Event) => void;

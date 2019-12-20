@@ -27,6 +27,26 @@ module('Integration | Component | FormField::Textarea', function(hooks) {
     assert.dom('[data-test-textarea]').hasAttribute('id', 'my-id');
   });
 
+  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+    this.set('isSmall', true);
+    this.set('isLarge', false);
+
+    await render(
+      hbs`<FormField::Textarea data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+    );
+
+    assert.dom('[data-test-input]').hasClass('form-textarea-sm');
+    this.set('isSmall', false);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-textarea-lg');
+
+    // should only add one size class
+    this.set('isSmall', true);
+    this.set('isLarge', true);
+    assert.dom('[data-test-input]').hasClass('form-textarea-sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form-textarea-lg');
+  });
+
   test('renders @value arg, does not mutate it by default', async function(assert) {
     this.set('value', 'Josemar');
 

@@ -3,6 +3,7 @@ import { guidFor } from '@ember/object/internals';
 
 interface FormFieldArgs {
   isSmall?: boolean;
+  isLarge?: boolean;
 }
 
 export default class FormField extends Component<FormFieldArgs> {

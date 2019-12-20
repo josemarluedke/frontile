@@ -1,6 +1,7 @@
 <FormField
   @isSmall={{@isSmall}}
-  class="form-radio-container {{@containerClass}}"
+  @isLarge={{@isLarge}}
+  class="form-radio-container {{@containerClass}} {{if @isSmall "form-radio-container-sm" (if @isLarge "form-radio-container-lg")}}"
   as |f|
 >
   <f.Radio

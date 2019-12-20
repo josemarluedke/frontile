@@ -15,6 +15,8 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
         @errors={{this.errors}}
         @hasSubmitted={{this.hasSubmitted}}
         @isInline={{this.isInline}}
+        @isSmall={{this.isSmall}}
+        @isLarge={{this.isLarge}}
         @containerClass={{this.containerClass}}
         @label="My Group"
         @value={{this.myValue}}

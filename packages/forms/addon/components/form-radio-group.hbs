@@ -1,8 +1,10 @@
 <FormField
   @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
   class="form-radio-group-container
     {{if this.showErrorFeedback "has-error"}}
-    {{if @isInline "is-inline"}} {{@containerClass}}"
+    {{if @isInline "is-inline"}} {{@containerClass}}
+    {{if @isSmall "form-radio-group-container-sm" (if @isLarge "form-radio-group-container-lg")}}"
     role="radiogroup"
   ...attributes
   as |f|
@@ -18,6 +20,8 @@
   {{yield (component "form-radio"
             checked=@value
             _parentOnChange=this.handleChange
+            isSmall=@isSmall
+            isLarge=@isLarge
             name=(concat f.id "-radio-group")
           )
   }}
