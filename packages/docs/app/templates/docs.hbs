@@ -1,12 +1,33 @@
 <DocsViewer as |viewer|>
   <viewer.nav as |nav|>
-    {{nav.item "Introduction" "docs.index"}}
-    {{nav.item "FormInput" "docs.forms.form-input"}}
-    {{nav.item "FormTextarea" "docs.forms.form-textarea"}}
-    {{nav.item "FormRadio" "docs.forms.form-radio"}}
-    {{nav.item "FromRadioGroup" "docs.forms.form-radio-group"}}
-    {{nav.item "FormCheckbox" "docs.forms.form-checkbox"}}
-    {{nav.item "FormCheckboxGroup" "docs.forms.form-checkbox-group"}}
+    {{nav.section "Introduction"}}
+    {{nav.item "Overview" "docs.index"}}
+
+    {{nav.section "Core"}}
+
+    <li class="docs-mt-2 docs-ml-4 docs-mb-1 docs-text-xs">
+      Accessibility
+    </li>
+    {{#nav.subnav as |nav|}}
+      {{nav.item "Focus management" "docs.core.accessibility.focus-management"}}
+      {{nav.item "<VisuallyHidden>" "docs.core.accessibility.visually-hidden"}}
+    {{/nav.subnav}}
+
+    {{nav.section "Forms"}}
+    {{nav.item "Installation" "docs.forms.index"}}
+
+    <li class="docs-mt-2 docs-ml-4 docs-mb-1 docs-text-xs">
+      Components
+    </li>
+
+    {{#nav.subnav as |nav|}}
+      {{nav.item "FormInput" "docs.forms.form-input"}}
+      {{nav.item "FormTextarea" "docs.forms.form-textarea"}}
+      {{nav.item "FormRadio" "docs.forms.form-radio"}}
+      {{nav.item "FormRadioGroup" "docs.forms.form-radio-group"}}
+      {{nav.item "FormCheckbox" "docs.forms.form-checkbox"}}
+      {{nav.item "FormCheckboxGroup" "docs.forms.form-checkbox-group"}}
+    {{/nav.subnav}}
   </viewer.nav>
 
   <viewer.main>

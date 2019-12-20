@@ -8,6 +8,13 @@ export default class Router extends AddonDocsRouter {
 
 Router.map(function() {
   docsRoute(this, function() {
+    this.route('core', function() {
+      this.route('accessibility', function() {
+        this.route('focus-management');
+        this.route('visually-hidden');
+      });
+    });
+
     this.route('forms', function() {
       this.route('form-input');
       this.route('form-textarea');
