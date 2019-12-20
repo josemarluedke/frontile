@@ -16,7 +16,7 @@
   "scripts": {
     "build": "ember build",
     "start": "ember serve",
-    "test": "echo 'Tests ignored'",
+    "test": "ember test",
     "test:all": "echo 'Tests ignored'",
     "try:one": "echo 'Tests ignored'"
   },
