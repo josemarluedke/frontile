@@ -134,9 +134,6 @@ module.exports = function(/*{ theme }*/) {
         paddingBottom: defaultTheme.spacing[0]
       }
     },
-    label: {
-      paddingBottom: defaultTheme.spacing[2]
-    },
     feedback: {
       paddingTop: defaultTheme.spacing[0],
       flex: '1 100%'
