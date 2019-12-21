@@ -7,5 +7,5 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function() {
-  // there are no routes in this dummy app
+  this.route('style-variants');
 });
