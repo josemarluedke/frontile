@@ -12,7 +12,7 @@ function resolveOptions(userOptions, theme) {
 }
 
 module.exports = function({ addComponents, theme }) {
-  function add(element, options) {
+  function add(element, options, modifier) {
     if (isEmpty(options)) {
       return;
     }
@@ -20,7 +20,7 @@ module.exports = function({ addComponents, theme }) {
     addComponents(
       replaceIconDeclarations(
         {
-          [`.ember-power-select-${element}`]: options
+          [`.ember-power-select-${element}${modifier}`]: options
         },
         ({ icon = options.icon, iconColor = options.iconColor }) => {
           return {
@@ -39,21 +39,24 @@ module.exports = function({ addComponents, theme }) {
     }
   }
 
-  const options = resolveOptions(theme('ember-power-select'), theme).default;
+  const options = resolveOptions(theme('ember-power-select'), theme);
+  Object.keys(options).forEach(key => {
+    const modifier = key === 'default' ? '' : `-${key}`;
 
-  add('trigger', options.trigger);
-  add('placeholder', options.placeholder);
-  add('status-icon', options.statusIcon);
-  add('dropdown', options.dropdown);
-  add('options', options.options);
-  add('option', options.option);
-  add('clear-btn', options.clearBtn);
-  add('search', options.search);
-  add('search-input', options.searchInput);
-  add('group', options.group);
-  add('group-name', options.groupName);
-  add('trigger-multiple-input', options.triggerMultipleInput);
-  add('multiple-options', options.multipleOptions);
-  add('multiple-option', options.multipleOption);
-  add('multiple-remove-btn', options.multipleRemoveBtn);
+    add('trigger', options[key].trigger, modifier);
+    add('placeholder', options[key].placeholder, modifier);
+    add('status-icon', options[key].statusIcon, modifier);
+    add('dropdown', options[key].dropdown, modifier);
+    add('options', options[key].options, modifier);
+    add('option', options[key].option, modifier);
+    add('clear-btn', options[key].clearBtn, modifier);
+    add('search', options[key].search, modifier);
+    add('search-input', options[key].searchInput, modifier);
+    add('group', options[key].group, modifier);
+    add('group-name', options[key].groupName, modifier);
+    add('trigger-multiple-input', options[key].triggerMultipleInput, modifier);
+    add('multiple-options', options[key].multipleOptions, modifier);
+    add('multiple-option', options[key].multipleOption, modifier);
+    add('multiple-remove-btn', options[key].multipleRemoveBtn, modifier);
+  });
 };

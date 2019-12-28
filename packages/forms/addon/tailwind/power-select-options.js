@@ -43,6 +43,10 @@ module.exports = function(/*{ theme }*/) {
         '&[aria-disabled=true]': {
           borderColor: defaultTheme.borderColor.gray[300],
           color: defaultTheme.borderColor.gray[500]
+        },
+
+        '&[aria-invalid=true]': {
+          borderColor: defaultTheme.borderColor.red[600]
         }
       },
       placeholder: {
@@ -236,6 +240,37 @@ module.exports = function(/*{ theme }*/) {
         '&:not(:hover)': {
           opacity: 0.5
         }
+      }
+    },
+    sm: {
+      trigger: {
+        fontSize: defaultTheme.fontSize.sm,
+        paddingTop: defaultTheme.spacing[2],
+        paddingRight: defaultTheme.spacing[2],
+        paddingBottom: defaultTheme.spacing[2],
+        paddingLeft: defaultTheme.spacing[2],
+        minHeight: `calc((${defaultTheme.fontSize.sm} * ${defaultTheme.lineHeight.snug}) + ${defaultTheme.spacing[4]})`,
+
+        '.ember-power-select-multiple-options': {
+          marginTop: '-0.05rem'
+        },
+
+        '.ember-power-select-multiple-option': {
+          fontSize: defaultTheme.fontSize.xs,
+          paddingTop: '0.15rem',
+          paddingRight: defaultTheme.spacing[1],
+          paddingBottom: '0.15rem',
+          paddingLeft: '0.15rem'
+        }
+      }
+    },
+    lg: {
+      trigger: {
+        paddingTop: defaultTheme.spacing[4],
+        paddingRight: defaultTheme.spacing[4],
+        paddingBottom: defaultTheme.spacing[4],
+        paddingLeft: defaultTheme.spacing[4],
+        minHeight: `calc((${defaultTheme.fontSize.base} * ${defaultTheme.lineHeight.snug}) + ${defaultTheme.spacing[8]})`
       }
     }
   };

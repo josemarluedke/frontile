@@ -192,7 +192,7 @@ module.exports = function({ addComponents, theme }) {
     const options = resolveOptions(theme('@frontile/forms'), theme);
 
     Object.keys(options).forEach(key => {
-      const modifier = key === 'default' ? undefined : `-${key}`;
+      const modifier = key === 'default' ? '' : `-${key}`;
 
       addLabel(options[key].label || {}, modifier);
       addInput(options[key].input || {}, modifier);
