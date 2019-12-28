@@ -9,7 +9,7 @@ module('Integration | Component | FormInput', function(hooks) {
   test('it renders', async function(assert) {
     await render(hbs`<FormInput @label="Name" />`);
 
-    assert.dom('label').hasText('Name');
+    assert.dom('[data-test-id="form-field-label"]').hasText('Name');
   });
 
   test('it renders html attributes', async function(assert) {

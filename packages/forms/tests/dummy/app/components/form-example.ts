@@ -15,6 +15,18 @@ export default class FormExample extends Component<FormExampleArgs> {
   @tracked bio!: string;
   @tracked interests: string[] = [];
 
+  @tracked country?: unknown;
+
+  countries = [
+    { name: 'United States', code: 'US' },
+    { name: 'Spain', code: 'ES' },
+    { name: 'Portugal', code: 'PT', disabled: true },
+    { name: 'Russia', code: 'RU', disabled: true },
+    { name: 'Latvia', code: 'LV' },
+    { name: 'Brazil', code: 'BR' },
+    { name: 'United Kingdom', code: 'GB' }
+  ];
+
   get firstNameErrors(): string[] {
     if (this.firstName) {
       return [];
@@ -46,6 +58,14 @@ export default class FormExample extends Component<FormExampleArgs> {
     }
   }
 
+  get countryErrors(): string[] {
+    if (this.country) {
+      return [];
+    } else {
+      return ["Country can't be blank"];
+    }
+  }
+
   get isIoTChecked(): boolean {
     return this.interests.includes('IoT');
   }
@@ -56,6 +76,10 @@ export default class FormExample extends Component<FormExampleArgs> {
 
   get isEntertainmentTChecked(): boolean {
     return this.interests.includes('Entertainment');
+  }
+
+  @action setCountry(value: unknown) {
+    this.country = value;
   }
 
   @action setField(
