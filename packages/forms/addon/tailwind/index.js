@@ -207,4 +207,6 @@ module.exports = function({ addComponents, theme }) {
   }
 
   registerComponents();
+
+  require('./power-select')({ addComponents, theme });
 };
