@@ -1,0 +1,90 @@
+<FormField
+  @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
+  class="form-select-container {{@containerClass}} {{if @isSmall "form-select-container-sm" (if @isLarge "form-select-container-lg")}}"
+  as |f|
+>
+
+  {{#if @label}}
+    <f.Label
+      @for={{false}}
+      id={{f.id}}
+    >
+      {{@label}}
+    </f.Label>
+  {{/if}}
+
+  {{#if @hint}}
+    <f.Hint>{{@hint}}</f.Hint>
+  {{/if}}
+
+  {{#let (component (if @isMultiple "power-select-multiple" "power-select")) as |Component|}}
+    <Component
+      ...attributes
+      @onChange={{this.handleChange}}
+      @onFocus={{this.handleFocusIn}}
+      @onBlur={{this.handleFocusOut}}
+      @onOpen={{this.handleOpen}}
+      @onClose={{this.handleClose}}
+      @ariaDescribedBy="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}{{if @ariaDescribedBy (concat " " @ariaDescribedBy)}}"
+      @ariaLabelledBy="{{if @label f.id}}{{if @ariaLabelledBy (concat " "@ariaLabelledBy)}}"
+      @ariaInvalid={{if this.showErrorFeedback "true"}}
+      @triggerClass="{{@triggerClass}} {{if @isSmall "ember-power-select-trigger-sm" (if @isLarge "ember-power-select-trigger-lg")}}"
+
+      @highlightOnHover={{@highlightOnHover}}
+      @placeholderComponent={{@placeholderComponent}}
+      @searchMessage={{@searchMessage}}
+      @noMatchesMessage={{@noMatchesMessage}}
+      @matchTriggerWidth={{@matchTriggerWidth}}
+      @options={{@options}}
+      @selected={{@selected}}
+      @closeOnSelect={{@closeOnSelect}}
+      @defaultHighlighted={{@defaultHighlighted}}
+      @searchField={{@searchField}}
+      @searchEnabled={{@searchEnabled}}
+      @tabindex={{@tabindex}}
+      @triggerComponent={{@triggerComponent}}
+      @matcher={{@matcher}}
+      @initiallyOpened={{@initiallyOpened}}
+      @typeAheadOptionMatcher={{@typeAheadOptionMatcher}}
+      @buildSelection={{@buildSelection}}
+      @search={{@search}}
+      @onInput={{@onInput}}
+      @onKeydown={{@onKeydown}}
+      @scrollTo={{@scrollTo}}
+      @registerAPI={{@registerAPI}}
+      @horizontalPosition={{@horizontalPosition}}
+      @destination={{@destination}}
+      @preventScroll={{@preventScroll}}
+      @renderInPlace={{@renderInPlace}}
+      @verticalPosition={{@verticalPosition}}
+      @disabled={{@disabled}}
+      @calculatePosition={{@calculatePosition}}
+      @eventType={{@eventType}}
+      @ariaLabel={{@ariaLabel}}
+      @required={{@required}}
+      @triggerRole={{@triggerRole}}
+      @title={{@title}}
+      @triggerId={{@triggerId}}
+      @allowClear={{@allowClear}}
+      @loadingMessage={{@loadingMessage}}
+      @selectedItemComponent={{@selectedItemComponent}}
+      @dropdownClass={{@dropdownClass}}
+      @beforeOptionsComponent={{@beforeOptionsComponent}}
+      @placeholder={{@placeholder}}
+      @searchPlaceholder={{@searchPlaceholder}}
+      @searchMessageComponent={{@searchMessageComponent}}
+      @optionsComponent={{@optionsComponent}}
+      @extra={{@extra}}
+      @groupComponent={{@groupComponent}}
+      @afterOptionsComponent={{@afterOptionsComponent}}
+      as |option term|
+    >
+      {{yield option term}}
+    </Component>
+  {{/let}}
+
+  {{#if this.showErrorFeedback}}
+    <f.Feedback @errors={{@errors}} />
+  {{/if}}
+</FormField>
