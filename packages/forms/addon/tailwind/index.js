@@ -207,9 +207,12 @@ module.exports = function({ addComponents, theme }) {
     addRadioGroup(options[key].radioGroup || {}, modifier);
   });
 
-  require('./power-select').registerComponents(
+  require('tailwindcss-ember-power-select').registerComponents(
     { addComponents },
     selectOptions,
-    {}
+    {
+      triggerFocusBoxShadow: null,
+      searchInputFocusBoxShadow: null
+    }
   );
 };
