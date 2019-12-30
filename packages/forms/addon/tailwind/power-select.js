@@ -4,14 +4,14 @@ const isEmpty = require('lodash/isEmpty');
 const svgToDataUri = require('mini-svg-data-uri');
 const { merge, flattenOptions, replaceIconDeclarations } = require('./helpers');
 
-function resolveOptions(userOptions, theme) {
+function resolveOptions(userOptions, customConfig) {
   return merge(
-    require('./power-select-options')({ theme }),
+    require('./power-select-options')(customConfig),
     fromPairs(map(userOptions, (value, key) => [key, flattenOptions(value)]))
   );
 }
 
-module.exports = function({ addComponents, theme }) {
+function registerComponents({ addComponents }, userOptions, customConfig) {
   function add(element, options, modifier) {
     if (isEmpty(options)) {
       return;
@@ -34,12 +34,12 @@ module.exports = function({ addComponents, theme }) {
 
     if (options['&:focus']) {
       addComponents({
-        [`.ember-power-select-${element}-active`]: options['&:focus']
+        [`.ember-power-select-${element}--active`]: options['&:focus']
       });
     }
   }
 
-  const options = resolveOptions(theme('ember-power-select'), theme);
+  const options = resolveOptions(userOptions, customConfig);
   Object.keys(options).forEach(key => {
     const modifier = key === 'default' ? '' : `-${key}`;
 
@@ -59,4 +59,16 @@ module.exports = function({ addComponents, theme }) {
     add('multiple-option', options[key].multipleOption, modifier);
     add('multiple-remove-btn', options[key].multipleRemoveBtn, modifier);
   });
+}
+
+module.exports = {
+  registerComponents,
+
+  default: function({ addComponents, theme }, customConfig) {
+    registerComponents(
+      { addComponents },
+      theme('ember-power-select'),
+      customConfig
+    );
+  }
 };

@@ -1,52 +1,87 @@
 const defaultTheme = require('tailwindcss/resolveConfig')(
   require('tailwindcss/defaultConfig')
 ).theme;
+const { merge } = require('./helpers');
 
-module.exports = function(/*{ theme }*/) {
+const defaultConfig = {
+  textColor: 'inherit',
+  disabledTextColor: defaultTheme.borderColor.gray[500],
+  placeholderTextColor: defaultTheme.borderColor.gray[500],
+  backgroundColor: defaultTheme.colors.white,
+  dropdownMargin: defaultTheme.spacing[1],
+
+  // Selected option
+  selectedBackgroundColor: defaultTheme.colors.gray[200],
+  selectedTextColor: null,
+
+  // Highlighted option (aka hover)
+  highlightedBackgroundColor: defaultTheme.colors.blue[500],
+  highlightedTextColor: defaultTheme.colors.white,
+
+  // Multiple option
+  multipleOptionBackgroundColor: defaultTheme.colors.gray[600],
+  multipleOptionTextColor: defaultTheme.colors.white,
+
+  // Box Shadow
+  triggerFocusBoxShadow: defaultTheme.boxShadow.outline,
+  searchInputFocusBoxShadow: defaultTheme.boxShadow.outline,
+  dropdownBoxShadow: defaultTheme.boxShadow.md,
+
+  // Border color
+  borderColor: defaultTheme.colors.gray[500],
+  focusBorderColor: defaultTheme.colors.gray[800],
+  disabledBorderColor: defaultTheme.borderColor.gray[300],
+  invalidBorderColor: defaultTheme.borderColor.red[600],
+
+  // Border Radius
+  triggerBorderRadius: defaultTheme.borderRadius.default,
+  dropdownBorderRadius: defaultTheme.borderRadius.default,
+  searchInputBorderRadius: defaultTheme.borderRadius.default,
+  multipleOptionBorderRadius: defaultTheme.borderRadius.default,
+  openedBorderRadius: defaultTheme.borderRadius.default
+};
+
+module.exports = function(customConfig) {
+  const config = merge(defaultConfig, customConfig);
+
   return {
     default: {
       trigger: {
         position: 'relative',
-        borderColor: defaultTheme.colors.gray[500],
+        borderColor: config.borderColor,
         borderWidth: defaultTheme.borderWidth.default,
-        borderRadius: defaultTheme.borderRadius.default,
+        borderRadius: config.triggerBorderRadius,
         width: defaultTheme.width.full,
-        backgroundColor: defaultTheme.colors.white,
+        backgroundColor: config.backgroundColor,
         fontSize: defaultTheme.fontSize.base,
+        color: config.textColor,
         lineHeight: defaultTheme.lineHeight.tight,
-        paddingTop: defaultTheme.spacing[3],
-        paddingRight: defaultTheme.spacing[3],
-        paddingBottom: defaultTheme.spacing[3],
-        paddingLeft: defaultTheme.spacing[3],
+        padding: defaultTheme.spacing[3],
         overflowX: 'hidden',
         textOverflow: 'ellipsis',
         minHeight: `calc((${defaultTheme.fontSize.base} * ${defaultTheme.lineHeight.snug}) + ${defaultTheme.spacing[6]})`,
         userSelect: 'none',
-
         '&:focus': {
-          borderColor: defaultTheme.colors.gray[800]
+          boxShadow: config.triggerFocusBoxShadow,
+          borderColor: config.focusBorderColor
         },
-
         /* Minimum clearfix for modern browsers */
         '&:after': {
           content: '""',
           display: 'table',
           clear: 'both'
         },
-
         '&[aria-expanded="true"]': {
           '.ember-power-select-status-icon': {
             transform: 'rotate(180deg)'
           }
         },
-
         '&[aria-disabled=true]': {
-          borderColor: defaultTheme.borderColor.gray[300],
-          color: defaultTheme.borderColor.gray[500]
+          borderColor: config.disabledBorderColor,
+          color: config.disabledTextColor
         },
-
         '&[aria-invalid=true]': {
-          borderColor: defaultTheme.borderColor.red[600]
+          borderColor: config.invalidBorderColor
         }
       },
       placeholder: {
@@ -54,7 +89,7 @@ module.exports = function(/*{ theme }*/) {
         overflowX: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
-        color: defaultTheme.colors.gray[500],
+        color: config.placeholderTextColor,
         lineHeight: defaultTheme.lineHeight.tight
       },
       statusIcon: {
@@ -93,37 +128,49 @@ module.exports = function(/*{ theme }*/) {
       search: {
         paddingTop: defaultTheme.spacing[2],
         paddingRight: defaultTheme.spacing[2],
-        // paddingBottom: defaultTheme.spacing[2],
         paddingLeft: defaultTheme.spacing[2]
       },
       searchInput: {
-        borderColor: defaultTheme.colors.gray[500],
+        borderColor: config.borderColor,
         borderWidth: defaultTheme.borderWidth.default,
-        borderRadius: defaultTheme.borderRadius.default,
+        borderRadius: config.searchInputBorderRadius,
         width: defaultTheme.width.full,
-        backgroundColor: defaultTheme.colors.white,
+        backgroundColor: config.backgroundColor,
         fontSize: defaultTheme.fontSize.base,
         lineHeight: defaultTheme.lineHeight.tight,
-        paddingTop: defaultTheme.spacing[3],
-        paddingRight: defaultTheme.spacing[3],
-        paddingBottom: defaultTheme.spacing[3],
-        paddingLeft: defaultTheme.spacing[3],
-
+        padding: defaultTheme.spacing[3],
         '&:focus': {
           outline: 'none',
-          borderColor: defaultTheme.colors.gray[800]
+          boxShadow: config.searchInputFocusBoxShadow,
+          borderColor: config.focusBorderColor
         }
       },
 
       // Dropdown
       dropdown: {
-        borderColor: defaultTheme.colors.gray[500],
+        color: config.textColor,
+        borderColor: config.borderColor,
         borderWidth: defaultTheme.borderWidth.default,
-        borderRadius: defaultTheme.borderRadius.default,
-        boxShadow: defaultTheme.boxShadow.md,
-
+        borderRadius: config.dropdownBorderRadius,
+        boxShadow: config.dropdownBoxShadow,
         '&.ember-basic-dropdown-content--in-place': {
           width: defaultTheme.width.full
+        },
+        '&.ember-basic-dropdown-content--above': {
+          transform:
+            config.dropdownMargin && config.dropdownMargin !== '0'
+              ? `translateY(calc(-1 * ${config.dropdownMargin}))`
+              : null,
+          borderBottomLeftRadius: config.openedBorderRadius,
+          borderBottomRightRadius: config.openedBorderRadius
+        },
+        '&.ember-basic-dropdown-content--below, &.ember-basic-dropdown-content--in-place': {
+          transform:
+            config.dropdownMargin && config.dropdownMargin !== '0'
+              ? `translateY(${config.dropdownMargin})`
+              : null,
+          borderTopLeftRadius: config.openedBorderRadius,
+          borderTopRightRadius: config.openedBorderRadius
         }
       },
 
@@ -149,15 +196,16 @@ module.exports = function(/*{ theme }*/) {
         paddingTop: defaultTheme.spacing[1],
         paddingBottom: defaultTheme.spacing[1],
         '&[aria-disabled="true"]': {
-          color: defaultTheme.colors.gray[300],
+          color: config.disabledTextColor,
           cursor: 'not-allowed'
         },
         '&[aria-selected="true"]': {
-          backgroundColor: defaultTheme.colors.gray[200]
+          backgroundColor: config.selectedBackgroundColor,
+          color: config.selectedTextColor
         },
         '&[aria-current="true"]': {
-          backgroundColor: defaultTheme.colors.blue[500],
-          color: defaultTheme.colors.white
+          backgroundColor: config.highlightedBackgroundColor,
+          color: config.highlightedTextColor
         }
       },
       group: {
@@ -176,8 +224,8 @@ module.exports = function(/*{ theme }*/) {
           paddingLeft: defaultTheme.spacing[3]
         },
         '&[aria-disabled=true]': {
-          borderColor: defaultTheme.borderColor.gray[300],
-          color: defaultTheme.borderColor.gray[500],
+          borderColor: config.disabledBorderColor,
+          color: config.disabledTextColor,
           '.ember-power-select-option': {
             cursor: 'not-allowed'
           }
@@ -207,9 +255,9 @@ module.exports = function(/*{ theme }*/) {
       multipleOption: {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: defaultTheme.colors.gray[600],
-        color: defaultTheme.colors.white,
-        borderRadius: defaultTheme.borderRadius.default,
+        backgroundColor: config.multipleOptionBackgroundColor,
+        color: config.multipleOptionTextColor,
+        borderRadius: config.multipleOptionBorderRadius,
         fontSize: defaultTheme.fontSize.sm,
         lineHeight: defaultTheme.lineHeight.tight,
         paddingTop: defaultTheme.spacing[1],
@@ -234,7 +282,7 @@ module.exports = function(/*{ theme }*/) {
         transition: 'opacity .20s ease-in-out',
         height: '1em',
         width: '1em',
-        iconColor: defaultTheme.colors.white,
+        iconColor: config.multipleOptionTextColor,
         icon: iconColor =>
           `<svg fill="${iconColor}" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M9.41 8l2.29-2.29c.19-.18.3-.43.3-.71a1.003 1.003 0 0 0-1.71-.71L8 6.59l-2.29-2.3a1.003 1.003 0 0 0-1.42 1.42L6.59 8 4.3 10.29c-.19.18-.3.43-.3.71a1.003 1.003 0 0 0 1.71.71L8 9.41l2.29 2.29c.18.19.43.3.71.3a1.003 1.003 0 0 0 .71-1.71L9.41 8z" /></svg>`,
         '&:not(:hover)': {
@@ -245,16 +293,11 @@ module.exports = function(/*{ theme }*/) {
     sm: {
       trigger: {
         fontSize: defaultTheme.fontSize.sm,
-        paddingTop: defaultTheme.spacing[2],
-        paddingRight: defaultTheme.spacing[2],
-        paddingBottom: defaultTheme.spacing[2],
-        paddingLeft: defaultTheme.spacing[2],
+        padding: defaultTheme.spacing[2],
         minHeight: `calc((${defaultTheme.fontSize.sm} * ${defaultTheme.lineHeight.snug}) + ${defaultTheme.spacing[4]})`,
-
         '.ember-power-select-multiple-options': {
           marginTop: '-0.05rem'
         },
-
         '.ember-power-select-multiple-option': {
           fontSize: defaultTheme.fontSize.xs,
           paddingTop: '0.15rem',
@@ -266,10 +309,7 @@ module.exports = function(/*{ theme }*/) {
     },
     lg: {
       trigger: {
-        paddingTop: defaultTheme.spacing[4],
-        paddingRight: defaultTheme.spacing[4],
-        paddingBottom: defaultTheme.spacing[4],
-        paddingLeft: defaultTheme.spacing[4],
+        padding: defaultTheme.spacing[4],
         minHeight: `calc((${defaultTheme.fontSize.base} * ${defaultTheme.lineHeight.snug}) + ${defaultTheme.spacing[8]})`
       }
     }

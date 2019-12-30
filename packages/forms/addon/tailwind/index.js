@@ -188,25 +188,28 @@ module.exports = function({ addComponents, theme }) {
     addRelatedComponents('radio-group', options, modifier);
   }
 
-  function registerComponents() {
-    const options = resolveOptions(theme('@frontile/forms'), theme);
+  const selectOptions = {};
+  const options = resolveOptions(theme('@frontile/forms'), theme);
+  Object.keys(options).forEach(key => {
+    selectOptions[key] = options[key].select || {};
+    delete options[key].select;
 
-    Object.keys(options).forEach(key => {
-      const modifier = key === 'default' ? '' : `-${key}`;
+    const modifier = key === 'default' ? '' : `-${key}`;
 
-      addLabel(options[key].label || {}, modifier);
-      addInput(options[key].input || {}, modifier);
-      addTextarea(options[key].textarea || {}, modifier);
-      addCheckbox(options[key].checkbox || {}, modifier);
-      addRadio(options[key].radio || {}, modifier);
-      addHint(options[key].hint || {}, modifier);
-      addFeedback(options[key].feedback || {}, modifier);
-      addCheckboxGroup(options[key].checkboxGroup || {}, modifier);
-      addRadioGroup(options[key].radioGroup || {}, modifier);
-    });
-  }
+    addLabel(options[key].label || {}, modifier);
+    addInput(options[key].input || {}, modifier);
+    addTextarea(options[key].textarea || {}, modifier);
+    addCheckbox(options[key].checkbox || {}, modifier);
+    addRadio(options[key].radio || {}, modifier);
+    addHint(options[key].hint || {}, modifier);
+    addFeedback(options[key].feedback || {}, modifier);
+    addCheckboxGroup(options[key].checkboxGroup || {}, modifier);
+    addRadioGroup(options[key].radioGroup || {}, modifier);
+  });
 
-  registerComponents();
-
-  require('./power-select')({ addComponents, theme });
+  require('./power-select').registerComponents(
+    { addComponents },
+    selectOptions,
+    {}
+  );
 };

@@ -47,6 +47,7 @@
 />
 
 <FormSelect
+  @isMultiple={{false}}
   @isSmall={{this.isSmall}}
   @isLarge={{this.isLarge}}
   @containerClass="mt-4"
@@ -54,10 +55,10 @@
   @errors={{this.countryErrors}}
   @allowClear={{true}}
   @label="Country"
-  @searchEnabled={{false}}
+  @searchEnabled={{true}}
+  @searchField="name"
   @options={{this.countries}}
   @selected={{this.country}}
-  @searchField="name"
   @onChange={{this.setCountry}}
   as |country|
 >
