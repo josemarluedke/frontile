@@ -61,7 +61,7 @@
     "typescript": "^3.7.4"
   },
   "engines": {
-    "node": "8.* || >= 10.*"
+    "node": ">= 10.*"
   },
   "ember": {
     "edition": "octane"
