@@ -4,6 +4,8 @@ module.exports = {
   extends: 'octane',
   rules: {
     quotes: 'double',
-    'no-curly-component-invocation': { allow: ['demo.example', 'nav.item'] }
+    'no-curly-component-invocation': {
+      allow: ['demo.example', 'nav.item', 'nav.subnav']
+    }
   }
 };

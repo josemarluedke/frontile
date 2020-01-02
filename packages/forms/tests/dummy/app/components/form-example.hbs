@@ -46,6 +46,25 @@
   @isLarge={{this.isLarge}}
 />
 
+<FormSelect
+  @isMultiple={{false}}
+  @isSmall={{this.isSmall}}
+  @isLarge={{this.isLarge}}
+  @containerClass="mt-4"
+  @hint="Select your country of residence"
+  @errors={{this.countryErrors}}
+  @allowClear={{true}}
+  @label="Country"
+  @searchEnabled={{true}}
+  @searchField="name"
+  @options={{this.countries}}
+  @selected={{this.country}}
+  @onChange={{this.setCountry}}
+  as |country|
+>
+  {{country.name}}
+</FormSelect>
+
 <FormRadioGroup
   @label="Account Type"
   @value={{this.accountType}}
