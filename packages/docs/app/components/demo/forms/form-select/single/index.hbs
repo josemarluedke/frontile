@@ -1,0 +1,32 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-forms-form-select-single-index.hbs"}}
+    <FormSelect
+      @hint="Select your country of residence"
+      @errors={{this.countryErrors}}
+      @allowClear={{true}}
+      @label="Country"
+      @searchEnabled={{true}}
+      @searchField="name"
+      @options={{this.countries}}
+      @selected={{this.country}}
+      @onChange={{this.setCountry}}
+      as |country|
+    >
+      {{country.name}}
+    </FormSelect>
+
+    <p class="mt-4">
+      You selected, "{{this.country.name}}"
+    </p>
+
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-forms-form-select-single-index.hbs"
+    @label="components/single.hbs"
+  />
+  <demo.snippet
+    @name="demo-forms-form-select-single-index.js"
+    @label="components/single.js"
+  />
+</DocsDemo>

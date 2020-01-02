@@ -21,6 +21,13 @@ module.exports = function(defaults) {
     }
   });
 
+  // Make sure to include ember-basic-dropdown styles
+  // Ember Basic Dropdown does not include the styles of sass or less is
+  // present in the project and ember-cli-addon-docs has sass as a dependency
+  app.import(
+    'node_modules/ember-basic-dropdown/vendor/ember-basic-dropdown.css'
+  );
+
   // Use `app.import` to add additional libraries to the generated
   // output files.
   //

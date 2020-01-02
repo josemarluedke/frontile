@@ -7,3 +7,14 @@
 :root {
   --brand-primary: #2c7a7b;
 }
+
+/*
+ * Hack because of addon-docs styles
+ * https://github.com/ember-learn/ember-cli-addon-docs/issues/395
+ */
+.docs-md ul.ember-power-select-multiple-options {
+  margin-bottom: -0.4rem;
+}
+.docs-md li.ember-power-select-multiple-option {
+  margin-bottom: 0.25rem;
+}
