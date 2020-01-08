@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "dummy/tests/*": ["tests/*"],
+      "dummy/*": ["tests/dummy/app/*", "app/*"],
+      "@frontile/changeset-form": ["addon"],
+      "@frontile/changeset-form/*": ["addon/*"],
+      "@frontile/changeset-form/test-support": ["addon-test-support"],
+      "@frontile/changeset-form/test-support/*": ["addon-test-support/*"],
+      "*": ["types/*"]
+    }
+  },
+  "include": [
+    "app/**/*",
+    "addon/**/*",
+    "tests/**/*",
+    "types/**/*",
+    "test-support/**/*",
+    "addon-test-support/**/*"
+  ]
+}
