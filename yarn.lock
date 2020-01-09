@@ -6361,7 +6361,7 @@ ember-basic-dropdown@^3.0.0-beta.6:
     ember-maybe-in-element "^0.4.0"
     ember-truth-helpers "2.1.0"
 
-ember-changeset@3.0.0-beta.4:
+ember-changeset@^3.0.0-beta.4:
   version "3.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/ember-changeset/-/ember-changeset-3.0.0-beta.4.tgz#397fcfa02d642e4d099b69c14c071fcd60aaad77"
   integrity sha512-zhtDKpqUWWbmk5sen6lNq18NxYLo9gXTcytQL3u8eNjWuLmbzHqomwFEK8G30oABlYRzjbwwRXTdZ6m1hFbsYw==
