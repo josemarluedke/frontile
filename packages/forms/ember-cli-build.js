@@ -10,7 +10,7 @@ module.exports = function(defaults) {
         enabled: true,
         plugins: [
           require('tailwindcss')(
-            path.join('tests', 'dummy', 'styles', 'tailwind.config.js')
+            path.join('tests', 'dummy', 'app', 'styles', 'tailwind.config.js')
           ),
           require('autoprefixer')
         ]
