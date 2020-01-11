@@ -1,0 +1,19 @@
+<FormRadioGroup
+  @onChange={{this.handleChange}}
+  @value={{this.value}}
+  @errors={{this.errors}}
+
+  @label={{@label}}
+  @hint={{@hint}}
+  @hasSubmitted={{@hasSubmitted}}
+  @hasError={{@hasError}}
+  @containerClass={{@containerClass}}
+  @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
+  @isInline={{@isInline}}
+
+  ...attributes
+  as |Radio|
+>
+  {{yield Radio}}
+</FormRadioGroup>
