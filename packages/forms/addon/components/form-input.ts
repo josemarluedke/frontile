@@ -6,6 +6,7 @@ interface FormInputArgs {
   value: unknown;
   type?: string;
   label?: string;
+  hint?: string;
   hasSubmitted?: boolean;
   hasError?: boolean;
   errors?: string[] | string;
