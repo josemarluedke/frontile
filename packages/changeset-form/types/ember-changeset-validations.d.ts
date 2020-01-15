@@ -1,5 +1,13 @@
 declare module 'ember-changeset-validations' {
-  import { ValidationResult, ValidatorMap } from 'ember-changeset/types';
+  import {
+    ValidationResult,
+    ValidatorMapFunc,
+    ValidatorAction
+  } from 'ember-changeset/types';
+
+  interface ValidatorMap {
+    [s: string]: ValidatorMapFunc | ValidatorMapFunc[] | ValidatorAction;
+  }
 
   export default function lookupValidator(
     validationMap: ValidatorMap
