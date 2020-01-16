@@ -4,28 +4,34 @@
   class="form-radio-container {{@containerClass}} {{if @isSmall "form-radio-container-sm" (if @isLarge "form-radio-container-lg")}}"
   as |f|
 >
-  <f.Radio
-    {{on "focus" this.handleFocusIn}}
-    {{on "blur" this.handleFocusOut}}
+  <div class="label-container">
+    <div class="input-container">
+      {{!--  Zero-width space character, used to align checkbox properly --}}
+      &#8203;
+      <f.Radio
+        {{on "focus" this.handleFocusIn}}
+        {{on "blur" this.handleFocusOut}}
 
-    @onChange={{this.handleChange}}
-    @value={{@value}}
-    @checked={{@checked}}
-    @name={{@name}}
+        @onChange={{this.handleChange}}
+        @value={{@value}}
+        @checked={{@checked}}
+        @name={{@name}}
 
-    aria-describedby={{if @hint f.hintId}}
-    ...attributes
-  />
+        aria-describedby={{if @hint f.hintId}}
+        ...attributes
+      />
+    </div>
 
-  <f.Label
-    class={{if this.isFocused "is-focused"}}
-  >
-   {{#if hasBlock}}
-      {{yield}}
-    {{else}}
-      {{@label}}
-    {{/if}}
-  </f.Label>
+    <f.Label
+      class={{if this.isFocused "is-focused"}}
+    >
+     {{#if hasBlock}}
+        {{yield}}
+      {{else}}
+        {{@label}}
+      {{/if}}
+    </f.Label>
+  </div>
 
   {{#if @hint}}
     <f.Hint>{{@hint}}</f.Hint>

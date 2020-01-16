@@ -21,7 +21,7 @@ module.exports = function({ addComponents, theme }) {
 
     if (options.label !== undefined) {
       addComponents({
-        [`.form-${key}-container${modifier} > .form-field-label${modifier}`]: options.label
+        [`.form-${key}-container${modifier} .form-field-label${modifier}`]: options.label
       });
     }
 

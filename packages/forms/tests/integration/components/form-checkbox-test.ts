@@ -14,7 +14,9 @@ module('Integration | Component | FormCheckbox', function(hooks) {
             @label="My Checkbox Input"
           />`
     );
-    assert.dom('[data-test-input] + label').hasText('My Checkbox Input');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasText('My Checkbox Input');
   });
 
   test('it renders the label from block param', async function(assert) {
@@ -22,7 +24,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
       hbs`<FormCheckbox data-test-input>My Block Label</FormCheckbox>`
     );
 
-    assert.dom('[data-test-input] + label').hasText('My Block Label');
+    assert.dom('[data-test-id="form-field-label"]').hasText('My Block Label');
   });
 
   test('it should have id attr with matching label attr `for`', async function(assert) {
@@ -62,7 +64,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
           />`
     );
 
-    await click('[data-test-input] + label');
+    await click('[data-test-input]');
     assert.equal(this.get('myValue'), undefined);
   });
 
@@ -79,7 +81,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
           />`
     );
 
-    await click('[data-test-input] + label');
+    await click('[data-test-input]');
     assert.equal(this.get('myValue'), true);
   });
 
@@ -111,7 +113,9 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     );
 
     const inputId = find('[data-test-input]')!.getAttribute('id');
-    const labelFor = find('[data-test-input] + label')!.getAttribute('for');
+    const labelFor = find('[data-test-id="form-field-label"]')!.getAttribute(
+      'for'
+    );
 
     assert.ok(inputId, 'input should have an id attribute');
     assert.equal(

@@ -22,8 +22,8 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
         @value={{this.myValue}}
         @onChange={{action (mut this.myValue)}} as |Radio|
       >
-        <Radio @value={{true}} @label="Yes" data-test-option-yes />
-        <Radio @value={{false}} @label="No" data-test-option-no />
+        <Radio @value={{true}} @label="Yes" data-test-option-yes @containerClass="option-yes" />
+        <Radio @value={{false}} @label="No" data-test-option-no  @containerClass="option-no"/>
       </FormRadioGroup>
     </div>`;
 
@@ -50,8 +50,8 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     assert.dom('[data-test-option-yes]').exists();
     assert.dom('[data-test-option-no]').exists();
 
-    assert.dom('[data-test-option-no] ~ label').hasText('No');
-    assert.dom('[data-test-option-yes] ~ label').hasText('Yes');
+    assert.dom('.option-no label').hasText('No');
+    assert.dom('.option-yes label').hasText('Yes');
   });
 
   test('it marks the selected option correctly', async function(assert) {
@@ -66,7 +66,7 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     this.set('myValue', false);
     await render(template);
 
-    await click('[data-test-option-yes] ~ label');
+    await click('[data-test-option-yes]');
     assert.equal(this.get('myValue'), true);
   });
 
@@ -83,7 +83,7 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-option-yes] + label');
+    await click('[data-test-option-yes]');
 
     assert.dom('.my-container .has-error').exists();
     assert
@@ -96,7 +96,7 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-option-yes] + label');
+    await click('[data-test-option-yes]');
 
     assert.dom('.my-container .has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
@@ -108,7 +108,7 @@ module('Integration | Component | FormRadioGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-option-yes] + label');
+    await click('[data-test-option-yes]');
 
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     assert.dom('.my-container .has-error').doesNotExist();
