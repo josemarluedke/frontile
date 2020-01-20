@@ -1,0 +1,22 @@
+<FormRadio
+  {{on "blur" this.validate}}
+
+  @onChange={{this.handleChange}}
+  @checked={{this.value}}
+
+  @hint={{@hint}}
+  @value={{@value}}
+  @name={{@name}}
+  @containerClass={{@containerClass}}
+  @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
+
+
+  ...attributes
+>
+ {{#if hasBlock}}
+    {{yield}}
+  {{else}}
+    {{@label}}
+  {{/if}}
+</FormRadio>

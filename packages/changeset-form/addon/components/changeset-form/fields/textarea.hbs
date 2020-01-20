@@ -1,0 +1,23 @@
+<FormTextarea
+  {{on "blur" this.validate}}
+
+  @value={{this.value}}
+  @onInput={{this.handleInput}}
+  @errors={{this.errors}}
+
+  @hasSubmitted={{@hasSubmitted}}
+  @type={{@type}}
+  @label={{@label}}
+  @hint={{@hint}}
+  @hasError={{@hasError}}
+  @containerClass={{@containerClass}}
+  @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
+  @onChange={{@onChange}}
+  @onFocusIn={{@onFocusIn}}
+  @onFocusOut={{@onFocusOut}}
+
+  ...attributes
+>
+  {{yield}}
+</FormTextarea>

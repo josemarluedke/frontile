@@ -26,13 +26,13 @@
   },
   "dependencies": {
     "ember-cli-babel": "^7.13.2",
-    "ember-cli-htmlbars": "^4.2.0",
+    "ember-cli-htmlbars": "^4.2.1",
     "ember-cli-typescript": "^3.1.2",
     "ember-power-select": "4.0.0-beta.6",
     "lodash": "^4.17.15",
     "mini-svg-data-uri": "^1.1.3",
-    "traverse": "^0.6.6",
-    "tailwindcss-ember-power-select": "^0.2.0"
+    "tailwindcss-ember-power-select": "^0.2.0",
+    "traverse": "^0.6.6"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
@@ -48,9 +48,9 @@
     "@types/rsvp": "^4.0.3",
     "autoprefixer": "^9.7.2",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-auto-import": "^1.3.0",
+    "ember-auto-import": "^1.5.3",
     "ember-cli": "3.15.1",
-    "ember-cli-dependency-checker": "^3.1.0",
+    "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-inject-live-reload": "^2.0.1",
     "ember-cli-postcss": "^5.0.0",
     "ember-cli-typescript-blueprints": "^3.0.0",

@@ -1,0 +1,25 @@
+<FormCheckboxGroup
+  @onChange={{this.handleChange}}
+  @errors={{this.errors}}
+
+  @label={{@label}}
+  @hint={{@hint}}
+  @hasError={{@hasError}}
+  @hasSubmitted={{@hasSubmitted}}
+  @containerClass={{@containerClass}}
+  @isSmall={{@isSmall}}
+  @isLarge={{@isLarge}}
+  @isInline={{@isInline}}
+
+  ...attributes
+  as |Checkbox api|
+>
+  {{yield (component "changeset-form/fields/checkbox"
+            _groupName=@groupName
+            _parentOnChange=api.onChange
+            changeset=@changeset
+            isSmall=@isSmall
+            isLarge=@isLarge
+          )
+  }}
+</FormCheckboxGroup>

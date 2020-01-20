@@ -2,10 +2,10 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, focus, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-// @ts-ignore
-import { selectChoose } from 'ember-power-select/test-support';
-// @ts-ignore
-import { clickTrigger } from 'ember-power-select/test-support/helpers';
+import {
+  selectChoose,
+  clickTrigger
+} from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | FormSelect', function(hooks) {
   setupRenderingTest(hooks);
