@@ -23,12 +23,14 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
       >
         <Checkbox @label="Checkbox 1"
           data-test-checkbox-1
+          @containerClass="checkbox-1"
           @name="checkbox1"
           @checked={{this.myValue1}}
           @onChange={{action (mut this.myValue1)}}
         />
         <Checkbox @label="Checkbox 2"
           data-test-checkbox-2
+          @containerClass="checkbox-2"
           @name="checkbox2"
           @checked={{this.myValue2}}
           @onChange={{action (mut this.myValue2)}}
@@ -51,8 +53,8 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
     assert.dom('[data-test-checkbox-1]').exists();
     assert.dom('[data-test-checkbox-2]').exists();
 
-    assert.dom('[data-test-checkbox-1] ~ label').hasText('Checkbox 1');
-    assert.dom('[data-test-checkbox-2] ~ label').hasText('Checkbox 2');
+    assert.dom('.checkbox-1 label').hasText('Checkbox 1');
+    assert.dom('.checkbox-2 label').hasText('Checkbox 2');
   });
 
   test('it adds inline class when isInline is true', async function(assert) {
@@ -68,7 +70,7 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-checkbox-1] + label');
+    await click('[data-test-checkbox-1]');
 
     assert.dom('.my-container .has-error').exists();
     assert
@@ -81,7 +83,7 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-checkbox-1] + label');
+    await click('[data-test-checkbox-1]');
 
     assert.dom('.my-container .has-error').doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
@@ -93,7 +95,7 @@ module('Integration | Component | FormCheckboxGroup', function(hooks) {
     await render(template);
 
     assert.dom('.my-container .has-error').doesNotExist();
-    await click('[data-test-checkbox-1] + label');
+    await click('[data-test-checkbox-1]');
 
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     assert.dom('.my-container .has-error').doesNotExist();

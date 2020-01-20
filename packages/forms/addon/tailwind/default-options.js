@@ -97,7 +97,16 @@ module.exports = function(/*{ theme }*/) {
     container: {
       display: 'flex',
       flexWrap: 'wrap',
-      alignItems: 'center'
+      alignItems: 'center',
+      '.label-container': {
+        lineHeight: defaultTheme.lineHeight.tight,
+        display: 'flex',
+        alignItems: 'flex-start'
+      },
+      '.input-container': {
+        display: 'flex',
+        alignItems: 'center'
+      }
     },
     label: {
       fontWeight: defaultTheme.fontWeight.normal,
@@ -112,7 +121,8 @@ module.exports = function(/*{ theme }*/) {
         content: '""',
         display: 'inline-block',
         width: '1em',
-        height: '1em'
+        height: '1em',
+        flexShrink: 0
       }
     }
   };
