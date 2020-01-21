@@ -24,6 +24,10 @@ Router.map(function() {
       this.route('form-checkbox');
       this.route('form-checkbox-group');
     });
+
+    this.route('changeset-form', function() {
+      this.route('usage');
+    });
   });
 
   this.route('not-found', { path: '/*path' });
