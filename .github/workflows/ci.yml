@@ -43,7 +43,7 @@ jobs:
       matrix:
         ember-try-scenario:
           - ember-3.13 - ember-release
-          - ember-beta
+          # - ember-beta
           # - ember-canary
           - ember-default
 
