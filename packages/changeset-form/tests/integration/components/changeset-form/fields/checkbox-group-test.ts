@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -52,8 +52,7 @@ module(
       assert.dom('[data-test-checkbox-red]').isNotChecked();
     });
 
-    // https://github.com/poteto/ember-changeset/pull/415
-    skip('it updates the changeset on input', async function(assert) {
+    test('it updates the changeset on input', async function(assert) {
       await click('[data-test-checkbox-blue]');
       await click('[data-test-checkbox-green]');
       await click('[data-test-checkbox-red]');
