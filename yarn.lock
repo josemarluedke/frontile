@@ -14269,10 +14269,10 @@ taffydb@2.7.2:
   resolved "https://registry.yarnpkg.com/taffydb/-/taffydb-2.7.2.tgz#7bf8106a5c1a48251b3e3bc0a0e1732489fd0dc8"
   integrity sha1-e/gQalwaSCUbPjvAoOFzJIn9Dcg=
 
-tailwindcss-ember-power-select@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/tailwindcss-ember-power-select/-/tailwindcss-ember-power-select-0.2.0.tgz#53dbf8d9bac9c7487d6f5a39208d348127643bc1"
-  integrity sha512-BAn2KMBd86Vrxc9jcu2xhxGe1d0DNYc1Xd9WsbqbC8WOHBdvxSqWZLvRHaRm/eEVRg+96WadFnvtORkER707qw==
+tailwindcss-ember-power-select@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss-ember-power-select/-/tailwindcss-ember-power-select-0.2.1.tgz#cbf4342b15133e720ed89014fd9a7f7afce76173"
+  integrity sha512-zlM4PwFFr/UIbBE5ebJX4Zz67vOWbiZH5WhyKalLHn2xpQmF4xht06ZAr17qjxq1AbBkvd539QFCP4doGDXiJw==
   dependencies:
     lodash "^4.17.15"
     mini-svg-data-uri "^1.1.3"

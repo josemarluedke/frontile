@@ -210,9 +210,6 @@ module.exports = function({ addComponents, theme }) {
   require('tailwindcss-ember-power-select').registerComponents(
     { addComponents },
     selectOptions,
-    {
-      triggerFocusBoxShadow: null,
-      searchInputFocusBoxShadow: null
-    }
+    {}
   );
 };
