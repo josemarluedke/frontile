@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Changeset from 'ember-changeset';
+import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 
 module('Integration | Component | ChangesetForm::Fields::Checkbox', function(
@@ -16,7 +16,7 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function(
       green: false,
       red: false
     };
-    this.set('changeset', new Changeset(model));
+    this.set('changeset', Changeset(model));
 
     await render(hbs`
         <ChangesetForm::Fields::Checkbox

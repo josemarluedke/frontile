@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Changeset from 'ember-changeset';
+import { Changeset } from 'ember-changeset';
 import lookupValidator from 'ember-changeset-validations';
 import { run } from '@ember/runloop';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
@@ -24,7 +24,7 @@ module('Integration | Component | ChangesetForm::Fields::Select', function(
         return true;
       }
     };
-    this.set('changeset', new Changeset(model, lookupValidator(validations)));
+    this.set('changeset', Changeset(model, lookupValidator(validations)));
     this.set('frameworks', ['Ember', 'Glimmer', 'React', 'Vue', 'Ruby']);
 
     await render(hbs`

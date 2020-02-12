@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { blur, fillIn, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Changeset from 'ember-changeset';
+import { Changeset } from 'ember-changeset';
 import lookupValidator from 'ember-changeset-validations';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 import { run } from '@ember/runloop';
@@ -19,7 +19,7 @@ module('Integration | Component | ChangesetForm::Fields::Input', function(
     const validations = {
       message: validatePresence(true)
     };
-    this.set('changeset', new Changeset(model, lookupValidator(validations)));
+    this.set('changeset', Changeset(model, lookupValidator(validations)));
 
     await render(hbs`
         <ChangesetForm::Fields::Input

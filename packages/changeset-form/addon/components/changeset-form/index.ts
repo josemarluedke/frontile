@@ -1,14 +1,14 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import Changeset from 'ember-changeset';
-import { ChangesetDef, ValidatorMap } from 'ember-changeset/types';
+import { Changeset } from 'ember-changeset';
+import { BufferedChangeset, ValidatorMap } from 'ember-changeset/types';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import lookupValidator from 'ember-changeset-validations';
 
 interface ChangesetFormArgs {
   model?: { [key: string]: unknown };
-  changeset?: ChangesetDef;
+  changeset?: BufferedChangeset;
   validations?: ValidatorMap;
 
   runExecuteInsteadOfSave?: boolean;
@@ -18,7 +18,7 @@ interface ChangesetFormArgs {
 }
 
 export default class ChangesetForm extends Component<ChangesetFormArgs> {
-  changeset!: ChangesetDef;
+  changeset!: BufferedChangeset;
 
   @tracked hasSubmitted = false;
 
@@ -32,13 +32,13 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
       );
 
       if (typeof this.args.validations !== 'undefined') {
-        this.changeset = new Changeset(
+        this.changeset = Changeset(
           this.args.model || {},
           lookupValidator(this.args.validations || {}),
           this.args.validations
-        ) as ChangesetDef;
+        );
       } else {
-        this.changeset = new Changeset(this.args.model || {}) as ChangesetDef;
+        this.changeset = Changeset(this.args.model || {});
       }
     } else {
       this.changeset = this.args.changeset;

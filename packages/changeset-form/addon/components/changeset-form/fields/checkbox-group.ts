@@ -1,12 +1,12 @@
 import Component from '@glimmer/component';
-import { ChangesetDef } from 'ember-changeset/types';
+import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { ValidationError } from './base';
 
 interface ChangesetFormFieldsGroupArgs {
   errors?: string[];
-  changeset: ChangesetDef;
+  changeset: BufferedChangeset;
   groupName?: string;
   onChange?: (value: unknown, event: Event) => void;
 }
