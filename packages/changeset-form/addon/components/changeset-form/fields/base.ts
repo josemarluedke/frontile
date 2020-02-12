@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
-import { ChangesetDef } from 'ember-changeset/types';
+import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 
 export interface BaseArgs {
-  changeset: ChangesetDef;
+  changeset: BufferedChangeset;
   fieldName: string;
   errors?: string[];
 }

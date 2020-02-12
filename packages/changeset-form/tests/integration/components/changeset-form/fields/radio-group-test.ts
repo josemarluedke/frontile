@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Changeset from 'ember-changeset';
+import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 import lookupValidator from 'ember-changeset-validations';
 
@@ -23,7 +23,7 @@ module('Integration | Component | ChangesetForm::Fields::RadioGroup', function(
         return true;
       }
     };
-    this.set('changeset', new Changeset(model, lookupValidator(validations)));
+    this.set('changeset', Changeset(model, lookupValidator(validations)));
 
     await render(hbs`
         <ChangesetForm::Fields::RadioGroup
