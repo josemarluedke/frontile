@@ -2,14 +2,31 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
   require('tailwindcss/defaultConfig')
 ).theme;
 
-module.exports = function(/*{ theme }*/) {
+const defaultConfig = {
+  textColor: defaultTheme.colors.gray[900],
+  labelColor: defaultTheme.colors.gray[800],
+  placeholderTextColor: defaultTheme.colors.gray[500],
+  hintColor: defaultTheme.colors.gray[500],
+  disabledTextColor: defaultTheme.colors.gray[500],
+  checkboxAndRadioColor: defaultTheme.colors.blue[500],
+  invalidColor: defaultTheme.colors.red[600],
+  backgroundColor: defaultTheme.colors.white,
+  focusBoxShadow: defaultTheme.boxShadow.outline,
+  focusBoxShadowInvalid: '0 0 0 3px rgba(229,62,62, 0.3)',
+  borderColor: defaultTheme.borderColor.gray[500],
+  focusBorderColor: defaultTheme.colors.blue[400],
+  disabledBorderColor: defaultTheme.borderColor.gray[300],
+  powerSelect: {}
+};
+
+function defaultOptions({ config }) {
   // Input styles
   const input = {
     appearance: 'none',
     flex: defaultTheme.flex[1],
     width: defaultTheme.width.full,
-    backgroundColor: defaultTheme.colors.white,
-    borderColor: defaultTheme.colors.gray[500],
+    backgroundColor: config.backgroundColor,
+    borderColor: config.borderColor,
     borderWidth: defaultTheme.borderWidth.default,
     borderRadius: defaultTheme.borderRadius.default,
     paddingTop: defaultTheme.spacing[3],
@@ -17,22 +34,26 @@ module.exports = function(/*{ theme }*/) {
     paddingBottom: defaultTheme.spacing[3],
     paddingLeft: defaultTheme.spacing[3],
     fontSize: defaultTheme.fontSize.base,
+    color: config.textColor,
     lineHeight: defaultTheme.lineHeight.tight,
     '&::placeholder': {
-      color: defaultTheme.colors.gray[500],
+      color: config.placeholderTextColor,
       opacity: '1'
     },
     '&:focus': {
       outline: 'none',
-      boxShadow: defaultTheme.boxShadow.outline,
-      borderColor: defaultTheme.colors.blue[400]
+      boxShadow: config.focusBoxShadow,
+      borderColor: config.focusBorderColor
     },
     '&:disabled': {
-      borderColor: defaultTheme.borderColor.gray[300],
-      color: defaultTheme.borderColor.gray[500]
+      borderColor: config.disabledBorderColor,
+      color: config.disabledTextColor
     },
     '&[aria-invalid="true"]': {
-      borderColor: defaultTheme.colors.red[600]
+      borderColor: config.invalidColor,
+      '&:focus': {
+        boxShadow: config.focusBoxShadowInvalid
+      }
     },
     container: {
       display: 'flex',
@@ -69,18 +90,17 @@ module.exports = function(/*{ theme }*/) {
     height: '1em',
     width: '1em',
     fontSize: defaultTheme.fontSize.base,
-    color: defaultTheme.colors.blue[500],
-    backgroundColor: defaultTheme.colors.white,
-    borderColor: defaultTheme.borderColor.gray[500],
+    color: config.checkboxAndRadioColor,
+    backgroundColor: config.backgroundColor,
+    borderColor: config.borderColor,
     borderWidth: defaultTheme.borderWidth.default,
-    borderRadius: defaultTheme.borderRadius.sm, //YOO
-    iconColor: defaultTheme.colors.white,
+    iconColor: config.backgroundColor,
     '&:focus': {
       outline: 'none'
     },
     '&.focus-visible:focus': {
-      boxShadow: defaultTheme.boxShadow.outline,
-      borderColor: defaultTheme.colors.blue[400]
+      boxShadow: config.focusBoxShadow,
+      borderColor: config.focusBorderColor
     },
     '&:checked': {
       borderColor: 'transparent',
@@ -89,11 +109,11 @@ module.exports = function(/*{ theme }*/) {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       '&:disabled': {
-        color: defaultTheme.borderColor.gray[300]
+        color: config.disabledBorderColor
       }
     },
     '&:disabled': {
-      borderColor: defaultTheme.borderColor.gray[300]
+      borderColor: config.disabledBorderColor
     },
     container: {
       display: 'flex',
@@ -155,13 +175,13 @@ module.exports = function(/*{ theme }*/) {
     default: {
       label: {
         display: 'inline-block',
-        color: defaultTheme.colors.gray[800],
+        color: config.labelColor,
         fontWeight: defaultTheme.fontWeight.semibold,
         lineHeight: defaultTheme.lineHeight.tight,
         paddingBottom: defaultTheme.spacing[1]
       },
       hint: {
-        color: defaultTheme.colors.gray[500],
+        color: config.hintColor,
         fontSize: defaultTheme.fontSize.xs,
         paddingBottom: defaultTheme.spacing[1],
         '&:last-child': {
@@ -172,7 +192,7 @@ module.exports = function(/*{ theme }*/) {
         fontSize: defaultTheme.fontSize.xs,
         paddingTop: defaultTheme.spacing[1],
         '&.is-error': {
-          color: defaultTheme.colors.red[600]
+          color: config.invalidColor
         }
       },
       input,
@@ -188,7 +208,7 @@ module.exports = function(/*{ theme }*/) {
       },
       radio: {
         ...checkboxAndRadioShared,
-        borderRadius: '100%',
+        borderRadius: defaultTheme.borderRadius.full,
         icon: iconColor =>
           `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="${iconColor}" stroke-width="3" fill="none" /></svg>`
       },
@@ -246,4 +266,9 @@ module.exports = function(/*{ theme }*/) {
       }
     }
   };
+}
+
+module.exports = {
+  defaultConfig,
+  defaultOptions
 };
