@@ -95,14 +95,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
           </div>`
     );
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
 
-    assert.dom('[data-test-input].has-error').exists();
-    assert.dom('.my-container .has-error').exists();
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
@@ -120,14 +118,12 @@ module('Integration | Component | FormTextarea', function(hooks) {
           </div>`
     );
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
@@ -143,18 +139,16 @@ module('Integration | Component | FormTextarea', function(hooks) {
           </div>`
     );
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
 
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
-    assert.dom('.my-container .has-error').doesNotExist();
   });
 
-  test('shows error message and adds the has-error class only when focus out', async function(assert) {
+  test('shows error message and adds the aria-invalid only when focus out', async function(assert) {
     await render(
       hbs`<div class="my-container">
             <FormTextarea
@@ -166,20 +160,18 @@ module('Integration | Component | FormTextarea', function(hooks) {
           </div>`
     );
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
 
     await focus('[data-test-input]');
     await blur('[data-test-input]');
 
-    assert.dom('.my-container .has-error').exists();
-    assert.dom('[data-test-input].has-error').exists();
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
   });
 
-  test('it hides the has-error when input is in focus', async function(assert) {
+  test('it removes error indication when input is in focus', async function(assert) {
     await render(
       hbs`<div class="my-container">
             <FormTextarea
@@ -194,13 +186,11 @@ module('Integration | Component | FormTextarea', function(hooks) {
     await focus('[data-test-input]');
     await blur('[data-test-input]');
 
-    assert.dom('.my-container .has-error').exists();
-    assert.dom('[data-test-input].has-error').exists();
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid');
 
     await focus('[data-test-input]');
 
-    assert.dom('.my-container .has-error').doesNotExist();
-    assert.dom('[data-test-input].has-error').doesNotExist();
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
   });
 
   test('always show error messages when hasSubmitted is true', async function(assert) {
@@ -215,8 +205,7 @@ module('Integration | Component | FormTextarea', function(hooks) {
           </div>`
     );
 
-    assert.dom('.my-container .has-error').exists();
-    assert.dom('[data-test-input].has-error').exists();
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');

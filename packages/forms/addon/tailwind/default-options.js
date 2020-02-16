@@ -31,7 +31,7 @@ module.exports = function(/*{ theme }*/) {
       borderColor: defaultTheme.borderColor.gray[300],
       color: defaultTheme.borderColor.gray[500]
     },
-    '&.has-error': {
+    '&[aria-invalid="true"]': {
       borderColor: defaultTheme.colors.red[600]
     },
     container: {
