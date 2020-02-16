@@ -20,7 +20,7 @@
     "try:one": "ember try:one"
   },
   "dependencies": {
-    "ember-cli-babel": "^7.17.2",
+    "ember-cli-babel": "^7.18.0",
     "ember-cli-htmlbars": "^4.2.2"
   },
   "devDependencies": {
