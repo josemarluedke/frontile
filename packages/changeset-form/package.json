@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "ember build",
+    "build": "ember build --environment=production",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean",
     "start": "ember serve",

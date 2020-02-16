@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "ember build",
+    "build": "ember build --environment=production",
     "start": "ember serve",
     "test": "ember test",
     "test:all": "ember try:each",
