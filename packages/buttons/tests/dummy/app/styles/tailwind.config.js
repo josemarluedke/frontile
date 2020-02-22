@@ -1,7 +1,18 @@
+/* eslint-disable node/no-extraneous-require */
+
+// Remove cache to allow rebuilds
+const path = require('path');
+delete require.cache[
+  path.join(
+    path.dirname(require.resolve('@frontile/buttons')),
+    'addon/tailwind/default-options.js'
+  )
+];
+
 module.exports = {
   theme: {
     extend: {}
   },
   variants: {},
-  plugins: []
+  plugins: [require('@frontile/buttons').tailwind]
 };
