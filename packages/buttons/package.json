@@ -12,6 +12,9 @@
     "doc": "doc",
     "test": "tests"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "ember build --environment=production",
     "start": "ember serve",
