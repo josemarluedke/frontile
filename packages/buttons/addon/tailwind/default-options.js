@@ -2,9 +2,45 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
   require('tailwindcss/defaultConfig')
 ).theme;
 
-const defaultConfig = {};
+const defaultConfig = {
+  borderRadius: defaultTheme.borderRadius.default,
+  minimal: {
+    hoverBackgroundColor: defaultTheme.colors.gray[200],
+    activeBackgroundColor: defaultTheme.colors.gray[300]
+  },
+  default: {
+    contrastColor: defaultTheme.colors.white,
+    color: defaultTheme.colors.gray[700],
+    hoverColor: defaultTheme.colors.gray[800],
+    activeColor: defaultTheme.colors.gray[900]
+  },
+  primary: {
+    contrastColor: defaultTheme.colors.white,
+    color: defaultTheme.colors.blue[700],
+    hoverColor: defaultTheme.colors.blue[800],
+    activeColor: defaultTheme.colors.blue[900]
+  },
+  success: {
+    contrastColor: defaultTheme.colors.white,
+    color: defaultTheme.colors.green[600],
+    hoverColor: defaultTheme.colors.green[700],
+    activeColor: defaultTheme.colors.green[800]
+  },
+  warning: {
+    contrastColor: defaultTheme.colors.white,
+    color: defaultTheme.colors.yellow[600],
+    hoverColor: defaultTheme.colors.yellow[700],
+    activeColor: defaultTheme.colors.yellow[800]
+  },
+  danger: {
+    contrastColor: defaultTheme.colors.white,
+    color: defaultTheme.colors.red[600],
+    hoverColor: defaultTheme.colors.red[700],
+    activeColor: defaultTheme.colors.red[800]
+  }
+};
 
-function defaultOptions(/*{ config }*/) {
+function defaultOptions({ config }) {
   const buttonShape = {
     lineHeight: defaultTheme.lineHeight.tight,
     display: 'inline-block',
@@ -13,7 +49,7 @@ function defaultOptions(/*{ config }*/) {
     paddingRight: defaultTheme.spacing[4],
     paddingBottom: defaultTheme.spacing[3],
     paddingLeft: defaultTheme.spacing[4],
-    borderRadius: defaultTheme.borderRadius.default,
+    borderRadius: config.borderRadius,
     borderWidth: defaultTheme.borderWidth.default,
     borderColor: defaultTheme.colors.transparent,
     '&.focus-visible:focus': {
@@ -29,168 +65,86 @@ function defaultOptions(/*{ config }*/) {
   const hover = '&:not([disabled])&:hover';
   const active = '&:not([disabled])&:active,&.is-active';
 
+  function generateIntents(options) {
+    return {
+      default: {
+        color: options.contrastColor,
+        backgroundColor: options.color,
+        [hover]: {
+          backgroundColor: options.hoverColor
+        },
+        [active]: {
+          backgroundColor: options.activeColor
+        }
+      },
+      outlined: {
+        color: options.color,
+        borderColor: options.color,
+        [hover]: {
+          color: options.contrastColor,
+          backgroundColor: options.color
+        },
+        [active]: {
+          color: options.contrastColor,
+          backgroundColor: options.color
+        }
+      },
+      minimal: {
+        color: options.color
+      }
+    };
+  }
+
   return {
     default: {
       button: {
         default: {
           ...buttonShape,
 
-          color: defaultTheme.colors.white,
-          backgroundColor: defaultTheme.colors.gray[900],
+          color: config.default.contrastColor,
+          backgroundColor: config.default.color,
           borderColor: defaultTheme.colors.transparent,
           [hover]: {
-            backgroundColor: defaultTheme.colors.black
+            backgroundColor: config.default.hoverColor
           },
           [active]: {
-            backgroundColor: defaultTheme.colors.black
+            backgroundColor: config.default.activeColor
           }
         },
         outlined: {
           ...buttonShape,
 
-          color: defaultTheme.colors.gray[900],
+          color: config.default.color,
           backgroundColor: defaultTheme.colors.transparent,
-          borderColor: defaultTheme.colors.gray[900],
+          borderColor: config.default.color,
           [hover]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.gray[900]
+            color: config.default.contrastColor,
+            backgroundColor: config.default.color
           },
           [active]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.black
+            color: config.default.contrastColor,
+            backgroundColor: config.default.hoverColor
           }
         },
         minimal: {
           ...buttonShape,
 
-          color: defaultTheme.colors.gray[900],
+          color: config.default.color,
           backgroundColor: defaultTheme.colors.transparent,
           borderColor: defaultTheme.colors.transparent,
           [hover]: {
-            backgroundColor: defaultTheme.colors.gray[200]
+            backgroundColor: config.minimal.hoverBackgroundColor
           },
           [active]: {
-            backgroundColor: defaultTheme.colors.gray[300]
+            backgroundColor: config.minimal.activeBackgroundColor
           }
         }
       }
     },
-    primary: {
-      button: {
-        default: {
-          color: defaultTheme.colors.white,
-          backgroundColor: defaultTheme.colors.blue[700],
-          [hover]: {
-            backgroundColor: defaultTheme.colors.blue[800]
-          },
-          [active]: {
-            backgroundColor: defaultTheme.colors.blue[900]
-          }
-        },
-        outlined: {
-          color: defaultTheme.colors.blue[700],
-          borderColor: defaultTheme.colors.blue[700],
-          [hover]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.blue[700]
-          },
-          [active]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.blue[800]
-          }
-        },
-        minimal: {
-          color: defaultTheme.colors.blue[700]
-        }
-      }
-    },
-    success: {
-      button: {
-        default: {
-          color: defaultTheme.colors.white,
-          backgroundColor: defaultTheme.colors.green[600],
-          [hover]: {
-            backgroundColor: defaultTheme.colors.green[700]
-          },
-          [active]: {
-            backgroundColor: defaultTheme.colors.green[800]
-          }
-        },
-        outlined: {
-          color: defaultTheme.colors.green[600],
-          borderColor: defaultTheme.colors.green[600],
-          [hover]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.green[600]
-          },
-          [active]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.green[700]
-          }
-        },
-        minimal: {
-          color: defaultTheme.colors.green[600]
-        }
-      }
-    },
-    warning: {
-      button: {
-        default: {
-          color: defaultTheme.colors.white,
-          backgroundColor: defaultTheme.colors.yellow[600],
-          [hover]: {
-            backgroundColor: defaultTheme.colors.yellow[700]
-          },
-          [active]: {
-            backgroundColor: defaultTheme.colors.yellow[800]
-          }
-        },
-        outlined: {
-          color: defaultTheme.colors.yellow[600],
-          borderColor: defaultTheme.colors.yellow[600],
-          [hover]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.yellow[600]
-          },
-          [active]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.yellow[700]
-          }
-        },
-        minimal: {
-          color: defaultTheme.colors.yellow[600]
-        }
-      }
-    },
-    danger: {
-      button: {
-        default: {
-          color: defaultTheme.colors.white,
-          backgroundColor: defaultTheme.colors.red[600],
-          [hover]: {
-            backgroundColor: defaultTheme.colors.red[700]
-          },
-          [active]: {
-            backgroundColor: defaultTheme.colors.red[800]
-          }
-        },
-        outlined: {
-          color: defaultTheme.colors.red[600],
-          borderColor: defaultTheme.colors.red[600],
-          [hover]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.red[600]
-          },
-          [active]: {
-            color: defaultTheme.colors.white,
-            backgroundColor: defaultTheme.colors.red[700]
-          }
-        },
-        minimal: {
-          color: defaultTheme.colors.red[600]
-        }
-      }
-    },
+    primary: { button: generateIntents(config.primary) },
+    success: { button: generateIntents(config.success) },
+    warning: { button: generateIntents(config.warning) },
+    danger: { button: generateIntents(config.danger) },
     sm: {},
     lg: {}
   };
