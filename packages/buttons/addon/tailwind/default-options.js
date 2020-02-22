@@ -4,7 +4,7 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 
 const defaultConfig = {};
 
-function defaultOptions({ config }) {
+function defaultOptions(/*{ config }*/) {
   const buttonShape = {
     lineHeight: defaultTheme.lineHeight.tight,
     display: 'inline-block',
