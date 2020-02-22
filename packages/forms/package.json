@@ -65,7 +65,7 @@
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.0.0",
     "tailwindcss": "^1.2.0",
-    "typescript": "^3.7.5"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">= 10.*"
