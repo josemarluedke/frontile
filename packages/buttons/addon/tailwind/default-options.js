@@ -145,8 +145,48 @@ function defaultOptions({ config }) {
     success: { button: generateIntents(config.success) },
     warning: { button: generateIntents(config.warning) },
     danger: { button: generateIntents(config.danger) },
-    sm: {},
-    lg: {}
+    xs: {
+      button: {
+        default: {
+          fontSize: defaultTheme.fontSize.sm,
+          paddingTop: defaultTheme.spacing[1],
+          paddingRight: defaultTheme.spacing[2],
+          paddingBottom: defaultTheme.spacing[1],
+          paddingLeft: defaultTheme.spacing[2]
+        }
+      }
+    },
+    sm: {
+      button: {
+        default: {
+          paddingTop: defaultTheme.spacing[2],
+          paddingRight: defaultTheme.spacing[3],
+          paddingBottom: defaultTheme.spacing[2],
+          paddingLeft: defaultTheme.spacing[3]
+        }
+      }
+    },
+    lg: {
+      button: {
+        default: {
+          paddingTop: defaultTheme.spacing[4],
+          paddingRight: defaultTheme.spacing[4],
+          paddingBottom: defaultTheme.spacing[4],
+          paddingLeft: defaultTheme.spacing[4]
+        }
+      }
+    },
+    xl: {
+      button: {
+        default: {
+          fontSize: defaultTheme.fontSize.xl,
+          paddingTop: defaultTheme.spacing[5],
+          paddingRight: defaultTheme.spacing[6],
+          paddingBottom: defaultTheme.spacing[5],
+          paddingLeft: defaultTheme.spacing[6]
+        }
+      }
+    }
   };
 }
 
