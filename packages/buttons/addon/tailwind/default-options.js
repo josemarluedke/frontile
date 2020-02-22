@@ -86,7 +86,7 @@ function defaultOptions({ config }) {
         },
         [active]: {
           color: options.contrastColor,
-          backgroundColor: options.color
+          backgroundColor: options.hoverColor
         }
       },
       minimal: {
