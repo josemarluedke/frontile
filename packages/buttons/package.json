@@ -1,11 +1,11 @@
 {
-  "name": "@frontile/forms",
+  "name": "@frontile/buttons",
   "version": "0.1.0-alpha.0",
-  "description": "Component Library for Ember Octane apps: Forms",
+  "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
     "ember-addon"
   ],
-  "repository": "https://github.com/josemarluedke/frontile",
+  "repository": "",
   "license": "MIT",
   "author": "",
   "directories": {
@@ -25,20 +25,14 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
+    "@frontile/core": "^0.1.0-alpha.0",
     "ember-cli-babel": "^7.18.0",
     "ember-cli-htmlbars": "^4.2.2",
     "ember-cli-typescript": "^3.1.3",
-    "ember-power-select": "4.0.0-beta.6",
-    "lodash": "^4.17.15",
-    "mini-svg-data-uri": "^1.1.3",
-    "tailwindcss-ember-power-select": "^0.3.0",
-    "traverse": "^0.6.6"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@ember/edition-utils": "^1.2.0",
     "@ember/optional-features": "^1.3.0",
-    "@frontile/core": "^0.1.0-alpha.0",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "@types/ember": "^3.1.1",
@@ -49,9 +43,9 @@
     "autoprefixer": "^9.7.4",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.5.3",
-    "ember-cli": "3.16.0",
+    "ember-cli": "~3.16.0",
     "ember-cli-dependency-checker": "^3.2.0",
-    "ember-cli-inject-live-reload": "^2.0.1",
+    "ember-cli-inject-live-reload": "^2.0.2",
     "ember-cli-postcss": "^5.0.0",
     "ember-cli-typescript-blueprints": "^3.0.0",
     "ember-cli-uglify": "^3.0.0",
@@ -60,7 +54,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.6.0",
     "ember-resolver": "^7.0.0",
-    "ember-source": "^3.16.3",
+    "ember-source": "~3.16.3",
     "ember-try": "^1.4.0",
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.0.0",
@@ -68,15 +62,12 @@
     "typescript": "3.7.5"
   },
   "engines": {
-    "node": ">= 10.*"
+    "node": "10.* || >= 12"
   },
   "ember": {
     "edition": "octane"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config",
-    "before": [
-      "ember-power-select"
-    ]
+    "configPath": "tests/dummy/config"
   }
 }
