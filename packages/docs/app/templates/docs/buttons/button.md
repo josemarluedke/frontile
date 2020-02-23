@@ -17,6 +17,16 @@ Here are the possible sizes and its argument name.
 
 <Demo::Buttons::ButtonSizes />
 
+## Renderless
+
+Sometimes a button element is not ideal for a given case, but the same styles are still desired.
+Frontile provides the option to disable rendering the element, but instead yield back an object with
+the class names it would use.
+
+To enable this behavior, pass `@isRenderless` as true to the `Button` component.
+
+<Demo::Buttons::ButtonRenderless />
+
 ## `@type` Argument
 
 Use the `@type` argument to modify the `type` attribute of the button. By default, `button` will be used.

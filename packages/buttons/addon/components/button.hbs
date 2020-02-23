@@ -9,10 +9,14 @@ Intents:
 --}}
 
 {{!-- template-lint-disable require-button-type --}}
-<button
-  type={{this.type}}
-  class={{this.classNames}}
-  ...attributes
->
-  {{yield}}
-</button>
+{{#if @isRenderless}}
+  {{yield (hash classNames=this.classNames)}}
+{{else}}
+  <button
+    type={{this.type}}
+    class={{this.classNames}}
+    ...attributes
+  >
+    {{yield}}
+  </button>
+{{/if}}
