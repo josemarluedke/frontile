@@ -10,11 +10,12 @@ module('Integration | Component | Button', function(hooks) {
     await render(hbs`<Button data-test-id="button">My Button</Button>`);
 
     assert.dom('[data-test-id="button"]').hasText('My Button');
+    assert.dom('[data-test-id="button"]').hasAttribute('type', 'button');
   });
 
-  test('it accepts type attribute', async function(assert) {
+  test('it accepts @type argument', async function(assert) {
     await render(
-      hbs`<Button type="submit" data-test-id="button">My Button</Button>`
+      hbs`<Button @type="submit" data-test-id="button">My Button</Button>`
     );
 
     assert.dom('[data-test-id="button"]').hasAttribute('type', 'submit');

@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 
 interface ButtonArgs {
+  type?: 'button' | 'submit' | 'reset';
   appearance?: 'default' | 'outlined' | 'minimal';
   intent?: 'primary' | 'success' | 'warning' | 'danger';
   isActive?: boolean;
@@ -11,6 +12,13 @@ interface ButtonArgs {
 }
 
 export default class Button extends Component<ButtonArgs> {
+  get type(): string {
+    if (this.args.type) {
+      return this.args.type;
+    }
+    return 'button';
+  }
+
   get size(): string | undefined {
     const sizes: { [key: string]: boolean | undefined } = {
       xs: this.args.isXSmall,
