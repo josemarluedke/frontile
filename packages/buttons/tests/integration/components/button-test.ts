@@ -144,4 +144,13 @@ module('Integration | Component | Button', function(hooks) {
       });
     });
   });
+
+  test('it yields classNames when renderless', async function(assert) {
+    await render(
+      hbs`<Button @isRenderless={{true}} as |btn|>
+            <div data-test-id="my-div">{{btn.classNames}}</div>
+          </Button>`
+    );
+    assert.dom('[data-test-id="my-div"]').hasText('btn');
+  });
 });

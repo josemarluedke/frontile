@@ -7,3 +7,5 @@ Packages:
 
 - `@frontile/core`
 - `@frontile/forms`
+- `@frontile/changeset-form`
+- `@frontile/buttons`

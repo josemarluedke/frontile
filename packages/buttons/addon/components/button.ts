@@ -9,6 +9,7 @@ interface ButtonArgs {
   isSmall?: boolean;
   isLarge?: boolean;
   isXLarge?: boolean;
+  isRenderless?: boolean;
 }
 
 export default class Button extends Component<ButtonArgs> {

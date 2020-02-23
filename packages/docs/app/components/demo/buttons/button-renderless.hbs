@@ -1,0 +1,12 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-buttons-button-renderless.hbs"}}
+    <Button @isRenderless={{true}} as |btn|>
+      <a href="javascript:void(0)" class={{btn.classNames}}>My Llink</a>
+    </Button>
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-buttons-button-renderless.hbs"
+    @label="components/demo.hbs"
+  />
+</DocsDemo>
