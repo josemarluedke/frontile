@@ -28,6 +28,10 @@ Router.map(function() {
     this.route('changeset-form', function() {
       this.route('usage');
     });
+
+    this.route('buttons', function() {
+      this.route('button');
+    });
   });
 
   this.route('not-found', { path: '/*path' });

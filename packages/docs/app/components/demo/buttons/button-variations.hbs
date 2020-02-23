@@ -1,0 +1,73 @@
+<DocsDemo as |demo|>
+  {{#demo.example name="demo-buttons-button-variations.hbs"}}
+    <h3 class="text-xl font-bold">
+      Default Appearance
+    </h3>
+
+    <div class="mt-4">
+      <Button>Default</Button>
+      <Button @intent="primary">Primary</Button>
+      <Button @intent="success">Success</Button>
+      <Button @intent="warning">Warning</Button>
+      <Button @intent="danger">Danger</Button>
+    </div>
+
+    <div class="mt-4">
+      <Button disabled="true">Default</Button>
+      <Button @intent="primary" disabled="true">Primary</Button>
+      <Button @intent="success" disabled="true">Success</Button>
+      <Button @intent="warning" disabled="true">Warning</Button>
+      <Button @intent="danger" disabled="true">Danger</Button>
+    </div>
+
+    <h3 class="mt-8 text-xl font-bold">
+      Outlined Appearance
+    </h3>
+    <div class="mt-4">
+      <Button @appearance="outlined">Button</Button>
+      <Button @appearance="outlined" @intent="primary">Primary</Button>
+      <Button @appearance="outlined" @intent="success">Success</Button>
+      <Button @appearance="outlined" @intent="warning">Warning</Button>
+      <Button @appearance="outlined" @intent="danger">Danger</Button>
+    </div>
+
+    <div class="mt-4">
+      <Button @appearance="outlined" disabled="true">Button</Button>
+      <Button @appearance="outlined" @intent="primary" disabled="true">Primary</Button>
+      <Button @appearance="outlined" @intent="success" disabled="true">Success</Button>
+      <Button @appearance="outlined" @intent="warning" disabled="true">Warning</Button>
+      <Button @appearance="outlined" @intent="danger" disabled="true">Danger</Button>
+    </div>
+
+    <h3 class="mt-8 text-xl font-bold">
+      Minimal Appearance
+    </h3>
+    <div class="mt-4">
+      <Button @appearance="minimal">Button</Button>
+      <Button @appearance="minimal" @intent="primary">Primary</Button>
+      <Button @appearance="minimal" @intent="success">Success</Button>
+      <Button @appearance="minimal" @intent="warning">Warning</Button>
+      <Button @appearance="minimal" @intent="danger">Danger</Button>
+    </div>
+
+    <div class="mt-4">
+      <Button @appearance="minimal" disabled="true">Button</Button>
+      <Button @appearance="minimal" @intent="primary" disabled="true">Primary</Button>
+      <Button @appearance="minimal" @intent="success" disabled="true">Success</Button>
+      <Button @appearance="minimal" @intent="warning" disabled="true">Warning</Button>
+      <Button @appearance="minimal" @intent="danger" disabled="true">Danger</Button>
+    </div>
+
+
+
+  {{/demo.example}}
+
+  <demo.snippet
+    @name="demo-buttons-button-variations.hbs"
+    @label="components/demo.hbs"
+  />
+  <demo.snippet
+    @name="demo-buttons-button-variations.js"
+    @label="components/demo.js"
+  />
+</DocsDemo>
