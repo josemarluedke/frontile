@@ -45,17 +45,17 @@ module.exports = plugin.withOptions(function(customConfig) {
           });
         }
       } else {
-        addComponents({ [`.btn${modifier}`]: options.default });
+        addComponents({ [`.btn.btn${modifier}`]: options.default });
 
         if (!isEmpty(options.outlined)) {
           addComponents({
-            [`.btn-outlined${modifier}`]: options.outlined
+            [`.btn-outlined.btn-outlined${modifier}`]: options.outlined
           });
         }
 
         if (!isEmpty(options.minimal)) {
           addComponents({
-            [`.btn-minimal${modifier}`]: options.minimal
+            [`.btn-minimal.btn-minimal${modifier}`]: options.minimal
           });
         }
       }
