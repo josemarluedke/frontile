@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  extends: 'octane',
+  extends: ['octane', 'stylistic'],
   rules: {
     quotes: 'double',
     'no-curly-component-invocation': {
