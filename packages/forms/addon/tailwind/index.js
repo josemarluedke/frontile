@@ -205,6 +205,7 @@ module.exports = plugin.withOptions(function(customConfig) {
 
     Object.keys(options).forEach(key => {
       selectOptions[key] = options[key].select || {};
+      const selectContainer = selectOptions[key].container;
       delete options[key].select;
 
       const modifier = key === 'default' ? '' : `-${key}`;
@@ -218,6 +219,12 @@ module.exports = plugin.withOptions(function(customConfig) {
       addFeedback(options[key].feedback || {}, modifier);
       addCheckboxGroup(options[key].checkboxGroup || {}, modifier);
       addRadioGroup(options[key].radioGroup || {}, modifier);
+
+      if (selectContainer) {
+        addComponents({
+          [`.form-select-container${modifier}`]: selectContainer
+        });
+      }
     });
 
     require('tailwindcss-ember-power-select').registerComponents(

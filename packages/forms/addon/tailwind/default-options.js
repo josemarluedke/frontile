@@ -200,6 +200,12 @@ function defaultOptions({ config }) {
         ...input,
         minHeight: defaultTheme.height[24]
       },
+      select: {
+        container: {
+          display: 'flex',
+          flexDirection: 'column'
+        }
+      },
       checkbox: {
         ...checkboxAndRadioShared,
         borderRadius: defaultTheme.borderRadius.sm,
