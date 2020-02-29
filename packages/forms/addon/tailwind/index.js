@@ -1,29 +1,20 @@
 const plugin = require('tailwindcss/plugin');
-const map = require('lodash/map');
-const fromPairs = require('lodash/fromPairs');
-const isEmpty = require('lodash/isEmpty');
-const svgToDataUri = require('mini-svg-data-uri');
-const { merge, flattenOptions, replaceIconDeclarations } = require('./helpers');
-const { defaultConfig, defaultOptions } = require('./default-options');
+const {
+  merge,
+  replaceIconDeclarations,
+  resolve,
+  svgToDataUri,
+  isEmpty
+} = require('@frontile/tailwindcss-plugin-helpers');
 
-function resolveOptions(userOptions, params) {
-  return merge(
-    defaultOptions(params),
-    fromPairs(map(userOptions, (value, key) => [key, flattenOptions(value)]))
-  );
-}
-
-module.exports = plugin.withOptions(function(customConfig) {
+module.exports = plugin.withOptions(function(userConfig) {
   return function({ addComponents, theme }) {
-    if (typeof customConfig === 'function') {
-      customConfig = customConfig({ theme });
-    }
-
-    const config = merge(defaultConfig, customConfig || {});
-    const options = resolveOptions(theme('@frontile/forms'), {
-      theme,
-      config
-    });
+    const { config, options } = resolve(
+      '@frontile/forms',
+      require('./default-options'),
+      userConfig,
+      theme
+    );
 
     function addRelatedComponents(key, options, modifier) {
       if (options.container !== undefined) {
@@ -210,15 +201,15 @@ module.exports = plugin.withOptions(function(customConfig) {
 
       const modifier = key === 'default' ? '' : `-${key}`;
 
-      addLabel(options[key].label || {}, modifier);
-      addInput(options[key].input || {}, modifier);
-      addTextarea(options[key].textarea || {}, modifier);
-      addCheckbox(options[key].checkbox || {}, modifier);
-      addRadio(options[key].radio || {}, modifier);
-      addHint(options[key].hint || {}, modifier);
-      addFeedback(options[key].feedback || {}, modifier);
-      addCheckboxGroup(options[key].checkboxGroup || {}, modifier);
-      addRadioGroup(options[key].radioGroup || {}, modifier);
+      addLabel(options[key].label, modifier);
+      addInput(options[key].input, modifier);
+      addTextarea(options[key].textarea, modifier);
+      addCheckbox(options[key].checkbox, modifier);
+      addRadio(options[key].radio, modifier);
+      addHint(options[key].hint, modifier);
+      addFeedback(options[key].feedback, modifier);
+      addCheckboxGroup(options[key].checkboxGroup, modifier);
+      addRadioGroup(options[key].radioGroup, modifier);
 
       if (selectContainer) {
         addComponents({

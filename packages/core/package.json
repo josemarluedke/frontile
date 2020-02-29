@@ -12,19 +12,16 @@
     "doc": "doc",
     "test": "tests"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
+    "prepublishOnly": "ember ts:precompile",
+    "postpublish": "ember ts:clean",
     "start": "ember serve",
     "test": "ember test",
     "test:all": "ember try:each",
-    "try:one": "ember try:one",
-    "prepublishOnly": "ember ts:precompile",
-    "postpublish": "ember ts:clean"
+    "try:one": "ember try:one"
   },
   "dependencies": {
     "ember-cli-babel": "^7.18.0",
@@ -62,6 +59,9 @@
   },
   "engines": {
     "node": ">= 10.*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "ember": {
     "edition": "octane"

@@ -12,9 +12,6 @@
     "doc": "doc",
     "test": "tests"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "ember build --environment=production",
     "prepublishOnly": "ember ts:precompile",
@@ -66,6 +63,9 @@
   },
   "engines": {
     "node": ">= 10.*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "ember": {
     "edition": "octane"

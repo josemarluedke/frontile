@@ -10,9 +10,6 @@
     "doc": "doc",
     "test": "tests"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "ember build",
     "start": "ember serve",
@@ -58,10 +55,13 @@
     "qunit-dom": "^1.0.0",
     "tailwindcss": "^1.2.0"
   },
-  "ember": {
-    "edition": "octane"
-  },
   "engines": {
     "node": ">= 10.*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "ember": {
+    "edition": "octane"
   }
 }
