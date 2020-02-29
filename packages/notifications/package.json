@@ -1,16 +1,19 @@
 {
-  "name": "notifications",
+  "name": "@frontile/notifications",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Component Library for Ember Octane apps: Notifications",
   "keywords": [
     "ember-addon"
   ],
-  "repository": "",
+  "repository": "https://github.com/josemarluedke/frontile",
   "license": "MIT",
   "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "ember build --environment=production",
