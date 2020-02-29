@@ -1,29 +1,14 @@
 const plugin = require('tailwindcss/plugin');
-const map = require('lodash/map');
-const isEmpty = require('lodash/isEmpty');
-const fromPairs = require('lodash/fromPairs');
-const { merge, flattenOptions } = require('./helpers');
+const { resolve, isEmpty } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function(customConfig) {
-  const { defaultConfig, defaultOptions } = require('./default-options');
-
-  function resolveOptions(userOptions, params) {
-    return merge(
-      defaultOptions(params),
-      fromPairs(map(userOptions, (value, key) => [key, flattenOptions(value)]))
-    );
-  }
-
+module.exports = plugin.withOptions(function(userConfig) {
   return function({ addComponents, theme }) {
-    if (typeof customConfig === 'function') {
-      customConfig = customConfig({ theme });
-    }
-
-    const config = merge(defaultConfig, customConfig || {});
-    const options = resolveOptions(theme('@frontile/notifications'), {
-      theme,
-      config
-    });
+    const { options } = resolve(
+      '@frontile/notifications',
+      require('./default-options'),
+      userConfig,
+      theme
+    );
 
     function addTODO(options, modifier) {
       if (isEmpty(options)) {

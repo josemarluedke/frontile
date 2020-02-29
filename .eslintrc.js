@@ -35,7 +35,8 @@ module.exports = {
         'packages/*/config/**/*.js',
         'packages/*/tests/dummy/config/**/*.js',
         'packages/**/tailwind.config.js',
-        'packages/*/addon/tailwind/*.js'
+        'packages/*/addon/tailwind/*.js',
+        'packages/tailwindcss-plugin-helpers/**/*.js'
       ],
       extends: ['@neighborly/eslint-config-node'],
       rules: {}

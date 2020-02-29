@@ -1,9 +1,12 @@
+const isEmpty = require('lodash/isEmpty');
 const toPairs = require('lodash/toPairs');
 const fromPairs = require('lodash/fromPairs');
 const mergeWith = require('lodash/mergeWith');
+const map = require('lodash/map');
 const flatMap = require('lodash/flatMap');
 const isPlainObject = require('lodash/isPlainObject');
 const traverse = require('traverse');
+const svgToDataUri = require('mini-svg-data-uri');
 
 function merge(...options) {
   function mergeCustomizer(objValue, srcValue, key, obj, src) {
@@ -47,8 +50,40 @@ function replaceIconDeclarations(component, replace) {
   });
 }
 
+function resolveOptions(userOptionsName, defaultOptions, config, theme) {
+  return merge(
+    defaultOptions({ theme, config }),
+    fromPairs(
+      map(theme(userOptionsName), (value, key) => [key, flattenOptions(value)])
+    )
+  );
+}
+
+function resolveConfig(defaultConfig, userConfig, theme) {
+  if (typeof userConfig === 'function') {
+    userConfig = userConfig({ theme });
+  }
+  return merge(defaultConfig, userConfig || {});
+}
+
+function resolve(optionsName, params, userConfig, theme) {
+  const { defaultConfig, defaultOptions } = params;
+  const config = resolveConfig(defaultConfig, userConfig, theme);
+  const options = resolveOptions(optionsName, defaultOptions, config, theme);
+
+  return {
+    config,
+    options
+  };
+}
+
 module.exports = {
   merge,
+  isEmpty,
   flattenOptions,
-  replaceIconDeclarations
+  replaceIconDeclarations,
+  resolveOptions,
+  resolveConfig,
+  resolve,
+  svgToDataUri
 };
