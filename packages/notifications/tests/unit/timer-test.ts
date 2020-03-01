@@ -49,7 +49,7 @@ module('Unit | Timer', function(hooks) {
       () => {
         return timer.isRunning === false;
       },
-      { timeout: timer.remaining + 1 }
+      { timeout: timer.remaining + 1 } // eslint-disable-line
     );
   });
 });
