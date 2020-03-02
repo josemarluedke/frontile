@@ -1,0 +1,38 @@
+<div class="mb-6">
+  <FormRadioGroup
+    @label="Appearance"
+    @value={{this.appearance}}
+    @onChange={{this.setAppearance}}
+    @isInline={{true}}
+    as |Radio|
+  >
+    <Radio @value="info" @label="info" />
+    <Radio @value="success" @label="success" />
+    <Radio @value="warning" @label="warning" />
+    <Radio @value="error" @label="error" />
+  </FormRadioGroup>
+</div>
+
+<button
+  type="button"
+  {{on "click" this.addSimple}}
+  class="px-4 py-2 text-teal-600 border border-teal-600 rounded hover:bg-teal-700 hover:text-white"
+>
+  Add
+</button>
+
+<button
+  type="button"
+  {{on "click" this.addPreserve}}
+  class="px-4 py-2 text-teal-600 border border-teal-600 rounded hover:bg-teal-700 hover:text-white"
+>
+  Add Preserve
+</button>
+
+<button
+  type="button"
+  {{on "click" this.addWithAction}}
+  class="px-4 py-2 text-teal-600 border border-teal-600 rounded hover:bg-teal-700 hover:text-white"
+>
+  Add with Action
+</button>
