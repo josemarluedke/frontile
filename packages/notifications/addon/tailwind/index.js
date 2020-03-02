@@ -1,5 +1,10 @@
 const plugin = require('tailwindcss/plugin');
-const { resolve, isEmpty } = require('@frontile/tailwindcss-plugin-helpers');
+const {
+  resolve,
+  isEmpty,
+  replaceIconDeclarations,
+  svgToDataUri
+} = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function(userConfig) {
   return function({ addComponents, theme }) {
@@ -10,16 +15,35 @@ module.exports = plugin.withOptions(function(userConfig) {
       theme
     );
 
-    function addTODO(options, modifier) {
+    function addContainer(options, modifier) {
       if (isEmpty(options)) {
         return;
       }
-      addComponents({ [`.TODO${modifier}`]: options });
+      addComponents({ [`.notifications-container${modifier}`]: options });
+    }
+
+    function addCard(options, modifier) {
+      if (isEmpty(options)) {
+        return;
+      }
+      addComponents(
+        replaceIconDeclarations(
+          { [`.notification-card${modifier}`]: options },
+          ({ icon = options.icon, iconColor = options.iconColor }) => {
+            return {
+              backgroundImage: `url("${svgToDataUri(
+                typeof icon === 'function' ? icon(iconColor) : icon
+              )}")`
+            };
+          }
+        )
+      );
     }
 
     Object.keys(options).forEach(key => {
       const modifier = key === 'default' ? '' : `-${key}`;
-      addTODO(options[key].TODO, modifier);
+      addContainer(options[key].container, modifier);
+      addCard(options[key].card, modifier);
     });
   };
 });
