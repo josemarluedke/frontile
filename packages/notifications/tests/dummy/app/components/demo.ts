@@ -11,23 +11,49 @@ interface DemoArgs {}
 
 export default class Demo extends Component<DemoArgs> {
   @service notifications!: NotificationsService;
-  @tracked appearance: NotificationOptions['appearance'] = 'info';
+  @tracked options: NotificationOptions = {
+    appearance: 'info',
+    preserve: false,
+    duration: 5000,
+    allowClosing: true
+  };
 
-  @action setAppearance(value: NotificationOptions['appearance']): void {
-    this.appearance = value;
+  @tracked customActions: NotificationOptions['customActions'] = [
+    {
+      label: 'Ok',
+      onClick: () => {
+        // empty
+      }
+    },
+    {
+      label: 'Undo',
+      onClick: () => {
+        // empty
+      }
+    },
+    {
+      label: 'Cancel',
+      onClick: () => {
+        // empty
+      }
+    }
+  ];
+
+  @action setValue<T extends keyof NotificationOptions>(
+    key: T,
+    value: NotificationOptions[T]
+  ): void {
+    const options = {
+      ...this.options,
+      [key]: value
+    };
+    this.options = options;
   }
 
-  @action addSimple() {
+  @action addNotification() {
     this.notifications.add(
       'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna',
-      { appearance: this.appearance }
-    );
-  }
-
-  @action addPreserve() {
-    this.notifications.add(
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua',
-      { appearance: this.appearance, preserve: true }
+      this.options
     );
   }
 

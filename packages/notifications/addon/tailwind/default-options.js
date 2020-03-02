@@ -47,13 +47,13 @@ function defaultOptions(/*{ config }*/) {
         transitionDuration: defaultTheme.transitionDuration[200],
         color: defaultTheme.colors.white,
         fontSize: defaultTheme.fontSize.sm,
-        borderWidth: defaultTheme.borderWidth.default,
         borderRadius: defaultTheme.borderRadius.default,
         boxShadow: defaultTheme.boxShadow.default,
         position: 'relative',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        minHeight: defaultTheme.height[16],
         paddingTop: defaultTheme.padding[3],
         paddingBottom: defaultTheme.padding[3],
         paddingRight: defaultTheme.padding[4],
@@ -105,7 +105,6 @@ function defaultOptions(/*{ config }*/) {
     },
     info: {
       card: {
-        borderColor: defaultTheme.borderColor.gray[700],
         backgroundColor: defaultTheme.colors.gray[900],
         '.close-btn': {
           '&:hover': {
@@ -121,7 +120,6 @@ function defaultOptions(/*{ config }*/) {
     },
     success: {
       card: {
-        borderColor: defaultTheme.borderColor.blue[500],
         backgroundColor: defaultTheme.colors.blue[700],
         '.close-btn': {
           '&:hover': {
@@ -137,7 +135,6 @@ function defaultOptions(/*{ config }*/) {
     },
     warning: {
       card: {
-        borderColor: defaultTheme.borderColor.yellow[500],
         backgroundColor: defaultTheme.colors.yellow[600],
         '.close-btn': {
           '&:hover': {
@@ -153,7 +150,6 @@ function defaultOptions(/*{ config }*/) {
     },
     error: {
       card: {
-        borderColor: defaultTheme.borderColor.red[500],
         backgroundColor: defaultTheme.colors.red[600],
         '.close-btn': {
           '&:hover': {
