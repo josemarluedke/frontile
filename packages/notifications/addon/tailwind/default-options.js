@@ -91,14 +91,13 @@ function defaultOptions(/*{ config }*/) {
           paddingLeft: defaultTheme.spacing[2],
           paddingRight: defaultTheme.spacing[2],
           borderRadius: defaultTheme.borderRadius.default,
-          marginRight: `-${defaultTheme.spacing[2]}`,
           ...btnShared,
 
           '&:first-child': {
             marginLeft: defaultTheme.spacing[4]
           },
-          '&:not(:last-child)': {
-            marginRight: defaultTheme.spacing[2]
+          '&:last-child': {
+            marginRight: `-${defaultTheme.spacing[2]}`
           }
         }
       }
