@@ -1,0 +1,23 @@
+{{!--
+  Placements:
+    top-left
+    top-center
+    top-right
+    bottom-left
+    bottom-center
+    bottom-right
+--}}
+
+{{#if this.notifications.notifications}}
+  <div
+    class="notifications-container {{if @placement @placement "bottom-right"}}"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    ...attributes
+  >
+    {{#each this.notifications.notifications as |notification|}}
+      <NotificationCard @notification={{notification}} />
+    {{/each}}
+  </div>
+{{/if}}

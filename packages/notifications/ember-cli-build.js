@@ -18,6 +18,10 @@ module.exports = function(defaults) {
     }
   });
 
+  app.import(
+    'node_modules/ember-basic-dropdown/vendor/ember-basic-dropdown.css'
+  );
+
   /*
     This build file specifies the options for the dummy test app of this
     addon, located in `/tests/dummy`

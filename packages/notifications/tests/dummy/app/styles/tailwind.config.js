@@ -14,5 +14,8 @@ module.exports = {
     extend: {}
   },
   variants: {},
-  plugins: [require('@frontile/notifications').tailwind]
+  plugins: [
+    require('@frontile/notifications').tailwind,
+    require('@frontile/forms').tailwind
+  ]
 };
