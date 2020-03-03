@@ -1,4 +1,7 @@
-{{!-- template-lint-disable no-invalid-interactive  --}}
+{{!-- template-lint-disable no-invalid-interactive --}}
+{{!-- template-lint-disable no-unnecessary-concat --}}
+{{!-- template-lint-disable no-inline-styles --}}
+{{!-- template-lint-disable style-concatenation  --}}
 {{!-
 appearances:
   notification-card-info
@@ -10,7 +13,9 @@ appearances:
 <div
   {{on "mouseenter" this.pause}}
   {{on "mouseleave" this.resume}}
-  class="notification-card notification-card-{{@notification.appearance}} {{if @notification.isRemoving "opacity-0"}}"
+  class="notification-card
+        notification-card-{{@notification.appearance}}{{if @notification.isRemoving "is-removing"}}"
+  style="{{this.styles}}"
   ...attributes
 >
   <div class="notification-card-message">

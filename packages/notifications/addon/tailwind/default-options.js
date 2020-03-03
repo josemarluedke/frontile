@@ -70,7 +70,7 @@ function defaultOptions({ config }) {
         width: '100%',
         maxHeight: '100%',
         overflow: 'hidden',
-        padding: defaultTheme.padding[4],
+        margin: defaultTheme.padding[4],
         position: 'fixed',
         zIndex: 1000,
         maxWidth: defaultTheme.maxWidth.lg,
@@ -92,6 +92,9 @@ function defaultOptions({ config }) {
         paddingBottom: defaultTheme.padding[3],
         paddingRight: defaultTheme.padding[4],
         paddingLeft: defaultTheme.padding[4],
+        '&.is-removing': {
+          opacity: 0
+        },
         '&:not(:last-child)': {
           marginBottom: defaultTheme.spacing[4]
         },
