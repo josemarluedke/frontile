@@ -20,7 +20,9 @@ module('Integration | Component | NotificationCard', function(hooks) {
     await render(template);
 
     assert.dom('[data-test-notification]').containsText('My message');
-    assert.dom('[data-test-notification] .close-btn').containsText('Close');
+    assert
+      .dom('[data-test-notification] .notification-card-close-btn')
+      .containsText('Close');
   });
 
   test('it renders the correct appearance', async function(assert) {
@@ -90,7 +92,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
 
     await render(template);
 
-    await click('[data-test-notification] .close-btn');
+    await click('[data-test-notification] .notification-card-close-btn-icon');
 
     sinon.restore();
   });
@@ -130,18 +132,24 @@ module('Integration | Component | NotificationCard', function(hooks) {
     await render(template);
 
     assert
-      .dom('[data-test-notification] .custom-action-btn')
+      .dom('[data-test-notification] .notification-card-custom-action-btn')
       .exists({ count: 2 });
 
     assert
-      .dom('[data-test-notification] .custom-action-btn:first-child')
+      .dom(
+        '[data-test-notification] .notification-card-custom-action-btn:first-child'
+      )
       .hasText('Undo');
 
     assert
-      .dom('[data-test-notification] .custom-action-btn:last-child')
+      .dom(
+        '[data-test-notification] .notification-card-custom-action-btn:last-child'
+      )
       .hasText('Ok');
 
-    await click('[data-test-notification] .custom-action-btn:first-child');
+    await click(
+      '[data-test-notification] .notification-card-custom-action-btn:first-child'
+    );
 
     sinon.restore();
   });

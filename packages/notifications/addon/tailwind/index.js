@@ -26,10 +26,37 @@ module.exports = plugin.withOptions(function(userConfig) {
       if (isEmpty(options)) {
         return;
       }
+
+      const {
+        message,
+        closeBtn,
+        closeBtnIcon,
+        customActions,
+        customActionBtn,
+        ...rest
+      } = options;
+
+      addComponents({ [`.notification-card${modifier}`]: rest });
+      addComponents({
+        [`.notification-card${modifier} .notification-card-message`]: message
+      });
+      addComponents({
+        [`.notification-card${modifier} .notification-card-close-btn`]: closeBtn
+      });
+      addComponents({
+        [`.notification-card${modifier} .notification-card-custom-actions`]: customActions
+      });
+
+      addComponents({
+        [`.notification-card${modifier} .notification-card-custom-action-btn`]: customActionBtn
+      });
+
       addComponents(
         replaceIconDeclarations(
-          { [`.notification-card${modifier}`]: options },
-          ({ icon = options.icon, iconColor = options.iconColor }) => {
+          {
+            [`.notification-card${modifier} .notification-card-close-btn-icon`]: closeBtnIcon
+          },
+          ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
             return {
               backgroundImage: `url("${svgToDataUri(
                 typeof icon === 'function' ? icon(iconColor) : icon

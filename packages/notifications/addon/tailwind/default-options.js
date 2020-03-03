@@ -61,10 +61,10 @@ function defaultOptions(/*{ config }*/) {
         '&:not(:last-child)': {
           marginBottom: defaultTheme.spacing[4]
         },
-        '.message': {
+        message: {
           flexGrow: 1
         },
-        '.close-btn': {
+        closeBtn: {
           display: 'inline-block',
           padding: defaultTheme.spacing[2],
           marginLeft: defaultTheme.spacing[2],
@@ -72,7 +72,7 @@ function defaultOptions(/*{ config }*/) {
           borderRadius: defaultTheme.borderRadius.full,
           ...btnShared
         },
-        '.close-btn-icon': {
+        closeBtnIcon: {
           height: '1em',
           width: '1em',
           backgroundRepeat: 'no-repeat',
@@ -80,11 +80,11 @@ function defaultOptions(/*{ config }*/) {
           icon: iconColor =>
             `<svg fill="none" viewBox="0 0 24 24" stroke="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`
         },
-        '.custom-actions': {
+        customActions: {
           display: 'flex',
           flexWrap: 'nowrap'
         },
-        '.custom-action-btn': {
+        customActionBtn: {
           fontWeight: defaultTheme.fontWeight.semibold,
           paddingTop: defaultTheme.spacing[1],
           paddingBottom: defaultTheme.spacing[1],
@@ -105,12 +105,12 @@ function defaultOptions(/*{ config }*/) {
     info: {
       card: {
         backgroundColor: defaultTheme.colors.gray[900],
-        '.close-btn': {
+        closeBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.gray[800]
           }
         },
-        '.custom-action-btn': {
+        customActionBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.gray[800]
           }
@@ -120,12 +120,12 @@ function defaultOptions(/*{ config }*/) {
     success: {
       card: {
         backgroundColor: defaultTheme.colors.blue[700],
-        '.close-btn': {
+        closeBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.blue[800]
           }
         },
-        '.custom-action-btn': {
+        customActionBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.blue[800]
           }
@@ -135,12 +135,12 @@ function defaultOptions(/*{ config }*/) {
     warning: {
       card: {
         backgroundColor: defaultTheme.colors.yellow[600],
-        '.close-btn': {
+        closeBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.yellow[700]
           }
         },
-        '.custom-action-btn': {
+        customActionBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.yellow[700]
           }
@@ -150,12 +150,12 @@ function defaultOptions(/*{ config }*/) {
     error: {
       card: {
         backgroundColor: defaultTheme.colors.red[600],
-        '.close-btn': {
+        closeBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.red[700]
           }
         },
-        '.custom-action-btn': {
+        customActionBtn: {
           '&:hover': {
             backgroundColor: defaultTheme.colors.red[700]
           }
