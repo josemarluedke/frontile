@@ -1,6 +1,6 @@
 {
   "name": "@frontile/tailwindcss-plugin-helpers",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "TailwindCSS helpers for building plugins",
   "repository": "https://github.com/josemarluedke/frontile",
   "license": "MIT",
