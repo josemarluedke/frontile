@@ -52,24 +52,8 @@ export default class Demo extends Component<DemoArgs> {
 
   @action addNotification() {
     this.notifications.add(
-      'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna',
+      'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
       this.options
     );
-  }
-
-  @action addWithAction() {
-    this.notifications.add('Conversation arquived.', {
-      appearance: this.appearance,
-      preserve: true,
-      allowClosing: true,
-      customActions: [
-        {
-          label: 'Undo',
-          onClick: () => {
-            // empty
-          }
-        }
-      ]
-    });
   }
 }
