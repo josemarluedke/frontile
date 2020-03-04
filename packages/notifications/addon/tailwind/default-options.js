@@ -70,15 +70,18 @@ function defaultOptions({ config }) {
         width: '100%',
         maxHeight: '100%',
         overflow: 'hidden',
-        margin: defaultTheme.padding[4],
+        paddingLeft: defaultTheme.padding[4],
+        paddingRight: defaultTheme.padding[4],
         position: 'fixed',
         zIndex: 1000,
         maxWidth: defaultTheme.maxWidth.lg,
         ...placements
       },
       card: {
-        transitionProperty: defaultTheme.transitionProperty.default,
+        transitionProperty: defaultTheme.transitionProperty.all,
         transitionDuration: defaultTheme.transitionDuration[200],
+        transitionTimingFunction:
+          defaultTheme.transitionTimingFunction['in-out'],
         color: config.textColor,
         fontSize: defaultTheme.fontSize.sm,
         borderRadius: defaultTheme.borderRadius.default,
@@ -88,16 +91,47 @@ function defaultOptions({ config }) {
         justifyContent: 'space-between',
         alignItems: 'center',
         minHeight: defaultTheme.height[16],
+        overflow: 'hidden',
         paddingTop: defaultTheme.padding[3],
         paddingBottom: defaultTheme.padding[3],
         paddingRight: defaultTheme.padding[4],
         paddingLeft: defaultTheme.padding[4],
-        '&.is-removing': {
+
+        '&.top-right, &.top-left, &.top-center': {
+          marginTop: defaultTheme.padding[4]
+        },
+
+        '&.bottom-right, &.bottom-left, &.bottom-center': {
+          marginBottom: defaultTheme.padding[4]
+        },
+
+        '&.is-entering': {
+          '&.top-right, &.bottom-right': {
+            transform: 'translate3d(125%, 0, 0)'
+          },
+
+          '&.top-left, &.bottom-left': {
+            transform: 'translate3d(-125%, 0, 0)'
+          },
+
+          '&.top-center': {
+            transform: 'translate3d(0, -125%, 0)'
+          },
+
+          '&.bottom-center': {
+            transform: 'translate3d(0, 125%, 0)'
+          }
+        },
+
+        '&.has-entered': {
+          transform: 'translate3d(0,0,0)'
+        },
+
+        '&.is-exiting': {
+          transform: 'scale(0.80)',
           opacity: 0
         },
-        '&:not(:last-child)': {
-          marginBottom: defaultTheme.spacing[4]
-        },
+
         message: {
           flexGrow: 1
         },

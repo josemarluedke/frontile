@@ -17,7 +17,10 @@
     ...attributes
   >
     {{#each this.notifications.notifications as |notification|}}
-      <NotificationCard @notification={{notification}} />
+      <NotificationCard
+        @placement={{if @placement @placement "bottom-right"}}
+        @notification={{notification}}
+      />
     {{/each}}
   </div>
 {{/if}}

@@ -22,6 +22,7 @@
     "try:one": "ember try:one"
   },
   "dependencies": {
+    "@ember/render-modifiers": "^1.0.2",
     "@frontile/core": "^0.1.0-alpha.3",
     "@frontile/tailwindcss-plugin-helpers": "^0.1.0-alpha.3",
     "ember-cli-babel": "^7.17.2",
