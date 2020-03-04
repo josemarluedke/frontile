@@ -1,4 +1,5 @@
-import { NotificationOptions } from '@frontile/notifications';
+import { DefaultConfig } from '@frontile/notifications';
+
 /**
  * Type declarations for
  *    import config from './config/environment'
@@ -12,7 +13,7 @@ declare const config: {
   podModulePrefix: string;
   locationType: string;
   rootURL: string;
-  '@frontile/notifications'?: NotificationOptions;
+  '@frontile/notifications'?: DefaultConfig;
 };
 
 export default config;

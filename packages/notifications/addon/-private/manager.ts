@@ -1,8 +1,9 @@
 import Notification from './notification';
 import Timer from './timer';
+import { NotificationOptions } from './types';
+import { getConfigOption } from './get-config';
 import { tracked } from '@glimmer/tracking';
 import { later } from '@ember/runloop';
-import { NotificationOptions } from './types';
 
 export default class NotificationsManager {
   @tracked notifications: Notification[] = [];
@@ -11,7 +12,18 @@ export default class NotificationsManager {
     const notification = new Notification(message, options);
     this.notifications = [...this.notifications, notification];
 
-    if (options.preserve !== true) {
+    let preserve =
+      typeof options.preserve === 'undefined'
+        ? getConfigOption('preserve', false)
+        : options.preserve;
+
+    // if default config has set skipTimer to true, we will preserve the
+    // notification, therefore skiping the timer
+    if (getConfigOption('skipTimer', false) === true) {
+      preserve = true;
+    }
+
+    if (preserve === false) {
       this.setupAutoRemoval(notification, notification.duration);
     }
     return notification;
@@ -22,7 +34,7 @@ export default class NotificationsManager {
       return;
     }
 
-    notification.isRemoving = true;
+    notification.remove();
 
     later(
       this,
