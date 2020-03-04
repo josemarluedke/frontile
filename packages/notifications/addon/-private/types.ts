@@ -36,3 +36,14 @@ export interface NotificationOptions {
    */
   customActions?: CustomAction[];
 }
+
+export interface DefaultConfig extends NotificationOptions {
+  /*
+   * If set to true, we will preserve the notification, therefore skiping the timer.
+   * This is useful in tests because Ember will wait for any runloop to
+   * finish before proceeding.
+   *
+   * @defaultValue false
+   */
+  skipTimer?: boolean;
+}

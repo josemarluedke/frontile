@@ -21,6 +21,11 @@ export default class NotificationsService extends Service {
   removeAll(): void {
     this.manager.removeAll();
   }
+
+  willDestroy(): void {
+    this.removeAll();
+    super.willDestroy();
+  }
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your services.

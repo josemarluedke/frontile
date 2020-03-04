@@ -1,19 +1,7 @@
 import { tracked } from '@glimmer/tracking';
 import Timer from './timer';
 import { NotificationOptions, CustomAction } from './types';
-import config from 'ember-get-config';
-import { getWithDefault } from '@ember/object';
-
-function getConfigOption<T extends keyof NotificationOptions>(
-  key: T,
-  defaultValue: NonNullable<NotificationOptions[T]>
-): NonNullable<NotificationOptions[T]> {
-  return getWithDefault(
-    config['@frontile/notifications'] || ({} as never),
-    key as never,
-    defaultValue as never
-  );
-}
+import { getConfigOption } from './get-config';
 
 export default class Notification {
   readonly message: string;
@@ -41,6 +29,14 @@ export default class Notification {
       this.allowClosing = false;
     } else {
       this.allowClosing = true;
+    }
+  }
+
+  remove(): void {
+    this.isRemoving = true;
+
+    if (this.timer) {
+      this.timer.clear();
     }
   }
 }
