@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import NotificationsService from '../services/notifications';
 
-interface NotificationsContainerArgs {
+export interface NotificationsContainerArgs {
   /*
    * @defaultValue 'bottom-right'
    */
