@@ -13,9 +13,9 @@ module.exports = {
   test_page: 'tests/index.html?hidepassed',
   disable_watching: true,
   launch_in_ci: ['Chromium', 'Chrome'],
-  launch_in_dev: ['Chromium'],
+  launch_in_dev: ['Chromium', 'Chrome'],
   ignore_missing_launchers: true,
-  browser_start_timeout: process.env.CI ? 60 : null,
+  browser_start_timeout: 60,
   browser_args: {
     Chromium: {
       ci: CHROME_ARGS,
