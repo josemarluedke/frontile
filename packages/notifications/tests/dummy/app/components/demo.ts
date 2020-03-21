@@ -18,6 +18,8 @@ export default class Demo extends Component<DemoArgs> {
     allowClosing: true
   };
 
+  @tracked placement = 'bottom-right';
+
   @tracked customActions: NotificationOptions['customActions'] = [
     {
       label: 'Ok',
@@ -38,6 +40,10 @@ export default class Demo extends Component<DemoArgs> {
       }
     }
   ];
+
+  @action setPlacement(placement: string): void {
+    this.placement = placement;
+  }
 
   @action setValue<T extends keyof NotificationOptions>(
     key: T,
