@@ -1,4 +1,20 @@
 <FormRadioGroup
+  @label="Placement"
+  @value={{this.placement}}
+  @onChange={{this.setPlacement}}
+  @isInline={{true}}
+  as |Radio|
+>
+  <Radio @value="top-left" @label="top-left" />
+  <Radio @value="top-center" @label="top-center" />
+  <Radio @value="top-right" @label="top-right" />
+  <Radio @value="bottom-left" @label="bottom-left" />
+  <Radio @value="bottom-center" @label="bottom-center" />
+  <Radio @value="bottom-right" @label="bottom-right" />
+</FormRadioGroup>
+
+<FormRadioGroup
+  @containerClass="mt-6"
   @label="Appearance"
   @value={{this.options.appearance}}
   @onChange={{fn this.setValue "appearance"}}
@@ -56,3 +72,4 @@
   Add Notification
 </button>
 
+<NotificationsContainer @placement={{this.placement}} />
