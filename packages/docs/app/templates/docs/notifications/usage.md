@@ -1,0 +1,3 @@
+# Notifications
+
+<Demo::Notifications::Demo />

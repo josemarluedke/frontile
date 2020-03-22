@@ -32,6 +32,9 @@ Router.map(function() {
     this.route('buttons', function() {
       this.route('button');
     });
+    this.route('notifications', function() {
+      this.route('usage');
+    });
   });
 
   this.route('not-found', { path: '/*path' });
