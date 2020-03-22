@@ -25,6 +25,7 @@
     "@frontile/changeset-form": "^0.1.0-alpha.3",
     "@frontile/core": "^0.1.0-alpha.3",
     "@frontile/forms": "^0.1.0-alpha.3",
+    "@frontile/notifications": "^0.1.0-alpha.4",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "autoprefixer": "^9.7.4",

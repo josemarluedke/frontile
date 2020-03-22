@@ -9,3 +9,4 @@ Packages:
 - `@frontile/forms`
 - `@frontile/changeset-form`
 - `@frontile/buttons`
+- `@frontile/notifications`
