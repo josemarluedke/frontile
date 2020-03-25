@@ -11,6 +11,7 @@ module.exports = function(defaults) {
     postcssOptions: {
       compile: {
         enabled: true,
+        cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
         plugins: [
           require('tailwindcss')(
             path.join('app', 'styles', 'tailwind.config.js')
