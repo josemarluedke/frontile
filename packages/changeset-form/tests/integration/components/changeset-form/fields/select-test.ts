@@ -7,7 +7,7 @@ import lookupValidator from 'ember-changeset-validations';
 import { run } from '@ember/runloop';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
-module('Integration | Component | ChangesetForm::Fields::Select', function(
+module('Integration | Component | ChangesetForm::Fields::Select', function (
   hooks
 ) {
   setupRenderingTest(hooks);
@@ -41,19 +41,19 @@ module('Integration | Component | ChangesetForm::Fields::Select', function(
     `);
   });
 
-  test('it renders with initial model value', async function(assert) {
+  test('it renders with initial model value', async function (assert) {
     assert
       .dom('.field-container .ember-power-select-trigger')
       .hasTextContaining('Ember');
   });
 
-  test('it updates the changeset on input', async function(assert) {
+  test('it updates the changeset on input', async function (assert) {
     await selectChoose('.field-container', 'Glimmer');
 
     assert.equal(this.get('changeset').get('framework'), 'Glimmer');
   });
 
-  test('it displays error message on focus out', async function(assert) {
+  test('it displays error message on focus out', async function (assert) {
     assert
       .dom('.field-container')
       .doesNotHaveTextContaining('Please select a Framework, not a language');
@@ -65,7 +65,7 @@ module('Integration | Component | ChangesetForm::Fields::Select', function(
       .hasTextContaining('Please select a Framework, not a language');
   });
 
-  test('it receives original input values on rollback', async function(assert) {
+  test('it receives original input values on rollback', async function (assert) {
     await selectChoose('.field-container', 'Glimmer');
 
     run(() => {

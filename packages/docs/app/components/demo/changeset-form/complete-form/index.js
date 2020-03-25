@@ -13,7 +13,7 @@ export const myValidations = {
 
 export default class Demo extends Component {
   validations = myValidations;
-  countries = countries.map(c => c.name);
+  countries = countries.map((c) => c.name);
 
   model = {
     firstName: null,

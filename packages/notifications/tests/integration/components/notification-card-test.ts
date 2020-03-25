@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { Notification, NotificationsService } from '@frontile/notifications';
 import sinon from 'sinon';
 
-module('Integration | Component | NotificationCard', function(hooks) {
+module('Integration | Component | NotificationCard', function (hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`
@@ -14,7 +14,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
       @notification={{this.notification}}
     />`;
 
-  test('it renders the notification content & close button', async function(assert) {
+  test('it renders the notification content & close button', async function (assert) {
     this.set('notification', new Notification('My message'));
 
     await render(template);
@@ -25,7 +25,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
       .containsText('Close');
   });
 
-  test('it renders the correct appearance', async function(assert) {
+  test('it renders the correct appearance', async function (assert) {
     this.set('notification', new Notification('My message'));
 
     await render(template);
@@ -61,7 +61,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
     assert.dom('[data-test-notification]').hasClass('notification-card-error');
   });
 
-  test('it does not render close button when allowClosing=false', async function(assert) {
+  test('it does not render close button when allowClosing=false', async function (assert) {
     this.set(
       'notification',
       new Notification('My message', {
@@ -74,7 +74,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
     assert.dom('[data-test-notification] .close-btn').doesNotExist();
   });
 
-  test('it calls remove function from service on close-btn click', async function(assert) {
+  test('it calls remove function from service on close-btn click', async function (assert) {
     assert.expect(1);
 
     this.set(
@@ -97,7 +97,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
     sinon.restore();
   });
 
-  test('it renders and calls custom actions', async function(assert) {
+  test('it renders and calls custom actions', async function (assert) {
     assert.expect(5);
 
     this.set(
@@ -154,7 +154,7 @@ module('Integration | Component | NotificationCard', function(hooks) {
     sinon.restore();
   });
 
-  test('it pauses/resumes the timer on mouseenter/mouseleave', async function(assert) {
+  test('it pauses/resumes the timer on mouseenter/mouseleave', async function (assert) {
     assert.expect(2);
 
     this.set(

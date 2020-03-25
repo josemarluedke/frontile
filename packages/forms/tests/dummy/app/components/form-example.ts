@@ -99,7 +99,7 @@ export default class FormExample extends Component<FormExampleArgs> {
     if (isChecked) {
       this.interests = [...this.interests, interest];
     } else {
-      this.interests = this.interests.filter(element => {
+      this.interests = this.interests.filter((element) => {
         return element !== interest;
       });
     }

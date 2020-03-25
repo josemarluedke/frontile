@@ -7,7 +7,7 @@ import { run } from '@ember/runloop';
 
 module(
   'Integration | Component | ChangesetForm::Fields::CheckboxGroup',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
     hooks.beforeEach(async function beforeEach(this: { set: Function }) {
@@ -46,13 +46,13 @@ module(
       `);
     });
 
-    test('it renders with initial model value', async function(assert) {
+    test('it renders with initial model value', async function (assert) {
       assert.dom('[data-test-checkbox-blue]').isChecked();
       assert.dom('[data-test-checkbox-green]').isNotChecked();
       assert.dom('[data-test-checkbox-red]').isNotChecked();
     });
 
-    test('it updates the changeset on input', async function(assert) {
+    test('it updates the changeset on input', async function (assert) {
       await click('[data-test-checkbox-blue]');
       await click('[data-test-checkbox-green]');
       await click('[data-test-checkbox-red]');
@@ -62,7 +62,7 @@ module(
       assert.equal(this.get('changeset').get('colors.red'), true);
     });
 
-    test('it receives original input values on rollback', async function(assert) {
+    test('it receives original input values on rollback', async function (assert) {
       await click('[data-test-checkbox-green]');
 
       assert.dom('[data-test-checkbox-blue]').isChecked();

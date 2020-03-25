@@ -39,7 +39,7 @@ export default class NotificationsManager {
     later(
       this,
       () => {
-        this.notifications = this.notifications.filter(n => {
+        this.notifications = this.notifications.filter((n) => {
           return n !== notification;
         });
       },
@@ -48,7 +48,7 @@ export default class NotificationsManager {
   }
 
   removeAll(): void {
-    this.notifications.forEach(notification => {
+    this.notifications.forEach((notification) => {
       this.remove(notification);
     });
   }

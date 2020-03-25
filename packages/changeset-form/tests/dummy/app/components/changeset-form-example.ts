@@ -14,7 +14,7 @@ interface ExampleArgs {}
 
 export default class Example extends Component<ExampleArgs> {
   validations = myValidations;
-  countries = countries.map(c => c.name);
+  countries = countries.map((c) => c.name);
 
   model = {
     firstName: null,

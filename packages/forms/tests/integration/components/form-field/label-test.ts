@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | FormField::Label', function(hooks) {
+module('Integration | Component | FormField::Label', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders content, attributes and args', async function(assert) {
+  test('it renders content, attributes and args', async function (assert) {
     await render(
       hbs`<FormField::Label @for="some-input-id" class="something-else">My Label</FormField::Label>`
     );
@@ -23,7 +23,7 @@ module('Integration | Component | FormField::Label', function(hooks) {
       .hasTextContaining('My Label');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
     this.set('isSmall', true);
     this.set('isLarge', false);
 

@@ -1,8 +1,8 @@
 const plugin = require('tailwindcss/plugin');
 const { resolve, isEmpty } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function(userConfig) {
-  return function({ addComponents, theme }) {
+module.exports = plugin.withOptions(function (userConfig) {
+  return function ({ addComponents, theme }) {
     const { options } = resolve(
       '@frontile/buttons',
       require('./default-options'),
@@ -46,7 +46,7 @@ module.exports = plugin.withOptions(function(userConfig) {
       }
     }
 
-    Object.keys(options).forEach(key => {
+    Object.keys(options).forEach((key) => {
       const modifier = key === 'default' ? '' : `-${key}`;
       addButton(options[key].button, modifier);
     });

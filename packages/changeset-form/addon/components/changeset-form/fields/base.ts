@@ -41,7 +41,7 @@ export default class ChangesetFormFieldsBase<
       return this.args.errors;
     }
 
-    const fieldErrors = this.args.changeset.errors.filter(error => {
+    const fieldErrors = this.args.changeset.errors.filter((error) => {
       return error.key === this.args.fieldName;
     });
 

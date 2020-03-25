@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 
-module('Integration | Component | ChangesetForm::Fields::Checkbox', function(
+module('Integration | Component | ChangesetForm::Fields::Checkbox', function (
   hooks
 ) {
   setupRenderingTest(hooks);
@@ -40,13 +40,13 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function(
     `);
   });
 
-  test('it renders with initial model value', async function(assert) {
+  test('it renders with initial model value', async function (assert) {
     assert.dom('[data-test-checkbox-blue]').isChecked();
     assert.dom('[data-test-checkbox-green]').isNotChecked();
     assert.dom('[data-test-checkbox-red]').isNotChecked();
   });
 
-  test('it updates the changeset on input', async function(assert) {
+  test('it updates the changeset on input', async function (assert) {
     await click('[data-test-checkbox-blue]');
     await click('[data-test-checkbox-green]');
     await click('[data-test-checkbox-red]');
@@ -56,7 +56,7 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function(
     assert.equal(this.get('changeset').get('red'), true);
   });
 
-  test('it receives original input values on rollback', async function(assert) {
+  test('it receives original input values on rollback', async function (assert) {
     await click('[data-test-checkbox-green]');
 
     assert.dom('[data-test-checkbox-blue]').isChecked();

@@ -21,7 +21,7 @@ module.exports = {
   // manually.
   contentFor(type, config) {
     const emberPowerSelect = this.addons.find(
-      a => a.name === 'ember-power-select'
+      (a) => a.name === 'ember-power-select'
     );
     return emberPowerSelect.contentFor(type, config);
   }

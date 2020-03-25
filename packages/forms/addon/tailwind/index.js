@@ -7,8 +7,8 @@ const {
   isEmpty
 } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function(userConfig) {
-  return function({ addComponents, theme }) {
+module.exports = plugin.withOptions(function (userConfig) {
+  return function ({ addComponents, theme }) {
     const { config, options } = resolve(
       '@frontile/forms',
       require('./default-options'),
@@ -194,7 +194,7 @@ module.exports = plugin.withOptions(function(userConfig) {
 
     const selectOptions = {};
 
-    Object.keys(options).forEach(key => {
+    Object.keys(options).forEach((key) => {
       selectOptions[key] = options[key].select || {};
       const selectContainer = selectOptions[key].container;
       delete options[key].select;

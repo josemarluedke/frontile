@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import validateFormat from 'ember-changeset-validations/validators/format';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 
-module('Integration | Component | ChangesetForm', function(hooks) {
+module('Integration | Component | ChangesetForm', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function beforeEach(this: { set: Function }) {
@@ -14,7 +14,7 @@ module('Integration | Component | ChangesetForm', function(hooks) {
         first: 'Chim',
         last: 'Richolds'
       },
-      email: 'chim.richolds@neighborly.com'
+      email: 'chim.richolds@example.com'
     };
     const validations = {
       'name.first': validatePresence(true),
@@ -60,7 +60,7 @@ module('Integration | Component | ChangesetForm', function(hooks) {
     `);
   });
 
-  test('it renders with initial value from model', async function(assert) {
+  test('it renders with initial value from model', async function (assert) {
     assert
       .dom('[data-test-changeset-form]')
       .exists('The ChangesetForm failed to render');
@@ -76,7 +76,7 @@ module('Integration | Component | ChangesetForm', function(hooks) {
     assert.dom('[data-test-email-input]').hasValue(this.get('model.email'));
   });
 
-  test('it validates and then updates the changeset on input', async function(assert) {
+  test('it validates and then updates the changeset on input', async function (assert) {
     await fillIn('[data-test-email-input]', 'notanemailaddress');
     await blur('[data-test-email-input]');
 
@@ -87,7 +87,7 @@ module('Integration | Component | ChangesetForm', function(hooks) {
     assert.dom('[data-test-email]').hasTextContaining('notanemailaddress');
   });
 
-  test('it rolls-back the changeset, and calls onReset when reset is clicked', async function(assert) {
+  test('it rolls-back the changeset, and calls onReset when reset is clicked', async function (assert) {
     assert.expect(7);
     await fillIn('[data-test-name-first-input]', 'James');
     await fillIn('[data-test-name-last-input]', 'Silva');
@@ -105,12 +105,10 @@ module('Integration | Component | ChangesetForm', function(hooks) {
 
     assert.dom('[data-test-name-first-input]').hasValue('Chim');
     assert.dom('[data-test-name-last-input]').hasValue('Richolds');
-    assert
-      .dom('[data-test-email-input]')
-      .hasValue('chim.richolds@neighborly.com');
+    assert.dom('[data-test-email-input]').hasValue('chim.richolds@example.com');
   });
 
-  test('it calls onSubmit when the submit button is clicked and marks hasSubmitted to true', async function(assert) {
+  test('it calls onSubmit when the submit button is clicked and marks hasSubmitted to true', async function (assert) {
     assert.expect(8);
     await fillIn('[data-test-name-first-input]', 'James');
     await fillIn('[data-test-name-last-input]', 'Silva');

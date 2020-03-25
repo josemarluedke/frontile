@@ -32,7 +32,7 @@ export default class ChangesetFormFieldsCheckboxGroup extends Component<
       return [];
     }
 
-    const fieldErrors = this.args.changeset.errors.filter(error => {
+    const fieldErrors = this.args.changeset.errors.filter((error) => {
       return error.key === this.args.groupName;
     });
 
