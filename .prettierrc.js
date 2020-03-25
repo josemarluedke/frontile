@@ -1,1 +1,1 @@
-module.exports = require('@neighborly/eslint-config/.prettierrc.js');
+module.exports = require('@underline/eslint-config/.prettierrc.js');
