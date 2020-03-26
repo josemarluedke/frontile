@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | FormField::Checkbox', function(hooks) {
+module('Integration | Component | FormField::Checkbox', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders with html attributes', async function(assert) {
+  test('it renders with html attributes', async function (assert) {
     await render(hbs`<FormField::Checkbox
                       name="some-name"
                       data-test-checkbox />`);
@@ -15,13 +15,13 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.dom('[name="some-name"]').exists();
   });
 
-  test('it renders @id arg', async function(assert) {
+  test('it renders @id arg', async function (assert) {
     await render(hbs`<FormField::Checkbox @id="my-id" data-test-checkbox />`);
 
     assert.dom('[data-test-checkbox]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
     this.set('isSmall', true);
     this.set('isLarge', false);
 
@@ -41,13 +41,13 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.dom('[data-test-input]').doesNotHaveClass('form-checkbox-lg');
   });
 
-  test('it renders id html attribute', async function(assert) {
+  test('it renders id html attribute', async function (assert) {
     await render(hbs`<FormField::Checkbox id="my-id" data-test-checkbox />`);
 
     assert.dom('[data-test-checkbox]').hasAttribute('id', 'my-id');
   });
 
-  test('it renders @name arg', async function(assert) {
+  test('it renders @name arg', async function (assert) {
     await render(
       hbs`<FormField::Checkbox @name="my-name" data-test-checkbox />`
     );
@@ -55,7 +55,7 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.dom('[data-test-checkbox]').hasAttribute('name', 'my-name');
   });
 
-  test('it renders name html attribute', async function(assert) {
+  test('it renders name html attribute', async function (assert) {
     await render(
       hbs`<FormField::Checkbox name="my-name" data-test-checkbox />`
     );
@@ -63,7 +63,7 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.dom('[data-test-checkbox]').hasAttribute('name', 'my-name');
   });
 
-  test('renders @checed arg, does not mutate it by default', async function(assert) {
+  test('renders @checed arg, does not mutate it by default', async function (assert) {
     this.set('value', true);
 
     await render(
@@ -76,7 +76,7 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.equal(this.get('value'), true, 'should have not mutated the value');
   });
 
-  test('should call @onChange function arg', async function(assert) {
+  test('should call @onChange function arg', async function (assert) {
     assert.expect(4);
     this.set('value', undefined);
 
@@ -101,7 +101,7 @@ module('Integration | Component | FormField::Checkbox', function(hooks) {
     assert.equal(this.get('value'), true, 'should have mutated the value');
   });
 
-  test('it sets as checked if value is truthy', async function(assert) {
+  test('it sets as checked if value is truthy', async function (assert) {
     this.set('value', undefined);
 
     await render(

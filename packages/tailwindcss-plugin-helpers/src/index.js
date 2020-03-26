@@ -29,13 +29,13 @@ function merge(...options) {
 function flattenOptions(options) {
   return merge(
     ...flatMap(toPairs(options), ([keys, value]) => {
-      return fromPairs(keys.split(', ').map(key => [key, value]));
+      return fromPairs(keys.split(', ').map((key) => [key, value]));
     })
   );
 }
 
 function replaceIconDeclarations(component, replace) {
-  return traverse(component).map(function(value) {
+  return traverse(component).map(function (value) {
     if (!isPlainObject(value)) {
       return;
     }

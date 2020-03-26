@@ -6,16 +6,16 @@ export default class Router extends AddonDocsRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function() {
-  docsRoute(this, function() {
-    this.route('core', function() {
-      this.route('accessibility', function() {
+Router.map(function () {
+  docsRoute(this, function () {
+    this.route('core', function () {
+      this.route('accessibility', function () {
         this.route('focus-management');
         this.route('visually-hidden');
       });
     });
 
-    this.route('forms', function() {
+    this.route('forms', function () {
       this.route('form-input');
       this.route('form-textarea');
       this.route('form-select');
@@ -25,14 +25,14 @@ Router.map(function() {
       this.route('form-checkbox-group');
     });
 
-    this.route('changeset-form', function() {
+    this.route('changeset-form', function () {
       this.route('usage');
     });
 
-    this.route('buttons', function() {
+    this.route('buttons', function () {
       this.route('button');
     });
-    this.route('notifications', function() {
+    this.route('notifications', function () {
       this.route('usage');
     });
   });

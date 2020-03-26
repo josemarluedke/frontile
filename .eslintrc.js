@@ -6,7 +6,7 @@ module.exports = {
     project: join(__dirname, './tsconfig.eslint.json')
   },
   plugins: [],
-  extends: ['@neighborly/eslint-config-ember-typescript'],
+  extends: ['@underline/eslint-config-ember-typescript'],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off'
   },
@@ -38,7 +38,7 @@ module.exports = {
         'packages/*/addon/tailwind/*.js',
         'packages/tailwindcss-plugin-helpers/**/*.js'
       ],
-      extends: ['@neighborly/eslint-config-node'],
+      extends: ['@underline/eslint-config-node'],
       rules: {}
     }
   ]

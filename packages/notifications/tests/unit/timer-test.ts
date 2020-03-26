@@ -3,10 +3,10 @@ import { setupTest } from 'ember-qunit';
 import { Timer } from '@frontile/notifications';
 import { waitUntil } from '@ember/test-helpers';
 
-module('Unit | Timer', function(hooks) {
+module('Unit | Timer', function (hooks) {
   setupTest(hooks);
 
-  test('it calls onFinish when timer is up', async function(assert) {
+  test('it calls onFinish when timer is up', async function (assert) {
     assert.expect(2);
 
     const timer = new Timer(10, () => {
@@ -23,7 +23,7 @@ module('Unit | Timer', function(hooks) {
     );
   });
 
-  test('it can pause and resume', async function(assert) {
+  test('it can pause and resume', async function (assert) {
     const timer = new Timer(10, () => {
       // nothing
     });

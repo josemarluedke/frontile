@@ -4,10 +4,10 @@ import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
-module('Integration | Component | FormCheckbox', function(hooks) {
+module('Integration | Component | FormCheckbox', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders with the label from argument', async function(assert) {
+  test('it renders with the label from argument', async function (assert) {
     await render(
       hbs`<FormCheckbox
             data-test-input
@@ -19,7 +19,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
       .hasText('My Checkbox Input');
   });
 
-  test('it renders the label from block param', async function(assert) {
+  test('it renders the label from block param', async function (assert) {
     await render(
       hbs`<FormCheckbox data-test-input>My Block Label</FormCheckbox>`
     );
@@ -27,7 +27,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.dom('[data-test-id="form-field-label"]').hasText('My Block Label');
   });
 
-  test('it should have id attr with matching label attr `for`', async function(assert) {
+  test('it should have id attr with matching label attr `for`', async function (assert) {
     await render(hbs`<FormCheckbox
                         @label="Something Else"
                         data-test-input
@@ -41,7 +41,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.dom('[data-test-id="form-field-label"]').hasAttribute('for', id);
   });
 
-  test('it renders the `name` from args', async function(assert) {
+  test('it renders the `name` from args', async function (assert) {
     await render(
       hbs`<FormCheckbox
             data-test-input
@@ -52,7 +52,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.dom('[data-test-input]').hasAttribute('name', 'my-input');
   });
 
-  test('it does not mutates the value directly', async function(assert) {
+  test('it does not mutates the value directly', async function (assert) {
     this.set('myValue', undefined);
 
     await render(
@@ -68,7 +68,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.equal(this.get('myValue'), undefined);
   });
 
-  test('it calls onChange function to change value', async function(assert) {
+  test('it calls onChange function to change value', async function (assert) {
     this.set('myValue', undefined);
 
     await render(
@@ -85,7 +85,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.equal(this.get('myValue'), true);
   });
 
-  test('it marks the input as checked if value matches', async function(assert) {
+  test('it marks the input as checked if value matches', async function (assert) {
     this.set('myValue', false);
 
     await render(
@@ -102,7 +102,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.dom('[data-test-input]').isChecked();
   });
 
-  test('input id should match label for attribute', async function(assert) {
+  test('input id should match label for attribute', async function (assert) {
     this.set('myValue', false);
 
     await render(
@@ -125,7 +125,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     );
   });
 
-  test('it adds container class from @containerClass arg', async function(assert) {
+  test('it adds container class from @containerClass arg', async function (assert) {
     await render(
       hbs`<FormCheckbox
             @containerClass="my-container-class"
@@ -135,7 +135,7 @@ module('Integration | Component | FormCheckbox', function(hooks) {
     assert.dom('.my-container-class').exists();
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
     this.set('isSmall', true);
     this.set('isLarge', false);
 

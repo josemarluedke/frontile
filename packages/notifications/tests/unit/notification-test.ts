@@ -2,10 +2,10 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { Notification, Timer } from '@frontile/notifications';
 
-module('Unit | Notification', function(hooks) {
+module('Unit | Notification', function (hooks) {
   setupTest(hooks);
 
-  test('it creates with default values', async function(assert) {
+  test('it creates with default values', async function (assert) {
     const notification = new Notification('Message');
 
     assert.equal(notification.message, 'Message');
@@ -16,7 +16,7 @@ module('Unit | Notification', function(hooks) {
     assert.equal(notification.allowClosing, true);
   });
 
-  test('it can create with custom options', async function(assert) {
+  test('it can create with custom options', async function (assert) {
     const notification = new Notification('Message', {
       appearance: 'success',
       duration: 1,
@@ -41,14 +41,14 @@ module('Unit | Notification', function(hooks) {
     assert.equal(typeof notification.customActions![0].onClick, 'function');
   });
 
-  test('it can set isRemoving', async function(assert) {
+  test('it can set isRemoving', async function (assert) {
     const notification = new Notification('Message');
 
     notification.isRemoving = true;
     assert.ok(notification.isRemoving);
   });
 
-  test('it can set a timer', async function(assert) {
+  test('it can set a timer', async function (assert) {
     const notification = new Notification('Message');
 
     notification.timer = new Timer(0, () => {

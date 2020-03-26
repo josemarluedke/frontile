@@ -7,7 +7,7 @@ import {
   NotificationOptions
 } from '@frontile/notifications';
 
-module('Integration | Component | NotificationsContainer', function(hooks) {
+module('Integration | Component | NotificationsContainer', function (hooks) {
   setupRenderingTest(hooks);
 
   const options: NotificationOptions = {
@@ -21,13 +21,13 @@ module('Integration | Component | NotificationsContainer', function(hooks) {
       data-test-notifications
     />`;
 
-  test('it does not render if there are no notifications', async function(assert) {
+  test('it does not render if there are no notifications', async function (assert) {
     await render(template);
 
     assert.dom('[data-test-notifications]').doesNotExist();
   });
 
-  test('it render all notifications from service', async function(assert) {
+  test('it render all notifications from service', async function (assert) {
     const service: NotificationsService = this.owner.lookup(
       'service:notifications'
     );
@@ -41,7 +41,7 @@ module('Integration | Component | NotificationsContainer', function(hooks) {
     assert.dom('[data-test-notifications] > div').exists({ count: 2 });
   });
 
-  test('it adds placement classes', async function(assert) {
+  test('it adds placement classes', async function (assert) {
     (this.owner.lookup('service:notifications') as NotificationsService).add(
       'Message 1',
       options
@@ -72,7 +72,7 @@ module('Integration | Component | NotificationsContainer', function(hooks) {
     assert.dom('[data-test-notifications]').hasClass('bottom-right');
   });
 
-  test('it adds accessibility attributes', async function(assert) {
+  test('it adds accessibility attributes', async function (assert) {
     (this.owner.lookup('service:notifications') as NotificationsService).add(
       'Message 1',
       options

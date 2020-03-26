@@ -26,7 +26,7 @@ export default class ChangesetFormFieldsCheckbox extends Base<
       return this.args.errors;
     }
 
-    const fieldErrors = this.args.changeset.errors.filter(error => {
+    const fieldErrors = this.args.changeset.errors.filter((error) => {
       return error.key === this.fullFieldName;
     });
 

@@ -7,7 +7,7 @@ import {
   clickTrigger
 } from 'ember-power-select/test-support/helpers';
 
-module('Integration | Component | FormSelect', function(hooks) {
+module('Integration | Component | FormSelect', function (hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`<FormSelect
@@ -35,13 +35,13 @@ module('Integration | Component | FormSelect', function(hooks) {
                           {{option}}
                         </FormSelect>`;
 
-  test('it renders the label', async function(assert) {
+  test('it renders the label', async function (assert) {
     await render(template);
 
     assert.dom('[data-test-id="form-field-label"]').hasText('Select Countries');
   });
 
-  test('show the select option', async function(assert) {
+  test('show the select option', async function (assert) {
     this.set('options', ['Brazil', 'United States of America']);
     this.set('value', 'Brazil');
     await render(template);
@@ -49,7 +49,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     assert.dom('.test-select').containsText('Brazil');
   });
 
-  test('it renders the hint', async function(assert) {
+  test('it renders the hint', async function (assert) {
     await render(template);
 
     assert
@@ -57,7 +57,7 @@ module('Integration | Component | FormSelect', function(hooks) {
       .containsText('The countries where you have lived');
   });
 
-  test('it calls onOpen & onClose', async function(assert) {
+  test('it calls onOpen & onClose', async function (assert) {
     assert.expect(2);
 
     this.set('onOpen', () => {
@@ -73,7 +73,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     await clickTrigger('.my-container');
   });
 
-  test('it calls onFocusIn/onFocus & onFocusOut/onBlur', async function(assert) {
+  test('it calls onFocusIn/onFocus & onFocusOut/onBlur', async function (assert) {
     assert.expect(4);
 
     this.set('onFocusIn', () => {
@@ -98,7 +98,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     await blur('.test-select');
   });
 
-  test('mutates the value using onChange', async function(assert) {
+  test('mutates the value using onChange', async function (assert) {
     this.set('options', ['Brazil', 'China']);
     this.set('value', undefined);
     await render(template);
@@ -109,7 +109,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     assert.deepEqual(this.get('value'), 'Brazil');
   });
 
-  test('it handle multiple options', async function(assert) {
+  test('it handle multiple options', async function (assert) {
     this.set('options', ['Brazil', 'China', 'United States of America']);
     this.set('value', []);
     this.set('isMultiple', true);
@@ -127,7 +127,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     assert.deepEqual(this.get('value'), ['Brazil', 'China']);
   });
 
-  test('shows error messages and adds aria-invalid on close', async function(assert) {
+  test('shows error messages and adds aria-invalid on close', async function (assert) {
     this.set('errors', ['This field is required']);
     await render(template);
 
@@ -141,7 +141,7 @@ module('Integration | Component | FormSelect', function(hooks) {
       .hasText('This field is required');
   });
 
-  test('do not show errors if errors are empty', async function(assert) {
+  test('do not show errors if errors are empty', async function (assert) {
     this.set('errors', []);
     await render(template);
 
@@ -154,7 +154,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
-  test('do not show errors if hasError is false even if errors has elements', async function(assert) {
+  test('do not show errors if hasError is false even if errors has elements', async function (assert) {
     this.set('hasError', false);
     this.set('errors', ['Some error']);
     await render(template);
@@ -166,7 +166,7 @@ module('Integration | Component | FormSelect', function(hooks) {
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
-  test('always show error messages when hasSubmitted is true', async function(assert) {
+  test('always show error messages when hasSubmitted is true', async function (assert) {
     this.set('errors', ['This field is required']);
     this.set('hasSubmitted', true);
     await render(template);
@@ -177,7 +177,7 @@ module('Integration | Component | FormSelect', function(hooks) {
       .hasText('This field is required');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
     this.set('isSmall', true);
     this.set('isLarge', false);
     this.set('errors', ['something']);

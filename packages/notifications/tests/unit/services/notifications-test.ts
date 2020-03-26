@@ -3,10 +3,10 @@ import { setupTest } from 'ember-qunit';
 import { NotificationsService, Timer } from '@frontile/notifications';
 import { waitUntil } from '@ember/test-helpers';
 
-module('Unit | Service | notifications', function(hooks) {
+module('Unit | Service | notifications', function (hooks) {
   setupTest(hooks);
 
-  test('it creates a notification', async function(assert) {
+  test('it creates a notification', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;
@@ -22,7 +22,7 @@ module('Unit | Service | notifications', function(hooks) {
     assert.equal(service.notifications.length, 1);
   });
 
-  test('auto removal works', async function(assert) {
+  test('auto removal works', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;
@@ -44,7 +44,7 @@ module('Unit | Service | notifications', function(hooks) {
     );
   });
 
-  test('it creates a notification with preserve', async function(assert) {
+  test('it creates a notification with preserve', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;
@@ -62,7 +62,7 @@ module('Unit | Service | notifications', function(hooks) {
     assert.equal(service.notifications.length, 1);
   });
 
-  test('it passes options to the notification', async function(assert) {
+  test('it passes options to the notification', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;
@@ -94,7 +94,7 @@ module('Unit | Service | notifications', function(hooks) {
     assert.equal(service.notifications.length, 1);
   });
 
-  test('it removes a notification', async function(assert) {
+  test('it removes a notification', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;
@@ -119,7 +119,7 @@ module('Unit | Service | notifications', function(hooks) {
     );
   });
 
-  test('it removes all notifications', async function(assert) {
+  test('it removes all notifications', async function (assert) {
     const service = this.owner.lookup(
       'service:notifications'
     ) as NotificationsService;

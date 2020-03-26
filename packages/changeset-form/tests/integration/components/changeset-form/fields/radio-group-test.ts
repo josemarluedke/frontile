@@ -6,7 +6,7 @@ import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 import lookupValidator from 'ember-changeset-validations';
 
-module('Integration | Component | ChangesetForm::Fields::RadioGroup', function(
+module('Integration | Component | ChangesetForm::Fields::RadioGroup', function (
   hooks
 ) {
   setupRenderingTest(hooks);
@@ -48,20 +48,20 @@ module('Integration | Component | ChangesetForm::Fields::RadioGroup', function(
     `);
   });
 
-  test('it renders with initial model value', async function(assert) {
+  test('it renders with initial model value', async function (assert) {
     assert.dom('[data-test-radio-blue]').isChecked();
     assert.dom('[data-test-radio-green]').isNotChecked();
     assert.dom('[data-test-radio-red]').isNotChecked();
   });
 
-  test('it updates the changeset on input', async function(assert) {
+  test('it updates the changeset on input', async function (assert) {
     await click('[data-test-radio-green]');
     await click('[data-test-radio-red]');
 
     assert.equal(this.get('changeset').get('color'), 'red');
   });
 
-  test('it displays error message after option is selected', async function(assert) {
+  test('it displays error message after option is selected', async function (assert) {
     await click('[data-test-radio-green]');
 
     assert
@@ -69,7 +69,7 @@ module('Integration | Component | ChangesetForm::Fields::RadioGroup', function(
       .hasTextContaining('Please select another color');
   });
 
-  test('it receives original input values on rollback', async function(assert) {
+  test('it receives original input values on rollback', async function (assert) {
     await click('[data-test-radio-green]');
 
     assert.dom('[data-test-radio-blue]').isNotChecked();

@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | FormField::Input', function(hooks) {
+module('Integration | Component | FormField::Input', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders with html attributes', async function(assert) {
+  test('it renders with html attributes', async function (assert) {
     await render(hbs`<FormField::Input
                       name="some-name"
                       data-test-my-input />`);
@@ -15,31 +15,31 @@ module('Integration | Component | FormField::Input', function(hooks) {
     assert.dom('[name="some-name"]').exists();
   });
 
-  test('it should default type as text', async function(assert) {
+  test('it should default type as text', async function (assert) {
     await render(hbs`<FormField::Input data-test-my-input />`);
 
     assert.dom('[data-test-my-input]').hasAttribute('type', 'text');
   });
 
-  test('it should allow to change the input type', async function(assert) {
+  test('it should allow to change the input type', async function (assert) {
     await render(hbs`<FormField::Input @type="number" data-test-my-input />`);
 
     assert.dom('[data-test-my-input]').hasAttribute('type', 'number');
   });
 
-  test('it renders @id arg', async function(assert) {
+  test('it renders @id arg', async function (assert) {
     await render(hbs`<FormField::Input @id="my-id" data-test-my-input />`);
 
     assert.dom('[data-test-my-input]').hasAttribute('id', 'my-id');
   });
 
-  test('it renders id html attribute', async function(assert) {
+  test('it renders id html attribute', async function (assert) {
     await render(hbs`<FormField::Input id="my-id" data-test-my-input />`);
 
     assert.dom('[data-test-my-input]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function(assert) {
+  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
     this.set('isSmall', true);
     this.set('isLarge', false);
 
@@ -59,7 +59,7 @@ module('Integration | Component | FormField::Input', function(hooks) {
     assert.dom('[data-test-input]').doesNotHaveClass('form-input-lg');
   });
 
-  test('renders @value arg, does not mutate it by default', async function(assert) {
+  test('renders @value arg, does not mutate it by default', async function (assert) {
     this.set('value', 'Josemar');
 
     await render(
@@ -77,7 +77,7 @@ module('Integration | Component | FormField::Input', function(hooks) {
     );
   });
 
-  test('should call @onInput function arg', async function(assert) {
+  test('should call @onInput function arg', async function (assert) {
     assert.expect(4);
     this.set('value', 'Josemar');
 
@@ -102,7 +102,7 @@ module('Integration | Component | FormField::Input', function(hooks) {
     assert.equal(this.get('value'), 'Sam', 'should have mutated the value');
   });
 
-  test('should call @onChange function arg', async function(assert) {
+  test('should call @onChange function arg', async function (assert) {
     assert.expect(4);
     this.set('value', 'Josemar');
 

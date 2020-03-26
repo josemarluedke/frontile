@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | FormField', function(hooks) {
+module('Integration | Component | FormField', function (hooks) {
   setupRenderingTest(hooks);
   const template = hbs`
                  <FormField
@@ -20,7 +20,7 @@ module('Integration | Component | FormField', function(hooks) {
                   <f.Feedback>My Feedback</f.Feedback>
                 </FormField>`;
 
-  test('it generates unique id for the component and yield ids', async function(assert) {
+  test('it generates unique id for the component and yield ids', async function (assert) {
     await render(template);
 
     assert.dom('[data-test-id="form-field"] .id').matchesText(/ember[1-9.]/);
@@ -30,7 +30,7 @@ module('Integration | Component | FormField', function(hooks) {
       .matchesText(/(.)-feedback/);
   });
 
-  test('it yields Label, Hint and Feedback components with pre-defined ids', async function(assert) {
+  test('it yields Label, Hint and Feedback components with pre-defined ids', async function (assert) {
     await render(template);
 
     const id =
