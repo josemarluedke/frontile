@@ -10,5 +10,11 @@
     "name": "v0.1.0-alpha.4",
     "sha": "cf89496b6ee354d8018bee1ae3970750b08ccc11",
     "tag": "v0.1.0-alpha.4"
+  },
+  "v0.1.0-alpha.5": {
+    "path": "versions/v0.1.0-alpha.5",
+    "name": "v0.1.0-alpha.5",
+    "sha": "a05a2a64f6b6881b2ddb0f21bc35b111083329ec",
+    "tag": "v0.1.0-alpha.5"
   }
 }
