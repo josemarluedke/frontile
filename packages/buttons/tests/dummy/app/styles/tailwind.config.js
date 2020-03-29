@@ -14,5 +14,5 @@ module.exports = {
     extend: {}
   },
   variants: {},
-  plugins: [require('@frontile/buttons').tailwind]
+  plugins: [require('@frontile/buttons/tailwind')]
 };

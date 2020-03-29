@@ -2,7 +2,6 @@
 
 module.exports = {
   name: require('./package').name,
-  tailwind: require('./addon/tailwind'),
   options: {
     'ember-power-select': {
       theme: false
