@@ -48,7 +48,19 @@ module.exports = plugin.withOptions(function (userConfig) {
 
     Object.keys(options).forEach((key) => {
       const modifier = key === 'default' ? '' : `-${key}`;
-      addButton(options[key].button, modifier);
+      if (['xs', 'sm', 'lg', 'xl'].includes(modifier.substring(1))) {
+        addButton(
+          {
+            default: options[key].button.default,
+            outlined:
+              options[key].button.outlined || options[key].button.default,
+            minimal: options[key].button.minimal || options[key].button.default
+          },
+          modifier
+        );
+      } else {
+        addButton(options[key].button, modifier);
+      }
     });
   };
 });
