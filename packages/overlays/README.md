@@ -1,4 +1,4 @@
-@frontile/modals
+@frontile/overlays
 ==============================================================================
 
 [Short description of the addon.]
@@ -16,7 +16,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install @frontile/modals
+ember install @frontile/overlays
 ```
 
 

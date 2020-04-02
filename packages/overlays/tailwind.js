@@ -4,7 +4,7 @@ const { resolve, isEmpty } = require('@frontile/tailwindcss-plugin-helpers');
 module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {
     const { options } = resolve(
-      '@frontile/modals',
+      '@frontile/overlays',
       require('./addon/tailwind/default-options'),
       userConfig,
       theme
