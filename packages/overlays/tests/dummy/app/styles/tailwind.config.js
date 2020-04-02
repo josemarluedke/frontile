@@ -4,7 +4,7 @@
 const path = require('path');
 delete require.cache[
   path.join(
-    path.dirname(require.resolve('@frontile/modals')),
+    path.dirname(require.resolve('@frontile/overlays')),
     'addon/tailwind/default-options.js'
   )
 ];
@@ -14,5 +14,5 @@ module.exports = {
     extend: {}
   },
   variants: {},
-  plugins: [require('@frontile/modals/tailwind')]
+  plugins: [require('@frontile/overlays/tailwind')]
 };

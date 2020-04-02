@@ -10,16 +10,16 @@
         "tests/dummy/app/*",
         "app/*"
       ],
-      "@frontile/modals": [
+      "@frontile/overlays": [
         "addon"
       ],
-      "@frontile/modals/*": [
+      "@frontile/overlays/*": [
         "addon/*"
       ],
-      "@frontile/modals/test-support": [
+      "@frontile/overlays/test-support": [
         "addon-test-support"
       ],
-      "@frontile/modals/test-support/*": [
+      "@frontile/overlays/test-support/*": [
         "addon-test-support/*"
       ],
       "*": [

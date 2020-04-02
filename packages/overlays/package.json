@@ -1,7 +1,7 @@
 {
-  "name": "@frontile/modals",
+  "name": "@frontile/overlays",
   "version": "0.0.0",
-  "description": "Component Library for Ember Octane apps: modals",
+  "description": "Component Library for Ember Octane apps: overlays",
   "keywords": [
     "ember-addon"
   ],
