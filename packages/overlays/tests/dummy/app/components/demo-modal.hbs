@@ -1,0 +1,23 @@
+<button
+  {{on "click" this.toggleModal}}
+  type="button"
+>
+  Toggle Modal
+</button>
+
+<div class="relative w-48 h-48">
+  <Modal
+    class="bg-white rounded"
+    @isOpen={{this.isOpen}}
+    @onClose={{this.toggleModal}}
+    @renderInPlace={{false}}
+    as |m|
+  >
+    <m.Header>Header Title</m.Header>
+    <m.Body>
+      Body Content
+
+    </m.Body>
+    <m.Footer>Footer Content</m.Footer>
+  </Modal>
+</div>
