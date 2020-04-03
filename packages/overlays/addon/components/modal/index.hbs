@@ -1,0 +1,27 @@
+<Overlay
+  @isOpen={{@isOpen}}
+  @onClose={{this.handleClose}}
+  @renderInPlace={{@renderInPlace}}
+  @destinationElementId={{@destinationElementId}}
+  @transitionDuration={{@transitionDuration}}
+  @disableBackdrop={{@disableBackdrop}}
+  @disableTransitions={{@disableTransitions}}
+  @disableFocusTrap={{@disableFocusTrap}}
+  @closeOnOutsideClick={{@closeOnOutsideClick}}
+  @closeOnEscapeKey={{@closeOnEscapeKey}}
+  @backdropTransitionName={{@backdropTransitionName}}
+  @contentTransitionName={{if @transitionName @transitionName "overlay--transition--zoom"}}
+>
+  <div
+    ...attributes
+    tabindex="0"
+    role="dialog"
+    aria-labelledby={{this.headerId}}
+  >
+    {{yield (hash
+      Header=(component "modal/header" labelledById=this.headerId onClose=this.handleClose)
+      Body=(component "modal/body")
+      Footer=(component "modal/footer")
+    )}}
+  </div>
+</Overlay>

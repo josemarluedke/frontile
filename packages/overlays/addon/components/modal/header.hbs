@@ -1,0 +1,14 @@
+<div
+  ...attributes
+>
+  <div id={{@labelledById}}>
+    {{yield}}
+  </div>
+
+  <button
+    {{on "click" @onClose}}
+    type="button"
+  >
+    Close
+  </button>
+</div>
