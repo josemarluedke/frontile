@@ -10,16 +10,51 @@ module.exports = plugin.withOptions(function (userConfig) {
       theme
     );
 
-    function addTODO(options, modifier) {
+    function addTransitionPhases(name, options) {
       if (isEmpty(options)) {
         return;
       }
-      addComponents({ [`.TODO${modifier}`]: options });
+      const { enter, enterActive, leave, leaveActive } = options || {};
+
+      name = `.overlay--transition--${name}`;
+
+      addComponents({ [`${name}-enter`]: enter });
+      addComponents({ [`${name}-enter-active`]: enterActive });
+      addComponents({ [`${name}-leave`]: leave });
+      addComponents({ [`${name}-leave-active`]: leaveActive });
     }
 
+    function addTransitions(options) {
+      if (isEmpty(options)) {
+        return;
+      }
+
+      Object.keys(options).forEach((key) => {
+        addTransitionPhases(key, options[key]);
+      });
+    }
+
+    function addOverlay(options, modifier) {
+      if (isEmpty(options)) {
+        return;
+      }
+      addComponents({ [`.overlay${modifier}`]: options });
+      addComponents({
+        [`.overlay${modifier} .overlay__backdrop`]: options.backdrop
+      });
+
+      addComponents({
+        [`.overlay${modifier} .overlay__content`]: options.content
+      });
+
+      addComponents({ [`.js-overlay-is-open`]: options.jsIsOpen });
+    }
+
+    addTransitions(options.default.transitions);
+
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `-${key}`;
-      addTODO(options[key].TODO, modifier);
+      const modifier = key === 'default' ? '' : `--${key}`;
+      addOverlay(options[key].overlay, modifier);
     });
   };
 });
