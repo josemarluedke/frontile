@@ -1,0 +1,66 @@
+{{!--
+  Here are the css classes we use. This is here so that purgecss doesn't remove them.
+  js-overlay-is-open
+  overlay--transition--fade-enter
+  overlay--transition--fade-enter-active
+  overlay--transition--fade-leave
+  overlay--transition--fade-leave-active
+  overlay--transition--zoom-enter
+  overlay--transition--zoom-enter-active
+  overlay--transition--zoom-leave
+  overlay--transition--zoom-leave-active
+--}}
+
+{{#if this.isVisible}}
+  {{#maybe-in-element this.destinationElement @renderInPlace insertBefore=null}}
+    <div
+      {{focus-trap isActive=(if @disableFocusTrap false @isOpen)}}
+      class="overlay {{if @renderInPlace "overlay--in-place"}}"
+      ...attributes
+    >
+      {{#if this.isBackdropVisible}}
+        {{!-- template-lint-disable no-invalid-interactive --}}
+        {{#if @disableTransitions}}
+          <div
+            class="overlay__backdrop"
+            {{on "click" this.handleOverlayClick}}
+          ></div>
+        {{else}}
+          <div
+            class="overlay__backdrop"
+            {{on "click" this.handleOverlayClick}}
+            {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade")}}
+          ></div>
+          {{/if}}
+        {{!-- template-lint-enable no-invalid-interactive --}}
+      {{/if}}
+
+      {{!--
+        This is required to make css-transition work with 2
+        sibling elements been removed at the same time.
+      --}}
+      <span data-is-visible={{this.isVisible}}></span>
+
+      {{#if @isOpen}}
+        {{#if @disableTransitions}}
+          <div
+            class="overlay__content"
+            {{did-insert this.setup}}
+            {{will-destroy this.teardown}}
+          >
+            {{yield}}
+          </div>
+        {{else}}
+          <div
+            class="overlay__content"
+            {{did-insert this.setup}}
+            {{will-destroy this.teardown}}
+            {{css-transition (if @contentTransitionName @contentTransitionName "overlay--transition--fade")}}
+          >
+            {{yield}}
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  {{/maybe-in-element}}
+{{/if}}

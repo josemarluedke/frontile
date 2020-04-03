@@ -3,11 +3,15 @@
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 const path = require('path');
 
+// Enable FastBoot Rehydration
+// process.env.EXPERIMENTAL_RENDER_MODE_SERIALIZE = true;
+
 module.exports = function (defaults) {
   const app = new EmberAddon(defaults, {
     postcssOptions: {
       compile: {
         enabled: true,
+        cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
         plugins: [
           require('tailwindcss')(
             path.join('tests', 'dummy', 'app', 'styles', 'tailwind.config.js')
