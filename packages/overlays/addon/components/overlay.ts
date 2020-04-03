@@ -141,7 +141,7 @@ export default class Overlay extends Component<OverlayArgs> {
 
     let duration = this.args.transitionDuration || 200;
 
-    if (this.args.disableTransitions !== true) {
+    if (this.args.disableTransitions === true) {
       duration = 0;
     }
 
