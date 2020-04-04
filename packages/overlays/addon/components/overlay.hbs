@@ -18,8 +18,8 @@
       class="overlay {{if @renderInPlace "overlay--in-place"}}"
       ...attributes
     >
+      {{!-- template-lint-disable no-invalid-interactive --}}
       {{#if this.isBackdropVisible}}
-        {{!-- template-lint-disable no-invalid-interactive --}}
         {{#if @disableTransitions}}
           <div
             class="overlay__backdrop"
@@ -32,7 +32,6 @@
             {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade")}}
           ></div>
         {{/if}}
-        {{!-- template-lint-enable no-invalid-interactive --}}
       {{/if}}
 
       {{!--
@@ -63,6 +62,7 @@
           </div>
         {{/if}}
       {{/if}}
+      {{!-- template-lint-enable no-invalid-interactive --}}
     </div>
   {{/maybe-in-element}}
 {{/if}}
