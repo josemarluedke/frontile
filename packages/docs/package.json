@@ -26,6 +26,7 @@
     "@frontile/core": "^0.1.0-alpha.6",
     "@frontile/forms": "^0.1.0-alpha.6",
     "@frontile/notifications": "^0.1.0-alpha.6",
+    "@frontile/overlays": "^0.1.0-alpha.6",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "@types/ember": "^3.1.2",
