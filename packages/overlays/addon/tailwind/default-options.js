@@ -56,7 +56,6 @@ function defaultOptions(/*{ config }*/) {
         bottom: 0,
         right: 0,
         left: 0,
-
         '-webkit-overflow-scrolling': 'touch',
 
         jsIsOpen: {
@@ -103,6 +102,8 @@ function defaultOptions(/*{ config }*/) {
           right: defaultTheme.padding[2],
           transitionProperty: defaultTheme.transitionProperty.default,
           transitionDuration: defaultTheme.transitionDuration[200],
+          borderRadius: defaultTheme.borderRadius.full,
+
           '&:hover': {
             backgroundColor: defaultTheme.colors.gray[200]
           },
@@ -112,7 +113,6 @@ function defaultOptions(/*{ config }*/) {
             boxShadow: defaultTheme.boxShadow.outline
           },
 
-          borderRadius: defaultTheme.borderRadius.full,
           icon: {
             display: 'inline-block',
             height: '1em',
@@ -156,7 +156,6 @@ function defaultOptions(/*{ config }*/) {
     'in-place': {
       overlay: {
         position: 'absolute',
-
         backdrop: {
           position: 'absolute'
         }
