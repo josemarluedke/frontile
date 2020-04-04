@@ -9,10 +9,22 @@ interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
    * @defaultValue `overlay--transition--zoom`
    */
   transitionName?: string;
+
+  /* If set to false, the close button will not be displayed,
+   * closeOnOutsideClick will be set to false, and closeOnEscapeKey will also be set
+   * to false.
+   *
+   * @defaultValue true
+   */
+  allowClosing?: boolean;
 }
 
 export default class Modal extends Component<ModalArgs> {
   headerId = `${guidFor(this)}-header`;
+
+  get preventClosing(): boolean {
+    return this.args.allowClosing === false;
+  }
 
   @action handleClose(): void {
     if (typeof this.args.onClose === 'function') {

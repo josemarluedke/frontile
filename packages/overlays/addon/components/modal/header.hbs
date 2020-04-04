@@ -1,14 +1,7 @@
 <div
+  id={{@labelledById}}
+  class="modal__header"
   ...attributes
 >
-  <div id={{@labelledById}}>
-    {{yield}}
-  </div>
-
-  <button
-    {{on "click" @onClose}}
-    type="button"
-  >
-    Close
-  </button>
+  {{yield}}
 </div>
