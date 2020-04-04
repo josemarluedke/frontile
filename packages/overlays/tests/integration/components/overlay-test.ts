@@ -47,7 +47,7 @@ module('Integration | Component | Overlay', function (hooks) {
     assert.dom('[data-test-id="overlay"]').doesNotExist();
   });
 
-  test('@renderInPlace={{true}} it renders in place', async function (assert) {
+  test('when @renderInPlace={{true}} renders in place', async function (assert) {
     this.set('disableTransitions', true);
     this.set('renderInPlace', true);
     this.set('isOpen', true);
@@ -58,7 +58,7 @@ module('Integration | Component | Overlay', function (hooks) {
     assert.dom('[data-test-id="overlay"].overlay--in-place').exists();
   });
 
-  test('@disableBackdrop=true does not render backdrop', async function (assert) {
+  test('when @disableBackdrop=true does not render backdrop', async function (assert) {
     this.set('disableTransitions', true);
     this.set('isOpen', true);
     this.set('disableBackdrop', true);
@@ -83,7 +83,7 @@ module('Integration | Component | Overlay', function (hooks) {
     assert.dom('[data-test-id="overlay"]').doesNotExist();
   });
 
-  test('@closeOnOutsideClick={{false}} it does not close overlay', async function (assert) {
+  test('when @closeOnOutsideClick={{false}} does not close overlay', async function (assert) {
     assert.expect(1);
 
     this.set('disableTransitions', true);
@@ -116,7 +116,7 @@ module('Integration | Component | Overlay', function (hooks) {
     assert.dom('[data-test-id="overlay"]').doesNotExist();
   });
 
-  test('@closeOnEscapeKey={{false}} it does not close overlay', async function (assert) {
+  test('when @closeOnEscapeKey={{false}} does not close overlay', async function (assert) {
     assert.expect(1);
 
     this.set('disableTransitions', true);
