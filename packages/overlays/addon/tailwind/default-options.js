@@ -97,6 +97,7 @@ function defaultOptions(/*{ config }*/) {
         closeBtn: {
           display: 'flex',
           position: 'absolute',
+          fontSize: defaultTheme.fontSize.xl,
           padding: defaultTheme.spacing[2],
           top: defaultTheme.padding[2],
           right: defaultTheme.padding[2],
@@ -125,6 +126,7 @@ function defaultOptions(/*{ config }*/) {
 
         header: {
           fontWeight: defaultTheme.fontWeight.bold,
+          fontSize: defaultTheme.fontSize.xl,
           paddingTop: defaultTheme.padding[4],
           paddingBottom: defaultTheme.padding[4],
           paddingRight: defaultTheme.padding[4],
@@ -139,7 +141,7 @@ function defaultOptions(/*{ config }*/) {
         footer: {
           display: 'flex',
           justifyContent: 'flex-end',
-          backgroundColor: defaultTheme.colors.gray[200],
+          backgroundColor: defaultTheme.colors.gray[100],
           borderTopWidth: defaultTheme.borderWidth.default,
           borderTopColor: defaultTheme.borderColor.default,
           paddingTop: defaultTheme.padding[4],
