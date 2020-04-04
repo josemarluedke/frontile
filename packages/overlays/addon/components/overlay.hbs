@@ -45,6 +45,7 @@
         {{#if @disableTransitions}}
           <div
             class="overlay__content"
+            {{on "click" this.handleContentClick}}
             {{did-insert this.setup}}
             {{will-destroy this.teardown}}
           >
@@ -53,6 +54,7 @@
         {{else}}
           <div
             class="overlay__content"
+            {{on "click" this.handleContentClick}}
             {{did-insert this.setup}}
             {{will-destroy this.teardown}}
             {{css-transition (if @contentTransitionName @contentTransitionName "overlay--transition--fade")}}
