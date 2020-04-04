@@ -29,6 +29,7 @@ module('Integration | Component | Overlay', function (hooks) {
   `;
 
   test('it renders the content, into destination and only when opened', async function (assert) {
+    this.set('disableTransitions', true);
     this.set('isOpen', true);
     await render(template);
     await settled();
