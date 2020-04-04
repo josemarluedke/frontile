@@ -1,0 +1,37 @@
+<Button
+  {{on "click" this.toggleModal}}
+>
+  Open Modal
+</Button>
+
+<div class="relative h-48 w-3xl">
+  <Modal
+    @isOpen={{this.isOpen}}
+    @onClose={{this.toggleModal}}
+    @renderInPlace={{false}}
+    as |m|
+  >
+    <m.Header>Title</m.Header>
+    <m.Body>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </m.Body>
+    <m.Footer>
+      <Button
+        @appearance="minimal"
+        class="mr-4"
+        {{on "click" this.toggleModal}}
+      >
+        Cancel
+      </Button>
+      <Button
+        @intent="primary"
+        disabled={{this.isLoading}}
+        {{on "click" this.save}}
+      >
+        {{if this.isLoading "Loading..." "Save"}}
+      </Button>
+    </m.Footer>
+  </Modal>
+</div>

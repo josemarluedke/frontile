@@ -35,6 +35,9 @@ Router.map(function () {
     this.route('notifications', function () {
       this.route('usage');
     });
+    this.route('overlays', function () {
+      this.route('usage');
+    });
   });
 
   this.route('not-found', { path: '/*path' });
