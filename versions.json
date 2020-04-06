@@ -22,5 +22,11 @@
     "name": "v0.1.0-alpha.6",
     "sha": "7c6e89ab3a618791d2a00b363def1612e7ad799f",
     "tag": "v0.1.0-alpha.6"
+  },
+  "v0.1.0-alpha.7": {
+    "path": "versions/v0.1.0-alpha.7",
+    "name": "v0.1.0-alpha.7",
+    "sha": "4d5e9200fbfc0a8b55f597b38014a316e14efd34",
+    "tag": "v0.1.0-alpha.7"
   }
 }
