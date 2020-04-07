@@ -55,6 +55,13 @@ export interface OverlayArgs {
   onClose?: () => void;
 
   /*
+   * A function that will be called when closing is finished executing, this
+   * includes waiting for animations/transitions to finish.
+   * @defaultValue true
+   */
+  didClose?: () => void;
+
+  /*
    * Whether to close when the area outside (the backdrop) is clicked
    * @defaultValue true
    */
@@ -157,8 +164,12 @@ export default class Overlay extends Component<OverlayArgs> {
       duration = 0;
     }
 
+    const { didClose } = this.args;
     later(() => {
       if (!this.isDestroyed) this.keepOpen = false;
+      if (typeof didClose === 'function') {
+        didClose();
+      }
     }, duration);
   }
 }
