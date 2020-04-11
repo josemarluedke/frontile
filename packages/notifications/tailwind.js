@@ -40,35 +40,45 @@ module.exports = plugin.withOptions(function (userConfig) {
         ...rest
       } = options;
 
-      addComponents({ [`.notification-card${modifier}`]: rest });
-      addComponents({
-        [`.notification-card${modifier} .notification-card__message`]: message
-      });
-      addComponents({
-        [`.notification-card${modifier} .notification-card__close-btn`]: closeBtn
-      });
-      addComponents({
-        [`.notification-card${modifier} .notification-card__custom-actions`]: customActions
-      });
-
-      addComponents({
-        [`.notification-card${modifier} .notification-card__custom-actions__btn`]: customActionBtn
-      });
-
-      addComponents(
-        replaceIconDeclarations(
-          {
-            [`.notification-card${modifier} .notification-card__close-btn__icon`]: closeBtnIcon
-          },
-          ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
-            return {
-              backgroundImage: `url("${svgToDataUri(
-                typeof icon === 'function' ? icon(iconColor) : icon
-              )}")`
-            };
-          }
-        )
-      );
+      if (!isEmpty(rest)) {
+        addComponents({ [`.notification-card${modifier}`]: rest });
+      }
+      if (!isEmpty(message)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__message`]: message
+        });
+      }
+      if (!isEmpty(closeBtn)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__close-btn`]: closeBtn
+        });
+      }
+      if (!isEmpty(customActions)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__custom-actions`]: customActions
+        });
+      }
+      if (!isEmpty(customActionBtn)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__custom-actions__btn`]: customActionBtn
+        });
+      }
+      if (!isEmpty(closeBtnIcon)) {
+        addComponents(
+          replaceIconDeclarations(
+            {
+              [`.notification-card${modifier} .notification-card__close-btn__icon`]: closeBtnIcon
+            },
+            ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
+              return {
+                backgroundImage: `url("${svgToDataUri(
+                  typeof icon === 'function' ? icon(iconColor) : icon
+                )}")`
+              };
+            }
+          )
+        );
+      }
     }
 
     Object.keys(options).forEach((key) => {
