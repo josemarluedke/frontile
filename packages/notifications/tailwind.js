@@ -37,11 +37,29 @@ module.exports = plugin.withOptions(function (userConfig) {
         closeBtnIcon,
         customActions,
         customActionBtn,
+        stateEntered,
+        stateExisting,
+        stateEntering,
         ...rest
       } = options;
 
       if (!isEmpty(rest)) {
         addComponents({ [`.notification-card${modifier}`]: rest });
+      }
+      if (!isEmpty(stateEntered)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-entered`]: stateEntered
+        });
+      }
+      if (!isEmpty(stateExisting)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-exiting`]: stateExisting
+        });
+      }
+      if (!isEmpty(stateEntering)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-entering`]: stateEntering
+        });
       }
       if (!isEmpty(message)) {
         addComponents({

@@ -52,6 +52,24 @@ function defaultOptions({ config }) {
     }
   };
 
+  const notificationEnteringPosition = {
+    right: {
+      transform: 'translate3d(125%, 0, 0)'
+    },
+
+    left: {
+      transform: 'translate3d(-125%, 0, 0)'
+    },
+
+    top: {
+      transform: 'translate3d(0, -125%, 0)'
+    },
+
+    bottom: {
+      transform: 'translate3d(0, 125%, 0)'
+    }
+  };
+
   return {
     default: {
       container: {
@@ -84,33 +102,13 @@ function defaultOptions({ config }) {
         paddingRight: defaultTheme.padding[4],
         paddingLeft: defaultTheme.padding[4],
 
-        '&.is-entering': {
-          '&.top-right, &.bottom-right': {
-            transform: 'translate3d(125%, 0, 0)'
-          },
-
-          '&.top-left, &.bottom-left': {
-            transform: 'translate3d(-125%, 0, 0)'
-          },
-
-          '&.top-center': {
-            transform: 'translate3d(0, -125%, 0)'
-          },
-
-          '&.bottom-center': {
-            transform: 'translate3d(0, 125%, 0)'
-          }
-        },
-
-        '&.has-entered': {
+        stateEntered: {
           transform: 'translate3d(0,0,0)'
         },
-
-        '&.is-exiting': {
+        stateExisting: {
           transform: 'scale(0.80)',
           opacity: 0
         },
-
         message: {
           flexGrow: 1
         },
@@ -158,26 +156,32 @@ function defaultOptions({ config }) {
     error: generateAppearance(config.error),
 
     topLeft: {
-      container: { top: 0, left: 0 }
+      container: { top: 0, left: 0 },
+      card: { stateEntering: notificationEnteringPosition.left }
     },
     topCenter: {
-      container: { top: 0, left: '50%', transform: 'translateX(-50%)' }
+      container: { top: 0, left: '50%', transform: 'translateX(-50%)' },
+      card: { stateEntering: notificationEnteringPosition.top }
     },
     topRight: {
-      container: { top: 0, right: 0 }
+      container: { top: 0, right: 0 },
+      card: { stateEntering: notificationEnteringPosition.right }
     },
     bottomLeft: {
-      container: { bottom: 0, left: 0 }
+      container: { bottom: 0, left: 0 },
+      card: { stateEntering: notificationEnteringPosition.left }
     },
     bottomCenter: {
       container: {
         bottom: 0,
         left: '50%',
         transform: 'translateX(-50%)'
-      }
+      },
+      card: { stateEntering: notificationEnteringPosition.bottom }
     },
     bottomRight: {
-      container: { bottom: 0, right: 0 }
+      container: { bottom: 0, right: 0 },
+      card: { stateEntering: notificationEnteringPosition.right }
     }
   };
 }
