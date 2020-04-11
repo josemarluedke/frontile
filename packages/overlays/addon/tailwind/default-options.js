@@ -3,10 +3,21 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 ).theme;
 
 const defaultConfig = {
-  // empty for now
+  textColor: 'inherit',
+  zIndex: 50,
+  borderRadius: defaultTheme.borderRadius.default,
+  backdropColor: 'rgba(0, 0, 0, 0.45)',
+  modal: {
+    padding: defaultTheme.padding[4],
+    backgroundColor: defaultTheme.colors.white,
+    secondaryBackgroundColor: defaultTheme.colors.gray[100], // Background for footer and close btn applied on hover
+    iconColor: 'currentColor',
+    borderColor: defaultTheme.borderColor.default,
+    maxWidth: defaultTheme.maxWidth['xl']
+  }
 };
 
-function defaultOptions(/*{ config }*/) {
+function defaultOptions({ config }) {
   const inset0 = {
     top: 0,
     bottom: 0,
@@ -17,7 +28,8 @@ function defaultOptions(/*{ config }*/) {
   return {
     default: {
       overlay: {
-        zIndex: 50,
+        color: config.textColor,
+        zIndex: config.zIndex,
         jsIsOpen: {
           overflow: 'hidden'
         },
@@ -25,7 +37,7 @@ function defaultOptions(/*{ config }*/) {
         backdrop: {
           ...inset0,
           position: 'fixed',
-          backgroundColor: 'rgba(0, 0, 0, 0.45)',
+          backgroundColor: config.backdropColor,
           userSelect: 'none'
         },
 
@@ -39,15 +51,15 @@ function defaultOptions(/*{ config }*/) {
         }
       },
       modal: {
-        backgroundColor: defaultTheme.colors.white,
-        borderRadius: defaultTheme.borderRadius.default,
+        backgroundColor: config.modal.backgroundColor,
+        borderRadius: config.borderRadius,
         boxShadow: defaultTheme.boxShadow.default,
         marginBottom: defaultTheme.margin[24],
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: defaultTheme.spacing[24],
-        maxWidth: defaultTheme.maxWidth['xl'],
         width: defaultTheme.width.full,
+        maxWidth: config.modal.maxWidth,
         outline: 'none',
         position: 'relative',
 
@@ -67,7 +79,7 @@ function defaultOptions(/*{ config }*/) {
           borderRadius: defaultTheme.borderRadius.full,
 
           '&:hover': {
-            backgroundColor: defaultTheme.colors.gray[200]
+            backgroundColor: config.modal.secondaryBackgroundColor
           },
 
           '&.focus-visible:focus': {
@@ -79,31 +91,30 @@ function defaultOptions(/*{ config }*/) {
             height: '1em',
             width: '1em',
             backgroundRepeat: 'no-repeat',
-            iconColor: 'currentColor',
+            iconColor: config.modal.iconColor,
             icon: (iconColor) =>
               `<svg fill="none" stroke="${iconColor}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12"></path></svg>`
           }
         },
-
         header: {
           fontWeight: defaultTheme.fontWeight.bold,
           fontSize: defaultTheme.fontSize.xl,
-          padding: defaultTheme.padding[4],
-          borderTopRightRadius: defaultTheme.borderRadius.default,
-          borderTopLeftRadius: defaultTheme.borderRadius.default
+          padding: config.modal.padding,
+          borderTopRightRadius: config.borderRadius,
+          borderTopLeftRadius: config.borderRadius
         },
         body: {
-          padding: defaultTheme.padding[4]
+          padding: config.modal.padding
         },
         footer: {
           display: 'flex',
           justifyContent: 'flex-end',
-          backgroundColor: defaultTheme.colors.gray[100],
+          backgroundColor: config.modal.secondaryBackgroundColor,
           borderTopWidth: defaultTheme.borderWidth.default,
-          borderTopColor: defaultTheme.borderColor.default,
-          padding: defaultTheme.padding[4],
-          borderBottomRightRadius: defaultTheme.borderRadius.default,
-          borderBottomLeftRadius: defaultTheme.borderRadius.default
+          borderTopColor: config.modal.borderColor,
+          padding: config.modal.padding,
+          borderBottomRightRadius: config.borderRadius,
+          borderBottomLeftRadius: config.borderRadius
         }
       },
       transitions: {
