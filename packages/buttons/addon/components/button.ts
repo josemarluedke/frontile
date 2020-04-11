@@ -4,7 +4,6 @@ interface ButtonArgs {
   type?: 'button' | 'submit' | 'reset';
   appearance?: 'default' | 'outlined' | 'minimal';
   intent?: 'primary' | 'success' | 'warning' | 'danger';
-  isActive?: boolean;
   isXSmall?: boolean;
   isSmall?: boolean;
   isLarge?: boolean;
@@ -43,15 +42,11 @@ export default class Button extends Component<ButtonArgs> {
     }
 
     if (this.size) {
-      names.push(`${names[0]}-${this.size}`);
+      names.push(`${names[0]}--${this.size}`);
     }
 
     if (this.args.intent) {
-      names.push(`${names[0]}-${this.args.intent}`);
-    }
-
-    if (this.args.isActive) {
-      names.push('is-active');
+      names.push(`${names[0]}--${this.args.intent}`);
     }
 
     return names.join(' ');

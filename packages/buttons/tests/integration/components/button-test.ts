@@ -56,13 +56,13 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @intent="primary" data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-primary');
+        assert.dom('[data-test-id="button"]').hasClass('btn--primary');
         assert
           .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-outlined-primary');
+          .doesNotHaveClass('btn-outlined--primary');
         assert
           .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-minimal-primary');
+          .doesNotHaveClass('btn-minimal--primary');
       });
 
       test('it adds class for the an intent with appearance=outlined', async function (assert) {
@@ -76,11 +76,11 @@ module('Integration | Component | Button', function (hooks) {
              </Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-outlined-primary');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-primary');
+        assert.dom('[data-test-id="button"]').hasClass('btn-outlined--primary');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn--primary');
         assert
           .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-minimal-primary');
+          .doesNotHaveClass('btn-minimal--primary');
       });
 
       test('it adds class for the an intent with appearance=minimal', async function (assert) {
@@ -94,11 +94,11 @@ module('Integration | Component | Button', function (hooks) {
              </Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-minimal-primary');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-primary');
+        assert.dom('[data-test-id="button"]').hasClass('btn-minimal--primary');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn--primary');
         assert
           .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-outlined-primary');
+          .doesNotHaveClass('btn-outlined--primary');
       });
     });
 
@@ -108,7 +108,7 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @isXSmall={{true}} data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-xs');
+        assert.dom('[data-test-id="button"]').hasClass('btn--xs');
       });
 
       test('it adds class @isSmall', async function (assert) {
@@ -116,7 +116,7 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @isSmall={{true}} data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-sm');
+        assert.dom('[data-test-id="button"]').hasClass('btn--sm');
       });
 
       test('it adds class @isLarge', async function (assert) {
@@ -124,7 +124,7 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @isLarge={{true}} data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-lg');
+        assert.dom('[data-test-id="button"]').hasClass('btn--lg');
       });
 
       test('it adds class @isXLarge', async function (assert) {
@@ -132,7 +132,7 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @isXLarge={{true}} data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-xl');
+        assert.dom('[data-test-id="button"]').hasClass('btn--xl');
       });
 
       test('it adds class @isLarge with appearance', async function (assert) {
@@ -140,7 +140,7 @@ module('Integration | Component | Button', function (hooks) {
           hbs`<Button @appearance="outlined" @isLarge={{true}} data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn-outlined-lg');
+        assert.dom('[data-test-id="button"]').hasClass('btn-outlined--lg');
       });
     });
   });

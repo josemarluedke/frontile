@@ -30,25 +30,25 @@ module.exports = plugin.withOptions(function (userConfig) {
           });
         }
       } else {
-        addComponents({ [`.btn.btn${modifier}`]: options.default });
+        addComponents({ [`.btn${modifier}`]: options.default });
 
         if (!isEmpty(options.outlined)) {
           addComponents({
-            [`.btn-outlined.btn-outlined${modifier}`]: options.outlined
+            [`.btn-outlined${modifier}`]: options.outlined
           });
         }
 
         if (!isEmpty(options.minimal)) {
           addComponents({
-            [`.btn-minimal.btn-minimal${modifier}`]: options.minimal
+            [`.btn-minimal${modifier}`]: options.minimal
           });
         }
       }
     }
 
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `-${key}`;
-      if (['xs', 'sm', 'lg', 'xl'].includes(modifier.substring(1))) {
+      const modifier = key === 'default' ? '' : `--${key}`;
+      if (['xs', 'sm', 'lg', 'xl'].includes(modifier.substring(2))) {
         addButton(
           {
             default: options[key].button.default,
