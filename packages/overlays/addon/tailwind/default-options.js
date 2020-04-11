@@ -50,14 +50,6 @@ function defaultOptions(/*{ config }*/) {
 
       overlay: {
         zIndex: 50,
-        overflow: 'auto',
-        position: 'fixed',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        '-webkit-overflow-scrolling': 'touch',
-
         jsIsOpen: {
           overflow: 'hidden'
         },
@@ -68,13 +60,18 @@ function defaultOptions(/*{ config }*/) {
           bottom: 0,
           right: 0,
           left: 0,
-          overflow: 'auto',
           backgroundColor: 'rgba(0, 0, 0, 0.45)',
           userSelect: 'none'
         },
 
         content: {
-          position: 'relative'
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          right: 0,
+          left: 0,
+          overflow: 'auto',
+          '-webkit-overflow-scrolling': 'touch'
         }
       },
       modal: {
@@ -86,7 +83,7 @@ function defaultOptions(/*{ config }*/) {
         marginLeft: 'auto',
         marginRight: 'auto',
         outline: 'none',
-        top: defaultTheme.spacing[24],
+        marginTop: defaultTheme.spacing[24],
         marginBottom: defaultTheme.margin[4],
 
         [`@media (max-width: ${defaultTheme.screens.sm})`]: {
@@ -155,8 +152,10 @@ function defaultOptions(/*{ config }*/) {
     },
     'in-place': {
       overlay: {
-        position: 'absolute',
         backdrop: {
+          position: 'absolute'
+        },
+        content: {
           position: 'absolute'
         }
       }
