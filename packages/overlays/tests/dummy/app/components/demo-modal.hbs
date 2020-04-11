@@ -4,11 +4,48 @@
   Open Modal
 </Button>
 
-<div class="relative h-48 w-3xl">
+<Modal
+  @isOpen={{this.isOpen}}
+  @onClose={{this.toggleModal}}
+  @renderInPlace={{false}}
+  as |m|
+>
+  <m.Header>Title</m.Header>
+  <m.Body>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </m.Body>
+  <m.Footer>
+    <Button
+      @appearance="minimal"
+      class="mr-4"
+      {{on "click" this.toggleModal}}
+    >
+      Cancel
+    </Button>
+    <Button
+      @intent="primary"
+      disabled={{this.isLoading}}
+      {{on "click" this.save}}
+    >
+      {{if this.isLoading "Loading..." "Save"}}
+    </Button>
+  </m.Footer>
+</Modal>
+
+<Button
+  {{on "click" this.toggleInPlaceModal}}
+>
+  Open In Place Modal
+</Button>
+
+<div class="relative h-64 border w-3xl">
   <Modal
-    @isOpen={{this.isOpen}}
-    @onClose={{this.toggleModal}}
-    @renderInPlace={{false}}
+    @isOpen={{this.isInPlaceOpen}}
+    @onClose={{this.toggleInPlaceModal}}
+    @renderInPlace={{true}}
+    @disableFocusTrap={{true}}
     as |m|
   >
     <m.Header>Title</m.Header>
@@ -19,18 +56,10 @@
     </m.Body>
     <m.Footer>
       <Button
-        @appearance="minimal"
-        class="mr-4"
+        @intent="primary"
         {{on "click" this.toggleModal}}
       >
-        Cancel
-      </Button>
-      <Button
-        @intent="primary"
-        disabled={{this.isLoading}}
-        {{on "click" this.save}}
-      >
-        {{if this.isLoading "Loading..." "Save"}}
+        Save
       </Button>
     </m.Footer>
   </Modal>

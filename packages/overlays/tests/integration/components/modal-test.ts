@@ -11,6 +11,7 @@ module('Integration | Component | modal', function (hooks) {
     <Modal
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
+      @isCentered={{this.isCentered}}
       @allowClosing={{this.allowClosing}}
       @renderInPlace={{this.renderInPlace}}
       @destinationElementId="my-destination"
@@ -50,6 +51,14 @@ module('Integration | Component | modal', function (hooks) {
     assert
       .dom('[data-test-id="modal"] .modal__header')
       .hasAttribute('id', ariaLablledBy);
+  });
+
+  test('it adds modifier class if @isCentered is set to true', async function (assert) {
+    this.set('isOpen', true);
+    this.set('isCentered', true);
+    await render(template);
+
+    assert.dom('[data-test-id="modal"]').hasClass('modal--centered');
   });
 
   test('it closes modal when close button is clicked', async function (assert) {

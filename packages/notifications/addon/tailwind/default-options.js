@@ -149,7 +149,7 @@ function defaultOptions({ config }) {
           backgroundRepeat: 'no-repeat',
           iconColor: config.textColor,
           icon: (iconColor) =>
-            `<svg fill="none" viewBox="0 0 24 24" stroke="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`
+            `<svg fill="none" stroke="${iconColor}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12"></path></svg>`
         },
         customActions: {
           display: 'flex',

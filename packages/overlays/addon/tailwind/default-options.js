@@ -3,12 +3,120 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 ).theme;
 
 const defaultConfig = {
-  // empty for now
+  textColor: 'inherit',
+  zIndex: 50,
+  borderRadius: defaultTheme.borderRadius.default,
+  backdropColor: 'rgba(0, 0, 0, 0.45)',
+  modal: {
+    padding: defaultTheme.padding[4],
+    backgroundColor: defaultTheme.colors.white,
+    secondaryBackgroundColor: defaultTheme.colors.gray[100], // Background for footer and close btn applied on hover
+    iconColor: 'currentColor',
+    borderColor: defaultTheme.borderColor.default,
+    maxWidth: defaultTheme.maxWidth['xl']
+  }
 };
 
-function defaultOptions(/*{ config }*/) {
+function defaultOptions({ config }) {
+  const inset0 = {
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0
+  };
+
   return {
     default: {
+      overlay: {
+        color: config.textColor,
+        zIndex: config.zIndex,
+        jsIsOpen: {
+          overflow: 'hidden'
+        },
+
+        backdrop: {
+          ...inset0,
+          position: 'fixed',
+          backgroundColor: config.backdropColor,
+          userSelect: 'none'
+        },
+
+        content: {
+          ...inset0,
+          position: 'fixed',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          '-webkit-overflow-scrolling': 'touch'
+        }
+      },
+      modal: {
+        backgroundColor: config.modal.backgroundColor,
+        borderRadius: config.borderRadius,
+        boxShadow: defaultTheme.boxShadow.default,
+        marginBottom: defaultTheme.margin[24],
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: defaultTheme.spacing[24],
+        width: defaultTheme.width.full,
+        maxWidth: config.modal.maxWidth,
+        outline: 'none',
+        position: 'relative',
+
+        [`@media (max-width: ${defaultTheme.screens.sm})`]: {
+          maxWidth: `calc(100vw - ${defaultTheme.margin[4]})`
+        },
+
+        closeBtn: {
+          display: 'flex',
+          position: 'absolute',
+          fontSize: defaultTheme.fontSize.xl,
+          padding: defaultTheme.spacing[2],
+          top: defaultTheme.padding[2],
+          right: defaultTheme.padding[2],
+          transitionProperty: defaultTheme.transitionProperty.default,
+          transitionDuration: defaultTheme.transitionDuration[200],
+          borderRadius: defaultTheme.borderRadius.full,
+
+          '&:hover': {
+            backgroundColor: config.modal.secondaryBackgroundColor
+          },
+
+          '&.focus-visible:focus': {
+            outline: 'none',
+            boxShadow: defaultTheme.boxShadow.outline
+          },
+
+          icon: {
+            height: '1em',
+            width: '1em',
+            backgroundRepeat: 'no-repeat',
+            iconColor: config.modal.iconColor,
+            icon: (iconColor) =>
+              `<svg fill="none" stroke="${iconColor}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12"></path></svg>`
+          }
+        },
+        header: {
+          fontWeight: defaultTheme.fontWeight.bold,
+          fontSize: defaultTheme.fontSize.xl,
+          padding: config.modal.padding,
+          borderTopRightRadius: config.borderRadius,
+          borderTopLeftRadius: config.borderRadius
+        },
+        body: {
+          padding: config.modal.padding
+        },
+        footer: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          backgroundColor: config.modal.secondaryBackgroundColor,
+          borderTopWidth: defaultTheme.borderWidth.default,
+          borderTopColor: config.modal.borderColor,
+          padding: config.modal.padding,
+          borderBottomRightRadius: config.borderRadius,
+          borderBottomLeftRadius: config.borderRadius
+        }
+      },
       transitions: {
         fade: {
           enter: {
@@ -46,119 +154,22 @@ function defaultOptions(/*{ config }*/) {
             transition: 'all 0.2s ease-in-out'
           }
         }
-      },
-
-      overlay: {
-        zIndex: 50,
-        overflow: 'auto',
-        position: 'fixed',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        '-webkit-overflow-scrolling': 'touch',
-
-        jsIsOpen: {
-          overflow: 'hidden'
-        },
-
-        backdrop: {
-          position: 'fixed',
-          top: 0,
-          bottom: 0,
-          right: 0,
-          left: 0,
-          overflow: 'auto',
-          backgroundColor: 'rgba(0, 0, 0, 0.45)',
-          userSelect: 'none'
-        },
-
-        content: {
-          position: 'relative'
-        }
-      },
-      modal: {
-        position: 'relative',
-        backgroundColor: defaultTheme.colors.white,
-        borderRadius: defaultTheme.borderRadius.default,
-        boxShadow: defaultTheme.boxShadow.default,
-        maxWidth: defaultTheme.maxWidth['xl'],
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        outline: 'none',
-        top: defaultTheme.spacing[24],
-        marginBottom: defaultTheme.margin[4],
-
-        [`@media (max-width: ${defaultTheme.screens.sm})`]: {
-          maxWidth: `calc(100vw - ${defaultTheme.margin[4]})`
-        },
-
-        closeBtn: {
-          display: 'flex',
-          position: 'absolute',
-          fontSize: defaultTheme.fontSize.xl,
-          padding: defaultTheme.spacing[2],
-          top: defaultTheme.padding[2],
-          right: defaultTheme.padding[2],
-          transitionProperty: defaultTheme.transitionProperty.default,
-          transitionDuration: defaultTheme.transitionDuration[200],
-          borderRadius: defaultTheme.borderRadius.full,
-
-          '&:hover': {
-            backgroundColor: defaultTheme.colors.gray[200]
-          },
-
-          '&.focus-visible:focus': {
-            outline: 'none',
-            boxShadow: defaultTheme.boxShadow.outline
-          },
-
-          icon: {
-            display: 'inline-block',
-            height: '1em',
-            width: '1em',
-            backgroundRepeat: 'no-repeat',
-            iconColor: 'currentColor',
-            icon: (iconColor) =>
-              `<svg fill="none" viewBox="0 0 24 24" stroke="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`
-          }
-        },
-
-        header: {
-          fontWeight: defaultTheme.fontWeight.bold,
-          fontSize: defaultTheme.fontSize.xl,
-          paddingTop: defaultTheme.padding[4],
-          paddingBottom: defaultTheme.padding[4],
-          paddingRight: defaultTheme.padding[4],
-          paddingLeft: defaultTheme.padding[4]
-        },
-        body: {
-          paddingTop: defaultTheme.padding[4],
-          paddingBottom: defaultTheme.padding[8],
-          paddingRight: defaultTheme.padding[4],
-          paddingLeft: defaultTheme.padding[4]
-        },
-        footer: {
-          display: 'flex',
-          justifyContent: 'flex-end',
-          backgroundColor: defaultTheme.colors.gray[100],
-          borderTopWidth: defaultTheme.borderWidth.default,
-          borderTopColor: defaultTheme.borderColor.default,
-          paddingTop: defaultTheme.padding[4],
-          paddingBottom: defaultTheme.padding[4],
-          paddingRight: defaultTheme.padding[4],
-          paddingLeft: defaultTheme.padding[4],
-          borderBottomRightRadius: defaultTheme.borderRadius.default,
-          borderBottomLeftRadius: defaultTheme.borderRadius.default
-        }
       }
     },
     'in-place': {
       overlay: {
-        position: 'absolute',
         backdrop: {
           position: 'absolute'
+        },
+        content: {
+          position: 'absolute'
         }
+      }
+    },
+    centered: {
+      modal: {
+        marginTop: 'auto',
+        marginBottom: 'auto'
       }
     }
   };
