@@ -17,6 +17,12 @@ interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
    * @defaultValue true
    */
   allowClosing?: boolean;
+
+  /*
+   * If set to true, the modal will be vertically centered
+   * @defaultValue false
+   */
+  isCentered?: boolean;
 }
 
 export default class Modal extends Component<ModalArgs> {

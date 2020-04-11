@@ -33,6 +33,8 @@ function defaultOptions(/*{ config }*/) {
           ...inset0,
           position: 'fixed',
           overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
           '-webkit-overflow-scrolling': 'touch'
         }
       },
@@ -45,6 +47,7 @@ function defaultOptions(/*{ config }*/) {
         marginRight: 'auto',
         marginTop: defaultTheme.spacing[24],
         maxWidth: defaultTheme.maxWidth['xl'],
+        width: defaultTheme.width.full,
         outline: 'none',
         position: 'relative',
 
@@ -150,6 +153,12 @@ function defaultOptions(/*{ config }*/) {
         content: {
           position: 'absolute'
         }
+      }
+    },
+    centered: {
+      modal: {
+        marginTop: 'auto',
+        marginBottom: 'auto'
       }
     }
   };
