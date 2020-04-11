@@ -38,23 +38,23 @@ module.exports = plugin.withOptions(function (userConfig) {
 
       addComponents({ [`.notification-card${modifier}`]: rest });
       addComponents({
-        [`.notification-card${modifier} .notification-card-message`]: message
+        [`.notification-card${modifier} .notification-card__message`]: message
       });
       addComponents({
-        [`.notification-card${modifier} .notification-card-close-btn`]: closeBtn
+        [`.notification-card${modifier} .notification-card__close-btn`]: closeBtn
       });
       addComponents({
-        [`.notification-card${modifier} .notification-card-custom-actions`]: customActions
+        [`.notification-card${modifier} .notification-card__custom-actions`]: customActions
       });
 
       addComponents({
-        [`.notification-card${modifier} .notification-card-custom-action-btn`]: customActionBtn
+        [`.notification-card${modifier} .notification-card__custom-actions__btn`]: customActionBtn
       });
 
       addComponents(
         replaceIconDeclarations(
           {
-            [`.notification-card${modifier} .notification-card-close-btn-icon`]: closeBtnIcon
+            [`.notification-card${modifier} .notification-card__close-btn__icon`]: closeBtnIcon
           },
           ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
             return {
@@ -68,7 +68,7 @@ module.exports = plugin.withOptions(function (userConfig) {
     }
 
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `-${key}`;
+      const modifier = key === 'default' ? '' : `--${key}`;
       addContainer(options[key].container, modifier);
       addCard(options[key].card, modifier);
     });
