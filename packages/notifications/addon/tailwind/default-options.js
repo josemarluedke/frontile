@@ -4,6 +4,7 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 
 const defaultConfig = {
   textColor: defaultTheme.colors.white,
+  zIndex: 1000,
   info: {
     color: defaultTheme.colors.gray[900],
     buttonHoverColor: defaultTheme.colors.gray[800]
@@ -20,19 +21,6 @@ const defaultConfig = {
     color: defaultTheme.colors.red[600],
     buttonHoverColor: defaultTheme.colors.red[700]
   }
-};
-
-const placements = {
-  '&.top-left': { top: 0, left: 0 },
-  '&.top-center': { top: 0, left: '50%', transform: 'translateX(-50%)' },
-  '&.top-right': { top: 0, right: 0 },
-  '&.bottom-left': { bottom: 0, left: 0 },
-  '&.bottom-center': {
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)'
-  },
-  '&.bottom-right': { bottom: 0, right: 0 }
 };
 
 function generateAppearance({ color, buttonHoverColor }) {
@@ -73,9 +61,8 @@ function defaultOptions({ config }) {
         paddingLeft: defaultTheme.padding[4],
         paddingRight: defaultTheme.padding[4],
         position: 'fixed',
-        zIndex: 1000,
-        maxWidth: defaultTheme.maxWidth.lg,
-        ...placements
+        zIndex: config.zIndex,
+        maxWidth: defaultTheme.maxWidth.lg
       },
       card: {
         transitionProperty: defaultTheme.transitionProperty.all,
@@ -168,7 +155,30 @@ function defaultOptions({ config }) {
     info: generateAppearance(config.info),
     success: generateAppearance(config.success),
     warning: generateAppearance(config.warning),
-    error: generateAppearance(config.error)
+    error: generateAppearance(config.error),
+
+    topLeft: {
+      container: { top: 0, left: 0 }
+    },
+    topCenter: {
+      container: { top: 0, left: '50%', transform: 'translateX(-50%)' }
+    },
+    topRight: {
+      container: { top: 0, right: 0 }
+    },
+    bottomLeft: {
+      container: { bottom: 0, left: 0 }
+    },
+    bottomCenter: {
+      container: {
+        bottom: 0,
+        left: '50%',
+        transform: 'translateX(-50%)'
+      }
+    },
+    bottomRight: {
+      container: { bottom: 0, right: 0 }
+    }
   };
 }
 

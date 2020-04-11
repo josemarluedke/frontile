@@ -6,6 +6,10 @@ const {
   svgToDataUri
 } = require('@frontile/tailwindcss-plugin-helpers');
 
+function camelCaseToDash(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+}
+
 module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {
     const { options } = resolve(
@@ -68,7 +72,7 @@ module.exports = plugin.withOptions(function (userConfig) {
     }
 
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `--${key}`;
+      const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
       addContainer(options[key].container, modifier);
       addCard(options[key].card, modifier);
     });
