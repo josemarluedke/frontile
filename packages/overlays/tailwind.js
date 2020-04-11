@@ -83,7 +83,7 @@ module.exports = plugin.withOptions(function (userConfig) {
         addComponents({
           [`.modal${modifier} .modal__close-btn`]: closeBtn
         });
-        if (!isEmpty(closeBtn.icon)) {
+        if (!isEmpty(btnIcon)) {
           addComponents(
             replaceIconDeclarations(
               {
