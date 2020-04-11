@@ -7,10 +7,15 @@ interface DemoModalArgs {}
 
 export default class DemoModal extends Component<DemoModalArgs> {
   @tracked isOpen = false;
+  @tracked isInPlaceOpen = false;
   @tracked isLoading = false;
 
   @action toggleModal(): void {
     this.isOpen = !this.isOpen;
+  }
+
+  @action toggleInPlaceModal(): void {
+    this.isInPlaceOpen = !this.isInPlaceOpen;
   }
 
   @action save(): void {
