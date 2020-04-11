@@ -97,14 +97,6 @@ function defaultOptions({ config }) {
         paddingRight: defaultTheme.padding[4],
         paddingLeft: defaultTheme.padding[4],
 
-        '&.top-right, &.top-left, &.top-center': {
-          marginTop: defaultTheme.padding[4]
-        },
-
-        '&.bottom-right, &.bottom-left, &.bottom-center': {
-          marginBottom: defaultTheme.padding[4]
-        },
-
         '&.is-entering': {
           '&.top-right, &.bottom-right': {
             transform: 'translate3d(125%, 0, 0)'
