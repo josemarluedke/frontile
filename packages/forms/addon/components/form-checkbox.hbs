@@ -1,17 +1,14 @@
 <FormField
   @isSmall={{@isSmall}}
   @isLarge={{@isLarge}}
-  class="form-checkbox-container {{@containerClass}} {{if @isSmall "form-checkbox-container-sm" (if @isLarge "form-checkbox-container-lg")}}"
+  class="form-checkbox-container {{@containerClass}} {{if @isSmall "form-checkbox-container--sm" (if @isLarge "form-checkbox-container--lg")}}"
   as |f|
 >
-  <div class="label-container">
-    <div class="input-container">
+  <div class="form-checkbox-container__label-container">
+    <div class="form-checkbox-container__input-container">
       {{!--  Zero-width space character, used to align checkbox properly --}}
       &#8203;
       <f.Checkbox
-        {{on "focus" this.handleFocusIn}}
-        {{on "blur" this.handleFocusOut}}
-
         @onChange={{this.handleChange}}
         @checked={{@checked}}
         @name={{@name}}

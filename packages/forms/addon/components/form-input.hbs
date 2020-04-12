@@ -1,7 +1,7 @@
 <FormField
   @isSmall={{@isSmall}}
   @isLarge={{@isLarge}}
-  class="form-input-container {{@containerClass}} {{if @isSmall "form-input-container-sm" (if @isLarge "form-input-container-lg")}}"
+  class="form-input-container {{@containerClass}} {{if @isSmall "form-input-container--sm" (if @isLarge "form-input-container--lg")}}"
   as |f|
 >
   {{#if @label}}

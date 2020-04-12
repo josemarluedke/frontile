@@ -161,44 +161,32 @@ module('Integration | Component | FormRadio', function (hooks) {
           />`
     );
 
-    assert.dom('.my-container').hasClass('form-radio-container-sm');
-    assert.dom('[data-test-input]').hasClass('form-radio-sm');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-sm');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-sm');
+    assert.dom('.my-container').hasClass('form-radio-container--sm');
+    assert.dom('[data-test-input]').hasClass('form__radio--sm');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
 
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-radio-container-lg');
-    assert.dom('[data-test-input]').hasClass('form-radio-lg');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-lg');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-lg');
+    assert.dom('.my-container').hasClass('form-radio-container--lg');
+    assert.dom('[data-test-input]').hasClass('form__radio--lg');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--lg');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-radio-container-sm');
-    assert.dom('[data-test-input]').hasClass('form-radio-sm');
+    assert.dom('.my-container').hasClass('form-radio-container--sm');
+    assert.dom('[data-test-input]').hasClass('form__radio--sm');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
+    assert.dom('.my-container').doesNotHaveClass('form-radio-container--lg');
+    assert.dom('[data-test-input]').doesNotHaveClass('form__radio--lg');
     assert
       .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-sm');
+      .doesNotHaveClass('form__label--lg');
     assert
       .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-sm');
-    assert.dom('.my-container').doesNotHaveClass('form-radio-container-lg');
-    assert.dom('[data-test-input]').doesNotHaveClass('form-radio-lg');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .doesNotHaveClass('form-field-label-lg');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .doesNotHaveClass('form-field-hint-lg');
+      .doesNotHaveClass('form__hint--lg');
   });
 });

@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { tracked } from '@glimmer/tracking';
 
 interface FormRadioArgs {
   label?: string;
@@ -20,8 +19,6 @@ interface FormRadioArgs {
 }
 
 export default class FormRadio extends Component<FormRadioArgs> {
-  @tracked isFocused = false;
-
   @action handleChange(value: unknown, event: Event): void {
     event.preventDefault();
 
@@ -32,15 +29,5 @@ export default class FormRadio extends Component<FormRadioArgs> {
     if (typeof this.args._parentOnChange === 'function') {
       this.args._parentOnChange(value, event);
     }
-  }
-
-  @action handleFocusIn(event: FocusEvent): void {
-    if (event.relatedTarget !== null) {
-      this.isFocused = true;
-    }
-  }
-
-  @action handleFocusOut(_: FocusEvent): void {
-    this.isFocused = false;
   }
 }

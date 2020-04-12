@@ -75,17 +75,19 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('isInline', true);
     await render(template);
 
-    assert.dom('[data-test-input-group]').hasClass('is-inline');
+    assert.dom('[data-test-input-group]').hasClass('form-radio-group--inline');
   });
 
   test('show error messages when errors array has items', async function (assert) {
     this.set('errors', ['This field is required']);
     await render(template);
 
-    assert.dom('.my-container .has-error').doesNotExist();
+    assert
+      .dom('.my-container [data-test-id="form-field-feedback"]')
+      .doesNotExist();
     await click('[data-test-option-yes]');
 
-    assert.dom('.my-container .has-error').exists();
+    assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');
@@ -95,10 +97,14 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('errors', []);
     await render(template);
 
-    assert.dom('.my-container .has-error').doesNotExist();
+    assert
+      .dom('.my-container [data-test-id="form-field-feedback"]')
+      .doesNotExist();
     await click('[data-test-option-yes]');
 
-    assert.dom('.my-container .has-error').doesNotExist();
+    assert
+      .dom('.my-container [data-test-id="form-field-feedback"]')
+      .doesNotExist();
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
   });
 
@@ -107,11 +113,15 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('hasError', false);
     await render(template);
 
-    assert.dom('.my-container .has-error').doesNotExist();
+    assert
+      .dom('.my-container [data-test-id="form-field-feedback"]')
+      .doesNotExist();
     await click('[data-test-option-yes]');
 
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
-    assert.dom('.my-container .has-error').doesNotExist();
+    assert
+      .dom('.my-container [data-test-id="form-field-feedback"]')
+      .doesNotExist();
   });
 
   test('always show error messages when hasSubmitted is true', async function (assert) {
@@ -119,7 +129,7 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('hasSubmitted', true);
     await render(template);
 
-    assert.dom('.my-container .has-error').exists();
+    assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasText('This field is required');

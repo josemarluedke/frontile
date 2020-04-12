@@ -1,10 +1,9 @@
 <FormField
   @isSmall={{@isSmall}}
   @isLarge={{@isLarge}}
-  class="form-checkbox-group-container
-    {{if this.showErrorFeedback "has-error"}}
-    {{if @isInline "is-inline"}} {{@containerClass}}
-    {{if @isSmall "form-checkbox-group-container-sm" (if @isLarge "form-checkbox-group-container-lg")}}"
+  class="form-checkbox-group
+    {{if @isInline "form-checkbox-group--inline"}} {{@containerClass}}
+    {{if @isSmall "form-checkbox-group--sm" (if @isLarge "form-checkbox-group--lg")}}"
     role="group"
   ...attributes
   as |f|
