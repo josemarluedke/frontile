@@ -1,9 +1,9 @@
 <FormField
   @isSmall={{@isSmall}}
   @isLarge={{@isLarge}}
-  class="form-radio-group
-    {{if @isInline "form-radio-group--inline"}} {{@containerClass}}
-    {{if @isSmall "form-radio-group--sm" (if @isLarge "form-radio-group--lg")}}"
+  class="form-radio-group-container
+    {{if @isInline "form-radio-group-container--inline"}} {{@containerClass}}
+    {{if @isSmall "form-radio-group-container--sm" (if @isLarge "form-radio-group-container--lg")}}"
     role="radiogroup"
   ...attributes
   as |f|

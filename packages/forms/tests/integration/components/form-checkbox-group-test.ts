@@ -64,7 +64,7 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
 
     assert
       .dom('[data-test-input-group]')
-      .hasClass('form-checkbox-group--inline');
+      .hasClass('form-checkbox-group-container--inline');
   });
 
   test('show error messages when errors array has items', async function (assert) {
@@ -137,7 +137,9 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
     this.set('hasSubmitted', true);
     await render(template);
 
-    assert.dom('[data-test-input-group]').hasClass('form-checkbox-group--sm');
+    assert
+      .dom('[data-test-input-group]')
+      .hasClass('form-checkbox-group-container--sm');
     assert.dom('[data-test-checkbox-1]').hasClass('form__checkbox--sm');
     assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
     assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
@@ -147,7 +149,9 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
 
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('[data-test-input-group]').hasClass('form-checkbox-group--lg');
+    assert
+      .dom('[data-test-input-group]')
+      .hasClass('form-checkbox-group-container--lg');
     assert.dom('[data-test-checkbox-1]').hasClass('form__checkbox--lg');
     assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--lg');
     assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--lg');
@@ -158,7 +162,9 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('[data-test-input-group]').hasClass('form-checkbox-group--sm');
+    assert
+      .dom('[data-test-input-group]')
+      .hasClass('form-checkbox-group-container--sm');
     assert.dom('[data-test-checkbox-1]').hasClass('form__checkbox--sm');
     assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
     assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
@@ -167,7 +173,7 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
       .hasClass('form__feedback--sm');
     assert
       .dom('[data-test-input-group]')
-      .doesNotHaveClass('form-checkbox-group--lg');
+      .doesNotHaveClass('form-checkbox-group-container--lg');
     assert.dom('[data-test-checkbox-1]').doesNotHaveClass('form__checkbox--lg');
     assert
       .dom('[data-test-id="form-field-label"]')

@@ -75,7 +75,9 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('isInline', true);
     await render(template);
 
-    assert.dom('[data-test-input-group]').hasClass('form-radio-group--inline');
+    assert
+      .dom('[data-test-input-group]')
+      .hasClass('form-radio-group-container--inline');
   });
 
   test('show error messages when errors array has items', async function (assert) {
