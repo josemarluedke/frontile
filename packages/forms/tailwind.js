@@ -4,7 +4,8 @@ const {
   replaceIconDeclarations,
   resolve,
   svgToDataUri,
-  isEmpty
+  isEmpty,
+  camelCaseToDash
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -16,211 +17,162 @@ module.exports = plugin.withOptions(function (userConfig) {
       theme
     );
 
-    function addRelatedComponents(key, options, modifier) {
-      if (options.container !== undefined) {
-        addComponents({
-          [`.form-${key}-container${modifier}`]: options.container
-        });
+    function addFormElementComponent(key, options, modifier = '', prefix = '') {
+      if (isEmpty(options)) {
+        return;
       }
 
-      if (options.label !== undefined) {
-        addComponents({
-          [`.form-${key}-container${modifier} .form-field-label${modifier}`]: options.label
-        });
+      addComponents({ [`${prefix}.form__${key}${modifier}`]: options });
+    }
+
+    // To be used with Radio and Checkbox elements
+    function addFromElementWithIcon(key, options, modifier = '', prefix = '') {
+      if (isEmpty(options)) {
+        return;
       }
 
-      if (options.hint !== undefined) {
-        let hint = options.hint;
+      addComponents(
+        replaceIconDeclarations(
+          {
+            [`${prefix}.form__${key}${modifier}`]: merge(
+              options.borderWidth === undefined
+                ? {}
+                : {
+                    '&::-ms-check': {
+                      '@media not print': {
+                        borderWidth: options.borderWidth
+                      }
+                    }
+                  },
+              options
+            )
+          },
+          ({ icon = options.icon, iconColor = options.iconColor }) => {
+            return {
+              '&:checked': {
+                backgroundImage: `url("${svgToDataUri(
+                  typeof icon === 'function' ? icon(iconColor) : icon
+                )}")`
+              }
+            };
+          }
+        )
+      );
+    }
 
-        if (hint['&::before'] !== undefined) {
-          hint = merge(options.hint, {
+    function addFormContainerComponents(key, options, modifier) {
+      const {
+        label,
+        input,
+        textarea,
+        checkbox,
+        radio,
+        hint,
+        feedback,
+        labelContainer,
+        inputContainer,
+        ...rest
+      } = options || {};
+
+      const className = `.form-${key}-container${modifier}`;
+
+      if (!isEmpty(rest)) {
+        addComponents({ [className]: rest });
+      }
+
+      addFormElementComponent('label', label, modifier, `${className} `);
+      addFormElementComponent('input', input, modifier, `${className} > `);
+      addFormElementComponent(
+        'textarea',
+        textarea,
+        modifier,
+        `${className} > `
+      );
+      addFormElementComponent(
+        'feedback',
+        feedback,
+        modifier,
+        `${className} > `
+      );
+      addFromElementWithIcon('checkbox', checkbox, modifier, `${className} > `);
+      addFromElementWithIcon('radio', radio, modifier, `${className} > `);
+
+      if (!isEmpty(hint)) {
+        let hintOptions = hint;
+
+        // Make sure to set up the fontSize for hint before
+        if (hintOptions['&::before'] !== undefined && modifier === '') {
+          hintOptions = merge(hintOptions, {
             '&::before': {
-              fontSize: options.fontSize || '1rem'
+              fontSize: rest.fontSize || '1rem'
             }
           });
         }
 
+        addFormElementComponent(
+          'hint',
+          hintOptions,
+          modifier,
+          `${className} > `
+        );
+      }
+
+      // Used in FormCheckbox and FormRadio components
+      if (!isEmpty(labelContainer)) {
         addComponents({
-          [`.form-${key}-container${modifier} > .form-field-hint${modifier}`]: hint
+          [`.form-${key}-container__label-container`]: labelContainer
         });
       }
-
-      if (options.feedback !== undefined) {
+      if (!isEmpty(inputContainer)) {
         addComponents({
-          [`.form-${key}-container${modifier} > .form-field-feedback${modifier}`]: options.feedback
+          [`.form-${key}-container__input-container`]: inputContainer
         });
       }
     }
-
-    function addLabel(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-field-label${modifier}`]: options });
-    }
-
-    function addHint(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-field-hint${modifier}`]: options });
-    }
-
-    function addFeedback(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-field-feedback${modifier}`]: options });
-    }
-
-    function addInput(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-input${modifier}`]: options });
-      addRelatedComponents('input', options, modifier);
-    }
-
-    function addTextarea(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-textarea${modifier}`]: options });
-      addRelatedComponents('textarea', options, modifier);
-    }
-
-    function addCheckbox(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents(
-        replaceIconDeclarations(
-          {
-            [`.form-checkbox${modifier}`]: merge(
-              options.borderWidth === undefined
-                ? {}
-                : {
-                    '&::-ms-check': {
-                      '@media not print': {
-                        borderWidth: options.borderWidth
-                      }
-                    }
-                  },
-              options
-            )
-          },
-          ({ icon = options.icon, iconColor = options.iconColor }) => {
-            return {
-              '&:checked': {
-                backgroundImage: `url("${svgToDataUri(
-                  typeof icon === 'function' ? icon(iconColor) : icon
-                )}")`
-              }
-            };
-          }
-        )
-      );
-
-      addRelatedComponents('checkbox', options, modifier);
-    }
-
-    function addRadio(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents(
-        replaceIconDeclarations(
-          {
-            [`.form-radio${modifier}`]: merge(
-              options.borderWidth === undefined
-                ? {}
-                : {
-                    '&::-ms-check': {
-                      '@media not print': {
-                        borderWidth: options.borderWidth
-                      }
-                    }
-                  },
-              options
-            )
-          },
-          ({ icon = options.icon, iconColor = options.iconColor }) => {
-            return {
-              '&:checked': {
-                backgroundImage: `url("${svgToDataUri(
-                  typeof icon === 'function' ? icon(iconColor) : icon
-                )}")`
-              }
-            };
-          }
-        )
-      );
-
-      addRelatedComponents('radio', options, modifier);
-    }
-
-    function addCheckboxGroup(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-checkbox-group-container${modifier}`]: options });
-
-      // Make sure to remove container as group styles are the container
-      delete options.container;
-
-      addRelatedComponents('checkbox-group', options, modifier);
-    }
-
-    function addRadioGroup(options, modifier = '') {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      addComponents({ [`.form-radio-group-container${modifier}`]: options });
-
-      // Make sure to remove container as group styles are the container
-      delete options.container;
-
-      addRelatedComponents('radio-group', options, modifier);
-    }
-
-    const selectOptions = {};
 
     Object.keys(options).forEach((key) => {
-      selectOptions[key] = options[key].select || {};
-      const selectContainer = selectOptions[key].container;
-      delete options[key].select;
+      const {
+        label,
+        input,
+        textarea,
+        checkbox,
+        radio,
+        hint,
+        feedback,
 
-      const modifier = key === 'default' ? '' : `-${key}`;
+        formInputContainer,
+        formTextareaContainer,
+        formCheckboxGroup,
+        formRadioGroup,
+        formCheckboxContainer,
+        formRadioContainer,
+        formSelectContainer
+      } = options[key] || {};
 
-      addLabel(options[key].label, modifier);
-      addInput(options[key].input, modifier);
-      addTextarea(options[key].textarea, modifier);
-      addCheckbox(options[key].checkbox, modifier);
-      addRadio(options[key].radio, modifier);
-      addHint(options[key].hint, modifier);
-      addFeedback(options[key].feedback, modifier);
-      addCheckboxGroup(options[key].checkboxGroup, modifier);
-      addRadioGroup(options[key].radioGroup, modifier);
+      const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
 
-      if (selectContainer) {
-        addComponents({
-          [`.form-select-container${modifier}`]: selectContainer
-        });
-      }
+      addFormElementComponent('label', label, modifier);
+      addFormElementComponent('input', input, modifier);
+      addFormElementComponent('textarea', textarea, modifier);
+      addFormElementComponent('hint', hint, modifier);
+      addFormElementComponent('feedback', feedback, modifier);
+      addFromElementWithIcon('checkbox', checkbox, modifier);
+      addFromElementWithIcon('radio', radio, modifier);
+
+      addFormContainerComponents('input', formInputContainer, modifier);
+      addFormContainerComponents('textarea', formTextareaContainer, modifier);
+      addFormContainerComponents('checkbox', formCheckboxContainer, modifier);
+      addFormContainerComponents('radio', formRadioContainer, modifier);
+      addFormContainerComponents('select', formSelectContainer, modifier);
+      addFormContainerComponents('checkbox-group', formCheckboxGroup, modifier);
+      addFormContainerComponents('radio-group', formRadioGroup, modifier);
     });
+
+    const { powerSelect: powerSelectOptions } = options.default || {};
 
     require('tailwindcss-ember-power-select').registerComponents(
       { addComponents },
-      selectOptions,
+      powerSelectOptions,
       merge(
         {
           textColor: config.textColor,
