@@ -4,6 +4,7 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 
 const defaultConfig = {
   textColor: defaultTheme.colors.white,
+  zIndex: 1000,
   info: {
     color: defaultTheme.colors.gray[900],
     buttonHoverColor: defaultTheme.colors.gray[800]
@@ -20,19 +21,6 @@ const defaultConfig = {
     color: defaultTheme.colors.red[600],
     buttonHoverColor: defaultTheme.colors.red[700]
   }
-};
-
-const placements = {
-  '&.top-left': { top: 0, left: 0 },
-  '&.top-center': { top: 0, left: '50%', transform: 'translateX(-50%)' },
-  '&.top-right': { top: 0, right: 0 },
-  '&.bottom-left': { bottom: 0, left: 0 },
-  '&.bottom-center': {
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)'
-  },
-  '&.bottom-right': { bottom: 0, right: 0 }
 };
 
 function generateAppearance({ color, buttonHoverColor }) {
@@ -64,6 +52,24 @@ function defaultOptions({ config }) {
     }
   };
 
+  const notificationEnteringPosition = {
+    right: {
+      transform: 'translate3d(125%, 0, 0)'
+    },
+
+    left: {
+      transform: 'translate3d(-125%, 0, 0)'
+    },
+
+    top: {
+      transform: 'translate3d(0, -125%, 0)'
+    },
+
+    bottom: {
+      transform: 'translate3d(0, 125%, 0)'
+    }
+  };
+
   return {
     default: {
       container: {
@@ -73,9 +79,8 @@ function defaultOptions({ config }) {
         paddingLeft: defaultTheme.padding[4],
         paddingRight: defaultTheme.padding[4],
         position: 'fixed',
-        zIndex: 1000,
-        maxWidth: defaultTheme.maxWidth.lg,
-        ...placements
+        zIndex: config.zIndex,
+        maxWidth: defaultTheme.maxWidth.lg
       },
       card: {
         transitionProperty: defaultTheme.transitionProperty.all,
@@ -97,41 +102,13 @@ function defaultOptions({ config }) {
         paddingRight: defaultTheme.padding[4],
         paddingLeft: defaultTheme.padding[4],
 
-        '&.top-right, &.top-left, &.top-center': {
-          marginTop: defaultTheme.padding[4]
-        },
-
-        '&.bottom-right, &.bottom-left, &.bottom-center': {
-          marginBottom: defaultTheme.padding[4]
-        },
-
-        '&.is-entering': {
-          '&.top-right, &.bottom-right': {
-            transform: 'translate3d(125%, 0, 0)'
-          },
-
-          '&.top-left, &.bottom-left': {
-            transform: 'translate3d(-125%, 0, 0)'
-          },
-
-          '&.top-center': {
-            transform: 'translate3d(0, -125%, 0)'
-          },
-
-          '&.bottom-center': {
-            transform: 'translate3d(0, 125%, 0)'
-          }
-        },
-
-        '&.has-entered': {
+        stateEntered: {
           transform: 'translate3d(0,0,0)'
         },
-
-        '&.is-exiting': {
+        stateExisting: {
           transform: 'scale(0.80)',
           opacity: 0
         },
-
         message: {
           flexGrow: 1
         },
@@ -176,7 +153,36 @@ function defaultOptions({ config }) {
     info: generateAppearance(config.info),
     success: generateAppearance(config.success),
     warning: generateAppearance(config.warning),
-    error: generateAppearance(config.error)
+    error: generateAppearance(config.error),
+
+    topLeft: {
+      container: { top: 0, left: 0 },
+      card: { stateEntering: notificationEnteringPosition.left }
+    },
+    topCenter: {
+      container: { top: 0, left: '50%', transform: 'translateX(-50%)' },
+      card: { stateEntering: notificationEnteringPosition.top }
+    },
+    topRight: {
+      container: { top: 0, right: 0 },
+      card: { stateEntering: notificationEnteringPosition.right }
+    },
+    bottomLeft: {
+      container: { bottom: 0, left: 0 },
+      card: { stateEntering: notificationEnteringPosition.left }
+    },
+    bottomCenter: {
+      container: {
+        bottom: 0,
+        left: '50%',
+        transform: 'translateX(-50%)'
+      },
+      card: { stateEntering: notificationEnteringPosition.bottom }
+    },
+    bottomRight: {
+      container: { bottom: 0, right: 0 },
+      card: { stateEntering: notificationEnteringPosition.right }
+    }
   };
 }
 

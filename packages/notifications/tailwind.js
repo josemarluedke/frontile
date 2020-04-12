@@ -6,6 +6,10 @@ const {
   svgToDataUri
 } = require('@frontile/tailwindcss-plugin-helpers');
 
+function camelCaseToDash(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+}
+
 module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {
     const { options } = resolve(
@@ -33,42 +37,70 @@ module.exports = plugin.withOptions(function (userConfig) {
         closeBtnIcon,
         customActions,
         customActionBtn,
+        stateEntered,
+        stateExisting,
+        stateEntering,
         ...rest
       } = options;
 
-      addComponents({ [`.notification-card${modifier}`]: rest });
-      addComponents({
-        [`.notification-card${modifier} .notification-card-message`]: message
-      });
-      addComponents({
-        [`.notification-card${modifier} .notification-card-close-btn`]: closeBtn
-      });
-      addComponents({
-        [`.notification-card${modifier} .notification-card-custom-actions`]: customActions
-      });
-
-      addComponents({
-        [`.notification-card${modifier} .notification-card-custom-action-btn`]: customActionBtn
-      });
-
-      addComponents(
-        replaceIconDeclarations(
-          {
-            [`.notification-card${modifier} .notification-card-close-btn-icon`]: closeBtnIcon
-          },
-          ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
-            return {
-              backgroundImage: `url("${svgToDataUri(
-                typeof icon === 'function' ? icon(iconColor) : icon
-              )}")`
-            };
-          }
-        )
-      );
+      if (!isEmpty(rest)) {
+        addComponents({ [`.notification-card${modifier}`]: rest });
+      }
+      if (!isEmpty(stateEntered)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-entered`]: stateEntered
+        });
+      }
+      if (!isEmpty(stateExisting)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-exiting`]: stateExisting
+        });
+      }
+      if (!isEmpty(stateEntering)) {
+        addComponents({
+          [`.notification-card${modifier}.notification-card--state-entering`]: stateEntering
+        });
+      }
+      if (!isEmpty(message)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__message`]: message
+        });
+      }
+      if (!isEmpty(closeBtn)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__close-btn`]: closeBtn
+        });
+      }
+      if (!isEmpty(customActions)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__custom-actions`]: customActions
+        });
+      }
+      if (!isEmpty(customActionBtn)) {
+        addComponents({
+          [`.notification-card${modifier} .notification-card__custom-actions__btn`]: customActionBtn
+        });
+      }
+      if (!isEmpty(closeBtnIcon)) {
+        addComponents(
+          replaceIconDeclarations(
+            {
+              [`.notification-card${modifier} .notification-card__close-btn__icon`]: closeBtnIcon
+            },
+            ({ icon = closeBtn.icon, iconColor = closeBtnIcon.iconColor }) => {
+              return {
+                backgroundImage: `url("${svgToDataUri(
+                  typeof icon === 'function' ? icon(iconColor) : icon
+                )}")`
+              };
+            }
+          )
+        );
+      }
     }
 
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `-${key}`;
+      const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
       addContainer(options[key].container, modifier);
       addCard(options[key].card, modifier);
     });

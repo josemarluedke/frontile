@@ -51,25 +51,39 @@ module('Integration | Component | NotificationsContainer', function (hooks) {
 
     await render(template);
 
-    assert.dom('[data-test-notifications]').hasClass('bottom-right');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--bottom-right');
 
     this.set('placement', 'top-left');
-    assert.dom('[data-test-notifications]').hasClass('top-left');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--top-left');
 
     this.set('placement', 'top-center');
-    assert.dom('[data-test-notifications]').hasClass('top-center');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--top-center');
 
     this.set('placement', 'top-right');
-    assert.dom('[data-test-notifications]').hasClass('top-right');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--top-right');
 
     this.set('placement', 'bottom-left');
-    assert.dom('[data-test-notifications]').hasClass('bottom-left');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--bottom-left');
 
     this.set('placement', 'bottom-center');
-    assert.dom('[data-test-notifications]').hasClass('bottom-center');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--bottom-center');
 
     this.set('placement', 'bottom-right');
-    assert.dom('[data-test-notifications]').hasClass('bottom-right');
+    assert
+      .dom('[data-test-notifications]')
+      .hasClass('notifications-container--bottom-right');
   });
 
   test('it adds accessibility attributes', async function (assert) {

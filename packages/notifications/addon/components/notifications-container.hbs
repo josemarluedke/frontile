@@ -1,23 +1,26 @@
 {{!--
-  Placements:
-    top-left
-    top-center
-    top-right
-    bottom-left
-    bottom-center
-    bottom-right
+Placements:
+  notifications-container--top-left
+  notifications-container--top-center
+  notifications-container--top-right
+  notifications-container--bottom-left
+  notifications-container--bottom-center
+  notifications-container--bottom-right
 --}}
 
-{{#if this.notifications.notifications}}
+{{#if this.sortedNotifications}}
   <div
-    class="notifications-container {{if @placement @placement "bottom-right"}}"
+    {{did-insert this.addSpacing}}
+    {{did-update this.addSpacing @spacing @placement}}
+    class="notifications-container notifications-container--{{if @placement @placement "bottom-right"}}"
     role="alert"
     aria-live="assertive"
     aria-atomic="true"
     ...attributes
   >
-    {{#each this.notifications.notifications as |notification|}}
+    {{#each this.sortedNotifications as |notification|}}
       <NotificationCard
+        @spacing={{@spacing}}
         @placement={{if @placement @placement "bottom-right"}}
         @notification={{notification}}
       />

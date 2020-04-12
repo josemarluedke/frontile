@@ -13,7 +13,6 @@ interface NotificationCardArgs {
 
   /*
    * Spacing for each notification, in px.
-   * Only applied in bottom placement
    * @defaultValue 16
    */
   spacing?: number;
@@ -29,14 +28,15 @@ export default class NotificationCard extends Component<NotificationCardArgs> {
     );
   }
 
-  @action transitionIn(element: HTMLElement): void {
-    let spacing =
-      typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
-
-    if ((this.args.placement || '').includes('top')) {
-      spacing = 0;
+  @action addSpacing(element: HTMLElement): void {
+    if (this.args.placement && this.args.placement.includes('top')) {
+      element.style.marginTop = `${this.args.spacing || 16}px`;
     }
+  }
 
+  @action transitionIn(element: HTMLElement): void {
+    const spacing =
+      typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
     const expectedHeight = element.offsetHeight + spacing;
     const duration = this.args.notification.transitionDuration / 2;
 

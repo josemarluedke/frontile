@@ -21,7 +21,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
 
     assert.dom('[data-test-notification]').containsText('My message');
     assert
-      .dom('[data-test-notification] .notification-card-close-btn')
+      .dom('[data-test-notification] .notification-card__close-btn')
       .containsText('Close');
   });
 
@@ -30,7 +30,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
 
     await render(template);
 
-    assert.dom('[data-test-notification]').hasClass('notification-card-info');
+    assert.dom('[data-test-notification]').hasClass('notification-card--info');
 
     this.set(
       'notification',
@@ -40,7 +40,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     );
     assert
       .dom('[data-test-notification]')
-      .hasClass('notification-card-success');
+      .hasClass('notification-card--success');
 
     this.set(
       'notification',
@@ -50,7 +50,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     );
     assert
       .dom('[data-test-notification]')
-      .hasClass('notification-card-warning');
+      .hasClass('notification-card--warning');
 
     this.set(
       'notification',
@@ -58,7 +58,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
         appearance: 'error'
       })
     );
-    assert.dom('[data-test-notification]').hasClass('notification-card-error');
+    assert.dom('[data-test-notification]').hasClass('notification-card--error');
   });
 
   test('it does not render close button when allowClosing=false', async function (assert) {
@@ -71,7 +71,9 @@ module('Integration | Component | NotificationCard', function (hooks) {
 
     await render(template);
 
-    assert.dom('[data-test-notification] .close-btn').doesNotExist();
+    assert
+      .dom('[data-test-notification] .notification-card__close-btn')
+      .doesNotExist();
   });
 
   test('it calls remove function from service on close-btn click', async function (assert) {
@@ -92,7 +94,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
 
     await render(template);
 
-    await click('[data-test-notification] .notification-card-close-btn-icon');
+    await click('[data-test-notification] .notification-card__close-btn__icon');
 
     sinon.restore();
   });
@@ -132,23 +134,23 @@ module('Integration | Component | NotificationCard', function (hooks) {
     await render(template);
 
     assert
-      .dom('[data-test-notification] .notification-card-custom-action-btn')
+      .dom('[data-test-notification] .notification-card__custom-actions__btn')
       .exists({ count: 2 });
 
     assert
       .dom(
-        '[data-test-notification] .notification-card-custom-action-btn:first-child'
+        '[data-test-notification] .notification-card__custom-actions__btn:first-child'
       )
       .hasText('Undo');
 
     assert
       .dom(
-        '[data-test-notification] .notification-card-custom-action-btn:last-child'
+        '[data-test-notification] .notification-card__custom-actions__btn:last-child'
       )
       .hasText('Ok');
 
     await click(
-      '[data-test-notification] .notification-card-custom-action-btn:first-child'
+      '[data-test-notification] .notification-card__custom-actions__btn:first-child'
     );
 
     sinon.restore();
