@@ -1,3 +1,4 @@
+// BEGIN-SNIPPET demo-notifications.ts
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
@@ -63,3 +64,4 @@ export default class Demo extends Component<DemoArgs> {
     );
   }
 }
+// END-SNIPPET
