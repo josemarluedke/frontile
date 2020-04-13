@@ -5,30 +5,6 @@
     "sha": "bd0173da04649493bc94fc845125d8b0b97e8968",
     "tag": null
   },
-  "v0.1.0-alpha.4": {
-    "path": "versions/v0.1.0-alpha.4",
-    "name": "v0.1.0-alpha.4",
-    "sha": "cf89496b6ee354d8018bee1ae3970750b08ccc11",
-    "tag": "v0.1.0-alpha.4"
-  },
-  "v0.1.0-alpha.5": {
-    "path": "versions/v0.1.0-alpha.5",
-    "name": "v0.1.0-alpha.5",
-    "sha": "a05a2a64f6b6881b2ddb0f21bc35b111083329ec",
-    "tag": "v0.1.0-alpha.5"
-  },
-  "v0.1.0-alpha.6": {
-    "path": "versions/v0.1.0-alpha.6",
-    "name": "v0.1.0-alpha.6",
-    "sha": "7c6e89ab3a618791d2a00b363def1612e7ad799f",
-    "tag": "v0.1.0-alpha.6"
-  },
-  "v0.1.0-alpha.7": {
-    "path": "versions/v0.1.0-alpha.7",
-    "name": "v0.1.0-alpha.7",
-    "sha": "4d5e9200fbfc0a8b55f597b38014a316e14efd34",
-    "tag": "v0.1.0-alpha.7"
-  },
   "v0.1.0": {
     "path": "versions/v0.1.0",
     "name": "v0.1.0",
