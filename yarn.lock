@@ -2033,13 +2033,13 @@
     once "^1.4.0"
 
 "@octokit/request@^5.2.0":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-5.3.4.tgz#fbc950bf785d59da3b0399fc6d042c8cf52e2905"
-  integrity sha512-qyj8G8BxQyXjt9Xu6NvfvOr1E0l35lsXtwm3SopsYg/JWXjlsnwqLc8rsD2OLguEL/JjLfBvrXr4az7z8Lch2A==
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-5.4.0.tgz#52382c830f0cf3295b5a03e308872ac0f5ccba9b"
+  integrity sha512-uAJO6GI8z8VHBqtY7VTL9iFy1Y+UTp5ShpI97tY5z0qBfYKE9rZCRsCm23VmF00x+IoNJ7a0nuVITs/+wS9/mg==
   dependencies:
     "@octokit/endpoint" "^6.0.0"
     "@octokit/request-error" "^2.0.0"
-    "@octokit/types" "^2.0.0"
+    "@octokit/types" "^2.8.2"
     deprecation "^2.0.0"
     is-plain-object "^3.0.0"
     node-fetch "^2.3.0"
@@ -2068,10 +2068,10 @@
     once "^1.4.0"
     universal-user-agent "^4.0.0"
 
-"@octokit/types@^2.0.0", "@octokit/types@^2.0.1":
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-2.8.1.tgz#935ba46c3abb745e913b1110b87f1ca75f2a3792"
-  integrity sha512-1fzZcYTvPkrJsS9MX7oTMun447Q/tJo5XOtXQsKqmbTbwQV1f+R58pDmjDbzeFbQ7KzMJaDN7Sq4bCh/WHmgLg==
+"@octokit/types@^2.0.0", "@octokit/types@^2.0.1", "@octokit/types@^2.8.2":
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-2.8.2.tgz#08d1165354637ef32c3134b4b39b7f17bdc17aef"
+  integrity sha512-8cs4DjRAzFoGo1ieUhDyrTdPK016V3JD/H00nbnojSCUYfOXnnJ1owUaAT/3OebTzp/tgdTG6M+8PdCTJzI+/w==
   dependencies:
     "@types/node" ">= 8"
 
@@ -6769,15 +6769,15 @@ ember-changeset-validations@^3.1.0:
     ember-get-config "^0.2.4"
     ember-validators "^2.0.0"
 
-ember-changeset@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-changeset/-/ember-changeset-3.2.0.tgz#9f889e9fd8d1f5e80b8fbeec09f0623ad3d7836a"
-  integrity sha512-aJVsLRVyV/uKuSnKyZteqxvkAUDiGmKet6q/iD2eb36H9t4iwqZbq4XzDve6gtddz0sfK9VL61HFMVCqbHjYlw==
+ember-changeset@^3.2.0, ember-changeset@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ember-changeset/-/ember-changeset-3.2.1.tgz#81605a3fb6a0626d91ab69dd51f30dd1756f8d84"
+  integrity sha512-o0XinNqQXP7eJunExhUxGE1WOdo6yfqMQird7HNLBtU1y0jP8sMZx8S7uG05iG0e9iwbndfJwbJ9LrHPtTU45A==
   dependencies:
     "@glimmer/tracking" "^1.0.0"
     ember-auto-import "^1.5.2"
     ember-cli-babel "7.17.2"
-    validated-changeset "~0.3.0"
+    validated-changeset "~0.3.1"
 
 ember-cli-addon-docs-esdoc@^0.2.3:
   version "0.2.3"
@@ -8324,9 +8324,9 @@ eslint-plugin-node@^11.0.0:
     semver "^6.1.0"
 
 eslint-plugin-prettier@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.2.tgz#432e5a667666ab84ce72f945c72f77d996a5c9ba"
-  integrity sha512-GlolCC9y3XZfv3RQfwGew7NnuFDKsfI4lbvRK+PIIo23SFH+LemGs4cKwzAaRa+Mdb+lQO/STaIayno8T5sJJA==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-prettier/-/eslint-plugin-prettier-3.1.3.tgz#ae116a0fc0e598fdae48743a4430903de5b4e6ca"
+  integrity sha512-+HG5jmu/dN3ZV3T6eCD7a4BlAySdN7mLIbJYo0z1cFQuI+r2DiTJEFeF68ots93PsnrMxbzIZ2S/ieX+mkrBeQ==
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -15821,10 +15821,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-validated-changeset@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/validated-changeset/-/validated-changeset-0.3.0.tgz#bd8f744c65c8661fd1e1436edc809c2c68113094"
-  integrity sha512-JWtSN4gktah+tgUPk2G8CixVDjtkb24UHtDocesoeXPWVH7KOuxV/E7GzwcIt1gvTqDBjvVxjrT9nKJHS/Lt0Q==
+validated-changeset@~0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/validated-changeset/-/validated-changeset-0.3.1.tgz#1c827686e0025f92a2803e617d7159fa1b3ec26c"
+  integrity sha512-YXlYzSbqNyGD1segW+NYKjeNcQrYZcYz37/LCaRY+bWOp1rYta2KEySLMyT+Dv3x3lWEa8F4/vjOosiBX5+4xQ==
 
 vary@~1.1.2:
   version "1.1.2"

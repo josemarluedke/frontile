@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@frontile/forms": "^0.1.0-alpha.8",
-    "ember-changeset": "^3.2.0",
+    "ember-changeset": "^3.2.1",
     "ember-changeset-validations": "^3.1.0",
     "ember-cli-babel": "^7.19.0",
     "ember-cli-htmlbars": "^4.3.1",
