@@ -1,38 +1,39 @@
-@frontile.notifications
-==============================================================================
+## @frontile/notifications
 
-[Short description of the addon.]
+Component Library for Ember Octane apps: Notifications
 
-
-Compatibility
-------------------------------------------------------------------------------
+## Compatibility
 
 * Ember.js v3.13 or above
 * Ember CLI v2.13 or above
 * Node.js v10 or above
 
 
-Installation
-------------------------------------------------------------------------------
+## Installation
 
-```
+```sh
 ember install @frontile/notifications
 ```
 
+### Styles
 
-Usage
-------------------------------------------------------------------------------
+```js
+// tailwind.config.js
 
-[Longer description of how to use the addon in apps.]
+module.exports = {
+  theme: {
+    // ...
+  },
+  plugins: [require('@frontile/notifications/tailwind')]
+};
+```
+
+## Documentation
+
+Visit [frontile.dev](https://frontile.dev/versions/master/) to read the docs
+and see live demos.
 
 
-Contributing
-------------------------------------------------------------------------------
-
-See the [Contributing](CONTRIBUTING.md) guide for details.
-
-
-License
-------------------------------------------------------------------------------
+## License
 
 This project is licensed under the [MIT License](LICENSE.md).
