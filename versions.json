@@ -28,5 +28,17 @@
     "name": "v0.1.0-alpha.7",
     "sha": "4d5e9200fbfc0a8b55f597b38014a316e14efd34",
     "tag": "v0.1.0-alpha.7"
+  },
+  "v0.1.0": {
+    "path": "versions/v0.1.0",
+    "name": "v0.1.0",
+    "sha": "bd0173da04649493bc94fc845125d8b0b97e8968",
+    "tag": "v0.1.0"
+  },
+  "-latest": {
+    "path": "",
+    "name": "Latest",
+    "sha": "bd0173da04649493bc94fc845125d8b0b97e8968",
+    "tag": "v0.1.0"
   }
 }
