@@ -41,9 +41,10 @@ still pre-version 1.0.0, so breaking changes can still occur.
 All the styles we provide are through [TailwindCSS](https://tailwindcss.com/)
 plugins. It is perfect if your app has Tailwind; however, some apps don't have or
 don't necessarily want to write styles using it. For these, there are two alternatives:
-Write all the styles yourself targeting our classes, which follows
+
+- Write all the styles yourself targeting our classes, which follows
 [BEM naming](http://getbem.com/naming/) conventions.
-Only add Tailwind for our styles. This approach is yet to be proven, but in theory,
+- Only add Tailwind for our styles. This approach is yet to be proven, but in theory,
 you should be able to set up Tailwind and only allow it to include Frontile styles.
 
 By providing Tailwind plugins, you can customize pretty much all styles, even
