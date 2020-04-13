@@ -29,16 +29,16 @@ module('Integration | Component | FormField::Checkbox', function (hooks) {
       hbs`<FormField::Checkbox data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form-checkbox-sm');
+    assert.dom('[data-test-input]').hasClass('form__checkbox--sm');
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-checkbox-lg');
+    assert.dom('[data-test-input]').hasClass('form__checkbox--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-checkbox-sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form-checkbox-lg');
+    assert.dom('[data-test-input]').hasClass('form__checkbox--sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form__checkbox--lg');
   });
 
   test('it renders id html attribute', async function (assert) {

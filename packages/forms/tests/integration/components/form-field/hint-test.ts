@@ -14,7 +14,7 @@ module('Integration | Component | FormField::Hint', function (hooks) {
       .dom('[data-test-id="form-field-hint"]')
       .hasAttribute('id', 'some-hint-id');
 
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form-field-hint');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint');
     assert.dom('[data-test-id="form-field-hint"]').hasClass('something-else');
     assert.dom('[data-test-id="form-field-hint"]').hasTextContaining('Content');
   });
@@ -27,15 +27,15 @@ module('Integration | Component | FormField::Hint', function (hooks) {
       hbs`<FormField::Hint data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form-field-hint-sm');
+    assert.dom('[data-test-input]').hasClass('form__hint--sm');
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-field-hint-lg');
+    assert.dom('[data-test-input]').hasClass('form__hint--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-field-hint-sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form-field-hint-lg');
+    assert.dom('[data-test-input]').hasClass('form__hint--sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form__hint--lg');
   });
 });

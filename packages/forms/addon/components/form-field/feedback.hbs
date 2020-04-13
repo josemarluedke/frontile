@@ -1,6 +1,6 @@
 <div
   id={{@id}}
-  class="form-field-feedback {{if this.isError "is-error"}} {{if @isSmall "form-field-feedback-sm" (if @isLarge "form-field-feedback-lg")}}"
+  class="form__feedback {{if this.isError "form__feedback--state-error"}} {{if @isSmall "form__feedback--sm" (if @isLarge "form__feedback--lg")}}"
   data-test-id="form-field-feedback"
   aria-live={{if this.isError "assertive" "polite"}}
   ...attributes

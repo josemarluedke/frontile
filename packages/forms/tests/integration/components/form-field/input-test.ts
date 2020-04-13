@@ -47,16 +47,16 @@ module('Integration | Component | FormField::Input', function (hooks) {
       hbs`<FormField::Input data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form-input-sm');
+    assert.dom('[data-test-input]').hasClass('form__input--sm');
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-input-lg');
+    assert.dom('[data-test-input]').hasClass('form__input--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-input-sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form-input-lg');
+    assert.dom('[data-test-input]').hasClass('form__input--sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form__input--lg');
   });
 
   test('renders @value arg, does not mutate it by default', async function (assert) {

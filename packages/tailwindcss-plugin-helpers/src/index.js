@@ -52,7 +52,12 @@ function replaceIconDeclarations(component, replace) {
 
 function resolveOptions(userOptionsName, defaultOptions, config, theme) {
   return merge(
-    defaultOptions({ theme, config }),
+    fromPairs(
+      map(defaultOptions({ theme, config }), (value, key) => [
+        key,
+        flattenOptions(value)
+      ])
+    ),
     fromPairs(
       map(theme(userOptionsName), (value, key) => [key, flattenOptions(value)])
     )
@@ -77,6 +82,10 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
+function camelCaseToDash(str) {
+  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+}
+
 module.exports = {
   merge,
   isEmpty,
@@ -85,5 +94,6 @@ module.exports = {
   resolveOptions,
   resolveConfig,
   resolve,
-  svgToDataUri
+  svgToDataUri,
+  camelCaseToDash
 };

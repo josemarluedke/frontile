@@ -3,12 +3,9 @@ const {
   resolve,
   isEmpty,
   replaceIconDeclarations,
-  svgToDataUri
+  svgToDataUri,
+  camelCaseToDash
 } = require('@frontile/tailwindcss-plugin-helpers');
-
-function camelCaseToDash(str) {
-  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
-}
 
 module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {

@@ -185,64 +185,52 @@ module('Integration | Component | FormSelect', function (hooks) {
 
     await render(template);
 
-    assert.dom('.my-container').hasClass('form-select-container-sm');
+    assert.dom('.my-container').hasClass('form-select-container--sm');
     assert
       .dom('.ember-power-select-trigger')
       .hasClass('ember-power-select-trigger-sm');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-sm');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-sm');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form-field-feedback-sm');
+      .hasClass('form__feedback--sm');
 
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-select-container-lg');
+    assert.dom('.my-container').hasClass('form-select-container--lg');
     assert
       .dom('.ember-power-select-trigger')
       .hasClass('ember-power-select-trigger-lg');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-lg');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-lg');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--lg');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--lg');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form-field-feedback-lg');
+      .hasClass('form__feedback--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-select-container-sm');
+    assert.dom('.my-container').hasClass('form-select-container--sm');
     assert
       .dom('.ember-power-select-trigger')
       .hasClass('ember-power-select-trigger-sm');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label-sm');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-field-hint-sm');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
+    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form-field-feedback-sm');
-    assert.dom('.my-container').doesNotHaveClass('form-select-container-lg');
+      .hasClass('form__feedback--sm');
+    assert.dom('.my-container').doesNotHaveClass('form-select-container--lg');
     assert
       .dom('.ember-power-select-trigger')
       .doesNotHaveClass('ember-power-select-trigger-lg');
     assert
       .dom('[data-test-id="form-field-label"]')
-      .doesNotHaveClass('form-field-label-lg');
+      .doesNotHaveClass('form__label--lg');
     assert
       .dom('[data-test-id="form-field-hint"]')
-      .doesNotHaveClass('form-field-hint-lg');
+      .doesNotHaveClass('form__hint--lg');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .doesNotHaveClass('form-field-feedback-lg');
+      .doesNotHaveClass('form__feedback--lg');
   });
 });

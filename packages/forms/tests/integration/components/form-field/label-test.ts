@@ -14,9 +14,7 @@ module('Integration | Component | FormField::Label', function (hooks) {
       .dom('[data-test-id="form-field-label"]')
       .hasAttribute('for', 'some-input-id');
 
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-field-label');
+    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label');
     assert.dom('[data-test-id="form-field-label"]').hasClass('something-else');
     assert
       .dom('[data-test-id="form-field-label"]')
@@ -31,15 +29,15 @@ module('Integration | Component | FormField::Label', function (hooks) {
       hbs`<FormField::Label data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form-field-label-sm');
+    assert.dom('[data-test-input]').hasClass('form__label--sm');
     this.set('isSmall', false);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-field-label-lg');
+    assert.dom('[data-test-input]').hasClass('form__label--lg');
 
     // should only add one size class
     this.set('isSmall', true);
     this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form-field-label-sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form-field-label-lg');
+    assert.dom('[data-test-input]').hasClass('form__label--sm');
+    assert.dom('[data-test-input]').doesNotHaveClass('form__label--lg');
   });
 });
