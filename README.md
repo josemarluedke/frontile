@@ -1,17 +1,10 @@
-# Frontile ![](https://github.com/josemarluedke/frontile/workflows/CI/badge.svg)
+<img width="978" alt="github-readme" src="https://user-images.githubusercontent.com/230476/79399597-a288ec80-7f38-11ea-9967-f65667dbe7f7.png">
+<p align="center">
+  <a href="https://github.com/josemarluedke/frontile/actions?query=workflow%3ACI"><img src="https://github.com/josemarluedke/frontile/workflows/CI/badge.svg" alt="Build Status"></a>
+  <a href="https://github.com/josemarluedke/frontile/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
+</p>
 
-Component Library for Ember Octane apps
-
-**Under continued development.**
-
-## Documentation
-
-Visit [frontile.dev](https://frontile.dev/versions/master/) to read the docs
-and see live demos.
-
-**Docs are early development and will have a big re-write/re-organization in near future.**
-
-## What is Frontile?
+**Under active development.**
 
 Frontile aims to provide the legos (components, helpers, modifiers, and styles)
 necessary for building consistent and powerful Ember.js apps while following best
@@ -22,6 +15,15 @@ practices from the community and providing both low-level and high-level compone
 - Written in TypeScript;
 - All components are Glimmer components;
 - Styles are just TailwindCSS plugins, and fully responsive;
+
+
+## Documentation
+
+Visit [frontile.dev](https://frontile.dev/) to read the docs
+and see live demos.
+
+**Docs are early development and will have a big re-write/re-organization in near future.**
+
 
 ## What is available?
 
