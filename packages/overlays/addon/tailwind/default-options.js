@@ -38,7 +38,8 @@ function defaultOptions({ config }) {
           ...inset0,
           position: 'fixed',
           backgroundColor: config.backdropColor,
-          userSelect: 'none'
+          userSelect: 'none',
+          zIndex: 1
         },
 
         content: {
@@ -47,7 +48,8 @@ function defaultOptions({ config }) {
           overflow: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          '-webkit-overflow-scrolling': 'touch'
+          '-webkit-overflow-scrolling': 'touch',
+          zIndex: 2
         }
       },
       modal: {
