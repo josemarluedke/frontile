@@ -12,7 +12,7 @@ export interface BaseArgs {
 export interface ValidationError {
   key: string;
   value: unknown;
-  validation: string[];
+  validation: string[] | string;
 }
 
 export default class ChangesetFormFieldsBase<
@@ -47,7 +47,11 @@ export default class ChangesetFormFieldsBase<
 
     return fieldErrors.reduce(
       (errors: string[], error: ValidationError): string[] => {
-        return [...errors, ...error.validation];
+        if (Array.isArray(error.validation)) {
+          return [...errors, ...error.validation];
+        } else {
+          return [...errors, error.validation];
+        }
       },
       []
     );
