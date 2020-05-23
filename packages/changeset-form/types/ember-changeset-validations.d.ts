@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-type-alias */
+
 declare module 'ember-changeset-validations' {
   import {
     ValidationResult,
@@ -5,8 +7,18 @@ declare module 'ember-changeset-validations' {
     ValidatorAction
   } from 'ember-changeset/types';
 
+  interface NestedValidator<T> {
+    [key: string]: T;
+  }
+
+  type Validator =
+    | ValidatorMapFunc
+    | ValidatorMapFunc[]
+    | ValidatorAction
+    | NestedValidator<Validator>;
+
   interface ValidatorMap {
-    [s: string]: ValidatorMapFunc | ValidatorMapFunc[] | ValidatorAction;
+    [s: string]: Validator;
   }
 
   export default function lookupValidator(

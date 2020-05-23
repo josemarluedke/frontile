@@ -19,7 +19,9 @@ module('Integration | Component | ChangesetForm::Fields::Textarea', function (
       }
     };
     const validations = {
-      'notification.message': validatePresence(true)
+      notification: {
+        message: validatePresence(true)
+      }
     };
     this.set('changeset', Changeset(model, lookupValidator(validations)));
 
