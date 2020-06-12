@@ -113,6 +113,7 @@ to your `Changeset`. The following is a brief example of that method:
 
 ```js
 import Component from '@glimmer/component';
+import { Changeset } from 'ember-changeset';
 import lookupValidator from 'ember-changeset-validations';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 
