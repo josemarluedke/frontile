@@ -1,6 +1,6 @@
 {
   "name": "@frontile/changeset-form",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Component Library for Ember Octane apps: ChangesetForm",
   "keywords": [
     "ember-addon"
