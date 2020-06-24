@@ -6815,26 +6815,26 @@ ember-basic-dropdown@^3.0.2:
     ember-maybe-in-element "^0.4.0"
     ember-truth-helpers "2.1.0"
 
-ember-changeset-validations@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/ember-changeset-validations/-/ember-changeset-validations-3.3.2.tgz#a1c24b46c2750a1a79b93261d5399f52b58e6786"
-  integrity sha512-S6873o5ns3JTqL+kg9L4P5uGRs1SwWb1ushw433oKhn5W57gZPxOtfaD/PJW1NOkgjMzLA5MXoiu1c34hK5G0A==
+ember-changeset-validations@^3.0.0:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/ember-changeset-validations/-/ember-changeset-validations-3.6.1.tgz#812c33079d631d3d08da750b0370e803719f0fe9"
+  integrity sha512-v3uQIhM/zegZCkv4ncHtRNxMIX/h+48X/kX0iqCsX3pwRiYu6d8AHw0PtySU7zy1fonjI4LGc3QL7BfiPlLAcQ==
   dependencies:
-    ember-changeset "^3.3.8"
+    ember-changeset "^3.6.1"
     ember-cli-babel "^7.8.0"
     ember-cli-htmlbars "^4.0.5"
     ember-get-config "^0.2.4"
     ember-validators "^2.0.0"
 
-ember-changeset@^3.3.8, ember-changeset@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/ember-changeset/-/ember-changeset-3.4.0.tgz#4a1ebcb470427dfb08258c274bbb6221eae40658"
-  integrity sha512-zozM2c8m0D+7QTC2V8C/bMb2oEGjBtY3BsAbmNm7jYGbTDXYFp40Jum2l6rGLKKM1H0JMsbzfT6TdIh0dPQcTw==
+ember-changeset@^3.0.0, ember-changeset@^3.6.1:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/ember-changeset/-/ember-changeset-3.7.0.tgz#4c1a319e1624e50a8f4481580914b5f14fc11540"
+  integrity sha512-o7aFtXRRtBldA0J4+YapGYd/xuY64bUnjT9RHIM0iyZ9VSn38Omsmn8gc8QBt53sNOn5W0xOmgEt+HCaonAVew==
   dependencies:
     "@glimmer/tracking" "^1.0.0"
     ember-auto-import "^1.5.2"
     ember-cli-babel "^7.19.0"
-    validated-changeset "~0.5.9"
+    validated-changeset "~0.7.1"
 
 ember-cli-addon-docs-esdoc@^0.2.3:
   version "0.2.3"
@@ -8300,7 +8300,6 @@ esdoc-ecmascript-proposal-plugin@^1.0.0:
 
 esdoc@pzuraq/esdoc#015a342:
   version "1.0.4"
-  uid "015a3426b2e53b2b0270a9c00133780db3f1d144"
   resolved "https://codeload.github.com/pzuraq/esdoc/tar.gz/015a3426b2e53b2b0270a9c00133780db3f1d144"
   dependencies:
     babel-generator "6.26.0"
@@ -15984,10 +15983,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-validated-changeset@~0.5.9:
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/validated-changeset/-/validated-changeset-0.5.9.tgz#e9c012a13c9d035ca6e7d42da0334a623ae45f1b"
-  integrity sha512-IpeEO5uUvsjOtQFuE2P9q+dcftjDGpgJK2/z5xXAgXYx179u+jeKtM0tiHARGjXbq89NKDc4Pnmu7LUvuHlHPw==
+validated-changeset@~0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/validated-changeset/-/validated-changeset-0.7.1.tgz#cb2c11c93d5acfb2286e5bfca07f4a516f83c844"
+  integrity sha512-BbFK98Cp7WunEwLOW/oAi6qDZZFBOLkae0q5RZ3ne8ZkwB1sskOYfF5IqQhqubwxRb4emMhA2UgN5rdfOaZxXQ==
 
 vary@~1.1.2:
   version "1.1.2"
