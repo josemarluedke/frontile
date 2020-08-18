@@ -1,4 +1,7 @@
 module.exports = {
+  future: {
+    removeDeprecatedGapUtilities: true
+  },
   theme: {
     '@frontile/forms': {
       default: {}
