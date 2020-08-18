@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-get */
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, fillIn, render, blur } from '@ember/test-helpers';
@@ -8,7 +9,9 @@ import validatePresence from 'ember-changeset-validations/validators/presence';
 module('Integration | Component | ChangesetForm', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+  hooks.beforeEach(async function beforeEach(this: {
+    set: (key: string, val: unknown) => void;
+  }) {
     const model = {
       name: {
         first: 'Chim',
@@ -123,7 +126,7 @@ module('Integration | Component | ChangesetForm', function (hooks) {
 
     assert.dom('[data-test-id="has-submitted"]').hasText('true');
 
-    const model = this.get('model');
+    const model = this.model;
     assert.equal(
       model.name.first.trim(),
       'James',

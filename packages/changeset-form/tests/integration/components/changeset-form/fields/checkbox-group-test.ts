@@ -10,7 +10,9 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
-    hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+    hooks.beforeEach(async function beforeEach(this: {
+      set: (key: string, val: unknown) => void;
+    }) {
       const model = {
         colors: {
           blue: true,
@@ -57,9 +59,9 @@ module(
       await click('[data-test-checkbox-green]');
       await click('[data-test-checkbox-red]');
 
-      assert.equal(this.get('changeset').get('colors.blue'), false);
-      assert.equal(this.get('changeset').get('colors.green'), true);
-      assert.equal(this.get('changeset').get('colors.red'), true);
+      assert.equal(this.changeset.get('colors.blue'), false);
+      assert.equal(this.changeset.get('colors.green'), true);
+      assert.equal(this.changeset.get('colors.red'), true);
     });
 
     test('it receives original input values on rollback', async function (assert) {
@@ -69,7 +71,7 @@ module(
       assert.dom('[data-test-checkbox-red]').isNotChecked();
 
       run(() => {
-        this.get('changeset').rollback();
+        this.changeset.rollback();
       });
       assert.dom('[data-test-checkbox-blue]').isChecked();
       assert.dom('[data-test-checkbox-green]').isNotChecked();

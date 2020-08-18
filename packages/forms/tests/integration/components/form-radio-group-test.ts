@@ -67,7 +67,7 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     await render(template);
 
     await click('[data-test-option-yes]');
-    assert.equal(this.get('myValue'), true);
+    assert.equal(this.myValue, true);
   });
 
   test('it adds inline class when isInline is true', async function (assert) {

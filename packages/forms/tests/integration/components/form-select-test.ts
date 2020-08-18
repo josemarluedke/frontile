@@ -106,7 +106,7 @@ module('Integration | Component | FormSelect', function (hooks) {
     await clickTrigger('.my-container');
     await selectChoose('.test-select', 'Brazil');
 
-    assert.deepEqual(this.get('value'), 'Brazil');
+    assert.deepEqual(this.value, 'Brazil');
   });
 
   test('it handle multiple options', async function (assert) {
@@ -124,7 +124,7 @@ module('Integration | Component | FormSelect', function (hooks) {
 
     await clickTrigger('.my-container');
     await selectChoose('.my-container .ember-power-select-trigger', 'China');
-    assert.deepEqual(this.get('value'), ['Brazil', 'China']);
+    assert.deepEqual(this.value, ['Brazil', 'China']);
   });
 
   test('shows error messages and adds aria-invalid on close', async function (assert) {
