@@ -58,7 +58,7 @@ TL; DR; You don't need TailwindCSS if you don't want it, but it's best if you do
 
 ## Compatibility
 
-* Ember.js v3.13 or above
+* Ember.js v3.16 or above
 * Ember CLI v2.13 or above
 * Node.js v10 or above
 
