@@ -112,6 +112,10 @@ export default class Overlay extends Component<OverlayArgs> {
     return this.args.isOpen === true && this.args.disableBackdrop !== true;
   }
 
+  get isAnimationEnabled(): boolean {
+    return !(this.args.disableTransitions === true);
+  }
+
   @action handleOverlayClick(): void {
     if (this.args.closeOnOutsideClick !== false) {
       this.handleClose();

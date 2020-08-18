@@ -25,7 +25,7 @@ module('Integration | Component | Overlay', function (hooks) {
       data-test-id="overlay"
     >
       My Content
-      <button>Something focusable</button>
+      <button type="button">Something focusable</button>
     </Overlay>
   `;
 

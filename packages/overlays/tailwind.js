@@ -23,9 +23,12 @@ module.exports = plugin.withOptions(function (userConfig) {
 
       name = `.overlay--transition--${name}`;
 
-      addComponents({ [`${name}-enter`]: enter });
+      addComponents({
+        [`${name}-enter`]: enter,
+        [`${name}-leave-to`]: enter
+      });
       addComponents({ [`${name}-enter-active`]: enterActive });
-      addComponents({ [`${name}-leave`]: leave });
+      addComponents({ [`${name}-leave`]: leave, [`${name}-enter-to`]: leave });
       addComponents({ [`${name}-leave-active`]: leaveActive });
     }
 

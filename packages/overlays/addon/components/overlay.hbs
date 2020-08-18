@@ -20,18 +20,11 @@
     >
       {{!-- template-lint-disable no-invalid-interactive --}}
       {{#if this.isBackdropVisible}}
-        {{#if @disableTransitions}}
-          <div
-            class="overlay__backdrop"
-            {{on "click" this.handleOverlayClick}}
-          ></div>
-        {{else}}
-          <div
-            class="overlay__backdrop"
-            {{on "click" this.handleOverlayClick}}
-            {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade")}}
-          ></div>
-        {{/if}}
+        <div
+          class="overlay__backdrop"
+          {{on "click" this.handleOverlayClick}}
+          {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade") isEnabled=this.isAnimationEnabled}}
+        ></div>
       {{/if}}
 
       {{!--
@@ -41,26 +34,15 @@
       <span data-is-visible={{this.isVisible}}></span>
 
       {{#if @isOpen}}
-        {{#if @disableTransitions}}
-          <div
-            class="overlay__content"
-            {{on "click" this.handleContentClick}}
-            {{did-insert this.setup}}
-            {{will-destroy this.teardown}}
-          >
-            {{yield}}
-          </div>
-        {{else}}
-          <div
-            class="overlay__content"
-            {{on "click" this.handleContentClick}}
-            {{did-insert this.setup}}
-            {{will-destroy this.teardown}}
-            {{css-transition (if @contentTransitionName @contentTransitionName "overlay--transition--fade")}}
-          >
-            {{yield}}
-          </div>
-        {{/if}}
+        <div
+          class="overlay__content"
+          {{on "click" this.handleContentClick}}
+          {{did-insert this.setup}}
+          {{will-destroy this.teardown}}
+          {{css-transition (if @contentTransitionName @contentTransitionName "overlay--transition--fade") isEnabled=this.isAnimationEnabled}}
+        >
+          {{yield}}
+        </div>
       {{/if}}
       {{!-- template-lint-enable no-invalid-interactive --}}
     </div>
