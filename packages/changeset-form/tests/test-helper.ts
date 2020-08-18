@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import Application from 'dummy/app';
 import config from 'dummy/config/environment';
 import { setApplication } from '@ember/test-helpers';
