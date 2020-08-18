@@ -12,7 +12,9 @@ module('Integration | Component | ChangesetForm::Fields::Select', function (
 ) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+  hooks.beforeEach(async function beforeEach(this: {
+    set: (key: string, val: unknown) => void;
+  }) {
     const model = {
       framework: 'Ember'
     };
@@ -50,7 +52,7 @@ module('Integration | Component | ChangesetForm::Fields::Select', function (
   test('it updates the changeset on input', async function (assert) {
     await selectChoose('.field-container', 'Glimmer');
 
-    assert.equal(this.get('changeset').get('framework'), 'Glimmer');
+    assert.equal(this.changeset.get('framework'), 'Glimmer');
   });
 
   test('it displays error message on focus out', async function (assert) {
@@ -69,7 +71,7 @@ module('Integration | Component | ChangesetForm::Fields::Select', function (
     await selectChoose('.field-container', 'Glimmer');
 
     run(() => {
-      this.get('changeset').rollback();
+      this.changeset.rollback();
     });
 
     assert

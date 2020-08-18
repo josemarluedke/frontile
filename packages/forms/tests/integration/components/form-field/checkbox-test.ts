@@ -73,7 +73,7 @@ module('Integration | Component | FormField::Checkbox', function (hooks) {
     assert.dom('[data-test-checkbox]').isChecked();
     await click('[data-test-checkbox]');
 
-    assert.equal(this.get('value'), true, 'should have not mutated the value');
+    assert.equal(this.value, true, 'should have not mutated the value');
   });
 
   test('should call @onChange function arg', async function (assert) {
@@ -98,7 +98,7 @@ module('Integration | Component | FormField::Checkbox', function (hooks) {
     await click('[data-test-checkbox]');
 
     assert.dom('[data-test-checkbox]').isChecked();
-    assert.equal(this.get('value'), true, 'should have mutated the value');
+    assert.equal(this.value, true, 'should have mutated the value');
   });
 
   test('it sets as checked if value is truthy', async function (assert) {

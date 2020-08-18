@@ -86,11 +86,7 @@ module('Integration | Component | FormField::Radio', function (hooks) {
     assert.dom('[data-test-radio]').isNotChecked();
     await click('[data-test-radio]');
 
-    assert.equal(
-      this.get('value'),
-      undefined,
-      'should have not mutated the value'
-    );
+    assert.equal(this.value, undefined, 'should have not mutated the value');
   });
 
   test('should call @onChange function arg', async function (assert) {
@@ -116,10 +112,6 @@ module('Integration | Component | FormField::Radio', function (hooks) {
     await click('[data-test-radio]');
 
     assert.dom('[data-test-radio]').isChecked();
-    assert.equal(
-      this.get('value'),
-      'my-value',
-      'should have mutated the value'
-    );
+    assert.equal(this.value, 'my-value', 'should have mutated the value');
   });
 });

@@ -10,7 +10,9 @@ module('Integration | Component | ChangesetForm::Fields::Radio', function (
 ) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+  hooks.beforeEach(async function beforeEach(this: {
+    set: (key: string, val: unknown) => void;
+  }) {
     const model = {
       color: 'blue'
     };
@@ -51,7 +53,7 @@ module('Integration | Component | ChangesetForm::Fields::Radio', function (
     await click('[data-test-radio-green]');
     await click('[data-test-radio-red]');
 
-    assert.equal(this.get('changeset').get('color'), 'red');
+    assert.equal(this.changeset.get('color'), 'red');
   });
 
   test('it receives original input values on rollback', async function (assert) {
@@ -61,7 +63,7 @@ module('Integration | Component | ChangesetForm::Fields::Radio', function (
     assert.dom('[data-test-radio-red]').isNotChecked();
 
     run(() => {
-      this.get('changeset').rollback();
+      this.changeset.rollback();
     });
     assert.dom('[data-test-radio-blue]').isChecked();
   });

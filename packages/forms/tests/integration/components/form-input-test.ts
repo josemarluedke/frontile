@@ -62,7 +62,7 @@ module('Integration | Component | FormInput', function (hooks) {
     assert.dom('[data-test-input]').hasValue('Josemar');
     await fillIn('[data-test-input]', 'Sam');
     assert.equal(
-      this.get('myInputValue'),
+      this.myInputValue,
       'Josemar',
       'should have not mutated the value'
     );
@@ -81,11 +81,7 @@ module('Integration | Component | FormInput', function (hooks) {
 
     assert.dom('[data-test-input]').hasValue('Josemar');
     await fillIn('[data-test-input]', 'Sam');
-    assert.equal(
-      this.get('myInputValue'),
-      'Sam',
-      'should have mutated the value'
-    );
+    assert.equal(this.myInputValue, 'Sam', 'should have mutated the value');
   });
 
   test('show error messages when errors array has items', async function (assert) {

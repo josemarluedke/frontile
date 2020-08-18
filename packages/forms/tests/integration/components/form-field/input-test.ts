@@ -70,11 +70,7 @@ module('Integration | Component | FormField::Input', function (hooks) {
 
     await fillIn('.my-input', 'Sam');
 
-    assert.equal(
-      this.get('value'),
-      'Josemar',
-      'should have not mutated the value'
-    );
+    assert.equal(this.value, 'Josemar', 'should have not mutated the value');
   });
 
   test('should call @onInput function arg', async function (assert) {
@@ -99,7 +95,7 @@ module('Integration | Component | FormField::Input', function (hooks) {
     await fillIn('.my-input', 'Sam');
 
     assert.dom('.my-input').hasValue('Sam');
-    assert.equal(this.get('value'), 'Sam', 'should have mutated the value');
+    assert.equal(this.value, 'Sam', 'should have mutated the value');
   });
 
   test('should call @onChange function arg', async function (assert) {
@@ -124,6 +120,6 @@ module('Integration | Component | FormField::Input', function (hooks) {
     await fillIn('.my-input', 'Sam');
 
     assert.dom('.my-input').hasValue('Sam');
-    assert.equal(this.get('value'), 'Sam', 'should have mutated the value');
+    assert.equal(this.value, 'Sam', 'should have mutated the value');
   });
 });

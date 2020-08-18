@@ -10,7 +10,9 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function (
 ) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+  hooks.beforeEach(async function beforeEach(this: {
+    set: (key: string, val: unknown) => void;
+  }) {
     const model = {
       blue: true,
       green: false,
@@ -51,9 +53,9 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function (
     await click('[data-test-checkbox-green]');
     await click('[data-test-checkbox-red]');
 
-    assert.equal(this.get('changeset').get('blue'), false);
-    assert.equal(this.get('changeset').get('green'), true);
-    assert.equal(this.get('changeset').get('red'), true);
+    assert.equal(this.changeset.get('blue'), false);
+    assert.equal(this.changeset.get('green'), true);
+    assert.equal(this.changeset.get('red'), true);
   });
 
   test('it receives original input values on rollback', async function (assert) {
@@ -63,7 +65,7 @@ module('Integration | Component | ChangesetForm::Fields::Checkbox', function (
     assert.dom('[data-test-checkbox-red]').isNotChecked();
 
     run(() => {
-      this.get('changeset').rollback();
+      this.changeset.rollback();
     });
     assert.dom('[data-test-checkbox-blue]').isChecked();
     assert.dom('[data-test-checkbox-green]').isNotChecked();

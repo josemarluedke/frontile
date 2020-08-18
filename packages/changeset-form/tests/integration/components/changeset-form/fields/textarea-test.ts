@@ -12,7 +12,9 @@ module('Integration | Component | ChangesetForm::Fields::Textarea', function (
 ) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function beforeEach(this: { set: Function }) {
+  hooks.beforeEach(async function beforeEach(this: {
+    set: (key: string, val: unknown) => void;
+  }) {
     const model = {
       notification: {
         message: 'EmberJS'
@@ -42,7 +44,7 @@ module('Integration | Component | ChangesetForm::Fields::Textarea', function (
   test('it updates the changeset on input', async function (assert) {
     await fillIn('[data-test-text-input]', 'Glimmer');
 
-    assert.equal(this.get('changeset').get('notification.message'), 'Glimmer');
+    assert.equal(this.changeset.get('notification.message'), 'Glimmer');
   });
 
   test('it displays error message on focus out', async function (assert) {
@@ -62,7 +64,7 @@ module('Integration | Component | ChangesetForm::Fields::Textarea', function (
     await fillIn('[data-test-text-input]', 'Glimmer');
 
     run(() => {
-      this.get('changeset').rollback();
+      this.changeset.rollback();
     });
     assert.dom('[data-test-text-input]').hasValue('EmberJS');
   });

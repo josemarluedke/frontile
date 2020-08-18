@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-get */
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn } from '@ember/test-helpers';

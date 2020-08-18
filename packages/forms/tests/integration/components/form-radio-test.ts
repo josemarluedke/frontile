@@ -74,7 +74,7 @@ module('Integration | Component | FormRadio', function (hooks) {
     );
 
     await click('[data-test-input]');
-    assert.equal(this.get('myValue'), undefined);
+    assert.equal(this.myValue, undefined);
   });
 
   test('it calls onChange function to change value', async function (assert) {
@@ -92,7 +92,7 @@ module('Integration | Component | FormRadio', function (hooks) {
     );
 
     await click('[data-test-input]');
-    assert.equal(this.get('myValue'), true);
+    assert.equal(this.myValue, true);
   });
 
   test('it marks the input as checked if value matches', async function (assert) {

@@ -89,7 +89,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     );
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
-      assert.equal(n, this.get('notification'));
+      assert.equal(n, this.notification);
     });
 
     await render(template);
@@ -128,7 +128,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     );
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
-      assert.equal(n, this.get('notification'));
+      assert.equal(n, this.notification);
     });
 
     await render(template);
@@ -164,7 +164,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
       new Notification('My message', { transitionDuration: 1 })
     );
 
-    this.get('notification').timer = {
+    this.notification.timer = {
       pause() {
         assert.ok('should have paused');
       },
