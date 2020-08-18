@@ -125,14 +125,12 @@ function defaultOptions({ config }) {
             opacity: 0
           },
           enterActive: {
-            opacity: 1,
             transition: 'opacity 0.2s linear'
           },
           leave: {
             opacity: 1
           },
           leaveActive: {
-            opacity: 0,
             transition: 'opacity 0.2s linear'
           }
         },
@@ -142,8 +140,6 @@ function defaultOptions({ config }) {
             transform: 'scale(0.8)'
           },
           enterActive: {
-            opacity: 1,
-            transform: 'scale(1)',
             transition: 'all 0.2s ease-in-out'
           },
           leave: {
@@ -151,8 +147,6 @@ function defaultOptions({ config }) {
             transform: 'scale(1)'
           },
           leaveActive: {
-            opacity: 0,
-            transform: 'scale(0.8)',
             transition: 'all 0.2s ease-in-out'
           }
         }
