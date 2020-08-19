@@ -6,6 +6,20 @@ import hbs from 'htmlbars-inline-precompile';
 import validateFormat from 'ember-changeset-validations/validators/format';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 
+interface Model {
+  name: {
+    first: string;
+    last: string;
+  };
+  email: string;
+}
+
+declare module 'ember-test-helpers' {
+  interface TestContext {
+    model: Model;
+  }
+}
+
 module('Integration | Component | ChangesetForm', function (hooks) {
   setupRenderingTest(hooks);
 

@@ -4,6 +4,14 @@ import { render, click, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
+declare module 'ember-test-helpers' {
+  interface TestContext {
+    myValue: unknown;
+    value: unknown;
+    myInputValue: unknown;
+  }
+}
+
 module('Integration | Component | FormCheckbox', function (hooks) {
   setupRenderingTest(hooks);
 

@@ -3,6 +3,13 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Notification, NotificationsService } from '@frontile/notifications';
+
+declare module 'ember-test-helpers' {
+  interface TestContext {
+    notification?: Notification;
+  }
+}
+
 import sinon from 'sinon';
 
 module('Integration | Component | NotificationCard', function (hooks) {
@@ -15,6 +22,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     />`;
 
   test('it renders the notification content & close button', async function (assert) {
+    this;
     this.set('notification', new Notification('My message'));
 
     await render(template);
@@ -164,7 +172,8 @@ module('Integration | Component | NotificationCard', function (hooks) {
       new Notification('My message', { transitionDuration: 1 })
     );
 
-    this.notification.timer = {
+    // @ts-ignore
+    this.notification!.timer = {
       pause() {
         assert.ok('should have paused');
       },
