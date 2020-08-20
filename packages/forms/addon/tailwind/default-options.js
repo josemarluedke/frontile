@@ -9,6 +9,7 @@ const defaultConfig = {
   hintColor: defaultTheme.colors.gray[500],
   disabledTextColor: defaultTheme.colors.gray[500],
   checkboxAndRadioColor: defaultTheme.colors.blue[500],
+  checkboxAndRadioIconColor: defaultTheme.colors.white,
   invalidColor: defaultTheme.colors.red[600],
   backgroundColor: defaultTheme.colors.white,
   focusBoxShadow: defaultTheme.boxShadow.outline,
@@ -103,7 +104,7 @@ function defaultOptions({ config }) {
         backgroundColor: config.backgroundColor,
         borderColor: config.borderColor,
         borderWidth: defaultTheme.borderWidth.default,
-        iconColor: config.backgroundColor,
+        iconColor: config.checkboxAndRadioIconColor,
         '&:focus': {
           outline: 'none'
         },

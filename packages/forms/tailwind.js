@@ -1,11 +1,14 @@
 const plugin = require('tailwindcss/plugin');
 const {
   merge,
+  map,
+  fromPairs,
   replaceIconDeclarations,
   resolve,
   svgToDataUri,
   isEmpty,
-  camelCaseToDash
+  camelCaseToDash,
+  flattenOptions
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -17,16 +20,30 @@ module.exports = plugin.withOptions(function (userConfig) {
       theme
     );
 
-    function addFormElementComponent(key, options, modifier = '', prefix = '') {
+    function addFormElementComponent(
+      namespace,
+      key,
+      options,
+      modifier = '',
+      prefix = ''
+    ) {
       if (isEmpty(options)) {
         return;
       }
 
-      addComponents({ [`${prefix}.form__${key}${modifier}`]: options });
+      addComponents({
+        [`${namespace}${prefix}.form__${key}${modifier}`]: options
+      });
     }
 
     // To be used with Radio and Checkbox elements
-    function addFromElementWithIcon(key, options, modifier = '', prefix = '') {
+    function addFromElementWithIcon(
+      namespace,
+      key,
+      options,
+      modifier = '',
+      prefix = ''
+    ) {
       if (isEmpty(options)) {
         return;
       }
@@ -34,7 +51,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       addComponents(
         replaceIconDeclarations(
           {
-            [`${prefix}.form__${key}${modifier}`]: merge(
+            [`${namespace}${prefix}.form__${key}${modifier}`]: merge(
               options.borderWidth === undefined
                 ? {}
                 : {
@@ -60,7 +77,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       );
     }
 
-    function addFormContainerComponents(key, options, modifier) {
+    function addFormContainerComponents(namespace, key, options, modifier) {
       const {
         label,
         input,
@@ -74,28 +91,54 @@ module.exports = plugin.withOptions(function (userConfig) {
         ...rest
       } = options || {};
 
-      const className = `.form-${key}-container${modifier}`;
+      const className = `${namespace}.form-${key}-container${modifier}`;
 
       if (!isEmpty(rest)) {
         addComponents({ [className]: rest });
       }
 
-      addFormElementComponent('label', label, modifier, `${className} `);
-      addFormElementComponent('input', input, modifier, `${className} > `);
       addFormElementComponent(
+        namespace,
+        'label',
+        label,
+        modifier,
+        `${className} `
+      );
+      addFormElementComponent(
+        namespace,
+        'input',
+        input,
+        modifier,
+        `${className} > `
+      );
+      addFormElementComponent(
+        namespace,
         'textarea',
         textarea,
         modifier,
         `${className} > `
       );
       addFormElementComponent(
+        namespace,
         'feedback',
         feedback,
         modifier,
         `${className} > `
       );
-      addFromElementWithIcon('checkbox', checkbox, modifier, `${className} > `);
-      addFromElementWithIcon('radio', radio, modifier, `${className} > `);
+      addFromElementWithIcon(
+        namespace,
+        'checkbox',
+        checkbox,
+        modifier,
+        `${className} > `
+      );
+      addFromElementWithIcon(
+        namespace,
+        'radio',
+        radio,
+        modifier,
+        `${className} > `
+      );
 
       if (!isEmpty(hint)) {
         let hintOptions = hint;
@@ -110,6 +153,7 @@ module.exports = plugin.withOptions(function (userConfig) {
         }
 
         addFormElementComponent(
+          namespace,
           'hint',
           hintOptions,
           modifier,
@@ -120,53 +164,119 @@ module.exports = plugin.withOptions(function (userConfig) {
       // Used in FormCheckbox and FormRadio components
       if (!isEmpty(labelContainer)) {
         addComponents({
-          [`.form-${key}-container__label-container`]: labelContainer
+          [`${namespace}.form-${key}-container__label-container`]: labelContainer
         });
       }
       if (!isEmpty(inputContainer)) {
         addComponents({
-          [`.form-${key}-container__input-container`]: inputContainer
+          [`${namespace}.form-${key}-container__input-container`]: inputContainer
         });
       }
     }
 
-    Object.keys(options).forEach((key) => {
-      const {
-        label,
-        input,
-        textarea,
-        checkbox,
-        radio,
-        hint,
-        feedback,
+    function addNamespaced(namespace, options) {
+      Object.keys(options).forEach((key) => {
+        const {
+          label,
+          input,
+          textarea,
+          checkbox,
+          radio,
+          hint,
+          feedback,
 
-        formInputContainer,
-        formTextareaContainer,
-        formCheckboxGroup,
-        formRadioGroup,
-        formCheckboxContainer,
-        formRadioContainer,
-        formSelectContainer
-      } = options[key] || {};
+          formInputContainer,
+          formTextareaContainer,
+          formCheckboxGroup,
+          formRadioGroup,
+          formCheckboxContainer,
+          formRadioContainer,
+          formSelectContainer
+        } = options[key] || {};
 
-      const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
+        const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
 
-      addFormElementComponent('label', label, modifier);
-      addFormElementComponent('input', input, modifier);
-      addFormElementComponent('textarea', textarea, modifier);
-      addFormElementComponent('hint', hint, modifier);
-      addFormElementComponent('feedback', feedback, modifier);
-      addFromElementWithIcon('checkbox', checkbox, modifier);
-      addFromElementWithIcon('radio', radio, modifier);
+        addFormElementComponent(namespace, 'label', label, modifier);
+        addFormElementComponent(namespace, 'input', input, modifier);
+        addFormElementComponent(namespace, 'textarea', textarea, modifier);
+        addFormElementComponent(namespace, 'hint', hint, modifier);
+        addFormElementComponent(namespace, 'feedback', feedback, modifier);
+        addFromElementWithIcon(namespace, 'checkbox', checkbox, modifier);
+        addFromElementWithIcon(namespace, 'radio', radio, modifier);
 
-      addFormContainerComponents('input', formInputContainer, modifier);
-      addFormContainerComponents('textarea', formTextareaContainer, modifier);
-      addFormContainerComponents('checkbox', formCheckboxContainer, modifier);
-      addFormContainerComponents('radio', formRadioContainer, modifier);
-      addFormContainerComponents('select', formSelectContainer, modifier);
-      addFormContainerComponents('checkbox-group', formCheckboxGroup, modifier);
-      addFormContainerComponents('radio-group', formRadioGroup, modifier);
-    });
+        addFormContainerComponents(
+          namespace,
+          'input',
+          formInputContainer,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'textarea',
+          formTextareaContainer,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'checkbox',
+          formCheckboxContainer,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'radio',
+          formRadioContainer,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'select',
+          formSelectContainer,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'checkbox-group',
+          formCheckboxGroup,
+          modifier
+        );
+        addFormContainerComponents(
+          namespace,
+          'radio-group',
+          formRadioGroup,
+          modifier
+        );
+      });
+    }
+
+    const { namespaced } = options;
+    options.namespaced = undefined;
+    addNamespaced('', options);
+
+    if (namespaced && Object.keys(namespaced).length > 0) {
+      Object.keys(namespaced).forEach((namespace) => {
+        const namespacedOptions = fromPairs(
+          map(namespaced[namespace], (value, key) => [
+            key,
+            flattenOptions(value)
+          ])
+        );
+
+        // Work around to allow change color of icons in namespace
+        Object.keys(namespacedOptions).forEach((key) => {
+          Object.keys(namespacedOptions[key]).forEach((k) => {
+            if (
+              k === 'checkbox' ||
+              (k === 'radio' && namespacedOptions[key][k].iconColor)
+            ) {
+              namespacedOptions[key][k].icon = options[key][k].icon;
+            }
+          });
+        });
+
+        addNamespaced(`${namespace} `, namespacedOptions);
+      });
+    }
 
     const { powerSelect: powerSelectOptions } = options.default || {};
 

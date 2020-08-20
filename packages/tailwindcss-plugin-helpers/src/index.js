@@ -87,7 +87,9 @@ function camelCaseToDash(str) {
 }
 
 module.exports = {
+  map,
   merge,
+  fromPairs,
   isEmpty,
   flattenOptions,
   replaceIconDeclarations,
