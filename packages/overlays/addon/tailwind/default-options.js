@@ -8,12 +8,15 @@ const defaultConfig = {
   borderRadius: defaultTheme.borderRadius.default,
   backdropColor: 'rgba(0, 0, 0, 0.45)',
   modal: {
-    padding: defaultTheme.padding[4],
+    headerPadding: defaultTheme.padding[4],
+    bodyPadding: defaultTheme.padding[4],
+    footerPadding: defaultTheme.padding[4],
     backgroundColor: defaultTheme.colors.white,
     secondaryBackgroundColor: defaultTheme.colors.gray[100], // Background for footer and close btn applied on hover
-    iconColor: 'currentColor',
+    iconColor: defaultTheme.colors.black,
     borderColor: defaultTheme.borderColor.default,
-    maxWidth: defaultTheme.maxWidth['xl']
+    maxWidth: defaultTheme.maxWidth['xl'],
+    closeBtnMargin: defaultTheme.spacing[2]
   }
 };
 
@@ -74,8 +77,8 @@ function defaultOptions({ config }) {
           position: 'absolute',
           fontSize: defaultTheme.fontSize.xl,
           padding: defaultTheme.spacing[2],
-          top: defaultTheme.padding[2],
-          right: defaultTheme.padding[2],
+          top: config.modal.closeBtnMargin,
+          right: config.modal.closeBtnMargin,
           transitionProperty: defaultTheme.transitionProperty.default,
           transitionDuration: defaultTheme.transitionDuration[200],
           borderRadius: defaultTheme.borderRadius.full,
@@ -101,12 +104,12 @@ function defaultOptions({ config }) {
         header: {
           fontWeight: defaultTheme.fontWeight.bold,
           fontSize: defaultTheme.fontSize.xl,
-          padding: config.modal.padding,
+          padding: config.modal.headerPadding,
           borderTopRightRadius: config.borderRadius,
           borderTopLeftRadius: config.borderRadius
         },
         body: {
-          padding: config.modal.padding
+          padding: config.modal.bodyPadding
         },
         footer: {
           display: 'flex',
@@ -114,7 +117,7 @@ function defaultOptions({ config }) {
           backgroundColor: config.modal.secondaryBackgroundColor,
           borderTopWidth: defaultTheme.borderWidth.default,
           borderTopColor: config.modal.borderColor,
-          padding: config.modal.padding,
+          padding: config.modal.footerPadding,
           borderBottomRightRadius: config.borderRadius,
           borderBottomLeftRadius: config.borderRadius
         }
