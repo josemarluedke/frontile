@@ -47,12 +47,18 @@ module.exports = plugin.withOptions(function (userConfig) {
         return;
       }
       addComponents({ [`.overlay${modifier}`]: options });
+
+      let prefix = '';
+      if (modifier !== '') {
+        prefix = `.overlay${modifier} `;
+      }
+
       addComponents({
-        [`.overlay${modifier} .overlay__backdrop`]: options.backdrop
+        [`${prefix}.overlay__backdrop`]: options.backdrop
       });
 
       addComponents({
-        [`.overlay${modifier} .overlay__content`]: options.content
+        [`${prefix}.overlay__content`]: options.content
       });
 
       addComponents({ [`.js-overlay-is-open`]: options.jsIsOpen });
@@ -69,10 +75,14 @@ module.exports = plugin.withOptions(function (userConfig) {
       }
 
       addComponents({ [`.modal${modifier}`]: options });
+      let prefix = '';
+      if (modifier !== '') {
+        prefix = `.modal${modifier} `;
+      }
 
       if (!isEmpty(options.header)) {
         addComponents({
-          [`.modal${modifier} .modal__header`]: options.header
+          [`${prefix}.modal__header`]: options.header
         });
       }
 
@@ -84,13 +94,13 @@ module.exports = plugin.withOptions(function (userConfig) {
         }
 
         addComponents({
-          [`.modal${modifier} .modal__close-btn`]: closeBtn
+          [`${prefix}.modal__close-btn`]: closeBtn
         });
         if (!isEmpty(btnIcon)) {
           addComponents(
             replaceIconDeclarations(
               {
-                [`.modal${modifier} .modal__close-btn--icon`]: btnIcon
+                [`${prefix}.modal__close-btn--icon`]: btnIcon
               },
               ({ icon = btnIcon.icon, iconColor = btnIcon.iconColor }) => {
                 return {
@@ -106,13 +116,13 @@ module.exports = plugin.withOptions(function (userConfig) {
 
       if (!isEmpty(options.body)) {
         addComponents({
-          [`.modal${modifier} .modal__body`]: options.body
+          [`${prefix}.modal__body`]: options.body
         });
       }
 
       if (!isEmpty(options.footer)) {
         addComponents({
-          [`.modal${modifier} .modal__footer`]: options.footer
+          [`${prefix}.modal__footer`]: options.footer
         });
       }
     }
