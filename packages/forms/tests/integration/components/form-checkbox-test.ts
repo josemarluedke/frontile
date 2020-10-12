@@ -186,4 +186,12 @@ module('Integration | Component | FormCheckbox', function (hooks) {
       .dom('[data-test-id="form-field-hint"]')
       .doesNotHaveClass('form__hint--lg');
   });
+
+  test('it adds the "is-checked" class when checked', async function (assert) {
+    await render(
+      hbs`<FormCheckbox data-test-input @checked={{true}}>Checked</FormCheckbox>`
+    );
+
+    assert.dom('[data-test-form-checkbox-container]').hasClass('is-checked');
+  });
 });
