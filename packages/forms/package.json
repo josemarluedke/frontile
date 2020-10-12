@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon"
