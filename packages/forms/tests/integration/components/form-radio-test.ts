@@ -189,4 +189,12 @@ module('Integration | Component | FormRadio', function (hooks) {
       .dom('[data-test-id="form-field-hint"]')
       .doesNotHaveClass('form__hint--lg');
   });
+
+  test('it adds the "is-checked" class when checked', async function (assert) {
+    await render(
+      hbs`<FormRadio data-test-input @checked={{true}}>Checked</FormRadio>`
+    );
+
+    assert.dom('[data-test-form-radio-container]').hasClass('is-checked');
+  });
 });
