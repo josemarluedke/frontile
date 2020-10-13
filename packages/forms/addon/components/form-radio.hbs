@@ -4,10 +4,7 @@
   class="form-radio-container {{@containerClass}} {{if @isSmall "form-radio-container--sm" (if @isLarge "form-radio-container--lg")}}"
   as |f|
 >
-  <div
-    data-test-form-radio-container
-    class="form-radio-container__label-container {{if @checked "is-checked"}}"
-  >
+  <div class="form-radio-container__label-container">
     <div class="form-radio-container__input-container">
       {{!--  Zero-width space character, used to align checkbox properly --}}
       &#8203;
