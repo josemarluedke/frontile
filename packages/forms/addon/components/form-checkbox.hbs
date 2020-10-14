@@ -4,10 +4,7 @@
   class="form-checkbox-container {{@containerClass}} {{if @isSmall "form-checkbox-container--sm" (if @isLarge "form-checkbox-container--lg")}}"
   as |f|
 >
-  <div
-    data-test-form-checkbox-container
-    class="form-checkbox-container__label-container {{if @checked "is-checked"}}"
-  >
+  <div class="form-checkbox-container__label-container">
     <div class="form-checkbox-container__input-container">
       {{!--  Zero-width space character, used to align checkbox properly --}}
       &#8203;
