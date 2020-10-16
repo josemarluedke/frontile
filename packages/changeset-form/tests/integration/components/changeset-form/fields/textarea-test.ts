@@ -51,13 +51,13 @@ module('Integration | Component | ChangesetForm::Fields::Textarea', function (
     await fillIn('[data-test-text-input]', '');
     assert
       .dom('.field-container')
-      .doesNotHaveTextContaining("Notification.message can't be blank");
+      .doesNotHaveTextContaining("message can't be blank");
 
     await blur('[data-test-text-input]');
 
     assert
       .dom('.field-container')
-      .hasTextContaining("Notification.message can't be blank");
+      .matchesText(/Notification.message can't be blank/);
   });
 
   test('it receives original input values on rollback', async function (assert) {
