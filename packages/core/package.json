@@ -24,10 +24,10 @@
     "try:one": "ember try:one"
   },
   "dependencies": {
-    "ember-cli-babel": "^7.21.0",
+    "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.2.0",
     "ember-cli-typescript": "^3.1.4",
-    "focus-visible": "^5.1.0"
+    "focus-visible": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
@@ -41,7 +41,7 @@
     "@types/rsvp": "^4.0.3",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.6.0",
-    "ember-cli": "3.20.0",
+    "ember-cli": "3.21.2",
     "ember-cli-dependency-checker": "^3.1.0",
     "ember-cli-inject-live-reload": "^2.0.1",
     "ember-cli-typescript-blueprints": "^3.0.0",
@@ -51,7 +51,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^4.4.1",
     "ember-resolver": "^8.0.2",
-    "ember-source": "^3.20.2",
+    "ember-source": "^3.22.0",
     "ember-try": "^1.2.1",
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.5.0",
