@@ -30,7 +30,7 @@
     "ember-cli-typescript": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.6",
+    "@babel/core": "^7.12.3",
     "@ember/optional-features": "^2.0.0",
     "@frontile/core": "^0.3.0",
     "@glimmer/component": "^1.0.2",

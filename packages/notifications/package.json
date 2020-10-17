@@ -33,7 +33,7 @@
     "ember-get-config": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.1",
+    "@babel/core": "^7.12.3",
     "@ember/optional-features": "^2.0.0",
     "@frontile/forms": "^0.3.4",
     "@glimmer/component": "^1.0.2",

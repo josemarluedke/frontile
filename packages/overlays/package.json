@@ -35,7 +35,7 @@
     "ember-maybe-in-element": "^2.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.1",
+    "@babel/core": "^7.12.3",
     "@ember/optional-features": "^2.0.0",
     "@frontile/buttons": "^0.3.2",
     "@glimmer/component": "^1.0.2",
