@@ -173,7 +173,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
     );
 
     // @ts-ignore
-    this.notification!.timer = {
+    this.notification.timer = {
       pause() {
         assert.ok('should have paused');
       },
