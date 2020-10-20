@@ -1,0 +1,63 @@
+{{!--
+  classes for purgecss
+
+  drawer--top
+  drawer--bottom
+  drawer--left
+  drawer--right
+  drawer--xs-vertical
+  drawer--xs-horizontal
+  drawer--sm-vertical
+  drawer--sm-horizontal
+  drawer--md-vertical
+  drawer--md-horizontal
+  drawer--lg-vertical
+  drawer--lg-horizontal
+  drawer--xl-vertical
+  drawer--xl-horizontal
+  drawer--full-vertical
+  drawer--full-horizontal
+--}}
+
+<Overlay
+  @isOpen={{@isOpen}}
+  @onClose={{this.handleClose}}
+  @didClose={{@didClose}}
+  @renderInPlace={{@renderInPlace}}
+  @destinationElementId={{@destinationElementId}}
+  @transitionDuration={{@transitionDuration}}
+  @disableBackdrop={{@disableBackdrop}}
+  @disableTransitions={{@disableTransitions}}
+  @disableFocusTrap={{@disableFocusTrap}}
+  @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
+  @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
+  @backdropTransitionName={{@backdropTransitionName}}
+  @contentTransitionName={{if @transitionName @transitionName (concat "overlay--transition--slide-from-" this.placement)}}
+>
+  <div
+    class="drawer drawer--{{this.placement}} drawer--{{this.size}}"
+    tabindex="0"
+    role="dialog"
+    aria-labelledby={{this.headerId}}
+    ...attributes
+  >
+    {{#unless this.preventClosing}}
+      <button
+        {{on "click" this.handleClose}}
+        type="button"
+        class="modal__close-btn"
+        data-test-id="drawer-close-btn"
+      >
+        <span class="modal__close-btn--icon"></span>
+        <VisuallyHidden>Close</VisuallyHidden>
+      </button>
+    {{/unless}}
+
+    {{yield (hash
+      Header=(component "drawer/header" labelledById=this.headerId)
+      Body=(component "drawer/body")
+      Footer=(component "drawer/footer")
+      headerId=this.headerId
+    )}}
+  </div>
+</Overlay>

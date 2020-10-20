@@ -3,7 +3,8 @@ const {
   resolve,
   isEmpty,
   svgToDataUri,
-  replaceIconDeclarations
+  replaceIconDeclarations,
+  kebabCase
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -19,17 +20,17 @@ module.exports = plugin.withOptions(function (userConfig) {
       if (isEmpty(options)) {
         return;
       }
-      const { enter, enterActive, leave, leaveActive } = options || {};
-
       name = `.overlay--transition--${name}`;
 
+      const { enter, enterActive, leave, leaveActive } = options;
       addComponents({
         [`${name}-enter`]: enter,
-        [`${name}-leave-to`]: enter
+        [`${name}-leave-to`]: enter,
+        [`${name}-enter-active`]: enterActive,
+        [`${name}-leave`]: leave,
+        [`${name}-enter-to`]: leave,
+        [`${name}-leave-active`]: leaveActive
       });
-      addComponents({ [`${name}-enter-active`]: enterActive });
-      addComponents({ [`${name}-leave`]: leave, [`${name}-enter-to`]: leave });
-      addComponents({ [`${name}-leave-active`]: leaveActive });
     }
 
     function addTransitions(options) {
@@ -38,7 +39,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       }
 
       Object.keys(options).forEach((key) => {
-        addTransitionPhases(key, options[key]);
+        addTransitionPhases(kebabCase(key), options[key]);
       });
     }
 
@@ -46,45 +47,39 @@ module.exports = plugin.withOptions(function (userConfig) {
       if (isEmpty(options)) {
         return;
       }
-      addComponents({ [`.overlay${modifier}`]: options });
 
       let prefix = '';
       if (modifier !== '') {
         prefix = `.overlay${modifier} `;
       }
 
+      const { backdrop, content, jsIsOpen, ...rest } = options;
       addComponents({
-        [`${prefix}.overlay__backdrop`]: options.backdrop
+        [`.overlay${modifier}`]: rest,
+        [`${prefix}.overlay__backdrop`]: backdrop,
+        [`${prefix}.overlay__content`]: content,
+        [`.js-overlay-is-open`]: jsIsOpen
       });
-
-      addComponents({
-        [`${prefix}.overlay__content`]: options.content
-      });
-
-      addComponents({ [`.js-overlay-is-open`]: options.jsIsOpen });
     }
 
     function addModal(options, modifier) {
       if (isEmpty(options)) {
         return;
       }
-      const { closeBtn } = options;
 
-      if (closeBtn) {
-        delete options.closeBtn;
-      }
-
-      addComponents({ [`.modal${modifier}`]: options });
       let prefix = '';
       if (modifier !== '') {
         prefix = `.modal${modifier} `;
       }
 
-      if (!isEmpty(options.header)) {
-        addComponents({
-          [`${prefix}.modal__header`]: options.header
-        });
-      }
+      const { closeBtn, header, body, footer, ...rest } = options;
+
+      addComponents({
+        [`.modal${modifier}`]: rest,
+        [`${prefix}.modal__header`]: header,
+        [`${prefix}.modal__footer`]: footer,
+        [`${prefix}.modal__body`]: body
+      });
 
       if (!isEmpty(closeBtn)) {
         const { icon: btnIcon } = closeBtn;
@@ -96,6 +91,7 @@ module.exports = plugin.withOptions(function (userConfig) {
         addComponents({
           [`${prefix}.modal__close-btn`]: closeBtn
         });
+
         if (!isEmpty(btnIcon)) {
           addComponents(
             replaceIconDeclarations(
@@ -113,18 +109,42 @@ module.exports = plugin.withOptions(function (userConfig) {
           );
         }
       }
+    }
 
-      if (!isEmpty(options.body)) {
-        addComponents({
-          [`${prefix}.modal__body`]: options.body
-        });
+    function addDrawer(options, modifier) {
+      if (isEmpty(options)) {
+        return;
       }
 
-      if (!isEmpty(options.footer)) {
-        addComponents({
-          [`${prefix}.modal__footer`]: options.footer
-        });
+      let prefix = '';
+      if (modifier !== '') {
+        prefix = `.drawer${modifier} `;
       }
+
+      const { header, body, footer, drawer, placements, sizes } = options;
+
+      addComponents({
+        [`.drawer${modifier}`]: drawer,
+        [`${prefix}.drawer__header`]: header,
+        [`${prefix}.drawer__footer`]: footer,
+        [`${prefix}.drawer__body`]: body
+      });
+
+      Object.keys(placements).forEach((key) => {
+        addComponents({
+          [`.drawer--${key}`]: placements[key]
+        });
+      });
+
+      Object.keys(sizes).forEach((sizeKey) => {
+        Object.keys(sizes[sizeKey]).forEach((placementKey) => {
+          addComponents({
+            [`.drawer--${sizeKey}-${placementKey}`]: sizes[sizeKey][
+              placementKey
+            ]
+          });
+        });
+      });
     }
 
     addTransitions(options.default.transitions);
@@ -133,6 +153,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       const modifier = key === 'default' ? '' : `--${key}`;
       addOverlay(options[key].overlay, modifier);
       addModal(options[key].modal, modifier);
+      addDrawer(options[key].drawer, modifier);
     });
   };
 });

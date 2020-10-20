@@ -1,0 +1,116 @@
+<div class="mt-10">
+  <div>
+    <Button
+      {{on "click" this.toggleIsOpen}}
+    >
+      Open Drawer
+    </Button>
+
+    <Button
+      {{on "click" this.toggleIsInPlaceOpen}}
+    >
+      Open In Place Drawer
+    </Button>
+  </div>
+
+  <FormRadioGroup
+    @containerClass="mt-6"
+    @isInline={{true}}
+    @label="Placement"
+    @value={{this.placement}}
+    @onChange={{this.setPlacement}}
+    as |Radio|
+  >
+    <Radio @value="top" @label="top" />
+    <Radio @value="right" @label="right" />
+    <Radio @value="bottom" @label="bottom" />
+    <Radio @value="left" @label="left" />
+  </FormRadioGroup>
+
+  <FormRadioGroup
+    @containerClass="mt-2"
+    @isInline={{true}}
+    @label="Size"
+    @value={{this.size}}
+    @onChange={{this.setSize}}
+    as |Radio|
+  >
+    <Radio @value="xs" @label="xs" />
+    <Radio @value="sm" @label="sm" />
+    <Radio @value="md" @label="md" />
+    <Radio @value="lg" @label="lg" />
+    <Radio @value="xl" @label="xl" />
+    <Radio @value="full" @label="full" />
+  </FormRadioGroup>
+
+  <Drawer
+    @isOpen={{this.isOpen}}
+    @onClose={{this.toggleIsOpen}}
+    @size={{this.size}}
+    @placement={{this.placement}}
+    as |d|
+  >
+    <d.Header>Header</d.Header>
+    <d.Body>
+      Body
+
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+    </d.Body>
+    <d.Footer>
+      <Button
+        @appearance="minimal"
+        class="mr-4"
+        {{on "click" this.toggleIsOpen}}
+      >
+        Cancel
+      </Button>
+      <Button
+        @intent="primary"
+        disabled={{this.isLoading}}
+        {{on "click" this.save}}
+      >
+        {{if this.isLoading "Loading..." "Save"}}
+      </Button>
+    </d.Footer>
+  </Drawer>
+
+  <div class="relative h-64 mt-4 overflow-hidden border w-3xl">
+    <Drawer
+      @isOpen={{this.isInPlaceOpen}}
+      @onClose={{this.toggleIsInPlaceOpen}}
+      @renderInPlace={{true}}
+      @size={{this.size}}
+      @placement={{this.placement}}
+      @disableFocusTrap={{true}}
+      as |d|
+    >
+      <d.Header>Header</d.Header>
+      <d.Body>
+        In Place
+      </d.Body>
+      <d.Footer>
+        <Button
+          @appearance="minimal"
+          class="mr-4"
+          {{on "click" this.toggleIsInPlaceOpen}}
+        >
+          Cancel
+        </Button>
+        <Button
+          @intent="primary"
+          disabled={{this.isLoading}}
+          {{on "click" this.save}}
+        >
+          {{if this.isLoading "Loading..." "Save"}}
+        </Button>
+      </d.Footer>
+    </Drawer>
+  </div>
+</div>
