@@ -1,13 +1,53 @@
 <div class="mt-10">
-  <Button
-    {{on "click" this.toggleIsOpen}}
+  <div>
+    <Button
+      {{on "click" this.toggleIsOpen}}
+    >
+      Open Drawer
+    </Button>
+
+    <Button
+      {{on "click" this.toggleIsInPlaceOpen}}
+    >
+      Open In Place Drawer
+    </Button>
+  </div>
+
+  <FormRadioGroup
+    @containerClass="mt-6"
+    @isInline={{true}}
+    @label="Placement"
+    @value={{this.placement}}
+    @onChange={{this.setPlacement}}
+    as |Radio|
   >
-    Open Drawer
-  </Button>
+    <Radio @value="top" @label="top" />
+    <Radio @value="right" @label="right" />
+    <Radio @value="bottom" @label="bottom" />
+    <Radio @value="left" @label="left" />
+  </FormRadioGroup>
+
+  <FormRadioGroup
+    @containerClass="mt-2"
+    @isInline={{true}}
+    @label="Size"
+    @value={{this.size}}
+    @onChange={{this.setSize}}
+    as |Radio|
+  >
+    <Radio @value="xs" @label="xs" />
+    <Radio @value="sm" @label="sm" />
+    <Radio @value="md" @label="md" />
+    <Radio @value="lg" @label="lg" />
+    <Radio @value="xl" @label="xl" />
+    <Radio @value="full" @label="full" />
+  </FormRadioGroup>
 
   <Drawer
     @isOpen={{this.isOpen}}
     @onClose={{this.toggleIsOpen}}
+    @size={{this.size}}
+    @placement={{this.placement}}
     as |d|
   >
     <d.Header>Header</d.Header>
@@ -41,18 +81,13 @@
     </d.Footer>
   </Drawer>
 
-  <Button
-    {{on "click" this.toggleIsInPlaceOpen}}
-  >
-    Open In Place Drawer
-  </Button>
-
   <div class="relative h-64 mt-4 overflow-hidden border w-3xl">
     <Drawer
       @isOpen={{this.isInPlaceOpen}}
       @onClose={{this.toggleIsInPlaceOpen}}
       @renderInPlace={{true}}
-      @size="xs"
+      @size={{this.size}}
+      @placement={{this.placement}}
       @disableFocusTrap={{true}}
       as |d|
     >

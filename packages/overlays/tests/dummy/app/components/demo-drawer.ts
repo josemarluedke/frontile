@@ -7,6 +7,8 @@ export default class DemoDrawer extends Component {
   @tracked isOpen = false;
   @tracked isLoading = false;
   @tracked isInPlaceOpen = false;
+  @tracked placement = 'right';
+  @tracked size = 'md';
 
   @action toggleIsOpen(): void {
     this.isOpen = !this.isOpen;
@@ -14,6 +16,14 @@ export default class DemoDrawer extends Component {
 
   @action toggleIsInPlaceOpen(): void {
     this.isInPlaceOpen = !this.isInPlaceOpen;
+  }
+
+  @action setPlacement(placement: string): void {
+    this.placement = placement;
+  }
+
+  @action setSize(size: string): void {
+    this.size = size;
   }
 
   @action save(): void {
