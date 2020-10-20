@@ -47,45 +47,39 @@ module.exports = plugin.withOptions(function (userConfig) {
       if (isEmpty(options)) {
         return;
       }
-      addComponents({ [`.overlay${modifier}`]: options });
 
       let prefix = '';
       if (modifier !== '') {
         prefix = `.overlay${modifier} `;
       }
 
+      const { backdrop, content, jsIsOpen, ...rest } = options;
       addComponents({
-        [`${prefix}.overlay__backdrop`]: options.backdrop
+        [`.overlay${modifier}`]: rest,
+        [`${prefix}.overlay__backdrop`]: backdrop,
+        [`${prefix}.overlay__content`]: content,
+        [`.js-overlay-is-open`]: jsIsOpen
       });
-
-      addComponents({
-        [`${prefix}.overlay__content`]: options.content
-      });
-
-      addComponents({ [`.js-overlay-is-open`]: options.jsIsOpen });
     }
 
     function addModal(options, modifier) {
       if (isEmpty(options)) {
         return;
       }
-      const { closeBtn } = options;
 
-      if (closeBtn) {
-        delete options.closeBtn;
-      }
-
-      addComponents({ [`.modal${modifier}`]: options });
       let prefix = '';
       if (modifier !== '') {
         prefix = `.modal${modifier} `;
       }
 
-      if (!isEmpty(options.header)) {
-        addComponents({
-          [`${prefix}.modal__header`]: options.header
-        });
-      }
+      const { closeBtn, header, body, footer, ...rest } = options;
+
+      addComponents({
+        [`.modal${modifier}`]: rest,
+        [`${prefix}.modal__header`]: header,
+        [`${prefix}.modal__footer`]: footer,
+        [`${prefix}.modal__body`]: body
+      });
 
       if (!isEmpty(closeBtn)) {
         const { icon: btnIcon } = closeBtn;
@@ -97,6 +91,7 @@ module.exports = plugin.withOptions(function (userConfig) {
         addComponents({
           [`${prefix}.modal__close-btn`]: closeBtn
         });
+
         if (!isEmpty(btnIcon)) {
           addComponents(
             replaceIconDeclarations(
@@ -115,10 +110,6 @@ module.exports = plugin.withOptions(function (userConfig) {
         }
       }
 
-      if (!isEmpty(options.body)) {
-        addComponents({
-          [`${prefix}.modal__body`]: options.body
-        });
       }
 
       if (!isEmpty(options.footer)) {
