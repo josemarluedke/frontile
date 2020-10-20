@@ -7,7 +7,7 @@ const {
   resolve,
   svgToDataUri,
   isEmpty,
-  camelCaseToDash,
+  kebabCase,
   flattenOptions
 } = require('@frontile/tailwindcss-plugin-helpers');
 
@@ -194,7 +194,7 @@ module.exports = plugin.withOptions(function (userConfig) {
           formSelectContainer
         } = options[key] || {};
 
-        const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
+        const modifier = key === 'default' ? '' : `--${kebabCase(key)}`;
 
         addFormElementComponent(namespace, 'label', label, modifier);
         addFormElementComponent(namespace, 'input', input, modifier);

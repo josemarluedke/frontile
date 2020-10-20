@@ -4,7 +4,7 @@ const {
   isEmpty,
   replaceIconDeclarations,
   svgToDataUri,
-  camelCaseToDash
+  kebabCase
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -97,7 +97,7 @@ module.exports = plugin.withOptions(function (userConfig) {
     }
 
     Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `--${camelCaseToDash(key)}`;
+      const modifier = key === 'default' ? '' : `--${kebabCase(key)}`;
       addContainer(options[key].container, modifier);
       addCard(options[key].card, modifier);
     });

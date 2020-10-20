@@ -2,6 +2,7 @@ const isEmpty = require('lodash/isEmpty');
 const toPairs = require('lodash/toPairs');
 const fromPairs = require('lodash/fromPairs');
 const mergeWith = require('lodash/mergeWith');
+const kebabCase = require('lodash/kebabCase');
 const map = require('lodash/map');
 const flatMap = require('lodash/flatMap');
 const isPlainObject = require('lodash/isPlainObject');
@@ -82,10 +83,6 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
-function camelCaseToDash(str) {
-  return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
-}
-
 module.exports = {
   map,
   merge,
@@ -97,5 +94,5 @@ module.exports = {
   resolveConfig,
   resolve,
   svgToDataUri,
-  camelCaseToDash
+  kebabCase
 };
