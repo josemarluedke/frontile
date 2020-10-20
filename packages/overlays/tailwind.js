@@ -3,7 +3,8 @@ const {
   resolve,
   isEmpty,
   svgToDataUri,
-  replaceIconDeclarations
+  replaceIconDeclarations,
+  kebabCase
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -19,17 +20,17 @@ module.exports = plugin.withOptions(function (userConfig) {
       if (isEmpty(options)) {
         return;
       }
-      const { enter, enterActive, leave, leaveActive } = options || {};
-
       name = `.overlay--transition--${name}`;
 
+      const { enter, enterActive, leave, leaveActive } = options;
       addComponents({
         [`${name}-enter`]: enter,
-        [`${name}-leave-to`]: enter
+        [`${name}-leave-to`]: enter,
+        [`${name}-enter-active`]: enterActive,
+        [`${name}-leave`]: leave,
+        [`${name}-enter-to`]: leave,
+        [`${name}-leave-active`]: leaveActive
       });
-      addComponents({ [`${name}-enter-active`]: enterActive });
-      addComponents({ [`${name}-leave`]: leave, [`${name}-enter-to`]: leave });
-      addComponents({ [`${name}-leave-active`]: leaveActive });
     }
 
     function addTransitions(options) {
@@ -38,7 +39,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       }
 
       Object.keys(options).forEach((key) => {
-        addTransitionPhases(key, options[key]);
+        addTransitionPhases(kebabCase(key), options[key]);
       });
     }
 

@@ -28,6 +28,15 @@ function defaultOptions({ config }) {
     left: 0
   };
 
+  const slideTransition = {
+    enterActive: {
+      transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)'
+    },
+
+    leaveActive: {
+      transition: 'transform 0.2s cubic-bezier(0.37, 0, 0.63, 1)'
+    }
+  };
   return {
     default: {
       overlay: {
@@ -152,6 +161,43 @@ function defaultOptions({ config }) {
           leaveActive: {
             transition: 'all 0.2s ease-in-out'
           }
+        },
+        slideFromLeft: {
+          enter: {
+            transform: 'translateX(-100%)'
+          },
+          leave: {
+            transform: 'translateX(0%)'
+          },
+          ...slideTransition
+        },
+        slideFromRight: {
+          enter: {
+            transform: 'translateX(100%)'
+          },
+          leave: {
+            transform: 'translateX(0%)'
+          },
+          ...slideTransition
+        },
+
+        slideFromTop: {
+          enter: {
+            transform: 'translateY(-100%)'
+          },
+          leave: {
+            transform: 'translateY(0%)'
+          },
+          ...slideTransition
+        },
+        slideFromBottom: {
+          enter: {
+            transform: 'translateY(100%)'
+          },
+          leave: {
+            transform: 'translateY(0%)'
+          },
+          ...slideTransition
         }
       }
     },
