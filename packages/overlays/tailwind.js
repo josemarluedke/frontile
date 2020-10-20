@@ -109,14 +109,42 @@ module.exports = plugin.withOptions(function (userConfig) {
           );
         }
       }
+    }
 
+    function addDrawer(options, modifier) {
+      if (isEmpty(options)) {
+        return;
       }
 
-      if (!isEmpty(options.footer)) {
+      let prefix = '';
+      if (modifier !== '') {
+        prefix = `.drawer${modifier} `;
+      }
+
+      const { header, body, footer, drawer, placements, sizes } = options;
+
+      addComponents({
+        [`.drawer${modifier}`]: drawer,
+        [`${prefix}.drawer__header`]: header,
+        [`${prefix}.drawer__footer`]: footer,
+        [`${prefix}.drawer__body`]: body
+      });
+
+      Object.keys(placements).forEach((key) => {
         addComponents({
-          [`${prefix}.modal__footer`]: options.footer
+          [`.drawer--${key}`]: placements[key]
         });
-      }
+      });
+
+      Object.keys(sizes).forEach((sizeKey) => {
+        Object.keys(sizes[sizeKey]).forEach((placementKey) => {
+          addComponents({
+            [`.drawer--${sizeKey}-${placementKey}`]: sizes[sizeKey][
+              placementKey
+            ]
+          });
+        });
+      });
     }
 
     addTransitions(options.default.transitions);
@@ -125,6 +153,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       const modifier = key === 'default' ? '' : `--${key}`;
       addOverlay(options[key].overlay, modifier);
       addModal(options[key].modal, modifier);
+      addDrawer(options[key].drawer, modifier);
     });
   };
 });
