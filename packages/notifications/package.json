@@ -1,6 +1,6 @@
 {
   "name": "@frontile/notifications",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "Component Library for Ember Octane apps: Notifications",
   "keywords": [
     "ember-addon"
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
-    "@frontile/core": "^0.3.0",
-    "@frontile/tailwindcss-plugin-helpers": "^0.3.2",
+    "@frontile/core": "^0.4.0",
+    "@frontile/tailwindcss-plugin-helpers": "^0.4.0",
     "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.2.0",
     "ember-cli-typescript": "^4.0.0",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@ember/optional-features": "^2.0.0",
-    "@frontile/forms": "^0.3.4",
+    "@frontile/forms": "^0.4.0",
     "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.2",
     "@types/ember": "^3.16.1",
