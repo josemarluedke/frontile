@@ -43,7 +43,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       });
     }
 
-    function addOverlay(options, modifier) {
+    function addOverlay(options, modifier = '') {
       if (isEmpty(options)) {
         return;
       }
@@ -53,32 +53,32 @@ module.exports = plugin.withOptions(function (userConfig) {
         prefix = `.overlay${modifier} `;
       }
 
-      const { backdrop, content, jsIsOpen, ...rest } = options;
+      const { backdrop, content, jsIsOpen, overlay, inPlace } = options;
       addComponents({
-        [`.overlay${modifier}`]: rest,
+        [`.overlay${modifier}`]: overlay,
         [`${prefix}.overlay__backdrop`]: backdrop,
         [`${prefix}.overlay__content`]: content,
         [`.js-overlay-is-open`]: jsIsOpen
       });
+
+      if (inPlace) {
+        addOverlay(inPlace, '--in-place');
+      }
     }
 
-    function addModal(options, modifier) {
+    function addModal(options) {
       if (isEmpty(options)) {
         return;
       }
 
-      let prefix = '';
-      if (modifier !== '') {
-        prefix = `.modal${modifier} `;
-      }
-
-      const { closeBtn, header, body, footer, ...rest } = options;
+      const { closeBtn, header, body, footer, modal, centered } = options;
 
       addComponents({
-        [`.modal${modifier}`]: rest,
-        [`${prefix}.modal__header`]: header,
-        [`${prefix}.modal__footer`]: footer,
-        [`${prefix}.modal__body`]: body
+        [`.modal`]: modal,
+        [`.modal--centered`]: centered,
+        [`.modal__header`]: header,
+        [`.modal__footer`]: footer,
+        [`.modal__body`]: body
       });
 
       if (!isEmpty(closeBtn)) {
@@ -89,14 +89,14 @@ module.exports = plugin.withOptions(function (userConfig) {
         }
 
         addComponents({
-          [`${prefix}.modal__close-btn`]: closeBtn
+          [`.modal__close-btn`]: closeBtn
         });
 
         if (!isEmpty(btnIcon)) {
           addComponents(
             replaceIconDeclarations(
               {
-                [`${prefix}.modal__close-btn--icon`]: btnIcon
+                [`.modal__close-btn--icon`]: btnIcon
               },
               ({ icon = btnIcon.icon, iconColor = btnIcon.iconColor }) => {
                 return {
@@ -111,23 +111,19 @@ module.exports = plugin.withOptions(function (userConfig) {
       }
     }
 
-    function addDrawer(options, modifier) {
+    function addDrawer(options) {
       if (isEmpty(options)) {
         return;
-      }
-
-      let prefix = '';
-      if (modifier !== '') {
-        prefix = `.drawer${modifier} `;
       }
 
       const { header, body, footer, drawer, placements, sizes } = options;
 
       addComponents({
-        [`.drawer${modifier}`]: drawer,
-        [`${prefix}.drawer__header`]: header,
-        [`${prefix}.drawer__footer`]: footer,
-        [`${prefix}.drawer__body`]: body
+        ['.drawer']: drawer,
+        ['.drawer__header']: header,
+        ['.drawer__footer']: footer,
+        ['.drawer__body']: body,
+        ['.yolo-bla-bla-bla']: undefined
       });
 
       Object.keys(placements).forEach((key) => {
@@ -147,13 +143,9 @@ module.exports = plugin.withOptions(function (userConfig) {
       });
     }
 
-    addTransitions(options.default.transitions);
-
-    Object.keys(options).forEach((key) => {
-      const modifier = key === 'default' ? '' : `--${key}`;
-      addOverlay(options[key].overlay, modifier);
-      addModal(options[key].modal, modifier);
-      addDrawer(options[key].drawer, modifier);
-    });
+    addTransitions(options.transitions);
+    addOverlay(options.overlay);
+    addModal(options.modal);
+    addDrawer(options.drawer);
   };
 });
