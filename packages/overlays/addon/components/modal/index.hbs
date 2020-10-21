@@ -14,7 +14,7 @@
   @contentTransitionName={{if @transitionName @transitionName "overlay--transition--zoom"}}
 >
   <div
-    class="modal {{if @isCentered "modal--centered"}}"
+    class="modal {{if @isCentered "modal--centered"}} modal--{{if @size @size "lg"}}"
     tabindex="0"
     role="dialog"
     aria-labelledby={{this.headerId}}
@@ -35,6 +35,7 @@
       Header=(component "modal/header" labelledById=this.headerId)
       Body=(component "modal/body")
       Footer=(component "modal/footer")
+      headerId=this.headerId
     )}}
   </div>
 </Overlay>
