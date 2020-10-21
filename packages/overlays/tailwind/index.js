@@ -71,7 +71,15 @@ module.exports = plugin.withOptions(function (userConfig) {
         return;
       }
 
-      const { closeBtn, header, body, footer, modal, centered } = options;
+      const {
+        closeBtn,
+        header,
+        body,
+        footer,
+        modal,
+        centered,
+        sizes
+      } = options;
 
       addComponents({
         [`.modal`]: modal,
@@ -79,6 +87,12 @@ module.exports = plugin.withOptions(function (userConfig) {
         [`.modal__header`]: header,
         [`.modal__footer`]: footer,
         [`.modal__body`]: body
+      });
+
+      Object.keys(sizes || {}).forEach((key) => {
+        addComponents({
+          [`.modal--${key}`]: sizes[key]
+        });
       });
 
       if (!isEmpty(closeBtn)) {
@@ -122,8 +136,7 @@ module.exports = plugin.withOptions(function (userConfig) {
         ['.drawer']: drawer,
         ['.drawer__header']: header,
         ['.drawer__footer']: footer,
-        ['.drawer__body']: body,
-        ['.yolo-bla-bla-bla']: undefined
+        ['.drawer__body']: body
       });
 
       Object.keys(placements).forEach((key) => {
