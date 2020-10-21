@@ -1,14 +1,33 @@
 <DocsDemo as |demo|>
   {{#demo.example name="demo-overlays.hbs"}}
-    <Button
-      {{on "click" this.toggleModal}}
+    <div>
+      <Button
+        {{on "click" this.toggleModal}}
+      >
+        Open Modal
+      </Button>
+    </div>
+
+    <FormRadioGroup
+      @containerClass="mt-6"
+      @isInline={{true}}
+      @label="Size"
+      @value={{this.size}}
+      @onChange={{this.setSize}}
+      as |Radio|
     >
-      Open Modal
-    </Button>
+      <Radio @value="xs" @label="xs" />
+      <Radio @value="sm" @label="sm" />
+      <Radio @value="md" @label="md" />
+      <Radio @value="lg" @label="lg" />
+      <Radio @value="xl" @label="xl" />
+      <Radio @value="full" @label="full" />
+    </FormRadioGroup>
 
     <Modal
       @isOpen={{this.isOpen}}
       @onClose={{this.toggleModal}}
+      @size={{this.size}}
       as |m|
     >
       <m.Header>Title</m.Header>
