@@ -48,7 +48,7 @@
     "autoprefixer": "^9.8.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.6.0",
-    "ember-cli": "~3.21.2",
+    "ember-cli": "~3.22.0",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-inject-live-reload": "^2.0.2",
     "ember-cli-postcss": "^6.0.1",
@@ -65,7 +65,7 @@
     "ember-try": "^1.4.0",
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.5.0",
-    "tailwindcss": "^1.9.3",
+    "tailwindcss": "^1.9.5",
     "typescript": "^4.0.3"
   },
   "engines": {
