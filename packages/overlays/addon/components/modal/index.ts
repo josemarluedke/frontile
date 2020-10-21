@@ -23,6 +23,13 @@ interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
    * @defaultValue false
    */
   isCentered?: boolean;
+
+  /*
+   * The Modal size.
+   *
+   * @defaultValue `lg`
+   */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 export default class Modal extends Component<ModalArgs> {

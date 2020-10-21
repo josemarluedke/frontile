@@ -18,6 +18,7 @@ module('Integration | Component | modal', function (hooks) {
       @disableTransitions={{true}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
+      @size={{this.size}}
       data-test-id="modal"
       as |m|
     >
@@ -59,6 +60,31 @@ module('Integration | Component | modal', function (hooks) {
     await render(template);
 
     assert.dom('[data-test-id="modal"]').hasClass('modal--centered');
+  });
+
+  test('it adds modifier class for size', async function (assert) {
+    this.set('isOpen', true);
+
+    await render(template);
+    assert.dom('[data-test-id="modal"]').hasClass('modal--lg');
+
+    this.set('size', 'xs');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--xs');
+
+    this.set('size', 'sm');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--sm');
+
+    this.set('size', 'md');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--md');
+
+    this.set('size', 'lg');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--lg');
+
+    this.set('size', 'xl');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--xl');
+
+    this.set('size', 'full');
+    assert.dom('[data-test-id="modal"]').hasClass('modal--full');
   });
 
   test('it closes modal when close button is clicked', async function (assert) {
