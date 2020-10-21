@@ -61,13 +61,26 @@ module('Integration | Component | Drawer', function (hooks) {
     await render(template);
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--md-horizontal');
 
+    this.set('size', 'xs');
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--xs-horizontal');
+
     this.set('size', 'sm');
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--sm-horizontal');
+
+    this.set('size', 'md');
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--md-horizontal');
 
     this.set('size', 'lg');
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--lg-horizontal');
 
+    this.set('size', 'xl');
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--xl-horizontal');
+
+    this.set('size', 'full');
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--full-horizontal');
+
     this.set('placement', 'top');
+    this.set('size', 'lg');
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--lg-vertical');
   });
 
