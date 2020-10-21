@@ -11,7 +11,7 @@ module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {
     const { options } = resolve(
       '@frontile/notifications',
-      require('./addon/tailwind/default-options'),
+      require('./default-options'),
       userConfig,
       theme
     );

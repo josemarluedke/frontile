@@ -12,8 +12,7 @@ module.exports = function (defaults) {
       compile: {
         enabled: true,
         cacheExclude: [],
-        cacheInclude: [],
-        // cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
+        cacheInclude: [/.*\.css$/, /(.*?)tailwind(.*)?\.js$/],
         plugins: [
           require('tailwindcss')(
             path.join('tests', 'dummy', 'app', 'styles', 'tailwind.config.js')

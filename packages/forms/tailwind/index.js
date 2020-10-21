@@ -15,7 +15,7 @@ module.exports = plugin.withOptions(function (userConfig) {
   return function ({ addComponents, theme }) {
     const { config, options } = resolve(
       '@frontile/forms',
-      require('./addon/tailwind/default-options'),
+      require('./default-options'),
       userConfig,
       theme
     );
