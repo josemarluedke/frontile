@@ -9,9 +9,14 @@ export default class DemoModal extends Component<DemoModalArgs> {
   @tracked isOpen = false;
   @tracked isInPlaceOpen = false;
   @tracked isLoading = false;
+  @tracked size = 'lg';
 
   @action toggleModal(): void {
     this.isOpen = !this.isOpen;
+  }
+
+  @action setSize(size: string): void {
+    this.size = size;
   }
 
   @action toggleInPlaceModal(): void {

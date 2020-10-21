@@ -1,14 +1,38 @@
-<Button
-  {{on "click" this.toggleModal}}
+<div>
+  <Button
+    {{on "click" this.toggleModal}}
+  >
+    Open Modal
+  </Button>
+
+  <Button
+    {{on "click" this.toggleInPlaceModal}}
+  >
+    Open In Place Modal
+  </Button>
+</div>
+
+<FormRadioGroup
+  @containerClass="mt-2"
+  @isInline={{true}}
+  @label="Size"
+  @value={{this.size}}
+  @onChange={{this.setSize}}
+  as |Radio|
 >
-  Open Modal
-</Button>
+  <Radio @value="xs" @label="xs" />
+  <Radio @value="sm" @label="sm" />
+  <Radio @value="md" @label="md" />
+  <Radio @value="lg" @label="lg" />
+  <Radio @value="xl" @label="xl" />
+  <Radio @value="full" @label="full" />
+</FormRadioGroup>
 
 <Modal
   @isOpen={{this.isOpen}}
   @onClose={{this.toggleModal}}
   @renderInPlace={{false}}
-  @isCentered={{true}}
+  @size={{this.size}}
   as |m|
 >
   <m.Header>Title</m.Header>
@@ -17,6 +41,9 @@
     <p>Some contents...</p>
     <p>Some contents...</p>
     <p>
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
       Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
     </p>
   </m.Body>
@@ -38,18 +65,13 @@
   </m.Footer>
 </Modal>
 
-<Button
-  {{on "click" this.toggleInPlaceModal}}
->
-  Open In Place Modal
-</Button>
-
 <div class="relative h-64 mt-4 border w-3xl">
   <Modal
     @isOpen={{this.isInPlaceOpen}}
     @onClose={{this.toggleInPlaceModal}}
     @renderInPlace={{true}}
     @disableFocusTrap={{true}}
+    @size={{this.size}}
     as |m|
   >
     <m.Header>Title</m.Header>
