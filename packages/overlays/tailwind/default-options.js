@@ -190,7 +190,7 @@ function defaultOptions({ config }) {
         justifyContent: 'flex-end',
         backgroundColor: config.modal.footer.backgroundColor,
         borderTopWidth: defaultTheme.borderWidth.default,
-        borderTopColor: config.modal.borderColor,
+        borderTopColor: config.modal.footer.borderColor,
         padding: config.modal.footer.padding,
         alignItems: 'center',
         position: 'relative',
