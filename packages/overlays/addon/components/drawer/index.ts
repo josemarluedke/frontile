@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { OverlayArgs } from '../overlay';
-import type { CloseButtonArgs } from '@frontile/core/components/close-button';
 
 interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /*
@@ -29,7 +28,7 @@ interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /*
    * The Close Button size.
    */
-  closeButtonSize?: CloseButtonArgs['size'];
+  closeButtonSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
   /*
    * The Drawer can appear from any side of the screen. The 'placement'
