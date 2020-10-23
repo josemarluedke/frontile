@@ -3,28 +3,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "dummy/tests/*": [
-        "tests/*"
-      ],
-      "dummy/*": [
-        "tests/dummy/app/*",
-        "app/*"
-      ],
-      "@frontile/overlays": [
-        "addon"
-      ],
-      "@frontile/overlays/*": [
-        "addon/*"
-      ],
-      "@frontile/overlays/test-support": [
-        "addon-test-support"
-      ],
-      "@frontile/overlays/test-support/*": [
-        "addon-test-support/*"
-      ],
-      "*": [
-        "types/*"
-      ]
+      "dummy/tests/*": ["tests/*"],
+      "dummy/*": ["tests/dummy/app/*", "app/*"],
+      "@frontile/overlays": ["addon"],
+      "@frontile/overlays/*": ["addon/*"],
+      "@frontile/core/*": ["../core/addon/*"],
+      "@frontile/overlays/test-support": ["addon-test-support"],
+      "@frontile/overlays/test-support/*": ["addon-test-support/*"],
+      "*": ["types/*"]
     }
   },
   "include": [

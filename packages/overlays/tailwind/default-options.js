@@ -5,9 +5,6 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 const modalAndDrawerDefaultConfig = {
   backgroundColor: defaultTheme.colors.white,
   boxShadow: defaultTheme.boxShadow.default,
-
-  closeBtnHoverBgColor: defaultTheme.colors.gray[100],
-  iconColor: defaultTheme.colors.black,
   closeBtnMargin: defaultTheme.spacing[2],
 
   header: {
@@ -135,7 +132,8 @@ function defaultOptions({ config }) {
         marginTop: defaultTheme.spacing[24],
         width: defaultTheme.width.full,
         outline: 'none',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        zIndex: 0
       },
 
       centered: {
@@ -144,34 +142,12 @@ function defaultOptions({ config }) {
       },
 
       closeBtn: {
-        display: 'flex',
         position: 'absolute',
-        fontSize: defaultTheme.fontSize.xl,
-        padding: defaultTheme.spacing[2],
         top: config.modal.closeBtnMargin,
         right: config.modal.closeBtnMargin,
-        transitionProperty: defaultTheme.transitionProperty.default,
-        transitionDuration: defaultTheme.transitionDuration[200],
-        borderRadius: defaultTheme.borderRadius.full,
-
-        '&:hover': {
-          backgroundColor: config.modal.closeBtnHoverBgColor
-        },
-
-        '&.focus-visible:focus': {
-          outline: 'none',
-          boxShadow: defaultTheme.boxShadow.outline
-        },
-
-        icon: {
-          height: '1em',
-          width: '1em',
-          backgroundRepeat: 'no-repeat',
-          iconColor: config.modal.iconColor,
-          icon: (iconColor) =>
-            `<svg fill="none" stroke="${iconColor}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12"></path></svg>`
-        }
+        zIndex: 1
       },
+
       header: {
         fontWeight: defaultTheme.fontWeight.bold,
         fontSize: defaultTheme.fontSize.xl,
@@ -225,7 +201,15 @@ function defaultOptions({ config }) {
         backgroundColor: config.drawer.backgroundColor,
         width: '100%',
         height: '100%',
-        boxShadow: config.drawer.boxShadow.default
+        boxShadow: config.drawer.boxShadow.default,
+        zIndex: 0
+      },
+
+      closeBtn: {
+        position: 'absolute',
+        top: config.drawer.closeBtnMargin,
+        right: config.drawer.closeBtnMargin,
+        zIndex: 1
       },
 
       header: {

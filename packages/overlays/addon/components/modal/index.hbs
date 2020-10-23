@@ -20,18 +20,16 @@
     aria-labelledby={{this.headerId}}
     ...attributes
   >
-    {{#unless this.preventClosing}}
-      <button
-        {{on "click" this.handleClose}}
-        type="button"
+    {{#if this.showCloseButton}}
+      <CloseButton
+        @onClick={{this.handleClose}}
+        @size={{@closeButtonSize}}
         class="modal__close-btn"
-      >
-        <span class="modal__close-btn--icon"></span>
-        <VisuallyHidden>Close</VisuallyHidden>
-      </button>
-    {{/unless}}
+      />
+    {{/if}}
 
     {{yield (hash
+      CloseButton=(component "close-button" onClick=this.handleClose class="modal__close-btn")
       Header=(component "modal/header" labelledById=this.headerId)
       Body=(component "modal/body")
       Footer=(component "modal/footer")

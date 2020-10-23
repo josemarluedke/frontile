@@ -19,6 +19,7 @@ module('Integration | Component | modal', function (hooks) {
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
       @size={{this.size}}
+      @allowCloseButton={{this.allowCloseButton}}
       data-test-id="modal"
       as |m|
     >
@@ -103,6 +104,21 @@ module('Integration | Component | modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').exists();
     await click('[data-test-id="modal"] .modal__close-btn');
     assert.dom('[data-test-id="modal"]').doesNotExist();
+  });
+
+  test('it does not render close button when @allowCloseButton=false', async function (assert) {
+    this.set('disableTransitions', true);
+    this.set('isOpen', true);
+    this.set('allowCloseButton', false);
+
+    this.set('onClose', () => {
+      this.set('isOpen', false);
+    });
+
+    await render(template);
+
+    assert.dom('[data-test-id="modal"]').exists();
+    assert.dom('[data-test-id="modal"] .modal__close-btn').doesNotExist();
   });
 
   test('it closes modal when backdrop is clicked', async function (assert) {
