@@ -13,6 +13,11 @@ module.exports = {
   theme: {
     // ...
   },
-  plugins: [require('@frontile/overlays/tailwind')]
+  plugins: [
+    require('@frontile/core/tailwind'),
+    require('@frontile/overlays/tailwind')
+  ]
 };
 ```
+
+> Note: The overlays package depends on the core styles, so you must also include `@frontile/core` Tailwind Plugin.
