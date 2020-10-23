@@ -10,4 +10,5 @@ module.exports = {
     extend: {}
   },
   variants: {},
+  plugins: [require('@frontile/core/tailwind')]
 };
