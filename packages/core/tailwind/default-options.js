@@ -41,13 +41,13 @@ function defaultOptions({ config }) {
         xs: {
           baseStyle: {
             fontSize: config.closeButton.sizes.xs,
-            padding: defaultTheme.spacing[2]
+            padding: defaultTheme.spacing[1]
           }
         },
         sm: {
           baseStyle: {
             fontSize: config.closeButton.sizes.sm,
-            padding: defaultTheme.spacing[1]
+            padding: defaultTheme.spacing[2]
           }
         },
         md: {
