@@ -16,8 +16,6 @@
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
-    "prepublishOnly": "ember ts:precompile",
-    "postpublish": "ember ts:clean",
     "start": "ember serve",
     "test": "ember test",
     "test:all": "ember try:each",

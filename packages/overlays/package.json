@@ -14,8 +14,6 @@
   },
   "scripts": {
     "build": "ember build --environment=production",
-    "prepublishOnly": "ember ts:precompile",
-    "postpublish": "ember ts:clean",
     "start": "ember serve",
     "test": "ember test",
     "test:all": "ember try:each",
