@@ -2,8 +2,6 @@ const plugin = require('tailwindcss/plugin');
 const {
   resolve,
   isEmpty,
-  svgToDataUri,
-  replaceIconDeclarations,
   kebabCase
 } = require('@frontile/tailwindcss-plugin-helpers');
 
@@ -86,7 +84,8 @@ module.exports = plugin.withOptions(function (userConfig) {
         [`.modal--centered`]: centered,
         [`.modal__header`]: header,
         [`.modal__footer`]: footer,
-        [`.modal__body`]: body
+        [`.modal__body`]: body,
+        [`.modal__close-btn`]: closeBtn
       });
 
       Object.keys(sizes || {}).forEach((key) => {
@@ -94,35 +93,6 @@ module.exports = plugin.withOptions(function (userConfig) {
           [`.modal--${key}`]: sizes[key]
         });
       });
-
-      if (!isEmpty(closeBtn)) {
-        const { icon: btnIcon } = closeBtn;
-
-        if (btnIcon) {
-          delete closeBtn.icon;
-        }
-
-        addComponents({
-          [`.modal__close-btn`]: closeBtn
-        });
-
-        if (!isEmpty(btnIcon)) {
-          addComponents(
-            replaceIconDeclarations(
-              {
-                [`.modal__close-btn--icon`]: btnIcon
-              },
-              ({ icon = btnIcon.icon, iconColor = btnIcon.iconColor }) => {
-                return {
-                  backgroundImage: `url("${svgToDataUri(
-                    typeof icon === 'function' ? icon(iconColor) : icon
-                  )}")`
-                };
-              }
-            )
-          );
-        }
-      }
     }
 
     function addDrawer(options) {
@@ -130,13 +100,22 @@ module.exports = plugin.withOptions(function (userConfig) {
         return;
       }
 
-      const { header, body, footer, drawer, placements, sizes } = options;
+      const {
+        header,
+        body,
+        footer,
+        drawer,
+        placements,
+        sizes,
+        closeBtn
+      } = options;
 
       addComponents({
         ['.drawer']: drawer,
         ['.drawer__header']: header,
         ['.drawer__footer']: footer,
-        ['.drawer__body']: body
+        ['.drawer__body']: body,
+        [`.drawer__close-btn`]: closeBtn
       });
 
       Object.keys(placements).forEach((key) => {
