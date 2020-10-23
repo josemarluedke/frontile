@@ -19,6 +19,7 @@ module('Integration | Component | Drawer', function (hooks) {
       @disableTransitions={{true}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
+      @allowCloseButton={{this.allowCloseButton}}
       data-test-id="drawer"
       as |m|
     >
@@ -36,9 +37,7 @@ module('Integration | Component | Drawer', function (hooks) {
     assert.dom('[data-test-id="drawer"] .drawer__header').hasText('My Header');
     assert.dom('[data-test-id="drawer"] .drawer__body').hasText('My Content');
     assert.dom('[data-test-id="drawer"] .drawer__footer').hasText('My Footer');
-    assert
-      .dom('[data-test-id="drawer"] [data-test-id="drawer-close-btn"]')
-      .hasText('Close');
+    assert.dom('[data-test-id="drawer"] .drawer__close-btn').hasText('Close');
   });
 
   test('it renders accessibility attributes', async function (assert) {
@@ -115,8 +114,23 @@ module('Integration | Component | Drawer', function (hooks) {
 
     assert.dom('[data-test-id="drawer"]').exists();
 
-    await click('[data-test-id="drawer"] [data-test-id="drawer-close-btn"]');
+    await click('[data-test-id="drawer"] .drawer__close-btn');
     assert.dom('[data-test-id="drawer"]').doesNotExist();
+  });
+
+  test('it does not render close button when @allowCloseButton=false', async function (assert) {
+    this.set('disableTransitions', true);
+    this.set('isOpen', true);
+    this.set('allowCloseButton', false);
+
+    this.set('onClose', () => {
+      this.set('isOpen', false);
+    });
+
+    await render(template);
+
+    assert.dom('[data-test-id="drawer"]').exists();
+    assert.dom('[data-test-id="drawer"] .drawer__close-btn').doesNotExist();
   });
 
   test('it closes drawer when backdrop is clicked', async function (assert) {
