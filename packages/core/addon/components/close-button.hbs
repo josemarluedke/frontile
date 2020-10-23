@@ -1,7 +1,7 @@
 <button
   {{on "click" this.handleClick}}
   type="button"
-  class="close-button {{this.sizeClass}}"
+  class="close-button {{this.sizeClass}} {{@class}}"
   ...attributes
 >
   {{#let (concat "close-button__icon " this.sizeClass "__icon") as |iconClassName|}}

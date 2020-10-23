@@ -1,17 +1,28 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface CloseButtonArgs {
+export interface CloseButtonArgs {
+  /*
+   * The icon size
+   *
+   * @defaultValue `lg`
+   */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+  /*
+   * The function to call when button is clicked
+   */
   onClick?: (event: Event) => void;
 }
 
 export default class CloseButton extends Component<CloseButtonArgs> {
   @action handleClick(event: Event): void {
-    this.args.onClick?.(event);
+    if (typeof this.args.onClick === 'function') {
+      this.args.onClick(event);
+    }
   }
 
   get sizeClass(): string {
-    return `close-button--${this.args.size || 'sm'}`;
+    return `close-button--${this.args.size || 'md'}`;
   }
 }
