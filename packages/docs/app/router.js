@@ -13,6 +13,7 @@ Router.map(function () {
         this.route('focus-management');
         this.route('visually-hidden');
       });
+      this.route('close-button');
     });
 
     this.route('forms', function () {

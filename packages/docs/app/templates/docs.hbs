@@ -4,6 +4,7 @@
     {{nav.item "Overview" "docs.index"}}
 
     {{nav.section "Core"}}
+    {{nav.item "Installation" "docs.core.index"}}
 
     <li class="docs-mt-2 docs-ml-4 docs-mb-1 docs-text-xs">
       Accessibility
@@ -11,6 +12,14 @@
     {{#nav.subnav as |nav|}}
       {{nav.item "Focus management" "docs.core.accessibility.focus-management"}}
       {{nav.item "<VisuallyHidden>" "docs.core.accessibility.visually-hidden"}}
+    {{/nav.subnav}}
+
+    <li class="docs-mt-2 docs-ml-4 docs-mb-1 docs-text-xs">
+      Components
+    </li>
+
+    {{#nav.subnav as |nav|}}
+      {{nav.item "CloseButton" "docs.core.close-button"}}
     {{/nav.subnav}}
 
     {{nav.section "Forms"}}
