@@ -132,7 +132,8 @@ function defaultOptions({ config }) {
         marginTop: defaultTheme.spacing[24],
         width: defaultTheme.width.full,
         outline: 'none',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        zIndex: 0
       },
 
       centered: {
@@ -143,7 +144,8 @@ function defaultOptions({ config }) {
       closeBtn: {
         position: 'absolute',
         top: config.modal.closeBtnMargin,
-        right: config.modal.closeBtnMargin
+        right: config.modal.closeBtnMargin,
+        zIndex: 1
       },
 
       header: {
@@ -199,13 +201,15 @@ function defaultOptions({ config }) {
         backgroundColor: config.drawer.backgroundColor,
         width: '100%',
         height: '100%',
-        boxShadow: config.drawer.boxShadow.default
+        boxShadow: config.drawer.boxShadow.default,
+        zIndex: 0
       },
 
       closeBtn: {
         position: 'absolute',
         top: config.drawer.closeBtnMargin,
-        right: config.drawer.closeBtnMargin
+        right: config.drawer.closeBtnMargin,
+        zIndex: 1
       },
 
       header: {
