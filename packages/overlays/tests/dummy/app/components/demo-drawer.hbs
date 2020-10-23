@@ -89,9 +89,17 @@
       @size={{this.size}}
       @placement={{this.placement}}
       @disableFocusTrap={{true}}
+      @allowCloseButton={{false}}
       as |d|
     >
-      <d.Header>Header</d.Header>
+      <d.Header>
+        Header
+
+        <d.CloseButton
+          @size="lg"
+          class="relative inset-auto ml-6 text-blue-500 bg-gray-200 rounded-md hover:bg-gray-500"
+        />
+      </d.Header>
       <d.Body>
         In Place
       </d.Body>
