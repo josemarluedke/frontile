@@ -14,7 +14,7 @@ module.exports = plugin.withOptions(function () {
 
     addTransitions(
       addComponents,
-      '.overlay--transition',
+      '.overlay-transition',
       components.transitions
     );
 

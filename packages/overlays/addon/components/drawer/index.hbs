@@ -32,7 +32,7 @@
   @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
   @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
   @backdropTransitionName={{@backdropTransitionName}}
-  @contentTransitionName={{if @transitionName @transitionName (concat "overlay--transition--slide-from-" this.placement)}}
+  @contentTransitionName={{if @transitionName @transitionName (concat "overlay-transition--slide-from-" this.placement)}}
 >
   <div
     class="drawer drawer--{{this.placement}} drawer--{{this.size}}"

@@ -6,7 +6,7 @@ import { OverlayArgs } from '../overlay';
 interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /*
    * The name of the transition to be used in the modal.
-   * @defaultValue `overlay--transition--zoom`
+   * @defaultValue `overlay-transition--zoom`
    */
   transitionName?: string;
 

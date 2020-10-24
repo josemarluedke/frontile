@@ -75,13 +75,13 @@ export interface OverlayArgs {
 
   /*
    * The name of the transition to be used in the backdrop.
-   * @defaultValue `overlay--transition--fade`
+   * @defaultValue `overlay-transition--fade`
    */
   backdropTransitionName?: string;
 
   /*
    * The name of the transition to be used in the content.
-   * @defaultValue `overlay--transition--fade`
+   * @defaultValue `overlay-transition--fade`
    */
   contentTransitionName?: string;
 }

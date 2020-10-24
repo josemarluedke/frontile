@@ -11,7 +11,7 @@
   @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
   @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
   @backdropTransitionName={{@backdropTransitionName}}
-  @contentTransitionName={{if @transitionName @transitionName "overlay--transition--zoom"}}
+  @contentTransitionName={{if @transitionName @transitionName "overlay-transition--zoom"}}
 >
   <div
     class="modal {{if @isCentered "modal--centered"}} modal--{{if @size @size "lg"}}"
