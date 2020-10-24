@@ -54,13 +54,17 @@ function replaceIconDeclarations(component, replace) {
 function resolveOptions(userOptionsName, defaultOptions, config, theme) {
   return merge(
     fromPairs(
-      map(defaultOptions({ theme, config }), (value, key) => [
+      map(flattenOptions(defaultOptions({ theme, config })), (value, key) => [
         key,
         flattenOptions(value)
       ])
     ),
+
     fromPairs(
-      map(theme(userOptionsName), (value, key) => [key, flattenOptions(value)])
+      map(flattenOptions(theme(userOptionsName)), (value, key) => [
+        key,
+        flattenOptions(value)
+      ])
     )
   );
 }
