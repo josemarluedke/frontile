@@ -150,7 +150,7 @@ export default class Overlay extends Component<OverlayArgs> {
     document.addEventListener('keydown', this.handleKeyDown);
 
     if (this.args.renderInPlace !== true) {
-      document.body.classList.add('js-overlay-is-open');
+      document.body.style.overflow = 'hidden';
     }
   }
 
@@ -159,7 +159,7 @@ export default class Overlay extends Component<OverlayArgs> {
     document.removeEventListener('keydown', this.handleKeyDown);
 
     if (this.args.renderInPlace !== true && document.body.classList) {
-      document.body.classList.remove('js-overlay-is-open');
+      document.body.style.overflow = '';
     }
 
     let duration = this.args.transitionDuration || 200;

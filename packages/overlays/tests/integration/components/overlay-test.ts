@@ -160,7 +160,7 @@ module('Integration | Component | Overlay', function (hooks) {
     this.set('isOpen', true);
 
     await render(template);
-    assert.dom(document.body).hasClass('js-overlay-is-open');
+    assert.dom(document.body).hasStyle({ overflow: 'hidden' });
   });
 
   test('it does not add class to body when renderInPlace', async function (assert) {
@@ -169,6 +169,6 @@ module('Integration | Component | Overlay', function (hooks) {
     this.set('disableTransitions', true);
 
     await render(template);
-    assert.dom(document.body).doesNotHaveClass('js-overlay-is-open');
+    assert.dom(document.body).doesNotHaveStyle({ overflow: 'hidden' });
   });
 });

@@ -80,45 +80,47 @@ const getObscurer = (options) => {
 function defaultOptions({ config }) {
   return {
     overlay: {
-      overlay: {
+      baseStyle: {
         color: config.textColor,
         zIndex: config.zIndex
       },
 
-      jsIsOpen: {
-        overflow: 'hidden'
-      },
-
-      backdrop: {
-        ...inset0,
-        position: 'fixed',
-        backgroundColor: config.backdropColor,
-        userSelect: 'none',
-        zIndex: 1
-      },
-
-      content: {
-        ...inset0,
-        position: 'fixed',
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        '-webkit-overflow-scrolling': 'touch',
-        zIndex: 2,
-        willChange: 'transform'
-      },
-
-      inPlace: {
+      parts: {
         backdrop: {
-          position: 'absolute'
+          ...inset0,
+          position: 'fixed',
+          backgroundColor: config.backdropColor,
+          userSelect: 'none',
+          zIndex: 1
         },
+
         content: {
-          position: 'absolute'
+          ...inset0,
+          position: 'fixed',
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          '-webkit-overflow-scrolling': 'touch',
+          zIndex: 2,
+          willChange: 'transform'
+        }
+      },
+
+      variants: {
+        inPlace: {
+          parts: {
+            backdrop: {
+              position: 'absolute'
+            },
+            content: {
+              position: 'absolute'
+            }
+          }
         }
       }
     },
     modal: {
-      modal: {
+      baseStyle: {
         display: 'flex',
         flexDirection: 'column',
         flexShrink: 0,
@@ -136,65 +138,76 @@ function defaultOptions({ config }) {
         zIndex: 0
       },
 
-      centered: {
-        marginTop: 'auto',
-        marginBottom: 'auto'
-      },
+      parts: {
+        closeBtn: {
+          position: 'absolute',
+          top: config.modal.closeBtnMargin,
+          right: config.modal.closeBtnMargin,
+          zIndex: 1
+        },
 
-      closeBtn: {
-        position: 'absolute',
-        top: config.modal.closeBtnMargin,
-        right: config.modal.closeBtnMargin,
-        zIndex: 1
-      },
-
-      header: {
-        fontWeight: defaultTheme.fontWeight.bold,
-        fontSize: defaultTheme.fontSize.xl,
-        padding: config.modal.header.padding,
-        borderTopRightRadius: config.borderRadius,
-        borderTopLeftRadius: config.borderRadius
-      },
-      body: {
-        flexGrow: 1,
-        padding: config.modal.body.padding,
-        overflowY: 'scroll',
-        '-webkit-overflow-scrolling': 'touch'
-      },
-      footer: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        backgroundColor: config.modal.footer.backgroundColor,
-        borderTopWidth: defaultTheme.borderWidth.default,
-        borderTopColor: config.modal.footer.borderColor,
-        padding: config.modal.footer.padding,
-        alignItems: 'center',
-        position: 'relative',
-        '&:before': getObscurer(config.modal.obscurer)
-      },
-      sizes: ['xs', 'sm', 'md', 'lg', 'xl', 'full'].reduce((obj, key) => {
-        if (key === 'full') {
-          obj[key] = {
-            width: config.modal.sizes[key],
-            height: config.modal.sizes[key],
-            marginTop: 'auto',
-            marginBottom: 'auto',
-            borderRadius: 0
-          };
-        } else {
-          obj[key] = {
-            maxWidth: config.modal.sizes[key],
-            [`@media (max-width: ${config.modal.sizes[key]})`]: {
-              maxWidth: `calc(100vw - ${defaultTheme.margin[4]})`
-            }
-          };
+        header: {
+          fontWeight: defaultTheme.fontWeight.bold,
+          fontSize: defaultTheme.fontSize.xl,
+          padding: config.modal.header.padding,
+          borderTopRightRadius: config.borderRadius,
+          borderTopLeftRadius: config.borderRadius
+        },
+        body: {
+          flexGrow: 1,
+          padding: config.modal.body.padding,
+          overflowY: 'scroll',
+          '-webkit-overflow-scrolling': 'touch'
+        },
+        footer: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          backgroundColor: config.modal.footer.backgroundColor,
+          borderTopWidth: defaultTheme.borderWidth.default,
+          borderTopColor: config.modal.footer.borderColor,
+          padding: config.modal.footer.padding,
+          alignItems: 'center',
+          position: 'relative',
+          '&:before': getObscurer(config.modal.obscurer)
         }
-        return obj;
-      }, {})
+      },
+
+      variants: {
+        centered: {
+          baseStyle: {
+            marginTop: 'auto',
+            marginBottom: 'auto'
+          }
+        },
+
+        ...['xs', 'sm', 'md', 'lg', 'xl', 'full'].reduce((obj, key) => {
+          if (key === 'full') {
+            obj[key] = {
+              baseStyle: {
+                width: config.modal.sizes[key],
+                height: config.modal.sizes[key],
+                marginTop: 'auto',
+                marginBottom: 'auto',
+                borderRadius: 0
+              }
+            };
+          } else {
+            obj[key] = {
+              baseStyle: {
+                maxWidth: config.modal.sizes[key],
+                [`@media (max-width: ${config.modal.sizes[key]})`]: {
+                  maxWidth: `calc(100vw - ${defaultTheme.margin[4]})`
+                }
+              }
+            };
+          }
+          return obj;
+        }, {})
+      }
     },
 
     drawer: {
-      drawer: {
+      baseStyle: {
         display: 'flex',
         flexDirection: 'column',
         position: 'absolute',
@@ -205,84 +218,98 @@ function defaultOptions({ config }) {
         zIndex: 0
       },
 
-      closeBtn: {
-        position: 'absolute',
-        top: config.drawer.closeBtnMargin,
-        right: config.drawer.closeBtnMargin,
-        zIndex: 1
-      },
-
-      header: {
-        fontWeight: defaultTheme.fontWeight.bold,
-        fontSize: defaultTheme.fontSize.xl,
-        padding: config.drawer.header.padding
-      },
-
-      body: {
-        flexGrow: 1,
-        flexBasis: 0,
-        padding: config.drawer.body.padding,
-        overflowY: 'scroll',
-        '-webkit-overflow-scrolling': 'touch'
-      },
-
-      footer: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        backgroundColor: config.drawer.footer.backgroundColor,
-        borderTopWidth: defaultTheme.borderWidth.default,
-        borderTopColor: config.drawer.footer.borderColor,
-        padding: config.drawer.footer.padding,
-        alignItems: 'center',
-        position: 'relative',
-        '&:before': getObscurer(config.drawer.obscurer)
-      },
-
-      placements: {
-        top: {
-          top: 0,
-          right: 0,
-          left: 0
+      parts: {
+        closeBtn: {
+          position: 'absolute',
+          top: config.drawer.closeBtnMargin,
+          right: config.drawer.closeBtnMargin,
+          zIndex: 1
         },
-        bottom: {
-          bottom: 0,
-          right: 0,
-          left: 0
+
+        header: {
+          fontWeight: defaultTheme.fontWeight.bold,
+          fontSize: defaultTheme.fontSize.xl,
+          padding: config.drawer.header.padding
         },
-        left: {
-          left: 0,
-          top: 0,
-          bottom: 0
+
+        body: {
+          flexGrow: 1,
+          flexBasis: 0,
+          padding: config.drawer.body.padding,
+          overflowY: 'scroll',
+          '-webkit-overflow-scrolling': 'touch'
         },
-        right: {
-          right: 0,
-          top: 0,
-          bottom: 0
+
+        footer: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          backgroundColor: config.drawer.footer.backgroundColor,
+          borderTopWidth: defaultTheme.borderWidth.default,
+          borderTopColor: config.drawer.footer.borderColor,
+          padding: config.drawer.footer.padding,
+          alignItems: 'center',
+          position: 'relative',
+          '&:before': getObscurer(config.drawer.obscurer)
         }
       },
-      sizes: ['xs', 'sm', 'md', 'lg', 'xl', 'full'].reduce((obj, key) => {
-        obj[key] = {
-          vertical: {
-            maxHeight: config.drawer.sizes[key],
-            [`@media (max-height: calc(${config.drawer.sizes[key]} + ${defaultTheme.margin[8]}))`]:
-              key === 'full'
-                ? undefined
-                : {
-                    maxHeight: `calc(100vh - ${defaultTheme.margin[8]})`
-                  }
-          },
-          horizontal: {
-            maxWidth: config.drawer.sizes[key],
-            [`@media (max-width: calc(${config.drawer.sizes[key]} + ${defaultTheme.margin[8]}))`]:
-              key === 'full'
-                ? undefined
-                : {
-                    maxWidth: `calc(100vw - ${defaultTheme.margin[8]})`
-                  }
+
+      variants: {
+        top: {
+          baseStyle: {
+            top: 0,
+            right: 0,
+            left: 0
           }
-        };
-        return obj;
-      }, {})
+        },
+        bottom: {
+          baseStyle: {
+            bottom: 0,
+            right: 0,
+            left: 0
+          }
+        },
+        left: {
+          baseStyle: {
+            left: 0,
+            top: 0,
+            bottom: 0
+          }
+        },
+        right: {
+          baseStyle: {
+            right: 0,
+            top: 0,
+            bottom: 0
+          }
+        },
+        ...['xs', 'sm', 'md', 'lg', 'xl', 'full'].reduce((obj, key) => {
+          obj[`${key}-vertical`] = {
+            baseStyle: {
+              maxHeight: config.drawer.sizes[key],
+              [`@media (max-height: calc(${config.drawer.sizes[key]} + ${defaultTheme.margin[8]}))`]:
+                key === 'full'
+                  ? undefined
+                  : {
+                      maxHeight: `calc(100vh - ${defaultTheme.margin[8]})`
+                    }
+            }
+          };
+
+          obj[`${key}-horizontal`] = {
+            baseStyle: {
+              maxWidth: config.drawer.sizes[key],
+              [`@media (max-width: calc(${config.drawer.sizes[key]} + ${defaultTheme.margin[8]}))`]:
+                key === 'full'
+                  ? undefined
+                  : {
+                      maxWidth: `calc(100vw - ${defaultTheme.margin[8]})`
+                    }
+            }
+          };
+
+          return obj;
+        }, {})
+      }
     },
 
     transitions: {

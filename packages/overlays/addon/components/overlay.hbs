@@ -1,6 +1,5 @@
 {{!--
   Here are the css classes we use. This is here so that purgecss doesn't remove them.
-  js-overlay-is-open
   overlay--transition--fade-enter
   overlay--transition--fade-enter-to
   overlay--transition--fade-enter-active
@@ -54,7 +53,7 @@
       {{!-- template-lint-disable no-invalid-interactive --}}
       {{#if this.isBackdropVisible}}
         <div
-          class="overlay__backdrop"
+          class="overlay__backdrop {{if @renderInPlace "overlay--in-place__backdrop"}}"
           {{on "click" this.handleOverlayClick}}
           {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade") isEnabled=this.isAnimationEnabled}}
         ></div>
@@ -68,7 +67,7 @@
 
       {{#if @isOpen}}
         <div
-          class="overlay__content"
+          class="overlay__content {{if @renderInPlace "overlay--in-place__content"}}"
           {{on "click" this.handleContentClick}}
           {{did-insert this.setup}}
           {{will-destroy this.teardown}}
