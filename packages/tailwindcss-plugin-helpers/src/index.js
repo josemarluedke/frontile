@@ -176,6 +176,39 @@ function addSinglePartComponent(addComponents, baseSelector, options) {
   }
 }
 
+function addTransitions(addComponents, baseSelector, transitions) {
+  if (isEmpty(transitions)) {
+    return;
+  }
+
+  Object.keys(transitions).forEach((key) => {
+    const transition = transitions[key];
+
+    if (isEmpty(transition)) {
+      return;
+    }
+    const name = `${baseSelector}--${kebabCase(key)}`;
+
+    const {
+      enter,
+      enterTo,
+      leave,
+      leaveActive,
+      enterActive,
+      leaveTo
+    } = transition;
+
+    addComponents({
+      [`${name}-enter`]: enter,
+      [`${name}-enter-to`]: enterTo || leave,
+      [`${name}-leave`]: leave,
+      [`${name}-leave-to`]: leaveTo || enter,
+      [`${name}-enter-active`]: enterActive,
+      [`${name}-leave-active`]: leaveActive
+    });
+  });
+}
+
 module.exports = {
   map,
   merge,
@@ -190,5 +223,6 @@ module.exports = {
   kebabCase,
   resolveComponents,
   addMultipartComponent,
-  addSinglePartComponent
+  addSinglePartComponent,
+  addTransitions
 };

@@ -1,9 +1,8 @@
 const plugin = require('tailwindcss/plugin');
 const {
   resolveComponents,
-  isEmpty,
-  kebabCase,
-  addMultipartComponent
+  addMultipartComponent,
+  addTransitions
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function () {
@@ -13,34 +12,11 @@ module.exports = plugin.withOptions(function () {
       require('./default-options')
     );
 
-    function addTransitionPhases(name, options) {
-      if (isEmpty(options)) {
-        return;
-      }
-      name = `.overlay--transition--${name}`;
-
-      const { enter, enterActive, leave, leaveActive } = options;
-      addComponents({
-        [`${name}-enter`]: enter,
-        [`${name}-leave-to`]: enter,
-        [`${name}-enter-active`]: enterActive,
-        [`${name}-leave`]: leave,
-        [`${name}-enter-to`]: leave,
-        [`${name}-leave-active`]: leaveActive
-      });
-    }
-
-    function addTransitions(options) {
-      if (isEmpty(options)) {
-        return;
-      }
-
-      Object.keys(options).forEach((key) => {
-        addTransitionPhases(kebabCase(key), options[key]);
-      });
-    }
-
-    addTransitions(components.transitions);
+    addTransitions(
+      addComponents,
+      '.overlay--transition',
+      components.transitions
+    );
 
     addMultipartComponent(addComponents, '.overlay', components.overlay);
     addMultipartComponent(addComponents, '.modal', components.modal);
