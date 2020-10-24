@@ -87,6 +87,20 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
+function resolveComponents({ config: userConfig, extend }, params) {
+  const { defaultConfig, defaultOptions } = params;
+  const config = merge(defaultConfig, userConfig || {});
+  const components = merge(
+    flattenOptions(defaultOptions({ config })),
+    flattenOptions(extend || {})
+  );
+
+  return {
+    config,
+    components
+  };
+}
+
 module.exports = {
   map,
   merge,
@@ -98,5 +112,6 @@ module.exports = {
   resolveConfig,
   resolve,
   svgToDataUri,
-  kebabCase
+  kebabCase,
+  resolveComponents
 };

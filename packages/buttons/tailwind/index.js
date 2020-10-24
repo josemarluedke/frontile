@@ -1,6 +1,6 @@
 const plugin = require('tailwindcss/plugin');
 const {
-  resolve,
+  resolveComponents,
   isEmpty,
   kebabCase,
   merge
@@ -32,17 +32,15 @@ function addSinglePartComponent(addComponents, baseSelector, options) {
   }
 }
 
-module.exports = plugin.withOptions(function (userConfig) {
+module.exports = plugin.withOptions(function () {
   return function ({ addComponents, theme }) {
-    const { options } = resolve(
-      '@frontile/buttons',
-      require('./default-options'),
-      userConfig,
-      theme
+    const { components } = resolveComponents(
+      theme('frontile.buttons') || {},
+      require('./default-options')
     );
 
-    addSinglePartComponent(addComponents, '.btn', options.default);
-    addSinglePartComponent(addComponents, '.btn-outlined', options.outlined);
-    addSinglePartComponent(addComponents, '.btn-minimal', options.minimal);
+    addSinglePartComponent(addComponents, '.btn', components.default);
+    addSinglePartComponent(addComponents, '.btn-outlined', components.outlined);
+    addSinglePartComponent(addComponents, '.btn-minimal', components.minimal);
   };
 });
