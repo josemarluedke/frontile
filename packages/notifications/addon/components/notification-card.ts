@@ -23,9 +23,17 @@ export default class NotificationCard extends Component<NotificationCardArgs> {
   @tracked hasEntered = false;
 
   get styles(): unknown {
-    return htmlSafe(
+    const styles = [
       `transition-duration: ${this.args.notification.transitionDuration}ms`
-    );
+    ];
+
+    if (!this.hasEntered) {
+      styles.push(
+        `transition-delay: ${this.args.notification.transitionDuration}ms`
+      );
+    }
+
+    return htmlSafe(styles.join('; '));
   }
 
   @action addSpacing(element: HTMLElement): void {
