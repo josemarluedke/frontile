@@ -2,20 +2,6 @@
 {{!-- template-lint-disable no-unnecessary-concat --}}
 {{!-- template-lint-disable no-inline-styles --}}
 {{!-- template-lint-disable style-concatenation  --}}
-{{!-
-Appearances:
-  notification-card--info
-  notification-card--success
-  notification-card--warning
-  notification-card--error
-Placements:
-  notification-card--top-left
-  notification-card--top-center
-  notification-card--top-right
-  notification-card--bottom-left
-  notification-card--bottom-center
-  notification-card--bottom-right
--}}
 <div
   {{did-insert this.transitionIn}}
   {{did-update this.transitionOut @notification.isRemoving}}
@@ -24,11 +10,8 @@ Placements:
     <div
       {{on "mouseenter" this.pause}}
       {{on "mouseleave" this.resume}}
-      class="notification-card
-             notification-card--{{@notification.appearance}}
-           "
-
       {{css-transition (concat "notification-transition--slide-from-" @placement) isEnabled=true}}
+      class="notification-card notification-card--{{@notification.appearance}}"
       style="{{this.styles}}"
       ...attributes
     >

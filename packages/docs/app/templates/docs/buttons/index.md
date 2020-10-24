@@ -10,6 +10,14 @@ ember install @frontile/buttons
 // tailwind.config.js
 
 module.exports = {
+  purge: {
+    // ...
+    options: {
+      whitelist: [
+        /^btn/,
+      ]
+    }
+  },
   theme: {
     // ...
   },

@@ -10,6 +10,16 @@ ember install @frontile/notifications
 // tailwind.config.js
 
 module.exports = {
+  purge: {
+    // ...
+    options: {
+      whitelist: [
+        /^notifications-container/,
+        /^notification-card/,
+        /^notification-transition/
+      ]
+    }
+  },
   theme: {
     // ...
   },

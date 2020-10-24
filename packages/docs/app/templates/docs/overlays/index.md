@@ -10,6 +10,16 @@ ember install @frontile/overlays
 // tailwind.config.js
 
 module.exports = {
+  purge: {
+    // ...
+    options: {
+      whitelist: [
+        /^overlay/,
+        /^modal/,
+        /^drawer/
+      ]
+    }
+  },
   theme: {
     // ...
   },

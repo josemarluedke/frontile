@@ -10,6 +10,15 @@ ember install @frontile/core
 // tailwind.config.js
 
 module.exports = {
+  purge: {
+    // ...
+    options: {
+      whitelist: [
+        /^close-button/,
+        /^visually-hidden/
+      ]
+    }
+  },
   theme: {
     // ...
   },

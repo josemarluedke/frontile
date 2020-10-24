@@ -6,7 +6,7 @@ const {
   addTransitions
 } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function (userConfig) {
+module.exports = plugin.withOptions(function () {
   return function ({ addComponents, theme }) {
     const { components } = resolveComponents(
       theme('frontile.notifications') || {},
