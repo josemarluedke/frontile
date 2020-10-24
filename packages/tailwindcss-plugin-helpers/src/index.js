@@ -89,7 +89,10 @@ function resolve(optionsName, params, userConfig, theme) {
 
 function resolveComponents({ config: userConfig, extend }, params) {
   const { defaultConfig, defaultOptions } = params;
-  const config = merge(defaultConfig, userConfig || {});
+  const config = merge(
+    flattenOptions(defaultConfig),
+    flattenOptions(userConfig || {})
+  );
   const components = merge(
     flattenOptions(defaultOptions({ config })),
     flattenOptions(extend || {})

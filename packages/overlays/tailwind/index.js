@@ -1,18 +1,16 @@
 const plugin = require('tailwindcss/plugin');
 const {
-  resolve,
+  resolveComponents,
   isEmpty,
   kebabCase,
   addMultipartComponent
 } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function (userConfig) {
+module.exports = plugin.withOptions(function () {
   return function ({ addComponents, theme }) {
-    const { options } = resolve(
-      '@frontile/overlays',
-      require('./default-options'),
-      userConfig,
-      theme
+    const { components } = resolveComponents(
+      theme('frontile.overlays') || {},
+      require('./default-options')
     );
 
     function addTransitionPhases(name, options) {
@@ -42,10 +40,10 @@ module.exports = plugin.withOptions(function (userConfig) {
       });
     }
 
-    addTransitions(options.transitions);
+    addTransitions(components.transitions);
 
-    addMultipartComponent(addComponents, '.overlay', options.overlay);
-    addMultipartComponent(addComponents, '.modal', options.modal);
-    addMultipartComponent(addComponents, '.drawer', options.drawer);
+    addMultipartComponent(addComponents, '.overlay', components.overlay);
+    addMultipartComponent(addComponents, '.modal', components.modal);
+    addMultipartComponent(addComponents, '.drawer', components.drawer);
   };
 });

@@ -2,48 +2,45 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
   require('tailwindcss/defaultConfig')
 ).theme;
 
-const modalAndDrawerDefaultConfig = {
-  backgroundColor: defaultTheme.colors.white,
-  boxShadow: defaultTheme.boxShadow.default,
-  closeBtnMargin: defaultTheme.spacing[2],
-
-  header: {
-    padding: defaultTheme.padding[4]
-  },
-
-  body: {
-    padding: defaultTheme.padding[4]
-  },
-
-  footer: {
-    borderColor: defaultTheme.borderColor.default,
-    padding: defaultTheme.padding[4],
-    backgroundColor: defaultTheme.colors.gray[100]
-  },
-
-  obscurer: {
-    disabled: false,
-    size: defaultTheme.padding[4],
-    background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, ${defaultTheme.colors.white} 100%)`
-  },
-
-  sizes: {
-    xs: '20rem',
-    sm: '24rem',
-    md: '28rem',
-    lg: '32rem',
-    xl: '36rem',
-    full: '100%'
-  }
-};
-
 const defaultConfig = {
   textColor: 'inherit',
   zIndex: 50,
   borderRadius: defaultTheme.borderRadius.default,
   backdropColor: 'rgba(0, 0, 0, 0.45)',
-  modal: modalAndDrawerDefaultConfig,
-  drawer: modalAndDrawerDefaultConfig
+  'modal, drawer': {
+    backgroundColor: defaultTheme.colors.white,
+    boxShadow: defaultTheme.boxShadow.default,
+    closeBtnMargin: defaultTheme.spacing[2],
+
+    header: {
+      padding: defaultTheme.padding[4]
+    },
+
+    body: {
+      padding: defaultTheme.padding[4]
+    },
+
+    footer: {
+      borderColor: defaultTheme.borderColor.default,
+      padding: defaultTheme.padding[4],
+      backgroundColor: defaultTheme.colors.gray[100]
+    },
+
+    obscurer: {
+      disabled: false,
+      size: defaultTheme.padding[4],
+      background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, ${defaultTheme.colors.white} 100%)`
+    },
+
+    sizes: {
+      xs: '20rem',
+      sm: '24rem',
+      md: '28rem',
+      lg: '32rem',
+      xl: '36rem',
+      full: '100%'
+    }
+  }
 };
 
 const inset0 = {
