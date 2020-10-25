@@ -2,66 +2,43 @@
 {{!-- template-lint-disable no-unnecessary-concat --}}
 {{!-- template-lint-disable no-inline-styles --}}
 {{!-- template-lint-disable style-concatenation  --}}
-{{!-
-Appearances:
-  notification-card--info
-  notification-card--success
-  notification-card--warning
-  notification-card--error
-Placements:
-  notification-card--top-left
-  notification-card--top-center
-  notification-card--top-right
-  notification-card--bottom-left
-  notification-card--bottom-center
-  notification-card--bottom-right
--}}
 <div
   {{did-insert this.transitionIn}}
   {{did-update this.transitionOut @notification.isRemoving}}
 >
-  <div
-    {{on "mouseenter" this.pause}}
-    {{on "mouseleave" this.resume}}
-    class="notification-card
-           notification-card--{{@notification.appearance}}
-           notification-card--{{@placement}}
-           {{if @notification.isRemoving "notification-card--state-exiting"}}
-           {{if this.hasEntered
-             (if @notification.isRemoving  "" "notification-card--state-entered")
-             "notification-card--state-entering"
-           }}
-         "
-    style="{{this.styles}}"
-    ...attributes
-  >
-    <div class="notification-card__message">
-      {{@notification.message}}
-    </div>
-
-    {{#if @notification.customActions}}
-      <div class="notification-card__custom-actions">
-        {{#each @notification.customActions as |customAction|}}
-          <button
-            type="button"
-            class="notification-card__custom-actions__btn"
-            {{on "click" (fn this.handleClickCustomAction customAction)}}
-          >
-            {{customAction.label}}
-          </button>
-        {{/each}}
+  {{#unless @notification.isRemoving}}
+    <div
+      {{on "mouseenter" this.pause}}
+      {{on "mouseleave" this.resume}}
+      {{css-transition (concat "notification-transition--slide-from-" @placement) isEnabled=true}}
+      class="notification-card notification-card--{{@notification.appearance}}"
+      style="{{this.styles}}"
+      ...attributes
+    >
+      <div class="notification-card__message notification-card--{{@notification.appearance}}__message">
+        {{@notification.message}}
       </div>
-    {{/if}}
 
-    {{#if @notification.allowClosing}}
-      <button
-        type="button"
-        class="notification-card__close-btn"
-        {{on "click" this.remove}}
-      >
-        <div class="notification-card__close-btn__icon"></div>
-        <VisuallyHidden>Close</VisuallyHidden>
-      </button>
-    {{/if}}
-  </div>
+      {{#if @notification.customActions}}
+        <div class="notification-card__custom-actions notification-card--{{@notification.appearance}}__custom-actions">
+          {{#each @notification.customActions as |customAction|}}
+            <button
+              type="button"
+              class="notification-card__custom-action-btn notification-card--{{@notification.appearance}}__custom-action-btn"
+              {{on "click" (fn this.handleClickCustomAction customAction)}}
+            >
+              {{customAction.label}}
+            </button>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if @notification.allowClosing}}
+        <CloseButton
+          @onClick={{this.remove}}
+          class="notification-card__close-btn notification-card--{{@notification.appearance}}__close-btn"
+        />
+      {{/if}}
+    </div>
+  {{/unless}}
 </div>

@@ -102,7 +102,7 @@ module('Integration | Component | NotificationCard', function (hooks) {
 
     await render(template);
 
-    await click('[data-test-notification] .notification-card__close-btn__icon');
+    await click('[data-test-notification] .notification-card__close-btn');
 
     sinon.restore();
   });
@@ -142,23 +142,23 @@ module('Integration | Component | NotificationCard', function (hooks) {
     await render(template);
 
     assert
-      .dom('[data-test-notification] .notification-card__custom-actions__btn')
+      .dom('[data-test-notification] .notification-card__custom-action-btn')
       .exists({ count: 2 });
 
     assert
       .dom(
-        '[data-test-notification] .notification-card__custom-actions__btn:first-child'
+        '[data-test-notification] .notification-card__custom-action-btn:first-child'
       )
       .hasText('Undo');
 
     assert
       .dom(
-        '[data-test-notification] .notification-card__custom-actions__btn:last-child'
+        '[data-test-notification] .notification-card__custom-action-btn:last-child'
       )
       .hasText('Ok');
 
     await click(
-      '[data-test-notification] .notification-card__custom-actions__btn:first-child'
+      '[data-test-notification] .notification-card__custom-action-btn:first-child'
     );
 
     sinon.restore();

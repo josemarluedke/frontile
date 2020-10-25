@@ -1,24 +1,3 @@
-{{!--
-  classes for purgecss
-
-  drawer--top
-  drawer--bottom
-  drawer--left
-  drawer--right
-  drawer--xs-vertical
-  drawer--xs-horizontal
-  drawer--sm-vertical
-  drawer--sm-horizontal
-  drawer--md-vertical
-  drawer--md-horizontal
-  drawer--lg-vertical
-  drawer--lg-horizontal
-  drawer--xl-vertical
-  drawer--xl-horizontal
-  drawer--full-vertical
-  drawer--full-horizontal
---}}
-
 <Overlay
   @isOpen={{@isOpen}}
   @onClose={{this.handleClose}}
@@ -32,7 +11,7 @@
   @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
   @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
   @backdropTransitionName={{@backdropTransitionName}}
-  @contentTransitionName={{if @transitionName @transitionName (concat "overlay--transition--slide-from-" this.placement)}}
+  @contentTransitionName={{if @transitionName @transitionName (concat "overlay-transition--slide-from-" this.placement)}}
 >
   <div
     class="drawer drawer--{{this.placement}} drawer--{{this.size}}"

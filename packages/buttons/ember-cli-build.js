@@ -11,7 +11,7 @@ module.exports = function (defaults) {
         cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
         plugins: [
           require('tailwindcss')(
-            path.join('tests', 'dummy', 'app', 'styles', 'tailwind.config.js')
+            path.join('tests', 'dummy', 'app', 'config', 'tailwind.config.js')
           ),
           require('autoprefixer')
         ]

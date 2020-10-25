@@ -1,49 +1,3 @@
-{{!--
-  Here are the css classes we use. This is here so that purgecss doesn't remove them.
-  js-overlay-is-open
-  overlay--transition--fade-enter
-  overlay--transition--fade-enter-to
-  overlay--transition--fade-enter-active
-  overlay--transition--fade-leave
-  overlay--transition--fade-leave-to
-  overlay--transition--fade-leave-active
-
-  overlay--transition--zoom-enter
-  overlay--transition--zoom-enter-to
-  overlay--transition--zoom-enter-active
-  overlay--transition--zoom-leave
-  overlay--transition--zoom-leave-to
-  overlay--transition--zoom-leave-active
-
-  overlay--transition--slide-from-top-enter
-  overlay--transition--slide-from-top-enter-to
-  overlay--transition--slide-from-top-enter-active
-  overlay--transition--slide-from-top-leave
-  overlay--transition--slide-from-top-leave-to
-  overlay--transition--slide-from-top-leave-active
-
-  overlay--transition--slide-from-bottom-enter
-  overlay--transition--slide-from-bottom-enter-to
-  overlay--transition--slide-from-bottom-enter-active
-  overlay--transition--slide-from-bottom-leave
-  overlay--transition--slide-from-bottom-leave-to
-  overlay--transition--slide-from-bottom-leave-active
-
-  overlay--transition--slide-from-left-enter
-  overlay--transition--slide-from-left-enter-to
-  overlay--transition--slide-from-left-enter-active
-  overlay--transition--slide-from-left-leave
-  overlay--transition--slide-from-left-leave-to
-  overlay--transition--slide-from-left-leave-active
-
-  overlay--transition--slide-from-right-enter
-  overlay--transition--slide-from-right-enter-to
-  overlay--transition--slide-from-right-enter-active
-  overlay--transition--slide-from-right-leave
-  overlay--transition--slide-from-right-leave-to
-  overlay--transition--slide-from-right-leave-active
---}}
-
 {{#if this.isVisible}}
   {{#maybe-in-element this.destinationElement @renderInPlace insertBefore=null}}
     <div
@@ -54,9 +8,9 @@
       {{!-- template-lint-disable no-invalid-interactive --}}
       {{#if this.isBackdropVisible}}
         <div
-          class="overlay__backdrop"
+          class="overlay__backdrop {{if @renderInPlace "overlay--in-place__backdrop"}}"
           {{on "click" this.handleOverlayClick}}
-          {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay--transition--fade") isEnabled=this.isAnimationEnabled}}
+          {{css-transition (if @backdropTransitionName @backdropTransitionName "overlay-transition--fade") isEnabled=this.isAnimationEnabled}}
         ></div>
       {{/if}}
 
@@ -68,11 +22,11 @@
 
       {{#if @isOpen}}
         <div
-          class="overlay__content"
+          class="overlay__content {{if @renderInPlace "overlay--in-place__content"}}"
           {{on "click" this.handleContentClick}}
           {{did-insert this.setup}}
           {{will-destroy this.teardown}}
-          {{css-transition (if @contentTransitionName @contentTransitionName "overlay--transition--fade") isEnabled=this.isAnimationEnabled}}
+          {{css-transition (if @contentTransitionName @contentTransitionName "overlay-transition--fade") isEnabled=this.isAnimationEnabled}}
         >
           {{yield}}
         </div>

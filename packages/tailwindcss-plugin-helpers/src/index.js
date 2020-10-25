@@ -54,13 +54,17 @@ function replaceIconDeclarations(component, replace) {
 function resolveOptions(userOptionsName, defaultOptions, config, theme) {
   return merge(
     fromPairs(
-      map(defaultOptions({ theme, config }), (value, key) => [
+      map(flattenOptions(defaultOptions({ theme, config })), (value, key) => [
         key,
         flattenOptions(value)
       ])
     ),
+
     fromPairs(
-      map(theme(userOptionsName), (value, key) => [key, flattenOptions(value)])
+      map(flattenOptions(theme(userOptionsName)), (value, key) => [
+        key,
+        flattenOptions(value)
+      ])
     )
   );
 }
@@ -83,6 +87,128 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
+function resolveComponents({ config: userConfig, extend }, params) {
+  const { defaultConfig, defaultOptions } = params;
+  const config = merge(
+    flattenOptions(defaultConfig),
+    flattenOptions(userConfig || {})
+  );
+  const components = merge(
+    flattenOptions(defaultOptions({ config })),
+    flattenOptions(extend || {})
+  );
+
+  return {
+    config,
+    components
+  };
+}
+
+function addMultipartComponent(
+  addComponents,
+  baseSelector,
+  options,
+  modifier = ''
+) {
+  if (isEmpty(options)) {
+    return;
+  }
+
+  if (modifier !== '') {
+    baseSelector += `--${modifier}`;
+  }
+
+  const { baseStyle, variants, parts } = options;
+
+  let defaultVariant = {};
+  if (variants && !isEmpty(variants.default)) {
+    defaultVariant = variants.default;
+    delete variants.default;
+  }
+
+  addComponents({
+    [baseSelector]: merge(baseStyle, defaultVariant)
+  });
+
+  if (!isEmpty(parts)) {
+    Object.keys(parts).forEach((key) => {
+      addComponents({
+        [`${baseSelector}__${kebabCase(key)}`]: parts[key]
+      });
+    });
+  }
+
+  if (!isEmpty(variants)) {
+    Object.keys(variants).forEach((key) => {
+      addMultipartComponent(
+        addComponents,
+        baseSelector,
+        variants[key],
+        kebabCase(key)
+      );
+    });
+  }
+}
+
+function addSinglePartComponent(addComponents, baseSelector, options) {
+  if (isEmpty(options)) {
+    return;
+  }
+
+  const { baseStyle, variants } = options;
+
+  let defaultVariant = {};
+  if (variants && !isEmpty(variants.default)) {
+    defaultVariant = variants.default;
+    delete variants.default;
+  }
+
+  addComponents({
+    [baseSelector]: merge(baseStyle, defaultVariant)
+  });
+
+  if (!isEmpty(variants)) {
+    Object.keys(variants).forEach((key) => {
+      addComponents({
+        [`${baseSelector}--${kebabCase(key)}`]: variants[key]
+      });
+    });
+  }
+}
+
+function addTransitions(addComponents, baseSelector, transitions) {
+  if (isEmpty(transitions)) {
+    return;
+  }
+
+  Object.keys(transitions).forEach((key) => {
+    const transition = transitions[key];
+
+    if (isEmpty(transition)) {
+      return;
+    }
+    const name = `${baseSelector}--${kebabCase(key)}`;
+
+    const {
+      enter,
+      enterTo,
+      leave,
+      leaveActive,
+      enterActive,
+      leaveTo
+    } = transition;
+
+    addComponents({
+      [`${name}-enter`]: enter,
+      [`${name}-enter-to`]: enterTo || leave,
+      [`${name}-leave`]: leave,
+      [`${name}-leave-to`]: leaveTo || enter,
+      [`${name}-enter-active`]: enterActive,
+      [`${name}-leave-active`]: leaveActive
+    });
+  });
+}
+
 module.exports = {
   map,
   merge,
@@ -94,5 +220,9 @@ module.exports = {
   resolveConfig,
   resolve,
   svgToDataUri,
-  kebabCase
+  kebabCase,
+  resolveComponents,
+  addMultipartComponent,
+  addSinglePartComponent,
+  addTransitions
 };

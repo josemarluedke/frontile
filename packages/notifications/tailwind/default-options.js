@@ -25,13 +25,17 @@ const defaultConfig = {
 
 function generateAppearance({ color, buttonHoverColor }) {
   return {
-    card: {
-      backgroundColor: color,
+    baseStyle: {
+      backgroundColor: color
+    },
+
+    parts: {
       closeBtn: {
         '&:hover': {
           backgroundColor: buttonHoverColor
         }
       },
+
       customActionBtn: {
         '&:hover': {
           backgroundColor: buttonHoverColor
@@ -52,7 +56,7 @@ function defaultOptions({ config }) {
     }
   };
 
-  const notificationEnteringPosition = {
+  const notificationEnteringFrom = {
     right: {
       transform: 'translate3d(125%, 0, 0)'
     },
@@ -70,9 +74,19 @@ function defaultOptions({ config }) {
     }
   };
 
+  const zoomOut = {
+    leaveTo: {
+      transform: 'scale(0.80)',
+      opacity: 0
+    },
+    leave: {
+      transform: 'translate3d(0,0,0)'
+    }
+  };
+
   return {
-    default: {
-      container: {
+    container: {
+      baseStyle: {
         width: '100%',
         maxHeight: '100%',
         overflow: 'hidden',
@@ -82,7 +96,38 @@ function defaultOptions({ config }) {
         zIndex: config.zIndex,
         maxWidth: defaultTheme.maxWidth.lg
       },
-      card: {
+
+      variants: {
+        topLeft: {
+          top: 0,
+          left: 0
+        },
+        topCenter: {
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)'
+        },
+        topRight: {
+          top: 0,
+          right: 0
+        },
+        bottomLeft: {
+          bottom: 0,
+          left: 0
+        },
+        bottomCenter: {
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)'
+        },
+        bottomRight: {
+          bottom: 0,
+          right: 0
+        }
+      }
+    },
+    card: {
+      baseStyle: {
         transitionProperty: defaultTheme.transitionProperty.all,
         transitionDuration: defaultTheme.transitionDuration[200],
         transitionTimingFunction:
@@ -100,15 +145,17 @@ function defaultOptions({ config }) {
         paddingTop: defaultTheme.padding[3],
         paddingBottom: defaultTheme.padding[3],
         paddingRight: defaultTheme.padding[4],
-        paddingLeft: defaultTheme.padding[4],
+        paddingLeft: defaultTheme.padding[4]
+      },
 
-        stateEntered: {
-          transform: 'translate3d(0,0,0)'
-        },
-        stateExisting: {
-          transform: 'scale(0.80)',
-          opacity: 0
-        },
+      variants: {
+        info: generateAppearance(config.info),
+        success: generateAppearance(config.success),
+        warning: generateAppearance(config.warning),
+        error: generateAppearance(config.error)
+      },
+
+      parts: {
         message: {
           flexGrow: 1
         },
@@ -118,15 +165,7 @@ function defaultOptions({ config }) {
           marginLeft: defaultTheme.spacing[2],
           marginRight: `-${defaultTheme.spacing[2]}`,
           borderRadius: defaultTheme.borderRadius.full,
-          ...btnShared
-        },
-        closeBtnIcon: {
-          height: '1em',
-          width: '1em',
-          backgroundRepeat: 'no-repeat',
-          iconColor: config.textColor,
-          icon: (iconColor) =>
-            `<svg fill="none" stroke="${iconColor}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12"></path></svg>`
+          fontSize: 'inherit'
         },
         customActions: {
           display: 'flex',
@@ -150,38 +189,33 @@ function defaultOptions({ config }) {
         }
       }
     },
-    info: generateAppearance(config.info),
-    success: generateAppearance(config.success),
-    warning: generateAppearance(config.warning),
-    error: generateAppearance(config.error),
-
-    topLeft: {
-      container: { top: 0, left: 0 },
-      card: { stateEntering: notificationEnteringPosition.left }
-    },
-    topCenter: {
-      container: { top: 0, left: '50%', transform: 'translateX(-50%)' },
-      card: { stateEntering: notificationEnteringPosition.top }
-    },
-    topRight: {
-      container: { top: 0, right: 0 },
-      card: { stateEntering: notificationEnteringPosition.right }
-    },
-    bottomLeft: {
-      container: { bottom: 0, left: 0 },
-      card: { stateEntering: notificationEnteringPosition.left }
-    },
-    bottomCenter: {
-      container: {
-        bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)'
+    transitions: {
+      slideFromTopLeft: {
+        ...zoomOut,
+        enter: {
+          ...notificationEnteringFrom.left
+        }
       },
-      card: { stateEntering: notificationEnteringPosition.bottom }
-    },
-    bottomRight: {
-      container: { bottom: 0, right: 0 },
-      card: { stateEntering: notificationEnteringPosition.right }
+      slideFromTopCenter: {
+        ...zoomOut,
+        enter: notificationEnteringFrom.top
+      },
+      slideFromTopRight: {
+        ...zoomOut,
+        enter: notificationEnteringFrom.right
+      },
+      slideFromBottomLeft: {
+        ...zoomOut,
+        enter: notificationEnteringFrom.left
+      },
+      slideFromBottomCenter: {
+        ...zoomOut,
+        enter: notificationEnteringFrom.bottom
+      },
+      slideFromBottomRight: {
+        ...zoomOut,
+        enter: notificationEnteringFrom.right
+      }
     }
   };
 }
