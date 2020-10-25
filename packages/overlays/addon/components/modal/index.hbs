@@ -13,27 +13,29 @@
   @backdropTransitionName={{@backdropTransitionName}}
   @contentTransitionName={{if @transitionName @transitionName "overlay-transition--zoom"}}
 >
-  <div
-    class="modal {{if @isCentered "modal--centered"}} modal--{{if @size @size "lg"}}"
-    tabindex="0"
-    role="dialog"
-    aria-labelledby={{this.headerId}}
-    ...attributes
-  >
-    {{#if this.showCloseButton}}
-      <CloseButton
-        @onClick={{this.handleClose}}
-        @size={{@closeButtonSize}}
-        class="modal__close-btn"
-      />
-    {{/if}}
+  {{#let (use-frontile-class "modal" this.size part="close-btn") as |closeBtnClass|}}
+    <div
+      class={{use-frontile-class "modal" (if @isCentered "centered") this.size}}
+      tabindex="0"
+      role="dialog"
+      aria-labelledby={{this.headerId}}
+      ...attributes
+    >
+      {{#if this.showCloseButton}}
+        <CloseButton
+          @onClick={{this.handleClose}}
+          @size={{@closeButtonSize}}
+          class={{closeBtnClass}}
+        />
+      {{/if}}
 
-    {{yield (hash
-      CloseButton=(component "close-button" onClick=this.handleClose class="modal__close-btn")
-      Header=(component "modal/header" labelledById=this.headerId)
-      Body=(component "modal/body")
-      Footer=(component "modal/footer")
-      headerId=this.headerId
-    )}}
-  </div>
+      {{yield (hash
+        CloseButton=(component "close-button" onClick=this.handleClose class=closeBtnClass)
+        Header=(component "modal/header" labelledById=this.headerId size=this.size)
+        Body=(component "modal/body" size=this.size)
+        Footer=(component "modal/footer" size=this.size)
+        headerId=this.headerId
+      )}}
+    </div>
+  {{/let}}
 </Overlay>
