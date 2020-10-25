@@ -21,8 +21,4 @@ export default class CloseButton extends Component<CloseButtonArgs> {
       this.args.onClick(event);
     }
   }
-
-  get sizeClass(): string {
-    return `close-button--${this.args.size || 'md'}`;
-  }
 }
