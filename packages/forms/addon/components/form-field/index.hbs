@@ -7,14 +7,14 @@
       hintId=this.hintId
       feedbackId=this.feedbackId
 
-      Label=(component "form-field/label" for=this.id isSmall=@isSmall isLarge=@isLarge)
-      Hint=(component "form-field/hint" id=this.hintId isSmall=@isSmall isLarge=@isLarge)
-      Feedback=(component "form-field/feedback" id=this.feedbackId isSmall=@isSmall isLarge=@isLarge)
+      Label=(component "form-field/label" for=this.id size=@size)
+      Hint=(component "form-field/hint" id=this.hintId size=@size)
+      Feedback=(component "form-field/feedback" id=this.feedbackId size=@size)
 
-      Input=(component "form-field/input" id=this.id isSmall=@isSmall isLarge=@isLarge)
-      Textarea=(component "form-field/textarea" id=this.id isSmall=@isSmall isLarge=@isLarge)
-      Checkbox=(component "form-field/checkbox" id=this.id isSmall=@isSmall isLarge=@isLarge)
-      Radio=(component "form-field/radio" id=this.id isSmall=@isSmall isLarge=@isLarge)
+      Input=(component "form-field/input" id=this.id size=@size)
+      Textarea=(component "form-field/textarea" id=this.id size=@size)
+      Checkbox=(component "form-field/checkbox" id=this.id size=@size)
+      Radio=(component "form-field/radio" id=this.id size=@size)
     )
   }}
 </div>

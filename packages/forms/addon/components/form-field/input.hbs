@@ -4,7 +4,7 @@
   id={{@id}}
   value={{@value}}
   type={{this.type}}
-  class="form__input {{if @isSmall "form__input--sm" (if @isLarge "form__input--lg")}}"
+  class={{use-frontile-class "form-field-input" @size}}
   data-test-id="form-field-input"
   ...attributes
 >

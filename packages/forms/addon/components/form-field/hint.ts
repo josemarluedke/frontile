@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 
 interface FormFieldHintArgs {
   id?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 }
 
 export default class FormFieldHint extends Component<FormFieldHintArgs> {}

@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 
 interface FormFieldLabelArgs {
   for?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 }
 
 export default class FormFieldLabel extends Component<FormFieldLabelArgs> {}

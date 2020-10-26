@@ -8,7 +8,8 @@ const {
   svgToDataUri,
   isEmpty,
   kebabCase,
-  flattenOptions
+  flattenOptions,
+  addSinglePartComponent
 } = require('@frontile/tailwindcss-plugin-helpers');
 
 module.exports = plugin.withOptions(function (userConfig) {
@@ -19,6 +20,64 @@ module.exports = plugin.withOptions(function (userConfig) {
       userConfig,
       theme
     );
+
+    function replaceIconFn({
+      icon = options.icon,
+      iconColor = options.iconColor
+    }) {
+      return {
+        '&:checked': {
+          backgroundImage: `url("${svgToDataUri(
+            typeof icon === 'function' ? icon(iconColor) : icon
+          )}")`
+        }
+      };
+    }
+
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-checkbox',
+      options.checkbox,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-feedback',
+      options.feedback,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-hint',
+      options.hint,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-input',
+      options.input,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-label',
+      options.label,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-radio',
+      options.radio,
+      replaceIconFn
+    );
+    addSinglePartComponent(
+      addComponents,
+      '.form-field-textarea',
+      options.textarea,
+      replaceIconFn
+    );
+
+    // OLD ---
 
     function addFormElementComponent(
       namespace,

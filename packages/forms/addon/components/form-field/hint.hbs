@@ -1,6 +1,6 @@
 <div
   id={{@id}}
-  class="form__hint {{if @isSmall "form__hint--sm" (if @isLarge "form__hint--lg")}}"
+  class={{use-frontile-class "form-field-hint" @size}}
   data-test-id="form-field-hint"
   ...attributes
 >

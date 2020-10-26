@@ -22,27 +22,38 @@ const defaultConfig = {
 
 function defaultOptions({ config }) {
   return {
-    default: {
-      label: {
+    label: {
+      baseStyle: {
         display: 'inline-block',
         color: config.labelColor,
         fontWeight: defaultTheme.fontWeight.semibold,
         lineHeight: defaultTheme.lineHeight.tight,
         paddingBottom: defaultTheme.spacing[1]
-      },
-      hint: {
+      }
+    },
+    hint: {
+      baseStyle: {
         color: config.hintColor,
         fontSize: defaultTheme.fontSize.xs,
         paddingBottom: defaultTheme.spacing[1],
         '&:last-child': {
           paddingBottom: defaultTheme.spacing[0]
         }
-      },
-      feedback: {
+      }
+    },
+    feedback: {
+      baseStyle: {
         fontSize: defaultTheme.fontSize.xs,
         paddingTop: defaultTheme.spacing[1]
       },
-      'input, textarea': {
+      variants: {
+        error: {
+          color: config.invalidColor
+        }
+      }
+    },
+    'input, textarea': {
+      baseStyle: {
         appearance: 'none',
         flex: defaultTheme.flex[1],
         width: defaultTheme.width.full,
@@ -77,11 +88,38 @@ function defaultOptions({ config }) {
           }
         }
       },
-      textarea: {
+      variants: {
+        sm: {
+          fontSize: defaultTheme.fontSize.sm,
+          paddingTop: defaultTheme.spacing[2],
+          paddingRight: defaultTheme.spacing[2],
+          paddingBottom: defaultTheme.spacing[2],
+          paddingLeft: defaultTheme.spacing[2]
+        },
+        lg: {
+          paddingTop: defaultTheme.spacing[4],
+          paddingRight: defaultTheme.spacing[4],
+          paddingBottom: defaultTheme.spacing[4],
+          paddingLeft: defaultTheme.spacing[4]
+        }
+      }
+    },
+    textarea: {
+      baseStyle: {
         minHeight: defaultTheme.height[24]
       },
+      variants: {
+        sm: {
+          minHeight: defaultTheme.height[16]
+        },
+        lg: {
+          minHeight: defaultTheme.height[32]
+        }
+      }
+    },
 
-      'checkbox, radio': {
+    'checkbox, radio': {
+      baseStyle: {
         appearance: 'none',
         colorAdjust: 'exact',
         '&::-ms-check': {
@@ -126,17 +164,31 @@ function defaultOptions({ config }) {
           borderColor: config.disabledBorderColor
         }
       },
-      checkbox: {
+      variants: {
+        sm: {
+          fontSize: defaultTheme.fontSize.sm
+        },
+        lg: {
+          fontSize: defaultTheme.fontSize.lg
+        }
+      }
+    },
+    checkbox: {
+      baseStyle: {
         borderRadius: defaultTheme.borderRadius.sm,
         icon: (iconColor) =>
           `<svg viewBox="0 0 16 16" fill="${iconColor}" xmlns="http://www.w3.org/2000/svg"><path d="M5.125 7.666a1.304 1.304 0 00-.882-.328 1.3 1.3 0 00-.876.343c-.232.216-.364.51-.367.816-.003.307.124.602.352.822l2.508 2.339c.235.219.554.342.886.342.333 0 .651-.123.887-.342l5.015-4.677c.228-.22.355-.516.352-.822a1.132 1.132 0 00-.367-.817A1.301 1.301 0 0011.757 5a1.304 1.304 0 00-.882.328l-4.129 3.85-1.621-1.512z"/></svg>`
-      },
-      radio: {
+      }
+    },
+    radio: {
+      baseStyle: {
         borderRadius: defaultTheme.borderRadius.full,
         icon: (iconColor) =>
           `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="${iconColor}" stroke-width="3" fill="none" /></svg>`
-      },
+      }
+    },
 
+    default: {
       'formCheckboxGroup, formRadioGroup': {
         '> *': {
           paddingBottom: defaultTheme.spacing[1],
@@ -202,11 +254,7 @@ function defaultOptions({ config }) {
         }
       }
     },
-    stateError: {
-      feedback: {
-        color: config.invalidColor
-      }
-    },
+
     inline: {
       'formCheckboxGroup, formRadioGroup': {
         display: 'flex',
@@ -219,38 +267,10 @@ function defaultOptions({ config }) {
       }
     },
     sm: {
-      'input, textarea': {
-        fontSize: defaultTheme.fontSize.sm,
-        paddingTop: defaultTheme.spacing[2],
-        paddingRight: defaultTheme.spacing[2],
-        paddingBottom: defaultTheme.spacing[2],
-        paddingLeft: defaultTheme.spacing[2]
-      },
-      textarea: {
-        minHeight: defaultTheme.height[16]
-      },
-      'checkbox, radio': {
-        fontSize: defaultTheme.fontSize.sm
-      },
-
       'formCheckboxContainer, formRadioContainer': {
         label: {
           fontSize: defaultTheme.fontSize.sm
         }
-      }
-    },
-    lg: {
-      'input, textarea': {
-        paddingTop: defaultTheme.spacing[4],
-        paddingRight: defaultTheme.spacing[4],
-        paddingBottom: defaultTheme.spacing[4],
-        paddingLeft: defaultTheme.spacing[4]
-      },
-      textarea: {
-        minHeight: defaultTheme.height[32]
-      },
-      'checkbox, radio': {
-        fontSize: defaultTheme.fontSize.lg
       }
     }
   };

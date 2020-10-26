@@ -4,7 +4,7 @@
   name={{@name}}
   checked={{this.isChecked}}
   type="checkbox"
-  class="form__checkbox {{if @isSmall "form__checkbox--sm" (if @isLarge "form__checkbox--lg")}}"
+  class={{use-frontile-class "form-field-checkbox" @size}}
   data-test-id="form-field-checkbox"
   ...attributes
 >

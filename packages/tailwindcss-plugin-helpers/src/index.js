@@ -150,28 +150,65 @@ function addMultipartComponent(
   }
 }
 
-function addSinglePartComponent(addComponents, baseSelector, options) {
+function addComponentsMaybeWithIcon(
+  addComponents,
+  selector,
+  styles,
+  replaceIconFn
+) {
+  if (
+    (Object.keys(styles).includes('iconColor') ||
+      Object.keys(styles).includes('icon')) &&
+    typeof replaceIconFn === 'function'
+  ) {
+    addComponents(
+      replaceIconDeclarations(
+        {
+          [selector]: styles
+        },
+        replaceIconFn
+      )
+    );
+  } else {
+    addComponents({
+      [selector]: styles
+    });
+  }
+}
+
+function addSinglePartComponent(
+  addComponents,
+  baseSelector,
+  options,
+  replaceIconFn
+) {
   if (isEmpty(options)) {
     return;
   }
 
-  const { baseStyle, variants } = options;
+  let { baseStyle, variants } = options;
 
-  let defaultVariant = {};
   if (variants && !isEmpty(variants.default)) {
-    defaultVariant = variants.default;
+    const defaultVariant = variants.default;
     delete variants.default;
+    baseStyle = merge(baseStyle, defaultVariant);
   }
 
-  addComponents({
-    [baseSelector]: merge(baseStyle, defaultVariant)
-  });
+  addComponentsMaybeWithIcon(
+    addComponents,
+    baseSelector,
+    baseStyle,
+    replaceIconFn
+  );
 
   if (!isEmpty(variants)) {
     Object.keys(variants).forEach((key) => {
-      addComponents({
-        [`${baseSelector}--${kebabCase(key)}`]: variants[key]
-      });
+      addComponentsMaybeWithIcon(
+        addComponents,
+        `${baseSelector}--${kebabCase(key)}`,
+        variants[key],
+        replaceIconFn
+      );
     });
   }
 }
