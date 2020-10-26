@@ -1,14 +1,19 @@
 import config from 'ember-get-config';
 import { DefaultConfig } from './types';
-import { getWithDefault } from '@ember/object';
+import { get } from '@ember/object';
 
 export function getConfigOption<T extends keyof DefaultConfig>(
   key: T,
-  defaultValue: NonNullable<DefaultConfig[T]> | undefined
+  defaultValue: NonNullable<DefaultConfig[T]>
 ): NonNullable<DefaultConfig[T]> {
-  return getWithDefault(
+  const value = get(
     config['@frontile/notifications'] || ({} as never),
-    key as never,
-    defaultValue as never
+    key as never
   );
+
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  return value;
 }
