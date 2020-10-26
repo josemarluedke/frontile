@@ -2,7 +2,7 @@
   <div
     {{did-insert this.addSpacing}}
     {{did-update this.addSpacing @spacing @placement}}
-    class="notifications-container notifications-container--{{if @placement @placement "bottom-right"}}"
+    class={{use-frontile-class "notifications-container" (if @placement @placement "bottom-right")}}
     role="alert"
     aria-live="assertive"
     aria-atomic="true"

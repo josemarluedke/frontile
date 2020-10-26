@@ -11,20 +11,20 @@
       {{on "mouseenter" this.pause}}
       {{on "mouseleave" this.resume}}
       {{css-transition (concat "notification-transition--slide-from-" @placement) isEnabled=true}}
-      class="notification-card notification-card--{{@notification.appearance}}"
+      class={{use-frontile-class "notification-card" @notification.appearance}}
       style="{{this.styles}}"
       ...attributes
     >
-      <div class="notification-card__message notification-card--{{@notification.appearance}}__message">
+      <div class={{use-frontile-class "notification-card" @notification.appearance part="message"}}>
         {{@notification.message}}
       </div>
 
       {{#if @notification.customActions}}
-        <div class="notification-card__custom-actions notification-card--{{@notification.appearance}}__custom-actions">
+        <div class={{use-frontile-class "notification-card" @notification.appearance part="custom-actions"}}>
           {{#each @notification.customActions as |customAction|}}
             <button
               type="button"
-              class="notification-card__custom-action-btn notification-card--{{@notification.appearance}}__custom-action-btn"
+              class={{use-frontile-class "notification-card" @notification.appearance part="custom-action-btn"}}
               {{on "click" (fn this.handleClickCustomAction customAction)}}
             >
               {{customAction.label}}
@@ -36,7 +36,7 @@
       {{#if @notification.allowClosing}}
         <CloseButton
           @onClick={{this.remove}}
-          class="notification-card__close-btn notification-card--{{@notification.appearance}}__close-btn"
+          class={{use-frontile-class "notification-card" @notification.appearance part="close-btn"}}
         />
       {{/if}}
     </div>
