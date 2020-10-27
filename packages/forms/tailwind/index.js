@@ -64,35 +64,6 @@ module.exports = plugin.withOptions(function (userConfig) {
       addMultipartComponent(addComponents, selector, options[key]);
     });
 
-    // const { namespaced } = options;
-    // options.namespaced = undefined;
-    // addNamespaced('', options);
-
-    // if (namespaced && Object.keys(namespaced).length > 0) {
-    // Object.keys(namespaced).forEach((namespace) => {
-    // const namespacedOptions = fromPairs(
-    // map(namespaced[namespace], (value, key) => [
-    // key,
-    // flattenOptions(value)
-    // ])
-    // );
-
-    // // Work around to allow change color of icons in namespace
-    // Object.keys(namespacedOptions).forEach((key) => {
-    // Object.keys(namespacedOptions[key]).forEach((k) => {
-    // if (
-    // k === 'checkbox' ||
-    // (k === 'radio' && namespacedOptions[key][k].iconColor)
-    // ) {
-    // namespacedOptions[key][k].icon = options[key][k].icon;
-    // }
-    // });
-    // });
-
-    // addNamespaced(`${namespace} `, namespacedOptions);
-    // });
-    // }
-
     const { powerSelect: powerSelectOptions } = options.default || {};
 
     require('tailwindcss-ember-power-select').registerComponents(

@@ -118,7 +118,7 @@ function addMultipartComponent(
     baseSelector += `--${modifier}`;
   }
 
-  let { baseStyle, variants, parts } = options;
+  let { baseStyle, variants, parts, namespaces } = options;
   variants = flattenOptions(variants || {});
   parts = flattenOptions(parts || {});
 
@@ -147,6 +147,16 @@ function addMultipartComponent(
         baseSelector,
         variants[key],
         kebabCase(key)
+      );
+    });
+  }
+
+  if (!isEmpty(namespaces)) {
+    Object.keys(namespaces).forEach((namespace) => {
+      addMultipartComponent(
+        addComponents,
+        `${namespace} ${baseSelector}`,
+        namespaces[namespace]
       );
     });
   }
@@ -188,7 +198,7 @@ function addSinglePartComponent(
     return;
   }
 
-  let { baseStyle, variants } = options;
+  let { baseStyle, variants, namespaces } = options;
   variants = flattenOptions(variants || {});
 
   if (variants && !isEmpty(variants.default)) {
@@ -206,10 +216,39 @@ function addSinglePartComponent(
 
   if (!isEmpty(variants)) {
     Object.keys(variants).forEach((key) => {
+      if (
+        Object.keys(baseStyle).includes('icon') &&
+        Object.keys(variants[key]).includes('iconColor') &&
+        !Object.keys(variants[key]).includes('icon')
+      ) {
+        variants[key].icon = baseStyle.icon;
+      }
+
       addComponentsMaybeWithIcon(
         addComponents,
         `${baseSelector}--${kebabCase(key)}`,
         variants[key],
+        replaceIconFn
+      );
+    });
+  }
+
+  if (!isEmpty(namespaces)) {
+    Object.keys(namespaces).forEach((namespace) => {
+      if (
+        Object.keys(baseStyle).includes('icon') &&
+        Object.keys(namespaces[namespace].baseStyle || {}).includes(
+          'iconColor'
+        ) &&
+        !Object.keys(namespaces[namespace].baseStyle || {}).includes('icon')
+      ) {
+        namespaces[namespace].baseStyle.icon = baseStyle.icon;
+      }
+
+      addSinglePartComponent(
+        addComponents,
+        `${namespace} ${baseSelector}`,
+        namespaces[namespace],
         replaceIconFn
       );
     });
