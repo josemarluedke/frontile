@@ -1,6 +1,6 @@
 <div
   id={{@id}}
-  class="form__feedback {{if this.isError "form__feedback--state-error"}} {{if @isSmall "form__feedback--sm" (if @isLarge "form__feedback--lg")}}"
+  class={{use-frontile-class "form-field-feedback" @size (if this.isError "error")}}
   data-test-id="form-field-feedback"
   aria-live={{if this.isError "assertive" "polite"}}
   ...attributes

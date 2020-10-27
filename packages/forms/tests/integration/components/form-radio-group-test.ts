@@ -15,8 +15,7 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
         @errors={{this.errors}}
         @hasSubmitted={{this.hasSubmitted}}
         @isInline={{this.isInline}}
-        @isSmall={{this.isSmall}}
-        @isLarge={{this.isLarge}}
+        @size={{this.size}}
         @containerClass={{this.containerClass}}
         @label="My Group"
         @value={{this.myValue}}
@@ -75,9 +74,7 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('isInline', true);
     await render(template);
 
-    assert
-      .dom('[data-test-input-group]')
-      .hasClass('form-radio-group-container--inline');
+    assert.dom('[data-test-input-group]').hasClass('form-radio-group--inline');
   });
 
   test('show error messages when errors array has items', async function (assert) {

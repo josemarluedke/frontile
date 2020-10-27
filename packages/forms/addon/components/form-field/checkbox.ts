@@ -4,8 +4,7 @@ import { action } from '@ember/object';
 interface FormFieldCheckboxArgs {
   checked?: boolean;
   name?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 
   // Callback when onchange is triggered
   onChange?: (value: boolean, event: Event) => void;

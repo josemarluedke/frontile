@@ -5,8 +5,11 @@ module.exports = {
     removeDeprecatedGapUtilities: true
   },
   theme: {
-    '@frontile/forms': {
-      default: {}
+    frontile: {
+      forms: {
+        config: {},
+        extend: {}
+      }
     }
   },
   plugins: [require('@frontile/forms/tailwind')]

@@ -1,11 +1,14 @@
 <FormField
-  @isSmall={{@isSmall}}
-  @isLarge={{@isLarge}}
-  class="form-radio-container {{@containerClass}} {{if @isSmall "form-radio-container--sm" (if @isLarge "form-radio-container--lg")}}"
+  @size={{@size}}
+  class={{use-frontile-class "form-radio" @size class=(array @containerClass @privateContainerClass)}}
   as |f|
 >
-  <div class="form-radio-container__label-container">
-    <div class="form-radio-container__input-container">
+  <div
+    class={{use-frontile-class "form-radio" @size part="label-container"}}
+  >
+    <div
+      class={{use-frontile-class "form-radio" @size part="input-container"}}
+    >
       {{!--  Zero-width space character, used to align checkbox properly --}}
       &#8203;
       <f.Radio
@@ -14,12 +17,15 @@
         @checked={{@checked}}
         @name={{@name}}
 
+        class={{use-frontile-class "form-radio" @size part="radio"}}
         aria-describedby={{if @hint f.hintId}}
         ...attributes
       />
     </div>
 
-    <f.Label>
+    <f.Label
+      class={{use-frontile-class "form-radio" @size part="label"}}
+    >
       {{#if hasBlock}}
         {{yield}}
       {{else}}
@@ -29,6 +35,10 @@
   </div>
 
   {{#if @hint}}
-    <f.Hint>{{@hint}}</f.Hint>
+    <f.Hint
+      class={{use-frontile-class "form-radio" @size part="hint"}}
+    >
+      {{@hint}}
+    </f.Hint>
   {{/if}}
 </FormField>

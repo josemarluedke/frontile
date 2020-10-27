@@ -3,7 +3,7 @@
   {{on "change" this.handleOnChange}}
   id={{@id}}
   value={{@value}}
-  class="form__textarea {{if @isSmall "form__textarea--sm" (if @isLarge "form__textarea--lg")}}"
+  class={{use-frontile-class "form-field-textarea" @size}}
   data-test-id="form-field-textarea"
   ...attributes
 >

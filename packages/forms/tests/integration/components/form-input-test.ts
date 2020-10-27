@@ -254,9 +254,8 @@ module('Integration | Component | FormInput', function (hooks) {
     assert.dom('.my-container-class').exists();
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
     await render(
       hbs`<FormInput
@@ -266,49 +265,33 @@ module('Integration | Component | FormInput', function (hooks) {
             @hint="Hint"
             @errors="Error"
             @hasSubmitted={{true}}
-            @isSmall={{this.isSmall}}
-            @isLarge={{this.isLarge}}
+            @size={{this.size}}
           />`
     );
 
-    assert.dom('.my-container').hasClass('form-input-container--sm');
-    assert.dom('[data-test-input]').hasClass('form__input--sm');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--sm');
-
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-input-container--lg');
-    assert.dom('[data-test-input]').hasClass('form__input--lg');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--lg');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--lg');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-input-container--sm');
-    assert.dom('[data-test-input]').hasClass('form__input--sm');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--sm');
-    assert.dom('.my-container').doesNotHaveClass('form-input-container--lg');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__input--lg');
+    assert.dom('.my-container').hasClass('form-input--sm');
+    assert.dom('[data-test-input]').hasClass('form-input--sm__input');
     assert
       .dom('[data-test-id="form-field-label"]')
-      .doesNotHaveClass('form__label--lg');
+      .hasClass('form-input--sm__label');
     assert
       .dom('[data-test-id="form-field-hint"]')
-      .doesNotHaveClass('form__hint--lg');
+      .hasClass('form-input--sm__hint');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .doesNotHaveClass('form__feedback--lg');
+      .hasClass('form-input--sm__feedback');
+
+    this.set('size', 'lg');
+    assert.dom('.my-container').hasClass('form-input--lg');
+    assert.dom('[data-test-input]').hasClass('form-input--lg__input');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-input--lg__label');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-input--lg__hint');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasClass('form-input--lg__feedback');
   });
 });

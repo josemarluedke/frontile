@@ -3,8 +3,7 @@ import { action } from '@ember/object';
 
 interface FormFieldTextareaArgs {
   id?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;

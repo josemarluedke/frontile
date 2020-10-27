@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 
 interface FormFieldArgs {
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 }
 
 export default class FormField extends Component<FormFieldArgs> {

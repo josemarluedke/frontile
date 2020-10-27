@@ -1,6 +1,6 @@
 <label
   for={{@for}}
-  class="form__label {{if @isSmall "form__label--sm" (if @isLarge "form__label--lg")}}"
+  class={{use-frontile-class "form-field-label" @size}}
   data-test-id="form-field-label"
   ...attributes
 >

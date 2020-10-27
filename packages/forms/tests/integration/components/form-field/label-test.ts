@@ -14,30 +14,22 @@ module('Integration | Component | FormField::Label', function (hooks) {
       .dom('[data-test-id="form-field-label"]')
       .hasAttribute('for', 'some-input-id');
 
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-field-label');
     assert.dom('[data-test-id="form-field-label"]').hasClass('something-else');
     assert
       .dom('[data-test-id="form-field-label"]')
       .hasTextContaining('My Label');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
-    await render(
-      hbs`<FormField::Label data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
-    );
+    await render(hbs`<FormField::Label data-test-input @size={{this.size}} />`);
 
-    assert.dom('[data-test-input]').hasClass('form__label--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__label--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__label--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__label--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-label--sm');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-label--lg');
   });
 });

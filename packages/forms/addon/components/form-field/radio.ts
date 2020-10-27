@@ -5,8 +5,7 @@ interface FormFieldRadioArgs {
   value?: unknown;
   checked?: unknown;
   name?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 
   // Callback when onchange is triggered
   onChange?: (value: unknown, event: Event) => void;

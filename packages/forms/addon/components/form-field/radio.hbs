@@ -5,7 +5,7 @@
   value={{@value}}
   checked={{this.isChecked}}
   type="radio"
-  class="form__radio {{if @isSmall "form__radio--sm" (if @isLarge "form__radio--lg")}}"
+  class={{use-frontile-class "form-field-radio" @size}}
   data-test-id="form-field-radio"
   ...attributes
 >

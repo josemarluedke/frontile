@@ -27,24 +27,14 @@ module('Integration | Component | FormField::Radio', function (hooks) {
     assert.dom('[data-test-radio]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
-    await render(
-      hbs`<FormField::Radio data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
-    );
+    await render(hbs`<FormField::Radio data-test-input @size={{this.size}} />`);
 
-    assert.dom('[data-test-input]').hasClass('form__radio--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__radio--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__radio--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__radio--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-radio--sm');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-radio--lg');
   });
 
   test('it renders @name arg', async function (assert) {

@@ -1,36 +1,21 @@
 const isEmpty = require('lodash/isEmpty');
 const toPairs = require('lodash/toPairs');
 const fromPairs = require('lodash/fromPairs');
-const mergeWith = require('lodash/mergeWith');
+const merge = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const map = require('lodash/map');
-const flatMap = require('lodash/flatMap');
 const isPlainObject = require('lodash/isPlainObject');
 const traverse = require('traverse');
 const svgToDataUri = require('mini-svg-data-uri');
 
-function merge(...options) {
-  function mergeCustomizer(objValue, srcValue, key, obj, src) {
-    if (isPlainObject(srcValue)) {
-      return mergeWith(objValue, srcValue, mergeCustomizer);
-    }
-    return Object.keys(src).includes(key)
-      ? // Convert undefined to null otherwise lodash won't replace the key
-        // PostCSS still omits properties with a null value so it behaves
-        // the same as undefined.
-        srcValue === undefined
-        ? null
-        : srcValue
-      : objValue;
-  }
-
-  return mergeWith({}, ...options, mergeCustomizer);
-}
-
 function flattenOptions(options) {
   return merge(
-    ...flatMap(toPairs(options), ([keys, value]) => {
-      return fromPairs(keys.split(', ').map((key) => [key, value]));
+    {},
+    ...toPairs(options).map(([keys, value]) => {
+      const flattendValue = isPlainObject(value)
+        ? flattenOptions(value)
+        : value;
+      return fromPairs(keys.split(', ').map((key) => [key, flattendValue]));
     })
   );
 }
@@ -87,7 +72,7 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
-function resolveComponents({ config: userConfig, extend }, params) {
+function resolveComponents({ config: userConfig, extend } = {}, params) {
   const { defaultConfig, defaultOptions } = params;
   const config = merge(
     flattenOptions(defaultConfig),
@@ -118,16 +103,18 @@ function addMultipartComponent(
     baseSelector += `--${modifier}`;
   }
 
-  const { baseStyle, variants, parts } = options;
+  let { baseStyle, variants, parts, namespaces } = options;
+  variants = flattenOptions(variants || {});
+  parts = flattenOptions(parts || {});
 
-  let defaultVariant = {};
   if (variants && !isEmpty(variants.default)) {
-    defaultVariant = variants.default;
+    const defaultVariant = variants.default;
     delete variants.default;
+    baseStyle = merge(baseStyle, defaultVariant);
   }
 
   addComponents({
-    [baseSelector]: merge(baseStyle, defaultVariant)
+    [baseSelector]: baseStyle
   });
 
   if (!isEmpty(parts)) {
@@ -148,30 +135,107 @@ function addMultipartComponent(
       );
     });
   }
+
+  if (!isEmpty(namespaces)) {
+    Object.keys(namespaces).forEach((namespace) => {
+      addMultipartComponent(
+        addComponents,
+        `${namespace} ${baseSelector}`,
+        namespaces[namespace]
+      );
+    });
+  }
 }
 
-function addSinglePartComponent(addComponents, baseSelector, options) {
+function addComponentsMaybeWithIcon(
+  addComponents,
+  selector,
+  styles,
+  replaceIconFn
+) {
+  if (
+    (Object.keys(styles).includes('iconColor') ||
+      Object.keys(styles).includes('icon')) &&
+    typeof replaceIconFn === 'function'
+  ) {
+    addComponents(
+      replaceIconDeclarations(
+        {
+          [selector]: styles
+        },
+        replaceIconFn
+      )
+    );
+  } else {
+    addComponents({
+      [selector]: styles
+    });
+  }
+}
+
+function addSinglePartComponent(
+  addComponents,
+  baseSelector,
+  options,
+  replaceIconFn
+) {
   if (isEmpty(options)) {
     return;
   }
 
-  const { baseStyle, variants } = options;
+  let { baseStyle, variants, namespaces } = options;
+  variants = flattenOptions(variants || {});
 
-  let defaultVariant = {};
   if (variants && !isEmpty(variants.default)) {
-    defaultVariant = variants.default;
+    const defaultVariant = variants.default;
     delete variants.default;
+    baseStyle = merge(baseStyle, defaultVariant);
   }
 
-  addComponents({
-    [baseSelector]: merge(baseStyle, defaultVariant)
-  });
+  addComponentsMaybeWithIcon(
+    addComponents,
+    baseSelector,
+    baseStyle,
+    replaceIconFn
+  );
 
   if (!isEmpty(variants)) {
     Object.keys(variants).forEach((key) => {
-      addComponents({
-        [`${baseSelector}--${kebabCase(key)}`]: variants[key]
-      });
+      if (
+        Object.keys(baseStyle).includes('icon') &&
+        Object.keys(variants[key]).includes('iconColor') &&
+        !Object.keys(variants[key]).includes('icon')
+      ) {
+        variants[key].icon = baseStyle.icon;
+      }
+
+      addComponentsMaybeWithIcon(
+        addComponents,
+        `${baseSelector}--${kebabCase(key)}`,
+        variants[key],
+        replaceIconFn
+      );
+    });
+  }
+
+  if (!isEmpty(namespaces)) {
+    Object.keys(namespaces).forEach((namespace) => {
+      if (
+        Object.keys(baseStyle).includes('icon') &&
+        Object.keys(namespaces[namespace].baseStyle || {}).includes(
+          'iconColor'
+        ) &&
+        !Object.keys(namespaces[namespace].baseStyle || {}).includes('icon')
+      ) {
+        namespaces[namespace].baseStyle.icon = baseStyle.icon;
+      }
+
+      addSinglePartComponent(
+        addComponents,
+        `${namespace} ${baseSelector}`,
+        namespaces[namespace],
+        replaceIconFn
+      );
     });
   }
 }
