@@ -87,7 +87,7 @@ function resolve(optionsName, params, userConfig, theme) {
   };
 }
 
-function resolveComponents({ config: userConfig, extend }, params) {
+function resolveComponents({ config: userConfig, extend } = {}, params) {
   const { defaultConfig, defaultOptions } = params;
   const config = merge(
     flattenOptions(defaultConfig),
