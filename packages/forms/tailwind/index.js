@@ -1,30 +1,22 @@
 const plugin = require('tailwindcss/plugin');
 const {
   merge,
-  map,
-  fromPairs,
-  replaceIconDeclarations,
-  resolve,
+  resolveComponents,
   svgToDataUri,
-  isEmpty,
-  kebabCase,
-  flattenOptions,
   addSinglePartComponent,
   addMultipartComponent
 } = require('@frontile/tailwindcss-plugin-helpers');
 
-module.exports = plugin.withOptions(function (userConfig) {
+module.exports = plugin.withOptions(function () {
   return function ({ addComponents, theme }) {
-    const { config, options } = resolve(
-      '@frontile/forms',
-      require('./default-options'),
-      userConfig,
-      theme
+    const { config, components } = resolveComponents(
+      theme('frontile.forms'),
+      require('./default-options')
     );
 
     function replaceIconFn({
-      icon = options.icon,
-      iconColor = options.iconColor
+      icon = components.icon,
+      iconColor = components.iconColor
     }) {
       return {
         '&:checked': {
@@ -47,7 +39,7 @@ module.exports = plugin.withOptions(function (userConfig) {
       addSinglePartComponent(
         addComponents,
         selector,
-        options[key],
+        components[key],
         replaceIconFn
       );
     });
@@ -61,10 +53,10 @@ module.exports = plugin.withOptions(function (userConfig) {
       ['.form-checkbox-group', 'formRadioGroup'],
       ['.form-radio-group', 'formRadioGroup']
     ].forEach(([selector, key]) => {
-      addMultipartComponent(addComponents, selector, options[key]);
+      addMultipartComponent(addComponents, selector, components[key]);
     });
 
-    const { powerSelect: powerSelectOptions } = options.default || {};
+    const { powerSelect: powerSelectOptions } = components || {};
 
     require('tailwindcss-ember-power-select').registerComponents(
       { addComponents },
