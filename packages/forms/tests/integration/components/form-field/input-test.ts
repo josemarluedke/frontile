@@ -39,24 +39,14 @@ module('Integration | Component | FormField::Input', function (hooks) {
     assert.dom('[data-test-my-input]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
-    await render(
-      hbs`<FormField::Input data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
-    );
+    await render(hbs`<FormField::Input data-test-input @size={{this.size}} />`);
 
-    assert.dom('[data-test-input]').hasClass('form__input--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__input--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__input--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__input--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-input--sm');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-input--lg');
   });
 
   test('renders @value arg, does not mutate it by default', async function (assert) {

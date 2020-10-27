@@ -21,24 +21,17 @@ module('Integration | Component | FormField::Checkbox', function (hooks) {
     assert.dom('[data-test-checkbox]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
     await render(
-      hbs`<FormField::Checkbox data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+      hbs`<FormField::Checkbox data-test-input @size={{this.size}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form__checkbox--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__checkbox--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-checkbox--sm');
 
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__checkbox--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__checkbox--lg');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-checkbox--lg');
   });
 
   test('it renders id html attribute', async function (assert) {

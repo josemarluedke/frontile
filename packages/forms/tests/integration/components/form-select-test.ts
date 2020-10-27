@@ -16,8 +16,7 @@ module('Integration | Component | FormSelect', function (hooks) {
                           @label="Select Countries"
                           @hint="The countries where you have lived"
                           @onChange={{action (mut this.value)}}
-                          @isSmall={{this.isSmall}}
-                          @isLarge={{this.isLarge}}
+                          @size={{this.size}}
                           @hasError={{this.hasError}}
                           @errors={{this.errors}}
                           @hasSubmitted={{this.hasSubmitted}}
@@ -177,60 +176,40 @@ module('Integration | Component | FormSelect', function (hooks) {
       .hasText('This field is required');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
     this.set('errors', ['something']);
     this.set('hasSubmitted', true);
 
     await render(template);
 
-    assert.dom('.my-container').hasClass('form-select-container--sm');
+    assert.dom('.my-container').hasClass('form-select--sm');
     assert
       .dom('.ember-power-select-trigger')
       .hasClass('ember-power-select-trigger-sm');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
+    assert
+      .dom('[data-test-id="form-field-label"]')
+      .hasClass('form-select--sm__label');
+    assert
+      .dom('[data-test-id="form-field-hint"]')
+      .hasClass('form-select--sm__hint');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--sm');
+      .hasClass('form-select--sm__feedback');
 
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-select-container--lg');
+    this.set('size', 'lg');
+    assert.dom('.my-container').hasClass('form-select--lg');
     assert
       .dom('.ember-power-select-trigger')
       .hasClass('ember-power-select-trigger-lg');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--lg');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--lg');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('.my-container').hasClass('form-select-container--sm');
-    assert
-      .dom('.ember-power-select-trigger')
-      .hasClass('ember-power-select-trigger-sm');
-    assert.dom('[data-test-id="form-field-label"]').hasClass('form__label--sm');
-    assert.dom('[data-test-id="form-field-hint"]').hasClass('form__hint--sm');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--sm');
-    assert.dom('.my-container').doesNotHaveClass('form-select-container--lg');
-    assert
-      .dom('.ember-power-select-trigger')
-      .doesNotHaveClass('ember-power-select-trigger-lg');
     assert
       .dom('[data-test-id="form-field-label"]')
-      .doesNotHaveClass('form__label--lg');
+      .hasClass('form-select--lg__label');
     assert
       .dom('[data-test-id="form-field-hint"]')
-      .doesNotHaveClass('form__hint--lg');
+      .hasClass('form-select--lg__hint');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .doesNotHaveClass('form__feedback--lg');
+      .hasClass('form-select--lg__feedback');
   });
 });

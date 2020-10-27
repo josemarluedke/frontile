@@ -28,24 +28,16 @@ module('Integration | Component | FormField::Textarea', function (hooks) {
     assert.dom('[data-test-textarea]').hasAttribute('id', 'my-id');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
     await render(
-      hbs`<FormField::Textarea data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+      hbs`<FormField::Textarea data-test-input @size={{this.size}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form__textarea--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__textarea--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__textarea--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__textarea--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-textarea--sm');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-textarea--lg');
   });
 
   test('renders @value arg, does not mutate it by default', async function (assert) {

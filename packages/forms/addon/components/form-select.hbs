@@ -87,6 +87,9 @@
   {{/let}}
 
   {{#if this.showErrorFeedback}}
-    <f.Feedback @errors={{@errors}} />
+    <f.Feedback
+      class={{use-frontile-class "form-select" @size part="feedback"}}
+      @errors={{@errors}}
+    />
   {{/if}}
 </FormField>

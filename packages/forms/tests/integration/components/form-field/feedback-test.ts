@@ -21,7 +21,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
       .containsText('Some error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--state-error');
+      .hasClass('form-field-feedback--error');
   });
 
   test('it renders an array of errors by joing elements', async function (assert) {
@@ -32,7 +32,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
       .containsText('Some error; Another error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--state-error');
+      .hasClass('form-field-feedback--error');
   });
 
   test('it renders when passing an string', async function (assert) {
@@ -43,7 +43,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
       .containsText('Another error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--state-error');
+      .hasClass('form-field-feedback--error');
   });
 
   test('it adds aria-live as assertive', async function (assert) {
@@ -54,24 +54,16 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
       .hasAttribute('aria-live', 'assertive');
   });
 
-  test('it adds size classes for @isSmall and @isLarge', async function (assert) {
-    this.set('isSmall', true);
-    this.set('isLarge', false);
+  test('it adds size classes for @size', async function (assert) {
+    this.set('size', 'sm');
 
     await render(
-      hbs`<FormField::Feedback data-test-input @isSmall={{this.isSmall}} @isLarge={{this.isLarge}} />`
+      hbs`<FormField::Feedback data-test-input @size={{this.size}} />`
     );
 
-    assert.dom('[data-test-input]').hasClass('form__feedback--sm');
-    this.set('isSmall', false);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__feedback--lg');
-
-    // should only add one size class
-    this.set('isSmall', true);
-    this.set('isLarge', true);
-    assert.dom('[data-test-input]').hasClass('form__feedback--sm');
-    assert.dom('[data-test-input]').doesNotHaveClass('form__feedback--lg');
+    assert.dom('[data-test-input]').hasClass('form-field-feedback--sm');
+    this.set('size', 'lg');
+    assert.dom('[data-test-input]').hasClass('form-field-feedback--lg');
   });
 
   test('it does not break if passed an undefined arg', async function (assert) {
@@ -80,7 +72,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
     assert.dom('[data-test-id="form-field-feedback"]').exists();
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .doesNotHaveClass('form__feedback--state-error');
+      .doesNotHaveClass('form-field-feedback--error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .hasAttribute('aria-live', 'polite');
@@ -90,7 +82,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
     await render(hbs`<FormField::Feedback>Block content</FormField::Feedback>`);
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .doesNotHaveClass('form__feedback--state-error');
+      .doesNotHaveClass('form-field-feedback--error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .containsText('Block content');
@@ -102,7 +94,7 @@ module('Integration | Component | FormField::Feedback', function (hooks) {
     );
     assert
       .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form__feedback--state-error');
+      .hasClass('form-field-feedback--error');
     assert
       .dom('[data-test-id="form-field-feedback"]')
       .containsText('Block content');
