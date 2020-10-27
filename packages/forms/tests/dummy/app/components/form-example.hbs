@@ -1,21 +1,30 @@
 <div class="p-4 bg-gray-100 border rounded">
+  <FormRadioGroup
+    @label="Size"
+    @value={{this.size}}
+    @onChange={{fn this.setField "size"}}
+    @isInline={{true}}
+    as |Radio|
+  >
+    <Radio
+      @value="sm"
+      @label="sm"
+    />
+    <Radio
+      @value="lg"
+      @label="lg"
+    />
+    <Radio
+      @value=""
+      @label="default"
+    />
+  </FormRadioGroup>
+
   <FormCheckboxGroup
     @isInline={{true}}
     @label="Settings"
     as |Checkbox|
   >
-    <Checkbox
-      disabled={{this.isLarge}}
-      @label="@isSmall"
-      @checked={{this.isSmall}}
-      @onChange={{fn this.setField "isSmall"}}
-    />
-    <Checkbox
-      disabled={{this.isSmall}}
-      @label="@isLarge"
-      @checked={{this.isLarge}}
-      @onChange={{fn this.setField "isLarge"}}
-    />
     <Checkbox
       @label="@isInline"
       @checked={{this.isInline}}
@@ -32,8 +41,7 @@
   @errors={{this.firstNameErrors}}
   placeholder="Joe"
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
 />
 
 <FormInput
@@ -42,14 +50,12 @@
   @onChange={{fn this.setField "email"}}
   @errors={{this.emailErrors}}
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
 />
 
 <FormSelect
   @isMultiple={{false}}
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
   @containerClass="mt-4"
   @hint="Select your country of residence"
   @errors={{this.countryErrors}}
@@ -71,8 +77,7 @@
   @onChange={{fn this.setField "accountType"}}
   @errors={{this.accountTypeErrors}}
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
   @isInline={{this.isInline}}
   as |Radio|
 >
@@ -95,8 +100,7 @@
   @label="Interests"
   @errors={{this.interestsErrors}}
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
   @isInline={{this.isInline}}
   as |Checkbox|
 >
@@ -124,14 +128,12 @@
   @value={{this.bio}}
   @onChange={{fn this.setField "bio"}}
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
 />
 
 <FormCheckbox
   @containerClass="mt-4"
-  @isSmall={{this.isSmall}}
-  @isLarge={{this.isLarge}}
+  @size={{this.size}}
 >
   I agree to the <a href="#" class="underline">privacy policy</a>
 </FormCheckbox>

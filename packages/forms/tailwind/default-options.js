@@ -188,28 +188,19 @@ function defaultOptions({ config }) {
       }
     },
 
-    default: {
-      'formCheckboxGroup, formRadioGroup': {
-        '> *': {
-          paddingBottom: defaultTheme.spacing[1],
-          '&:last-child': {
-            paddingBottom: defaultTheme.spacing[0]
-          }
-        },
-        feedback: {
-          paddingTop: defaultTheme.spacing[0],
-          flex: '1 100%'
-        }
-      },
-
-      formSelectContainer: {
+    formSelect: {
+      baseStyle: {
         display: 'flex',
         flexDirection: 'column'
-      },
+      }
+    },
 
-      'formInputContainer, formTextareaContainer': {
+    'formInput, formTextarea': {
+      baseStyle: {
         display: 'flex',
-        flexFlow: 'row wrap',
+        flexFlow: 'row wrap'
+      },
+      parts: {
         label: {
           flex: '1 100%'
         },
@@ -219,13 +210,17 @@ function defaultOptions({ config }) {
         feedback: {
           flex: '1 100%'
         }
-      },
+      }
+    },
 
-      'formCheckboxContainer, formRadioContainer': {
+    'formCheckbox, formRadio': {
+      baseStyle: {
         display: 'flex',
         flexWrap: 'wrap',
-        alignItems: 'center',
+        alignItems: 'center'
+      },
 
+      parts: {
         labelContainer: {
           lineHeight: defaultTheme.lineHeight.tight,
           display: 'flex',
@@ -252,24 +247,46 @@ function defaultOptions({ config }) {
             flexShrink: 0
           }
         }
-      }
-    },
-
-    inline: {
-      'formCheckboxGroup, formRadioGroup': {
-        display: 'flex',
-        flexFlow: 'row wrap',
-        alignItems: 'flex-start',
-        '> *, > label': {
-          paddingRight: defaultTheme.spacing[4],
-          paddingBottom: defaultTheme.spacing[0]
+      },
+      variants: {
+        sm: {
+          parts: {
+            label: {
+              fontSize: defaultTheme.fontSize.sm
+            }
+          }
         }
       }
     },
-    sm: {
-      'formCheckboxContainer, formRadioContainer': {
-        label: {
-          fontSize: defaultTheme.fontSize.sm
+
+    'formCheckboxGroup, formRadioGroup': {
+      baseStyle: {},
+      parts: {
+        feedback: {
+          paddingTop: defaultTheme.spacing[0],
+          flex: '1 100%'
+        },
+
+        'label, hint, formCheckbox, formRadio, feedback': {
+          paddingBottom: defaultTheme.spacing[1],
+          '&:last-child': {
+            paddingBottom: defaultTheme.spacing[0]
+          }
+        }
+      },
+      variants: {
+        inline: {
+          baseStyle: {
+            display: 'flex',
+            flexFlow: 'row wrap',
+            alignItems: 'flex-start'
+          },
+          parts: {
+            'label, hint, formCheckbox, formRadio, feedback': {
+              paddingRight: defaultTheme.spacing[4],
+              paddingBottom: defaultTheme.spacing[0]
+            }
+          }
         }
       }
     }

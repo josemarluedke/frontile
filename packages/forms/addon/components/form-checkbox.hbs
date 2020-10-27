@@ -1,11 +1,14 @@
 <FormField
-  @isSmall={{@isSmall}}
-  @isLarge={{@isLarge}}
-  class="form-checkbox-container {{@containerClass}} {{if @isSmall "form-checkbox-container--sm" (if @isLarge "form-checkbox-container--lg")}}"
+  @size={{@size}}
+  class={{use-frontile-class "form-checkbox" @size class=(array @containerClass @privateContainerClass)}}
   as |f|
 >
-  <div class="form-checkbox-container__label-container">
-    <div class="form-checkbox-container__input-container">
+  <div
+    class={{use-frontile-class "form-checkbox" @size part="label-container"}}
+  >
+    <div
+      class={{use-frontile-class "form-checkbox" @size part="input-container"}}
+    >
       {{!--  Zero-width space character, used to align checkbox properly --}}
       &#8203;
       <f.Checkbox
@@ -13,13 +16,14 @@
         @checked={{@checked}}
         @name={{@name}}
 
+        class={{use-frontile-class "form-checkbox" @size part="checkbox"}}
         aria-describedby={{if @hint f.hintId}}
         ...attributes
       />
     </div>
 
     <f.Label
-      class={{if this.isFocused "is-focused"}}
+      class={{use-frontile-class "form-checkbox" @size part="label"}}
     >
       {{#if hasBlock}}
         {{yield}}
@@ -30,6 +34,10 @@
   </div>
 
   {{#if @hint}}
-    <f.Hint>{{@hint}}</f.Hint>
+    <f.Hint
+      class={{use-frontile-class "form-checkbox" @size part="hint"}}
+    >
+      {{@hint}}
+    </f.Hint>
   {{/if}}
 </FormField>

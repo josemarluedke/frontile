@@ -9,8 +9,7 @@ interface FormCheckboxGroupArgs {
   hasError?: boolean;
   errors?: string[] | string;
   containerClass?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
   isInline?: boolean;
 
   // Callback when onchange is triggered

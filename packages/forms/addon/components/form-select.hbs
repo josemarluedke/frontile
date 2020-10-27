@@ -1,21 +1,24 @@
 <FormField
-  @isSmall={{@isSmall}}
-  @isLarge={{@isLarge}}
-  class="form-select-container {{@containerClass}} {{if @isSmall "form-select-container--sm" (if @isLarge "form-select-container--lg")}}"
+  @size={{@size}}
+  class={{use-frontile-class "form-select" @size class=@containerClass}}
   as |f|
 >
-
   {{#if @label}}
     <f.Label
       @for={{false}}
       id={{f.id}}
+      class={{use-frontile-class "form-select" @size part="label"}}
     >
       {{@label}}
     </f.Label>
   {{/if}}
 
   {{#if @hint}}
-    <f.Hint>{{@hint}}</f.Hint>
+    <f.Hint
+      class={{use-frontile-class "form-select" @size part="hint"}}
+    >
+      {{@hint}}
+    </f.Hint>
   {{/if}}
 
   {{#let (component (if @isMultiple "power-select-multiple" "power-select")) as |Component|}}
@@ -29,8 +32,7 @@
       @ariaDescribedBy="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}{{if @ariaDescribedBy (concat " " @ariaDescribedBy)}}"
       @ariaLabelledBy="{{if @label f.id}}{{if @ariaLabelledBy (concat " "@ariaLabelledBy)}}"
       @ariaInvalid={{if this.showErrorFeedback "true"}}
-      @triggerClass="{{@triggerClass}} {{if @isSmall "ember-power-select-trigger-sm" (if @isLarge "ember-power-select-trigger-lg")}}"
-
+      @triggerClass="{{@triggerClass}} {{if @size (concat "ember-power-select-trigger-" @size)}} {{use-frontile-class "form-select" @size part="select"}}"
       @highlightOnHover={{@highlightOnHover}}
       @placeholderComponent={{@placeholderComponent}}
       @searchMessage={{@searchMessage}}

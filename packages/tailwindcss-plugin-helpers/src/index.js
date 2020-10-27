@@ -118,16 +118,18 @@ function addMultipartComponent(
     baseSelector += `--${modifier}`;
   }
 
-  const { baseStyle, variants, parts } = options;
+  let { baseStyle, variants, parts } = options;
+  variants = flattenOptions(variants || {});
+  parts = flattenOptions(parts || {});
 
-  let defaultVariant = {};
   if (variants && !isEmpty(variants.default)) {
-    defaultVariant = variants.default;
+    const defaultVariant = variants.default;
     delete variants.default;
+    baseStyle = merge(baseStyle, defaultVariant);
   }
 
   addComponents({
-    [baseSelector]: merge(baseStyle, defaultVariant)
+    [baseSelector]: baseStyle
   });
 
   if (!isEmpty(parts)) {
@@ -187,6 +189,7 @@ function addSinglePartComponent(
   }
 
   let { baseStyle, variants } = options;
+  variants = flattenOptions(variants || {});
 
   if (variants && !isEmpty(variants.default)) {
     const defaultVariant = variants.default;

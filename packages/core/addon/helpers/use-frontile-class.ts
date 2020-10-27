@@ -24,7 +24,11 @@ export function useFrontileClass(
   }
 
   if (hash.class) {
-    classes.push(hash.class);
+    if (Array.isArray(hash.class)) {
+      classes.push(hash.class.join(' '));
+    } else {
+      classes.push(hash.class);
+    }
   }
 
   return classes.join(' ');

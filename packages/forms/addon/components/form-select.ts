@@ -13,8 +13,7 @@ interface FormSelectArgs extends PowerSelectArgs {
   hasError?: boolean;
   errors?: string[] | string;
   containerClass?: string;
-  isSmall?: boolean;
-  isLarge?: boolean;
+  size?: 'sm' | 'lg';
 
   // Same as onFocus from ember-power-select
   onFocusIn?: (select: Select, event: FocusEvent) => void;
