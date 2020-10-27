@@ -2,11 +2,7 @@ module.exports = {
   future: {
     removeDeprecatedGapUtilities: true
   },
-  theme: {
-    '@frontile/forms': {
-      default: {}
-    }
-  },
+  theme: {},
   plugins: [
     require('@frontile/core/tailwind'),
     require('@frontile/forms/tailwind'),

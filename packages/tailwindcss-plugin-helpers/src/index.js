@@ -1,36 +1,21 @@
 const isEmpty = require('lodash/isEmpty');
 const toPairs = require('lodash/toPairs');
 const fromPairs = require('lodash/fromPairs');
-const mergeWith = require('lodash/mergeWith');
+const merge = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const map = require('lodash/map');
-const flatMap = require('lodash/flatMap');
 const isPlainObject = require('lodash/isPlainObject');
 const traverse = require('traverse');
 const svgToDataUri = require('mini-svg-data-uri');
 
-function merge(...options) {
-  function mergeCustomizer(objValue, srcValue, key, obj, src) {
-    if (isPlainObject(srcValue)) {
-      return mergeWith(objValue, srcValue, mergeCustomizer);
-    }
-    return Object.keys(src).includes(key)
-      ? // Convert undefined to null otherwise lodash won't replace the key
-        // PostCSS still omits properties with a null value so it behaves
-        // the same as undefined.
-        srcValue === undefined
-        ? null
-        : srcValue
-      : objValue;
-  }
-
-  return mergeWith({}, ...options, mergeCustomizer);
-}
-
 function flattenOptions(options) {
   return merge(
-    ...flatMap(toPairs(options), ([keys, value]) => {
-      return fromPairs(keys.split(', ').map((key) => [key, value]));
+    {},
+    ...toPairs(options).map(([keys, value]) => {
+      const flattendValue = isPlainObject(value)
+        ? flattenOptions(value)
+        : value;
+      return fromPairs(keys.split(', ').map((key) => [key, flattendValue]));
     })
   );
 }
