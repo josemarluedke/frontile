@@ -78,7 +78,9 @@ function defaultOptions({ config }) {
   return {
     overlay: {
       baseStyle: {
+        alignItems: 'center',
         color: config.textColor,
+        justifyContent: 'center',
         zIndex: config.zIndex
       },
 
@@ -126,8 +128,6 @@ function defaultOptions({ config }) {
         borderRadius: config.borderRadius,
         boxShadow: config.modal.boxShadow,
         marginBottom: defaultTheme.margin[24],
-        marginLeft: 'auto',
-        marginRight: 'auto',
         marginTop: defaultTheme.spacing[24],
         width: defaultTheme.width.full,
         outline: 'none',
