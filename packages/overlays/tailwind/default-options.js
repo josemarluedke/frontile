@@ -78,9 +78,7 @@ function defaultOptions({ config }) {
   return {
     overlay: {
       baseStyle: {
-        alignItems: 'center',
         color: config.textColor,
-        justifyContent: 'center',
         zIndex: config.zIndex
       },
 
@@ -95,10 +93,12 @@ function defaultOptions({ config }) {
 
         content: {
           ...inset0,
-          position: 'fixed',
-          overflow: 'auto',
+          alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
+          justifyContent: 'center',
+          overflow: 'auto',
+          position: 'fixed',
           '-webkit-overflow-scrolling': 'touch',
           zIndex: 2,
           willChange: 'transform'
