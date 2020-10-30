@@ -1,7 +1,7 @@
 {{#if this.isVisible}}
   {{#maybe-in-element this.destinationElement @renderInPlace insertBefore=null}}
     <div
-      {{focus-trap isActive=(if @disableFocusTrap false @isOpen)}}
+      {{focus-trap isActive=(if @disableFocusTrap false @isOpen) focusTrapOptions=this.focusTrapOptions}}
       class={{use-frontile-class "overlay" (if @renderInPlace "in-place")}}
       ...attributes
     >

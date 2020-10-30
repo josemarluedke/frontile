@@ -43,6 +43,12 @@ export interface OverlayArgs {
   disableFocusTrap?: boolean;
 
   /*
+   * Focus trap options
+   * @defaultValue { allowOutsideClick: true }
+   */
+  focusTrapOptions?: unknown;
+
+  /*
    * Whether it is open or not
    * @defaultValue false
    */
@@ -114,6 +120,10 @@ export default class Overlay extends Component<OverlayArgs> {
 
   get isAnimationEnabled(): boolean {
     return !(this.args.disableTransitions === true);
+  }
+
+  get focusTrapOptions(): unknown {
+    return this.args.focusTrapOptions || { allowOutsideClick: true };
   }
 
   @action handleOverlayClick(): void {
