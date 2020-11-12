@@ -1,15 +1,36 @@
-<h2 id="title">@frontile/core</h2>
+<div class="container p-4 mx-auto">
+  <div class="flex flex-wrap items-center justify-between mb-6">
+    <h2 class="inline-block text-3xl font-bold text-teal-600">
+      @frontile/core
+    </h2>
 
-<a href="/tests?hidepassed">Go to Tests</a>
+    <a href="/tests?hidepassed" class="px-4 py-2 text-teal-600 border border-teal-600 rounded hover:bg-teal-700 hover:text-white">
+      Go to Tests
+    </a>
+  </div>
 
-<VisuallyHidden>This should not be shown</VisuallyHidden>
+  <div class="mt-4">
+    <VisuallyHidden>This should not be shown</VisuallyHidden>
 
-<div class="flex items-center mt-10 space-x-2">
-  <CloseButton @size="xs" />
-  <CloseButton @size="sm" />
-  <CloseButton @size="md" />
-  <CloseButton @size="lg" />
-  <CloseButton @size="xl" />
+    <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-teal-600">
+      CloseButton
+    </h1>
+    <div class="flex items-center mt-10 space-x-2">
+      <CloseButton @size="xs" />
+      <CloseButton @size="sm" />
+      <CloseButton @size="md" />
+      <CloseButton @size="lg" />
+      <CloseButton @size="xl" />
+    </div>
+
+    <hr class="mb-4 divide-gray-200">
+
+    <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-teal-600">
+      Collapsible
+    </h1>
+
+    <CollapsibleDemo />
+
+    {{outlet}}
+  </div>
 </div>
-
-{{outlet}}

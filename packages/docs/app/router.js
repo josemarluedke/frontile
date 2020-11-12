@@ -14,6 +14,7 @@ Router.map(function () {
         this.route('visually-hidden');
       });
       this.route('close-button');
+      this.route('collapsible');
     });
 
     this.route('forms', function () {
