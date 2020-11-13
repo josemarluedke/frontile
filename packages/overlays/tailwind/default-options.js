@@ -96,7 +96,6 @@ function defaultOptions({ config }) {
           alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           overflow: 'auto',
           position: 'fixed',
           '-webkit-overflow-scrolling': 'touch',
