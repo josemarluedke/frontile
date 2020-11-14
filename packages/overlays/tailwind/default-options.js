@@ -93,10 +93,11 @@ function defaultOptions({ config }) {
 
         content: {
           ...inset0,
-          position: 'fixed',
-          overflow: 'auto',
+          alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'auto',
+          position: 'fixed',
           '-webkit-overflow-scrolling': 'touch',
           zIndex: 2,
           willChange: 'transform'
@@ -126,8 +127,6 @@ function defaultOptions({ config }) {
         borderRadius: config.borderRadius,
         boxShadow: config.modal.boxShadow,
         marginBottom: defaultTheme.margin[24],
-        marginLeft: 'auto',
-        marginRight: 'auto',
         marginTop: defaultTheme.spacing[24],
         width: defaultTheme.width.full,
         outline: 'none',
