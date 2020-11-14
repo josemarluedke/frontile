@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "paths": {
+      "site/tests/*": ["tests/*"],
+      "site/*": ["app/*"],
+      "@frontile/notifications": ["../packages/notifications/addon"],
+      "@frontile/notifications/*": ["../packages/notifications/addon/*"],
+      "*": ["types/*"]
+    }
+  },
+  "include": ["app/**/*", "tests/**/*", "types/**/*"]
+}

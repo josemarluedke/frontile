@@ -37,7 +37,12 @@ module.exports = {
         'packages/*/tests/dummy/config/**/*.js',
         'packages/**/tailwind.config.js',
         'packages/**/tailwind/*.js',
-        'packages/tailwindcss-plugin-helpers/**/*.js'
+        'packages/tailwindcss-plugin-helpers/**/*.js',
+        'site/ember-cli-build.js',
+        'site/testem.js',
+        'site/config/**/*.js',
+        'site/tests/dummy/config/**/*.js',
+        'site/**/tailwind.config.js'
       ],
       extends: ['@underline/eslint-config-node'],
       rules: {}
