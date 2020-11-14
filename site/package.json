@@ -20,6 +20,11 @@
     "test:ember": "ember test"
   },
   "devDependencies": {
+    "@frontile/buttons": "^0.6.0",
+    "@frontile/core": "^0.6.0",
+    "@frontile/forms": "^0.6.0",
+    "@frontile/notifications": "^0.6.0",
+    "@frontile/overlays": "^0.6.0",
     "@ember/optional-features": "^2.0.0",
     "@fullhuman/postcss-purgecss": "^3.0.0",
     "@glimmer/component": "^1.0.2",

@@ -24,7 +24,33 @@ const purgecssOptions = {
 
     return broadMatches.concat(innerMatches);
   },
-  whitelistPatterns: [/js-/, /mode-dark/]
+  whitelistPatterns: [
+    /js-/,
+    /mode-dark/,
+    /^close-button/,
+    /^visually-hidden/,
+    /^form-field-checkbox/,
+    /^form-field-feedback/,
+    /^form-field-hint/,
+    /^form-field-input/,
+    /^form-field-label/,
+    /^form-field-radio/,
+    /^form-field-textarea/,
+    /^form-input/,
+    /^form-textarea/,
+    /^form-select/,
+    /^form-checkbox/,
+    /^form-radio/,
+    /^form-checkbox-group/,
+    /^form-radio-group/,
+    /^notifications-container/,
+    /^notification-card/,
+    /^notification-transition/,
+    /^overlay/,
+    /^modal/,
+    /^drawer/,
+    /^btn/
+  ]
 };
 
 const postcssPlugins = [
