@@ -178,7 +178,11 @@ module('Integration | Component | Drawer', function (hooks) {
     });
 
     await render(template);
-    await triggerKeyEvent(document as never, 'keydown', 'Escape');
+    await triggerKeyEvent(
+      find('.overlay__content') as Element,
+      'keydown',
+      'Escape'
+    );
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 

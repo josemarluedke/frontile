@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, triggerKeyEvent } from '@ember/test-helpers';
+import {
+  render,
+  settled,
+  click,
+  triggerKeyEvent,
+  find
+} from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | Overlay', function (hooks) {
@@ -114,7 +120,11 @@ module('Integration | Component | Overlay', function (hooks) {
     });
 
     await render(template);
-    await triggerKeyEvent(document as never, 'keydown', 'Escape');
+    await triggerKeyEvent(
+      find('[data-test-id="overlay"] .overlay__content') as Element,
+      'keydown',
+      'Escape'
+    );
     assert.dom('[data-test-id="overlay"]').doesNotExist();
   });
 
