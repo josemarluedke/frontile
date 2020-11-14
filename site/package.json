@@ -30,6 +30,7 @@
     "@fullhuman/postcss-purgecss": "^3.0.0",
     "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.2",
+    "@tailwindcss/typography": "^0.2.0",
     "@types/ember": "^3.16.2",
     "@types/ember-qunit": "^3.4.13",
     "@types/ember-resolver": "^5.0.10",

@@ -1,16 +1,14 @@
 {{page-title "Frontile"}}
 
-<DocfyOutput @scope="docs" as |node|>
-  <ul>
-    {{#each node.pages as |page|}}
-      <li>
-        <DocfyLink @to={{page.url}}>
-          {{page.title}}
-        </DocfyLink>
-      </li>
-    {{/each}}
-  </ul>
-</DocfyOutput>
+<div class="p-4 bg-gray-900">
+  <LinkTo
+    @route="docs"
+    class="pb-1 text-gray-200 border-b-2 border-transparent hover:border-teal-500 focus:outline-none focus-visible:shadow-outline "
+    @activeClass="border-teal-500"
+  >
+    Documentation
+  </LinkTo>
+</div>
 
 <div>
   {{outlet}}
