@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
@@ -5,7 +7,17 @@ module.exports = {
   },
   purge: [],
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans]
+      },
+      colors: {
+        gray: {
+          ...defaultTheme.colors.gray,
+          1000: '#12161f'
+        }
+      }
+    }
   },
   variants: {},
   plugins: [
@@ -14,7 +26,6 @@ module.exports = {
     require('@frontile/buttons/tailwind'),
     require('@frontile/notifications/tailwind'),
     require('@frontile/overlays/tailwind'),
-    require('@frontile/buttons/tailwind'),
-    require('@tailwindcss/typography')
+    require('@frontile/buttons/tailwind')
   ]
 };
