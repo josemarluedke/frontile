@@ -115,7 +115,7 @@ export default class Overlay extends Component<OverlayArgs> {
   }
 
   get isBackdropVisible(): boolean {
-    return this.args.isOpen === true && this.args.disableBackdrop !== true;
+    return Boolean(this.args.isOpen && this.args.disableBackdrop !== true);
   }
 
   get isAnimationEnabled(): boolean {
