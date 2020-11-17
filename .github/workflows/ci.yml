@@ -78,7 +78,7 @@ jobs:
           git config --global user.name "Tomster"
           git config --global user.email "tomster@emberjs.com"
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.1.1
+        uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
       - uses: actions/checkout@v2
