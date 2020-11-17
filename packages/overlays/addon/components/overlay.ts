@@ -157,7 +157,6 @@ export default class Overlay extends Component<OverlayArgs> {
   @action setup(element: HTMLElement): void {
     this.contentElement = element;
     this.keepOpen = true;
-    document.addEventListener('keydown', this.handleKeyDown);
 
     if (this.args.renderInPlace !== true) {
       document.body.style.overflow = 'hidden';
@@ -166,7 +165,6 @@ export default class Overlay extends Component<OverlayArgs> {
 
   @action teardown(): void {
     this.contentElement = undefined;
-    document.removeEventListener('keydown', this.handleKeyDown);
 
     if (this.args.renderInPlace !== true && document.body.classList) {
       document.body.style.overflow = '';

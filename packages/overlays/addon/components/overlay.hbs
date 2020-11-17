@@ -24,6 +24,7 @@
         <div
           class={{use-frontile-class "overlay" (if @renderInPlace "in-place") part="content"}}
           {{on "click" this.handleContentClick}}
+          {{on "keydown" this.handleKeyDown}}
           {{did-insert this.setup}}
           {{will-destroy this.teardown}}
           {{css-transition (if @contentTransitionName @contentTransitionName "overlay-transition--fade") isEnabled=this.isAnimationEnabled}}
