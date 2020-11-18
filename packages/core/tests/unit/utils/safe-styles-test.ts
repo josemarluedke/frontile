@@ -1,4 +1,4 @@
-import safeStyles from 'dummy/utils/safe-styles';
+import safeStyles from '@frontile/core/utils/safe-styles';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | safeStyles', function () {
