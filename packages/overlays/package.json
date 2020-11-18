@@ -30,7 +30,7 @@
     "ember-cli-htmlbars": "^5.2.0",
     "ember-cli-typescript": "^4.0.0",
     "ember-css-transitions": "^2.1.0",
-    "ember-focus-trap": "^0.4.0",
+    "ember-focus-trap": "^0.5.0",
     "ember-maybe-in-element": "^2.0.1"
   },
   "devDependencies": {
