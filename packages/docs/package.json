@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "description": "Frontile docs app",
   "repository": "https://github.com/josemarluedke/frontile",
@@ -26,7 +26,7 @@
     "@frontile/core": "^0.7.0",
     "@frontile/forms": "^0.7.0",
     "@frontile/notifications": "^0.7.0",
-    "@frontile/overlays": "^0.7.0",
+    "@frontile/overlays": "^0.7.1",
     "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.2",
     "@types/ember": "^3.16.1",
