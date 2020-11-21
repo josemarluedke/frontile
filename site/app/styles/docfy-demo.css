@@ -1,5 +1,5 @@
 .docfy-demo {
-  @apply mb-12;
+  @apply mt-8 mb-12;
 }
 
 .docfy-demo__example {
@@ -14,13 +14,13 @@
 
     &__title {
       @apply mb-4 text-xl font-semibold leading-tight;
-      @apply text-green-700;
+      @apply text-teal-700;
     }
 
     &__edit-url {
       @apply text-sm;
       &:hover {
-        @apply text-green-600;
+        @apply text-teal-600;
       }
     }
   }
@@ -39,7 +39,7 @@
 
       &--active,
       &:hover {
-        @apply border-green-700;
+        @apply border-teal-700;
       }
     }
   }
@@ -72,6 +72,6 @@
   }
 
   .docfy-demo__description__header__title {
-    @apply text-green-500;
+    @apply text-teal-500;
   }
 }
