@@ -7,15 +7,7 @@
   <div class="relative lg:flex">
     <div class="flex-none pt-12 pr-4 lg:w-64">
       <DocfyOutput @scope="docs" as |node|>
-        <ul>
-          {{#each node.pages as |page|}}
-            <li>
-              <DocfyLink @to={{page.url}}>
-                {{page.title}}
-              </DocfyLink>
-            </li>
-          {{/each}}
-        </ul>
+        <SidebarNav @node={{node}} />
       </DocfyOutput>
     </div>
 

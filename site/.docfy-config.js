@@ -60,10 +60,24 @@ module.exports = {
       root: path.resolve(__dirname, '../docs'),
       pattern: '**/*.md',
       urlPrefix: 'docs'
+    },
+    {
+      root: path.resolve(__dirname, '../packages/core/docs'),
+      pattern: '**/*.md',
+      urlPrefix: 'docs/core',
+      urlSchema: 'manual'
+    },
+    {
+      root: path.resolve(__dirname, '../packages/core/addon'),
+      pattern: '**/*.md',
+      urlPrefix: 'docs/core',
+      urlSchema: 'manual'
     }
   ],
   labels: {
     components: 'Components',
-    docs: 'Documentation'
+    docs: 'Documentation',
+    core: '@frontile/core',
+    accessibility: 'Accessibility'
   }
 };
