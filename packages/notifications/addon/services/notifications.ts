@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import Notification from '../-private/notification';
 import NotificationsManager from '../-private/manager';
 import { NotificationOptions } from '../-private/types';
+import { action } from '@ember/object';
 
 export default class NotificationsService extends Service {
   manager = new NotificationsManager();
@@ -10,14 +11,17 @@ export default class NotificationsService extends Service {
     return this.manager.notifications;
   }
 
+  @action
   add(message: string, options?: NotificationOptions): Notification {
     return this.manager.add(message, options);
   }
 
+  @action
   remove(notification?: Notification): void {
     this.manager.remove(notification);
   }
 
+  @action
   removeAll(): void {
     this.manager.removeAll();
   }
