@@ -18,13 +18,12 @@ interface ChangesetFormArgs {
 }
 
 export default class ChangesetForm extends Component<ChangesetFormArgs> {
-  changeset!: BufferedChangeset;
+  @tracked changeset!: BufferedChangeset;
 
   @tracked hasSubmitted = false;
 
-  constructor(owner: unknown, args: ChangesetFormArgs) {
-    super(owner, args);
-
+  @action
+  setup() {
     if (typeof this.args.changeset === 'undefined') {
       assert(
         '@model must be defined on <ChangesetForm> component if you do not provide a @changeset argument',

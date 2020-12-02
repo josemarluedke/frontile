@@ -1,6 +1,9 @@
 <form
   {{on "submit" this.handleSubmit}}
   {{on "reset" this.handleReset}}
+  {{did-insert this.setup}}
+  {{did-update this.setup @changeset}}
+  {{did-update this.setup @model}}
   ...attributes
 >
   {{yield
