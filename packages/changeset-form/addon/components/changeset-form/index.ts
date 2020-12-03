@@ -2,9 +2,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { BufferedChangeset } from 'ember-changeset/types';
 import { action } from '@ember/object';
+import { assert } from '@ember/debug';
 
 interface ChangesetFormArgs {
-  changeset?: BufferedChangeset;
+  changeset: BufferedChangeset;
 
   runExecuteInsteadOfSave?: boolean;
 
@@ -14,6 +15,11 @@ interface ChangesetFormArgs {
 
 export default class ChangesetForm extends Component<ChangesetFormArgs> {
   @tracked hasSubmitted = false;
+
+  constructor(owner: unknown, args: ChangesetFormArgs) {
+    super(owner, args);
+    assert('Must passs down a changeset', this.args.changeset);
+  }
 
   @action
   async handleSubmit(event: Event): Promise<void> {
