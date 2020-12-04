@@ -22,21 +22,21 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
   }
 
   @action
-  async handleSubmit(event: Event): Promise<void> {
+  async handleSubmit(changeset: BufferedChangeset, event: Event): Promise<void> {
     event.preventDefault();
-    await this.args.changeset.validate();
+    await changeset.validate();
 
     this.hasSubmitted = true;
 
-    if (this.args.changeset.isInvalid) {
+    if (changeset.isInvalid) {
       return;
     }
 
     let result;
     if (this.args.runExecuteInsteadOfSave) {
-      result = this.args.changeset.execute();
+      result = changeset.execute();
     } else {
-      result = await this.args.changeset.save({});
+      result = await changeset.save({});
     }
 
     if (typeof this.args.onSubmit === 'function') {
@@ -45,11 +45,11 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
   }
 
   @action
-  handleReset(event: Event): void {
+  handleReset(changeset: BufferedChangeset, event: Event): void {
     event.preventDefault();
     this.hasSubmitted = false;
 
-    const { data } = this.args.changeset.rollback();
+    const { data } = changeset.rollback();
     if (typeof this.args.onReset === 'function') {
       this.args.onReset(data, event);
     }
