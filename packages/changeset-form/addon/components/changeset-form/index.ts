@@ -22,7 +22,10 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
   }
 
   @action
-  async handleSubmit(changeset: BufferedChangeset, event: Event): Promise<void> {
+  async handleSubmit(
+    changeset: BufferedChangeset,
+    event: Event
+  ): Promise<void> {
     event.preventDefault();
     await changeset.validate();
 

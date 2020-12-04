@@ -173,7 +173,6 @@ module('Integration | Component | ChangesetForm', function (hooks) {
     // assert.dom('[data-test-name-last]').hasTextContaining('Silva');
   });
 
-
   test('it shows error message when the changeset is invalid', async function (assert) {
     assert.expect(1);
     await fillIn('[data-test-email-input]', '');
