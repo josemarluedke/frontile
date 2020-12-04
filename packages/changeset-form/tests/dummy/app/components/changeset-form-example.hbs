@@ -1,5 +1,5 @@
 <ChangesetForm
-  @changeset={{changeset this.model this.validations}} as |Form changeset state|
+  @changeset={{changeset this.model this.validations}} as |Form changeset|
 >
   <Form.Input
     @label="First Name"
@@ -56,8 +56,8 @@
     class="p-2 my-4 rounded
       {{if
         changeset.isInvalid
-        'bg-gray-100 text-gray-500'
-        'bg-gray-900 text-white'
+        "bg-gray-100 text-gray-500"
+        "bg-gray-900 text-white"
       }}"
     disabled={{changeset.isInvalid}}
   >
