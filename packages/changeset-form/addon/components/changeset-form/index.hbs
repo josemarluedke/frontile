@@ -6,7 +6,7 @@
   <ChangesetForm::Context @changeset={{@changeset}} as |Form|>
     {{yield
       (hash
-        Input=(component Form.input hasSubmitted=this.hasSubmitted)
+        Input=(component Form.Input hasSubmitted=this.hasSubmitted)
         Textarea=(component Form.Textarea hasSubmitted=this.hasSubmitted)
         Select=(component Form.Select hasSubmitted=this.hasSubmitted)
         Checkbox=(component Form.Checkbox hasSubmitted=this.hasSubmitted)
@@ -16,6 +16,7 @@
         Radio=(component Form.Radio hasSubmitted=this.hasSubmitted)
         RadioGroup=(component Form.RadioGroup hasSubmitted=this.hasSubmitted)
       )
+      @changeset
       (hash hasSubmitted=this.hasSubmitted)
     }}
   </ChangesetForm::Context>
