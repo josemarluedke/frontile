@@ -51,7 +51,7 @@ export default class Demo extends Component {
 ### Validation
 
 Changeset validation is provided by [`ember-changeset-validations`](https://github.com/poteto/ember-changeset-validations/),
-and is optional for any `Changeset` object used by <ChangesetForm>` components. This takes the form of another
+and is optional for any `Changeset` object used by `<ChangesetForm>` components. This takes the form of another
 JS object literal mapping properties to validation functions:
 
 ```js
