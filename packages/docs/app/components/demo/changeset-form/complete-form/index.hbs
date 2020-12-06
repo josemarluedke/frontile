@@ -1,109 +1,93 @@
 <DocsDemo as |demo|>
   {{#demo.example name="demo-changeset-form-complete-form-index.hbs"}}
-    <ChangesetForm
-      @model={{this.model}}
-      @validations={{this.validations}}
-      as |Form changeset|
-    >
-      <Form.Input
-        @label="First Name"
-        @fieldName="firstName"
-        placeholder="What is your first name?"
-      />
-      <Form.Input
-        @label="Last Name"
-        @fieldName="lastName"
-        @containerClass="mt-4"
-        placeholder="What is your family name?"
-      />
-      <Form.Input
-        @label="Email Address"
-        @fieldName="email"
-        type="email"
-        @containerClass="mt-4"
-      />
-
-      <Form.Textarea
-        @label="Comments"
-        @fieldName="comments"
-        @containerClass="mt-4"
-      />
-
-      <Form.Select
-        @label="Countries"
-        @fieldName="countries"
-        @isMultiple={{true}}
-        @options={{this.countries}}
-        @allowClear={{true}}
-        @containerClass="mt-4"
-        as |option|
-      >
-        {{option}}
-      </Form.Select>
-
-      <Form.CheckboxGroup
-        @groupName="coreValues"
-        @label="Core Values"
-        @isInline={{true}}
-        @containerClass="mt-4"
-        as |Checkbox|
-      >
-        <Checkbox
-          @label="Hungry"
-          @fieldName="hungry"
+    {{#let (changeset this.model this.validations) as |changesetObject|}}
+      <ChangesetForm @changeset={{changesetObject}} as |Form changeset|>
+        <Form.Input
+          @label="First Name"
+          @fieldName="firstName"
+          placeholder="What is your first name?"
         />
-        <Checkbox
-          @label="Humble"
-          @fieldName="humble"
+        <Form.Input
+          @label="Last Name"
+          @fieldName="lastName"
+          @containerClass="mt-4"
+          placeholder="What is your family name?"
         />
-        <Checkbox
-          @label="Curious"
-          @fieldName="curious"
+        <Form.Input
+          @label="Email Address"
+          @fieldName="email"
+          type="email"
+          @containerClass="mt-4"
         />
-      </Form.CheckboxGroup>
-
-      <Form.RadioGroup
-        @label="Favorite Meal"
-        @containerClass="mt-4"
-        @fieldName="favoriteMeal"
-        as |Radio|
-      >
-        <Radio
-          @label="Breakfast"
-          @value="breakfast"
+        <Form.Textarea
+          @label="Comments"
+          @fieldName="comments"
+          @containerClass="mt-4"
         />
-        <Radio
-          @label="Lunch"
-          @value="lunch"
-        />
-        <Radio
-          @label="Dinner"
-          @value="dinner"
-        />
-      </Form.RadioGroup>
-
-      <button
-        type="submit"
-        class="py-2 px-4 my-4 rounded {{if changeset.isInvalid "bg-gray-100 text-gray-500" "bg-gray-900 text-white"}}"
-        disabled={{changeset.isInvalid}}
-      >
-        Save
-      </button>
-      <button
-        type="reset"
-        class="px-4 py-2 my-4 ml-2 text-gray-900 bg-gray-200 rounded"
-      >
-        Reset
-      </button>
-
-      <div class="mb-4">
-        <p>isPristine: {{changeset.isPristine}}</p>
-        <p>isValid: {{changeset.isValid}}</p>
-        <p>isInvalid: {{changeset.isInvalid}}</p>
-      </div>
-    </ChangesetForm>
+        <Form.Select
+          @label="Countries"
+          @fieldName="countries"
+          @isMultiple={{true}}
+          @options={{this.countries}}
+          @allowClear={{true}}
+          @containerClass="mt-4" as |option|
+        >
+          {{option}}
+        </Form.Select>
+        <Form.CheckboxGroup
+          @groupName="coreValues"
+          @label="Core Values"
+          @isInline={{true}}
+          @containerClass="mt-4" as |Checkbox|
+        >
+          <Checkbox @label="Hungry" @fieldName="hungry" />
+          <Checkbox @label="Humble" @fieldName="humble" />
+          <Checkbox @label="Curious" @fieldName="curious" />
+        </Form.CheckboxGroup>
+        <Form.RadioGroup
+          @label="Favorite Meal"
+          @containerClass="mt-4"
+          @fieldName="favoriteMeal" as |Radio|
+        >
+          <Radio @label="Breakfast" @value="breakfast" />
+          <Radio @label="Lunch" @value="lunch" />
+          <Radio @label="Dinner" @value="dinner" />
+        </Form.RadioGroup>
+        <button
+          type="submit"
+          class="py-2 px-4 my-4 rounded
+            {{if
+              changeset.isInvalid
+              "bg-gray-100 text-gray-500"
+              "bg-gray-900 text-white"
+            }}"
+          disabled={{changeset.isInvalid}}
+        >
+          Save
+        </button>
+        <button
+          type="reset"
+          class="px-4 py-2 my-4 ml-2 text-gray-900 bg-gray-200 rounded"
+        >
+          Reset
+        </button>
+        <div class="mb-4">
+          <p>
+            isPristine:
+            {{changeset.isPristine}}
+          </p>
+          <p>
+            isValid:
+            {{changeset.isValid}}
+          </p>
+          <p>
+            isInvalid:
+            {{changeset.isInvalid}}
+          </p>
+        </div>
+      </ChangesetForm>
+    {{/let}}
   {{/demo.example}}
-
   <demo.snippet
     @name="demo-changeset-form-complete-form-index.hbs"
     @label="components/demo.hbs"
