@@ -18,7 +18,10 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
 
   constructor(owner: unknown, args: ChangesetFormArgs) {
     super(owner, args);
-    assert('@changeset must be defined on <ChangesetForm> component', this.args.changeset);
+    assert(
+      '@changeset must be defined on <ChangesetForm> component',
+      this.args.changeset
+    );
   }
 
   @action
