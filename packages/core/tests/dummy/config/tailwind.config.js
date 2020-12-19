@@ -1,4 +1,5 @@
 /* eslint-disable node/no-extraneous-require */
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   future: {
@@ -7,7 +8,11 @@ module.exports = {
   },
   purge: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        teal: colors.teal
+      }
+    },
     frontile: {
       core: {
         config: {

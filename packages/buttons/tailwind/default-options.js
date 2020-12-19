@@ -3,7 +3,7 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 ).theme;
 
 const defaultConfig = {
-  borderRadius: defaultTheme.borderRadius.default,
+  borderRadius: defaultTheme.borderRadius.DEFAULT,
   default: {
     contrastColor: defaultTheme.colors.white,
     color: defaultTheme.colors.gray[700],
@@ -102,7 +102,7 @@ function defaultOptions({ config }) {
         paddingBottom: defaultTheme.spacing[3],
         paddingLeft: defaultTheme.spacing[4],
         borderRadius: config.borderRadius,
-        borderWidth: defaultTheme.borderWidth.default,
+        borderWidth: defaultTheme.borderWidth.DEFAULT,
         borderColor: defaultTheme.colors.transparent,
         '&.focus-visible:focus': {
           outline: 'none',

@@ -5,11 +5,11 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 const defaultConfig = {
   textColor: 'inherit',
   zIndex: 50,
-  borderRadius: defaultTheme.borderRadius.default,
+  borderRadius: defaultTheme.borderRadius.DEFAULT,
   backdropColor: 'rgba(0, 0, 0, 0.45)',
   'modal, drawer': {
     backgroundColor: defaultTheme.colors.white,
-    boxShadow: defaultTheme.boxShadow.default,
+    boxShadow: defaultTheme.boxShadow.DEFAULT,
     closeBtnMargin: defaultTheme.spacing[2],
 
     header: {
@@ -21,7 +21,7 @@ const defaultConfig = {
     },
 
     footer: {
-      borderColor: defaultTheme.borderColor.default,
+      borderColor: defaultTheme.borderColor.DEFAULT,
       padding: defaultTheme.padding[4],
       backgroundColor: defaultTheme.colors.gray[100]
     },
@@ -65,7 +65,7 @@ const getObscurer = (options) => {
     ? undefined
     : {
         position: 'absolute',
-        top: `calc(-${options.size} - ${defaultTheme.borderWidth.default})`,
+        top: `calc(-${options.size} - ${defaultTheme.borderWidth.DEFAULT})`,
         left: 0,
         content: '" "',
         height: options.size,
@@ -159,7 +159,7 @@ function defaultOptions({ config }) {
           display: 'flex',
           justifyContent: 'flex-end',
           backgroundColor: config.modal.footer.backgroundColor,
-          borderTopWidth: defaultTheme.borderWidth.default,
+          borderTopWidth: defaultTheme.borderWidth.DEFAULT,
           borderTopColor: config.modal.footer.borderColor,
           padding: config.modal.footer.padding,
           alignItems: 'center',
@@ -210,7 +210,7 @@ function defaultOptions({ config }) {
         backgroundColor: config.drawer.backgroundColor,
         width: '100%',
         height: '100%',
-        boxShadow: config.drawer.boxShadow.default,
+        boxShadow: config.drawer.boxShadow,
         zIndex: 0
       },
 
@@ -240,7 +240,7 @@ function defaultOptions({ config }) {
           display: 'flex',
           justifyContent: 'flex-end',
           backgroundColor: config.drawer.footer.backgroundColor,
-          borderTopWidth: defaultTheme.borderWidth.default,
+          borderTopWidth: defaultTheme.borderWidth.DEFAULT,
           borderTopColor: config.drawer.footer.borderColor,
           padding: config.drawer.footer.padding,
           alignItems: 'center',

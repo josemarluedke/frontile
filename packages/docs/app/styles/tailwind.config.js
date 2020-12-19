@@ -1,8 +1,16 @@
+const { teal } = require('tailwindcss/colors');
+
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true
   },
-  theme: {},
+  theme: {
+    extend: {
+      colors: {
+        teal
+      }
+    }
+  },
   plugins: [
     require('@frontile/core/tailwind'),
     require('@frontile/forms/tailwind'),

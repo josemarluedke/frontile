@@ -25,7 +25,7 @@ function defaultOptions({ config }) {
       baseStyle: {
         backgroundColor: config.closeButton.backgroundColor,
         borderRadius: config.closeButton.borderRadius,
-        transitionProperty: defaultTheme.transitionProperty.default,
+        transitionProperty: defaultTheme.transitionProperty.DEFAULT,
         transitionDuration: defaultTheme.transitionDuration[200],
 
         '&.focus-visible:focus': {

@@ -5,18 +5,18 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 const defaultConfig = {
   textColor: defaultTheme.colors.gray[900],
   labelColor: defaultTheme.colors.gray[800],
-  placeholderTextColor: defaultTheme.colors.gray[500],
-  hintColor: defaultTheme.colors.gray[500],
+  placeholderTextColor: defaultTheme.colors.gray[400],
+  hintColor: defaultTheme.colors.gray[400],
   disabledTextColor: defaultTheme.colors.gray[500],
   checkboxAndRadioColor: defaultTheme.colors.blue[500],
   checkboxAndRadioIconColor: defaultTheme.colors.white,
   invalidColor: defaultTheme.colors.red[600],
   backgroundColor: defaultTheme.colors.white,
-  focusBoxShadow: defaultTheme.boxShadow.outline,
+  focusBoxShadow: '0 0 0 3px rgba(59, 130, 246, 0.45)',
   focusBoxShadowInvalid: '0 0 0 3px rgba(229,62,62, 0.3)',
-  borderColor: defaultTheme.borderColor.gray[500],
+  borderColor: defaultTheme.borderColor.gray[400],
   focusBorderColor: defaultTheme.colors.blue[400],
-  disabledBorderColor: defaultTheme.borderColor.gray[300],
+  disabledBorderColor: defaultTheme.borderColor.gray[200],
   powerSelect: {}
 };
 
@@ -59,8 +59,8 @@ function defaultOptions({ config }) {
         width: defaultTheme.width.full,
         backgroundColor: config.backgroundColor,
         borderColor: config.borderColor,
-        borderWidth: defaultTheme.borderWidth.default,
-        borderRadius: defaultTheme.borderRadius.default,
+        borderWidth: defaultTheme.borderWidth.DEFAULT,
+        borderRadius: defaultTheme.borderRadius.DEFAULT,
         paddingTop: defaultTheme.spacing[3],
         paddingRight: defaultTheme.spacing[3],
         paddingBottom: defaultTheme.spacing[3],
@@ -141,7 +141,7 @@ function defaultOptions({ config }) {
         color: config.checkboxAndRadioColor,
         backgroundColor: config.backgroundColor,
         borderColor: config.borderColor,
-        borderWidth: defaultTheme.borderWidth.default,
+        borderWidth: defaultTheme.borderWidth.DEFAULT,
         iconColor: config.checkboxAndRadioIconColor,
         '&:focus': {
           outline: 'none'
