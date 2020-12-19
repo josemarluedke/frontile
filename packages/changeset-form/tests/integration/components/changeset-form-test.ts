@@ -42,38 +42,44 @@ module('Integration | Component | ChangesetForm', function (hooks) {
     this.set('validations', validations);
 
     await render(hbs`
-      <ChangesetForm
-        @model={{this.model}}
-        @validations={{this.validations}}
-        @onSubmit={{this.onSubmit}}
-        @onReset={{this.onReset}}
-        data-test-changeset-form
-        as |Form changeset state|
-      >
-        <div data-test-id="has-submitted">{{state.hasSubmitted}}</div>
-        <Form.Input
-          @fieldName="name.first"
-          @label="First Name"
-          data-test-name-first-input
-        />
-        <div data-test-name-first>{{changeset.name.first}}</div>
-        <Form.Input
-          @fieldName="name.last"
-          @label="Last Name"
-          data-test-name-last-input
-        />
-        <div data-test-name-last>{{changeset.name.last}}</div>
-        <Form.Input
-          @containerClass="email-field"
-          @fieldName="email"
-          @label="Email Address"
-          data-test-email-input
-        />
-        <div data-test-email>{{changeset.email}}</div>
+      {{#let (changeset this.model this.validations) as |changesetObj|}}
+        <ChangesetForm
+          @changeset={{changesetObj}}
+          @onSubmit={{this.onSubmit}}
+          @onReset={{this.onReset}}
+          data-test-changeset-form
+          as |Form changeset state|
+        >
+        {{log changesetObj changeset}}
+          <div data-test-id="has-submitted">{{state.hasSubmitted}}</div>
+          {{#if changeset.isInvalid}}
+            <p data-test-id="form-error">There were one or more errors in your form.</p>
+          {{/if}}
+          <Form.Input
+            @fieldName="name.first"
+            @label="First Name"
+            data-test-name-first-input
+          />
+          <div data-test-name-first>{{changeset.name.first}}</div>
+          
+          <Form.Input
+            @fieldName="name.last"
+            @label="Last Name"
+            data-test-name-last-input
+          />
+          <div data-test-name-last>{{changeset.name.last}}</div>
+          <Form.Input
+            @containerClass="email-field"
+            @fieldName="email"
+            @label="Email Address"
+            data-test-email-input
+          />
+          <div data-test-email>{{changeset.email}}</div>
 
-        <button type="submit" data-test-submit>Submit</button>
-        <button type="reset" data-test-reset>Reset</button>
-      </ChangesetForm>
+          <button type="submit" data-test-submit>Submit</button>
+          <button type="reset" data-test-reset>Reset</button>
+        </ChangesetForm>
+      {{/let}}
     `);
   });
 
@@ -165,5 +171,12 @@ module('Integration | Component | ChangesetForm', function (hooks) {
 
     // assert.dom('[data-test-name-first]').hasTextContaining('James2');
     // assert.dom('[data-test-name-last]').hasTextContaining('Silva');
+  });
+
+  test('it shows error message when the changeset is invalid', async function (assert) {
+    assert.expect(1);
+    await fillIn('[data-test-email-input]', '');
+    await click('[data-test-submit]');
+    assert.dom('[data-test-id="form-error"]').exists();
   });
 });

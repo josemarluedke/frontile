@@ -1,42 +1,23 @@
 <form
-  {{on "submit" this.handleSubmit}}
-  {{on "reset" this.handleReset}}
   ...attributes
+  {{on "submit" (fn this.handleSubmit @changeset)}}
+  {{on "reset" (fn this.handleReset @changeset)}}
 >
-  {{yield
-    (hash
-      Input=(component "changeset-form/fields/input"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
+  <ChangesetForm::Context @changeset={{@changeset}} as |Form|>
+    {{yield
+      (hash
+        Input=(component Form.Input hasSubmitted=this.hasSubmitted)
+        Textarea=(component Form.Textarea hasSubmitted=this.hasSubmitted)
+        Select=(component Form.Select hasSubmitted=this.hasSubmitted)
+        Checkbox=(component Form.Checkbox hasSubmitted=this.hasSubmitted)
+        CheckboxGroup=(component
+          Form.CheckboxGroup hasSubmitted=this.hasSubmitted
+        )
+        Radio=(component Form.Radio hasSubmitted=this.hasSubmitted)
+        RadioGroup=(component Form.RadioGroup hasSubmitted=this.hasSubmitted)
       )
-      Textarea=(component "changeset-form/fields/textarea"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-      Select=(component "changeset-form/fields/select"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-      Checkbox=(component "changeset-form/fields/checkbox"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-      CheckboxGroup=(component "changeset-form/fields/checkbox-group"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-      Radio=(component "changeset-form/fields/radio"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-      RadioGroup=(component "changeset-form/fields/radio-group"
-        changeset=this.changeset
-        hasSubmitted=this.hasSubmitted
-      )
-    )
-    this.changeset
-    (hash
-      hasSubmitted=this.hasSubmitted
-    )
-  }}
+      @changeset
+      (hash hasSubmitted=this.hasSubmitted)
+    }}
+  </ChangesetForm::Context>
 </form>

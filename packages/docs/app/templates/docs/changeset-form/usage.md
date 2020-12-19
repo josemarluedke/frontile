@@ -17,21 +17,20 @@ you need to access any information directly.
 
 Here's the list of yielded form components:
 
-| Key               | Component                                                   |
-| ------------------| ----------------------------------------------------------- |
-| Text              | [`<FormText>`](/docs/forms/form-input)                      |
-| Textarea          | [`<FormTextArea>`](/docs/forms/form-textarea)               |
-| Select            | [`<FormSelect>`](/docs/forms/form-select)                   |
-| Checkbox          | [`<FormCheckbox>`](/docs/forms/form-checkbox)               |
-| CheckboxGroup     | [`<FormCheckboxGroup>`](/docs/forms/form-checkbox-group)    |
-| Radio             | [`<FormRadio>`](/docs/forms/form-radio)                     |
-| RadioGroup        | [`<FormRadioGroup>`](/docs/forms/form-radio-group)          |
+| Key           | Component                                                |
+| ------------- | -------------------------------------------------------- |
+| Text          | [`<FormText>`](/docs/forms/form-input)                   |
+| Textarea      | [`<FormTextArea>`](/docs/forms/form-textarea)            |
+| Select        | [`<FormSelect>`](/docs/forms/form-select)                |
+| Checkbox      | [`<FormCheckbox>`](/docs/forms/form-checkbox)            |
+| CheckboxGroup | [`<FormCheckboxGroup>`](/docs/forms/form-checkbox-group) |
+| Radio         | [`<FormRadio>`](/docs/forms/form-radio)                  |
+| RadioGroup    | [`<FormRadioGroup>`](/docs/forms/form-radio-group)       |
 
 ### Form Data Model
 
-The data model used to back the `<ChangesetForm>` is just a simple JS object,
-and nested property paths are supported. Ember Data Models are also supported
-by `ember-changeset`.
+The data model used to back the `<ChangesetForm>` is an instance of a changeset object by `ember-changeset`,
+and so, nested property paths are supported. Ember Data Models are also supported.
 
 ```js
 import Component from '@glimmer/component';
@@ -52,7 +51,7 @@ export default class Demo extends Component {
 ### Validation
 
 Changeset validation is provided by [`ember-changeset-validations`](https://github.com/poteto/ember-changeset-validations/),
-and is optional for `<ChangesetForm>` components. This takes the form of another
+and is optional for any `Changeset` object used by `<ChangesetForm>` components. This takes the form of another
 JS object literal mapping properties to validation functions:
 
 ```js
@@ -72,42 +71,42 @@ export default class Demo extends Component {
 }
 ```
 
-### Creating an Instance
+### Creating an Instance of a changeset via the template
 
 ```hbs
-<ChangesetForm
-  @model={{this.myFormModel}}
-  @validations={{this.myValidations}}
-  as |Form changeset|
->
-  <Form.Input
-    @fieldName="name.first"
-    @label="First Name"
-  />
-  <Form.Input
-    @fieldName="name.last"
-    @label="Last Name"
-  />
-  <Form.Input
-    @fieldName="email"
-    @label="Email"
-  />
-  <Form.Input
-    @fieldName="hometown"
-    @label="Home Town"
-  />
-  <Form.Select
-    @fieldName="preferences"
-    @label="Preferences"
-  />
+{{#let (changeset this.myFormModel this.myValidations) as |changesetObject|}}
+  <ChangesetForm
+    @changeset={{changesetObject}}
+    as |Form changeset|
+  >
+    <Form.Input
+      @fieldName="name.first"
+      @label="First Name"
+    />
+    <Form.Input
+      @fieldName="name.last"
+      @label="Last Name"
+    />
+    <Form.Input
+      @fieldName="email"
+      @label="Email"
+    />
+    <Form.Input
+      @fieldName="hometown"
+      @label="Home Town"
+    />
+    <Form.Select
+      @fieldName="preferences"
+      @label="Preferences"
+    />
 
-  <button type="submit">Submit</button>
-</ChangesetForm>
+    <button type="submit">Submit</button>
+  </ChangesetForm>
+{{/let}}
 ```
 
-### Providing Your Own Changeset
+### Creating Your Own Changeset via JS
 
-For added flexibility, you may provide your own `Changeset` object for the form.
 In this case you are responsible for also providing any validation you wish to apply
 to your `Changeset`. The following is a brief example of that method:
 
@@ -126,12 +125,14 @@ export default class Demo extends Component {
     myValue: ''
   };
 
-  myChangeset = new Changeset(this.myModel, lookupValidator(this.validations), this.validations);
+  myChangeset = new Changeset(
+    this.myModel,
+    lookupValidator(this.validations),
+    this.validations
+  );
 }
 ```
 
-In the template, instead of providing your `@model` and `@validations` objects,
-you only need to provide the `@changeset` object.
 
 ```hbs
 <ChangesetForm @changeset={{this.myChangeset}} as |Form changeset|>

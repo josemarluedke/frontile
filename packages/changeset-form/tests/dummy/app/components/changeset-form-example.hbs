@@ -1,7 +1,5 @@
 <ChangesetForm
-  @model={{this.model}}
-  @validations={{this.validations}}
-  as |Form changeset|
+  @changeset={{changeset this.model this.validations}} as |Form changeset|
 >
   <Form.Input
     @label="First Name"
@@ -20,76 +18,63 @@
     type="email"
     @containerClass="mt-4"
   />
-
   <Form.Textarea
     @label="Comments"
     @fieldName="comments"
     @containerClass="mt-4"
   />
-
   <Form.Select
     @label="Countries"
     @fieldName="countries"
     @isMultiple={{true}}
     @options={{this.countries}}
     @allowClear={{true}}
-    @containerClass="mt-4"
-    as |option|
+    @containerClass="mt-4" as |option|
   >
     {{option}}
   </Form.Select>
-
   <Form.CheckboxGroup
     @label="Core Values"
     @isInline={{true}}
-    @containerClass="mt-4"
-    as |Checkbox|
+    @containerClass="mt-4" as |Checkbox|
   >
-    <Checkbox
-      @label="Hungry"
-      @fieldName="hungry"
-    />
-    <Checkbox
-      @label="Humble"
-      @fieldName="humble"
-    />
-    <Checkbox
-      @label="Curious"
-      @fieldName="curious"
-    />
+    <Checkbox @label="Hungry" @fieldName="hungry" />
+    <Checkbox @label="Humble" @fieldName="humble" />
+    <Checkbox @label="Curious" @fieldName="curious" />
   </Form.CheckboxGroup>
-
   <Form.RadioGroup
     @label="Favorite Meal"
     @containerClass="mt-4"
-    @fieldName="favoriteMeal"
-    as |Radio|
+    @fieldName="favoriteMeal" as |Radio|
   >
-    <Radio
-      @label="Breakfast"
-      @value="breakfast"
-    />
-    <Radio
-      @label="Lunch"
-      @value="lunch"
-    />
-    <Radio
-      @label="Dinner"
-      @value="dinner"
-    />
+    <Radio @label="Breakfast" @value="breakfast" />
+    <Radio @label="Lunch" @value="lunch" />
+    <Radio @label="Dinner" @value="dinner" />
   </Form.RadioGroup>
-
   <button
     type="submit"
-    class="p-2 my-4 rounded {{if changeset.isInvalid "bg-gray-100 text-gray-500" "bg-gray-900 text-white"}}"
+    class="p-2 my-4 rounded
+      {{if
+        changeset.isInvalid
+        "bg-gray-100 text-gray-500"
+        "bg-gray-900 text-white"
+      }}"
     disabled={{changeset.isInvalid}}
   >
     Submit
   </button>
-
   <div class="mb-4">
-    <p>isPristine: {{changeset.isPristine}}</p>
-    <p>isValid: {{changeset.isValid}}</p>
-    <p>isInvalid: {{changeset.isInvalid}}</p>
+    <p>
+      isPristine:
+      {{changeset.isPristine}}
+    </p>
+    <p>
+      isValid:
+      {{changeset.isValid}}
+    </p>
+    <p>
+      isInvalid:
+      {{changeset.isInvalid}}
+    </p>
   </div>
 </ChangesetForm>
