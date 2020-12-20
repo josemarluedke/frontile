@@ -8,9 +8,7 @@ interface ChangesetFormFieldsCheckboxArgs extends BaseArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsCheckbox extends Base<
-  ChangesetFormFieldsCheckboxArgs
-> {
+export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormFieldsCheckboxArgs> {
   get fullFieldName(): string {
     return this.args._groupName
       ? `${this.args._groupName}.${this.args.fieldName}`

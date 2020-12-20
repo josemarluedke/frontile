@@ -8,9 +8,7 @@ interface ChangesetFormFieldsSelectArgs extends BaseArgs {
   onClose?: (select: Select, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsSelect extends Base<
-  ChangesetFormFieldsSelectArgs
-> {
+export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsSelectArgs> {
   @action
   handleChange(selection: unknown, select: Select, event?: Event): void {
     this.args.changeset.set(this.args.fieldName, selection);

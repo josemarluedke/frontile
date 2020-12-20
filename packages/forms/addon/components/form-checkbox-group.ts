@@ -16,9 +16,7 @@ interface FormCheckboxGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class FormCheckboxGroup extends Component<
-  FormCheckboxGroupArgs
-> {
+export default class FormCheckboxGroup extends Component<FormCheckboxGroupArgs> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {

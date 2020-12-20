@@ -11,9 +11,7 @@ interface ChangesetFormFieldsGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsCheckboxGroup extends Component<
-  ChangesetFormFieldsGroupArgs
-> {
+export default class ChangesetFormFieldsCheckboxGroup extends Component<ChangesetFormFieldsGroupArgs> {
   constructor(owner: unknown, args: ChangesetFormFieldsGroupArgs) {
     super(owner, args);
 

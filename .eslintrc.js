@@ -8,7 +8,8 @@ module.exports = {
   plugins: [],
   extends: ['@underline/eslint-config-ember-typescript'],
   rules: {
-    '@typescript-eslint/no-empty-interface': 'off'
+    '@typescript-eslint/no-empty-interface': 'off',
+    'ember/no-empty-glimmer-component-classes': 'off'
   },
   overrides: [
     {

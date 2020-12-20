@@ -10,9 +10,7 @@ interface FormFieldCheckboxArgs {
   onChange?: (value: boolean, event: Event) => void;
 }
 
-export default class FormFieldCheckbox extends Component<
-  FormFieldCheckboxArgs
-> {
+export default class FormFieldCheckbox extends Component<FormFieldCheckboxArgs> {
   get isChecked(): boolean {
     return !!this.args.checked;
   }
