@@ -115,7 +115,7 @@ function defaultOptions({ config }) {
       },
       variants: {
         xs: {
-          fontSize: defaultTheme.fontSize.sm,
+          fontSize: defaultTheme.fontSize.sm[0],
           paddingTop: defaultTheme.spacing[1],
           paddingRight: defaultTheme.spacing[2],
           paddingBottom: defaultTheme.spacing[1],
@@ -134,7 +134,7 @@ function defaultOptions({ config }) {
           paddingLeft: defaultTheme.spacing[4]
         },
         xl: {
-          fontSize: defaultTheme.fontSize.xl,
+          fontSize: defaultTheme.fontSize.xl[0],
           paddingTop: defaultTheme.spacing[5],
           paddingRight: defaultTheme.spacing[6],
           paddingBottom: defaultTheme.spacing[5],

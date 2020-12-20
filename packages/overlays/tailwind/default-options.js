@@ -144,7 +144,7 @@ function defaultOptions({ config }) {
 
         header: {
           fontWeight: defaultTheme.fontWeight.bold,
-          fontSize: defaultTheme.fontSize.xl,
+          fontSize: defaultTheme.fontSize.xl[0],
           padding: config.modal.header.padding,
           borderTopRightRadius: config.borderRadius,
           borderTopLeftRadius: config.borderRadius
@@ -224,7 +224,7 @@ function defaultOptions({ config }) {
 
         header: {
           fontWeight: defaultTheme.fontWeight.bold,
-          fontSize: defaultTheme.fontSize.xl,
+          fontSize: defaultTheme.fontSize.xl[0],
           padding: config.drawer.header.padding
         },
 

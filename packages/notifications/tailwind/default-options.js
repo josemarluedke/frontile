@@ -133,7 +133,7 @@ function defaultOptions({ config }) {
         transitionTimingFunction:
           defaultTheme.transitionTimingFunction['in-out'],
         color: config.textColor,
-        fontSize: defaultTheme.fontSize.sm,
+        fontSize: defaultTheme.fontSize.sm[0],
         borderRadius: defaultTheme.borderRadius.DEFAULT,
         boxShadow: defaultTheme.boxShadow.DEFAULT,
         position: 'relative',
