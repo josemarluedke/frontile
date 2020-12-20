@@ -5,9 +5,7 @@ interface ChangesetFormFieldsTextareaArgs extends BaseArgs {
   onInput?: (value: string, event: InputEvent) => void;
 }
 
-export default class ChangesetFormFieldsTextarea extends Base<
-  ChangesetFormFieldsTextareaArgs
-> {
+export default class ChangesetFormFieldsTextarea extends Base<ChangesetFormFieldsTextareaArgs> {
   @action handleInput(value: string, event: InputEvent): void {
     this.args.changeset.set(this.args.fieldName, value);
 

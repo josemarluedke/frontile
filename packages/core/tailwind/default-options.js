@@ -10,11 +10,11 @@ const defaultConfig = {
     color: 'inherit',
 
     sizes: {
-      xs: defaultTheme.fontSize.sm,
-      sm: defaultTheme.fontSize.base,
-      md: defaultTheme.fontSize.xl,
-      lg: defaultTheme.fontSize['2xl'],
-      xl: defaultTheme.fontSize['4xl']
+      xs: defaultTheme.fontSize.sm[0],
+      sm: defaultTheme.fontSize.base[0],
+      md: defaultTheme.fontSize.xl[0],
+      lg: defaultTheme.fontSize['2xl'][0],
+      xl: defaultTheme.fontSize['4xl'][0]
     }
   }
 };
@@ -25,7 +25,7 @@ function defaultOptions({ config }) {
       baseStyle: {
         backgroundColor: config.closeButton.backgroundColor,
         borderRadius: config.closeButton.borderRadius,
-        transitionProperty: defaultTheme.transitionProperty.default,
+        transitionProperty: defaultTheme.transitionProperty.DEFAULT,
         transitionDuration: defaultTheme.transitionDuration[200],
 
         '&.focus-visible:focus': {

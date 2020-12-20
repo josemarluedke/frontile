@@ -39,7 +39,6 @@ module('Integration | Component | Overlay', function (hooks) {
     this.set('disableTransitions', true);
     this.set('isOpen', true);
     await render(template);
-    await settled();
 
     assert.dom('[data-test-id="overlay"]').exists();
     assert

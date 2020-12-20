@@ -1,11 +1,16 @@
 /* eslint-disable node/no-extraneous-require */
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true
   },
   theme: {
-    extend: {}
+    extend: {
+      colors: {
+        teal: colors.teal
+      }
+    }
   },
   variants: {},
   plugins: [

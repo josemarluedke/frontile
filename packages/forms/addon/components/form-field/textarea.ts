@@ -12,9 +12,7 @@ interface FormFieldTextareaArgs {
   onChange?: (value: string, event: InputEvent) => void;
 }
 
-export default class FormFieldTextarea extends Component<
-  FormFieldTextareaArgs
-> {
+export default class FormFieldTextarea extends Component<FormFieldTextareaArgs> {
   @action handleOnInput(event: InputEvent): void {
     if (typeof this.args.onInput === 'function') {
       this.args.onInput((event.target as HTMLInputElement).value, event);

@@ -47,7 +47,7 @@ function generateAppearance({ color, buttonHoverColor }) {
 
 function defaultOptions({ config }) {
   const btnShared = {
-    transitionProperty: defaultTheme.transitionProperty.default,
+    transitionProperty: defaultTheme.transitionProperty.DEFAULT,
     transitionDuration: defaultTheme.transitionDuration[200],
 
     '&.focus-visible:focus': {
@@ -133,9 +133,9 @@ function defaultOptions({ config }) {
         transitionTimingFunction:
           defaultTheme.transitionTimingFunction['in-out'],
         color: config.textColor,
-        fontSize: defaultTheme.fontSize.sm,
-        borderRadius: defaultTheme.borderRadius.default,
-        boxShadow: defaultTheme.boxShadow.default,
+        fontSize: defaultTheme.fontSize.sm[0],
+        borderRadius: defaultTheme.borderRadius.DEFAULT,
+        boxShadow: defaultTheme.boxShadow.DEFAULT,
         position: 'relative',
         display: 'flex',
         justifyContent: 'space-between',
@@ -177,7 +177,7 @@ function defaultOptions({ config }) {
           paddingBottom: defaultTheme.spacing[1],
           paddingLeft: defaultTheme.spacing[2],
           paddingRight: defaultTheme.spacing[2],
-          borderRadius: defaultTheme.borderRadius.default,
+          borderRadius: defaultTheme.borderRadius.DEFAULT,
           ...btnShared,
 
           '&:first-child': {

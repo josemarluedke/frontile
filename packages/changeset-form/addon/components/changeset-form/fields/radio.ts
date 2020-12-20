@@ -5,9 +5,7 @@ interface ChangesetFormFieldsRadioArgs extends BaseArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsRadio extends Base<
-  ChangesetFormFieldsRadioArgs
-> {
+export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioArgs> {
   @action handleChange(value: unknown, event: Event): void {
     event.preventDefault();
 

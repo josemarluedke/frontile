@@ -6,9 +6,7 @@ interface FormFieldFeedbackArgs {
   size?: 'sm' | 'lg';
 }
 
-export default class FormFieldFeedback extends Component<
-  FormFieldFeedbackArgs
-> {
+export default class FormFieldFeedback extends Component<FormFieldFeedbackArgs> {
   get isError(): boolean {
     return (
       typeof this.args.errors !== 'undefined' || this.args.isError === true

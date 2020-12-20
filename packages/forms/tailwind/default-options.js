@@ -5,18 +5,18 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 const defaultConfig = {
   textColor: defaultTheme.colors.gray[900],
   labelColor: defaultTheme.colors.gray[800],
-  placeholderTextColor: defaultTheme.colors.gray[500],
-  hintColor: defaultTheme.colors.gray[500],
+  placeholderTextColor: defaultTheme.colors.gray[400],
+  hintColor: defaultTheme.colors.gray[400],
   disabledTextColor: defaultTheme.colors.gray[500],
   checkboxAndRadioColor: defaultTheme.colors.blue[500],
   checkboxAndRadioIconColor: defaultTheme.colors.white,
   invalidColor: defaultTheme.colors.red[600],
   backgroundColor: defaultTheme.colors.white,
-  focusBoxShadow: defaultTheme.boxShadow.outline,
+  focusBoxShadow: '0 0 0 3px rgba(59, 130, 246, 0.45)',
   focusBoxShadowInvalid: '0 0 0 3px rgba(229,62,62, 0.3)',
-  borderColor: defaultTheme.borderColor.gray[500],
+  borderColor: defaultTheme.borderColor.gray[400],
   focusBorderColor: defaultTheme.colors.blue[400],
-  disabledBorderColor: defaultTheme.borderColor.gray[300],
+  disabledBorderColor: defaultTheme.borderColor.gray[200],
   powerSelect: {}
 };
 
@@ -34,7 +34,7 @@ function defaultOptions({ config }) {
     hint: {
       baseStyle: {
         color: config.hintColor,
-        fontSize: defaultTheme.fontSize.xs,
+        fontSize: defaultTheme.fontSize.xs[0],
         paddingBottom: defaultTheme.spacing[1],
         '&:last-child': {
           paddingBottom: defaultTheme.spacing[0]
@@ -43,7 +43,7 @@ function defaultOptions({ config }) {
     },
     feedback: {
       baseStyle: {
-        fontSize: defaultTheme.fontSize.xs,
+        fontSize: defaultTheme.fontSize.xs[0],
         paddingTop: defaultTheme.spacing[1]
       },
       variants: {
@@ -59,13 +59,13 @@ function defaultOptions({ config }) {
         width: defaultTheme.width.full,
         backgroundColor: config.backgroundColor,
         borderColor: config.borderColor,
-        borderWidth: defaultTheme.borderWidth.default,
-        borderRadius: defaultTheme.borderRadius.default,
+        borderWidth: defaultTheme.borderWidth.DEFAULT,
+        borderRadius: defaultTheme.borderRadius.DEFAULT,
         paddingTop: defaultTheme.spacing[3],
         paddingRight: defaultTheme.spacing[3],
         paddingBottom: defaultTheme.spacing[3],
         paddingLeft: defaultTheme.spacing[3],
-        fontSize: defaultTheme.fontSize.base,
+        fontSize: defaultTheme.fontSize.base[0],
         color: config.textColor,
         lineHeight: defaultTheme.lineHeight.tight,
         '&::placeholder': {
@@ -90,7 +90,7 @@ function defaultOptions({ config }) {
       },
       variants: {
         sm: {
-          fontSize: defaultTheme.fontSize.sm,
+          fontSize: defaultTheme.fontSize.sm[0],
           paddingTop: defaultTheme.spacing[2],
           paddingRight: defaultTheme.spacing[2],
           paddingBottom: defaultTheme.spacing[2],
@@ -137,11 +137,11 @@ function defaultOptions({ config }) {
         flexShrink: 0,
         height: '1em',
         width: '1em',
-        fontSize: defaultTheme.fontSize.base,
+        fontSize: defaultTheme.fontSize.base[0],
         color: config.checkboxAndRadioColor,
         backgroundColor: config.backgroundColor,
         borderColor: config.borderColor,
-        borderWidth: defaultTheme.borderWidth.default,
+        borderWidth: defaultTheme.borderWidth.DEFAULT,
         iconColor: config.checkboxAndRadioIconColor,
         '&:focus': {
           outline: 'none'
@@ -166,10 +166,10 @@ function defaultOptions({ config }) {
       },
       variants: {
         sm: {
-          fontSize: defaultTheme.fontSize.sm
+          fontSize: defaultTheme.fontSize.sm[0]
         },
         lg: {
-          fontSize: defaultTheme.fontSize.lg
+          fontSize: defaultTheme.fontSize.lg[0]
         }
       }
     },
@@ -252,7 +252,7 @@ function defaultOptions({ config }) {
         sm: {
           parts: {
             label: {
-              fontSize: defaultTheme.fontSize.sm
+              fontSize: defaultTheme.fontSize.sm[0]
             }
           }
         }
