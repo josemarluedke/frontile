@@ -1,10 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const { teal } = require('tailwindcss/colors');
 
 module.exports = {
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true
-  },
   purge: [],
   theme: {
     extend: {
@@ -13,9 +10,9 @@ module.exports = {
       },
       colors: {
         gray: {
-          ...defaultTheme.colors.gray,
           1000: '#12161f'
-        }
+        },
+        teal
       }
     }
   },
