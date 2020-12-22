@@ -13,6 +13,16 @@ module.exports = {
           1000: '#12161f'
         },
         teal
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: null,
+            'h1 a, h2 a, h3 a, h4 a': {
+              textDecoration: 'none'
+            }
+          }
+        }
       }
     }
   },

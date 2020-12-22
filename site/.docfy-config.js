@@ -44,16 +44,7 @@ const docfyWithProse = (ctx) => {
 
 module.exports = {
   tocMaxDepth: 3,
-  remarkPlugins: [
-    [
-      autolinkHeadings,
-      {
-        behavior: 'wrap'
-      }
-    ],
-    codeImport,
-    highlight
-  ],
+  remarkPlugins: [autolinkHeadings, codeImport, highlight],
   plugins: [docfyWithProse],
   sources: [
     {
