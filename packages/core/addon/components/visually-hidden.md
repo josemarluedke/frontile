@@ -2,7 +2,7 @@
 category: accessibility
 ---
 
-# `<VisuallyHidden>`
+# VisuallyHidden
 
 This component provides text for screen readers that is visually hidden.
 Traditionally, developers use `display: none` to hide content on the page.

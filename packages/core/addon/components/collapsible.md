@@ -2,6 +2,6 @@
 category: components
 ---
 
-# `<Collapsible>`
+# Collapsible
 
 This component provides unstyled collapsible ability.

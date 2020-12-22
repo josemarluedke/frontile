@@ -2,7 +2,7 @@
 category: components
 ---
 
-# `<CloseButton>`
+# CloseButton
 
 This component provides the commonly used Close Button with an icon.
 
