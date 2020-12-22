@@ -14,7 +14,10 @@
     <div class="flex-1 w-full min-w-0 px-0 pt-12 lg:px-4">
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         <div
-          {{!--  {{intersect-headings this.setCurrentHeadingId headings=page.headings}}  --}}
+          {{docfy-intersect-headings
+            onIntersect=this.setCurrentHeadingId
+            headings=page.headings
+          }}
         >
           {{outlet}}
         </div>
@@ -58,6 +61,9 @@
           </div>
         </DocfyPreviousAndNextPage>
       </div>
+    </div>
+    <div class="flex-none hidden w-56 pl-4 lg:block">
+      <PageHeadings @currentHeadingId={{this.currentHeadingId}} />
     </div>
   </div>
 </div>
