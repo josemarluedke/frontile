@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Small description for site goes here",
-  "repository": "",
+  "repository": "https://github.com/josemarluedke/frontile",
   "license": "MIT",
   "author": "",
   "directories": {
@@ -73,5 +73,10 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "ember-addon": {
+    "paths": [
+      "lib/docfy-theme"
+    ]
   }
 }

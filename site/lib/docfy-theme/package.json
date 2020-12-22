@@ -1,0 +1,14 @@
+{
+  "name": "docfy-theme",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "ember-cli-babel": "^7.23.0",
+    "ember-cli-htmlbars": "^5.3.1",
+    "ember-cli-typescript": "^4.0.0",
+    "ember-modifier": "^2.1.1"
+  },
+  "keywords": [
+    "ember-addon"
+  ]
+}
