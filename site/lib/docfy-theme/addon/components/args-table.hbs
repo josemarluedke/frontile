@@ -1,0 +1,68 @@
+<div class="prose mt-8">
+  <table class="text-sm">
+    <thead>
+      <tr>
+        <th>
+          Arg
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Description
+        </th>
+        <th>
+          Required
+        </th>
+        <th>
+          Default
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#each this.component.args as |arg|}}
+        <tr>
+          <td>
+            <code>
+              {{arg.name}}
+            </code>
+          </td>
+          <td>
+            <code>
+              {{#if (eq arg.type.name "enum")}}
+                {{#each arg.type.options as |option index|}}
+                  {{#if index}}
+                    |
+                  {{/if}}
+                  {{option}}
+                {{/each}}
+              {{else}}
+                {{arg.type.name}}
+              {{/if}}
+            </code>
+          </td>
+          <td>
+            {{arg.description}}
+          </td>
+          <td>
+            {{#if arg.isRequired}}
+              Yes
+            {{else}}
+              -
+            {{/if}}
+          </td>
+          <td>
+            {{#if arg.defaultValue}}
+              <code>
+                {{arg.defaultValue}}
+              </code>
+            {{else}}
+              -
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
