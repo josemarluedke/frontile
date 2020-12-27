@@ -43,7 +43,8 @@ module.exports = {
         'site/config/**/*.js',
         'site/tests/dummy/config/**/*.js',
         'site/**/tailwind.config.js',
-        'site/.docfy-config.js'
+        'site/.docfy-config.js',
+        'site/lib/docfy-theme/*.js'
       ],
       extends: ['@underline/eslint-config-node'],
       rules: {}

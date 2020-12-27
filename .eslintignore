@@ -1,16 +1,22 @@
 # unconventional js
 /packages/*/blueprints/*/files/
 /packages/*/vendor/
+/site/vendor/
 
 # compiled output
 /packages/*/dist/
 /packages/*/tmp/
+
+/site/dist/
+/site/tmp/
 
 # dependencies
 /bower_components/
 /node_modules/
 /packages/*/bower_components/
 /packages/*/node_modules/
+/site/node_modules/
+/site/lib/docfy-theme/node_modules/
 
 # misc
 /packages/*/coverage/
