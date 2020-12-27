@@ -17,3 +17,7 @@ It is also used under other components in Frontile, for example `Modal` and `Dra
   <CloseButton @size="xl" />
 </div>
 ```
+
+## API
+
+<ArgsTable @of="CloseButton" />
