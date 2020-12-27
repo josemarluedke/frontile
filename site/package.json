@@ -17,7 +17,8 @@
     "lint:js": "eslint .",
     "start": "ember serve",
     "test": "npm-run-all lint:* test:*",
-    "test:ember": "ember test"
+    "test:ember": "ember test",
+    "generate-args-data": "node lib/docfy-theme/generate-args-data.js"
   },
   "devDependencies": {
     "@docfy/ember": "^0.2.0",
