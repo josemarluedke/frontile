@@ -38,8 +38,13 @@ module.exports = {
               fontWeight: 'inherit'
             },
             code: {
-              fontWeight: theme('fontWeight.normal')
-            }
+              fontWeight: theme('fontWeight.normal'),
+              padding: theme('padding.1'),
+              backgroundColor: theme('colors.gray.100'),
+              borderRadius: theme('borderRadius.sm')
+            },
+            'code::before': null,
+            'code::after': null
           }
         }
       })
