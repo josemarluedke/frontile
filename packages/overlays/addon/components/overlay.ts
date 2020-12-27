@@ -5,13 +5,13 @@ import { later } from '@ember/runloop';
 import { getDOM, getElementById } from '../-private/dom';
 
 export interface OverlayArgs {
-  /*
+  /**
    * Whether to render in place or in the specified/default destination
    * @defaultValue false
    */
   renderInPlace?: boolean;
 
-  /*
+  /**
    * The destination where the overlay will be inserted, defaults to
    * `document.body`
    * @defaultValue undefined
