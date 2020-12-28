@@ -1,8 +1,23 @@
 import Component from '@glimmer/component';
 
 interface ButtonArgs {
+  /**
+   * The HTML type of the button
+   *
+   * @defaultValue 'button'
+   */
   type?: 'button' | 'submit' | 'reset';
+
+  /**
+   * The button appearance
+   *
+   * @defaultValue 'default'
+   */
   appearance?: 'default' | 'outlined' | 'minimal';
+
+  /**
+   * The intent of the button
+   */
   intent?: 'primary' | 'success' | 'warning' | 'danger';
   isXSmall?: boolean;
   isSmall?: boolean;

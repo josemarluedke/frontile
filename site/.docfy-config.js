@@ -63,12 +63,19 @@ module.exports = {
       pattern: '**/*.md',
       urlPrefix: 'docs/core',
       urlSchema: 'manual'
+    },
+    {
+      root: path.resolve(__dirname, '../packages/buttons/addon'),
+      pattern: '**/*.md',
+      urlPrefix: 'docs/buttons',
+      urlSchema: 'manual'
     }
   ],
   labels: {
     components: 'Components',
     docs: 'Documentation',
     core: '@frontile/core',
+    buttons: '@frontile/buttons',
     accessibility: 'Accessibility'
   }
 };
