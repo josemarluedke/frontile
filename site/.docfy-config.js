@@ -73,11 +73,11 @@ module.exports = {
     accessibility: 'Accessibility',
     components: 'Components',
     docs: 'Documentation',
-    core: '@frontile/core',
-    buttons: '@frontile/buttons',
-    overlays: '@frontile/overlays',
-    notifications: '@frontile/notifications',
-    forms: '@frontile/forms',
-    'changeset-form': '@frontile/changeset-form'
+    core: 'Core',
+    buttons: 'Buttons',
+    overlays: 'Overlays',
+    notifications: 'Notifications',
+    forms: 'Forms',
+    'changeset-form': 'Changeset Form'
   }
 };
