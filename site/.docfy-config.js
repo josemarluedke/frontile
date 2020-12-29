@@ -52,24 +52,15 @@ module.exports = {
       pattern: '**/*.md',
       urlPrefix: 'docs'
     },
-    {
-      root: path.resolve(__dirname, '../packages/core/docs'),
-      pattern: '**/*.md',
-      urlPrefix: 'docs/core',
-      urlSchema: 'manual'
-    },
-    {
-      root: path.resolve(__dirname, '../packages/core/addon'),
-      pattern: '**/*.md',
-      urlPrefix: 'docs/core',
-      urlSchema: 'manual'
-    },
-    {
-      root: path.resolve(__dirname, '../packages/buttons/addon'),
-      pattern: '**/*.md',
-      urlPrefix: 'docs/buttons',
-      urlSchema: 'manual'
-    }
+
+    ...['core', 'buttons'].map((pkgName) => {
+      return {
+        root: path.resolve(__dirname, `../packages/${pkgName}`),
+        pattern: '(docs|addon)/**/*.md',
+        urlPrefix: `docs/${pkgName}`,
+        urlSchema: 'manual'
+      };
+    })
   ],
   labels: {
     components: 'Components',

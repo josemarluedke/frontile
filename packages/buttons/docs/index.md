@@ -4,11 +4,11 @@ order: 1
 url: /
 ---
 
-# Core Installation
+# Buttons Installation
 
 
 ```
-ember install @frontile/core
+ember install @frontile/buttons
 ```
 
 ```js
@@ -19,14 +19,13 @@ module.exports = {
     // ...
     options: {
       whitelist: [
-        /^close-button/,
-        /^visually-hidden/
+        /^btn/,
       ]
     }
   },
   theme: {
     // ...
   },
-  plugins: [require('@frontile/core/tailwind')]
+  plugins: [require('@frontile/buttons/tailwind')]
 };
 ```
