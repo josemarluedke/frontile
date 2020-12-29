@@ -6,7 +6,8 @@ import { OverlayArgs } from '../overlay';
 interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**
    * The name of the transition to be used in the modal.
-   * @defaultValue `overlay-transition--slide-from-[placement]`
+   *
+   * @defaultValue 'overlay-transition--slide-from-[placement]'
    */
   transitionName?: string;
 
@@ -22,12 +23,11 @@ interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**
    * If set to false, the close button will not be displayed.
    *
-   *
    * @defaultValue true
    */
   allowCloseButton?: boolean;
 
-  /*
+  /**
    * The Close Button size.
    */
   closeButtonSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -36,16 +36,16 @@ interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
    * The Drawer can appear from any side of the screen. The 'placement'
    * option allows to choose where it appears from.
    *
-   * @defaultValue `right`
+   * @defaultValue 'right'
    */
   placement?: 'top' | 'bottom' | 'left' | 'right';
 
   /**
    * The Drawer size.
    *
-   * @defaultValue `md`
+   * @defaultValue 'md'
    */
-  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 export default class Drawer extends Component<DrawerArgs> {
