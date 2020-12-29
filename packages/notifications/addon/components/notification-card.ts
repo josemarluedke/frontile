@@ -11,8 +11,9 @@ interface NotificationCardArgs {
   notification: Notification;
   placement: NotificationsContainerArgs['placement'];
 
-  /*
+  /**
    * Spacing for each notification, in px.
+   *
    * @defaultValue 16
    */
   spacing?: number;
