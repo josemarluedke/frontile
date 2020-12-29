@@ -76,6 +76,18 @@ You can compose appearance with intents and more to create the button that best 
 <Button @isXSmall={{true}} @intent="danger">Button</Button>
 ```
 
+You can also use TailwindCSS classes to customize even further.
+
+```hbs preview-template
+<Button
+  @appearance="outlined"
+  @intent="primary"
+  class="px-20 py-2 italic"
+>
+  Button
+</Button>
+```
+
 ## API
 
 <ArgsTable @of="Button" />
