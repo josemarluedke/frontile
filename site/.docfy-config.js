@@ -53,20 +53,31 @@ module.exports = {
       urlPrefix: 'docs'
     },
 
-    ...['core', 'buttons'].map((pkgName) => {
+    ...[
+      'buttons',
+      'changeset-form',
+      'core',
+      'forms',
+      'notifications',
+      'overlays'
+    ].map((pkgName) => {
       return {
         root: path.resolve(__dirname, `../packages/${pkgName}`),
-        pattern: '(docs|addon)/**/*.md',
+        pattern: '(docs|addon)/**/**/*.md',
         urlPrefix: `docs/${pkgName}`,
         urlSchema: 'manual'
       };
     })
   ],
   labels: {
+    accessibility: 'Accessibility',
     components: 'Components',
     docs: 'Documentation',
     core: '@frontile/core',
     buttons: '@frontile/buttons',
-    accessibility: 'Accessibility'
+    overlays: '@frontile/overlays',
+    notifications: '@frontile/notifications',
+    forms: '@frontile/forms',
+    'changeset-form': '@frontile/changeset-form'
   }
 };
