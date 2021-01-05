@@ -13,7 +13,7 @@ module.exports = {
   purge: {
     // ...
     options: {
-      whitelist: [
+      safelist: [
         /^overlay/,
         /^modal/,
         /^drawer/
