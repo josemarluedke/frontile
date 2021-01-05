@@ -13,7 +13,7 @@ module.exports = {
   purge: {
     // ...
     options: {
-      whitelist: [
+      safelist: [
         /^form-field-checkbox/,
         /^form-field-feedback/,
         /^form-field-hint/,

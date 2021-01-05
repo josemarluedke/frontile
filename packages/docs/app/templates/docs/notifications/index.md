@@ -13,7 +13,7 @@ module.exports = {
   purge: {
     // ...
     options: {
-      whitelist: [
+      safelist: [
         /^notifications-container/,
         /^notification-card/,
         /^notification-transition/
