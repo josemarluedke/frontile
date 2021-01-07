@@ -6,15 +6,16 @@ import safeStyles from '@frontile/core/utils/safe-styles';
 const waiter = buildWaiter('@frontile/core:collapsible');
 
 interface CollapsibleArgs {
-  /*
+  /**
    * If true, the content will be visible
    */
   isOpen: boolean;
 
-  /*
+  /**
    * The height for the content in it's collapsed state.
+   * The unit of the value should be included, eg. '10px'.
    *
-   * @defaultValue `0`
+   * @defaultValue 0
    */
   initialHeight?: string;
 }

@@ -1,3 +1,11 @@
+---
+order: 1
+---
+
+# Usage
+
+Simple usage example
+
 ```hbs template
 <div class="max-w-md">
   <button
