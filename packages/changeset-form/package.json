@@ -1,6 +1,6 @@
 {
   "name": "@frontile/changeset-form",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Component Library for Ember Octane apps: ChangesetForm",
   "keywords": [
     "ember-addon"
@@ -22,7 +22,7 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "@frontile/forms": "^0.9.1",
+    "@frontile/forms": "^0.9.2",
     "ember-changeset": "^3.10.5",
     "ember-changeset-validations": "^3.10.3",
     "ember-cli-babel": "^7.23.0",
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@ember/optional-features": "^2.0.0",
-    "@frontile/core": "^0.9.1",
+    "@frontile/core": "^0.9.2",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "@types/ember": "^3.16.2",
