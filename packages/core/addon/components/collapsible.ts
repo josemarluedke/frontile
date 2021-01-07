@@ -22,17 +22,19 @@ interface CollapsibleArgs {
 export default class Collapsible extends Component<CollapsibleArgs> {
   isInitiallyOpen = false;
   waiterToken?: unknown;
+  isCurrentlyOpen = false; // Internal value to track if open or not
 
   constructor(owner: unknown, args: CollapsibleArgs) {
     super(owner, args);
 
     if (this.args.isOpen) {
       this.isInitiallyOpen = true;
+      this.isCurrentlyOpen = true;
     }
   }
 
   get styles(): ReturnType<typeof safeStyles> {
-    let styles: Record<string, string | number> = { overflow: 'hidden' };
+    let styles: Record<string, string | number> = {};
 
     if (!this.isInitiallyOpen) {
       styles = {
@@ -42,11 +44,20 @@ export default class Collapsible extends Component<CollapsibleArgs> {
       };
     }
 
+    if (this.args.initialHeight) {
+      styles = {
+        ...styles,
+        overflow: 'hidden'
+      };
+    }
+
     return safeStyles(styles);
   }
 
   @action update(element: HTMLElement, [isOpen]: boolean[]): void {
-    this.waiterToken = waiter.beginAsync();
+    if (this.isCurrentlyOpen !== !!isOpen) {
+      this.waiterToken = waiter.beginAsync();
+    }
 
     if (isOpen) {
       this.expand(element);
@@ -58,6 +69,7 @@ export default class Collapsible extends Component<CollapsibleArgs> {
   @action onTransitionEnd(event: TransitionEvent): void {
     if (event.propertyName === 'height' && this.args.isOpen) {
       (event.target as HTMLElement).style.height = 'auto';
+      (event.target as HTMLElement).style.overflow = '';
     }
     if (this.waiterToken) {
       // when is opened, wait for height transition to finish
@@ -84,10 +96,12 @@ export default class Collapsible extends Component<CollapsibleArgs> {
   }
 
   expand(element: HTMLElement): void {
+    this.isCurrentlyOpen = true;
     element.style.transition = [
       this.heightTransision(0.4),
       this.opacityTransision(0.3)
     ].join(', ');
+    element.style.overflow = 'hidden';
 
     const height = element.scrollHeight;
     window.requestAnimationFrame(() => {
@@ -97,8 +111,10 @@ export default class Collapsible extends Component<CollapsibleArgs> {
   }
 
   contract(element: HTMLElement): void {
+    this.isCurrentlyOpen = false;
     const height = element.scrollHeight;
     element.style.transition = '';
+    element.style.overflow = 'hidden';
 
     window.requestAnimationFrame(() => {
       element.style.height = `${height}px`;
