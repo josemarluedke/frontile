@@ -20,7 +20,6 @@ module('Integration | Component | Collapsible', function (hooks) {
     assert.dom('[data-test-id=collapsible]').hasText('Content');
     assert.dom('[data-test-id=collapsible]').hasStyle({ height: '0px' });
     assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '0' });
-    assert.dom('[data-test-id=collapsible]').hasStyle({ overflow: 'hidden' });
   });
 
   test('renders content and starts open', async function (assert) {
@@ -39,7 +38,6 @@ module('Integration | Component | Collapsible', function (hooks) {
       .dom('[data-test-id=collapsible]')
       .doesNotHaveStyle({ height: '0px' });
     assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '1' });
-    assert.dom('[data-test-id=collapsible]').hasStyle({ overflow: 'hidden' });
   });
 
   test('expands content when opened; closes content when closed', async function (assert) {

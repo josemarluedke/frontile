@@ -1,9 +1,8 @@
 <div
-  {{did-update this.update @isOpen}}
-  {{on "transitionend" this.onTransitionEnd}}
-
   style={{this.styles}}
   ...attributes
+  {{did-update this.update @isOpen}}
+  {{on "transitionend" this.onTransitionEnd}}
 >
   {{yield}}
 </div>
