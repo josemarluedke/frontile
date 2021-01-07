@@ -17,6 +17,7 @@
 /packages/*/node_modules/
 /site/node_modules/
 /site/lib/docfy-theme/node_modules/
+/site/lib/docfy-theme/addon/components/args-data.js
 
 # misc
 /packages/*/coverage/
