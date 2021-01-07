@@ -44,7 +44,7 @@ export default class Collapsible extends Component<CollapsibleArgs> {
       };
     }
 
-    if (this.args.initialHeight) {
+    if (this.args.initialHeight || !this.isInitiallyOpen) {
       styles = {
         ...styles,
         overflow: 'hidden'
