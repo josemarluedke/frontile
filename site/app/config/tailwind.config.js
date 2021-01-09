@@ -14,6 +14,9 @@ module.exports = {
         },
         teal
       },
+      zIndex: {
+        1: '1'
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
