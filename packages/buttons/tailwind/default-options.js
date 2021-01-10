@@ -4,6 +4,7 @@ const defaultTheme = require('tailwindcss/resolveConfig')(
 
 const defaultConfig = {
   borderRadius: defaultTheme.borderRadius.DEFAULT,
+  focusBoxShadow: '0 0 0 3px rgba(59, 130, 246, 0.45)',
   default: {
     contrastColor: defaultTheme.colors.white,
     color: defaultTheme.colors.gray[700],
@@ -106,7 +107,7 @@ function defaultOptions({ config }) {
         borderColor: defaultTheme.colors.transparent,
         '&.focus-visible:focus': {
           outline: 'none',
-          boxShadow: defaultTheme.boxShadow.outline
+          boxShadow: config.focusBoxShadow
         },
         '&[disabled]': {
           opacity: '0.4',
