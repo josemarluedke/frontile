@@ -1,6 +1,6 @@
 {
   "name": "@frontile/buttons",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
     "ember-addon"
