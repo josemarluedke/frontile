@@ -17,6 +17,9 @@ module.exports = {
       zIndex: {
         1: '1'
       },
+      maxHeight: {
+        '(screen-16)': 'calc(100vh - 4rem)'
+      },
       typography: (theme) => ({
         DEFAULT: {
           css: {
