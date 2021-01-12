@@ -1,5 +1,4 @@
 'use strict';
-
 // Enable FastBoot Rehydration
 process.env.EXPERIMENTAL_RENDER_MODE_SERIALIZE = true;
 
@@ -83,6 +82,10 @@ module.exports = function (defaults) {
       }
     }
   });
+
+  app.import(
+    'node_modules/ember-basic-dropdown/vendor/ember-basic-dropdown.css'
+  );
 
   return app.toTree();
 };

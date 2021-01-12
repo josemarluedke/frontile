@@ -6,7 +6,10 @@ url: /
 
 # ChangesetForm Installation
 
+```
+ember install @frontile/form @frontile/changeset-form
+```
 
-```
-ember install @frontile/changeset-form
-```
+## Styles
+
+Refer to [Forms](../../forms/docs/index.md) installation for TailwindCSS setup.
