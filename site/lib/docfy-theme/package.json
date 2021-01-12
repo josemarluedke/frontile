@@ -2,6 +2,11 @@
   "name": "docfy-theme",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "test": "echo 'Tests ignored'",
+    "test:all": "echo 'Tests ignored'",
+    "try:one": "echo 'Tests ignored'"
+  },
   "dependencies": {
     "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.3.1",
