@@ -1,7 +1,3 @@
----
-category: components
----
-
 # Button
 
 The Button component can be used to trigger an action, such as submitting a form, opening a modal, and more.

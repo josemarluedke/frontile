@@ -1,7 +1,3 @@
----
-category: components
----
-
 # Overlay
 
 The Overlay component is the base for building interactions like Modal and Drawer.

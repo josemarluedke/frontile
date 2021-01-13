@@ -1,6 +1,5 @@
 ---
-category: components
-url: components/modal
+url: modal
 ---
 
 # Modal

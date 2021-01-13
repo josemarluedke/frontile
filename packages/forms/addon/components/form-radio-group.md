@@ -1,7 +1,3 @@
----
-category: components
----
-
 # FormRadioGroup
 
 ## API

@@ -1,6 +1,5 @@
 ---
-category: components
-url: components/drawer
+url: drawer
 ---
 
 # Drawer

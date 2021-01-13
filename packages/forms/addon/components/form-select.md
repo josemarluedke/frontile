@@ -1,7 +1,3 @@
----
-category: components
----
-
 # FormSelect
 
 We use [Ember Power Select](https://github.com/cibernox/ember-power-select/)

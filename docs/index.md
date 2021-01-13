@@ -17,12 +17,12 @@ applications today if you are in a supported Ember version. The project is
 still pre-version 1.0.0, so breaking changes can still occur.
 
 
-- [@frontile/core](/docs/core/accessibility/focus-management): Core package providing essential a11y components.
-- [@frontile/forms](/docs/forms): Components for working with forms.
-- [@frontile/changeset-form](/docs/changeset-form): Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
-- [@frontile/notifications](/docs/notifications): Package that provides toast-like notifications.
-- [@frontile/overlays](/docs/overlays): Components to render content over the UI, like Modal Dialogs.
-- [@frontile/buttons](/docs/buttons): Components for working with buttons.
+- `@frontile/core`: Core package providing essential a11y components.
+- `@frontile/forms`: Components for working with forms.
+- `@frontile/changeset-form`: Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
+- `@frontile/notifications`: Package that provides toast-like notifications.
+- `@frontile/overlays`: Components to render content over the UI, like Modal Dialogs.
+- `@frontile/buttons`: Components for working with buttons.
 
 ## Styles with Tailwind
 

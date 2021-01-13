@@ -1,6 +1,6 @@
 ---
 title: Usage
-url: /usage
+url: /
 ---
 
 # Notifications Usage

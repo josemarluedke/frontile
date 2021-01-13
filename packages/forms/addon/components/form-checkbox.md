@@ -1,7 +1,3 @@
----
-category: components
----
-
 # FormCheckbox
 
 ## API
