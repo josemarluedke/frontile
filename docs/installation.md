@@ -9,10 +9,13 @@ want in your project. Here you can find information on how to install all the pa
 
 
 ## Packages
-### Core
 
 Independently of what packages you are going to use, you will need to have the Core
 package installed. Some other packages use components defined in the Core.
+
+### Core
+
+Package providing essential a11y and base components.
 
 ```
 ember install @frontile/core
