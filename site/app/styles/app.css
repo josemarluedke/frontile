@@ -11,31 +11,29 @@
 @import './highlight.css';
 @import './docfy-demo.css';
 
-.prose {
-  & h2,
-  & h3,
-  & h4 {
-    /* Style anchor links on headings added by @nuxt/content */
-    & > a {
-      @apply ml-6;
+.prose h2,
+.prose h3,
+.prose h4,
+.docfy-demo__description__header__title {
+  & > a {
+    @apply ml-6;
+
+    &::before {
+      content: '#';
+      @apply text-green-500 -ml-6 pr-2 absolute opacity-100;
+    }
+
+    @screen lg {
+      @apply ml-0;
 
       &::before {
-        content: '#';
-        @apply text-green-500 leading-8 -ml-6 pr-2 absolute opacity-100;
-      }
-
-      @screen lg {
-        @apply ml-0;
-
-        &::before {
-          @apply opacity-0 pr-1;
-        }
+        @apply opacity-0 pr-1;
       }
     }
-    &:hover {
-      & > a::before {
-        @apply opacity-100;
-      }
+  }
+  &:hover {
+    & > a::before {
+      @apply opacity-100;
     }
   }
 }

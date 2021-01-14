@@ -7,14 +7,13 @@
 }
 
 .docfy-demo__description {
-  @apply p-4 border-t border-l border-r;
+  @apply pb-5;
 
   &__header {
-    @apply flex justify-between;
+    @apply flex justify-between items-center mb-4;
 
     &__title {
-      @apply mb-4 text-xl font-semibold leading-tight;
-      @apply text-teal-700;
+      @apply text-xl font-semibold;
     }
 
     &__edit-url {
@@ -23,10 +22,6 @@
         @apply text-teal-600;
       }
     }
-  }
-
-  &__content {
-    /* @apply markdown; */
   }
 }
 
