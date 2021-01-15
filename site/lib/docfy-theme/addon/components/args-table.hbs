@@ -22,46 +22,48 @@
 
     <tbody>
       {{#each this.component.args as |arg|}}
-        <tr>
-          <td>
-            <code>
-              {{arg.name}}
-            </code>
-          </td>
-          <td>
-            <code>
-              {{#if (eq arg.type.name "enum")}}
-                {{#each arg.type.options as |option index|}}
-                  {{#if index}}
-                    |
-                  {{/if}}
-                  {{option}}
-                {{/each}}
-              {{else}}
-                {{arg.type.name}}
-              {{/if}}
-            </code>
-          </td>
-          <td>
-            {{arg.description}}
-          </td>
-          <td>
-            {{#if arg.isRequired}}
-              Yes
-            {{else}}
-              -
-            {{/if}}
-          </td>
-          <td>
-            {{#if arg.defaultValue}}
+        {{#unless arg.tags.ignore}}
+          <tr>
+            <td>
               <code>
-                {{arg.defaultValue}}
+                {{arg.name}}
               </code>
-            {{else}}
-              -
-            {{/if}}
-          </td>
-        </tr>
+            </td>
+            <td>
+              <code>
+                {{#if (eq arg.type.name "enum")}}
+                  {{#each arg.type.options as |option index|}}
+                    {{#if index}}
+                      |
+                    {{/if}}
+                    {{option}}
+                  {{/each}}
+                {{else}}
+                  {{arg.type.name}}
+                {{/if}}
+              </code>
+            </td>
+            <td>
+              {{arg.description}}
+            </td>
+            <td>
+              {{#if arg.isRequired}}
+                Yes
+              {{else}}
+                -
+              {{/if}}
+            </td>
+            <td>
+              {{#if arg.defaultValue}}
+                <code>
+                  {{arg.defaultValue}}
+                </code>
+              {{else}}
+                -
+              {{/if}}
+            </td>
+          </tr>
+        {{/unless}}
       {{/each}}
     </tbody>
   </table>
