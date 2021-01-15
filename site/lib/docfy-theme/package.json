@@ -17,6 +17,9 @@
     "ember-addon"
   ],
   "devDependencies": {
-    "glimmer-docgen-typescript": "^0.1.0"
+    "glimmer-docgen-typescript": "^0.1.1",
+    "lowlight": "^1.18.0",
+    "rehype-stringify": "^8.0.0",
+    "unified": "^9.2.0"
   }
 }
