@@ -1,0 +1,77 @@
+.docfy-demo {
+  @apply mt-8 mb-12;
+}
+
+.docfy-demo__example {
+  @apply p-4 border-t border-l border-r rounded-t;
+}
+
+.docfy-demo__description {
+  @apply pb-5;
+
+  &__header {
+    @apply flex justify-between items-center mb-4;
+
+    &__title {
+      @apply text-xl font-semibold;
+    }
+
+    &__edit-url {
+      @apply text-xs;
+      &:hover {
+        @apply text-primary-600;
+      }
+    }
+  }
+}
+
+.docfy-demo__snippets {
+  &__tabs {
+    @apply px-2 border-t border-l border-r;
+
+    &__button {
+      @apply p-2 mr-2 border-b-4 border-transparent;
+
+      &--active,
+      &:hover {
+        @apply border-primary-700;
+      }
+    }
+  }
+}
+
+.docfy-demo__snippet {
+  @apply border rounded-b;
+
+  pre {
+    @apply p-4;
+    @apply flex text-gray-200 bg-gray-900;
+    @apply text-sm leading-normal;
+    @apply font-mono;
+    @apply rounded-b;
+    scrollbar-width: none;
+  }
+}
+
+.dark {
+  .docfy-demo__example {
+    @apply bg-white text-gray-900;
+    /* Temorary until Frontile supports dark mode */
+  }
+
+  .docfy-demo__example,
+  .docfy-demo__description,
+  .docfy-demo__snippets__tabs,
+  .docfy-demo__snippet {
+    @apply border-gray-700;
+  }
+
+  .docfy-demo__snippet pre {
+    @apply bg-gray-1000;
+    @apply border-gray-700;
+  }
+
+  .docfy-demo__description__header__title {
+    @apply text-primary-500;
+  }
+}

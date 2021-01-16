@@ -5,7 +5,9 @@ import { action } from '@ember/object';
 import { Notification } from '../';
 
 export interface NotificationsContainerArgs {
-  /*
+  /**
+   * The placement of the notifications
+   *
    * @defaultValue 'bottom-right'
    */
   placement?:
@@ -16,8 +18,9 @@ export interface NotificationsContainerArgs {
     | 'bottom-center'
     | 'bottom-right';
 
-  /*
+  /**
    * Spacing for each notification, in px.
+   *
    * @defaultValue 16
    */
   spacing?: number;

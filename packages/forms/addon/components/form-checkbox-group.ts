@@ -3,16 +3,23 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
 interface FormCheckboxGroupArgs {
+  /** The group label */
   label?: string;
+  /** A help text to be displayed */
   hint?: string;
+  /** If the form has been submitted, used to force displaying errors */
   hasSubmitted?: boolean;
+  /** If has errors */
   hasError?: boolean;
+  /** A list of errors or a single text describing the error */
   errors?: string[] | string;
+  /** CSS classes to be added in the container element */
   containerClass?: string;
+  /** The size */
   size?: 'sm' | 'lg';
+  /** If the Checkbox should be in one line */
   isInline?: boolean;
-
-  // Callback when onchange is triggered
+  /** Default callback added to the yielded FormCheckbox component, called when onchange is triggered */
   onChange?: (value: unknown, event: Event) => void;
 }
 

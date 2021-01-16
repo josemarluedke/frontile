@@ -5,11 +5,19 @@ import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 
 interface ChangesetFormArgs {
+  /** Changeset Object */
   changeset: BufferedChangeset;
 
+  /**
+   * Run Changeset execute method instead of save
+   * @defaultValue false
+   * */
   runExecuteInsteadOfSave?: boolean;
 
+  /** Callback exeuted when from `onsubmit` event is triggered */
   onSubmit?: (data: unknown, event: Event) => void;
+
+  /** Callback exeuted when from `onreset` event is triggered */
   onReset?: (data: unknown, event: Event) => void;
 }
 

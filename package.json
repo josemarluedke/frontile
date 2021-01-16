@@ -2,7 +2,9 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "site",
+    "site/lib/docfy-theme"
   ],
   "scripts": {
     "lint:hbs": "ember-template-lint .",

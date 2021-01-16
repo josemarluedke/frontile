@@ -3,26 +3,43 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
 interface FormInputArgs {
+  /**
+   * The value to be used in the input.
+   * You must also pass `onChange` or `onInput` to update its value.
+   */
   value: unknown;
+
+  /**
+   * The input type
+   * @defaultValue 'text'
+   */
   type?: string;
+
+  /** The group label */
   label?: string;
+  /** A help text to be displayed */
   hint?: string;
+  /** If the form has been submitted, used to force displaying errors */
   hasSubmitted?: boolean;
+  /** If has errors */
   hasError?: boolean;
+  /** A list of errors or a single text describing the error */
   errors?: string[] | string;
+  /** CSS classes to be added in the container element */
   containerClass?: string;
+  /** The size */
   size?: 'sm' | 'lg';
 
-  // Callback when oninput is triggered
+  /** Callback when oninput is triggered */
   onInput?: (value: string, event: InputEvent) => void;
 
-  // Callback when onchange is triggered
+  /** Callback when onchange is triggered */
   onChange?: (value: string, event: InputEvent) => void;
 
-  // Callback when onfocus is triggered
+  /** Callback when onfocus is triggered */
   onFocusIn?: (event: FocusEvent) => void;
 
-  // Callback when onblur is triggered
+  /** Callback when onblur is triggered */
   onFocusOut?: (event: FocusEvent) => void;
 }
 

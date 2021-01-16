@@ -8,11 +8,19 @@ import {
 } from 'ember-power-select/addon/components/power-select';
 
 interface FormSelectArgs extends PowerSelectArgs {
+  /** The input field label */
   label?: string;
+  /** A help text to be displayed */
+  hint?: string;
+  /** If the form has been submitted, used to force displaying errors */
   hasSubmitted?: boolean;
+  /** If has errors */
   hasError?: boolean;
+  /** A list of errors or a single text describing the error */
   errors?: string[] | string;
+  /** CSS classes to be added in the container element */
   containerClass?: string;
+  /** The size */
   size?: 'sm' | 'lg';
 
   // Same as onFocus from ember-power-select

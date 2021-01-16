@@ -9,6 +9,8 @@
 /node_modules/
 /packages/**/node_modules/
 /packages/**/dist/
+/site/node_modules/
+/site/lib/**/node_modules/
 
 # misc
 /.env*
