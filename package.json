@@ -9,7 +9,7 @@
   "scripts": {
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts",
-    "start": "yarn workspace docs start",
+    "start": "yarn workspace site start",
     "test": "lerna run --parallel test -- --test-port=",
     "test:all": "yarn workspaces run test:all",
     "try:one": "yarn workspaces run try:one"

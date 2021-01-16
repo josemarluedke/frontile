@@ -1,3 +1,0 @@
-# Notifications
-
-<Demo::Notifications::Demo />
