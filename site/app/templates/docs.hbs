@@ -30,7 +30,7 @@
               href={{page.editUrl}}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center text-xs"
+              class="flex items-center text-xs hover:text-primary-700 dark:hover:text-primary-400"
             >
               <svg class="w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -59,7 +59,7 @@
 
               <DocfyLink
                 @to={{previous.url}}
-                class="text-lg text-teal-700 dark:text-teal-500"
+                class="text-lg text-primary-700 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-400"
               >
                 {{previous.title}}
               </DocfyLink>
@@ -69,7 +69,7 @@
             {{#if next}}
               <DocfyLink
                 @to={{next.url}}
-                class="text-lg text-teal-700 dark:text-teal-500"
+                class="text-lg text-primary-700 hover:text-primary-900 dark:text-primary-500 dark:hover:text-primary-400"
               >
                 {{next.title}}
               </DocfyLink>

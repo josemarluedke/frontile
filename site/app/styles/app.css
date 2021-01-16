@@ -20,7 +20,7 @@
 
     &::before {
       content: '#';
-      @apply text-green-500 -ml-6 pr-2 absolute opacity-100;
+      @apply text-primary-500 -ml-6 pr-2 absolute opacity-100;
     }
 
     @screen lg {

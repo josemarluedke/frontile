@@ -1,7 +1,7 @@
 <button
   type="button"
-  class="flex items-center px-4 py-2 border rounded lg:hidden dark:border-green-800
-  {{if this.isOpen "bg-green-200 dark:bg-green-1000"}}"
+  class="flex items-center px-4 py-2 border rounded lg:hidden dark:border-primary-800
+  {{if this.isOpen "bg-primary-200 dark:bg-primary-900"}}"
   {{on "click" this.toggle}}
 >
   <svg class="w-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -27,8 +27,8 @@
       <li>
         <DocfyLink
           @to={{page.url}}
-          class="pl-2 py-1 hover:text-green-800 dark-hover:text-green-500 text-sm block rounded hover:bg-green-100"
-          @activeClass="text-green-800 dark:text-green-500 bg-green-100"
+          class="pl-2 py-1 hover:text-primary-800 dark:hover:text-primary-100 text-sm block rounded hover:bg-primary-100 dark:hover:bg-primary-900"
+          @activeClass="text-primary-800 dark:text-primary-100 bg-primary-100 dark:bg-primary-900"
         >
           {{page.title}}
         </DocfyLink>
@@ -37,7 +37,9 @@
 
     {{#each @node.children as |child|}}
       <li>
-        <div class="pt-2 pl-2 pb-2 text-xs text-green-700">
+        <div
+          class="pt-2 pl-2 pb-2 text-xs text-primary-700 dark:text-primary-300"
+        >
           {{child.label}}
         </div>
 
@@ -46,8 +48,8 @@
             <li class="truncate">
               <DocfyLink
                 @to={{page.url}}
-                class="pl-6 py-1 hover:text-green-800 dark-hover:text-green-500 text-sm block rounded hover:bg-green-100"
-                @activeClass="text-green-800 dark:text-green-500 bg-green-100"
+                class="pl-6 py-1 hover:text-primary-800 dark:hover:text-primary-100 text-sm block rounded hover:bg-primary-100 dark:hover:bg-primary-900"
+                @activeClass="text-primary-800 dark:text-primary-100 bg-primary-100 dark:bg-primary-900"
               >
                 {{page.title}}
               </DocfyLink>
@@ -56,7 +58,9 @@
 
           {{#each child.children as |subChild|}}
             <li>
-              <div class="pl-6 pt-2 pb-2 text-xs text-green-700">
+              <div
+                class="pl-6 pt-2 pb-2 text-xs text-primary-700 dark:text-primary-300"
+              >
                 {{subChild.label}}
               </div>
 
@@ -65,8 +69,8 @@
                   <li class="truncate">
                     <DocfyLink
                       @to={{page.url}}
-                      class="pl-10 py-1 hover:text-green-800 dark-hover:text-green-500 text-sm block rounded hover:bg-green-100"
-                      @activeClass="text-green-800 dark:text-green-500 bg-green-100"
+                      class="pl-10 py-1 hover:text-primary-800 dark:hover:text-primary-100 text-sm block rounded hover:bg-primary-100 dark:hover:bg-primary-900"
+                      @activeClass="text-primary-800 dark:text-primary-100 bg-primary-100 dark:bg-primary-900"
                     >
                       {{page.title}}
                     </DocfyLink>

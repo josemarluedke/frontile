@@ -2,6 +2,8 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
 
 module.exports = {
+  darkMode: 'class',
+
   purge: [],
   theme: {
     extend: {
@@ -12,7 +14,8 @@ module.exports = {
         gray: {
           1000: '#12161f'
         },
-        teal
+        teal,
+        primary: teal
       },
       zIndex: {
         1: '1'
@@ -27,7 +30,7 @@ module.exports = {
             color: theme('colors.gray.500'),
             fontFamily: ['Inter', ...defaultTheme.fontFamily.sans].join(', '),
             a: {
-              color: theme('colors.green.700'),
+              color: theme('colors.primary.700'),
               fontWeight: theme('fontWeight.medium'),
               textDecoration: 'none'
             },
@@ -52,11 +55,77 @@ module.exports = {
             'code::before': null,
             'code::after': null
           }
+        },
+        light: {
+          css: [
+            {
+              color: theme('colors.gray.300'),
+              '[class~="lead"]': {
+                color: theme('colors.gray.200')
+              },
+              a: {
+                color: theme('colors.white')
+              },
+              strong: {
+                color: theme('colors.white')
+              },
+              'ol > li::before': {
+                color: theme('colors.gray.400')
+              },
+              'ul > li::before': {
+                backgroundColor: theme('colors.gray.600')
+              },
+              hr: {
+                borderColor: theme('colors.gray.200')
+              },
+              blockquote: {
+                color: theme('colors.gray.200'),
+                borderLeftColor: theme('colors.gray.600')
+              },
+              h1: {
+                color: theme('colors.white')
+              },
+              h2: {
+                color: theme('colors.white')
+              },
+              h3: {
+                color: theme('colors.white')
+              },
+              h4: {
+                color: theme('colors.white')
+              },
+              'figure figcaption': {
+                color: theme('colors.gray.400')
+              },
+              code: {
+                backgroundColor: theme('colors.gray.900'),
+                color: theme('colors.white')
+              },
+              'a code': {
+                color: theme('colors.white')
+              },
+              pre: {
+                color: theme('colors.gray.200'),
+                backgroundColor: theme('colors.gray.900')
+              },
+              thead: {
+                color: theme('colors.white'),
+                borderBottomColor: theme('colors.gray.400')
+              },
+              'tbody tr': {
+                borderBottomColor: theme('colors.gray.600')
+              }
+            }
+          ]
         }
       })
     }
   },
-  variants: {},
+  variants: {
+    extend: {
+      typography: ['dark']
+    }
+  },
   plugins: [
     require('@frontile/core/tailwind'),
     require('@frontile/forms/tailwind'),

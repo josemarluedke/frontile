@@ -19,7 +19,7 @@
     &__edit-url {
       @apply text-xs;
       &:hover {
-        @apply text-teal-600;
+        @apply text-primary-600;
       }
     }
   }
@@ -34,7 +34,7 @@
 
       &--active,
       &:hover {
-        @apply border-teal-700;
+        @apply border-primary-700;
       }
     }
   }
@@ -53,7 +53,12 @@
   }
 }
 
-.mode-dark {
+.dark {
+  .docfy-demo__example {
+    @apply bg-white text-gray-900;
+    /* Temorary until Frontile supports dark mode */
+  }
+
   .docfy-demo__example,
   .docfy-demo__description,
   .docfy-demo__snippets__tabs,
@@ -67,6 +72,6 @@
   }
 
   .docfy-demo__description__header__title {
-    @apply text-teal-500;
+    @apply text-primary-500;
   }
 }

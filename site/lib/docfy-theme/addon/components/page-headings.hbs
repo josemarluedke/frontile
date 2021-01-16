@@ -8,11 +8,11 @@
           <li class="pb-2 border-l border-gray-400 dark:border-gray-700">
             <a
               href="#{{heading.id}}"
-              class="block px-2 py-1 border-l-2 hover:text-green-700
+              class="block px-2 py-1 border-l-2 hover:text-primary-700 dark:hover:text-primary-300
               {{
                 if
                 (docfy-eq heading.id @currentHeadingId)
-                "border-green-700 text-green-700 dark:border-green-500 dark:text-green-500"
+                "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
                 "border-transparent"
               }}"
               {{on "click" this.onClick}}
@@ -26,11 +26,11 @@
                   <li>
                     <a
                       href="#{{subHeading.id}}"
-                      class="block pl-6 py-1 border-l-2  border-l-2 hover:text-green-700
+                      class="block pl-6 py-1 border-l-2  border-l-2 hover:text-primary-700 dark:hover:text-primary-300
                       {{
                         if
                         (docfy-eq subHeading.id @currentHeadingId)
-                        "border-green-700 text-green-700 dark:border-green-500 dark:text-green-500"
+                        "border-primary-700 text-primary-700 dark:border-primary-500 dark:text-primary-500"
                         "border-transparent"
                       }}"
                       {{on "click" this.onClick}}

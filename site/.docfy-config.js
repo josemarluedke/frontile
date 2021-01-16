@@ -22,7 +22,7 @@ const withProse = (tree) => {
     if (!insideProse && !shouldUnproseNode(node)) {
       insideProse = true;
       return [
-        { type: 'html', value: '<div class="prose">' },
+        { type: 'html', value: '<div class="prose dark:prose-light">' },
         node,
         ...(i === tree.children.length - 1
           ? [{ type: 'html', value: '</div>' }]
