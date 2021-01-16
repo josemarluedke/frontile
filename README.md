@@ -19,10 +19,7 @@ practices from the community and providing both low-level and high-level compone
 
 ## Documentation
 
-Visit [frontile.dev](https://frontile.dev/) to read the docs
-and see live demos.
-
-**Docs are early development and will have a big re-write/re-organization in near future.**
+Visit [frontile.dev](https://frontile.dev/) to read the docs and see live demos.
 
 
 ## What is available?
@@ -45,7 +42,7 @@ plugins. It is perfect if your app has Tailwind; however, some apps don't have o
 don't necessarily want to write styles using it. For these, there are two alternatives:
 
 - Write all the styles yourself targeting our classes, which follows
-[BEM naming](http://getbem.com/naming/) conventions.
+[BEM-like naming](http://getbem.com/naming/) conventions.
 - Only add Tailwind for our styles. This approach is yet to be proven, but in theory,
 you should be able to set up Tailwind and only allow it to include Frontile styles.
 
