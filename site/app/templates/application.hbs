@@ -1,12 +1,10 @@
 {{page-title "Frontile"}}
 
-<div class="sticky top-0 z-1 h-16 bg-gray-1000">
+<div class="sticky top-0 z-1 h-16 bg-brand">
   <div class="flex h-full px-4 mx-auto sm:px-6 max-w-screen-2xl">
     <div class="flex items-center mr-4">
-      <LinkTo @route="index" class="flex items-center text-primary-500">
-        <span class="pt-1 ml-2 text-2xl font-semibold leading-none">
-          Frontile
-        </span>
+      <LinkTo @route="index" class="text-white">
+        <Logo class="w-24" />
       </LinkTo>
     </div>
     <div class="flex items-center justify-between flex-grow px-2 md:px-6">
@@ -14,8 +12,8 @@
         <li>
           <LinkTo
             @route="docs"
-            class="pb-1 text-gray-200 border-b-2 border-transparent hover:border-primary-500 focus:outline-none focus-visible:shadow-outline"
-            @activeClass="border-primary-500"
+            class="pb-1 text-gray-200 border-b-2 border-transparent hover:border-gray-200 focus:outline-none focus-visible:shadow-outline"
+            @activeClass="border-gray-200"
           >
             Documentation
           </LinkTo>

@@ -15,7 +15,8 @@ module.exports = {
           1000: '#12161f'
         },
         teal,
-        primary: teal
+        primary: teal,
+        brand: '#034166'
       },
       zIndex: {
         1: '1'
