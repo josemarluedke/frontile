@@ -19,7 +19,8 @@
     "generate-args-data": "node lib/docfy-theme/generate-args-data.js"
   },
   "devDependencies": {
-    "@docfy/ember": "^0.3.0",
+    "@docfy/ember": "^0.4.0",
+    "@docfy/plugin-with-prose": "^0.4.0",
     "@ember/optional-features": "^2.0.0",
     "@frontile/buttons": "^0.9.0",
     "@frontile/changeset-form": "^0.9.0",
