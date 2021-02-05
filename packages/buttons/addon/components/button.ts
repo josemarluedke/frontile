@@ -13,7 +13,7 @@ interface ButtonArgs {
    *
    * @defaultValue 'default'
    */
-  appearance?: 'default' | 'outlined' | 'minimal';
+  appearance?: 'default' | 'outlined' | 'minimal' | 'custom';
 
   /**
    * The intent of the button
@@ -52,6 +52,8 @@ export default class Button extends Component<ButtonArgs> {
       names.push('btn-outlined');
     } else if (this.args.appearance === 'minimal') {
       names.push('btn-minimal');
+    } else if (this.args.appearance === 'custom') {
+      names.push('btn-custom');
     } else {
       names.push('btn');
     }

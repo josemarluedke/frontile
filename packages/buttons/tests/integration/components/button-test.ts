@@ -26,6 +26,9 @@ module('Integration | Component | Button', function (hooks) {
       test('it adds class for default appearance', async function (assert) {
         await render(hbs`<Button data-test-id="button">My Button</Button>`);
 
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
         assert.dom('[data-test-id="button"]').hasClass('btn');
       });
 
@@ -36,17 +39,30 @@ module('Integration | Component | Button', function (hooks) {
 
         assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
         assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
         assert.dom('[data-test-id="button"]').hasClass('btn-outlined');
       });
 
-      test('it adds class for outlined appearance', async function (assert) {
+      test('it adds class for minimal appearance', async function (assert) {
         await render(
           hbs`<Button @appearance="minimal" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
         assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
         assert.dom('[data-test-id="button"]').hasClass('btn-minimal');
+      });
+
+      test('it adds class for custom appearance', async function (assert) {
+        await render(
+          hbs`<Button @appearance="custom" data-test-id="button">My Button</Button>`
+        );
+
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
+        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+        assert.dom('[data-test-id="button"]').hasClass('btn-custom');
       });
     });
 
