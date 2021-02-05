@@ -119,41 +119,41 @@ module('Integration | Component | Button', function (hooks) {
     });
 
     module('sizes', () => {
-      test('it adds class @isXSmall', async function (assert) {
+      test('it adds class size xs"', async function (assert) {
         await render(
-          hbs`<Button @isXSmall={{true}} data-test-id="button">My Button</Button>`
+          hbs`<Button @size="xs" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').hasClass('btn--xs');
       });
 
-      test('it adds class @isSmall', async function (assert) {
+      test('it adds class size sm', async function (assert) {
         await render(
-          hbs`<Button @isSmall={{true}} data-test-id="button">My Button</Button>`
+          hbs`<Button @size="sm" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').hasClass('btn--sm');
       });
 
-      test('it adds class @isLarge', async function (assert) {
+      test('it adds class size lg', async function (assert) {
         await render(
-          hbs`<Button @isLarge={{true}} data-test-id="button">My Button</Button>`
+          hbs`<Button @size="lg" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').hasClass('btn--lg');
       });
 
-      test('it adds class @isXLarge', async function (assert) {
+      test('it adds class size xl', async function (assert) {
         await render(
-          hbs`<Button @isXLarge={{true}} data-test-id="button">My Button</Button>`
+          hbs`<Button @size="xl" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').hasClass('btn--xl');
       });
 
-      test('it adds class @isLarge with appearance', async function (assert) {
+      test('it adds class size with appearance', async function (assert) {
         await render(
-          hbs`<Button @appearance="outlined" @isLarge={{true}} data-test-id="button">My Button</Button>`
+          hbs`<Button @appearance="outlined" @size="lg" data-test-id="button">My Button</Button>`
         );
 
         assert.dom('[data-test-id="button"]').hasClass('btn-outlined--lg');
