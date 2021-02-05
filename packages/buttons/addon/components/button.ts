@@ -19,10 +19,15 @@ interface ButtonArgs {
    * The intent of the button
    */
   intent?: 'primary' | 'success' | 'warning' | 'danger';
-  isXSmall?: boolean;
-  isSmall?: boolean;
-  isLarge?: boolean;
-  isXLarge?: boolean;
+
+  /**
+   * The size of the button
+   */
+  size?: 'xs' | 'sm' | 'lg' | 'xl';
+
+  /**
+   * Disable rendering the button element. It yields an object with classNames instead.
+   */
   isRenderless?: boolean;
 }
 
@@ -32,17 +37,6 @@ export default class Button extends Component<ButtonArgs> {
       return this.args.type;
     }
     return 'button';
-  }
-
-  get size(): string | undefined {
-    const sizes: { [key: string]: boolean | undefined } = {
-      xs: this.args.isXSmall,
-      sm: this.args.isSmall,
-      lg: this.args.isLarge,
-      xl: this.args.isXLarge
-    };
-
-    return Object.keys(sizes).find((key: string) => sizes[key] === true);
   }
 
   get classNames(): string {
@@ -58,8 +52,8 @@ export default class Button extends Component<ButtonArgs> {
       names.push('btn');
     }
 
-    if (this.size) {
-      names.push(`${names[0]}--${this.size}`);
+    if (this.args.size) {
+      names.push(`${names[0]}--${this.args.size}`);
     }
 
     if (this.args.intent) {

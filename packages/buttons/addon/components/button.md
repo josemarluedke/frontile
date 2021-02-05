@@ -48,11 +48,11 @@ The default styles are mainly structural. Intent colors are applied as `color`.
 ## Button Sizes
 
 ```hbs preview-template
-<Button @isXSmall={{true}}>Button</Button>
-<Button @isSmall={{true}}>Button</Button>
+<Button @size="xs">Button</Button>
+<Button @size="sm">Button</Button>
 <Button>Button</Button>
-<Button @isLarge={{true}}>Button</Button>
-<Button @isXLarge={{true}}>Button</Button>
+<Button @size="lg">Button</Button>
+<Button @size="xl">Button</Button>
 ```
 
 ## Renderless Button
@@ -74,7 +74,7 @@ You can compose appearance with intents and more to create the button that best 
 ```hbs preview-template
 <Button @appearance="outlined" @intent="primary">Button</Button>
 <Button @appearance="minimal" @intent="warning">Button</Button>
-<Button @isXSmall={{true}} @intent="danger">Button</Button>
+<Button @size="xs" @intent="danger">Button</Button>
 ```
 
 You can also use TailwindCSS classes to customize even further.
