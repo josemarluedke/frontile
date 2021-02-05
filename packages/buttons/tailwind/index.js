@@ -14,5 +14,6 @@ module.exports = plugin.withOptions(function () {
     addSinglePartComponent(addComponents, '.btn', components.default);
     addSinglePartComponent(addComponents, '.btn-outlined', components.outlined);
     addSinglePartComponent(addComponents, '.btn-minimal', components.minimal);
+    addSinglePartComponent(addComponents, '.btn-custom', components.custom);
   };
 });

@@ -14,15 +14,20 @@ The Button component can be used to trigger an action, such as submitting a form
 <div>
   <Button>Default</Button>
   <Button @appearance="outlined">Outlined</Button>
-  <Button @appearance="minimal">minimal</Button>
+  <Button @appearance="minimal">Minimal</Button>
+  <Button @appearance="custom">Custom</Button>
 </div>
 <div class="mt-4">
   <Button disabled>Default</Button>
   <Button @appearance="outlined" disabled>Outlined</Button>
-  <Button @appearance="minimal" disabled>minimal</Button>
+  <Button @appearance="minimal" disabled>Minimal</Button>
+  <Button @appearance="custom" disabled>Custom</Button>
 </div>
 
 ```
+
+The `custom` appearance is available for the cases where you might want to fully customize the appearance of the button.
+The default styles are mainly structural. Intent colors are applied as `color`.
 
 ## Button Intents
 
@@ -79,6 +84,16 @@ You can also use TailwindCSS classes to customize even further.
   @appearance="outlined"
   @intent="primary"
   class="px-20 py-2 italic"
+>
+  Button
+</Button>
+```
+
+Here is another example using TailwindCSS classes with the `custom` appearance.
+```hbs preview-template
+<Button
+  @appearance="custom"
+  class="bg-teal-100 hover:bg-teal-200 hover:text-teal-600 border-teal-600 rounded-none border-dashed"
 >
   Button
 </Button>

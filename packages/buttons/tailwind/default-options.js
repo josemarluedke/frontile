@@ -42,8 +42,8 @@ const defaultConfig = {
 };
 
 function defaultOptions({ config }) {
-  const hover = '&:not([disabled])&:hover';
-  const active = '&:not([disabled])&:active,&.is-active';
+  const hover = '&:not([disabled]):hover';
+  const active = '&:not([disabled]):active,&.is-active';
 
   function generateIntents(options) {
     return {
@@ -71,6 +71,9 @@ function defaultOptions({ config }) {
       },
       minimal: {
         color: options.color
+      },
+      custom: {
+        color: options.color
       }
     };
   }
@@ -93,7 +96,7 @@ function defaultOptions({ config }) {
   }
 
   return {
-    'default, outlined, minimal': {
+    'default, outlined, minimal, custom': {
       baseStyle: {
         lineHeight: defaultTheme.lineHeight.tight,
         display: 'inline-block',
@@ -169,6 +172,15 @@ function defaultOptions({ config }) {
       },
 
       variants: generateVariants('minimal')
+    },
+    custom: {
+      baseStyle: {
+        '&[disabled]': {
+          opacity: null
+        }
+      },
+
+      variants: generateVariants('custom')
     }
   };
 }
