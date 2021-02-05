@@ -1,6 +1,6 @@
 {
   "name": "docfy-theme",
-  "version": "0.0.0",
+  "version": "0.10.0",
   "private": true,
   "scripts": {
     "test": "echo 'Tests ignored'",
