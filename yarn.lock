@@ -14710,10 +14710,10 @@ table@^6.0.4:
     slice-ansi "^4.0.0"
     string-width "^4.2.0"
 
-tailwindcss-ember-power-select@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/tailwindcss-ember-power-select/-/tailwindcss-ember-power-select-0.4.0.tgz#9f6ae07eb55d5566d01269c70db9c1fb729dd113"
-  integrity sha512-2CvXXWU3OefCvX+Bs41Rux8TQUubdL+2NJ8DKjmV+LPqhFyH/uSpAs/npvv2K+CVh3B9n3CulXEteaedNfu1XA==
+tailwindcss-ember-power-select@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss-ember-power-select/-/tailwindcss-ember-power-select-0.4.1.tgz#e7634059e552f9b2045f69c60eaa4ced1614bc76"
+  integrity sha512-pq2i4vMtRkXSW7eFGFnCnvWFeA+Z0KCPYsBUFoRrawVEIvKBTtBD7gLHaMhPZYUoq65TyYSjsRbGBdKnxFkUFw==
   dependencies:
     lodash "^4.17.20"
     mini-svg-data-uri "^1.2.3"
