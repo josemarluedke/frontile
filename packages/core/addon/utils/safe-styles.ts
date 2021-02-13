@@ -1,9 +1,8 @@
-import { htmlSafe } from '@ember/string';
-import type { SafeString } from 'handlebars';
+import { htmlSafe } from '@ember/template';
 
 export default function safeStyles(
   style: Record<string, string | number> | undefined
-): SafeString {
+): ReturnType<typeof htmlSafe> {
   if (!style) {
     return htmlSafe('');
   }
