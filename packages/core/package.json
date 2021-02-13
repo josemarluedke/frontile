@@ -1,6 +1,6 @@
 {
   "name": "@frontile/core",
-  "version": "0.10.0",
+  "version": "0.10.2",
   "description": "Component Library for Ember Octane apps: Core",
   "keywords": [
     "ember-addon"
