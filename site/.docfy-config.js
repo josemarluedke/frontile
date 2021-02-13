@@ -4,6 +4,9 @@ const highlight = require('remark-highlight.js');
 const codeImport = require('remark-code-import');
 const withProse = require('@docfy/plugin-with-prose');
 
+/**
+ * @type {import('@docfy/core/lib/types').DocfyConfig}
+ */
 module.exports = {
   tocMaxDepth: 3,
   plugins: [withProse({ className: 'prose dark:prose-light' })],
