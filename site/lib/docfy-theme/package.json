@@ -8,9 +8,9 @@
     "try:one": "echo 'Tests ignored'"
   },
   "dependencies": {
-    "ember-cli-babel": "^7.23.0",
-    "ember-cli-htmlbars": "^5.3.1",
-    "ember-cli-typescript": "^4.0.0",
+    "ember-cli-babel": "^7.23.1",
+    "ember-cli-htmlbars": "^5.3.2",
+    "ember-cli-typescript": "^4.1.0",
     "ember-modifier": "^2.1.1"
   },
   "keywords": [
@@ -18,7 +18,7 @@
   ],
   "devDependencies": {
     "glimmer-docgen-typescript": "^0.1.1",
-    "lowlight": "^1.18.0",
+    "lowlight": "^1.19.0",
     "rehype-stringify": "^8.0.0",
     "unified": "^9.2.0"
   }
