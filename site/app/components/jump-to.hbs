@@ -1,0 +1,53 @@
+<button
+  type="button"
+  class="flex items-center text-gray-300 px-4 py-2 border rounded focus:ring"
+  {{on "click" this.toggle}}
+  {{did-insert this.setupShortcut}}
+  {{will-destroy this.teardownShortcut}}
+>
+  Search docs
+  <code
+    class="ml-2 rounded-sm border font-bold text-gray-600 border-gray-400 border-b-4 bg-gray-300 px-2 py-1 text-xs leading-none"
+  >
+    /
+  </code>
+</button>
+
+<Overlay
+  @isOpen={{this.isOpen}}
+  @onClose={{this.toggle}}
+  @didClose={{this.didClose}}
+>
+  <div class="px-4 w-full">
+    <div
+      class="bg-gray-900 mx-auto text-white mt-20 max-w-sm w-full rounded overflow-hidden"
+      {{did-insert this.registerContainerElement}}
+    >
+      {{!  template-lint-disable self-closing-void-elements  }}
+      <input
+        autocomplete="off"
+        placeholder="Search docs"
+        class="p-4 bg-gray-900 w-full focus:outline-none border-b border-gray-700 placeholder-gray-500"
+        {{on "input" this.search}}
+        {{on "keydown" this.onInputKeydown}}
+      />
+      {{!  template-lint-enable self-closing-void-elements  }}
+
+      <div class="space-y-2 max-h-96 overflow-y-scroll">
+        {{#each this.results as |result index|}}
+          <DocfyLink
+            @to={{result.item.url}}
+            class="block p-4 {{
+              if (eq this.selected index) "bg-primary-700 text-white"
+            }}"
+            data-result={{index}}
+            {{on "click" this.onItemClick}}
+            {{on "mouseenter" this.selectElement}}
+          >
+            {{result.item.title}}
+          </DocfyLink>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</Overlay>
