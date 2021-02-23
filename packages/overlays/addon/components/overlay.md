@@ -17,7 +17,7 @@ It contains all the core features necessary for a great experience.
 `FormSelect` uses Power Select under the hood and has `@renderInPlace={{false}}` set by default, which will insert the content of the drop-down outside of the `Overlay` (or `Drawer` or `Modal`) and because of that focus-trap will prevent accessing focusable elements ([search input](https://ember-power-select.com/docs/the-search)) in said Power Select. To solve this you have following options:
 
 - `<Overlay @disableFocusTrap={{true}} />` (not recommended)
-- `<FormSelect @renderInPlace={{false}} />` (recommended)
+- `<FormSelect @renderInPlace={{true}} />` (recommended)
 
 ## API
 
