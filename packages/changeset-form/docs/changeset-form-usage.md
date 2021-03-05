@@ -1,6 +1,6 @@
 ---
 title: Usage
-url: /
+url: /usage
 ---
 
 # Using ChangesetFornm
