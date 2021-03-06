@@ -83,9 +83,5 @@ module.exports = function (defaults) {
     }
   });
 
-  app.import(
-    'node_modules/ember-basic-dropdown/vendor/ember-basic-dropdown.css'
-  );
-
   return app.toTree();
 };
