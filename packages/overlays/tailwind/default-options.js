@@ -152,7 +152,7 @@ function defaultOptions({ config }) {
         body: {
           flexGrow: 1,
           padding: config.modal.body.padding,
-          overflowY: 'scroll',
+          overflowY: 'auto',
           '-webkit-overflow-scrolling': 'touch'
         },
         footer: {
