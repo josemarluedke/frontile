@@ -33,7 +33,7 @@
     "focus-visible": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
+    "@babel/core": "^7.13.15",
     "@ember/edition-utils": "^1.2.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",

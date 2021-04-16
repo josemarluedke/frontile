@@ -32,7 +32,7 @@
     "ember-get-config": "^0.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
+    "@babel/core": "^7.13.15",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",
     "@frontile/forms": "^0.10.3",
