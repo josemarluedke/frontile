@@ -3,30 +3,16 @@
     @label="Size"
     @value={{this.size}}
     @onChange={{fn this.setField "size"}}
-    @isInline={{true}}
-    as |Radio|
+    @isInline={{true}} as |Radio|
   >
-    <Radio
-      @value="sm"
-      @label="sm"
-    />
-    <Radio
-      @value="lg"
-      @label="lg"
-    />
-    <Radio
-      @value=""
-      @label="default"
-    />
+    <Radio @value="sm" @label="sm" />
+    <Radio @value="lg" @label="lg" />
+    <Radio @value="" @label="default" />
   </FormRadioGroup>
 
-  <FormCheckboxGroup
-    @isInline={{true}}
-    @label="Settings"
-    as |Checkbox|
-  >
+  <FormCheckboxGroup @isInline={{true}} @label="Settings" as |Checkbox|>
     <Checkbox
-      @label="@isInline"
+      @label="isInline"
       @checked={{this.isInline}}
       @onChange={{fn this.setField "isInline"}}
     />
@@ -65,8 +51,7 @@
   @searchField="name"
   @options={{this.countries}}
   @selected={{this.country}}
-  @onChange={{this.setCountry}}
-  as |country|
+  @onChange={{this.setCountry}} as |country|
 >
   {{country.name}}
 </FormSelect>
@@ -78,22 +63,15 @@
   @errors={{this.accountTypeErrors}}
   @containerClass="mt-4"
   @size={{this.size}}
-  @isInline={{this.isInline}}
-  as |Radio|
+  @isInline={{this.isInline}} as |Radio|
 >
-  <Radio
-    @value="personal"
-    @label="Personal"
-  />
+  <Radio @value="personal" @label="Personal" />
   <Radio
     @value="business"
     @label="Business"
     @hint="If this account is for business"
   />
-  <Radio
-    @value="other"
-    @label="Other"
-  />
+  <Radio @value="other" @label="Other" />
 </FormRadioGroup>
 
 <FormCheckboxGroup
@@ -101,8 +79,7 @@
   @errors={{this.interestsErrors}}
   @containerClass="mt-4"
   @size={{this.size}}
-  @isInline={{this.isInline}}
-  as |Checkbox|
+  @isInline={{this.isInline}} as |Checkbox|
 >
   <Checkbox
     @label="IoT"
@@ -131,10 +108,9 @@
   @size={{this.size}}
 />
 
-<FormCheckbox
-  @containerClass="mt-4"
-  @size={{this.size}}
->
-  I agree to the <a href="#" class="underline">privacy policy</a>
+<FormCheckbox @containerClass="mt-4" @size={{this.size}}>
+  I agree to the
+  <a href="#" class="underline">
+    privacy policy
+  </a>
 </FormCheckbox>
-
