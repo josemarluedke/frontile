@@ -8,6 +8,10 @@ const withProse = require('@docfy/plugin-with-prose');
  * @type {import('@docfy/core/lib/types').DocfyConfig}
  */
 module.exports = {
+  repository: {
+    url: 'https://github.com/josemarluedke/frontile',
+    editBranch: 'main'
+  },
   tocMaxDepth: 3,
   plugins: [withProse({ className: 'prose dark:prose-light' })],
   remarkPlugins: [autolinkHeadings, codeImport, highlight],

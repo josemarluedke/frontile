@@ -1,7 +1,7 @@
 <img width="978" alt="github-readme" src="https://user-images.githubusercontent.com/230476/99427114-dacf1f80-28b9-11eb-929f-c3aaa70dadd2.png">
 <p align="center">
   <a href="https://github.com/josemarluedke/frontile/actions?query=workflow%3ACI"><img src="https://github.com/josemarluedke/frontile/workflows/CI/badge.svg" alt="Build Status"></a>
-  <a href="https://github.com/josemarluedke/frontile/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
+  <a href="https://github.com/josemarluedke/frontile/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
 </p>
 
 **Under active development.**

@@ -31,7 +31,7 @@ module.exports = {
 
 ## Documentation
 
-Visit [frontile.dev](https://frontile.dev/versions/master/) to read the docs
+Visit [frontile.dev](https://frontile.dev/) to read the docs
 and see live demos.
 
 
