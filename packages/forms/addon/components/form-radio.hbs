@@ -23,7 +23,7 @@
     </div>
 
     <f.Label class={{use-frontile-class "form-radio" @size part="label"}}>
-      {{#if has-block}}
+      {{#if (has-block)}}
         {{yield}}
       {{else}}
         {{@label}}

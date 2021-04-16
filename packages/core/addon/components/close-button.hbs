@@ -9,7 +9,7 @@
       "close-button" (if @size @size "md") part="icon"
     ) as |iconClassName|
   }}
-    {{#if has-block}}
+    {{#if (has-block)}}
       {{yield iconClassName}}
     {{else}}
       <svg

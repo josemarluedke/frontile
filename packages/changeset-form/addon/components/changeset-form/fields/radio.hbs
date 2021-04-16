@@ -9,7 +9,7 @@
   ...attributes
   {{on "blur" this.validate}}
 >
-  {{#if has-block}}
+  {{#if (has-block)}}
     {{yield}}
   {{else}}
     {{@label}}
