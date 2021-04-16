@@ -21,6 +21,6 @@
     "ember-template-lint": "^2.18.1",
     "eslint": "^7.20.0",
     "lerna": "^3.22.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.4"
   }
 }

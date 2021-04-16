@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@frontile/tailwindcss-plugin-helpers": "^0.10.0",
-    "ember-cli-babel": "^7.23.1",
-    "ember-cli-htmlbars": "^5.3.2",
+    "ember-cli-babel": "^7.26.3",
+    "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^4.1.0"
   },
   "devDependencies": {
@@ -42,8 +42,8 @@
     "@types/rsvp": "^4.0.3",
     "autoprefixer": "^10.2.5",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-auto-import": "^1.10.1",
-    "ember-cli": "~3.24.0",
+    "ember-auto-import": "^1.11.2",
+    "ember-cli": "~3.26.0",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-inject-live-reload": "^2.0.2",
     "ember-cli-postcss": "^7.0.0",
@@ -54,13 +54,13 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.2",
-    "ember-source": "~3.25.1",
+    "ember-source": "~3.26.1",
     "ember-try": "^1.4.0",
     "loader.js": "^4.7.0",
-    "qunit": "^2.14.0",
+    "qunit": "^2.15.0",
     "qunit-dom": "^1.6.0",
-    "tailwindcss": "^2.0.3",
-    "typescript": "^4.1.5"
+    "tailwindcss": "^2.1.1",
+    "typescript": "^4.2.4"
   },
   "engines": {
     "node": "10.* || >= 12"
