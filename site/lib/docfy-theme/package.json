@@ -20,6 +20,6 @@
     "glimmer-docgen-typescript": "^0.1.1",
     "lowlight": "^1.19.0",
     "rehype-stringify": "^8.0.0",
-    "unified": "^9.2.0"
+    "unified": "^9.2.1"
   }
 }
