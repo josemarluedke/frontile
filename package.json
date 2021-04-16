@@ -15,6 +15,7 @@
     "try:one": "yarn workspaces run try:one"
   },
   "devDependencies": {
+    "@embroider/test-setup": "^0.39.1",
     "@underline/eslint-config-ember-typescript": "^0.10.3",
     "@underline/eslint-config-node": "^0.10.2",
     "ember-source-channel-url": "^3.0.0",

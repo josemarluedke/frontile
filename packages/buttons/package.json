@@ -31,6 +31,7 @@
     "@babel/core": "^7.13.15",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",
+    "@embroider/test-setup": "^0.39.1",
     "@frontile/core": "^0.10.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
@@ -60,7 +61,10 @@
     "qunit": "^2.15.0",
     "qunit-dom": "^1.6.0",
     "tailwindcss": "^2.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "@embroider/core": "0.39.1",
+    "@embroider/webpack": "0.39.1",
+    "@embroider/compat": "0.39.1"
   },
   "engines": {
     "node": "10.* || >= 12"

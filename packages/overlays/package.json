@@ -37,6 +37,7 @@
     "@babel/core": "^7.13.15",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",
+    "@embroider/test-setup": "^0.39.1",
     "@frontile/buttons": "^0.10.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
