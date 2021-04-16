@@ -26,7 +26,7 @@
     </div>
 
     <f.Label class={{use-frontile-class "form-checkbox" @size part="label"}}>
-      {{#if hasBlock}}
+      {{#if (has-block)}}
         {{yield}}
       {{else}}
         {{@label}}

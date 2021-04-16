@@ -1,11 +1,15 @@
 <button
-  {{on "click" this.handleClick}}
   type="button"
   class={{use-frontile-class "close-button" (if @size @size "md") class=@class}}
   ...attributes
+  {{on "click" this.handleClick}}
 >
-  {{#let (use-frontile-class "close-button" (if @size @size "md") part="icon") as |iconClassName|}}
-    {{#if hasBlock}}
+  {{#let
+    (use-frontile-class
+      "close-button" (if @size @size "md") part="icon"
+    ) as |iconClassName|
+  }}
+    {{#if (has-block)}}
       {{yield iconClassName}}
     {{else}}
       <svg
@@ -16,7 +20,12 @@
         viewBox="0 0 24 24"
         stroke="currentColor"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
       </svg>
     {{/if}}
   {{/let}}

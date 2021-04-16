@@ -1,15 +1,13 @@
 <FormCheckbox
   @onChange={{this.handleChange}}
   @checked={{this.value}}
-
   @hint={{@hint}}
   @name={{@name}}
   @containerClass={{@containerClass}}
   @size={{@size}}
-
   ...attributes
 >
-  {{#if hasBlock}}
+  {{#if (has-block)}}
     {{yield}}
   {{else}}
     {{@label}}
