@@ -1,6 +1,6 @@
 {
   "name": "@frontile/core",
-  "version": "0.10.3",
+  "version": "0.11.0",
   "description": "Component Library for Ember Octane apps: Core",
   "keywords": [
     "ember-addon"
@@ -26,7 +26,7 @@
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
     "@ember/test-waiters": "^2.4.3",
-    "@frontile/tailwindcss-plugin-helpers": "^0.10.0",
+    "@frontile/tailwindcss-plugin-helpers": "^0.11.0",
     "ember-cli-babel": "^7.26.3",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^4.1.0",
