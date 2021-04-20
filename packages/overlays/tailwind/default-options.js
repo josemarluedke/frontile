@@ -232,7 +232,7 @@ function defaultOptions({ config }) {
           flexGrow: 1,
           flexBasis: 0,
           padding: config.drawer.body.padding,
-          overflowY: 'scroll',
+          overflowY: 'auto',
           '-webkit-overflow-scrolling': 'touch'
         },
 
