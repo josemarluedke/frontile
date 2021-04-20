@@ -7,27 +7,22 @@ on:
       - 'v*'
   pull_request: {}
 
+env:
+  CI: 'true'
+
 jobs:
   test:
     name: Tests
-    runs-on: ${{ matrix.os }}
-
-    env:
-      CI: 'true'
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: volta-cli/action@v1
         with:
           node-version: 12.x
-      - name: Install yarn
-        run: npm install -g yarn
+          yarn-version: 1.x
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: Lint JS
         run: yarn lint:js
       - name: Lint HBS
@@ -36,7 +31,7 @@ jobs:
         run: yarn test
 
   try-scenarios:
-    name: ${{ matrix.ember-try-scenario }}
+    name: Compat ${{ matrix.ember-try-scenario }}
     runs-on: ubuntu-latest
     needs: test
 
@@ -47,22 +42,17 @@ jobs:
       fail-fast: true
       matrix:
         ember-try-scenario:
-          # - ember-3.16
           - ember-release
           - ember-beta
-          - ember-canary
-          - ember-default
+          # - ember-canary https://github.com/jeffjewiss/ember-cli-postcss/issues/745
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: volta-cli/action@v1
         with:
           node-version: 12.x
-      - name: Install yarn
-        run: npm install -g yarn
+          yarn-version: 1.x
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: Test
-        env:
-          EMBER_TRY_SCENARIO: ${{ matrix.ember-try-scenario }}
-        run: yarn try:one $EMBER_TRY_SCENARIO
+        run: yarn try:one ${{ matrix.ember-try-scenario }} --skip-cleanup
