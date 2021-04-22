@@ -103,7 +103,6 @@ export default class Demo extends Component {
 }
 ```
 
-
 ```hbs
 <ChangesetForm @changeset={{this.myChangeset}} as |Form|>
   <!-- ... -->
@@ -118,14 +117,14 @@ export default class Demo extends Component {
 
 ### Blocks
 
-| Name          | Type                                                                                       |
-| ------------- | -------------------------------------------------------------------------------------------|
-| `default`     | `[formComponents: FormComponents, changeset: BufferedChangeset, state: { hasSubmitted: boolean }]` |
+| Name      | Type                                                                                               |
+| --------- | -------------------------------------------------------------------------------------------------- |
+| `default` | `[formComponents: FormComponents, changeset: BufferedChangeset, state: { hasSubmitted: boolean }]` |
 
 Here's the list of yielded form components from `FormComponents`:
 
 | Key           | Component             |
-| ------------- | ----------------------|
+| ------------- | --------------------- |
 | Text          | `<FormText>`          |
 | Textarea      | `<FormTextArea>`      |
 | Select        | `<FormSelect>`        |
@@ -133,5 +132,3 @@ Here's the list of yielded form components from `FormComponents`:
 | CheckboxGroup | `<FormCheckboxGroup>` |
 | Radio         | `<FormRadio>`         |
 | RadioGroup    | `<FormRadioGroup>`    |
-
-

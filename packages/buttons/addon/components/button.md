@@ -45,6 +45,7 @@ The default styles are mainly structural. Intent colors are applied as `color`.
   <Button @intent="danger" disabled>Button</Button>
 </div>
 ```
+
 ## Button Sizes
 
 ```hbs preview-template
@@ -90,6 +91,7 @@ You can also use TailwindCSS classes to customize even further.
 ```
 
 Here is another example using TailwindCSS classes with the `custom` appearance.
+
 ```hbs preview-template
 <Button
   @appearance="custom"

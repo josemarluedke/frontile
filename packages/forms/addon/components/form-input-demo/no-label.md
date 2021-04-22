@@ -6,7 +6,6 @@ order: 2
 
 If you don't want the label then simply leave it out of the component tag:
 
-
 ```hbs template
 <FormInput
   @value={{this.value}}
@@ -18,7 +17,6 @@ If you don't want the label then simply leave it out of the component tag:
   You typed, "{{this.value}}"
 </p>
 ```
-
 
 ```js component
 import Component from '@glimmer/component';

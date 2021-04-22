@@ -110,10 +110,7 @@ export default class Demo extends Component {
     lastName: null,
     email: 'frontile@example.com',
     comments: 'Changeset forms are great! 🚀',
-    countries: [
-      'Brazil',
-      'United States'
-    ],
+    countries: ['Brazil', 'United States'],
     coreValues: {
       hungry: true,
       humble: true,

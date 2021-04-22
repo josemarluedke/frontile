@@ -1,6 +1,7 @@
 ---
 order: 2
 ---
+
 # Sizes
 
 Use the `size` argument to set the desired Modal size.
@@ -47,7 +48,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class DemoModal extends Component {
-  sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full']
+  sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full'];
 
   @tracked isOpen = false;
   @tracked size;

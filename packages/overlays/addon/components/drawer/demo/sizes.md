@@ -1,6 +1,7 @@
 ---
 order: 2
 ---
+
 # Sizes
 
 Use the `size` argument to set the desired Drawer size.
