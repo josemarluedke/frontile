@@ -6,7 +6,6 @@ order: 3
 
 You can pass `@hint` to the component to add hint content.
 
-
 ```hbs template
 <FormInput
   @label="I have Hint"
@@ -19,7 +18,6 @@ You can pass `@hint` to the component to add hint content.
   You typed, "{{this.value}}"
 </p>
 ```
-
 
 ```js component
 import Component from '@glimmer/component';

@@ -1,29 +1,21 @@
-@frontile/tailwindcss-plugin-helpers
-==============================================================================
+# @frontile/tailwindcss-plugin-helpers
 
 TailwindCSS helpers for building plugins
 
-Compatibility
-------------------------------------------------------------------------------
+## Compatibility
 
-* Node.js v10 or above
+- Node.js v10 or above
 
-
-Installation
-------------------------------------------------------------------------------
+## Installation
 
 ```
 yarn add @frontile/tailwindcss-plugin-helpers
 ```
 
-
-Contributing
-------------------------------------------------------------------------------
+## Contributing
 
 See the [Contributing](CONTRIBUTING.md) guide for details.
 
-
-License
-------------------------------------------------------------------------------
+## License
 
 This project is licensed under the [MIT License](LICENSE.md).
