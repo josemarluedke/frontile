@@ -26,15 +26,15 @@
     "@frontile/core": "^0.11.0",
     "@frontile/forms": "^0.11.0",
     "@frontile/tailwindcss-plugin-helpers": "^0.11.0",
-    "ember-cli-babel": "^7.26.3",
+    "ember-cli-babel": "^7.26.4",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^4.1.0",
     "ember-css-transitions": "^2.1.1",
-    "ember-focus-trap": "^0.5.0",
+    "ember-focus-trap": "^0.6.0",
     "ember-maybe-in-element": "^2.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
+    "@babel/core": "^7.14.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.5",
     "@frontile/buttons": "^0.11.0",
@@ -48,8 +48,8 @@
     "@types/rsvp": "^4.0.3",
     "autoprefixer": "^10.2.5",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-auto-import": "^1.11.2",
-    "ember-cli": "~3.26.0",
+    "ember-auto-import": "^1.11.3",
+    "ember-cli": "~3.26.1",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-fastboot": "^2.2.3",
     "ember-cli-inject-live-reload": "^2.0.2",
@@ -67,7 +67,7 @@
     "loader.js": "^4.7.0",
     "qunit": "^2.15.0",
     "qunit-dom": "^1.6.0",
-    "tailwindcss": "^2.1.1",
+    "tailwindcss": "^2.1.2",
     "typescript": "^4.2.4"
   },
   "engines": {
