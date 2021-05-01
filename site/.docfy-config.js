@@ -1,6 +1,6 @@
 const path = require('path');
 const autolinkHeadings = require('remark-autolink-headings');
-const highlight = require('remark-highlight.js');
+const highlight = require('rehype-highlight');
 const codeImport = require('remark-code-import');
 const withProse = require('@docfy/plugin-with-prose');
 
@@ -14,7 +14,17 @@ module.exports = {
   },
   tocMaxDepth: 3,
   plugins: [withProse({ className: 'prose dark:prose-light' })],
-  remarkPlugins: [autolinkHeadings, codeImport, highlight],
+  remarkPlugins: [autolinkHeadings, codeImport],
+  rehypePlugins: [
+    [
+      highlight
+      // {
+      // languages: {
+      // glimmer: require('highlightjs-glimmer').glimmer
+      // }
+      // }
+    ]
+  ],
   sources: [
     {
       root: path.resolve(__dirname, '../docs'),
