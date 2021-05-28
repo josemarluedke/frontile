@@ -19,7 +19,6 @@ to the focused element, but it only adds the class when `Tab`, `Shift + Tab`, or
 arrow key is used to focus an element. If the mouse is used to focus, the class
 will not be added (with the exception of input and textarea elements).
 
-
 ```hbs preview-template
 <FormInput placeholder="Test me for focus" />
 <a

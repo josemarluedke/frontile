@@ -7,4 +7,3 @@ url: drawer
 ## API
 
 <ArgsTable @of="Drawer" />
-

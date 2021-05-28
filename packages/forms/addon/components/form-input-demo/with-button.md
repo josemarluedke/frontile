@@ -6,7 +6,6 @@ order: 4
 
 This is an example of how to implement an input with a button next to it.
 
-
 ```hbs template
 <FormInput
   @value={{this.value}}
@@ -33,7 +32,6 @@ This is an example of how to implement an input with a button next to it.
   </button>
 </FormInput>
 ```
-
 
 ```js component
 import Component from '@glimmer/component';

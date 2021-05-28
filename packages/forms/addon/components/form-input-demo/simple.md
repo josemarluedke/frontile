@@ -6,7 +6,6 @@ order: 1
 
 The most common use case is a plain text input with validation:
 
-
 ```hbs template
 <FormInput
   @label="First Name"
@@ -19,7 +18,6 @@ The most common use case is a plain text input with validation:
   You typed, "{{this.value}}"
 </p>
 ```
-
 
 ```js component
 import Component from '@glimmer/component';
