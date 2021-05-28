@@ -253,14 +253,8 @@ function addTransitions(addComponents, baseSelector, transitions) {
     }
     const name = `${baseSelector}--${kebabCase(key)}`;
 
-    const {
-      enter,
-      enterTo,
-      leave,
-      leaveActive,
-      enterActive,
-      leaveTo
-    } = transition;
+    const { enter, enterTo, leave, leaveActive, enterActive, leaveTo } =
+      transition;
 
     addComponents({
       [`${name}-enter`]: enter,
