@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@embroider/test-setup": "^0.41.0",
+    "@underline/eslint-config-ember-typescript": "^0.10.4",
     "@underline/eslint-config-node": "^0.10.4",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^3.4.2",
