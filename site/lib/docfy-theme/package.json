@@ -11,7 +11,7 @@
     "ember-cli-babel": "^7.26.6",
     "ember-cli-htmlbars": "^5.7.1",
     "ember-cli-typescript": "^4.1.0",
-    "ember-modifier": "^2.1.1"
+    "ember-modifier": "^2.1.2"
   },
   "keywords": [
     "ember-addon"
