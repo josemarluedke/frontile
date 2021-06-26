@@ -45,10 +45,11 @@
 
   pre {
     @apply p-4;
-    @apply flex text-gray-200 bg-gray-900;
+    @apply flex text-gray-200 bg-gray-800;
     @apply text-sm leading-normal;
     @apply font-mono;
     @apply rounded-b;
+    @apply overflow-auto;
     scrollbar-width: none;
   }
 }
@@ -67,7 +68,7 @@
   }
 
   .docfy-demo__snippet pre {
-    @apply bg-gray-1000;
+    @apply bg-gray-900;
     @apply border-gray-700;
   }
 

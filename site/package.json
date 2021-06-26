@@ -68,9 +68,9 @@
     "prember": "^1.0.5",
     "qunit": "^2.15.0",
     "qunit-dom": "^1.6.0",
+    "rehype-highlight": "^4.1.0",
     "remark-autolink-headings": "^6.0.1",
     "remark-code-import": "^0.3.0",
-    "remark-highlight.js": "^6.0.0",
     "tailwindcss": "^2.1.2",
     "typescript": "^4.3.2"
   },
