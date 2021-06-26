@@ -74,6 +74,9 @@ module.exports = function (defaults) {
     prember: {
       urls: ['/']
     },
+    fastboot: {
+      hostWhitelist: [/^localhost:\d+$/]
+    },
     postcssOptions: {
       compile: {
         enabled: true,
