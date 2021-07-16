@@ -18,8 +18,8 @@
     "@underline/eslint-config-ember-typescript": "^0.10.4",
     "@underline/eslint-config-node": "^0.10.4",
     "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^3.4.2",
-    "eslint": "^7.27.0",
+    "ember-template-lint": "^3.5.0",
+    "eslint": "^7.30.0",
     "lerna": "^4.0.0",
     "typescript": "^4.3.5"
   }
