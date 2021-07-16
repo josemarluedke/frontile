@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Changeset } from 'ember-changeset';
 import lookupValidator from 'ember-changeset-validations';
@@ -61,6 +61,7 @@ module(
         .doesNotHaveTextContaining('Please select a Framework, not a language');
 
       await selectChoose('.field-container', 'Ruby');
+      await blur('.field-container .ember-power-select-trigger');
 
       assert
         .dom('.field-container')
