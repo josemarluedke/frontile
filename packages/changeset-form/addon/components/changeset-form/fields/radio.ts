@@ -6,11 +6,12 @@ interface ChangesetFormFieldsRadioArgs extends BaseArgs {
 }
 
 export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioArgs> {
-  @action handleChange(value: unknown, event: Event): void {
+  @action
+  async handleChange(value: unknown, event: Event): Promise<void> {
     event.preventDefault();
 
     this.args.changeset.set(this.args.fieldName, value);
-    this.validate();
+    await this.validate();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);

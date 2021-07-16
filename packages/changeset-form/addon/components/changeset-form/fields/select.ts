@@ -10,25 +10,31 @@ interface ChangesetFormFieldsSelectArgs extends BaseArgs {
 
 export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsSelectArgs> {
   @action
-  handleChange(selection: unknown, select: Select, event?: Event): void {
+  async handleChange(
+    selection: unknown,
+    select: Select,
+    event?: Event
+  ): Promise<void> {
     this.args.changeset.set(this.args.fieldName, selection);
-    this.validate();
+    await this.validate();
 
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(selection, select, event);
     }
   }
 
-  @action handleFocusOut(select: Select, event: FocusEvent): void {
-    this.validate();
+  @action
+  async handleFocusOut(select: Select, event: FocusEvent): Promise<void> {
+    await this.validate();
 
     if (typeof this.args.onFocusOut === 'function') {
       this.args.onFocusOut(select, event);
     }
   }
 
-  @action handleClose(select: Select, event: Event): void {
-    this.validate();
+  @action
+  async handleClose(select: Select, event: Event): Promise<void> {
+    await this.validate();
 
     if (typeof this.args.onClose === 'function') {
       this.args.onClose(select, event);
