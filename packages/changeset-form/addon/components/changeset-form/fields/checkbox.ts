@@ -40,10 +40,10 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
     await this.args.changeset.validate(this.fullFieldName);
   }
 
-  @action handleChange(value: unknown, event: Event): void {
+  @action async handleChange(value: unknown, event: Event): Promise<void> {
     this.args.changeset.set(this.fullFieldName, value);
 
-    this.validate();
+    await this.validate();
 
     if (typeof this.args._parentOnChange === 'function') {
       this.args._parentOnChange(value, event);
