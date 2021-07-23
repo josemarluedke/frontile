@@ -1,7 +1,6 @@
 <FormField
   @size={{@size}}
-  class={{use-frontile-class "form-select" @size class=@containerClass}}
-  as |f|
+  class={{use-frontile-class "form-select" @size class=@containerClass}} as |f|
 >
   {{#if @label}}
     <f.Label
@@ -14,14 +13,16 @@
   {{/if}}
 
   {{#if @hint}}
-    <f.Hint
-      class={{use-frontile-class "form-select" @size part="hint"}}
-    >
+    <f.Hint class={{use-frontile-class "form-select" @size part="hint"}}>
       {{@hint}}
     </f.Hint>
   {{/if}}
 
-  {{#let (component (if @isMultiple "power-select-multiple" "power-select")) as |Component|}}
+  {{#let
+    (if
+      @isMultiple (component "power-select-multiple") (component "power-select")
+    ) as |Component|
+  }}
     <Component
       ...attributes
       @onChange={{this.handleChange}}
@@ -29,10 +30,16 @@
       @onBlur={{this.handleFocusOut}}
       @onOpen={{this.handleOpen}}
       @onClose={{this.handleClose}}
-      @ariaDescribedBy="{{if @hint f.hintId}}{{if this.showErrorFeedback (concat " " f.feedbackId)}}{{if @ariaDescribedBy (concat " " @ariaDescribedBy)}}"
-      @ariaLabelledBy="{{if @label f.id}}{{if @ariaLabelledBy (concat " "@ariaLabelledBy)}}"
+      @ariaDescribedBy="{{if @hint f.hintId}}{{
+        if this.showErrorFeedback (concat " " f.feedbackId)
+      }}{{if @ariaDescribedBy (concat " " @ariaDescribedBy)}}"
+      @ariaLabelledBy="{{if @label f.id}}{{
+        if @ariaLabelledBy (concat " " @ariaLabelledBy)
+      }}"
       @ariaInvalid={{if this.showErrorFeedback "true"}}
-      @triggerClass="{{@triggerClass}} {{if @size (concat "ember-power-select-trigger-" @size)}} {{use-frontile-class "form-select" @size part="select"}}"
+      @triggerClass="{{@triggerClass}} {{
+        if @size (concat "ember-power-select-trigger-" @size)
+      }} {{use-frontile-class "form-select" @size part="select"}}"
       @highlightOnHover={{@highlightOnHover}}
       @placeholderComponent={{@placeholderComponent}}
       @searchMessage={{@searchMessage}}
@@ -79,8 +86,7 @@
       @optionsComponent={{@optionsComponent}}
       @extra={{@extra}}
       @groupComponent={{@groupComponent}}
-      @afterOptionsComponent={{@afterOptionsComponent}}
-      as |option term|
+      @afterOptionsComponent={{@afterOptionsComponent}} as |option term|
     >
       {{yield option term}}
     </Component>
