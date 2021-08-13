@@ -65,6 +65,12 @@ export default class Modal extends Component<ModalArgs> {
     }
   }
 
+  @action handleOpen(): void {
+    if (typeof this.args.onOpen === 'function') {
+      this.args.onOpen();
+    }
+  }
+
   get size(): string {
     return this.args.size || 'lg';
   }
