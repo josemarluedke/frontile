@@ -162,6 +162,9 @@ function defaultOptions({ config }) {
         },
         '&:disabled': {
           borderColor: config.disabledBorderColor
+        },
+        '&:not([disabled])': {
+          cursor: 'pointer'
         }
       },
       variants: {
@@ -233,7 +236,10 @@ function defaultOptions({ config }) {
         label: {
           fontWeight: defaultTheme.fontWeight.normal,
           paddingLeft: defaultTheme.spacing[2],
-          paddingBottom: defaultTheme.spacing[0]
+          paddingBottom: defaultTheme.spacing[0],
+          '&:not([disabled])': {
+            cursor: 'pointer'
+          }
         },
         hint: {
           flexBasis: '100%',

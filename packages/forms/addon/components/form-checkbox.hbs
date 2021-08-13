@@ -25,7 +25,10 @@
       />
     </div>
 
-    <f.Label class={{use-frontile-class "form-checkbox" @size part="label"}}>
+    <f.Label
+      class={{use-frontile-class "form-checkbox" @size part="label"}}
+      ...attributes
+    >
       {{#if (has-block)}}
         {{yield}}
       {{else}}
