@@ -183,11 +183,13 @@ module('Integration | Component | Overlay', function (hooks) {
   });
 
   test('it executes onOpen when overlay is opened', async function (assert) {
-    assert.expect(1);
-    this.set('isOpen', true);
+    assert.expect(2);
     this.set('onOpen', () => {
       assert.ok(true);
     });
     await render(template);
+    this.set('isOpen', true);
+    this.set('isOpen', false);
+    this.set('isOpen', true);
   });
 });
