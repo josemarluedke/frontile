@@ -67,12 +67,6 @@ export default class Drawer extends Component<DrawerArgs> {
     }
   }
 
-  @action handleOpen(): void {
-    if (typeof this.args.onOpen === 'function') {
-      this.args.onOpen();
-    }
-  }
-
   get placement(): string {
     return this.args.placement || 'right';
   }

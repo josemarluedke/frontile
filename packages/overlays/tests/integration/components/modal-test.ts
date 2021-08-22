@@ -11,6 +11,7 @@ module('Integration | Component | modal', function (hooks) {
     <Modal
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
+      @onOpen={{this.onOpen}}
       @isCentered={{this.isCentered}}
       @allowClosing={{this.allowClosing}}
       @renderInPlace={{this.renderInPlace}}
@@ -220,5 +221,14 @@ module('Integration | Component | modal', function (hooks) {
     await render(template);
     assert.dom('.my-destination > [data-test-id="modal"]').doesNotExist();
     assert.dom('[data-test-id="modal"]', this.element).exists();
+  });
+
+  test('it executes onOpen when modal is opened', async function (assert) {
+    assert.expect(1);
+    this.set('isOpen', true);
+    this.set('onOpen', () => {
+      assert.ok(true);
+    });
+    await render(template);
   });
 });
