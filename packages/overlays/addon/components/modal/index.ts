@@ -59,12 +59,6 @@ export default class Modal extends Component<ModalArgs> {
     );
   }
 
-  @action handleClose(): void {
-    if (typeof this.args.onClose === 'function') {
-      this.args.onClose();
-    }
-  }
-
   get size(): string {
     return this.args.size || 'lg';
   }
