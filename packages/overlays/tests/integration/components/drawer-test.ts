@@ -11,6 +11,7 @@ module('Integration | Component | Drawer', function (hooks) {
     <Drawer
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
+      @onOpen={{this.onOpen}}
       @size={{this.size}}
       @placement={{this.placement}}
       @allowClosing={{this.allowClosing}}
@@ -232,5 +233,14 @@ module('Integration | Component | Drawer', function (hooks) {
     await render(template);
     assert.dom('.my-destination > [data-test-id="drawer"]').doesNotExist();
     assert.dom('[data-test-id="drawer"]', this.element).exists();
+  });
+
+  test('it executes onOpen when drawer is opened', async function (assert) {
+    assert.expect(1);
+    this.set('isOpen', true);
+    this.set('onOpen', () => {
+      assert.ok(true);
+    });
+    await render(template);
   });
 });

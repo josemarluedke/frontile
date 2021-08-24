@@ -8380,7 +8380,7 @@ fast-diff@^1.1.2:
   resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.2.0.tgz#73ee11982d86caaf7959828d519cfe927fac5f03"
   integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
 
-fast-glob@^3.0.3, fast-glob@^3.1.1, fast-glob@^3.2.2, fast-glob@^3.2.5, fast-glob@^3.2.7:
+fast-glob@^3.0.3, fast-glob@^3.1.1, fast-glob@^3.2.5, fast-glob@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.7.tgz#fd6cb7a2d7e9aa7a7846111e85a196d6b2f766a1"
   integrity sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==
@@ -9202,14 +9202,14 @@ github-slugger@^1.0.0, github-slugger@^1.2.1, github-slugger@^1.3.0:
   dependencies:
     emoji-regex ">=6.0.0 <=6.1.1"
 
-glimmer-docgen-typescript@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/glimmer-docgen-typescript/-/glimmer-docgen-typescript-0.1.1.tgz#28c55272f35222915d89dcd5cbae2585604d1155"
-  integrity sha512-cixClQYs4Q68lRh0vV+ucga1CSphJvEY9PMk2xAEX2nJTR9BNFNgC4xjDjX5XrOXlimxwcyUeZzgLQga8WG8XQ==
+glimmer-docgen-typescript@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/glimmer-docgen-typescript/-/glimmer-docgen-typescript-0.2.0.tgz#f14d66210bddcb70fe0a72e47be973786044abbb"
+  integrity sha512-AoxCjzFrzr3wtt6buIp8sqduzJJiGBLf+02EpQ1P8usZYFzFmVyEHvPqC+SzogbQ5fsmCLfwIdgY9x8iQae5TQ==
   dependencies:
     debug "^4.1.1"
-    fast-glob "^3.2.2"
-    typescript ">4.0.2"
+    fast-glob "^3.2.5"
+    typescript "^4.3.2"
 
 glob-parent@^3.1.0:
   version "3.1.0"
@@ -15692,7 +15692,7 @@ typescript-memoize@^1.0.0-alpha.3:
   resolved "https://registry.yarnpkg.com/typescript-memoize/-/typescript-memoize-1.0.1.tgz#0a8199aa28f6fe18517f6e9308ef7bfbe9a98d59"
   integrity sha512-oJNge1qUrOK37d5Y6Ly2txKeuelYVsFtNF6U9kXIN7juudcQaHJQg2MxLOy0CqtkW65rVDYuTCOjnSIVPd8z3w==
 
-typescript@>4.0.2, typescript@^4.3.5:
+typescript@^4.3.2, typescript@^4.3.5:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==

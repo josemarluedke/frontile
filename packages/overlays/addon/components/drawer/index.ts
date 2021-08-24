@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { OverlayArgs } from '../overlay';
 
@@ -59,12 +58,6 @@ export default class Drawer extends Component<DrawerArgs> {
     return (
       this.args.allowClosing !== false && this.args.allowCloseButton !== false
     );
-  }
-
-  @action handleClose(): void {
-    if (typeof this.args.onClose === 'function') {
-      this.args.onClose();
-    }
   }
 
   get placement(): string {
