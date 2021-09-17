@@ -44,7 +44,7 @@ jobs:
           - ember-lts-3.28
           - ember-release
           - ember-beta
-          # - embroider-safe
+          - embroider-safe
           # - embroider-optimized
           # - ember-canary https://github.com/jeffjewiss/ember-cli-postcss/issues/745
 
