@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
-    "@embroider/test-setup": "^0.43.0",
+    "@embroider/test-setup": "^0.44.1",
     "@frontile/core": "^0.12.1",
     "@frontile/forms": "^0.12.1",
     "@frontile/tailwindcss-plugin-helpers": "^0.12.0",
@@ -35,7 +35,7 @@
     "ember-maybe-in-element": "^2.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.8",
+    "@babel/core": "^7.15.5",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.4.2",
     "@frontile/buttons": "^0.12.1",
@@ -60,14 +60,14 @@
     "ember-cli-uglify": "^3.0.0",
     "ember-disable-prototype-extensions": "^1.1.3",
     "ember-load-initializers": "^2.1.2",
-    "ember-maybe-import-regenerator": "^0.1.6",
+    "ember-maybe-import-regenerator": "^1.0.0",
     "ember-qunit": "^5.1.4",
     "ember-resolver": "^8.0.3",
     "ember-source": "~3.28.1",
     "ember-try": "^1.4.0",
     "loader.js": "^4.7.0",
     "qunit": "^2.17.1",
-    "qunit-dom": "^1.6.0",
+    "qunit-dom": "^2.0.0",
     "tailwindcss": "^2.2.15",
     "typescript": "^4.4.3",
     "webpack": "^5.53.0"
