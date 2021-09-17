@@ -22,7 +22,6 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "@embroider/test-setup": "^0.44.1",
     "@frontile/forms": "^0.12.1",
     "ember-changeset": "^3.15.0",
     "ember-changeset-validations": "^3.16.0",
@@ -34,6 +33,7 @@
     "@babel/core": "^7.15.5",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.4.2",
+    "@embroider/test-setup": "^0.44.1",
     "@frontile/core": "^0.12.1",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
