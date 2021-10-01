@@ -196,7 +196,7 @@ export default class Overlay extends Component<OverlayArgs> {
     const { didClose } = this.args;
     later(() => {
       if (!this.isDestroyed) this.keepOpen = false;
-      if (typeof didClose === 'function') {
+      if (typeof didClose === 'function' && !this.isDestroyed) {
         didClose();
       }
     }, duration);
