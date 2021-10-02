@@ -1,6 +1,6 @@
 {
   "name": "site",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "private": true,
   "description": "Small description for site goes here",
   "repository": "https://github.com/josemarluedke/frontile",
@@ -28,7 +28,7 @@
     "@frontile/core": "^0.12.2",
     "@frontile/forms": "^0.12.2",
     "@frontile/notifications": "^0.12.2",
-    "@frontile/overlays": "^0.12.2",
+    "@frontile/overlays": "^0.12.3",
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
