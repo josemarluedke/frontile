@@ -16,6 +16,8 @@ interface FormSelectArgs extends PowerSelectArgs {
   hasSubmitted?: boolean;
   /** If has errors */
   hasError?: boolean;
+  /** Force displaying errors */
+  showError?: boolean;
   /** A list of errors or a single text describing the error */
   errors?: string[] | string;
   /** CSS classes to be added in the container element */
@@ -47,7 +49,7 @@ export default class FormSelect extends Component<FormSelectArgs> {
     }
 
     if (
-      (this.args.hasError ||
+      (this.args.showError ||
         this.args.hasSubmitted ||
         this.shouldShowErrorFeedback) &&
       this.args.errors &&
