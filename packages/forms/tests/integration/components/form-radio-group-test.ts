@@ -12,6 +12,7 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
       <FormRadioGroup
         data-test-input-group
         @hasError={{this.hasError}}
+        @showError={{this.showError}}
         @errors={{this.errors}}
         @hasSubmitted={{this.hasSubmitted}}
         @isInline={{this.isInline}}
@@ -126,6 +127,17 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
   test('always show error messages when hasSubmitted is true', async function (assert) {
     this.set('errors', ['This field is required']);
     this.set('hasSubmitted', true);
+    await render(template);
+
+    assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasText('This field is required');
+  });
+
+  test('always show error messages when showError is true', async function (assert) {
+    this.set('errors', ['This field is required']);
+    this.set('showError', true);
     await render(template);
 
     assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();
