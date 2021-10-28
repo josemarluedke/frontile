@@ -34,7 +34,9 @@ export default class FormRadioGroup extends Component<FormRadioGroupArgs> {
     }
 
     if (
-      (this.args.hasSubmitted || this.shouldShowErrorFeedback) &&
+      (this.args.hasError ||
+        this.args.hasSubmitted ||
+        this.shouldShowErrorFeedback) &&
       this.args.errors &&
       this.args.errors.length > 0
     ) {
