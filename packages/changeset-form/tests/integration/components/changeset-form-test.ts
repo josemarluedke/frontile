@@ -47,6 +47,8 @@ module('Integration | Component | ChangesetForm', function (hooks) {
           @changeset={{changesetObj}}
           @onSubmit={{this.onSubmit}}
           @onReset={{this.onReset}}
+          @validateOnInit={{this.validateOnInit}}
+          @alwaysShowErrors={{this.alwaysShowErrors}}
           data-test-changeset-form
           as |Form changeset state|
         >
@@ -61,7 +63,7 @@ module('Integration | Component | ChangesetForm', function (hooks) {
             data-test-name-first-input
           />
           <div data-test-name-first>{{changeset.name.first}}</div>
-          
+
           <Form.Input
             @fieldName="name.last"
             @label="Last Name"
@@ -178,5 +180,50 @@ module('Integration | Component | ChangesetForm', function (hooks) {
     await fillIn('[data-test-email-input]', '');
     await click('[data-test-submit]');
     assert.dom('[data-test-id="form-error"]').exists();
+  });
+
+  test('it shows error message immediately when the changeset is invalid if alwaysShowErrors is true', async function (assert) {
+    const invalidModel = {
+      email: 'invalidemail'
+    };
+    const validationsTwo = {
+      email: validateFormat({ type: 'email' })
+    };
+    this.set('invalidModel', invalidModel);
+    this.set('validations', validationsTwo);
+
+    await render(hbs`
+      {{#let (changeset this.invalidModel this.validations) as |changesetObj|}}
+        <ChangesetForm
+          @changeset={{changesetObj}}
+          @onSubmit={{this.onSubmit}}
+          @onReset={{this.onReset}}
+          @validateOnInit={{true}}
+          @alwaysShowErrors={{false}}
+          data-test-changeset-form-two
+          as |Form changeset|
+        >
+        {{log changesetObj changeset}}
+          {{#if changeset.isInvalid}}
+            <p data-test-id="form-error-two">There were one or more errors in your form.</p>
+          {{/if}}
+
+          <Form.Input
+            @containerClass="email-field"
+            @fieldName="email"
+            @label="Email Address"
+            data-test-email-input-two
+          />
+          <div data-test-email-two>{{changeset.email}}</div>
+
+          <button type="submit" data-test-submit-two>Submit</button>
+          <button type="reset" data-test-reset-two>Reset</button>
+        </ChangesetForm>
+      {{/let}}
+    `);
+
+    assert.expect(1);
+
+    assert.dom('[data-test-id="form-error-two"]').exists();
   });
 });
