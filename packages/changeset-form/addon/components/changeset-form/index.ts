@@ -14,6 +14,12 @@ interface ChangesetFormArgs {
    * */
   runExecuteInsteadOfSave?: boolean;
 
+  /**
+   * Always show errors if there are any
+   * @defaultValue false
+   */
+  alwaysShowErrors?: boolean;
+
   /** Callback exeuted when from `onsubmit` event is triggered */
   onSubmit?: (data: unknown, event: Event) => void;
 
