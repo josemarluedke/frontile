@@ -44,7 +44,7 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
     );
 
     if (this.args.validateOnInit) {
-      this.args.changeset.validate()
+      this.args.changeset.validate();
     }
   }
 
