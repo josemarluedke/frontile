@@ -37,6 +37,7 @@ module(
           @options={{this.frameworks}}
           @hasError={{this.hasError}}
           @showError={{this.showError}}
+          @renderInPlace={{true}}
           data-test-text-input
           as |name|
         >
