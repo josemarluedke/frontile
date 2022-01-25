@@ -18,6 +18,7 @@ module('Integration | Component | FormSelect', function (hooks) {
                           @onChange={{action (mut this.value)}}
                           @size={{this.size}}
                           @hasError={{this.hasError}}
+                          @showError={{this.showError}}
                           @errors={{this.errors}}
                           @hasSubmitted={{this.hasSubmitted}}
                           @triggerClass="test-select"
@@ -163,6 +164,17 @@ module('Integration | Component | FormSelect', function (hooks) {
 
     assert.dom('.test-select').hasNoAttribute('aria-invalid');
     assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
+  });
+
+  test('always show error messages when showError is true', async function (assert) {
+    this.set('errors', ['This field is required']);
+    this.set('showError', true);
+    await render(template);
+
+    assert.dom('.test-select').hasAttribute('aria-invalid', 'true');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasText('This field is required');
   });
 
   test('always show error messages when hasSubmitted is true', async function (assert) {

@@ -14,6 +14,18 @@ interface ChangesetFormArgs {
    * */
   runExecuteInsteadOfSave?: boolean;
 
+  /**
+   * Always show errors if there are any
+   * @defaultValue false
+   */
+  alwaysShowErrors?: boolean;
+
+  /**
+   * Validate the changeset on initialization
+   * @defaultValue false
+   */
+  validateOnInit?: boolean;
+
   /** Callback exeuted when from `onsubmit` event is triggered */
   onSubmit?: (data: unknown, event: Event) => void;
 
@@ -30,6 +42,10 @@ export default class ChangesetForm extends Component<ChangesetFormArgs> {
       '@changeset must be defined on <ChangesetForm> component',
       this.args.changeset
     );
+
+    if (this.args.validateOnInit) {
+      this.args.changeset.validate();
+    }
   }
 
   @action

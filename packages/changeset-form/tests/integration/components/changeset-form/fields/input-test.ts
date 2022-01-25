@@ -27,6 +27,7 @@ module(
         <ChangesetForm::Fields::Input
           @containerClass="field-container"
           @changeset={{this.changeset}}
+          @hasError={{this.hasError}}
           @fieldName="message"
           data-test-text-input
         />
@@ -50,6 +51,16 @@ module(
         .doesNotHaveTextContaining("Message can't be blank");
 
       await blur('[data-test-text-input]');
+
+      assert
+        .dom('.field-container')
+        .hasTextContaining("Message can't be blank");
+    });
+
+    test('it displays error message immediately if hasError is true', async function (assert) {
+      this.set('hasError', true);
+
+      await fillIn('[data-test-text-input]', '');
 
       assert
         .dom('.field-container')

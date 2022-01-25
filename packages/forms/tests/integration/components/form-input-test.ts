@@ -211,6 +211,24 @@ module('Integration | Component | FormInput', function (hooks) {
       .hasText('This field is required');
   });
 
+  test('always shows error messages then showError is true', async function (assert) {
+    await render(
+      hbs`<div class="my-container">
+            <FormInput
+              data-test-input
+              @errors={{array "This field is required"}}
+              @label="Name"
+              @showError={{true}}
+            />
+          </div>`
+    );
+
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid');
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasText('This field is required');
+  });
+
   test('it triggers actions for onFocusIn, onFocusOut and onChange', async function (assert) {
     const calls: string[] = [];
 
