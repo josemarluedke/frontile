@@ -36,6 +36,7 @@ module(
           @fieldName="framework"
           @options={{this.frameworks}}
           @hasError={{this.hasError}}
+          @showError={{this.showError}}
           data-test-text-input
           as |name|
         >
@@ -69,8 +70,9 @@ module(
         .hasTextContaining('Please select a Framework, not a language');
     });
 
-    test('it displays error message immediately if hasError is true', async function (assert) {
+    test('it displays error message immediately if hasError is true and showError is true', async function (assert) {
       this.set('hasError', true);
+      this.set('showError', true);
 
       await selectChoose('.field-container', 'Ruby');
 
