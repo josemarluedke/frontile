@@ -41,6 +41,7 @@ jobs:
       fail-fast: true
       matrix:
         ember-try-scenario:
+          - ember-lts-3.28
           - ember-release
           - ember-beta
           # - embroider-safe
