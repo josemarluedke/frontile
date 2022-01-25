@@ -52,7 +52,6 @@ module('Integration | Component | ChangesetForm', function (hooks) {
           data-test-changeset-form
           as |Form changeset state|
         >
-        {{log changesetObj changeset}}
           <div data-test-id="has-submitted">{{state.hasSubmitted}}</div>
           {{#if changeset.isInvalid}}
             <p data-test-id="form-error">There were one or more errors in your form.</p>
@@ -203,7 +202,6 @@ module('Integration | Component | ChangesetForm', function (hooks) {
           data-test-changeset-form-two
           as |Form changeset|
         >
-        {{log changesetObj changeset}}
           {{#if changeset.isInvalid}}
             <p data-test-id="form-error-two">There were one or more errors in your form.</p>
           {{/if}}
