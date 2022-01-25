@@ -28,6 +28,7 @@ module(
           @containerClass="field-container"
           @changeset={{this.changeset}}
           @hasError={{this.hasError}}
+          @showError={{this.showError}}
           @fieldName="message"
           data-test-text-input
         />
@@ -57,8 +58,9 @@ module(
         .hasTextContaining("Message can't be blank");
     });
 
-    test('it displays error message immediately if hasError is true', async function (assert) {
+    test('it displays error message immediately if hasError is true and showError', async function (assert) {
       this.set('hasError', true);
+      this.set('showError', true);
 
       await fillIn('[data-test-text-input]', '');
 

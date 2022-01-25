@@ -30,6 +30,7 @@ module('Integration | Component | FormSelect', function (hooks) {
                           @onFocusOut={{this.onFocusOut}}
                           @onFocus={{this.onFocus}}
                           @onBlur={{this.onBlur}}
+                          @renderInPlace={{true}}
                           as |option|
                         >
                           {{option}}

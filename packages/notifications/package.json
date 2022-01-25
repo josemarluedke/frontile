@@ -22,20 +22,20 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "@ember/render-modifiers": "^2.0.0",
+    "@ember/render-modifiers": "^2.0.3",
     "@frontile/core": "^0.12.4",
     "@frontile/tailwindcss-plugin-helpers": "^0.12.0",
-    "ember-cli-babel": "^7.26.6",
-    "ember-cli-htmlbars": "^5.7.1",
+    "ember-cli-babel": "^7.26.11",
+    "ember-cli-htmlbars": "^6.0.1",
     "ember-cli-typescript": "^4.2.1",
     "ember-css-transitions": "^2.1.1",
-    "ember-get-config": "^0.3.0"
+    "ember-get-config": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@ember/optional-features": "^2.0.0",
-    "@ember/test-helpers": "^2.5.0",
-    "@embroider/test-setup": "^0.45.0",
+    "@ember/test-helpers": "^2.6.0",
+    "@embroider/test-setup": "^1.0.0",
     "@frontile/forms": "^0.12.4",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
@@ -48,7 +48,7 @@
     "@types/sinon": "^10.0.4",
     "autoprefixer": "^10.3.7",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-auto-import": "^2.2.0",
+    "ember-auto-import": "^2.4.0",
     "ember-cli": "~3.28.1",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-inject-live-reload": "^2.1.0",
