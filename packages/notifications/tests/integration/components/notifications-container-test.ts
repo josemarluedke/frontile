@@ -28,9 +28,9 @@ module('Integration | Component | NotificationsContainer', function (hooks) {
   });
 
   test('it render all notifications from service', async function (assert) {
-    const service: NotificationsService = this.owner.lookup(
+    const service = this.owner.lookup(
       'service:notifications'
-    );
+    ) as NotificationsService;
 
     service.add('Message 1', options);
     service.add('Message 2', options);

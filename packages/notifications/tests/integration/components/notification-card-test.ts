@@ -91,9 +91,9 @@ module('Integration | Component | NotificationCard', function (hooks) {
       new Notification('My message', { transitionDuration: 1 })
     );
 
-    const service: NotificationsService = this.owner.lookup(
+    const service = this.owner.lookup(
       'service:notifications'
-    );
+    ) as NotificationsService;
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
       assert.equal(n, this.notification);
@@ -130,9 +130,9 @@ module('Integration | Component | NotificationCard', function (hooks) {
       })
     );
 
-    const service: NotificationsService = this.owner.lookup(
+    const service = this.owner.lookup(
       'service:notifications'
-    );
+    ) as NotificationsService;
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
       assert.equal(n, this.notification);
