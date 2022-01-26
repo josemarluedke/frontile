@@ -34,4 +34,4 @@ export function useFrontileClass(
   return classes.join(' ');
 }
 
-export default helper(useFrontileClass);
+export default helper(useFrontileClass) as never;
