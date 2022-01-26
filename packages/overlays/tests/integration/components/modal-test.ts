@@ -220,6 +220,7 @@ module('Integration | Component | modal', function (hooks) {
 
     await render(template);
     assert.dom('.my-destination > [data-test-id="modal"]').doesNotExist();
+    // @ts-ignore
     assert.dom('[data-test-id="modal"]', this.element).exists();
   });
 

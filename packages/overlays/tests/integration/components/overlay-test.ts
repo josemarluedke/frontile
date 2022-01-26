@@ -62,6 +62,7 @@ module('Integration | Component | Overlay', function (hooks) {
 
     await render(template);
     assert.dom('.my-destination > [data-test-id="overlay"]').doesNotExist();
+    // @ts-ignore
     assert.dom('[data-test-id="overlay"]', this.element).exists();
     assert.dom('[data-test-id="overlay"].overlay--in-place').exists();
   });

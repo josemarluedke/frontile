@@ -232,6 +232,7 @@ module('Integration | Component | Drawer', function (hooks) {
 
     await render(template);
     assert.dom('.my-destination > [data-test-id="drawer"]').doesNotExist();
+    // @ts-ignore
     assert.dom('[data-test-id="drawer"]', this.element).exists();
   });
 
