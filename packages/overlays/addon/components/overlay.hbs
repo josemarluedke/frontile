@@ -46,6 +46,7 @@
           }}
           {{on "click" this.handleContentClick}}
           {{on "keydown" this.handleKeyDown}}
+          {{on "mousedown" this.handleContentMouseDown}}
           {{did-insert this.setup}}
           {{will-destroy this.teardown}}
           {{css-transition
