@@ -14,7 +14,7 @@ interface Model {
   email: string;
 }
 
-declare module 'ember-test-helpers' {
+declare module '@ember/test-helpers' {
   interface TestContext {
     model: Model;
   }
@@ -89,15 +89,11 @@ module('Integration | Component | ChangesetForm', function (hooks) {
       .dom('[data-test-changeset-form]')
       .exists('The ChangesetForm failed to render');
 
-    assert
-      .dom('[data-test-name-first-input]')
-      .hasValue(this.get('model.name.first'));
+    assert.dom('[data-test-name-first-input]').hasValue(this.model.name.first);
 
-    assert
-      .dom('[data-test-name-last-input]')
-      .hasValue(this.get('model.name.last'));
+    assert.dom('[data-test-name-last-input]').hasValue(this.model.name.last);
 
-    assert.dom('[data-test-email-input]').hasValue(this.get('model.email'));
+    assert.dom('[data-test-email-input]').hasValue(this.model.email);
   });
 
   test('it validates and then updates the changeset on input', async function (assert) {
