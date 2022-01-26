@@ -108,6 +108,7 @@ export interface OverlayArgs {
 export default class Overlay extends Component<OverlayArgs> {
   @tracked keepOpen = false;
   contentElement: HTMLElement | undefined;
+  mouseDownContentElement: EventTarget | null = null;
 
   get destinationElement(): HTMLElement | null {
     const doc = getDOM(this);
@@ -148,16 +149,23 @@ export default class Overlay extends Component<OverlayArgs> {
   @action handleContentClick(event: MouseEvent): void {
     if (
       this.args.closeOnOutsideClick !== false &&
-      event.target === this.contentElement
+      event.target === this.contentElement &&
+      this.mouseDownContentElement == this.contentElement
     ) {
       this.handleClose();
     }
+    this.mouseDownContentElement = null;
   }
 
   @action handleClose(): void {
     if (typeof this.args.onClose === 'function') {
       this.args.onClose();
     }
+  }
+
+  @action
+  handleContentMouseDown(event: MouseEvent): void {
+    this.mouseDownContentElement = event.target;
   }
 
   @action
