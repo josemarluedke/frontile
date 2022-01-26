@@ -10,17 +10,17 @@ export default class NotificationsService extends Service {
     return this.manager.notifications;
   }
 
-  add(message: string, options?: NotificationOptions): Notification {
+  add = (message: string, options?: NotificationOptions): Notification => {
     return this.manager.add(message, options);
-  }
+  };
 
-  remove(notification?: Notification): void {
+  remove = (notification?: Notification): void => {
     this.manager.remove(notification);
-  }
+  };
 
-  removeAll(): void {
+  removeAll = (): void => {
     this.manager.removeAll();
-  }
+  };
 
   willDestroy(): void {
     this.removeAll();
