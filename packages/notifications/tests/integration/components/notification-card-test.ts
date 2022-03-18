@@ -3,14 +3,13 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Notification, NotificationsService } from '@frontile/notifications';
+import sinon from 'sinon';
 
-declare module 'ember-test-helpers' {
+declare module '@ember/test-helpers' {
   interface TestContext {
     notification?: Notification;
   }
 }
-
-import sinon from 'sinon';
 
 module('Integration | Component | NotificationCard', function (hooks) {
   setupRenderingTest(hooks);
@@ -92,9 +91,9 @@ module('Integration | Component | NotificationCard', function (hooks) {
       new Notification('My message', { transitionDuration: 1 })
     );
 
-    const service: NotificationsService = this.owner.lookup(
+    const service = this.owner.lookup(
       'service:notifications'
-    );
+    ) as NotificationsService;
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
       assert.equal(n, this.notification);
@@ -131,9 +130,9 @@ module('Integration | Component | NotificationCard', function (hooks) {
       })
     );
 
-    const service: NotificationsService = this.owner.lookup(
+    const service = this.owner.lookup(
       'service:notifications'
-    );
+    ) as NotificationsService;
 
     sinon.stub(service, 'remove').callsFake((n: Notification): void => {
       assert.equal(n, this.notification);

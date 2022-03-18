@@ -12,6 +12,7 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
         data-test-input-group
         @errors={{this.errors}}
         @hasError={{this.hasError}}
+        @showError={{this.showError}}
         @containerClass={{this.containerClass}}
         @hasSubmitted={{this.hasSubmitted}}
         @isInline={{this.isInline}}
@@ -115,6 +116,17 @@ module('Integration | Component | FormCheckboxGroup', function (hooks) {
   test('always show error messages when hasSubmitted is true', async function (assert) {
     this.set('errors', ['This field is required']);
     this.set('hasSubmitted', true);
+    await render(template);
+
+    assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();
+    assert
+      .dom('[data-test-id="form-field-feedback"]')
+      .hasText('This field is required');
+  });
+
+  test('always show error messages when showError is true', async function (assert) {
+    this.set('errors', ['This field is required']);
+    this.set('showError', true);
     await render(template);
 
     assert.dom('.my-container [data-test-id="form-field-feedback"]').exists();

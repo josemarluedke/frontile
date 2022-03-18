@@ -1,0 +1,26 @@
+# unconventional js
+/packages/**/blueprints/*/files/
+/packages/**/vendor/
+
+# compiled output
+/packages/**/dist/
+/packages/**/tmp/
+
+# dependencies
+/packages/**/bower_components/
+/packages/**/node_modules/
+/node_modules/
+
+# misc
+/packages/**/coverage/
+!.*
+.eslintcache
+.lint-todo/
+
+# ember-try
+/.node_modules.ember-try/
+/bower.json.ember-try
+/npm-shrinkwrap.json.ember-try
+/package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try

@@ -32,6 +32,8 @@ module(
           @containerClass="field-container"
           @changeset={{this.changeset}}
           @fieldName="notification.message"
+          @hasError={{this.hasError}}
+          @showError={{this.showError}}
           data-test-text-input
         />
     `);
@@ -54,6 +56,17 @@ module(
         .doesNotHaveTextContaining("message can't be blank");
 
       await blur('[data-test-text-input]');
+
+      assert
+        .dom('.field-container')
+        .matchesText(/Notification.message can't be blank/);
+    });
+
+    test('it displays error message immediately if hasError is true and showError', async function (assert) {
+      this.set('hasError', true);
+      this.set('showError', true);
+
+      await fillIn('[data-test-text-input]', '');
 
       assert
         .dom('.field-container')

@@ -121,7 +121,7 @@ There are two practical approaches to set up PurgeCSS to prevent the erasing of
 all styles provided by Frontile. The simplest way is to use magical comments to
 safelist the TailwindCSS components. The other way is to list all the classes
 (or at least their prefix) in the PurgeCSS safelist config.
-Check [PurgeCSS docs](https://purgecss.com/safelisting.html) for further info on safelisting.
+Check [PurgeCSS docs](https://purgecss.com/safelisting.html) adn [tailwindcss docs](https://tailwindcss.com/docs/content-configuration#using-regular-expressions) for further info on safelisting.
 
 ### Using comments
 
@@ -141,45 +141,39 @@ File `app/styles/app.css`:
 // tailwind.config.js
 
 module.exports = {
-  purge: {
-    // ...
-    options: {
-      safelist: [
-        // Frontile Core
-        /^close-button/,
-        /^visually-hidden/,
+  safelist: [
+    { pattern: /^close-button/ },
+    { pattern: /^visually-hidden/ },
 
-        // Frontile Forms
-        /^form-field-checkbox/,
-        /^form-field-feedback/,
-        /^form-field-hint/,
-        /^form-field-input/,
-        /^form-field-label/,
-        /^form-field-radio/,
-        /^form-field-textarea/,
-        /^form-input/,
-        /^form-textarea/,
-        /^form-select/,
-        /^form-checkbox/,
-        /^form-radio/,
-        /^form-checkbox-group/,
-        /^form-radio-group/,
+    // Frontile Forms
+    { pattern: /^form-field-checkbox/ },
+    { pattern: /^form-field-feedback/ },
+    { pattern: /^form-field-hint/ },
+    { pattern: /^form-field-input/ },
+    { pattern: /^form-field-label/ },
+    { pattern: /^form-field-radio/ },
+    { pattern: /^form-field-textarea/ },
+    { pattern: /^form-input/ },
+    { pattern: /^form-textarea/ },
+    { pattern: /^form-select/ },
+    { pattern: /^form-checkbox/ },
+    { pattern: /^form-radio/ },
+    { pattern: /^form-checkbox-group/ },
+    { pattern: /^form-radio-group/ },
 
-        // Frontile Notifications
-        /^notifications-container/,
-        /^notification-card/,
-        /^notification-transition/,
+    // Frontile Notifications
+    { pattern: /^notifications-container/ },
+    { pattern: /^notification-card/ },
+    { pattern: /^notification-transition/ },
 
-        // Frontile Overlays
-        /^overlay/,
-        /^modal/,
-        /^drawer/,
+    // Frontile Overlays
+    { pattern: /^overlay/ },
+    { pattern: /^modal/ },
+    { pattern: /^drawer/ },
 
-        // Frontile Buttons
-        /^btn/
-      ]
-    }
-  },
+    // Frontile Buttons
+    { pattern: /^btn/ },
+  }
   // ...
 };
 

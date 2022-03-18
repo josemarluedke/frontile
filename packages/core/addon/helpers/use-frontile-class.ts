@@ -1,7 +1,7 @@
 import { helper } from '@ember/component/helper';
 
 export function useFrontileClass(
-  params: string | undefined[],
+  params: string | unknown[],
   hash: { part?: string; class?: string }
 ): string {
   const [base, ...variants] = params;
@@ -9,7 +9,7 @@ export function useFrontileClass(
     return '';
   }
 
-  const classes: string[] = [base];
+  const classes: string[] = [base as string];
 
   variants.forEach((variant) => {
     if (variant && variant !== '') {
@@ -34,4 +34,4 @@ export function useFrontileClass(
   return classes.join(' ');
 }
 
-export default helper(useFrontileClass);
+export default helper(useFrontileClass) as never;

@@ -6,7 +6,7 @@ import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 import { BufferedChangeset } from 'ember-changeset/types';
 
-declare module 'ember-test-helpers' {
+declare module '@ember/test-helpers' {
   interface TestContext {
     changeset: BufferedChangeset;
   }

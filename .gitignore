@@ -26,8 +26,11 @@ yarn-error.log
 
 # ember-try
 /packages/**/.node_modules.ember-try/
+/packages/**/npm-shrinkwrap.json.ember-try
 /packages/**/bower.json.ember-try
 /packages/**/package.json.ember-try
+/packages/**/package-lock.json.ember-try
+/packages/**/yarn.lock.ember-try
 
 packages/deploy-docs/
 packages/docs/tmp/

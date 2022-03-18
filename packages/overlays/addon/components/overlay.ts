@@ -72,6 +72,11 @@ export interface OverlayArgs {
   didClose?: () => void;
 
   /**
+   * A function that will be called when opened
+   */
+  onOpen?: () => void;
+
+  /**
    * Whether to close when the area outside (the backdrop) is clicked
    *
    * @defaultValue true
@@ -103,6 +108,7 @@ export interface OverlayArgs {
 export default class Overlay extends Component<OverlayArgs> {
   @tracked keepOpen = false;
   contentElement: HTMLElement | undefined;
+  mouseDownContentElement: EventTarget | null = null;
 
   get destinationElement(): HTMLElement | null {
     const doc = getDOM(this);
@@ -143,16 +149,23 @@ export default class Overlay extends Component<OverlayArgs> {
   @action handleContentClick(event: MouseEvent): void {
     if (
       this.args.closeOnOutsideClick !== false &&
-      event.target === this.contentElement
+      event.target === this.contentElement &&
+      this.mouseDownContentElement == this.contentElement
     ) {
       this.handleClose();
     }
+    this.mouseDownContentElement = null;
   }
 
   @action handleClose(): void {
     if (typeof this.args.onClose === 'function') {
       this.args.onClose();
     }
+  }
+
+  @action
+  handleContentMouseDown(event: MouseEvent): void {
+    this.mouseDownContentElement = event.target;
   }
 
   @action
@@ -168,6 +181,10 @@ export default class Overlay extends Component<OverlayArgs> {
 
     if (this.args.renderInPlace !== true) {
       document.body.style.overflow = 'hidden';
+    }
+
+    if (typeof this.args.onOpen === 'function') {
+      this.args.onOpen();
     }
   }
 
@@ -187,7 +204,7 @@ export default class Overlay extends Component<OverlayArgs> {
     const { didClose } = this.args;
     later(() => {
       if (!this.isDestroyed) this.keepOpen = false;
-      if (typeof didClose === 'function') {
+      if (typeof didClose === 'function' && !this.isDestroyed) {
         didClose();
       }
     }, duration);

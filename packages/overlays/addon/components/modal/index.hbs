@@ -1,6 +1,7 @@
 <Overlay
   @isOpen={{@isOpen}}
-  @onClose={{this.handleClose}}
+  @onClose={{@onClose}}
+  @onOpen={{@onOpen}}
   @didClose={{@didClose}}
   @renderInPlace={{@renderInPlace}}
   @destinationElementId={{@destinationElementId}}
@@ -24,14 +25,14 @@
     >
       {{#if this.showCloseButton}}
         <CloseButton
-          @onClick={{this.handleClose}}
+          @onClick={{@onClose}}
           @size={{@closeButtonSize}}
           class={{closeBtnClass}}
         />
       {{/if}}
 
       {{yield (hash
-        CloseButton=(component "close-button" onClick=this.handleClose class=closeBtnClass)
+        CloseButton=(component "close-button" onClick=@onClose class=closeBtnClass)
         Header=(component "modal/header" labelledById=this.headerId size=this.size)
         Body=(component "modal/body" size=this.size)
         Footer=(component "modal/footer" size=this.size)

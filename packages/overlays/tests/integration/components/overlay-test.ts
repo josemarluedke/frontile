@@ -17,6 +17,7 @@ module('Integration | Component | Overlay', function (hooks) {
     <Overlay
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
+      @onOpen={{this.onOpen}}
       @didClose={{this.didClose}}
       @renderInPlace={{this.renderInPlace}}
       @destinationElementId="my-destination"
@@ -61,6 +62,7 @@ module('Integration | Component | Overlay', function (hooks) {
 
     await render(template);
     assert.dom('.my-destination > [data-test-id="overlay"]').doesNotExist();
+    // @ts-ignore
     assert.dom('[data-test-id="overlay"]', this.element).exists();
     assert.dom('[data-test-id="overlay"].overlay--in-place').exists();
   });
@@ -179,5 +181,16 @@ module('Integration | Component | Overlay', function (hooks) {
 
     await render(template);
     assert.dom(document.body).doesNotHaveStyle({ overflow: 'hidden' });
+  });
+
+  test('it executes onOpen when overlay is opened', async function (assert) {
+    assert.expect(2);
+    this.set('onOpen', () => {
+      assert.ok(true);
+    });
+    await render(template);
+    this.set('isOpen', true);
+    this.set('isOpen', false);
+    this.set('isOpen', true);
   });
 });

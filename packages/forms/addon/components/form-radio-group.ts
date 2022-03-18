@@ -12,6 +12,8 @@ interface FormRadioGroupArgs {
   hasSubmitted?: boolean;
   /** If has errors */
   hasError?: boolean;
+  /** Force displaying errors */
+  showError?: boolean;
   /** A list of errors or a single text describing the error */
   errors?: string[] | string;
   /** CSS classes to be added in the container element */
@@ -34,7 +36,9 @@ export default class FormRadioGroup extends Component<FormRadioGroupArgs> {
     }
 
     if (
-      (this.args.hasSubmitted || this.shouldShowErrorFeedback) &&
+      (this.args.showError ||
+        this.args.hasSubmitted ||
+        this.shouldShowErrorFeedback) &&
       this.args.errors &&
       this.args.errors.length > 0
     ) {
