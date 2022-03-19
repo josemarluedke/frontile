@@ -8,5 +8,11 @@ module.exports = {
     extend: {},
   },
   variants: {},
-  plugins: [require('@frontile/buttons/tailwind')],
+  plugins: [
+    require('@frontile/core/tailwind'),
+    require('@frontile/forms/tailwind'),
+    require('@frontile/buttons/tailwind'),
+    require('@frontile/notifications/tailwind'),
+    require('@frontile/overlays/tailwind'),
+  ],
 };
