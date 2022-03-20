@@ -51,6 +51,7 @@
     "@types/ember__test-helpers": "^2.6.1",
     "@types/htmlbars-inline-precompile": "^3.0.0",
     "@types/sinon": "^10.0.11",
+    "@underline/eslint-config-ember-typescript": "^0.12.0",
     "autoprefixer": "^10.4.4",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
