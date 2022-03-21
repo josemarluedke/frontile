@@ -4,7 +4,8 @@
   "workspaces": [
     "packages/*",
     "site",
-    "site/lib/docfy-theme"
+    "site/lib/docfy-theme",
+    "test-app"
   ],
   "scripts": {
     "lint:hbs": "ember-template-lint .",
