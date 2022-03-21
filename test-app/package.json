@@ -12,12 +12,6 @@
   },
   "scripts": {
     "build": "ember build --environment=production",
-    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel \"lint:!(fix)\"",
-    "lint:fix": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*:fix",
-    "lint:hbs": "ember-template-lint .",
-    "lint:hbs:fix": "ember-template-lint . --fix",
-    "lint:js": "eslint . --cache",
-    "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
     "test:ember": "ember test"
@@ -51,7 +45,9 @@
     "@types/ember__test-helpers": "^2.6.1",
     "@types/htmlbars-inline-precompile": "^3.0.0",
     "@types/sinon": "^10.0.11",
+    "@underline/eslint-config": "^0.12.0",
     "@underline/eslint-config-ember-typescript": "^0.12.0",
+    "@underline/eslint-config-node": "^0.12.0",
     "autoprefixer": "^10.4.4",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
