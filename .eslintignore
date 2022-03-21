@@ -2,6 +2,7 @@
 /packages/*/blueprints/*/files/
 /packages/*/vendor/
 /site/vendor/
+/test-app/vendor/
 
 # compiled output
 /packages/*/dist/
@@ -9,6 +10,12 @@
 
 /site/dist/
 /site/tmp/
+/test-app/dist/
+/test-app/tmp/
+/test-app/ember-cli-build.js
+/test-app/testem.js
+/test-app/app/config/
+/test-app/config/
 
 # dependencies
 /bower_components/
@@ -16,6 +23,7 @@
 /packages/*/bower_components/
 /packages/*/node_modules/
 /site/node_modules/
+/test-app/node_modules/
 /site/lib/docfy-theme/node_modules/
 /site/lib/docfy-theme/addon/components/args-data.js
 
