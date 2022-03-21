@@ -35,7 +35,7 @@ module('Unit | Service | notifications', function (hooks) {
     assert.equal(service.notifications.length, 1);
 
     assert.ok(notification.timer instanceof Timer);
-    assert.ok(notification.timer?.remaining <= 10);
+    assert.ok(notification.timer!.remaining <= 10);
 
     await waitUntil(
       () => {
