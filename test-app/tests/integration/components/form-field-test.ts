@@ -34,7 +34,7 @@ module('Integration | Component | FormField', function (hooks) {
     await render(template);
 
     const id =
-      find('[data-test-id="form-field"] .id')!.textContent || 'id-not-found';
+      find('[data-test-id="form-field"] .id')?.textContent || 'id-not-found';
 
     assert
       .dom('[data-test-id="form-field-label"]')

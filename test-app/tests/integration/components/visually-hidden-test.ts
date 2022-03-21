@@ -14,7 +14,7 @@ module('Integration | Component | visually-hidden', function (hooks) {
     `);
 
     assert.equal(
-      this.element.textContent!.trim(),
+      this.element.textContent?.trim(),
       'This text will be visually hidden'
     );
     assert.dom('[data-test-id="my-element"]').hasClass('visually-hidden');

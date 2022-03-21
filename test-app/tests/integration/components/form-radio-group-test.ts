@@ -31,8 +31,8 @@ module('Integration | Component | FormRadioGroup', function (hooks) {
     this.set('myValue', undefined);
     await render(template);
 
-    const noName = find('[data-test-option-no]')!.getAttribute('name');
-    const yesName = find('[data-test-option-yes]')!.getAttribute('name');
+    const noName = find('[data-test-option-no]')?.getAttribute('name');
+    const yesName = find('[data-test-option-yes]')?.getAttribute('name');
 
     assert.ok(noName, 'input should have an name attribute');
     assert.equal(

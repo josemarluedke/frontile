@@ -120,8 +120,8 @@ module('Integration | Component | FormCheckbox', function (hooks) {
           />`
     );
 
-    const inputId = find('[data-test-input]')!.getAttribute('id');
-    const labelFor = find('[data-test-id="form-field-label"]')!.getAttribute(
+    const inputId = find('[data-test-input]')?.getAttribute('id');
+    const labelFor = find('[data-test-id="form-field-label"]')?.getAttribute(
       'for'
     );
 

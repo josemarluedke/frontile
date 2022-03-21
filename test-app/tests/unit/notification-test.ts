@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { Notification, Timer } from '@frontile/notifications';
@@ -36,7 +37,7 @@ module('Unit | Notification', function (hooks) {
     assert.equal(notification.appearance, 'success');
     assert.equal(notification.transitionDuration, 0);
     assert.equal(notification.allowClosing, false);
-    assert.equal(notification.customActions!.length, 1);
+    assert.equal(notification.customActions?.length, 1);
     assert.equal(notification.customActions![0].label, 'Label');
     assert.equal(typeof notification.customActions![0].onClick, 'function');
   });
