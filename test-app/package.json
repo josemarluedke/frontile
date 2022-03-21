@@ -13,8 +13,8 @@
   "scripts": {
     "build": "ember build --environment=production",
     "start": "ember serve",
-    "test": "npm-run-all test:*",
-    "test:ember": "ember test"
+    "test": "ember test",
+    "try:one": "ember try:one"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
