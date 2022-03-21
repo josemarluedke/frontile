@@ -3,6 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@frontile/notifications": ["../packages/notifications/addon"],
+      "@frontile/notifications/*": ["../packages/notifications/addon/*"],
+      "@frontile/core": ["../packages/core/addon"],
+      "@frontile/core/*": ["../packages/core/addon/*"],
       "*": ["types/*"]
     }
   },
