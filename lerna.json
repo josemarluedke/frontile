@@ -1,6 +1,6 @@
 {
   "version": "0.13.1",
-  "packages": ["packages/*", "test-app/*"],
+  "packages": ["packages/*", "test-app"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
