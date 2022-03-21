@@ -13,7 +13,7 @@ declare module '@ember/test-helpers' {
 }
 
 module(
-  'Integration | Component | ChangesetForm::Fields::CheckboxGroup',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::CheckboxGroup',
   function (hooks) {
     setupRenderingTest(hooks);
 

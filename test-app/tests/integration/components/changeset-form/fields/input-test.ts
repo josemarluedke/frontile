@@ -8,7 +8,7 @@ import validatePresence from 'ember-changeset-validations/validators/presence';
 import { run } from '@ember/runloop';
 
 module(
-  'Integration | Component | ChangesetForm::Fields::Input',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::Input',
   function (hooks) {
     setupRenderingTest(hooks);
 

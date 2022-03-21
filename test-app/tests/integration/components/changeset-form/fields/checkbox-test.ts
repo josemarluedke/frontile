@@ -6,7 +6,7 @@ import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 
 module(
-  'Integration | Component | ChangesetForm::Fields::Checkbox',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::Checkbox',
   function (hooks) {
     setupRenderingTest(hooks);
 

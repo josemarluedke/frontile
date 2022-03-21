@@ -7,7 +7,7 @@ import { run } from '@ember/runloop';
 import lookupValidator from 'ember-changeset-validations';
 
 module(
-  'Integration | Component | ChangesetForm::Fields::RadioGroup',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::RadioGroup',
   function (hooks) {
     setupRenderingTest(hooks);
 

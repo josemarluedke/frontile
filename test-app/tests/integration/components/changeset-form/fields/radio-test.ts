@@ -6,7 +6,7 @@ import { Changeset } from 'ember-changeset';
 import { run } from '@ember/runloop';
 
 module(
-  'Integration | Component | ChangesetForm::Fields::Radio',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::Radio',
   function (hooks) {
     setupRenderingTest(hooks);
 

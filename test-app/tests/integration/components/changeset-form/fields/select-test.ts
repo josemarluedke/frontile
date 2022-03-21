@@ -8,7 +8,7 @@ import { run } from '@ember/runloop';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 module(
-  'Integration | Component | ChangesetForm::Fields::Select',
+  'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::Select',
   function (hooks) {
     setupRenderingTest(hooks);
 
