@@ -28,7 +28,7 @@ const purgecssOptions = {
     /js-/,
     /mode-dark/,
     /^close-button/,
-    /^visually-hidden/,
+    /^sr-only/,
     /^form-field-checkbox/,
     /^form-field-feedback/,
     /^form-field-hint/,

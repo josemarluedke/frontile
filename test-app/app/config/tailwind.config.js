@@ -20,7 +20,7 @@ module.exports = {
   ],
   safelist: [
     { pattern: /^close-button/ },
-    { pattern: /^visually-hidden/ },
+    { pattern: /^sr-only/ },
 
     // Frontile Forms
     { pattern: /^form-field-checkbox/ },

@@ -7,7 +7,6 @@ title: Installation
 Frontile is separated into several packages so you can choose what features you
 want in your project. Here you can find information on how to install all the packages.
 
-
 ## Packages
 
 Independently of what packages you are going to use, you will need to have the Core
@@ -143,7 +142,7 @@ File `app/styles/app.css`:
 module.exports = {
   safelist: [
     { pattern: /^close-button/ },
-    { pattern: /^visually-hidden/ },
+    { pattern: /^sr-only/ },
 
     // Frontile Forms
     { pattern: /^form-field-checkbox/ },
@@ -178,4 +177,3 @@ module.exports = {
 };
 
 ```
-
