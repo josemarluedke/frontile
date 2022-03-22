@@ -80,7 +80,6 @@ module(
       run(() => {
         this.changeset.rollback();
       });
-
       assert.dom('[data-test-checkbox-blue]').isChecked();
       assert.dom('[data-test-checkbox-green]').isNotChecked();
       assert.dom('[data-test-checkbox-red]').isNotChecked();
