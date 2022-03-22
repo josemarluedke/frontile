@@ -1,7 +1,6 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
-const path = require('path');
 
 // Enable FastBoot Rehydration
 // process.env.EXPERIMENTAL_RENDER_MODE_SERIALIZE = true;
