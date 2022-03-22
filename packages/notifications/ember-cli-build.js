@@ -1,25 +1,9 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
-const path = require('path');
 
 module.exports = function (defaults) {
-  const app = new EmberAddon(defaults, {
-    postcssOptions: {
-      compile: {
-        enabled: true,
-        cacheExclude: [],
-        cacheInclude: [],
-        // cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
-        plugins: [
-          require('tailwindcss')(
-            path.join('tests', 'dummy', 'app', 'styles', 'tailwind.config.js')
-          ),
-          require('autoprefixer')
-        ]
-      }
-    }
-  });
+  const app = new EmberAddon(defaults, {});
 
   app.import(
     'node_modules/ember-basic-dropdown/vendor/ember-basic-dropdown.css'
