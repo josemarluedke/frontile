@@ -12,7 +12,7 @@ Router.map(function () {
   this.route('buttons');
   this.route('changeset-form');
   this.route('core');
-  this.route('forms', function() {
+  this.route('forms', function () {
     this.route('style-variants');
   });
   this.route('notifications');
