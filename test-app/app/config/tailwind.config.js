@@ -1,11 +1,16 @@
 /* eslint-disable node/no-extraneous-require */
 
+const colors = require('tailwindcss/colors');
 module.exports = {
   future: {
-    removeDeprecatedGapUtilities: true,
+    removeDeprecatedGapUtilities: true
   },
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        teal: colors.teal
+      }
+    }
   },
   variants: {},
   plugins: [
@@ -13,6 +18,6 @@ module.exports = {
     require('@frontile/forms/tailwind'),
     require('@frontile/buttons/tailwind'),
     require('@frontile/notifications/tailwind'),
-    require('@frontile/overlays/tailwind'),
-  ],
+    require('@frontile/overlays/tailwind')
+  ]
 };

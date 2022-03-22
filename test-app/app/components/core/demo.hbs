@@ -1,0 +1,27 @@
+<div class="container p-4 mx-auto">
+
+  <div class="mt-4">
+    <VisuallyHidden>This should not be shown</VisuallyHidden>
+
+    <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-teal-600">
+      CloseButton
+    </h1>
+    <div class="flex items-center mt-10 space-x-2">
+      <CloseButton @size="xs" />
+      <CloseButton @size="sm" />
+      <CloseButton @size="md" />
+      <CloseButton @size="lg" />
+      <CloseButton @size="xl" />
+    </div>
+
+    <hr class="mb-4 divide-gray-200" >
+
+    <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-teal-600">
+      Collapsible
+    </h1>
+
+    <Core::CollapsibleDemo />
+
+    {{outlet}}
+  </div>
+</div>
