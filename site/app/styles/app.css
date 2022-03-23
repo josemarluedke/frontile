@@ -1,13 +1,7 @@
-/* purgecss start ignore */
 @import './inter-font.css';
-
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
-/* purgecss end ignore */
-
 @import 'tailwindcss/utilities';
-
-/* purgecss start ignore */
 @import './highlight.css';
 @import './docfy-demo.css';
 
@@ -36,4 +30,3 @@
     }
   }
 }
-/* purgecss end ignore */
