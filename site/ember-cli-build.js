@@ -28,7 +28,7 @@ module.exports = function (defaults) {
     postcssOptions: {
       compile: {
         enabled: true,
-        cacheInclude: [/.*\.css$/, /.tailwind\.config\.js$/],
+        cacheInclude: [/.*\.(css|hbs)$/, /tailwind\.config\.js$/],
         plugins: postcssPlugins
       }
     }
