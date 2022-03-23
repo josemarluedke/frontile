@@ -174,6 +174,9 @@ module.exports = {
     { pattern: /^drawer/ },
 
     // Frontile Buttons
-    { pattern: /^btn/ }
+    { pattern: /^btn/ },
+
+    // Power Select
+    { pattern: /^ember-power-select/ }
   ]
 };
