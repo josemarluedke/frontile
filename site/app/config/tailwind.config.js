@@ -144,6 +144,7 @@ module.exports = {
   ],
   safelist: [
     { pattern: /^close-button/ },
+    { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
 
     // Frontile Forms

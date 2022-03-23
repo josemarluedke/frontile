@@ -128,9 +128,7 @@ File `app/styles/app.css`:
 
 ```css
 @tailwind base;
-/* purgecss start ignore */
 @tailwind components;
-/* purgecss end ignore */
 @tailwind utilities;
 ```
 
@@ -142,6 +140,7 @@ File `app/styles/app.css`:
 module.exports = {
   safelist: [
     { pattern: /^close-button/ },
+    { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
 
     // Frontile Forms
