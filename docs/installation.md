@@ -7,7 +7,6 @@ title: Installation
 Frontile is separated into several packages so you can choose what features you
 want in your project. Here you can find information on how to install all the packages.
 
-
 ## Packages
 
 Independently of what packages you are going to use, you will need to have the Core
@@ -129,9 +128,7 @@ File `app/styles/app.css`:
 
 ```css
 @tailwind base;
-/* purgecss start ignore */
 @tailwind components;
-/* purgecss end ignore */
 @tailwind utilities;
 ```
 
@@ -143,7 +140,8 @@ File `app/styles/app.css`:
 module.exports = {
   safelist: [
     { pattern: /^close-button/ },
-    { pattern: /^visually-hidden/ },
+    { pattern: /^js-focus-visible/ },
+    { pattern: /^sr-only/ },
 
     // Frontile Forms
     { pattern: /^form-field-checkbox/ },
@@ -173,9 +171,11 @@ module.exports = {
 
     // Frontile Buttons
     { pattern: /^btn/ },
+
+    // Power Select
+    { pattern: /^ember-power-select/ }
   }
   // ...
 };
 
 ```
-

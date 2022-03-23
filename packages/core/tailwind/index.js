@@ -11,6 +11,13 @@ module.exports = plugin.withOptions(function () {
       require('./default-options')
     );
 
+    /* https://github.com/WICG/focus-visible */
+    addComponents({
+      '.js-focus-visible :focus:not(.focus-visible)': {
+        outline: 'none'
+      }
+    });
+
     addMultipartComponent(
       addComponents,
       '.close-button',

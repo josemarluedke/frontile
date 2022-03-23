@@ -19,7 +19,7 @@ module(
         this.element.textContent?.trim(),
         'This text will be visually hidden'
       );
-      assert.dom('[data-test-id="my-element"]').hasClass('visually-hidden');
+      assert.dom('[data-test-id="my-element"]').hasClass('sr-only');
     });
   }
 );
