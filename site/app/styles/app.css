@@ -16,7 +16,8 @@
 .prose h4,
 .docfy-demo__description__header__title {
   & > a {
-    @apply ml-6;
+    @apply ml-6 lg:ml-0;
+    @apply lg:ml-0;
 
     &::before {
       content: '#';
@@ -24,8 +25,6 @@
     }
 
     @screen lg {
-      @apply ml-0;
-
       &::before {
         @apply opacity-0 pr-1;
       }
