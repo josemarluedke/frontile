@@ -29,7 +29,6 @@
     "@frontile/forms": "^0.13.1",
     "@frontile/notifications": "^0.13.1",
     "@frontile/overlays": "^0.13.1",
-    "@fullhuman/postcss-purgecss": "^4.1.3",
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "@tailwindcss/typography": "^0.5.2",
