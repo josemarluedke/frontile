@@ -40,6 +40,7 @@ module(
         'name.last': validatePresence(true),
         email: validateFormat({ type: 'email' })
       };
+
       this.set('model', model);
       this.set('validations', validations);
 
