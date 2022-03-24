@@ -45,7 +45,7 @@ jobs:
           - ember-release
           - ember-beta
           - embroider-safe
-          # - embroider-optimized
+          - embroider-optimized
           # - ember-canary https://github.com/jeffjewiss/ember-cli-postcss/issues/745
 
     steps:

@@ -3,21 +3,53 @@
   {{on "submit" (fn this.handleSubmit @changeset)}}
   {{on "reset" (fn this.handleReset @changeset)}}
 >
-  <ChangesetForm::Context @changeset={{@changeset}} as |Form|>
-    {{yield
-      (hash
-        Input=(component Form.Input hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
-        Textarea=(component Form.Textarea hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
-        Select=(component Form.Select hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
-        Checkbox=(component Form.Checkbox hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
-        CheckboxGroup=(component
-          Form.CheckboxGroup hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors
-        )
-        Radio=(component Form.Radio hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
-        RadioGroup=(component Form.RadioGroup hasSubmitted=this.hasSubmitted showError=@alwaysShowErrors)
+
+  {{yield
+    (hash
+      Input=(component
+        "changeset-form/fields/input"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
       )
-      @changeset
-      (hash hasSubmitted=this.hasSubmitted)
-    }}
-  </ChangesetForm::Context>
+      Textarea=(component
+        "changeset-form/fields/textarea"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      Select=(component
+        "changeset-form/fields/select"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      Checkbox=(component
+        "changeset-form/fields/checkbox"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      CheckboxGroup=(component
+        "changeset-form/fields/checkbox-group"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      Radio=(component
+        "changeset-form/fields/radio"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      RadioGroup=(component
+        "changeset-form/fields/radio-group"
+        changeset=@changeset
+        hasSubmitted=this.hasSubmitted
+        showError=@alwaysShowErrors
+      )
+      state=(hash hasSubmitted=this.hasSubmitted)
+    )
+  }}
+
 </form>

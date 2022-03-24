@@ -52,10 +52,10 @@ module(
           @validateOnInit={{this.validateOnInit}}
           @alwaysShowErrors={{this.alwaysShowErrors}}
           data-test-changeset-form
-          as |Form changeset state|
+          as |Form|
         >
-          <div data-test-id="has-submitted">{{state.hasSubmitted}}</div>
-          {{#if changeset.isInvalid}}
+          <div data-test-id="has-submitted">{{Form.state.hasSubmitted}}</div>
+          {{#if changesetObj.isInvalid}}
             <p data-test-id="form-error">There were one or more errors in your form.</p>
           {{/if}}
           <Form.Input
@@ -63,21 +63,21 @@ module(
             @label="First Name"
             data-test-name-first-input
           />
-          <div data-test-name-first>{{changeset.name.first}}</div>
+          <div data-test-name-first>{{changesetObj.name.first}}</div>
 
           <Form.Input
             @fieldName="name.last"
             @label="Last Name"
             data-test-name-last-input
           />
-          <div data-test-name-last>{{changeset.name.last}}</div>
+          <div data-test-name-last>{{changesetObj.name.last}}</div>
           <Form.Input
             @containerClass="email-field"
             @fieldName="email"
             @label="Email Address"
             data-test-email-input
           />
-          <div data-test-email>{{changeset.email}}</div>
+          <div data-test-email>{{changesetObj.email}}</div>
 
           <button type="submit" data-test-submit>Submit</button>
           <button type="reset" data-test-reset>Reset</button>
@@ -204,7 +204,7 @@ module(
           data-test-changeset-form-two
           as |Form changeset|
         >
-          {{#if changeset.isInvalid}}
+          {{#if changesetObj.isInvalid}}
             <p data-test-id="form-error-two">There were one or more errors in your form.</p>
           {{/if}}
 
