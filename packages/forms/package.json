@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon"
@@ -22,8 +22,8 @@
     "postpack": "ember ts:clean"
   },
   "dependencies": {
-    "@frontile/core": "^0.13.1",
-    "@frontile/tailwindcss-plugin-helpers": "^0.13.0",
+    "@frontile/core": "^0.14.0",
+    "@frontile/tailwindcss-plugin-helpers": "^0.14.0",
     "ember-cli-babel": "^7.26.11",
     "ember-cli-htmlbars": "^6.0.1",
     "ember-cli-typescript": "^5.0.0",
