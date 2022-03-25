@@ -11,6 +11,7 @@ declare const config: {
   podModulePrefix: string;
   locationType: string;
   rootURL: string;
+  'ember-basic-dropdown': Record<string, unknown>;
 };
 
 export default config;
