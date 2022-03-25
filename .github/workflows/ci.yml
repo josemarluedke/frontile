@@ -46,7 +46,7 @@ jobs:
           - ember-beta
           - embroider-safe
           - embroider-optimized
-          # - ember-canary https://github.com/jeffjewiss/ember-cli-postcss/issues/745
+          - ember-canary
 
     steps:
       - uses: actions/checkout@v2
