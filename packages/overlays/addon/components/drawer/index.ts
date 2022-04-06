@@ -1,10 +1,14 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
-import { OverlayArgs } from '../overlay';
+import { OverlaySignature } from '../overlay';
+import DrawerBody from './body';
+import DrawerFooter from './footer';
+import DrawerHeader from './header';
 
-interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
+export interface DrawerArgs
+  extends Omit<OverlaySignature['Args'], 'contentTransitionName'> {
   /**
-   * The name of the transition to be used in the modal.
+   * The name of the transition to be used in the Drawer.
    *
    * @defaultValue 'overlay-transition--slide-from-[placement]'
    */
@@ -47,7 +51,24 @@ interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-export default class Drawer extends Component<DrawerArgs> {
+interface DrawerBlocks {
+  default: {
+    // TODO define CloseButton import correctly
+    // CloseButton: CloseButton;
+    Header: DrawerHeader;
+    Body: DrawerBody;
+    Footer: DrawerFooter;
+    headerId: string;
+  };
+}
+
+interface DrawerSignature {
+  Args: DrawerArgs;
+  Blocks: DrawerBlocks;
+  Element: HTMLDivElement | null;
+}
+
+export default class Drawer extends Component<DrawerSignature> {
   headerId = `${guidFor(this)}-header`;
 
   get preventClosing(): boolean {

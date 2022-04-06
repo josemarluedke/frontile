@@ -10,7 +10,7 @@ interface ModalHeaderArgs extends Pick<ModalArgs, 'size'> {
 
 interface ModalHeaderSignature {
   Args: ModalHeaderArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class ModalHeader extends Component<ModalHeaderSignature> {}
