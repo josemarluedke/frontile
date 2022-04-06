@@ -4,6 +4,7 @@ import { OverlaySignature } from '../overlay';
 import ModalFooter from './footer';
 import ModalBody from './body';
 import ModalHeader from './header';
+import CloseButton from '@frontile/core/addon/components/close-button';
 
 export interface ModalArgs
   extends Omit<OverlaySignature['Args'], 'contentTransitionName'> {
@@ -51,8 +52,7 @@ export interface ModalArgs
 
 interface ModalBlocks {
   default: {
-    // TODO define CloseButton import correctly
-    // CloseButton: CloseButton;
+    CloseButton: CloseButton;
     Header: ModalHeader;
     Body: ModalBody;
     Footer: ModalFooter;

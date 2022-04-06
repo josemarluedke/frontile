@@ -4,6 +4,7 @@ import { OverlaySignature } from '../overlay';
 import DrawerBody from './body';
 import DrawerFooter from './footer';
 import DrawerHeader from './header';
+import CloseButton from '@frontile/core/addon/components/close-button';
 
 export interface DrawerArgs
   extends Omit<OverlaySignature['Args'], 'contentTransitionName'> {
@@ -53,8 +54,7 @@ export interface DrawerArgs
 
 interface DrawerBlocks {
   default: {
-    // TODO define CloseButton import correctly
-    // CloseButton: CloseButton;
+    CloseButton: CloseButton;
     Header: DrawerHeader;
     Body: DrawerBody;
     Footer: DrawerFooter;
