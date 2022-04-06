@@ -1,37 +1,43 @@
 import Component from '@glimmer/component';
 
-interface ButtonArgs {
-  /**
-   * The HTML type of the button
-   *
-   * @defaultValue 'button'
-   */
-  type?: 'button' | 'submit' | 'reset';
+interface ButtonSignature {
+  Args: {
+    /**
+     * The HTML type of the button
+     *
+     * @defaultValue 'button'
+     */
+    type?: 'button' | 'submit' | 'reset';
 
-  /**
-   * The button appearance
-   *
-   * @defaultValue 'default'
-   */
-  appearance?: 'default' | 'outlined' | 'minimal' | 'custom';
+    /**
+     * The button appearance
+     *
+     * @defaultValue 'default'
+     */
+    appearance?: 'default' | 'outlined' | 'minimal' | 'custom';
 
-  /**
-   * The intent of the button
-   */
-  intent?: 'primary' | 'success' | 'warning' | 'danger';
+    /**
+     * The intent of the button
+     */
+    intent?: 'primary' | 'success' | 'warning' | 'danger';
 
-  /**
-   * The size of the button
-   */
-  size?: 'xs' | 'sm' | 'lg' | 'xl';
+    /**
+     * The size of the button
+     */
+    size?: 'xs' | 'sm' | 'lg' | 'xl';
 
-  /**
-   * Disable rendering the button element. It yields an object with classNames instead.
-   */
-  isRenderless?: boolean;
+    /**
+     * Disable rendering the button element. It yields an object with classNames instead.
+     */
+    isRenderless?: boolean;
+  };
+  Blocks: {
+    default: [string | null];
+  };
+  Element: HTMLButtonElement | null;
 }
 
-export default class Button extends Component<ButtonArgs> {
+export default class Button extends Component<ButtonSignature> {
   get type(): string {
     if (this.args.type) {
       return this.args.type;
