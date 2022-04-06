@@ -1,5 +1,7 @@
 import Component from '@glimmer/component';
 
-interface VisuallyHiddenArgs {}
+export interface VisuallyHiddenSignature {
+  Element: HTMLDivElement;
+}
 
-export default class VisuallyHidden extends Component<VisuallyHiddenArgs> {}
+export default class VisuallyHidden extends Component<VisuallyHiddenSignature> {}

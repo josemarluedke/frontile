@@ -5,27 +5,30 @@ import safeStyles from '@frontile/core/utils/safe-styles';
 
 const waiter = buildWaiter('@frontile/core:collapsible');
 
-interface CollapsibleArgs {
-  /**
-   * If true, the content will be visible
-   */
-  isOpen: boolean;
+interface CollapsibleSignature {
+  Args: {
+    /**
+     * If true, the content will be visible
+     */
+    isOpen: boolean;
 
-  /**
-   * The height for the content in it's collapsed state.
-   * The unit of the value should be included, eg. '10px'.
-   *
-   * @defaultValue 0
-   */
-  initialHeight?: string;
+    /**
+     * The height for the content in it's collapsed state.
+     * The unit of the value should be included, eg. '10px'.
+     *
+     * @defaultValue 0
+     */
+    initialHeight?: string;
+  };
+  Element: HTMLDivElement;
 }
 
-export default class Collapsible extends Component<CollapsibleArgs> {
+export default class Collapsible extends Component<CollapsibleSignature> {
   isInitiallyOpen = false;
   waiterToken?: unknown;
   isCurrentlyOpen = false; // Internal value to track if open or not
 
-  constructor(owner: unknown, args: CollapsibleArgs) {
+  constructor(owner: unknown, args: CollapsibleSignature['Args']) {
     super(owner, args);
 
     if (this.args.isOpen) {
