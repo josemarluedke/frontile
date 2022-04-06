@@ -32,7 +32,7 @@ interface ButtonSignature {
     isRenderless?: boolean;
   };
   Blocks: {
-    default: [string | null];
+    default: [{ classNames: string } | null];
   };
   Element: HTMLButtonElement | null;
 }
