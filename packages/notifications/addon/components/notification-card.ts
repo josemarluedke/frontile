@@ -5,21 +5,24 @@ import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
 import { NotificationsService, Notification, CustomAction } from '../.';
 import { later } from '@ember/runloop';
-import { NotificationsContainerArgs } from './notifications-container';
+import { NotificationsContainerSignature } from './notifications-container';
 
-interface NotificationCardArgs {
-  notification: Notification;
-  placement: NotificationsContainerArgs['placement'];
+interface NotificationCardSignature {
+  Args: {
+    notification: Notification;
+    placement: NotificationsContainerSignature['Args']['placement'];
 
-  /**
-   * Spacing for each notification, in px.
-   *
-   * @defaultValue 16
-   */
-  spacing?: number;
+    /**
+     * Spacing for each notification, in px.
+     *
+     * @defaultValue 16
+     */
+    spacing?: number;
+  };
+  Element: HTMLDivElement;
 }
 
-export default class NotificationCard extends Component<NotificationCardArgs> {
+export default class NotificationCard extends Component<NotificationCardSignature> {
   @service notifications!: NotificationsService;
   @tracked hasEntered = false;
 

@@ -4,29 +4,32 @@ import NotificationsService from '../services/notifications';
 import { action } from '@ember/object';
 import { Notification } from '../';
 
-export interface NotificationsContainerArgs {
-  /**
-   * The placement of the notifications
-   *
-   * @defaultValue 'bottom-right'
-   */
-  placement?:
-    | 'top-left'
-    | 'top-center'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right';
+export interface NotificationsContainerSignature {
+  Args: {
+    /**
+     * The placement of the notifications
+     *
+     * @defaultValue 'bottom-right'
+     */
+    placement?:
+      | 'top-left'
+      | 'top-center'
+      | 'top-right'
+      | 'bottom-left'
+      | 'bottom-center'
+      | 'bottom-right';
 
-  /**
-   * Spacing for each notification, in px.
-   *
-   * @defaultValue 16
-   */
-  spacing?: number;
+    /**
+     * Spacing for each notification, in px.
+     *
+     * @defaultValue 16
+     */
+    spacing?: number;
+  };
+  Element: HTMLDivElement | null;
 }
 
-export default class NotificationsContainer extends Component<NotificationsContainerArgs> {
+export default class NotificationsContainer extends Component<NotificationsContainerSignature> {
   @service notifications!: NotificationsService;
 
   get isTopPlacement(): boolean {
