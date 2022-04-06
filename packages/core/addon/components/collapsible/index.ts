@@ -88,19 +88,19 @@ export default class Collapsible extends Component<CollapsibleArgs> {
     }
   }
 
-  heightTransision(duration: number): string {
+  heightTransition(duration: number): string {
     return `height ${duration}s cubic-bezier(0.4, 0, 0.2, 1) 0ms`;
   }
 
-  opacityTransision(duration: number): string {
+  opacityTransition(duration: number): string {
     return `opacity ${duration}s ease-in-out 0ms`;
   }
 
   expand(element: HTMLElement): void {
     this.isCurrentlyOpen = true;
     element.style.transition = [
-      this.heightTransision(0.4),
-      this.opacityTransision(0.3)
+      this.heightTransition(0.4),
+      this.opacityTransition(0.3)
     ].join(', ');
     element.style.overflow = 'hidden';
 
@@ -120,8 +120,8 @@ export default class Collapsible extends Component<CollapsibleArgs> {
     window.requestAnimationFrame(() => {
       element.style.height = `${height}px`;
       element.style.transition = [
-        this.heightTransision(0.2),
-        this.opacityTransision(0.3)
+        this.heightTransition(0.2),
+        this.opacityTransition(0.3)
       ].join(', ');
 
       window.requestAnimationFrame(() => {
