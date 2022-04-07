@@ -10,6 +10,10 @@ export interface BaseArgs {
   errors?: string[];
 }
 
+export interface BaseSignature {
+  Args: BaseArgs;
+}
+
 export interface ValidationError {
   key: string;
   value: unknown;
@@ -17,9 +21,9 @@ export interface ValidationError {
 }
 
 export default class ChangesetFormFieldsBase<
-  T extends BaseArgs
+  T extends BaseSignature
 > extends Component<T> {
-  constructor(owner: unknown, args: T) {
+  constructor(owner: unknown, args: T['Args']) {
     super(owner, args);
 
     assert(

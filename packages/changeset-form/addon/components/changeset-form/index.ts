@@ -4,40 +4,64 @@ import { BufferedChangeset } from 'ember-changeset/types';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { next } from '@ember/runloop';
+import ChangesetFormFieldsInput from './fields/input';
+import ChangesetFormFieldsTextarea from './fields/textarea';
+import ChangesetFormFieldsSelect from './fields/select';
+import ChangesetFormFieldsCheckbox from './fields/checkbox';
+import ChangesetFormFieldsCheckboxGroup from './fields/checkbox-group';
+import ChangesetFormFieldsRadio from './fields/radio';
+import ChangesetFormFieldsRadioGroup from './fields/radio-group';
 
-interface ChangesetFormArgs {
-  /** Changeset Object */
-  changeset: BufferedChangeset;
+interface ChangesetFormSignature {
+  Args: {
+    /** Changeset Object */
+    changeset: BufferedChangeset;
 
-  /**
-   * Run Changeset execute method instead of save
-   * @defaultValue false
-   * */
-  runExecuteInsteadOfSave?: boolean;
+    /**
+     * Run Changeset execute method instead of save
+     * @defaultValue false
+     * */
+    runExecuteInsteadOfSave?: boolean;
 
-  /**
-   * Always show errors if there are any
-   * @defaultValue false
-   */
-  alwaysShowErrors?: boolean;
+    /**
+     * Always show errors if there are any
+     * @defaultValue false
+     */
+    alwaysShowErrors?: boolean;
 
-  /**
-   * Validate the changeset on initialization
-   * @defaultValue false
-   */
-  validateOnInit?: boolean;
+    /**
+     * Validate the changeset on initialization
+     * @defaultValue false
+     */
+    validateOnInit?: boolean;
 
-  /** Callback exeuted when from `onsubmit` event is triggered */
-  onSubmit?: (data: unknown, event: Event) => void;
+    /** Callback executed when from `onsubmit` event is triggered */
+    onSubmit?: (data: unknown, event: Event) => void;
 
-  /** Callback exeuted when from `onreset` event is triggered */
-  onReset?: (data: unknown, event: Event) => void;
+    /** Callback executed when from `onreset` event is triggered */
+    onReset?: (data: unknown, event: Event) => void;
+  };
+  Blocks: {
+    default: [
+      {
+        Input: ChangesetFormFieldsInput;
+        Textarea: ChangesetFormFieldsTextarea;
+        Select: ChangesetFormFieldsSelect;
+        Checkbox: ChangesetFormFieldsCheckbox;
+        CheckboxGroup: ChangesetFormFieldsCheckboxGroup;
+        Radio: ChangesetFormFieldsRadio;
+        RadioGroup: ChangesetFormFieldsRadioGroup;
+        state: { hasSubmitted: boolean };
+      }
+    ];
+  };
+  Element: HTMLFormElement;
 }
 
-export default class ChangesetForm extends Component<ChangesetFormArgs> {
+export default class ChangesetForm extends Component<ChangesetFormSignature> {
   @tracked hasSubmitted = false;
 
-  constructor(owner: unknown, args: ChangesetFormArgs) {
+  constructor(owner: unknown, args: ChangesetFormSignature['Args']) {
     super(owner, args);
     assert(
       '@changeset must be defined on <ChangesetForm> component',
