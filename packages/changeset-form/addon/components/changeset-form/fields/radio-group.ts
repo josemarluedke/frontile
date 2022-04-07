@@ -1,11 +1,11 @@
 import Base, { BaseArgs, BaseSignature } from './base';
 import { action } from '@ember/object';
 
-interface ChangesetFormFieldsRadioGroupArgs extends BaseArgs {
+export interface ChangesetFormFieldsRadioGroupArgs extends BaseArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-interface ChangesetFormFieldsRadioGroupSignature extends BaseSignature {
+export interface ChangesetFormFieldsRadioGroupSignature extends BaseSignature {
   Args: ChangesetFormFieldsRadioGroupArgs;
 }
 

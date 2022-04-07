@@ -1,11 +1,11 @@
 import Base, { BaseArgs, BaseSignature } from './base';
 import { action } from '@ember/object';
 
-interface ChangesetFormFieldsInputArgs extends BaseArgs {
+export interface ChangesetFormFieldsInputArgs extends BaseArgs {
   onInput?: (value: string, event: InputEvent) => void;
 }
 
-interface ChangesetFormFieldsInputSignature extends BaseSignature {
+export interface ChangesetFormFieldsInputSignature extends BaseSignature {
   Args: ChangesetFormFieldsInputArgs;
 }
 

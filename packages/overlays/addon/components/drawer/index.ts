@@ -1,13 +1,12 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
-import { OverlaySignature } from '../overlay';
+import { OverlayArgs } from '../overlay';
 import DrawerBody from './body';
 import DrawerFooter from './footer';
 import DrawerHeader from './header';
 import CloseButton from '@frontile/core/addon/components/close-button';
 
-export interface DrawerArgs
-  extends Omit<OverlaySignature['Args'], 'contentTransitionName'> {
+export interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**
    * The name of the transition to be used in the Drawer.
    *
@@ -52,21 +51,19 @@ export interface DrawerArgs
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-interface DrawerBlocks {
-  default: [
-    {
-      CloseButton: CloseButton;
-      Header: DrawerHeader;
-      Body: DrawerBody;
-      Footer: DrawerFooter;
-      headerId: string;
-    }
-  ];
-}
-
-interface DrawerSignature {
+export interface DrawerSignature {
   Args: DrawerArgs;
-  Blocks: DrawerBlocks;
+  Blocks: {
+    default: [
+      {
+        CloseButton: CloseButton;
+        Header: DrawerHeader;
+        Body: DrawerBody;
+        Footer: DrawerFooter;
+        headerId: string;
+      }
+    ];
+  };
   Element: HTMLDivElement | null;
 }
 

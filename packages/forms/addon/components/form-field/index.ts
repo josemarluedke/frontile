@@ -8,7 +8,7 @@ import FormFieldLabel from './label';
 import FormFieldRadio from './radio';
 import FormFieldTextarea from './textarea';
 
-interface FormFieldSignature {
+export interface FormFieldSignature {
   Args: {
     size?: 'sm' | 'lg';
   };

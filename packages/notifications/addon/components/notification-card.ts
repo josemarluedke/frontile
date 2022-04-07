@@ -7,18 +7,20 @@ import { NotificationsService, Notification, CustomAction } from '../.';
 import { later } from '@ember/runloop';
 import { NotificationsContainerSignature } from './notifications-container';
 
-interface NotificationCardSignature {
-  Args: {
-    notification: Notification;
-    placement: NotificationsContainerSignature['Args']['placement'];
+export interface NotificationCardArgs {
+  notification: Notification;
+  placement: NotificationsContainerSignature['Args']['placement'];
 
-    /**
-     * Spacing for each notification, in px.
-     *
-     * @defaultValue 16
-     */
-    spacing?: number;
-  };
+  /**
+   * Spacing for each notification, in px.
+   *
+   * @defaultValue 16
+   */
+  spacing?: number;
+}
+
+export interface NotificationCardSignature {
+  Args: NotificationCardArgs;
   Element: HTMLDivElement;
 }
 

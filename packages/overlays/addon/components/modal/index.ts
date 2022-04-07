@@ -1,13 +1,12 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
-import { OverlaySignature } from '../overlay';
+import { OverlayArgs } from '../overlay';
 import ModalFooter from './footer';
 import ModalBody from './body';
 import ModalHeader from './header';
 import CloseButton from '@frontile/core/addon/components/close-button';
 
-export interface ModalArgs
-  extends Omit<OverlaySignature['Args'], 'contentTransitionName'> {
+export interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**
    * The name of the transition to be used in the modal.
    * @defaultValue 'overlay-transition--zoom'
@@ -50,21 +49,19 @@ export interface ModalArgs
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-interface ModalBlocks {
-  default: [
-    {
-      CloseButton: CloseButton;
-      Header: ModalHeader;
-      Body: ModalBody;
-      Footer: ModalFooter;
-      headerId: string;
-    }
-  ];
-}
-
-interface ModalSignature {
+export interface ModalSignature {
   Args: ModalArgs;
-  Blocks: ModalBlocks;
+  Blocks: {
+    default: [
+      {
+        CloseButton: CloseButton;
+        Header: ModalHeader;
+        Body: ModalBody;
+        Footer: ModalFooter;
+        headerId: string;
+      }
+    ];
+  };
   Element: HTMLDivElement | null;
 }
 

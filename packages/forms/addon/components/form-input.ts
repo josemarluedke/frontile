@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
-interface FormInputArgs {
+export interface FormInputArgs {
   /**
    * The value to be used in the input.
    * You must also pass `onChange` or `onInput` to update its value.
@@ -49,7 +49,7 @@ export interface FormInputBaseSignature {
   Args: FormInputArgs;
 }
 
-interface FormInputSignature extends FormInputBaseSignature {
+export interface FormInputSignature extends FormInputBaseSignature {
   Element: HTMLInputElement;
 }
 

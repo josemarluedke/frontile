@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldRadioSignature {
+export interface FormFieldRadioSignature {
   Args: {
     value?: unknown;
     checked?: unknown;

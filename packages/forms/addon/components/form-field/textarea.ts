@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldTextareaSignature {
+export interface FormFieldTextareaSignature {
   Args: {
     id?: string;
     size?: 'sm' | 'lg';

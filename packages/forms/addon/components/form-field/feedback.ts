@@ -1,11 +1,13 @@
 import Component from '@glimmer/component';
 
-interface FormFieldFeedbackSignature {
-  Args: {
-    isError?: boolean;
-    errors?: string[] | string;
-    size?: 'sm' | 'lg';
-  };
+export interface FormFieldFeedbackArgs {
+  isError?: boolean;
+  errors?: string[] | string;
+  size?: 'sm' | 'lg';
+}
+
+export interface FormFieldFeedbackSignature {
+  Args: FormFieldFeedbackArgs;
   Element: HTMLDivElement;
 }
 

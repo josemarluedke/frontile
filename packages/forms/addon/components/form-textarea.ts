@@ -1,6 +1,6 @@
 import { FormInputBase, FormInputBaseSignature } from './form-input';
 
-interface FormTextareaSignature extends FormInputBaseSignature {
+export interface FormTextareaSignature extends FormInputBaseSignature {
   Element: HTMLTextAreaElement;
 }
 

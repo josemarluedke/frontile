@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
 import { DrawerArgs } from '.';
 
-interface DrawerBodyArgs extends Pick<DrawerArgs, 'size' | 'placement'> {}
+export interface DrawerBodyArgs
+  extends Pick<DrawerArgs, 'size' | 'placement'> {}
 
-interface DrawerBodySignature {
+export interface DrawerBodySignature {
   Args: DrawerBodyArgs;
   Element: HTMLDivElement | null;
 }

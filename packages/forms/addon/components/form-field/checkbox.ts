@@ -1,15 +1,17 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldCheckboxSignature {
-  Args: {
-    checked?: boolean;
-    name?: string;
-    size?: 'sm' | 'lg';
+export interface FormFieldCheckboxArgs {
+  checked?: boolean;
+  name?: string;
+  size?: 'sm' | 'lg';
 
-    // Callback when onchange is triggered
-    onChange?: (value: boolean, event: Event) => void;
-  };
+  // Callback when onchange is triggered
+  onChange?: (value: boolean, event: Event) => void;
+}
+
+export interface FormFieldCheckboxSignature {
+  Args: FormFieldCheckboxArgs;
   Element: HTMLInputElement;
 }
 

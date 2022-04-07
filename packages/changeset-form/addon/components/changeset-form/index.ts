@@ -12,35 +12,37 @@ import ChangesetFormFieldsCheckboxGroup from './fields/checkbox-group';
 import ChangesetFormFieldsRadio from './fields/radio';
 import ChangesetFormFieldsRadioGroup from './fields/radio-group';
 
-interface ChangesetFormSignature {
-  Args: {
-    /** Changeset Object */
-    changeset: BufferedChangeset;
+export interface ChangesetFormArgs {
+  /** Changeset Object */
+  changeset: BufferedChangeset;
 
-    /**
-     * Run Changeset execute method instead of save
-     * @defaultValue false
-     * */
-    runExecuteInsteadOfSave?: boolean;
+  /**
+   * Run Changeset execute method instead of save
+   * @defaultValue false
+   * */
+  runExecuteInsteadOfSave?: boolean;
 
-    /**
-     * Always show errors if there are any
-     * @defaultValue false
-     */
-    alwaysShowErrors?: boolean;
+  /**
+   * Always show errors if there are any
+   * @defaultValue false
+   */
+  alwaysShowErrors?: boolean;
 
-    /**
-     * Validate the changeset on initialization
-     * @defaultValue false
-     */
-    validateOnInit?: boolean;
+  /**
+   * Validate the changeset on initialization
+   * @defaultValue false
+   */
+  validateOnInit?: boolean;
 
-    /** Callback executed when from `onsubmit` event is triggered */
-    onSubmit?: (data: unknown, event: Event) => void;
+  /** Callback executed when from `onsubmit` event is triggered */
+  onSubmit?: (data: unknown, event: Event) => void;
 
-    /** Callback executed when from `onreset` event is triggered */
-    onReset?: (data: unknown, event: Event) => void;
-  };
+  /** Callback executed when from `onreset` event is triggered */
+  onReset?: (data: unknown, event: Event) => void;
+}
+
+export interface ChangesetFormSignature {
+  Args: ChangesetFormArgs;
   Blocks: {
     default: [
       {
@@ -61,7 +63,7 @@ interface ChangesetFormSignature {
 export default class ChangesetForm extends Component<ChangesetFormSignature> {
   @tracked hasSubmitted = false;
 
-  constructor(owner: unknown, args: ChangesetFormSignature['Args']) {
+  constructor(owner: unknown, args: ChangesetFormArgs) {
     super(owner, args);
     assert(
       '@changeset must be defined on <ChangesetForm> component',

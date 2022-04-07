@@ -2,13 +2,13 @@ import Base, { BaseArgs, BaseSignature } from './base';
 import { action } from '@ember/object';
 import { Select } from 'ember-power-select/addon/components/power-select';
 
-interface ChangesetFormFieldsSelectArgs extends BaseArgs {
+export interface ChangesetFormFieldsSelectArgs extends BaseArgs {
   onChange?: (selection: unknown, select: Select, event?: Event) => void;
   onFocusOut?: (select: Select, event: FocusEvent) => void;
   onClose?: (select: Select, event: Event) => void;
 }
 
-interface ChangesetFormFieldsSelectSignature extends BaseSignature {
+export interface ChangesetFormFieldsSelectSignature extends BaseSignature {
   Args: ChangesetFormFieldsSelectArgs;
 }
 

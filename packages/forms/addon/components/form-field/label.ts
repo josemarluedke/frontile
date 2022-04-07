@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 
-interface FormFieldLabelSignature {
+export interface FormFieldLabelSignature {
   Args: {
     for?: string;
     size?: 'sm' | 'lg';

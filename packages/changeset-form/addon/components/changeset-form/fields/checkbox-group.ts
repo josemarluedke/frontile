@@ -4,14 +4,15 @@ import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { BaseArgs, BaseSignature, ValidationError } from './base';
 
-interface ChangesetFormFieldsGroupArgs extends BaseArgs {
+export interface ChangesetFormFieldsGroupArgs extends BaseArgs {
   errors?: string[];
   changeset: BufferedChangeset;
   groupName?: string;
   onChange?: (value: unknown, event: Event) => void;
 }
 
-interface ChangesetFormFieldsCheckboxGroupSignature extends BaseSignature {
+export interface ChangesetFormFieldsCheckboxGroupSignature
+  extends BaseSignature {
   Args: ChangesetFormFieldsGroupArgs;
 }
 
