@@ -1,16 +1,18 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-export interface FormFieldRadioSignature {
-  Args: {
-    value?: unknown;
-    checked?: unknown;
-    name?: string;
-    size?: 'sm' | 'lg';
+export interface FormFieldRadioArgs {
+  value?: unknown;
+  checked?: unknown;
+  name?: string;
+  size?: 'sm' | 'lg';
 
-    // Callback when onchange is triggered
-    onChange?: (value: unknown, event: Event) => void;
-  };
+  // Callback when onchange is triggered
+  onChange?: (value: unknown, event: Event) => void;
+}
+
+export interface FormFieldRadioSignature {
+  Args: FormFieldRadioArgs;
   Element: HTMLInputElement;
 }
 

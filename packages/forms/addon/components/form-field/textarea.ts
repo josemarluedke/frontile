@@ -1,17 +1,19 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
+export interface FormFieldTextareaArgs {
+  id?: string;
+  size?: 'sm' | 'lg';
+
+  // Callback when oninput is triggered
+  onInput?: (value: string, event: InputEvent) => void;
+
+  // Callback when onchange is triggered
+  onChange?: (value: string, event: InputEvent) => void;
+}
+
 export interface FormFieldTextareaSignature {
-  Args: {
-    id?: string;
-    size?: 'sm' | 'lg';
-
-    // Callback when oninput is triggered
-    onInput?: (value: string, event: InputEvent) => void;
-
-    // Callback when onchange is triggered
-    onChange?: (value: string, event: InputEvent) => void;
-  };
+  Args: FormFieldTextareaArgs;
   Element: HTMLTextAreaElement;
 }
 
