@@ -4,7 +4,7 @@ import NotificationsService from '../services/notifications';
 import { action } from '@ember/object';
 import { Notification } from '../';
 
-export interface NotificationContainerArgs {
+export interface NotificationsContainerArgs {
   /**
    * The placement of the notifications
    *
@@ -27,7 +27,7 @@ export interface NotificationContainerArgs {
 }
 
 export interface NotificationsContainerSignature {
-  Args: NotificationContainerArgs;
+  Args: NotificationsContainerArgs;
   Element: HTMLDivElement | null;
 }
 
