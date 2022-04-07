@@ -51,13 +51,15 @@ export interface ModalArgs
 }
 
 interface ModalBlocks {
-  default: {
-    CloseButton: CloseButton;
-    Header: ModalHeader;
-    Body: ModalBody;
-    Footer: ModalFooter;
-    headerId: string;
-  };
+  default: [
+    {
+      CloseButton: CloseButton;
+      Header: ModalHeader;
+      Body: ModalBody;
+      Footer: ModalFooter;
+      headerId: string;
+    }
+  ];
 }
 
 interface ModalSignature {

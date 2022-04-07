@@ -1,19 +1,22 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldInputArgs {
-  id?: string;
-  type?: string;
-  size?: 'sm' | 'lg';
+interface FormFieldInputSignature {
+  Args: {
+    id?: string;
+    type?: string;
+    size?: 'sm' | 'lg';
 
-  // Callback when oninput is triggered
-  onInput?: (value: string, event: InputEvent) => void;
+    // Callback when oninput is triggered
+    onInput?: (value: string, event: InputEvent) => void;
 
-  // Callback when onchange is triggered
-  onChange?: (value: string, event: InputEvent) => void;
+    // Callback when onchange is triggered
+    onChange?: (value: string, event: InputEvent) => void;
+  };
+  Element: HTMLInputElement;
 }
 
-export default class FormFieldInput extends Component<FormFieldInputArgs> {
+export default class FormFieldInput extends Component<FormFieldInputSignature> {
   get type(): string {
     if (typeof this.args.type === 'string') {
       return this.args.type;

@@ -45,7 +45,17 @@ interface FormInputArgs {
   onFocusOut?: (event: FocusEvent) => void;
 }
 
-export class FormInputBase extends Component<FormInputArgs> {
+export interface FormInputBaseSignature {
+  Args: FormInputArgs;
+}
+
+interface FormInputSignature extends FormInputBaseSignature {
+  Element: HTMLInputElement;
+}
+
+export class FormInputBase<
+  T extends FormInputBaseSignature
+> extends Component<T> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {
@@ -83,4 +93,4 @@ export class FormInputBase extends Component<FormInputArgs> {
   }
 }
 
-export default class FormInput extends FormInputBase {}
+export default class FormInput extends FormInputBase<FormInputSignature> {}

@@ -1,12 +1,15 @@
 import Component from '@glimmer/component';
 
-interface FormFieldFeedbackArgs {
-  isError?: boolean;
-  errors?: string[] | string;
-  size?: 'sm' | 'lg';
+interface FormFieldFeedbackSignature {
+  Args: {
+    isError?: boolean;
+    errors?: string[] | string;
+    size?: 'sm' | 'lg';
+  };
+  Element: HTMLDivElement;
 }
 
-export default class FormFieldFeedback extends Component<FormFieldFeedbackArgs> {
+export default class FormFieldFeedback extends Component<FormFieldFeedbackSignature> {
   get isError(): boolean {
     return (
       typeof this.args.errors !== 'undefined' || this.args.isError === true

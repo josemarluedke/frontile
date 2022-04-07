@@ -53,13 +53,15 @@ export interface DrawerArgs
 }
 
 interface DrawerBlocks {
-  default: {
-    CloseButton: CloseButton;
-    Header: DrawerHeader;
-    Body: DrawerBody;
-    Footer: DrawerFooter;
-    headerId: string;
-  };
+  default: [
+    {
+      CloseButton: CloseButton;
+      Header: DrawerHeader;
+      Body: DrawerBody;
+      Footer: DrawerFooter;
+      headerId: string;
+    }
+  ];
 }
 
 interface DrawerSignature {

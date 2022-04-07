@@ -31,7 +31,12 @@ interface FormSelectArgs extends PowerSelectArgs {
   onFocusOut?: (select: Select, event: FocusEvent) => void;
 }
 
-export default class FormSelect extends Component<FormSelectArgs> {
+interface FormSelectSignature {
+  Args: FormSelectArgs;
+  Element: HTMLDivElement;
+}
+
+export default class FormSelect extends Component<FormSelectSignature> {
   @tracked shouldShowErrorFeedback = false;
   @tracked isOpen = false;
 

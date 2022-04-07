@@ -1,8 +1,11 @@
 import Component from '@glimmer/component';
 
-interface FormFieldLabelArgs {
-  for?: string;
-  size?: 'sm' | 'lg';
+interface FormFieldLabelSignature {
+  Args: {
+    for?: string;
+    size?: 'sm' | 'lg';
+  };
+  Element: HTMLLabelElement;
 }
 
-export default class FormFieldLabel extends Component<FormFieldLabelArgs> {}
+export default class FormFieldLabel extends Component<FormFieldLabelSignature> {}

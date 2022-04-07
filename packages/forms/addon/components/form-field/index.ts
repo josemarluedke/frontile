@@ -1,11 +1,37 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
+import FormFieldCheckbox from './checkbox';
+import FormFieldFeedback from './feedback';
+import FormFieldHint from './hint';
+import FormFieldInput from './input';
+import FormFieldLabel from './label';
+import FormFieldRadio from './radio';
+import FormFieldTextarea from './textarea';
 
-interface FormFieldArgs {
-  size?: 'sm' | 'lg';
+interface FormFieldSignature {
+  Args: {
+    size?: 'sm' | 'lg';
+  };
+  Blocks: {
+    default: [
+      {
+        id: string;
+        hintId: string;
+        feedbackId: string;
+        Label: FormFieldLabel;
+        Hint: FormFieldHint;
+        Feedback: FormFieldFeedback;
+        Input: FormFieldInput;
+        Textarea: FormFieldTextarea;
+        Checkbox: FormFieldCheckbox;
+        Radio: FormFieldRadio;
+      }
+    ];
+  };
+  Element: HTMLDivElement;
 }
 
-export default class FormField extends Component<FormFieldArgs> {
+export default class FormField extends Component<FormFieldSignature> {
   id = guidFor(this);
 
   get hintId(): string {
