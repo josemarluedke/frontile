@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import FormRadio from './form-radio';
 
 export interface FormRadioGroupArgs {
   value: unknown;
@@ -29,6 +30,9 @@ export interface FormRadioGroupArgs {
 
 export interface FormRadioGroupSignature {
   Args: FormRadioGroupArgs;
+  Blocks: {
+    default: [radio: FormRadio];
+  };
   Element: HTMLDivElement;
 }
 

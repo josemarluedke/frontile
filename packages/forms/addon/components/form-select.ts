@@ -33,6 +33,9 @@ export interface FormSelectArgs extends PowerSelectArgs {
 
 export interface FormSelectSignature {
   Args: FormSelectArgs;
+  Blocks: {
+    default: [option: unknown, select: Select];
+  };
   Element: HTMLDivElement;
 }
 

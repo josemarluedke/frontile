@@ -10,6 +10,10 @@ export interface ChangesetFormFieldsSelectArgs extends BaseArgs {
 
 export interface ChangesetFormFieldsSelectSignature extends BaseSignature {
   Args: ChangesetFormFieldsSelectArgs;
+  Blocks: {
+    default: [option: unknown, select: Select];
+  };
+  Element: HTMLDivElement;
 }
 
 export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsSelectSignature> {

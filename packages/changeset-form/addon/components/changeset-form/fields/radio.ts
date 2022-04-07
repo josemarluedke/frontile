@@ -7,6 +7,7 @@ export interface ChangesetFormFieldsRadioArgs extends BaseArgs {
 
 export interface ChangesetFormFieldsRadioSignature extends BaseSignature {
   Args: ChangesetFormFieldsRadioArgs;
+  Element: HTMLInputElement;
 }
 
 export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioSignature> {

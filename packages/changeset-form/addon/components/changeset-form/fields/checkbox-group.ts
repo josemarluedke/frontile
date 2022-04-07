@@ -3,6 +3,7 @@ import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { BaseArgs, BaseSignature, ValidationError } from './base';
+import ChangesetFormFieldsCheckbox from './checkbox';
 
 export interface ChangesetFormFieldsGroupArgs extends BaseArgs {
   errors?: string[];
@@ -14,6 +15,10 @@ export interface ChangesetFormFieldsGroupArgs extends BaseArgs {
 export interface ChangesetFormFieldsCheckboxGroupSignature
   extends BaseSignature {
   Args: ChangesetFormFieldsGroupArgs;
+  Blocks: {
+    default: [checkbox: ChangesetFormFieldsCheckbox];
+  };
+  Element: HTMLDivElement;
 }
 
 export default class ChangesetFormFieldsCheckboxGroup extends Component<ChangesetFormFieldsCheckboxGroupSignature> {

@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import FormCheckbox from './form-checkbox';
 
 export interface FormCheckboxGroupArgs {
   /** The group label */
@@ -27,6 +28,12 @@ export interface FormCheckboxGroupArgs {
 
 export interface FormCheckboxGroupSignature {
   Args: FormCheckboxGroupArgs;
+  Blocks: {
+    default: [
+      checkbox: FormCheckbox,
+      api: { onChange: (value: unknown, event: Event) => void }
+    ];
+  };
   Element: HTMLDivElement;
 }
 
