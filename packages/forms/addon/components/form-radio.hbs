@@ -1,27 +1,24 @@
 <FormField
   @size={{@size}}
-  class={{
-    use-frontile-class
+  class={{use-frontile-class
     "form-radio"
     @size
     class=(array @containerClass @privateContainerClass)
-  }} as |f|
+  }}
+  as |f|
 >
-  <div class={{use-frontile-class "form-radio" @size part="label-container"}}>
-    <div class={{use-frontile-class "form-radio" @size part="input-container"}}>
-      {{!  Zero-width space character, used to align checkbox properly }}
-      ​
-      <f.Radio
-        @onChange={{this.handleChange}}
-        @value={{@value}}
-        @checked={{@checked}}
-        @name={{@name}}
-        class={{use-frontile-class "form-radio" @size part="radio"}}
-        aria-describedby={{if @hint f.hintId}}
-        ...attributes
-      />
-    </div>
-
+  <div class={{use-frontile-class "form-radio" @size part="input-container"}}>
+    {{!  Zero-width space character, used to align checkbox properly }}
+    ​
+    <f.Radio
+      @onChange={{this.handleChange}}
+      @value={{@value}}
+      @checked={{@checked}}
+      @name={{@name}}
+      class={{use-frontile-class "form-radio" @size part="radio"}}
+      aria-describedby={{if @hint f.hintId}}
+      ...attributes
+    />
     <f.Label class={{use-frontile-class "form-radio" @size part="label"}}>
       {{#if (has-block)}}
         {{yield}}
@@ -30,7 +27,6 @@
       {{/if}}
     </f.Label>
   </div>
-
   {{#if @hint}}
     <f.Hint class={{use-frontile-class "form-radio" @size part="hint"}}>
       {{@hint}}

@@ -221,14 +221,22 @@ function defaultOptions({ config }) {
       },
 
       parts: {
-        labelContainer: {
+        inputContainer: {
           lineHeight: defaultTheme.lineHeight.tight,
           display: 'flex',
-          alignItems: 'flex-start'
-        },
-        inputContainer: {
-          display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          '& > input:not([disabled])': {
+            cursor: defaultTheme.cursor['pointer'],
+            '& + label': {
+              cursor: defaultTheme.cursor['pointer']
+            }
+          },
+          '& > input[disabled]': {
+            cursor: defaultTheme.cursor['not-allowed'],
+            '& + label': {
+              cursor: defaultTheme.cursor['not-allowed']
+            }
+          }
         },
         label: {
           fontWeight: defaultTheme.fontWeight.normal,
