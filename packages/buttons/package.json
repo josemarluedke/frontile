@@ -3,9 +3,10 @@
   "version": "0.14.0",
   "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "frontile"
   ],
-  "repository": "",
+  "repository": "https://github.com/josemarluedke/frontile",
   "license": "MIT",
   "author": "",
   "directories": {
