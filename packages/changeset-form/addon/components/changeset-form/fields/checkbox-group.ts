@@ -2,16 +2,26 @@ import Component from '@glimmer/component';
 import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
-import { ValidationError } from './base';
+import { BaseArgs, BaseSignature, ValidationError } from './base';
+import ChangesetFormFieldsCheckbox from './checkbox';
 
-interface ChangesetFormFieldsGroupArgs {
+export interface ChangesetFormFieldsGroupArgs extends BaseArgs {
   errors?: string[];
   changeset: BufferedChangeset;
   groupName?: string;
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsCheckboxGroup extends Component<ChangesetFormFieldsGroupArgs> {
+export interface ChangesetFormFieldsCheckboxGroupSignature
+  extends BaseSignature {
+  Args: ChangesetFormFieldsGroupArgs;
+  Blocks: {
+    default: [checkbox: ChangesetFormFieldsCheckbox];
+  };
+  Element: HTMLDivElement;
+}
+
+export default class ChangesetFormFieldsCheckboxGroup extends Component<ChangesetFormFieldsCheckboxGroupSignature> {
   constructor(owner: unknown, args: ChangesetFormFieldsGroupArgs) {
     super(owner, args);
 

@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 
-interface ButtonArgs {
+export interface ButtonArgs {
   /**
    * The HTML type of the button
    *
@@ -31,7 +31,15 @@ interface ButtonArgs {
   isRenderless?: boolean;
 }
 
-export default class Button extends Component<ButtonArgs> {
+export interface ButtonSignature {
+  Args: ButtonArgs;
+  Blocks: {
+    default: [{ classNames: string } | null];
+  };
+  Element: HTMLButtonElement | null;
+}
+
+export default class Button extends Component<ButtonSignature> {
   get type(): string {
     if (this.args.type) {
       return this.args.type;

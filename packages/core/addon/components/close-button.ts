@@ -15,7 +15,15 @@ export interface CloseButtonArgs {
   onClick?: (event: Event) => void;
 }
 
-export default class CloseButton extends Component<CloseButtonArgs> {
+export interface CloseButtonSignature {
+  Args: CloseButtonArgs;
+  Blocks: {
+    default: [string | null];
+  };
+  Element: HTMLButtonElement;
+}
+
+export default class CloseButton extends Component<CloseButtonSignature> {
   @action handleClick(event: Event): void {
     if (typeof this.args.onClick === 'function') {
       this.args.onClick(event);

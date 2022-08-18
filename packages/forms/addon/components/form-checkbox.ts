@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormCheckboxArgs {
+export interface FormCheckboxArgs {
   /** The input field label */
   label?: string;
   /** A help text to be displayed */
@@ -27,7 +27,12 @@ interface FormCheckboxArgs {
   _parentOnChange?: (value: boolean, event: Event) => void;
 }
 
-export default class FormCheckbox extends Component<FormCheckboxArgs> {
+export interface FormCheckboxSignature {
+  Args: FormCheckboxArgs;
+  Element: HTMLInputElement;
+}
+
+export default class FormCheckbox extends Component<FormCheckboxSignature> {
   @action handleChange(value: boolean, event: Event): void {
     if (typeof this.args.onChange === 'function') {
       this.args.onChange(value, event);

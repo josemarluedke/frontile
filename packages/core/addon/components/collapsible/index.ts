@@ -5,7 +5,7 @@ import safeStyles from '@frontile/core/utils/safe-styles';
 
 const waiter = buildWaiter('@frontile/core:collapsible');
 
-interface CollapsibleArgs {
+export interface CollapsibleArgs {
   /**
    * If true, the content will be visible
    */
@@ -20,7 +20,12 @@ interface CollapsibleArgs {
   initialHeight?: string;
 }
 
-export default class Collapsible extends Component<CollapsibleArgs> {
+export interface CollapsibleSignature {
+  Args: CollapsibleArgs;
+  Element: HTMLDivElement;
+}
+
+export default class Collapsible extends Component<CollapsibleSignature> {
   isInitiallyOpen = false;
   waiterToken?: unknown;
   isCurrentlyOpen = false; // Internal value to track if open or not

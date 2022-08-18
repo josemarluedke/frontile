@@ -1,10 +1,16 @@
 import Component from '@glimmer/component';
+import { ModalArgs } from '.';
 
-interface ModalHeaderArgs {
+export interface ModalHeaderArgs extends Pick<ModalArgs, 'size'> {
   /**
    * The id used to reference labelledById in Modal component
    */
   labelledById: string;
 }
 
-export default class ModalHeader extends Component<ModalHeaderArgs> {}
+export interface ModalHeaderSignature {
+  Args: ModalHeaderArgs;
+  Element: HTMLDivElement;
+}
+
+export default class ModalHeader extends Component<ModalHeaderSignature> {}

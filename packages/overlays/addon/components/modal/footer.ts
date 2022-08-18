@@ -1,5 +1,11 @@
 import Component from '@glimmer/component';
+import { ModalArgs } from '.';
 
-interface ModalFooterArgs {}
+export interface ModalFooterArgs extends Pick<ModalArgs, 'size'> {}
 
-export default class ModalFooter extends Component<ModalFooterArgs> {}
+export interface ModalFooterSignature {
+  Args: ModalFooterArgs;
+  Element: HTMLDivElement;
+}
+
+export default class ModalFooter extends Component<ModalFooterSignature> {}

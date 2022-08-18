@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldInputArgs {
+export interface FormFieldInputArgs {
   id?: string;
   type?: string;
   size?: 'sm' | 'lg';
@@ -13,7 +13,12 @@ interface FormFieldInputArgs {
   onChange?: (value: string, event: InputEvent) => void;
 }
 
-export default class FormFieldInput extends Component<FormFieldInputArgs> {
+export interface FormFieldInputSignature {
+  Args: FormFieldInputArgs;
+  Element: HTMLInputElement;
+}
+
+export default class FormFieldInput extends Component<FormFieldInputSignature> {
   get type(): string {
     if (typeof this.args.type === 'string') {
       return this.args.type;

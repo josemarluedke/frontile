@@ -1,14 +1,18 @@
-import Base, { BaseArgs, ValidationError } from './base';
+import Base, { BaseArgs, BaseSignature, ValidationError } from './base';
 import { action } from '@ember/object';
 
-interface ChangesetFormFieldsCheckboxArgs extends BaseArgs {
+export interface ChangesetFormFieldsCheckboxArgs extends BaseArgs {
   _groupName?: string;
   _parentOnChange?: (value: unknown, event: Event) => void;
 
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormFieldsCheckboxArgs> {
+export interface ChangesetFormFieldsCheckboxSignature extends BaseSignature {
+  Args: ChangesetFormFieldsCheckboxArgs;
+}
+
+export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormFieldsCheckboxSignature> {
   get fullFieldName(): string {
     return this.args._groupName
       ? `${this.args._groupName}.${this.args.fieldName}`

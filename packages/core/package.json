@@ -39,7 +39,7 @@
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.6.0",
     "@embroider/test-setup": "^1.5.0",
-    "@glimmer/component": "^1.0.4",
+    "@glimmer/component": "^1.1.1",
     "@types/ember-qunit": "^5.0.0",
     "@types/ember-resolver": "^5.0.11",
     "@types/ember__application": "^4.0.0",

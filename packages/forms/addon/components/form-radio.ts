@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormRadioArgs {
+export interface FormRadioArgs {
   /** The input field label */
   label?: string;
   /** A help text to be displayed */
@@ -33,7 +33,12 @@ interface FormRadioArgs {
   _parentOnChange?: (value: unknown, event: Event) => void;
 }
 
-export default class FormRadio extends Component<FormRadioArgs> {
+export interface FormRadioSignature {
+  Args: FormRadioArgs;
+  Element: HTMLInputElement;
+}
+
+export default class FormRadio extends Component<FormRadioSignature> {
   @action handleChange(value: unknown, event: Event): void {
     event.preventDefault();
 

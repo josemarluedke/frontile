@@ -1,8 +1,13 @@
 import Component from '@glimmer/component';
 
-interface FormFieldHintArgs {
+export interface FormFieldHintArgs {
   id?: string;
   size?: 'sm' | 'lg';
 }
 
-export default class FormFieldHint extends Component<FormFieldHintArgs> {}
+export interface FormFieldHintSignature {
+  Args: FormFieldHintArgs;
+  Element: HTMLDivElement;
+}
+
+export default class FormFieldHint extends Component<FormFieldHintSignature> {}

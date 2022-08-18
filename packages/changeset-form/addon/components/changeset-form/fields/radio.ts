@@ -1,11 +1,16 @@
-import Base, { BaseArgs } from './base';
+import Base, { BaseArgs, BaseSignature } from './base';
 import { action } from '@ember/object';
 
-interface ChangesetFormFieldsRadioArgs extends BaseArgs {
+export interface ChangesetFormFieldsRadioArgs extends BaseArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioArgs> {
+export interface ChangesetFormFieldsRadioSignature extends BaseSignature {
+  Args: ChangesetFormFieldsRadioArgs;
+  Element: HTMLInputElement;
+}
+
+export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioSignature> {
   @action
   async handleChange(value: unknown, event: Event): Promise<void> {
     event.preventDefault();

@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldRadioArgs {
+export interface FormFieldRadioArgs {
   value?: unknown;
   checked?: unknown;
   name?: string;
@@ -11,7 +11,12 @@ interface FormFieldRadioArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class FormFieldRadio extends Component<FormFieldRadioArgs> {
+export interface FormFieldRadioSignature {
+  Args: FormFieldRadioArgs;
+  Element: HTMLInputElement;
+}
+
+export default class FormFieldRadio extends Component<FormFieldRadioSignature> {
   get isChecked(): boolean {
     return this.args.checked === this.args.value;
   }

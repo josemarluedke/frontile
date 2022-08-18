@@ -26,7 +26,12 @@ export interface NotificationsContainerArgs {
   spacing?: number;
 }
 
-export default class NotificationsContainer extends Component<NotificationsContainerArgs> {
+export interface NotificationsContainerSignature {
+  Args: NotificationsContainerArgs;
+  Element: HTMLDivElement | null;
+}
+
+export default class NotificationsContainer extends Component<NotificationsContainerSignature> {
   @service notifications!: NotificationsService;
 
   get isTopPlacement(): boolean {

@@ -105,7 +105,12 @@ export interface OverlayArgs {
   contentTransitionName?: string;
 }
 
-export default class Overlay extends Component<OverlayArgs> {
+export interface OverlaySignature {
+  Args: OverlayArgs;
+  Element: HTMLDivElement | null;
+}
+
+export default class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
   contentElement: HTMLElement | undefined;
   mouseDownContentElement: EventTarget | null = null;

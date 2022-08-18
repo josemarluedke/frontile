@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
-interface FormFieldTextareaArgs {
+export interface FormFieldTextareaArgs {
   id?: string;
   size?: 'sm' | 'lg';
 
@@ -12,7 +12,12 @@ interface FormFieldTextareaArgs {
   onChange?: (value: string, event: InputEvent) => void;
 }
 
-export default class FormFieldTextarea extends Component<FormFieldTextareaArgs> {
+export interface FormFieldTextareaSignature {
+  Args: FormFieldTextareaArgs;
+  Element: HTMLTextAreaElement;
+}
+
+export default class FormFieldTextarea extends Component<FormFieldTextareaSignature> {
   @action handleOnInput(event: InputEvent): void {
     if (typeof this.args.onInput === 'function') {
       this.args.onInput((event.target as HTMLInputElement).value, event);

@@ -1,11 +1,20 @@
-import Base, { BaseArgs } from './base';
+import Base, { BaseArgs, BaseSignature } from './base';
 import { action } from '@ember/object';
+import FormRadio from '@frontile/forms/addon/components/form-radio';
 
-interface Args extends BaseArgs {
+export interface ChangesetFormFieldsRadioGroupArgs extends BaseArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class ChangesetFormFieldsRadioGroup extends Base<Args> {
+export interface ChangesetFormFieldsRadioGroupSignature extends BaseSignature {
+  Args: ChangesetFormFieldsRadioGroupArgs;
+  Blocks: {
+    default: [radio: FormRadio];
+  };
+  Element: HTMLDivElement;
+}
+
+export default class ChangesetFormFieldsRadioGroup extends Base<ChangesetFormFieldsRadioGroupSignature> {
   @action
   async handleChange(value: unknown, event: Event): Promise<void> {
     event.preventDefault();

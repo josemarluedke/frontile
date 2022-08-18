@@ -1,8 +1,9 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import FormRadio from './form-radio';
 
-interface FormRadioGroupArgs {
+export interface FormRadioGroupArgs {
   value: unknown;
   /** The group label */
   label?: string;
@@ -27,7 +28,15 @@ interface FormRadioGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export default class FormRadioGroup extends Component<FormRadioGroupArgs> {
+export interface FormRadioGroupSignature {
+  Args: FormRadioGroupArgs;
+  Blocks: {
+    default: [radio: FormRadio];
+  };
+  Element: HTMLDivElement;
+}
+
+export default class FormRadioGroup extends Component<FormRadioGroupSignature> {
   @tracked shouldShowErrorFeedback = false;
 
   get showErrorFeedback(): boolean {

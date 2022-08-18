@@ -1,3 +1,7 @@
-import { FormInputBase } from './form-input';
+import { FormInputBase, FormInputBaseSignature } from './form-input';
 
-export default class FormTextarea extends FormInputBase {}
+export interface FormTextareaSignature extends FormInputBaseSignature {
+  Element: HTMLTextAreaElement;
+}
+
+export default class FormTextarea extends FormInputBase<FormTextareaSignature> {}

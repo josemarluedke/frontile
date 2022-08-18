@@ -7,7 +7,7 @@ import {
   Select
 } from 'ember-power-select/addon/components/power-select';
 
-interface FormSelectArgs extends PowerSelectArgs {
+export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */
   label?: string;
   /** A help text to be displayed */
@@ -31,7 +31,15 @@ interface FormSelectArgs extends PowerSelectArgs {
   onFocusOut?: (select: Select, event: FocusEvent) => void;
 }
 
-export default class FormSelect extends Component<FormSelectArgs> {
+export interface FormSelectSignature {
+  Args: FormSelectArgs;
+  Blocks: {
+    default: [option: unknown, select: Select];
+  };
+  Element: HTMLDivElement;
+}
+
+export default class FormSelect extends Component<FormSelectSignature> {
   @tracked shouldShowErrorFeedback = false;
   @tracked isOpen = false;
 

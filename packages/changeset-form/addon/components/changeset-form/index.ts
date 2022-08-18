@@ -4,8 +4,15 @@ import { BufferedChangeset } from 'ember-changeset/types';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { next } from '@ember/runloop';
+import ChangesetFormFieldsInput from './fields/input';
+import ChangesetFormFieldsTextarea from './fields/textarea';
+import ChangesetFormFieldsSelect from './fields/select';
+import ChangesetFormFieldsCheckbox from './fields/checkbox';
+import ChangesetFormFieldsCheckboxGroup from './fields/checkbox-group';
+import ChangesetFormFieldsRadio from './fields/radio';
+import ChangesetFormFieldsRadioGroup from './fields/radio-group';
 
-interface ChangesetFormArgs {
+export interface ChangesetFormArgs {
   /** Changeset Object */
   changeset: BufferedChangeset;
 
@@ -27,14 +34,33 @@ interface ChangesetFormArgs {
    */
   validateOnInit?: boolean;
 
-  /** Callback exeuted when from `onsubmit` event is triggered */
+  /** Callback executed when from `onsubmit` event is triggered */
   onSubmit?: (data: unknown, event: Event) => void;
 
-  /** Callback exeuted when from `onreset` event is triggered */
+  /** Callback executed when from `onreset` event is triggered */
   onReset?: (data: unknown, event: Event) => void;
 }
 
-export default class ChangesetForm extends Component<ChangesetFormArgs> {
+export interface ChangesetFormSignature {
+  Args: ChangesetFormArgs;
+  Blocks: {
+    default: [
+      {
+        Input: ChangesetFormFieldsInput;
+        Textarea: ChangesetFormFieldsTextarea;
+        Select: ChangesetFormFieldsSelect;
+        Checkbox: ChangesetFormFieldsCheckbox;
+        CheckboxGroup: ChangesetFormFieldsCheckboxGroup;
+        Radio: ChangesetFormFieldsRadio;
+        RadioGroup: ChangesetFormFieldsRadioGroup;
+        state: { hasSubmitted: boolean };
+      }
+    ];
+  };
+  Element: HTMLFormElement;
+}
+
+export default class ChangesetForm extends Component<ChangesetFormSignature> {
   @tracked hasSubmitted = false;
 
   constructor(owner: unknown, args: ChangesetFormArgs) {
