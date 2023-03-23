@@ -73,17 +73,26 @@ export default class Collapsible extends Component<CollapsibleSignature> {
   }
 
   @action onTransitionEnd(event: TransitionEvent): void {
-    if (event.propertyName === 'height' && this.args.isOpen) {
+    if (
+      (event.propertyName === 'height' || event.propertyName == 'opacity') &&
+      this.args.isOpen
+    ) {
       (event.target as HTMLElement).style.height = 'auto';
       (event.target as HTMLElement).style.overflow = '';
     }
     if (this.waiterToken) {
       // when is opened, wait for height transition to finish
-      // when closed, wait for opacity transition to finish
+      // when is opened, wait for opacity transition to finish at 1
+      // when closed, wait for opacity transition to finish at 0
       // when closed and has initialHeight, wait for height transition to finish
       if (
         (this.args.isOpen && event.propertyName === 'height') ||
-        (!this.args.isOpen && event.propertyName === 'opacity') ||
+        (!this.args.isOpen &&
+          event.propertyName === 'opacity' &&
+          (event.target as HTMLElement).style.opacity == '0') ||
+        (this.args.isOpen &&
+          event.propertyName === 'opacity' &&
+          (event.target as HTMLElement).style.opacity == '1') ||
         (!this.args.isOpen &&
           this.args.initialHeight &&
           event.propertyName === 'height')
