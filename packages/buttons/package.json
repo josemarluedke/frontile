@@ -1,6 +1,6 @@
 {
   "name": "@frontile/buttons",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
     "ember-addon",
@@ -33,7 +33,7 @@
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.6.0",
     "@embroider/test-setup": "^1.5.0",
-    "@frontile/core": "^0.14.0",
+    "@frontile/core": "^0.14.1",
     "@glimmer/component": "^1.1.1",
     "@glimmer/tracking": "^1.0.4",
     "@types/ember-qunit": "^5.0.0",
