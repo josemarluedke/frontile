@@ -4,8 +4,9 @@ import { NotificationOptions } from './types';
 import { getConfigOption } from './get-config';
 import { tracked } from '@glimmer/tracking';
 import { later } from '@ember/runloop';
+import Evented from './evented';
 
-export default class NotificationsManager {
+export default class NotificationsManager extends Evented {
   @tracked notifications: Notification[] = [];
 
   add(message: string, options: NotificationOptions = {}): Notification {
@@ -26,6 +27,8 @@ export default class NotificationsManager {
     if (preserve === false) {
       this.setupAutoRemoval(notification, notification.duration);
     }
+
+    this.trigger('add', notification);
     return notification;
   }
 
@@ -45,6 +48,7 @@ export default class NotificationsManager {
       },
       notification.transitionDuration
     );
+    this.trigger('remove', notification);
   }
 
   removeAll(): void {

@@ -13,6 +13,7 @@
       {{css-transition (concat "notification-transition--slide-from-" @placement) isEnabled=true}}
       class={{use-frontile-class "notification-card" @notification.appearance}}
       style="{{this.styles}}"
+      data-notification-id={{@notification.id}}
       ...attributes
     >
       <div class={{use-frontile-class "notification-card" @notification.appearance part="message"}}>

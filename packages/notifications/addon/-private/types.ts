@@ -52,6 +52,14 @@ export interface NotificationOptions {
    * @defaultValue undefined
    */
   customActions?: CustomAction[];
+
+  /**
+   * The unique id of the notification
+   *
+   * @defaultValue undefined
+   */
+
+  id?: string;
 }
 
 export interface DefaultConfig extends NotificationOptions {

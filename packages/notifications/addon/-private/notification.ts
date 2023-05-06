@@ -10,6 +10,7 @@ export default class Notification {
   readonly customActions?: CustomAction[];
   readonly allowClosing: boolean;
   readonly duration: number;
+  readonly id?: string;
 
   @tracked timer?: Timer;
   @tracked isRemoving = false;
@@ -30,6 +31,8 @@ export default class Notification {
     } else {
       this.allowClosing = true;
     }
+
+    this.id = options.id;
   }
 
   remove(): void {

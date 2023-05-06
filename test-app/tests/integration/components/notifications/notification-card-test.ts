@@ -192,5 +192,18 @@ module(
       await triggerEvent('[data-test-notification]', 'mouseenter');
       await triggerEvent('[data-test-notification]', 'mouseleave');
     });
+
+    test('it renders an identifier if notification has id attribute', async function (assert) {
+      assert.expect(1);
+
+      this.set(
+        'notification',
+        new Notification('My message', { transitionDuration: 1, id: 'abc123' })
+      );
+
+      await render(template);
+
+      assert.dom('[data-notification-id="abc123"]').exists({ count: 1 });
+    });
   }
 );

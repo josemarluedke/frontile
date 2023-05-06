@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { NotificationsService, Timer } from '@frontile/notifications';
 import { waitUntil } from '@ember/test-helpers';
+import { Notification } from '@frontile/notifications';
 
 module(
   'Unit | Service | @frontile/notifications/notifications',
@@ -150,6 +151,37 @@ module(
         },
         { timeout: 500 }
       );
+    });
+
+    test('it allows subscriptions to additions and removals', async function (assert) {
+      assert.expect(5);
+
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      assert.equal(service.notifications.length, 0);
+
+      const ids = ['123', '456'];
+
+      service.manager.on('add', (notification: Notification) => {
+        assert.true(ids.includes(notification.id!));
+      });
+
+      service.manager.on('remove', (notification: Notification) => {
+        assert.true(ids.includes(notification.id!));
+      });
+
+      ids.forEach((id) => {
+        service.add('Notification', {
+          id,
+          duration: 1,
+          transitionDuration: 0,
+          preserve: true
+        });
+      });
+
+      service.removeAll();
     });
   }
 );
