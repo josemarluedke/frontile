@@ -157,14 +157,12 @@ module(
       );
 
       assert.dom('[data-test-input]').isNotChecked();
-      assert.dom('.form-checkbox--checked__input-container').doesNotExist();
+      assert.dom('.form-checkbox--checked').doesNotExist();
 
       this.set('myValue', true);
 
       assert.dom('[data-test-input]').isChecked();
-      assert.dom('.form-checkbox--checked__input-container').exists();
-
-      assert.dom('.form-checkbox--checked__input-container + label').exists();
+      assert.dom('.form-checkbox--checked').exists();
     });
 
     test('it adds size classes for @size', async function (assert) {

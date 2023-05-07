@@ -1,21 +1,15 @@
 <FormField
   @size={{@size}}
-  class={{
-    use-frontile-class
+  class={{use-frontile-class
     "form-radio"
     @size
+    (if (eq @checked @value) "checked")
     class=(array @containerClass @privateContainerClass)
-  }} as |f|
+  }}
+  as |f|
 >
   <div class={{use-frontile-class "form-radio" @size part="label-container"}}>
-    <div
-      class={{use-frontile-class
-        "form-radio"
-        @size
-        (if (eq @checked @value) "checked")
-        part="input-container"
-      }}
-    >
+    <div class={{use-frontile-class "form-radio" @size part="input-container"}}>
       {{!  Zero-width space character, used to align checkbox properly }}
       ​
       <f.Radio

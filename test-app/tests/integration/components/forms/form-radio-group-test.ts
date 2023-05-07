@@ -155,15 +155,9 @@ module(
       await render(template);
 
       assert.dom('[data-test-option-no]').isNotChecked();
-      assert
-        .dom('.form-radio--checked__input-container [data-test-option-no]')
-        .doesNotExist();
+      assert.dom('.form-radio--checked [data-test-option-no]').doesNotExist();
       assert.dom('[data-test-option-yes]').isChecked();
-      assert
-        .dom('.form-radio--checked__input-container [data-test-option-yes]')
-        .exists();
-
-      assert.dom('.form-radio--checked__input-container + label').exists();
+      assert.dom('.form-radio--checked [data-test-option-yes]').exists();
     });
 
     test('it adds container class from @containerClass arg', async function (assert) {
