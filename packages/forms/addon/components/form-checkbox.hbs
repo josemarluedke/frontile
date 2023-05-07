@@ -11,7 +11,12 @@
     class={{use-frontile-class "form-checkbox" @size part="label-container"}}
   >
     <div
-      class={{use-frontile-class "form-checkbox" @size part="input-container"}}
+      class={{use-frontile-class
+        "form-checkbox"
+        @size
+        (if @checked "checked")
+        part="input-container"
+      }}
     >
       {{!  Zero-width space character, used to align checkbox properly }}
       ​
