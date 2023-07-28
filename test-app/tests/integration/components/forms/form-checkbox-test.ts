@@ -87,7 +87,7 @@ module(
             name="my-input"
             @label="My Checkbox Input"
             @checked={{this.myValue}}
-            @onChange={{action (mut this.myValue)}}
+            @onChange={{fn (mut this.myValue)}}
           />`
       );
 

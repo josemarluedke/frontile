@@ -43,7 +43,7 @@ module('Integration | Component | @frontile/forms/FormInput', function (hooks) {
         @label="Name"
         data-test-input
       >
-        <button>My Button</button>
+        <button type="submit">My Button</button>
       </FormInput>`);
 
     assert.dom('[data-test-input] + button').exists();
@@ -75,7 +75,7 @@ module('Integration | Component | @frontile/forms/FormInput', function (hooks) {
             data-test-input
             @label="Name"
             @value={{this.myInputValue}}
-            @onInput={{action (mut this.myInputValue)}}
+            @onInput={{fn (mut this.myInputValue)}}
           />`
     );
 
@@ -247,9 +247,9 @@ module('Integration | Component | @frontile/forms/FormInput', function (hooks) {
     await render(
       hbs`<FormInput
             data-test-input
-            @onFocusIn={{action this.onFocusIn}}
-            @onFocusOut={{action this.onFocusOut}}
-            @onChange={{action this.onChange}}
+            @onFocusIn={{this.onFocusIn}}
+            @onFocusOut={{this.onFocusOut}}
+            @onChange={{this.onChange}}
           />`
     );
 

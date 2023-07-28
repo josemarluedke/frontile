@@ -87,7 +87,7 @@ module('Integration | Component | @frontile/forms/FormRadio', function (hooks) {
             @label="My Radio Input"
             @value={{true}}
             @checked={{this.myValue}}
-            @onChange={{action (mut this.myValue)}}
+            @onChange={{fn (mut this.myValue)}}
           />`
     );
 

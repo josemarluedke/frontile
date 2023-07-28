@@ -36,7 +36,7 @@
       <span data-is-visible={{this.isVisible}}></span>
 
       {{#if @isOpen}}
-        {{! template-lint-disable no-down-event-binding }}
+        {{! template-lint-disable no-pointer-down-event-binding }}
         <div
           class={{
             use-frontile-class
@@ -58,7 +58,7 @@
             isEnabled=this.isAnimationEnabled
           }}
         >
-          {{! template-lint-enable no-down-event-binding }}
+          {{! template-lint-enable no-pointer-down-event-binding }}
           {{yield}}
         </div>
       {{/if}}
