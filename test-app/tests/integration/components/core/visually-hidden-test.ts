@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, RenderingTestContext } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
@@ -8,7 +8,7 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders', async function (assert) {
+    test('it renders', async function (this: RenderingTestContext, assert) {
       await render(hbs`
       <VisuallyHidden data-test-id="my-element">
         This text will be visually hidden

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, RenderingTestContext } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
@@ -8,13 +8,13 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it adds base class', async function (assert) {
+    test('it adds base class', async function (this: RenderingTestContext, assert) {
       await render(hbs`{{use-frontile-class "base-class"}}`);
 
       assert.equal(this.element.textContent?.trim(), 'base-class');
     });
 
-    test('it adds variant classes', async function (assert) {
+    test('it adds variant classes', async function (this: RenderingTestContext, assert) {
       await render(
         hbs`{{use-frontile-class "base-class" "variant-1" "variant-2"}}`
       );
@@ -25,7 +25,7 @@ module(
       );
     });
 
-    test('it ignores empty variants', async function (assert) {
+    test('it ignores empty variants', async function (this: RenderingTestContext, assert) {
       await render(hbs`{{use-frontile-class "base-class" "variant-1" ""}}`);
 
       assert.equal(
@@ -34,7 +34,7 @@ module(
       );
     });
 
-    test('it works with expressions', async function (assert) {
+    test('it works with expressions', async function (this: RenderingTestContext, assert) {
       await render(
         hbs`{{use-frontile-class "base-class" (if false "variant-1") "variant-2"}}`
       );
@@ -45,13 +45,13 @@ module(
       );
     });
 
-    test('it adds part', async function (assert) {
+    test('it adds part', async function (this: RenderingTestContext, assert) {
       await render(hbs`{{use-frontile-class "base-class" part="part-name"}}`);
 
       assert.equal(this.element.textContent?.trim(), 'base-class__part-name');
     });
 
-    test('it adds part with variants', async function (assert) {
+    test('it adds part with variants', async function (this: RenderingTestContext, assert) {
       await render(
         hbs`{{use-frontile-class "base-class" "variant-1" "variant-2" part="part-name"}}`
       );
@@ -62,7 +62,7 @@ module(
       );
     });
 
-    test('it adds additional classes', async function (assert) {
+    test('it adds additional classes', async function (this: RenderingTestContext, assert) {
       await render(hbs`{{use-frontile-class "base-class" class="my-class"}}`);
 
       assert.equal(this.element.textContent?.trim(), 'base-class my-class');

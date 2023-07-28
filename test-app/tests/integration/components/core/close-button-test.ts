@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, RenderingTestContext, } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
@@ -8,7 +8,7 @@ module(
   function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders title', async function (assert) {
+    test('it renders title', async function (this: RenderingTestContext, assert) {
       await render(hbs`<CloseButton @title={{this.title}} />`);
 
       assert.equal(this.element.textContent?.trim(), 'Close');
