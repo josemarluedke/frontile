@@ -11,9 +11,8 @@
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts",
     "start": "yarn workspace site start",
-    "test": "lerna run --parallel test -- --test-port=",
-    "test:all": "yarn workspaces run test:all",
-    "try:one": "yarn workspaces run try:one"
+    "test": "yarn workspace test-app run test",
+    "try:one": "yarn workspace test-app run try:one"
   },
   "resolutions": {
     "@ember/test-waiters": "^3.0.2"
