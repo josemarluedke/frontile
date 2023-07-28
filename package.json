@@ -15,9 +15,6 @@
     "test:all": "yarn workspaces run test:all",
     "try:one": "yarn workspaces run try:one"
   },
-  "resolutions": {
-    "ember-auto-import": "^2.4.0"
-  },
   "dependencies": {
     "@embroider/test-setup": "^1.0.0"
   },
