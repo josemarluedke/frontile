@@ -22,7 +22,7 @@ module(
         @containerClass={{this.containerClass}}
         @label="My Group"
         @value={{this.myValue}}
-        @onChange={{action (mut this.myValue)}} as |Radio|
+        @onChange={{fn (mut this.myValue)}} as |Radio|
       >
         <Radio @value={{true}} @label="Yes" data-test-option-yes @containerClass="option-yes" />
         <Radio @value={{false}} @label="No" data-test-option-no  @containerClass="option-no"/>

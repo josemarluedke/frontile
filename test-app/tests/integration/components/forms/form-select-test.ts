@@ -17,7 +17,7 @@ module(
                           @containerClass="my-container"
                           @label="Select Countries"
                           @hint="The countries where you have lived"
-                          @onChange={{action (mut this.value)}}
+                          @onChange={{fn (mut this.value)}}
                           @size={{this.size}}
                           @hasError={{this.hasError}}
                           @showError={{this.showError}}

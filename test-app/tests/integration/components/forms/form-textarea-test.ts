@@ -45,7 +45,7 @@ module(
         @label="Name"
         data-test-input
       >
-        <button>My Button</button>
+        <button type="submit">My Button</button>
       </FormTextarea>`);
 
       assert.dom('[data-test-input] + button').exists();
@@ -73,7 +73,7 @@ module(
             data-test-input
             @label="Name"
             @value={{this.myInputValue}}
-            @onInput={{action (mut this.myInputValue)}}
+            @onInput={{fn (mut this.myInputValue)}}
           />`
       );
 
@@ -245,9 +245,9 @@ module(
       await render(
         hbs`<FormTextarea
             data-test-input
-            @onFocusIn={{action this.onFocusIn}}
-            @onFocusOut={{action this.onFocusOut}}
-            @onChange={{action this.onChange}}
+            @onFocusIn={{this.onFocusIn}}
+            @onFocusOut={{this.onFocusOut}}
+            @onChange={{this.onChange}}
           />`
       );
 

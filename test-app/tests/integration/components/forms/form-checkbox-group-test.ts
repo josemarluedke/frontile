@@ -28,14 +28,14 @@ module(
           @containerClass="checkbox-1"
           @name="checkbox1"
           @checked={{this.myValue1}}
-          @onChange={{action (mut this.myValue1)}}
+          @onChange={{fn (mut this.myValue1)}}
         />
         <Checkbox @label="Checkbox 2"
           data-test-checkbox-2
           @containerClass="checkbox-2"
           @name="checkbox2"
           @checked={{this.myValue2}}
-          @onChange={{action (mut this.myValue2)}}
+          @onChange={{fn (mut this.myValue2)}}
         />
       </FormCheckboxGroup>
     </div>`;
