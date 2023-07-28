@@ -16,9 +16,6 @@
     "try:one": "yarn workspaces run try:one"
   },
   "resolutions": {
-    "@embroider/macros": "^1.0.0",
-    "@embroider/shared-internals": "^1.0.0",
-    "@embroider/util": "^1.0.0",
     "ember-auto-import": "^2.4.0"
   },
   "dependencies": {

@@ -18,11 +18,12 @@
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
+    "@ember/string": "^3.1.1",
     "@ember/test-helpers": "^2.6.0",
-    "@embroider/compat": "^1.5.0",
-    "@embroider/core": "^1.5.0",
-    "@embroider/test-setup": "^1.5.0",
-    "@embroider/webpack": "^1.5.0",
+    "@embroider/compat": "^3.2.0",
+    "@embroider/core": "^3.2.0",
+    "@embroider/test-setup": "^3.0.1",
+    "@embroider/webpack": "^3.1.4",
     "@frontile/buttons": "^0.14.1",
     "@frontile/changeset-form": "^0.14.1",
     "@frontile/core": "^0.14.1",
@@ -68,7 +69,6 @@
     "ember-page-title": "^7.0.0",
     "ember-qunit": "^5.1.5",
     "ember-resolver": "^8.0.3",
-    "ember-sinon": "^5.0.0",
     "ember-source": "^4.3.0",
     "ember-try": "^2.0.0",
     "loader.js": "^4.7.0",
@@ -76,12 +76,10 @@
     "prettier": "^2.6.0",
     "qunit": "^2.18.0",
     "qunit-dom": "^2.0.0",
+    "sinon": "^15.2.0",
     "tailwindcss": "^3.0.23",
     "typescript": "^4.6.2",
     "webpack": "^5.70.0"
-  },
-  "resolutions": {
-    "@embroider/macros": "^1.0.0"
   },
   "engines": {
     "node": "12.* || 14.* || >= 16"
