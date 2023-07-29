@@ -15,7 +15,8 @@
     "try:one": "yarn workspace test-app run try:one"
   },
   "resolutions": {
-    "@ember/test-waiters": "^3.0.2"
+    "@ember/test-waiters": "^3.0.2",
+    "ember-element-helper": "^0.7.1"
   },
   "dependencies": {
     "@embroider/test-setup": "^3.0.1"
