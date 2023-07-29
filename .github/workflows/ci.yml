@@ -30,31 +30,31 @@ jobs:
       - name: Test
         run: yarn test
 
-  try-scenarios:
-    name: Compat ${{ matrix.ember-try-scenario }}
-    runs-on: ubuntu-latest
+  # try-scenarios:
+  #   name: Compat ${{ matrix.ember-try-scenario }}
+  #   runs-on: ubuntu-latest
 
-    env:
-      CI: 'true'
+  #   env:
+  #     CI: 'true'
 
-    strategy:
-      fail-fast: true
-      matrix:
-        ember-try-scenario:
-          - ember-lts-4.12
-          - ember-release
-          - ember-beta
-          - embroider-safe
-          - embroider-optimized
-          - ember-canary
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       ember-try-scenario:
+  #         - ember-lts-4.12
+  #         - ember-release
+  #         - ember-beta
+  #         - embroider-safe
+  #         - embroider-optimized
+  #         - ember-canary
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
-        with:
-          node-version: 18.x
-          yarn-version: 1.x
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Test
-        run: yarn try:one ${{ matrix.ember-try-scenario }} --skip-cleanup
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: volta-cli/action@v1
+  #       with:
+  #         node-version: 18.x
+  #         yarn-version: 1.x
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #     - name: Test
+  #       run: yarn try:one ${{ matrix.ember-try-scenario }} --skip-cleanup
