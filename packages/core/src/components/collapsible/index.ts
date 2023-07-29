@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
-import safeStyles from '@frontile/core/utils/safe-styles';
+import safeStyles from '../../utils/safe-styles.ts';
 
 const waiter = buildWaiter('@frontile/core:collapsible');
 
@@ -23,6 +23,9 @@ export interface CollapsibleArgs {
 export interface CollapsibleSignature {
   Args: CollapsibleArgs;
   Element: HTMLDivElement;
+  Blocks: {
+    default: [];
+  };
 }
 
 export default class Collapsible extends Component<CollapsibleSignature> {

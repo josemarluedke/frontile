@@ -9,6 +9,7 @@
 /node_modules/
 /packages/**/node_modules/
 /packages/**/dist/
+/packages/**/declarations/
 /site/dist/
 /site/node_modules/
 /site/lib/**/node_modules/

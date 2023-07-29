@@ -34,4 +34,20 @@ export function useFrontileClass(
   return classes.join(' ');
 }
 
-export default helper(useFrontileClass) as never;
+export interface UseFrontileClassSignature {
+  Args: {
+    Positional: string | unknown[];
+    Named: { part?: string; class?: string };
+  };
+  Return: string;
+}
+
+const useClass = helper<UseFrontileClassSignature>(useFrontileClass);
+
+export default useClass;
+
+declare module '@glint/environment-ember-loose/registry' {
+  export default interface Registry {
+    'use-frontile-class': typeof useClass;
+  }
+}

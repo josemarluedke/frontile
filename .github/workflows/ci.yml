@@ -27,6 +27,8 @@ jobs:
         run: yarn lint:js
       - name: Lint HBS
         run: yarn lint:hbs
+      - name: Build V2 Addons
+        run: yarn workspace @frontile/core run build
       - name: Test
         run: yarn test
 

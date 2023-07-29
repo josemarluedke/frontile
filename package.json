@@ -8,6 +8,7 @@
     "test-app"
   ],
   "scripts": {
+    "build": "yarn workspaces run build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts",
     "start": "yarn workspace site start",
