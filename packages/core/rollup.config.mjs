@@ -7,7 +7,7 @@ const addon = new Addon({
 });
 
 // Add extensions here, such as ts, gjs, etc that you may import
-const extensions = ['.js', '.ts'];
+const extensions = ['.js', '.ts', '.gjs', '.gts'];
 
 export default {
   // This provides defaults that work well alongside `publicEntrypoints` below.
@@ -38,6 +38,8 @@ export default {
     // package names.
     addon.dependencies(),
 
+    addon.gjs(),
+
     // This babel config should *not* apply presets or compile away ES modules.
     // It exists only to provide development niceties for you, like automatic
     // template colocation.
@@ -47,8 +49,10 @@ export default {
       babelHelpers: 'bundled',
     }),
 
+
     // Ensure that standalone .hbs files are properly integrated as Javascript.
     addon.hbs(),
+
 
     // addons are allowed to contain imports of .css files, which we want rollup
     // to leave alone and keep in the published output.

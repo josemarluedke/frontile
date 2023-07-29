@@ -10,7 +10,7 @@
   "scripts": {
     "build": "yarn workspaces run build",
     "lint:hbs": "ember-template-lint .",
-    "lint:js": "eslint . --ext .js,.ts",
+    "lint:js": "eslint . --ext .js,.ts,.gts,.gjs",
     "start": "yarn workspace site start",
     "test": "yarn workspace test-app run test",
     "try:one": "yarn workspace test-app run try:one"
@@ -28,7 +28,13 @@
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^5.11.1",
     "eslint": "^8.46.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "lerna": "^4.0.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-ember-template-tag": "^1.0.0",
     "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">= 10.*"
   }
 }
