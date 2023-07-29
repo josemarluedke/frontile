@@ -1,11 +1,12 @@
 <FormField
   @size={{@size}}
-  class={{
-    use-frontile-class
+  class={{use-frontile-class
     "form-checkbox"
     @size
+    (if @checked "checked")
     class=(array @containerClass @privateContainerClass)
-  }} as |f|
+  }}
+  as |f|
 >
   <div
     class={{use-frontile-class "form-checkbox" @size part="label-container"}}

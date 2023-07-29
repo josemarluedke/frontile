@@ -150,6 +150,16 @@ module(
         .hasText('This field is required');
     });
 
+    test('it adds class to input wrapper when checked to allow selected label css styling', async function (assert) {
+      this.set('myValue', true);
+      await render(template);
+
+      assert.dom('[data-test-option-no]').isNotChecked();
+      assert.dom('.form-radio--checked [data-test-option-no]').doesNotExist();
+      assert.dom('[data-test-option-yes]').isChecked();
+      assert.dom('.form-radio--checked [data-test-option-yes]').exists();
+    });
+
     test('it adds container class from @containerClass arg', async function (assert) {
       this.set('containerClass', 'my-container-class');
 

@@ -145,6 +145,26 @@ module(
       assert.dom('.my-container-class').exists();
     });
 
+    test('it adds class to input wrapper when checked to allow selected label css styling', async function (assert) {
+      this.set('myValue', false);
+
+      await render(
+        hbs`<FormCheckbox
+            data-test-input
+            @label="My Checkbox Input"
+            @checked={{this.myValue}}
+          />`
+      );
+
+      assert.dom('[data-test-input]').isNotChecked();
+      assert.dom('.form-checkbox--checked').doesNotExist();
+
+      this.set('myValue', true);
+
+      assert.dom('[data-test-input]').isChecked();
+      assert.dom('.form-checkbox--checked').exists();
+    });
+
     test('it adds size classes for @size', async function (assert) {
       this.set('size', 'sm');
 
