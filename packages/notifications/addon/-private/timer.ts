@@ -1,6 +1,6 @@
 import { tracked } from '@glimmer/tracking';
 import { later, cancel } from '@ember/runloop';
-import { EmberRunTimer } from '@ember/runloop/types';
+import type { Timer as EmberTimer } from '@ember/runloop';
 import { action } from '@ember/object';
 
 export default class Timer {
@@ -8,7 +8,7 @@ export default class Timer {
   @tracked isRunning = true;
 
   readonly onFinish: () => void;
-  private timer?: EmberRunTimer;
+  private timer?: EmberTimer;
   private start!: number;
 
   constructor(duration: number, onFinish: () => void) {

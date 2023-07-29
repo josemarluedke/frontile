@@ -22,6 +22,9 @@
     "prepack": "ember ts:precompile",
     "postpack": "ember ts:clean"
   },
+  "peerDependencies": {
+    "ember-source": "^4.0.0 || ^5.0.0"
+  },
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
     "@frontile/core": "^0.14.1",
@@ -45,19 +48,6 @@
     "@glimmer/tracking": "^1.1.2",
     "@types/ember-qunit": "^6.1.1",
     "@types/ember-resolver": "^9.0.0",
-    "@types/ember__application": "^4.0.6",
-    "@types/ember__array": "^4.0.4",
-    "@types/ember__component": "^4.0.14",
-    "@types/ember__debug": "^4.0.4",
-    "@types/ember__error": "^4.0.3",
-    "@types/ember__object": "^4.0.6",
-    "@types/ember__routing": "^4.0.13",
-    "@types/ember__runloop": "^4.0.4",
-    "@types/ember__service": "^4.0.3",
-    "@types/ember__string": "^3.0.11",
-    "@types/ember__template": "^4.0.2",
-    "@types/ember__test": "^4.0.2",
-    "@types/ember__test-helpers": "^2.9.1",
     "@types/htmlbars-inline-precompile": "^3.0.0",
     "@types/qunit": "^2.19.6",
     "@types/rsvp": "^4.0.4",
@@ -73,13 +63,13 @@
     "ember-load-initializers": "^2.1.2",
     "ember-qunit": "^7.0.0",
     "ember-resolver": "^11.0.0",
-    "ember-source": "^4.3.0",
+    "ember-source": "^5.1.2",
     "ember-try": "^2.0.0",
     "loader.js": "^4.7.0",
     "qunit": "^2.19.4",
     "qunit-dom": "^2.0.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "^4.6.2",
+    "typescript": "^5.1.6",
     "webpack": "^5.88.2"
   },
   "engines": {
