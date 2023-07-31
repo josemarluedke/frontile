@@ -1,10 +1,5 @@
-const { join } = require('path');
-
 module.exports = {
   root: true,
-  parserOptions: {
-    project: join(__dirname, './tsconfig.eslint.json')
-  },
   plugins: [],
   extends: ['@underline/eslint-config-ember-typescript'],
   rules: {
@@ -28,6 +23,7 @@ module.exports = {
         '.template-lintrc.js',
         'testem.js',
         'config/**/*.js',
+        'packages/*/babel.config.js',
         'packages/*/addon-main.js',
         'packages/*/.ember-cli.js',
         'packages/*/ember-cli-build.js',

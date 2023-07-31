@@ -22,6 +22,7 @@
 /node_modules/
 /packages/*/bower_components/
 /packages/*/node_modules/
+/packages/*/declarations/
 /site/node_modules/
 /test-app/node_modules/
 /site/lib/docfy-theme/node_modules/
