@@ -7,7 +7,7 @@ module.exports = {
     {
       files: '*.{js,ts,gjs,gts}',
       options: {
-        singleQuote: true
+        templateSingleQuote: false
       }
     }
   ]

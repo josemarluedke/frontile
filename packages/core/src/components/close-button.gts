@@ -2,8 +2,8 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import 'focus-visible/dist/focus-visible.js';
 import { on } from '@ember/modifier';
-import useFrontileClass from '../helpers/use-frontile-class.ts'
-import VisuallyHidden from './visually-hidden.ts'
+import useFrontileClass from '../helpers/use-frontile-class.ts';
+import VisuallyHidden from './visually-hidden.ts';
 
 export interface CloseButtonArgs {
   /**
@@ -45,17 +45,21 @@ export default class CloseButton extends Component<CloseButtonSignature> {
       this.args.onClick(event);
     }
   }
+
   <template>
     <button
-    type="button"
-      class={{useFrontileClass "close-button" (if @size @size "md") class=@class}}
+      type="button"
+      class={{useFrontileClass
+        "close-button"
+        (if @size @size "md")
+        class=@class
+      }}
       ...attributes
       {{on "click" this.handleClick}}
     >
       {{#let
-        (useFrontileClass
-          "close-button" (if @size @size "md") part="icon"
-        ) as |iconClassName|
+        (useFrontileClass "close-button" (if @size @size "md") part="icon")
+        as |iconClassName|
       }}
         {{#if (has-block)}}
           {{yield iconClassName}}

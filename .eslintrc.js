@@ -1,10 +1,5 @@
-const { join } = require('path');
-
 module.exports = {
   root: true,
-  parserOptions: {
-    project: join(__dirname, './tsconfig.eslint.json')
-  },
   plugins: [],
   extends: ['@underline/eslint-config-ember-typescript'],
   rules: {
