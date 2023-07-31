@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 
 export interface ButtonArgs {
   /**
@@ -34,9 +35,9 @@ export interface ButtonArgs {
 export interface ButtonSignature {
   Args: ButtonArgs;
   Blocks: {
-    default: [{ classNames: string } | null];
+    default: [{ classNames: string }];
   };
-  Element: HTMLButtonElement | null;
+  Element: HTMLButtonElement;
 }
 
 export default class Button extends Component<ButtonSignature> {
@@ -70,4 +71,14 @@ export default class Button extends Component<ButtonSignature> {
 
     return names.join(' ');
   }
+
+  <template>
+    {{#if @isRenderless}}
+      {{yield (hash classNames=this.classNames)}}
+    {{else}}
+      <button type={{this.type}} class={{this.classNames}} ...attributes>
+        {{yield (hash classNames=this.classNames)}}
+      </button>
+    {{/if}}
+  </template>
 }
