@@ -1,4 +1,4 @@
-import type VisuallyHidden from './components/visually-hidden.ts';
+import type VisuallyHidden from './components/visually-hidden';
 import type CloseButton from './components/close-button';
 import type Collapsible from './components/collapsible';
 

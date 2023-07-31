@@ -2,8 +2,8 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import 'focus-visible/dist/focus-visible.js';
 import { on } from '@ember/modifier';
-import useFrontileClass from '../helpers/use-frontile-class.ts';
-import VisuallyHidden from './visually-hidden.ts';
+import useFrontileClass from '../helpers/use-frontile-class';
+import VisuallyHidden from './visually-hidden';
 
 export interface CloseButtonArgs {
   /**

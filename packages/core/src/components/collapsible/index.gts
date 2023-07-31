@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
-import safeStyles from '../../utils/safe-styles.ts';
+import { on } from '@ember/modifier';
+import didUpdate from '@ember/render-modifiers/modifiers/did-update';
+import safeStyles from '../../utils/safe-styles';
 
 const waiter = buildWaiter('@frontile/core:collapsible');
 
@@ -149,4 +151,15 @@ export default class Collapsible extends Component<CollapsibleSignature> {
       });
     });
   }
+
+  <template>
+    <div
+      style={{this.styles}}
+      ...attributes
+      {{didUpdate this.update @isOpen}}
+      {{on "transitionend" this.onTransitionEnd}}
+    >
+      {{yield}}
+    </div>
+  </template>
 }
