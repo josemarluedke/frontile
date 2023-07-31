@@ -1,13 +1,10 @@
-import { babel } from '@rollup/plugin-babel';
+import ts from "rollup-plugin-ts";
 import { Addon } from '@embroider/addon-dev/rollup';
 
 const addon = new Addon({
   srcDir: 'src',
   destDir: 'dist',
 });
-
-// Add extensions here, such as ts, gjs, etc that you may import
-const extensions = ['.js', '.ts', '.gjs', '.gts'];
 
 export default {
   // This provides defaults that work well alongside `publicEntrypoints` below.
@@ -44,9 +41,11 @@ export default {
     // It exists only to provide development niceties for you, like automatic
     // template colocation.
     // See `babel.config.json` for the actual Babel configuration!
-    babel({
-      extensions,
-      babelHelpers: 'bundled',
+    ts({
+      transpiler: "babel",
+      transpileOnly: true,
+      babelConfig: "./babel.config.js",
+      browserslist: ["last 2 firefox versions", "last 2 chrome versions"],
     }),
 
 
