@@ -1,17 +1,21 @@
 module.exports = {
   root: true,
-  plugins: [],
-  extends: ['@underline/eslint-config-ember-typescript'],
+  extends: [
+    '@underline/eslint-config-ember-typescript',
+
+    'plugin:ember/recommended'
+  ],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
     'ember/no-empty-glimmer-component-classes': 'off'
   },
   overrides: [
     {
-      files: ['packages/**/tests/**/*.ts'],
+      files: ['packages/**/tests/**/*.ts', '**/*.gts'],
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-non-null-assertion': 'off'
+        '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off'
       }
     },
 
