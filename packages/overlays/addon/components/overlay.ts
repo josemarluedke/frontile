@@ -107,7 +107,7 @@ export interface OverlayArgs {
 
 export interface OverlaySignature {
   Args: OverlayArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class Overlay extends Component<OverlaySignature> {

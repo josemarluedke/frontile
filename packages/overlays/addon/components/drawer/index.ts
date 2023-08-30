@@ -64,7 +64,7 @@ export interface DrawerSignature {
       }
     ];
   };
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class Drawer extends Component<DrawerSignature> {

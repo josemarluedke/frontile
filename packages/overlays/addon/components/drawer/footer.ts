@@ -6,7 +6,7 @@ export interface DrawerFooterArgs
 
 export interface DrawerFooterSignature {
   Args: DrawerFooterArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class DrawerFooter extends Component<DrawerFooterSignature> {}
