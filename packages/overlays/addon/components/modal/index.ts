@@ -62,7 +62,7 @@ export interface ModalSignature {
       }
     ];
   };
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class Modal extends Component<ModalSignature> {

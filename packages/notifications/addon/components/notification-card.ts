@@ -21,7 +21,7 @@ export interface NotificationCardArgs {
 
 export interface NotificationCardSignature {
   Args: NotificationCardArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class NotificationCard extends Component<NotificationCardSignature> {

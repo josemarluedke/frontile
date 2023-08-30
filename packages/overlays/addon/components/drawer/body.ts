@@ -6,7 +6,7 @@ export interface DrawerBodyArgs
 
 export interface DrawerBodySignature {
   Args: DrawerBodyArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class DrawerBody extends Component<DrawerBodySignature> {}

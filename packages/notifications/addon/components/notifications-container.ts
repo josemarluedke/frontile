@@ -28,7 +28,7 @@ export interface NotificationsContainerArgs {
 
 export interface NotificationsContainerSignature {
   Args: NotificationsContainerArgs;
-  Element: HTMLDivElement | null;
+  Element: HTMLDivElement;
 }
 
 export default class NotificationsContainer extends Component<NotificationsContainerSignature> {
