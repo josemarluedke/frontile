@@ -5,7 +5,7 @@ import { assert } from '@ember/debug';
 import {
   PowerSelectArgs,
   Select
-} from 'ember-power-select/addon/components/power-select';
+} from 'ember-power-select/components/power-select';
 
 export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */
