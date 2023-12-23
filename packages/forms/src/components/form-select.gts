@@ -137,9 +137,10 @@ export default class FormSelect extends Component<FormSelectSignature> {
       class={{useFrontileClass "form-select" @size class=@containerClass}}
       as |f|
     >
+
       {{#if @label}}
         <f.Label
-          @for={{false}}
+          @for=""
           id={{f.id}}
           class={{useFrontileClass "form-select" @size part="label"}}
         >

@@ -1,8 +1,11 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { on } from '@ember/modifier';
+import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
 export interface FormFieldRadioArgs {
-  value?: unknown;
+  id?: string;
+  value?: string | number | boolean;
   checked?: unknown;
   name?: string;
   size?: 'sm' | 'lg';
@@ -28,4 +31,18 @@ export default class FormFieldRadio extends Component<FormFieldRadioSignature> {
       this.args.onChange(this.args.value, event);
     }
   }
+
+  <template>
+    <input
+      {{on "change" this.handleChange}}
+      id={{@id}}
+      name={{@name}}
+      value={{@value}}
+      checked={{this.isChecked}}
+      type="radio"
+      class={{useFrontileClass "form-field-radio" @size}}
+      data-test-id="form-field-radio"
+      ...attributes
+    />
+  </template>
 }
