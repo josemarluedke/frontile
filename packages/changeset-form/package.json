@@ -30,6 +30,7 @@
     "ember-changeset": "^4.1.2",
     "ember-changeset-validations": "^4.1.1",
     "ember-cli-babel": "^7.26.11",
+    "ember-auto-import": "^2.6.3",
     "ember-cli-htmlbars": "^6.2.0",
     "ember-cli-typescript": "^5.2.1"
   },
@@ -47,7 +48,6 @@
     "@types/qunit": "^2.19.6",
     "@types/rsvp": "^4.0.4",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-auto-import": "^2.6.3",
     "ember-cli": "^5.1.0",
     "ember-cli-dependency-checker": "^3.3.2",
     "ember-cli-inject-live-reload": "^2.1.0",

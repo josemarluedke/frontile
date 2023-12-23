@@ -3,8 +3,19 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const path = require('path');
 
-module.exports = function (defaults) {
+module.exports = function(defaults) {
   const app = new EmberApp(defaults, {
+    autoImport: {
+      watchDependencies: [
+        '@frontile/buttons',
+        '@frontile/core',
+        '@frontile/notifications',
+        '@frontile/overlays',
+        '@frontile/forms',
+        '@frontile/changeset-form',
+        ['@frontile/forms', '@frontile/changeset-form']
+      ]
+    },
     postcssOptions: {
       compile: {
         enabled: true,
@@ -13,18 +24,18 @@ module.exports = function (defaults) {
           require('tailwindcss')(
             path.join('app', 'config', 'tailwind.config.js')
           ),
-          require('autoprefixer'),
-        ],
-      },
-    },
+          require('autoprefixer')
+        ]
+      }
+    }
   });
 
   /*
-    This build file specifies the options for the dummy test app of this
-    addon, located in `/tests/dummy`
-    This build file does *not* influence how the addon or the app using it
-    behave. You most likely want to be modifying `./index.js` or app's build file
-  */
+  This build file specifies the options for the dummy test app of this
+  addon, located in `/tests/dummy`
+  This build file does *not* influence how the addon or the app using it
+  behave. You most likely want to be modifying `./index.js` or app's build file
+*/
 
   const { maybeEmbroider } = require('@embroider/test-setup');
   return maybeEmbroider(app);

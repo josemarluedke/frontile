@@ -50,4 +50,8 @@ export default class FormRadio extends Component<FormRadioSignature> {
       this.args._parentOnChange(value, event);
     }
   }
+
+  get isChecked(): boolean {
+    return this.args.checked == this.args.value;
+  }
 }

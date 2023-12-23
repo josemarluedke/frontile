@@ -1,23 +1,17 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "dummy/tests/*": ["tests/*"],
-      "dummy/*": ["tests/dummy/app/*", "app/*"],
-      "@frontile/forms": ["addon"],
-      "@frontile/forms/*": ["addon/*"],
-      "@frontile/forms/test-support": ["addon-test-support"],
-      "@frontile/forms/test-support/*": ["addon-test-support/*"],
-      "*": ["types/*"]
-    }
-  },
+  "extends": "@tsconfig/ember/tsconfig.json",
   "include": [
-    "app/**/*",
-    "addon/**/*",
-    "tests/**/*",
-    "types/**/*",
-    "test-support/**/*",
-    "addon-test-support/**/*"
-  ]
+    "src/**/*",
+    "unpublished-development-types/**/*"
+  ],
+  "glint": {
+    "environment": [
+      "ember-loose",
+      "ember-template-imports"
+    ]
+  },
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declarationDir": "declarations"
+  }
 }
