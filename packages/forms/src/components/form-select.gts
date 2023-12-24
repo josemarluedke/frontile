@@ -3,8 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import PowerSelect, {
-  PowerSelectArgs,
-  Select
+  type PowerSelectArgs,
+  type Select
 } from 'ember-power-select/components/power-select';
 import PowerSelectMultiple from 'ember-power-select/components/power-select-multiple';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
@@ -154,6 +154,7 @@ export default class FormSelect extends Component<FormSelectSignature> {
         </f.Hint>
       {{/if}}
 
+      {{! @glint-nocheck: need to fix powerselect types}}
       {{#let (if @isMultiple PowerSelectMultiple PowerSelect) as |Component|}}
         <Component
           ...attributes
