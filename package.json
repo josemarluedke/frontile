@@ -24,16 +24,16 @@
     "@embroider/test-setup": "^3.0.1"
   },
   "devDependencies": {
-    "@glint/core": "1.0.2",
-    "@glint/environment-ember-loose": "1.0.2",
-    "@glint/environment-ember-template-imports": "1.0.2",
+    "@glint/core": "1.2.1",
+    "@glint/environment-ember-loose": "1.2.1",
+    "@glint/environment-ember-template-imports": "1.2.1",
     "@underline/eslint-config-ember-typescript": "^0.15.1",
     "@underline/eslint-config-node": "^0.15.1",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^5.11.1",
     "eslint": "^8.47.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "lerna": "^4.0.0",
+    "lerna": "^8.0.1",
     "prettier": "^3.0.0",
     "prettier-plugin-ember-template-tag": "^1.0.2",
     "typescript": "^5.1.6"
