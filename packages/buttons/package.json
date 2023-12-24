@@ -20,7 +20,7 @@
     "tailwind"
   ],
   "scripts": {
-    "build": "concurrently 'npm:build:*'",
+    "build": "concurrently -m 1 'npm:build:*'",
     "build:js": "rollup --config",
     "build:types": "glint --declaration",
     "lint": "concurrently 'npm:lint:*(!fix)' --names 'lint:'",
@@ -54,6 +54,7 @@
     "@glint/environment-ember-loose": "1.2.1",
     "@glint/environment-ember-template-imports": "1.2.1",
     "@glint/template": "1.2.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/ember": "^3.0.0",
     "babel-plugin-ember-template-compilation": "^2.1.1",
     "concurrently": "^8.2.0",

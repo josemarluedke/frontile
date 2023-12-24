@@ -1,5 +1,14 @@
 module.exports = {
-  presets: [['@babel/preset-typescript', { onlyRemoveTypeImports: true }]],
+  presets: [
+    [
+      '@babel/preset-typescript',
+      {
+        onlyRemoveTypeImports: true,
+        ignoreExtensions: true,
+        allExtensions: true
+      }
+    ]
+  ],
   plugins: [
     '@embroider/addon-dev/template-colocation-plugin',
     [
