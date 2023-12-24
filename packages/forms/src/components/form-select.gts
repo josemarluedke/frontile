@@ -9,10 +9,7 @@ import PowerSelect, {
 import PowerSelectMultiple from 'ember-power-select/components/power-select-multiple';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import FormField from './form-field';
-
-function concat(...args: string[]) {
-  return args.join('');
-}
+import { concat } from '@ember/helper';
 
 export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */
@@ -31,6 +28,9 @@ export interface FormSelectArgs extends PowerSelectArgs {
   containerClass?: string;
   /** The size */
   size?: 'sm' | 'lg';
+
+  /** If is multiple select instead of single */
+  isMultiple?: boolean;
 
   // Same as onFocus from ember-power-select
   onFocusIn?: (select: Select, event: FocusEvent) => void;
@@ -171,10 +171,10 @@ export default class FormSelect extends Component<FormSelectSignature> {
             (concat ' ' @ariaLabelledBy)
           }}"
           @ariaInvalid={{if this.showErrorFeedback "true"}}
-          @triggerClass="{{@triggerClass}} {{if
+          @triggerClass="{{@triggerClass}}{{if
             @size
             (concat 'ember-power-select-trigger-' @size)
-          }} {{useFrontileClass 'form-select' @size part="select"}}"
+          }}{{useFrontileClass 'form-select' @size part="select"}}"
           @highlightOnHover={{@highlightOnHover}}
           @placeholderComponent={{@placeholderComponent}}
           @searchMessage={{@searchMessage}}

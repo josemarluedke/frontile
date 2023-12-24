@@ -2,6 +2,10 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import FormCheckbox from './form-checkbox';
+import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import FormField from './form-field';
+import { hash } from '@ember/helper';
+import type { WithBoundArgs } from '@glint/template';
 
 export interface FormCheckboxGroupArgs {
   /** The group label */
@@ -30,7 +34,9 @@ export interface FormCheckboxGroupSignature {
   Args: FormCheckboxGroupArgs;
   Blocks: {
     default: [
-      checkbox: FormCheckbox,
+      checkbox: WithBoundArgs<typeof FormCheckbox, 'privateContainerClass'> &
+        WithBoundArgs<typeof FormCheckbox, '_parentOnChange'> &
+        WithBoundArgs<typeof FormCheckbox, 'size'>,
       api: { onChange: (value: unknown, event: Event) => void }
     ];
   };
@@ -65,4 +71,72 @@ export default class FormCheckboxGroup extends Component<FormCheckboxGroupSignat
       this.args.onChange(value, event);
     }
   }
+
+  <template>
+    <FormField
+      @size={{@size}}
+      class={{useFrontileClass
+        "form-checkbox-group"
+        @size
+        (if @isInline "inline")
+        class=@containerClass
+      }}
+      role="group"
+      ...attributes
+      as |f|
+    >
+      {{#if @label}}
+        <f.Label
+          class={{useFrontileClass
+            "form-checkbox-group"
+            @size
+            (if @isInline "inline")
+            part="label"
+          }}
+        >
+          {{@label}}
+        </f.Label>
+      {{/if}}
+
+      {{#if @hint}}
+        <f.Hint
+          class={{useFrontileClass
+            "form-checkbox-group"
+            @size
+            (if @isInline "inline")
+            part="hint"
+          }}
+        >
+          {{@hint}}
+        </f.Hint>
+      {{/if}}
+
+      {{yield
+        (component
+          FormCheckbox
+          privateContainerClass=(useFrontileClass
+            "form-checkbox-group"
+            @size
+            (if @isInline "inline")
+            part="form-checkbox"
+          )
+          _parentOnChange=this.handleChange
+          size=@size
+        )
+        (hash onChange=this.handleChange)
+      }}
+
+      {{#if this.showErrorFeedback}}
+        <f.Feedback
+          class={{useFrontileClass
+            "form-checkbox-group"
+            @size
+            (if @isInline "inline")
+            part="feedback"
+          }}
+          @errors={{@errors}}
+        />
+      {{/if}}
+    </FormField>
+  </template>
 }
