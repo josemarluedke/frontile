@@ -1,13 +1,13 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import FormFieldCheckbox from './checkbox';
-import FormFieldFeedback from './feedback';
-import FormFieldHint from './hint';
-import FormFieldInput from './input';
-import FormFieldLabel from './label';
-import FormFieldRadio from './radio';
-import FormFieldTextarea from './textarea';
+import FormFieldCheckbox from './form-field/checkbox';
+import FormFieldFeedback from './form-field/feedback';
+import FormFieldHint from './form-field/hint';
+import FormFieldInput from './form-field/input';
+import FormFieldLabel from './form-field/label';
+import FormFieldRadio from './form-field/radio';
+import FormFieldTextarea from './form-field/textarea';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface FormFieldArgs {

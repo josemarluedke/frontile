@@ -12,6 +12,8 @@
   },
   "compilerOptions": {
     "allowImportingTsExtensions": true,
-    "declarationDir": "declarations"
+    "declarationDir": "declarations",
+    "emitDeclarationOnly": true,
+    "noEmit": false
   }
 }

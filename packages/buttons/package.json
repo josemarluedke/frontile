@@ -44,11 +44,11 @@
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0"
   },
   "devDependencies": {
-    "@babel/core": "7.22.9",
+    "@babel/core": "7.23.6",
     "@babel/plugin-proposal-class-properties": "7.18.6",
-    "@babel/plugin-proposal-decorators": "7.22.7",
-    "@babel/plugin-transform-class-static-block": "^7.22.5",
-    "@babel/preset-typescript": "7.22.5",
+    "@babel/plugin-proposal-decorators": "7.23.6",
+    "@babel/plugin-transform-class-static-block": "^7.23.4",
+    "@babel/preset-typescript": "7.23.3",
     "@embroider/addon-dev": "3.2.0",
     "@glint/core": "1.0.2",
     "@glint/environment-ember-loose": "1.0.2",

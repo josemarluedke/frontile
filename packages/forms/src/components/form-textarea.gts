@@ -1,4 +1,4 @@
-import { FormInputBase, FormInputBaseSignature } from './form-input';
+import { FormInputBase, type FormInputBaseSignature } from './form-input';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import FormField from './form-field';
 import { on } from '@ember/modifier';
@@ -40,7 +40,7 @@ export default class FormTextarea extends FormInputBase<FormTextareaSignature> {
         aria-invalid={{if this.showErrorFeedback "true"}}
         aria-describedby="{{if @hint f.hintId}}{{if
           this.showErrorFeedback
-          (concat " " f.feedbackId)
+          (concat ' ' f.feedbackId)
         }}"
         ...attributes
       />

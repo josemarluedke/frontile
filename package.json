@@ -20,6 +20,7 @@
     "ember-element-helper": "^0.7.1"
   },
   "dependencies": {
+    "@ember/test-waiters": "^3.0.2",
     "@embroider/test-setup": "^3.0.1"
   },
   "devDependencies": {
