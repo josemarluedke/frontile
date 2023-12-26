@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import type { DrawerArgs } from '.';
+import type { DrawerArgs } from '../drawer';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
 export interface DrawerHeaderArgs extends Pick<DrawerArgs, 'placement'> {

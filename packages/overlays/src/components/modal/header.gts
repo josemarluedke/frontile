@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import type { ModalArgs } from '.';
+import type { ModalArgs } from '../modal';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
 export interface ModalHeaderArgs extends Pick<ModalArgs, 'size'> {
