@@ -4,7 +4,7 @@ import { OverlayArgs } from '../overlay';
 import DrawerBody from './body';
 import DrawerFooter from './footer';
 import DrawerHeader from './header';
-import CloseButton from '@frontile/core/addon/components/close-button';
+import type CloseButton from '@frontile/core/components/close-button';
 
 export interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**

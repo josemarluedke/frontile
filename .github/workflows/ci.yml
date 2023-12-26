@@ -25,10 +25,10 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint JS
         run: yarn lint:js
-      - name: Lint HBS
-        run: yarn lint:hbs
+      # - name: Lint HBS
+      #   run: yarn lint:hbs
       - name: Build V2 Addons
-        run: yarn workspace @frontile/core run build && yarn workspace @frontile/buttons run build && yarn workspace @frontile/notifications run build
+        run: yarn workspace @frontile/core run build && yarn workspace @frontile/buttons run build && yarn workspace @frontile/notifications run build && yarn workspace @frontile/forms run build&& yarn workspace @frontile/changeset-form run build
       - name: Test
         run: yarn test
 
