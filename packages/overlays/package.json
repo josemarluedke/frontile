@@ -44,8 +44,7 @@
     "@frontile/core": "^0.15.0",
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0",
     "ember-css-transitions": "^4.4.0",
-    "ember-focus-trap": "^1.0.2",
-    "ember-maybe-in-element": "^2.1.0"
+    "ember-focus-trap": "^1.0.2"
   },
   "devDependencies": {
     "@babel/core": "7.23.6",

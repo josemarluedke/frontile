@@ -2,7 +2,33 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
+import { on } from '@ember/modifier';
 import { getDOM, getElementById } from '../-private/dom';
+import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
+import { cssTransition } from 'ember-css-transitions';
+// @ts-ignore
+import { focusTrap } from 'ember-focus-trap';
+import type { TOC } from '@ember/component/template-only';
+
+const MaybeInElement: TOC<{
+  Args: {
+    destinationElement?: Element | null;
+    renderInPlace?: boolean;
+  };
+  Blocks: {
+    default: [];
+  };
+}> = <template>
+  {{#if @renderInPlace}}
+    {{yield}}
+  {{else if @destinationElement}}
+    {{#in-element @destinationElement insertBefore=null}}
+      {{yield}}
+    {{/in-element}}
+  {{/if}}
+</template>;
 
 export interface OverlayArgs {
   /**
@@ -108,6 +134,7 @@ export interface OverlayArgs {
 export interface OverlaySignature {
   Args: OverlayArgs;
   Element: HTMLDivElement;
+  Blocks: { default: [] };
 }
 
 export default class Overlay extends Component<OverlaySignature> {
@@ -214,4 +241,76 @@ export default class Overlay extends Component<OverlaySignature> {
       }
     }, duration);
   }
+
+  <template>
+    {{#if this.isVisible}}
+      <MaybeInElement
+        @renderInPlace={{@renderInPlace}}
+        @destinationElement={{this.destinationElement}}
+      >
+        <div
+          class={{useFrontileClass "overlay" (if @renderInPlace "in-place")}}
+          ...attributes
+          {{focusTrap
+            isActive=(if @disableFocusTrap false @isOpen)
+            focusTrapOptions=this.focusTrapOptions
+          }}
+        >
+          {{! template-lint-disable no-invalid-interactive }}
+          {{#if this.isBackdropVisible}}
+            <div
+              class={{useFrontileClass
+                "overlay"
+                (if @renderInPlace "in-place")
+                part="backdrop"
+              }}
+              {{on "click" this.handleOverlayClick}}
+              {{cssTransition
+                (if
+                  @backdropTransitionName
+                  @backdropTransitionName
+                  "overlay-transition--fade"
+                )
+                isEnabled=this.isAnimationEnabled
+              }}
+            ></div>
+          {{/if}}
+
+          {{!
+        This is required to make css-transition work with 2
+        sibling elements been removed at the same time.
+      }}
+          <span data-is-visible={{this.isVisible}}></span>
+
+          {{#if @isOpen}}
+            {{! template-lint-disable no-pointer-down-event-binding }}
+            <div
+              class={{useFrontileClass
+                "overlay"
+                (if @renderInPlace "in-place")
+                part="content"
+              }}
+              {{on "click" this.handleContentClick}}
+              {{on "keydown" this.handleKeyDown}}
+              {{on "mousedown" this.handleContentMouseDown}}
+              {{didInsert this.setup}}
+              {{willDestroy this.teardown}}
+              {{cssTransition
+                (if
+                  @contentTransitionName
+                  @contentTransitionName
+                  "overlay-transition--fade"
+                )
+                isEnabled=this.isAnimationEnabled
+              }}
+            >
+              {{! template-lint-enable no-pointer-down-event-binding }}
+              {{yield}}
+            </div>
+          {{/if}}
+          {{! template-lint-enable no-invalid-interactive }}
+        </div>
+      </MaybeInElement>
+    {{/if}}
+  </template>
 }
