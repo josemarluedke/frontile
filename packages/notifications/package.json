@@ -37,10 +37,12 @@
     "prepack": "concurrently 'npm:build'"
   },
   "peerDependencies": {
-    "ember-source": "^4.0.0 || ^5.0.0"
+    "ember-source": "^4.0.0 || ^5.0.0",
+    "@babel/runtime": ">= 7"
   },
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
+    "@embroider/addon-shim": "^1.8.7",
     "@frontile/core": "^0.15.0",
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0",
     "ember-auto-import": "^2.6.3",
@@ -63,7 +65,7 @@
     "@tsconfig/ember": "^3.0.0",
     "babel-plugin-ember-template-compilation": "^2.1.1",
     "concurrently": "^8.2.0",
-    "ember-source": "^5.1.2",
+    "ember-source": "^5.5.0",
     "rollup": "^4.9.1",
     "rollup-plugin-ts": "^3.2.0",
     "tailwindcss": "^3.3.3",
