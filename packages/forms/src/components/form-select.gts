@@ -10,7 +10,7 @@ import PowerSelectMultiple from 'ember-power-select/components/power-select-mult
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import FormField from './form-field';
 import { concat } from '@ember/helper';
-export { type Select } from 'ember-power-select/components/power-select';
+export type { Select } from 'ember-power-select/components/power-select';
 
 export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */
@@ -164,19 +164,19 @@ export default class FormSelect extends Component<FormSelectSignature> {
           @onBlur={{this.handleFocusOut}}
           @onOpen={{this.handleOpen}}
           @onClose={{this.handleClose}}
-          @ariaDescribedBy="{{if @hint f.hintId}}{{if
+          @ariaDescribedBy="{{if @hint f.hintId}} {{if
             this.showErrorFeedback
-            (concat " " f.feedbackId)
-          }}{{if @ariaDescribedBy (concat " " @ariaDescribedBy)}}"
-          @ariaLabelledBy="{{if @label f.id}}{{if
+            (concat ' ' f.feedbackId)
+          }}{{if @ariaDescribedBy (concat ' ' @ariaDescribedBy)}}"
+          @ariaLabelledBy="{{if @label f.id}} {{if
             @ariaLabelledBy
-            (concat " " @ariaLabelledBy)
+            (concat ' ' @ariaLabelledBy)
           }}"
           @ariaInvalid={{if this.showErrorFeedback "true"}}
-          @triggerClass="{{@triggerClass}}{{if
+          @triggerClass="{{@triggerClass}} {{if
             @size
-            (concat "ember-power-select-trigger-" @size)
-          }}{{useFrontileClass "form-select" @size part="select"}}"
+            (concat 'ember-power-select-trigger-' @size)
+          }} {{useFrontileClass 'form-select' @size part="select"}}"
           @highlightOnHover={{@highlightOnHover}}
           @placeholderComponent={{@placeholderComponent}}
           @searchMessage={{@searchMessage}}
