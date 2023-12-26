@@ -45,6 +45,7 @@
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0",
     "ember-basic-dropdown": "^7.3.0",
     "ember-power-select": "^7.2.0",
+    "@glint/template": "1.2.1",
     "tailwindcss-ember-power-select": "^0.4.1"
   },
   "devDependencies": {
@@ -57,7 +58,6 @@
     "@glint/core": "1.2.1",
     "@glint/environment-ember-loose": "1.2.1",
     "@glint/environment-ember-template-imports": "1.2.1",
-    "@glint/template": "1.2.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/ember": "^3.0.3",
     "babel-plugin-ember-template-compilation": "^2.2.1",

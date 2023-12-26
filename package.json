@@ -8,7 +8,7 @@
     "test-app"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "yarn workspace @frontile/core run build && yarn workspace @frontile/buttons run build && yarn workspace @frontile/notifications run build && yarn workspace @frontile/forms run build && yarn workspace @frontile/changeset-form run build && yarn workspace @frontile/overlays run build ",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts,.gts,.gjs",
     "start": "yarn workspace site start",

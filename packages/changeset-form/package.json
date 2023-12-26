@@ -39,7 +39,8 @@
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/forms": "^0.15.0",
     "ember-changeset": "^4.1.2",
-    "ember-changeset-validations": "^4.1.1"
+    "ember-changeset-validations": "^4.1.1",
+    "@glint/template": "1.2.1"
   },
   "devDependencies": {
     "@babel/core": "7.23.6",
@@ -51,7 +52,6 @@
     "@glint/core": "1.2.1",
     "@glint/environment-ember-loose": "1.2.1",
     "@glint/environment-ember-template-imports": "1.2.1",
-    "@glint/template": "1.2.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/ember": "^3.0.3",
     "babel-plugin-ember-template-compilation": "^2.2.1",
