@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.15.0",
+  "version": "0.16.0-alpha.0",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon",
@@ -37,12 +37,12 @@
     "prepack": "concurrently 'npm:build'"
   },
   "peerDependencies": {
-    "ember-source": "^4.0.0 || ^5.0.0",
-    "@babel/runtime": ">= 7"
+    "@babel/runtime": ">= 7",
+    "ember-source": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/core": "^0.15.0",
+    "@frontile/core": "^0.16.0-alpha.0",
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0",
     "@glint/template": "1.2.1",
     "ember-basic-dropdown": "^7.3.0",
