@@ -1,12 +1,13 @@
 import Component from '@glimmer/component';
-import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
-import type { BaseArgs, BaseSignature } from './base';
 import ChangesetFormFieldsCheckbox from './checkbox';
 import FormCheckboxGroup, {
   type FormCheckboxGroupArgs
 } from '@frontile/forms/components/form-checkbox-group';
+import type { BaseArgs, BaseSignature } from './base';
+import type { BufferedChangeset } from 'ember-changeset/types';
+import type { WithBoundArgs } from '@glint/template';
 
 export interface ChangesetFormFieldsGroupArgs
   extends BaseArgs,
@@ -21,7 +22,15 @@ export interface ChangesetFormFieldsCheckboxGroupSignature
   extends BaseSignature {
   Args: ChangesetFormFieldsGroupArgs;
   Blocks: {
-    default: [checkbox: ChangesetFormFieldsCheckbox];
+    default: [
+      checkbox: WithBoundArgs<
+        typeof ChangesetFormFieldsCheckbox,
+        '_groupName'
+      > &
+        WithBoundArgs<typeof ChangesetFormFieldsCheckbox, '_parentOnChange'> &
+        WithBoundArgs<typeof ChangesetFormFieldsCheckbox, 'changeset'> &
+        WithBoundArgs<typeof ChangesetFormFieldsCheckbox, 'size'>
+    ];
   };
   Element: HTMLDivElement;
 }
@@ -89,7 +98,7 @@ export default class ChangesetFormFieldsCheckboxGroup extends Component<Changese
       @size={{@size}}
       @isInline={{@isInline}}
       ...attributes
-      as |Checkbox api|
+      as |_ api|
     >
       {{yield
         (component

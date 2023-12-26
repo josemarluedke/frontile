@@ -15,7 +15,10 @@ export interface ChangesetFormFieldsInputSignature extends BaseSignature {
   Blocks: { default: [] };
 }
 
-export default class ChangesetFormFieldsInput extends Base<ChangesetFormFieldsInputSignature> {
+export default class ChangesetFormFieldsInput extends Base<
+  ChangesetFormFieldsInputSignature,
+  string | undefined
+> {
   @action handleInput(value: string, event: InputEvent): void {
     this.args.changeset.set(this.args.fieldName, value);
 

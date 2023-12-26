@@ -1,6 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { BufferedChangeset } from 'ember-changeset/types';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { next } from '@ember/runloop';
@@ -13,6 +12,8 @@ import ChangesetFormFieldsCheckbox from './fields/checkbox';
 import ChangesetFormFieldsCheckboxGroup from './fields/checkbox-group';
 import ChangesetFormFieldsRadio from './fields/radio';
 import ChangesetFormFieldsRadioGroup from './fields/radio-group';
+import type { BufferedChangeset } from 'ember-changeset/types';
+import type { WithBoundArgs } from '@glint/template';
 
 export interface ChangesetFormArgs {
   /** Changeset Object */
@@ -48,13 +49,38 @@ export interface ChangesetFormSignature {
   Blocks: {
     default: [
       {
-        Input: ChangesetFormFieldsInput;
-        Textarea: ChangesetFormFieldsTextarea;
-        Select: ChangesetFormFieldsSelect;
-        Checkbox: ChangesetFormFieldsCheckbox;
-        CheckboxGroup: ChangesetFormFieldsCheckboxGroup;
-        Radio: ChangesetFormFieldsRadio;
-        RadioGroup: ChangesetFormFieldsRadioGroup;
+        Input: WithBoundArgs<typeof ChangesetFormFieldsInput, 'changeset'> &
+          WithBoundArgs<typeof ChangesetFormFieldsInput, 'hasSubmitted'> &
+          WithBoundArgs<typeof ChangesetFormFieldsInput, 'showError'>;
+        Textarea: WithBoundArgs<
+          typeof ChangesetFormFieldsTextarea,
+          'changeset'
+        > &
+          WithBoundArgs<typeof ChangesetFormFieldsTextarea, 'hasSubmitted'> &
+          WithBoundArgs<typeof ChangesetFormFieldsTextarea, 'showError'>;
+        Select: WithBoundArgs<typeof ChangesetFormFieldsSelect, 'changeset'> &
+          WithBoundArgs<typeof ChangesetFormFieldsSelect, 'hasSubmitted'> &
+          WithBoundArgs<typeof ChangesetFormFieldsSelect, 'showError'>;
+        Checkbox: WithBoundArgs<
+          typeof ChangesetFormFieldsCheckbox,
+          'changeset'
+        >;
+        CheckboxGroup: WithBoundArgs<
+          typeof ChangesetFormFieldsCheckboxGroup,
+          'changeset'
+        > &
+          WithBoundArgs<
+            typeof ChangesetFormFieldsCheckboxGroup,
+            'hasSubmitted'
+          > &
+          WithBoundArgs<typeof ChangesetFormFieldsCheckboxGroup, 'showError'>;
+        Radio: WithBoundArgs<typeof ChangesetFormFieldsRadio, 'changeset'>;
+        RadioGroup: WithBoundArgs<
+          typeof ChangesetFormFieldsRadioGroup,
+          'changeset'
+        > &
+          WithBoundArgs<typeof ChangesetFormFieldsRadioGroup, 'hasSubmitted'> &
+          WithBoundArgs<typeof ChangesetFormFieldsRadioGroup, 'showError'>;
         state: { hasSubmitted: boolean };
       }
     ];

@@ -1,9 +1,10 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
-import type FormRadio from '@frontile/forms/components/form-radio';
+import type { FormRadioSignature } from '@frontile/forms/components/form-radio';
 import FormRadioGroup, {
   type FormRadioGroupArgs
 } from '@frontile/forms/components/form-radio-group';
+import { type ComponentLike } from '@glint/template';
 
 export interface ChangesetFormFieldsRadioGroupArgs
   extends BaseArgs,
@@ -13,13 +14,14 @@ export interface ChangesetFormFieldsRadioGroupArgs
 
 export interface ChangesetFormFieldsRadioGroupSignature extends BaseSignature {
   Args: ChangesetFormFieldsRadioGroupArgs;
-  Blocks: {
-    default: [radio: FormRadio];
-  };
+  Blocks: { default: [radio: ComponentLike<FormRadioSignature>] };
   Element: HTMLDivElement;
 }
 
-export default class ChangesetFormFieldsRadioGroup extends Base<ChangesetFormFieldsRadioGroupSignature> {
+export default class ChangesetFormFieldsRadioGroup extends Base<
+  ChangesetFormFieldsRadioGroupSignature,
+  string | boolean | number | undefined
+> {
   @action
   async handleChange(value: unknown, event: Event): Promise<void> {
     event.preventDefault();

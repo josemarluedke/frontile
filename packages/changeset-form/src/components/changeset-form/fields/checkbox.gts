@@ -34,6 +34,9 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
 
   get errors(): string[] {
     if (typeof this.args.errors !== 'undefined') {
+      if (typeof this.args.errors === 'string') {
+        return [this.args.errors];
+      }
       return this.args.errors;
     }
 

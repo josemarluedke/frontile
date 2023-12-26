@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { type BufferedChangeset } from 'ember-changeset/types';
+import type { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
@@ -15,7 +15,8 @@ export interface BaseSignature {
 }
 
 export default class ChangesetFormFieldsBase<
-  T extends BaseSignature
+  T extends BaseSignature,
+  V = unknown
 > extends Component<T> {
   constructor(owner: unknown, args: T['Args']) {
     super(owner, args);
@@ -31,7 +32,7 @@ export default class ChangesetFormFieldsBase<
     );
   }
 
-  get value(): unknown {
+  get value(): V {
     return this.args.changeset.get(this.args.fieldName);
   }
 

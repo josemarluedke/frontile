@@ -1,8 +1,8 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
-import { type Select } from 'ember-power-select/addon/components/power-select';
 import FormSelect, {
-  type FormSelectArgs
+  type FormSelectArgs,
+  type Select
 } from '@frontile/forms/components/form-select';
 
 export interface ChangesetFormFieldsSelectArgs
@@ -54,6 +54,7 @@ export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsS
     }
   }
   <template>
+    {{! @glint-nocheck: need to fix powerselect types}}
     <FormSelect
       @selected={{this.value}}
       @onChange={{this.handleChange}}

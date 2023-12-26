@@ -10,6 +10,7 @@ import PowerSelectMultiple from 'ember-power-select/components/power-select-mult
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import FormField from './form-field';
 import { concat } from '@ember/helper';
+export { type Select } from 'ember-power-select/components/power-select';
 
 export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */

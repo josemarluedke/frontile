@@ -18,7 +18,10 @@ export interface ChangesetFormFieldsTextareaSignature extends BaseSignature {
   };
 }
 
-export default class ChangesetFormFieldsTextarea extends Base<ChangesetFormFieldsTextareaSignature> {
+export default class ChangesetFormFieldsTextarea extends Base<
+  ChangesetFormFieldsTextareaSignature,
+  string | undefined
+> {
   @action handleInput(value: string, event: InputEvent): void {
     this.args.changeset.set(this.args.fieldName, value);
 
