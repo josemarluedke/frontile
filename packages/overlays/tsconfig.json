@@ -1,23 +1,14 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "dummy/tests/*": ["tests/*"],
-      "dummy/*": ["tests/dummy/app/*", "app/*"],
-      "@frontile/overlays": ["addon"],
-      "@frontile/overlays/*": ["addon/*"],
-      "@frontile/overlays/test-support": ["addon-test-support"],
-      "@frontile/overlays/test-support/*": ["addon-test-support/*"],
-      "*": ["types/*"]
-    }
+  "extends": "@tsconfig/ember/tsconfig.json",
+  "include": ["src/**/*", "unpublished-development-types/**/*"],
+  "glint": {
+    "environment": ["ember-loose", "ember-template-imports"]
   },
-  "include": [
-    "app/**/*",
-    "addon/**/*",
-    "tests/**/*",
-    "types/**/*",
-    "test-support/**/*",
-    "addon-test-support/**/*"
-  ]
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declarationDir": "declarations",
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "noEmitOnError": false // https://github.com/typed-ember/glint/issues/599
+  }
 }
