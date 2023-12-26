@@ -40,6 +40,7 @@
     "ember-source": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
+    "@embroider/addon-shim": "^1.8.7",
     "@frontile/core": "^0.15.0",
     "@frontile/tailwindcss-plugin-helpers": "^0.15.0",
     "ember-basic-dropdown": "^7.3.0",
@@ -96,10 +97,7 @@
       "./components/form-radio.js": "./dist/_app_/components/form-radio.js",
       "./components/form-select.js": "./dist/_app_/components/form-select.js",
       "./components/form-textarea.js": "./dist/_app_/components/form-textarea.js"
-    },
-    "before": [
-      "ember-power-select"
-    ]
+    }
   },
   "exports": {
     ".": {
