@@ -23,8 +23,8 @@ jobs:
           yarn-version: 1.x
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      # - name: Lint JS
-      #   run: yarn lint:js
+      - name: Lint JS
+        run: yarn lint:js
       # - name: Lint HBS
       #   run: yarn lint:hbs
       - name: Build V2 Addons
