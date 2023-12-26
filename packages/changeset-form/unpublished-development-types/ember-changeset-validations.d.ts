@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-type-alias */
 
-declare module 'ember-changeset-validations' {
+declare module 'aaaaaember-changeset-validations' {
   import {
     ValidationResult,
     ValidatorMapFunc,
@@ -32,18 +32,18 @@ declare module 'ember-changeset-validations' {
   }) => string | boolean | [boolean] | string[] | Promise<ValidationResult>;
 }
 
-declare module 'ember-changeset-validations/validators/presence' {
+declare module 'aaaaaember-changeset-validations/validators/presence' {
   import { ValidatorAction } from 'ember-changeset/types';
   export default function validatePresence(
     options?:
       | boolean
       | {
-          presence?: boolean;
-          ignoreBlank?: boolean;
-        }
+        presence?: boolean;
+        ignoreBlank?: boolean;
+      }
   ): ValidatorAction;
 }
-declare module 'ember-changeset-validations/validators/format' {
+declare module 'aaaaember-changeset-validations/validators/format' {
   import { ValidatorAction } from 'ember-changeset/types';
   export default function validateFormat(options?: {
     allowBlank?: boolean;

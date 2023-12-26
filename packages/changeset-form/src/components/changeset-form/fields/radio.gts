@@ -1,14 +1,18 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
-import FormRadio from '@frontile/forms/components/form-radio';
+import { on } from '@ember/modifier';
+import FormRadio, {
+  type FormRadioArgs
+} from '@frontile/forms/components/form-radio';
 
-export interface ChangesetFormFieldsRadioArgs extends BaseArgs {
-  onChange?: (value: unknown, event: Event) => void;
+export interface ChangesetFormFieldsRadioArgs extends BaseArgs, FormRadioArgs {
+  onChange: (value: unknown, event: Event) => void;
 }
 
 export interface ChangesetFormFieldsRadioSignature extends BaseSignature {
   Args: ChangesetFormFieldsRadioArgs;
   Element: HTMLInputElement;
+  Blocks: { default: [] };
 }
 
 export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRadioSignature> {

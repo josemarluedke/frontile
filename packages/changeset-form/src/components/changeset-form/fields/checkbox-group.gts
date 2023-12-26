@@ -2,11 +2,15 @@ import Component from '@glimmer/component';
 import { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
-import type { BaseArgs, BaseSignature, ValidationError } from './base';
+import type { BaseArgs, BaseSignature } from './base';
 import ChangesetFormFieldsCheckbox from './checkbox';
-import FormCheckboxGroup from '@frontile/forms/components/form-checkbox-group';
+import FormCheckboxGroup, {
+  type FormCheckboxGroupArgs
+} from '@frontile/forms/components/form-checkbox-group';
 
-export interface ChangesetFormFieldsGroupArgs extends BaseArgs {
+export interface ChangesetFormFieldsGroupArgs
+  extends BaseArgs,
+    FormCheckboxGroupArgs {
   errors?: string[];
   changeset: BufferedChangeset;
   groupName?: string;
@@ -45,12 +49,17 @@ export default class ChangesetFormFieldsCheckboxGroup extends Component<Changese
       return error.key === this.args.groupName;
     });
 
-    return fieldErrors.reduce(
-      (errors: string[], error: ValidationError): string[] => {
-        return [...errors, ...error.validation];
-      },
-      []
-    );
+    return fieldErrors.reduce((errors: string[], error): string[] => {
+      if (Array.isArray(error.validation)) {
+        const results = [...errors];
+        error.validation.forEach((err) => {
+          results.push(...err);
+        });
+        return results;
+      } else {
+        return [...errors, error.validation];
+      }
+    }, []);
   }
 
   @action async validate(): Promise<void> {

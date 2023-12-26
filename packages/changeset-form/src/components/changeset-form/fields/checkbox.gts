@@ -1,20 +1,24 @@
-import Base, {
-  type BaseArgs,
-  type BaseSignature,
-  type ValidationError
-} from './base';
+import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
-import FormCheckbox from '@frontile/forms/components/form-checkbox';
+import FormCheckbox, {
+  type FormCheckboxArgs
+} from '@frontile/forms/components/form-checkbox';
 
-export interface ChangesetFormFieldsCheckboxArgs extends BaseArgs {
+export interface ChangesetFormFieldsCheckboxArgs
+  extends BaseArgs,
+    FormCheckboxArgs {
   _groupName?: string;
   _parentOnChange?: (value: unknown, event: Event) => void;
 
-  onChange?: (value: unknown, event: Event) => void;
+  onChange: (value: boolean, event: Event) => void;
 }
 
 export interface ChangesetFormFieldsCheckboxSignature extends BaseSignature {
   Args: ChangesetFormFieldsCheckboxArgs;
+  Element: HTMLInputElement;
+  Blocks: {
+    default: [];
+  };
 }
 
 export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormFieldsCheckboxSignature> {
@@ -24,7 +28,7 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
       : this.args.fieldName;
   }
 
-  get value(): unknown {
+  get value(): boolean {
     return this.args.changeset.get(this.fullFieldName);
   }
 
@@ -37,19 +41,24 @@ export default class ChangesetFormFieldsCheckbox extends Base<ChangesetFormField
       return error.key === this.fullFieldName;
     });
 
-    return fieldErrors.reduce(
-      (errors: string[], error: ValidationError): string[] => {
-        return [...errors, ...error.validation];
-      },
-      []
-    );
+    return fieldErrors.reduce((errors: string[], error): string[] => {
+      if (Array.isArray(error.validation)) {
+        const results = [...errors];
+        error.validation.forEach((err) => {
+          results.push(...err);
+        });
+        return results;
+      } else {
+        return [...errors, error.validation];
+      }
+    }, []);
   }
 
   @action async validate(): Promise<void> {
     await this.args.changeset.validate(this.fullFieldName);
   }
 
-  @action async handleChange(value: unknown, event: Event): Promise<void> {
+  @action async handleChange(value: boolean, event: Event): Promise<void> {
     this.args.changeset.set(this.fullFieldName, value);
 
     await this.validate();

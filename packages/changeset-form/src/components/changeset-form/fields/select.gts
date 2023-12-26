@@ -1,12 +1,16 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import { type Select } from 'ember-power-select/addon/components/power-select';
-import FormSelect from '@frontile/forms/components/form-select';
+import FormSelect, {
+  type FormSelectArgs
+} from '@frontile/forms/components/form-select';
 
-export interface ChangesetFormFieldsSelectArgs extends BaseArgs {
-  onChange?: (selection: unknown, select: Select, event?: Event) => void;
+export interface ChangesetFormFieldsSelectArgs
+  extends BaseArgs,
+    FormSelectArgs {
+  onChange: (selection: unknown, select: Select, event?: Event) => void;
   onFocusOut?: (select: Select, event: FocusEvent) => void;
-  onClose?: (select: Select, event: Event) => void;
+  onClose?: (select: Select, e: Event) => boolean | undefined;
 }
 
 export interface ChangesetFormFieldsSelectSignature extends BaseSignature {

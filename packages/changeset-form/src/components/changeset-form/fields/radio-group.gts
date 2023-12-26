@@ -1,9 +1,13 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import type FormRadio from '@frontile/forms/components/form-radio';
-import FormRadioGroup from '@frontile/forms/components/form-radio-group';
+import FormRadioGroup, {
+  type FormRadioGroupArgs
+} from '@frontile/forms/components/form-radio-group';
 
-export interface ChangesetFormFieldsRadioGroupArgs extends BaseArgs {
+export interface ChangesetFormFieldsRadioGroupArgs
+  extends BaseArgs,
+    FormRadioGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 

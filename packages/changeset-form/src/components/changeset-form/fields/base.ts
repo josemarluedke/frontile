@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { BufferedChangeset } from 'ember-changeset/types';
+import { type BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
@@ -7,17 +7,11 @@ import { later } from '@ember/runloop';
 export interface BaseArgs {
   changeset: BufferedChangeset;
   fieldName: string;
-  errors?: string[];
+  errors?: string[] | string;
 }
 
 export interface BaseSignature {
   Args: BaseArgs;
-}
-
-export interface ValidationError {
-  key: string;
-  value: unknown;
-  validation: string[] | string;
 }
 
 export default class ChangesetFormFieldsBase<
@@ -43,6 +37,9 @@ export default class ChangesetFormFieldsBase<
 
   get errors(): string[] {
     if (typeof this.args.errors !== 'undefined') {
+      if (typeof this.args.errors === 'string') {
+        return [this.args.errors];
+      }
       return this.args.errors;
     }
 
@@ -50,16 +47,17 @@ export default class ChangesetFormFieldsBase<
       return error.key === this.args.fieldName;
     });
 
-    return fieldErrors.reduce(
-      (errors: string[], error: ValidationError): string[] => {
-        if (Array.isArray(error.validation)) {
-          return [...errors, ...error.validation];
-        } else {
-          return [...errors, error.validation];
-        }
-      },
-      []
-    );
+    return fieldErrors.reduce((errors: string[], error): string[] => {
+      if (Array.isArray(error.validation)) {
+        const results = [...errors];
+        error.validation.forEach((err) => {
+          results.push(...err);
+        });
+        return results;
+      } else {
+        return [...errors, error.validation];
+      }
+    }, []);
   }
 
   @action

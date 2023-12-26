@@ -1,14 +1,18 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import FormInput from '@frontile/forms/components/form-input';
+import FormInput, {
+  type FormInputArgs
+} from '@frontile/forms/components/form-input';
 
-export interface ChangesetFormFieldsInputArgs extends BaseArgs {
+export interface ChangesetFormFieldsInputArgs extends BaseArgs, FormInputArgs {
   onInput?: (value: string, event: InputEvent) => void;
 }
 
 export interface ChangesetFormFieldsInputSignature extends BaseSignature {
   Args: ChangesetFormFieldsInputArgs;
+  Element: HTMLInputElement;
+  Blocks: { default: [] };
 }
 
 export default class ChangesetFormFieldsInput extends Base<ChangesetFormFieldsInputSignature> {
@@ -19,6 +23,7 @@ export default class ChangesetFormFieldsInput extends Base<ChangesetFormFieldsIn
       this.args.onInput(value, event);
     }
   }
+
   <template>
     <FormInput
       {{on "blur" this.validate}}

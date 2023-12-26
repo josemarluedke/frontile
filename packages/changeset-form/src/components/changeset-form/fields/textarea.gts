@@ -2,13 +2,20 @@ import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormTextarea from '@frontile/forms/components/form-textarea';
+import { type FormInputArgs } from '@frontile/forms/components/form-input';
 
-export interface ChangesetFormFieldsTextareaArgs extends BaseArgs {
+export interface ChangesetFormFieldsTextareaArgs
+  extends BaseArgs,
+    FormInputArgs {
   onInput?: (value: string, event: InputEvent) => void;
 }
 
 export interface ChangesetFormFieldsTextareaSignature extends BaseSignature {
   Args: ChangesetFormFieldsTextareaArgs;
+  Element: HTMLTextAreaElement;
+  Blocks: {
+    default: [];
+  };
 }
 
 export default class ChangesetFormFieldsTextarea extends Base<ChangesetFormFieldsTextareaSignature> {
