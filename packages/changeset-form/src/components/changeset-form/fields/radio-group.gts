@@ -33,6 +33,7 @@ export default class ChangesetFormFieldsRadioGroup extends Base<
       this.args.onChange(value, event);
     }
   }
+
   <template>
     <FormRadioGroup
       @onChange={{this.handleChange}}

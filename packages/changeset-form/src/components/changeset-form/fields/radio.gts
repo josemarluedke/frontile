@@ -27,6 +27,7 @@ export default class ChangesetFormFieldsRadio extends Base<ChangesetFormFieldsRa
       this.args.onChange(value, event);
     }
   }
+
   <template>
     <FormRadio
       @onChange={{this.handleChange}}

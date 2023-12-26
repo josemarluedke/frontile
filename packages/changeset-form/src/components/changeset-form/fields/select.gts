@@ -53,6 +53,7 @@ export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsS
       this.args.onClose(select, event);
     }
   }
+
   <template>
     {{! @glint-nocheck: need to fix powerselect types}}
     <FormSelect
