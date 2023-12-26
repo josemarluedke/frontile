@@ -1,17 +1,10 @@
 {
   "version": "0.15.0",
-  "packages": [
-    "packages/*",
-    "test-app"
-  ],
+  "packages": ["packages/*", "test-app"],
   "npmClient": "yarn",
-  "useWorkspaces": true,
   "command": {
     "bootstrap": {
-      "npmClientArgs": [
-        "--frozen-lockfile",
-        "--non-interactive"
-      ]
+      "npmClientArgs": ["--frozen-lockfile", "--non-interactive"]
     }
   }
 }
