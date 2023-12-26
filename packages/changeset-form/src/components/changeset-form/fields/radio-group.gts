@@ -4,7 +4,7 @@ import type { FormRadioSignature } from '@frontile/forms/components/form-radio';
 import FormRadioGroup, {
   type FormRadioGroupArgs
 } from '@frontile/forms/components/form-radio-group';
-import { type ComponentLike } from '@glint/template';
+import type { ComponentLike } from '@glint/template';
 
 export interface ChangesetFormFieldsRadioGroupArgs
   extends BaseArgs,
