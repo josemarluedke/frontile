@@ -18,7 +18,7 @@
   "scripts": {
     "build": "concurrently -m 1 'npm:build:*'",
     "build:js": "rollup --config",
-    "build:types": "glint --clean --build && glint --declaration",
+    "build:types": "glint --declaration",
     "lint": "concurrently 'npm:lint:*(!fix)' --names 'lint:'",
     "lint:fix": "concurrently 'npm:lint:*:fix' --names 'fix:'",
     "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",

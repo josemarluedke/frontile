@@ -4,7 +4,7 @@ import { OverlayArgs } from '../overlay';
 import ModalFooter from './footer';
 import ModalBody from './body';
 import ModalHeader from './header';
-import CloseButton from '@frontile/core/addon/components/close-button';
+import type CloseButton from '@frontile/core/components/close-button';
 
 export interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**

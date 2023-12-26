@@ -40,7 +40,7 @@ export default class FormTextarea extends FormInputBase<FormTextareaSignature> {
         aria-invalid={{if this.showErrorFeedback "true"}}
         aria-describedby="{{if @hint f.hintId}}{{if
           this.showErrorFeedback
-          (concat ' ' f.feedbackId)
+          (concat " " f.feedbackId)
         }}"
         ...attributes
       />
