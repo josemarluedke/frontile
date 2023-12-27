@@ -14,21 +14,22 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
+    env:
+      VOLTA_FEATURE_PNPM: true
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
+      - uses: actions/checkout@v4
+      - uses: volta-cli/action@v4
         with:
-          node-version: 18.x
-          yarn-version: 1.x
+          node-version: 20.x
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
       - name: Lint JS
-        run: yarn lint:js
+        run: pnpm lint:js
       - name: Build V2 Addons
-        run: yarn build
+        run: pnpm build
       - name: Test
-        run: yarn test
+        run: pnpm test
 
   # try-scenarios:
   #   name: Compat ${{ matrix.ember-try-scenario }}

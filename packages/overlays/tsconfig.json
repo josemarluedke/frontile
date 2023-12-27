@@ -5,6 +5,8 @@
     "environment": ["ember-loose", "ember-template-imports"]
   },
   "compilerOptions": {
+    "allowJs": true,
+    "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "declarationDir": "declarations",
     "emitDeclarationOnly": true,

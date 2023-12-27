@@ -72,5 +72,9 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "dependencies": {
+    "@types/qunit": "^2.19.6",
+    "ember-changeset": "^4.1.2"
   }
 }
