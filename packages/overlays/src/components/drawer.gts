@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { concat, hash } from '@ember/helper';
-import Overlay, { type OverlayArgs } from '../overlay';
-import DrawerBody from './body';
-import DrawerFooter from './footer';
-import DrawerHeader from './header';
+import Overlay, { type OverlayArgs } from './overlay';
+import DrawerBody from './drawer/body';
+import DrawerFooter from './drawer/footer';
+import DrawerHeader from './drawer/header';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
 import type { WithBoundArgs } from '@glint/template';

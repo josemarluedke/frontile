@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import Overlay, { type OverlayArgs } from '../overlay';
-import ModalFooter from './footer';
-import ModalBody from './body';
-import ModalHeader from './header';
+import Overlay, { type OverlayArgs } from './overlay';
+import ModalFooter from './modal/footer';
+import ModalBody from './modal/body';
+import ModalHeader from './modal/header';
 import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
 import type { WithBoundArgs } from '@glint/template';
