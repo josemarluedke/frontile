@@ -1,6 +1,6 @@
 {
   "name": "@frontile/notifications",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Component Library for Ember Octane apps: Notifications",
   "keywords": [
     "ember-addon",
@@ -43,8 +43,8 @@
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/core": "^0.16.0",
-    "@frontile/tailwindcss-plugin-helpers": "^0.16.0",
+    "@frontile/core": "^0.16.1",
+    "@frontile/tailwindcss-plugin-helpers": "^0.16.1",
     "ember-auto-import": "^2.6.3",
     "ember-css-transitions": "^4.4.0",
     "ember-get-config": "^2.1.1"

@@ -1,6 +1,6 @@
 {
   "name": "@frontile/buttons",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
     "ember-addon",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/tailwindcss-plugin-helpers": "^0.16.0"
+    "@frontile/tailwindcss-plugin-helpers": "^0.16.1"
   },
   "devDependencies": {
     "@babel/core": "7.23.6",
