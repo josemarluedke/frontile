@@ -42,7 +42,7 @@ module.exports = {
     ].map((pkgName) => {
       return {
         root: path.resolve(__dirname, `../packages/${pkgName}`),
-        pattern: '(docs|addon)/**/**/*.md',
+        pattern: '(docs|src)/**/**/*.md',
         urlPrefix: `docs/${pkgName}`,
         urlSchema: 'manual'
       };

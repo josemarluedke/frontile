@@ -8,12 +8,12 @@
     "test-app"
   ],
   "scripts": {
-    "build": "yarn workspace @frontile/core run build && yarn workspace @frontile/buttons run build && yarn workspace @frontile/notifications run build && yarn workspace @frontile/forms run build && yarn workspace @frontile/changeset-form run build && yarn workspace @frontile/overlays run build ",
+    "build": "pnpm --filter @frontile/core build && pnpm --filter @frontile/buttons build && pnpm --filter @frontile/notifications build && pnpm --filter @frontile/forms build && pnpm --filter @frontile/changeset-form build && pnpm --filter @frontile/overlays build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts,.gts,.gjs",
-    "start": "yarn workspace site start",
-    "test": "yarn workspace test-app run test",
-    "try:one": "yarn workspace test-app run try:one"
+    "start": "pnpm --filter test-app start",
+    "test": "pnpm --filter test-app test",
+    "try:one": "pnpm --filter test-app try:one"
   },
   "resolutions": {
     "@ember/test-waiters": "^3.0.2",
@@ -40,5 +40,9 @@
   },
   "engines": {
     "node": ">= 10.*"
+  },
+  "volta": {
+    "node": "20.10.0",
+    "pnpm": "8.13.1"
   }
 }

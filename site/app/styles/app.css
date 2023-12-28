@@ -1,9 +1,9 @@
 @import './inter-font.css';
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
 @import './highlight.css';
 @import './docfy-demo.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .prose h2,
 .prose h3,
