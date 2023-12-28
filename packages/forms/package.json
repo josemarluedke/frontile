@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon",
@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/core": "^0.16.1",
-    "@frontile/tailwindcss-plugin-helpers": "^0.16.1",
+    "@frontile/core": "^0.16.2",
+    "@frontile/tailwindcss-plugin-helpers": "^0.16.2",
     "@glint/template": "1.2.1",
     "ember-basic-dropdown": "^7.3.0",
     "ember-power-select": "^7.2.0",
