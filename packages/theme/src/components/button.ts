@@ -1,7 +1,17 @@
 import { tv } from 'tailwind-variants';
 
 const button = tv({
-  base: 'leading-tight inline-block	font-semibold border border-transparent rounded disabled:cursor-not-allowed	disabled:opacity-40',
+  base: [
+    'leading-tight',
+    'inline-block',
+    'font-semibold',
+    'border',
+    'border-transparent',
+    'rounded',
+    'disabled:cursor-not-allowed',
+    'disabled:opacity-40',
+    'focus-visable:ring'
+  ],
   variants: {
     appearance: {
       default: '',
@@ -17,10 +27,10 @@ const button = tv({
       danger: ''
     },
     size: {
-      xs: 'text-sm py-1 px-2',
-      sm: 'text-base px-3 py-2',
-      md: 'text-base px-4 py-3',
-      lg: 'text-base px-4 py-4',
+      xs: 'text-sm px-1 py-1',
+      sm: 'text-sm px-3 py-2',
+      md: 'text-base px-4 py-2',
+      lg: 'text-base px-5 py-4',
       xl: 'text-xl px-6 py-5'
     }
   },

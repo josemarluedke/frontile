@@ -240,6 +240,9 @@ importers:
       '@frontile/tailwindcss-plugin-helpers':
         specifier: ^0.16.2
         version: link:../tailwindcss-plugin-helpers
+      '@frontile/theme':
+        specifier: ^0.16.2
+        version: link:../theme
       ember-auto-import:
         specifier: ^2.6.3
         version: 2.7.2(@glint/template@1.2.1)(webpack@5.89.0)
