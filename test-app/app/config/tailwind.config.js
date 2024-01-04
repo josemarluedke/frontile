@@ -2,7 +2,10 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-  content: ['./app/**/*.{html,js,ts,hbs}'],
+  content: [
+    './app/**/*.{html,js,ts,hbs}',
+    './node_modules/@frontile/buttons/dist/**/*.{js,ts}'
+  ],
 
   theme: {
     extend: {

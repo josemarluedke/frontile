@@ -5,6 +5,7 @@ const { teal } = require('tailwindcss/colors');
 module.exports = {
   content: [
     './app/**/*.{html,js,ts,hbs}',
+    './node_modules/@frontile/buttons/dist/**/*.{js,ts}',
     './lib/docfy-theme/addon/**/*.hbs',
     '../**/*.md',
     './node_modules/**/*.hbs',
