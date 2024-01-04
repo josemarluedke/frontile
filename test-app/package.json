@@ -25,6 +25,7 @@
     "@embroider/test-setup": "^3.0.3",
     "@embroider/webpack": "^3.2.1",
     "@frontile/buttons": "^0.16.2",
+    "@frontile/theme": "^0.16.2",
     "@frontile/changeset-form": "^0.16.2",
     "@frontile/core": "^0.16.2",
     "@frontile/forms": "^0.16.2",

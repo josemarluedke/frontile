@@ -29,6 +29,7 @@
     "@frontile/buttons": "workspace:*",
     "@frontile/changeset-form": "workspace:*",
     "@frontile/core": "workspace:*",
+    "@frontile/theme": "workspace:*",
     "@frontile/forms": "workspace:*",
     "@frontile/notifications": "workspace:*",
     "@frontile/overlays": "workspace:*",
