@@ -8,7 +8,7 @@
     "test-app"
   ],
   "scripts": {
-    "build": "pnpm --filter @frontile/core build && pnpm --filter @frontile/buttons build && pnpm --filter @frontile/notifications build && pnpm --filter @frontile/forms build && pnpm --filter @frontile/changeset-form build && pnpm --filter @frontile/overlays build",
+    "build": "pnpm --filter @frontile/theme build && pnpm --filter @frontile/core build && pnpm --filter @frontile/buttons build && pnpm --filter @frontile/notifications build && pnpm --filter @frontile/forms build && pnpm --filter @frontile/changeset-form build && pnpm --filter @frontile/overlays build",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --ext .js,.ts,.gts,.gjs",
     "start": "pnpm --filter test-app start",
