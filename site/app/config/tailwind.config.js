@@ -1,6 +1,7 @@
 /* eslint-disable node/no-extraneous-require */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
+const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = {
   content: [
@@ -135,15 +136,12 @@ module.exports = {
     }
   },
   plugins: [
-    require('@frontile/core/tailwind'),
+    frontile(),
     require('@frontile/forms/tailwind'),
-    require('@frontile/buttons/tailwind'),
-    require('@frontile/notifications/tailwind'),
     require('@frontile/overlays/tailwind'),
     require('@tailwindcss/typography')
   ],
   safelist: [
-    { pattern: /^close-button/ },
     { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
 
@@ -164,17 +162,12 @@ module.exports = {
     { pattern: /^form-radio-group/ },
 
     // Frontile Notifications
-    { pattern: /^notifications-container/ },
-    { pattern: /^notification-card/ },
     { pattern: /^notification-transition/ },
 
     // Frontile Overlays
     { pattern: /^overlay/ },
     { pattern: /^modal/ },
     { pattern: /^drawer/ },
-
-    // Frontile Buttons
-    { pattern: /^btn/ },
 
     // Power Select
     { pattern: /^ember-power-select/ }

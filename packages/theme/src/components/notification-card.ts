@@ -42,4 +42,61 @@ const notificationCard = tv({
   }
 });
 
-export { notificationCard };
+const zoomOut = {
+  leaveTo: {
+    transform: 'scale(0.80)',
+    opacity: '0'
+  },
+  leave: {
+    transform: 'translate3d(0,0,0)'
+  }
+};
+
+const notificationEnteringFrom = {
+  right: {
+    transform: 'translate3d(125%, 0, 0)'
+  },
+
+  left: {
+    transform: 'translate3d(-125%, 0, 0)'
+  },
+
+  top: {
+    transform: 'translate3d(0, -125%, 0)'
+  },
+
+  bottom: {
+    transform: 'translate3d(0, 125%, 0)'
+  }
+};
+
+const notificationTransitions = {
+  slideFromTopLeft: {
+    ...zoomOut,
+    enter: {
+      ...notificationEnteringFrom.left
+    }
+  },
+  slideFromTopCenter: {
+    ...zoomOut,
+    enter: notificationEnteringFrom.top
+  },
+  slideFromTopRight: {
+    ...zoomOut,
+    enter: notificationEnteringFrom.right
+  },
+  slideFromBottomLeft: {
+    ...zoomOut,
+    enter: notificationEnteringFrom.left
+  },
+  slideFromBottomCenter: {
+    ...zoomOut,
+    enter: notificationEnteringFrom.bottom
+  },
+  slideFromBottomRight: {
+    ...zoomOut,
+    enter: notificationEnteringFrom.right
+  }
+};
+
+export { notificationCard, notificationTransitions };
