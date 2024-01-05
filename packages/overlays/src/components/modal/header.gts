@@ -1,8 +1,7 @@
 import Component from '@glimmer/component';
-import type { ModalArgs } from '../modal';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
-export interface ModalHeaderArgs extends Pick<ModalArgs, 'size'> {
+export interface ModalHeaderArgs {
+  class?: string;
   /**
    * The id used to reference labelledById in Modal component
    */
@@ -19,11 +18,7 @@ export interface ModalHeaderSignature {
 
 export default class ModalHeader extends Component<ModalHeaderSignature> {
   <template>
-    <div
-      id={{@labelledById}}
-      class={{useFrontileClass "modal" @size part="header"}}
-      ...attributes
-    >
+    <div id={{@labelledById}} class={{@class}} ...attributes>
       {{yield}}
     </div>
   </template>

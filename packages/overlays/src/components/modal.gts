@@ -5,8 +5,8 @@ import Overlay, { type OverlayArgs } from './overlay';
 import ModalFooter from './modal/footer';
 import ModalBody from './modal/body';
 import ModalHeader from './modal/header';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
+import { useStyles } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
@@ -60,9 +60,9 @@ export interface ModalSignature {
         CloseButton: WithBoundArgs<typeof CloseButton, 'onClick'> &
           WithBoundArgs<typeof CloseButton, 'class'>;
         Header: WithBoundArgs<typeof ModalHeader, 'labelledById'> &
-          WithBoundArgs<typeof ModalHeader, 'size'>;
-        Body: WithBoundArgs<typeof ModalBody, 'size'>;
-        Footer: WithBoundArgs<typeof ModalFooter, 'size'>;
+          WithBoundArgs<typeof ModalHeader, 'class'>;
+        Body: WithBoundArgs<typeof ModalBody, 'class'>;
+        Footer: WithBoundArgs<typeof ModalFooter, 'class'>;
         headerId: string;
       }
     ];
@@ -87,6 +87,23 @@ export default class Modal extends Component<ModalSignature> {
     return this.args.size || 'lg';
   }
 
+  get classes() {
+    const { modal } = useStyles();
+
+    const { base, closeButton, header, body, footer } = modal({
+      size: this.size,
+      isCentered: this.args.isCentered
+    });
+
+    return {
+      base: base(),
+      closeButton: closeButton(),
+      header: header(),
+      body: body(),
+      footer: footer()
+    };
+  }
+
   <template>
     <Overlay
       @isOpen={{@isOpen}}
@@ -109,44 +126,35 @@ export default class Modal extends Component<ModalSignature> {
         "overlay-transition--zoom"
       }}
     >
-      {{#let
-        (useFrontileClass "modal" this.size part="close-btn")
-        as |closeBtnClass|
-      }}
-        <div
-          class={{useFrontileClass
-            "modal"
-            (if @isCentered "centered")
-            this.size
-          }}
-          tabindex="0"
-          role="dialog"
-          aria-labelledby={{this.headerId}}
-          ...attributes
-        >
-          {{#if this.showCloseButton}}
-            <CloseButton
-              @onClick={{@onClose}}
-              @size={{@closeButtonSize}}
-              class={{closeBtnClass}}
-            />
-          {{/if}}
+      <div
+        class={{this.classes.base}}
+        tabindex="0"
+        role="dialog"
+        aria-labelledby={{this.headerId}}
+        ...attributes
+      >
+        {{#if this.showCloseButton}}
+          <CloseButton
+            @onClick={{@onClose}}
+            @size={{@closeButtonSize}}
+            @class={{this.classes.closeButton}}
+          />
+        {{/if}}
 
-          {{yield
-            (hash
-              CloseButton=(component
-                CloseButton onClick=@onClose class=closeBtnClass
-              )
-              Header=(component
-                ModalHeader labelledById=this.headerId size=this.size
-              )
-              Body=(component ModalBody size=this.size)
-              Footer=(component ModalFooter size=this.size)
-              headerId=this.headerId
+        {{yield
+          (hash
+            CloseButton=(component
+              CloseButton onClick=@onClose class=this.classes.closeButton
             )
-          }}
-        </div>
-      {{/let}}
+            Header=(component
+              ModalHeader labelledById=this.headerId class=this.classes.header
+            )
+            Body=(component ModalBody class=this.classes.body)
+            Footer=(component ModalFooter class=this.classes.footer)
+            headerId=this.headerId
+          )
+        }}
+      </div>
     </Overlay>
   </template>
 }

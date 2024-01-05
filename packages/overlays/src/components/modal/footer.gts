@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
-import type { ModalArgs } from '../modal';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
-export interface ModalFooterArgs extends Pick<ModalArgs, 'size'> {}
+export interface ModalFooterArgs {
+  class?: string;
+}
 
 export interface ModalFooterSignature {
   Args: ModalFooterArgs;
@@ -14,7 +14,7 @@ export interface ModalFooterSignature {
 
 export default class ModalFooter extends Component<ModalFooterSignature> {
   <template>
-    <div class={{useFrontileClass "modal" @size part="footer"}} ...attributes>
+    <div class={{@class}} ...attributes>
       {{yield}}
     </div>
   </template>

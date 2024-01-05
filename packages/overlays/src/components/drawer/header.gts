@@ -1,13 +1,12 @@
 import Component from '@glimmer/component';
-import type { DrawerArgs } from '../drawer';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
-export interface DrawerHeaderArgs extends Pick<DrawerArgs, 'placement'> {
-  size: string;
+export interface DrawerHeaderArgs {
   /**
    * The id used to reference labelledById in Drawer component
    */
   labelledById: string;
+
+  class?: string;
 }
 
 export interface DrawerHeaderSignature {
@@ -19,11 +18,7 @@ export interface DrawerHeaderSignature {
 }
 export default class DrawerHeader extends Component<DrawerHeaderSignature> {
   <template>
-    <div
-      id={{@labelledById}}
-      class={{useFrontileClass "drawer" @placement @size part="header"}}
-      ...attributes
-    >
+    <div id={{@labelledById}} class={{@class}} ...attributes>
       {{yield}}
     </div>
   </template>

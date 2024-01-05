@@ -67,15 +67,9 @@ importers:
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7
-      '@frontile/tailwindcss-plugin-helpers':
-        specifier: ^0.16.2
-        version: link:../tailwindcss-plugin-helpers
       '@frontile/theme':
         specifier: ^0.16.2
         version: link:../theme
-      tailwind-variants:
-        specifier: ^0.1.20
-        version: 0.1.20(tailwindcss@3.4.0)
     devDependencies:
       '@babel/core':
         specifier: 7.23.6
@@ -237,9 +231,6 @@ importers:
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7
-      '@frontile/tailwindcss-plugin-helpers':
-        specifier: ^0.16.2
-        version: link:../tailwindcss-plugin-helpers
       '@frontile/theme':
         specifier: ^0.16.2
         version: link:../theme
@@ -416,9 +407,6 @@ importers:
       '@frontile/core':
         specifier: ^0.16.2
         version: link:../core
-      '@frontile/tailwindcss-plugin-helpers':
-        specifier: ^0.16.2
-        version: link:../tailwindcss-plugin-helpers
       '@frontile/theme':
         specifier: ^0.16.2
         version: link:../theme
@@ -510,9 +498,9 @@ importers:
       '@frontile/core':
         specifier: ^0.16.2
         version: link:../core
-      '@frontile/tailwindcss-plugin-helpers':
+      '@frontile/theme':
         specifier: ^0.16.2
-        version: link:../tailwindcss-plugin-helpers
+        version: link:../theme
       '@glint/template':
         specifier: 1.2.1
         version: 1.2.1

@@ -15,11 +15,7 @@ module.exports = {
       }
     }
   },
-  plugins: [
-    frontile(),
-    require('@frontile/forms/tailwind'),
-    require('@frontile/overlays/tailwind')
-  ],
+  plugins: [frontile(), require('@frontile/forms/tailwind')],
   safelist: [
     { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
