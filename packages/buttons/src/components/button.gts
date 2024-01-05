@@ -35,7 +35,7 @@ export interface ButtonArgs {
   /**
    * Custom class name, it will override the default ones using Tailwind Merge library.
    */
-  className?: string;
+  class?: string;
 }
 
 export interface ButtonSignature {
@@ -61,7 +61,7 @@ export default class Button extends Component<ButtonSignature> {
       intent: this.args.intent || 'default',
       size: this.args.size,
       appearance: this.args.appearance || 'default',
-      className: this.args.className
+      class: this.args.class
     });
   }
 

@@ -80,7 +80,7 @@ You can compose appearance with intents and more to create the button that best 
 You can also use TailwindCSS classes to customize even further.
 
 ```hbs preview-template
-<Button @appearance='outlined' @intent='primary' @className='px-20 py-2 italic'>
+<Button @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
   Button
 </Button>
 ```
@@ -96,9 +96,9 @@ Here is another example using TailwindCSS classes with the `custom` appearance.
 </Button>
 ```
 
-Note that here we used the HTML attribute `class`, instead of the argument `@className`.
+Note that here we used the HTML attribute `class`, instead of the argument `@class`.
 Using the class attribute will just append the class names passed in, while the
-argument `@className` will override and merge TailwindCSS class names.
+argument `@class` will override and merge TailwindCSS class names.
 
 ## API
 
