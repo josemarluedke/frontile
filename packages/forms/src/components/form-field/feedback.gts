@@ -1,11 +1,12 @@
 import Component from '@glimmer/component';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldFeedbackArgs {
   id?: string;
   isError?: boolean;
   errors?: string[] | string;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
 }
 
 export interface FormFieldFeedbackSignature {
@@ -23,6 +24,16 @@ export default class FormFieldFeedback extends Component<FormFieldFeedbackSignat
     );
   }
 
+  get classes() {
+    const { feedback } = useStyles();
+
+    return feedback({
+      size: this.args.size,
+      isError: this.isError,
+      class: this.args.class
+    });
+  }
+
   get errorMessage(): string {
     if (!this.args.errors) return '';
 
@@ -36,11 +47,7 @@ export default class FormFieldFeedback extends Component<FormFieldFeedbackSignat
   <template>
     <div
       id={{@id}}
-      class={{useFrontileClass
-        "form-field-feedback"
-        @size
-        (if this.isError "error")
-      }}
+      class={{this.classes}}
       data-test-id="form-field-feedback"
       aria-live={{if this.isError "assertive" "polite"}}
       ...attributes

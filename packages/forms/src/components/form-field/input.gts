@@ -1,12 +1,13 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldInputArgs {
   id?: string;
   type?: string;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
   value?: string;
 
   // Callback when oninput is triggered
@@ -47,6 +48,15 @@ export default class FormFieldInput extends Component<FormFieldInputSignature> {
     }
   }
 
+  get classes() {
+    const { input } = useStyles();
+
+    return input({
+      size: this.args.size,
+      class: this.args.class
+    });
+  }
+
   <template>
     <input
       {{on "input" this.handleOnInput}}
@@ -54,7 +64,7 @@ export default class FormFieldInput extends Component<FormFieldInputSignature> {
       id={{@id}}
       value={{@value}}
       type={{this.type}}
-      class={{useFrontileClass "form-field-input" @size}}
+      class={{this.classes}}
       data-test-id="form-field-input"
       ...attributes
     />

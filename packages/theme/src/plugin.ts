@@ -5,41 +5,52 @@ import type { CSSRuleObject, PluginAPI } from 'tailwindcss/types/config';
 import { overlayTransitions } from './components/overlays';
 
 function frontile(): ReturnType<typeof plugin> {
-  return plugin(({ addComponents, theme }) => {
-    addTransitions(
-      addComponents,
-      '.notification-transition',
-      notificationTransitions
-    );
+  return plugin(
+    ({ addComponents, theme }) => {
+      addTransitions(
+        addComponents,
+        '.notification-transition',
+        notificationTransitions
+      );
 
-    addTransitions(addComponents, '.overlay-transition', overlayTransitions);
+      addTransitions(addComponents, '.overlay-transition', overlayTransitions);
 
-    // drawer sizes
-    drawer(
-      addComponents,
-      {
-        xs: '20rem',
-        sm: '24rem',
-        md: '28rem',
-        lg: '32rem',
-        xl: '36rem',
-        full: '100%'
-      },
-      theme('spacing.8')
-    );
-    modal(
-      addComponents,
-      {
-        xs: '20rem',
-        sm: '24rem',
-        md: '28rem',
-        lg: '32rem',
-        xl: '36rem',
-        full: '100%'
-      },
-      theme('spacing.8')
-    );
-  });
+      // drawer sizes
+      drawer(
+        addComponents,
+        {
+          xs: '20rem',
+          sm: '24rem',
+          md: '28rem',
+          lg: '32rem',
+          xl: '36rem',
+          full: '100%'
+        },
+        theme('spacing.8')
+      );
+      modal(
+        addComponents,
+        {
+          xs: '20rem',
+          sm: '24rem',
+          md: '28rem',
+          lg: '32rem',
+          xl: '36rem',
+          full: '100%'
+        },
+        theme('spacing.8')
+      );
+    },
+    {
+      theme: {
+        extend: {
+          aria: {
+            invalid: 'invalid="true"'
+          }
+        }
+      }
+    }
+  );
 }
 
 function drawer(
