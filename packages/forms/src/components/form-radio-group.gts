@@ -4,7 +4,7 @@ import { tracked } from '@glimmer/tracking';
 import { concat } from '@ember/helper';
 import FormRadio from './form-radio';
 import FormField from './form-field';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface FormRadioGroupArgs {
@@ -24,7 +24,7 @@ export interface FormRadioGroupArgs {
   /** CSS classes to be added in the container element */
   containerClass?: string;
   /** The size */
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
   /** If the Checkbox should be in one line */
   isInline?: boolean;
 
@@ -75,41 +75,40 @@ export default class FormRadioGroup extends Component<FormRadioGroupSignature> {
     }
   }
 
+  get classes() {
+    const { formRadioGroup } = useStyles();
+    const { base, label, formRadio, hint, feedback } = formRadioGroup({
+      isInline: this.args.isInline
+    });
+
+    return {
+      base: base({
+        class: this.args.containerClass
+      }),
+      label: label(),
+      hint: hint(),
+      feedback: feedback(),
+      formRadio: formRadio()
+    };
+  }
+
   <template>
     <FormField
       @size={{@size}}
-      class={{useFrontileClass
-        "form-radio-group"
-        @size
-        (if @isInline "inline")
-        class=@containerClass
-      }}
+      class={{this.classes.base}}
       role="radiogroup"
       ...attributes
       as |f|
     >
       {{#if @label}}
-        <f.Label
-          class={{useFrontileClass
-            "form-radio-group"
-            @size
-            (if @isInline "inline")
-            part="label"
-          }}
-        >
+        <f.Label @class={{this.classes.label}}>
           {{@label}}
         </f.Label>
       {{/if}}
 
       {{#if @hint}}
-        <f.Hint
-          class={{useFrontileClass
-            "form-radio-group"
-            @size
-            (if @isInline "inline")
-            part="hint"
-          }}
-        >
+        <f.Hint @class={{this.classes.hint}}>
+
           {{@hint}}
         </f.Hint>
       {{/if}}
@@ -118,9 +117,7 @@ export default class FormRadioGroup extends Component<FormRadioGroupSignature> {
         (component
           FormRadio
           checked=@value
-          privateContainerClass=(useFrontileClass
-            "form-radio-group" @size (if @isInline "inline") part="form-radio"
-          )
+          privateContainerClass=this.classes.formRadio
           _parentOnChange=this.handleChange
           size=@size
           name=(concat f.id "-radio-group")
@@ -128,15 +125,7 @@ export default class FormRadioGroup extends Component<FormRadioGroupSignature> {
       }}
 
       {{#if this.showErrorFeedback}}
-        <f.Feedback
-          class={{useFrontileClass
-            "form-radio-group"
-            @size
-            (if @isInline "inline")
-            part="feedback"
-          }}
-          @errors={{@errors}}
-        />
+        <f.Feedback @class={{this.classes.feedback}} @errors={{@errors}} />
       {{/if}}
     </FormField>
   </template>

@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import { useStyles } from '@frontile/theme';
 
 export interface FormFieldLabelArgs {
@@ -22,6 +21,7 @@ export default class FormFieldLabel extends Component<FormFieldLabelSignature> {
 
     return label({ size: this.args.size, class: this.args.class });
   }
+
   <template>
     <label
       for={{@for}}

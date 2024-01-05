@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import FormCheckbox from './form-checkbox';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 import FormField from './form-field';
 import { hash } from '@ember/helper';
 import type { WithBoundArgs } from '@glint/template';
@@ -23,7 +23,7 @@ export interface FormCheckboxGroupArgs {
   /** CSS classes to be added in the container element */
   containerClass?: string;
   /** The size */
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
   /** If the Checkbox should be in one line */
   isInline?: boolean;
   /** Default callback added to the yielded FormCheckbox component, called when onchange is triggered */
@@ -72,41 +72,39 @@ export default class FormCheckboxGroup extends Component<FormCheckboxGroupSignat
     }
   }
 
+  get classes() {
+    const { formCheckboxGroup } = useStyles();
+    const { base, label, formCheckbox, hint, feedback } = formCheckboxGroup({
+      isInline: this.args.isInline
+    });
+
+    return {
+      base: base({
+        class: this.args.containerClass
+      }),
+      label: label(),
+      hint: hint(),
+      feedback: feedback(),
+      formCheckbox: formCheckbox()
+    };
+  }
+
   <template>
     <FormField
       @size={{@size}}
-      class={{useFrontileClass
-        "form-checkbox-group"
-        @size
-        (if @isInline "inline")
-        class=@containerClass
-      }}
+      class={{this.classes.base}}
       role="group"
       ...attributes
       as |f|
     >
       {{#if @label}}
-        <f.Label
-          class={{useFrontileClass
-            "form-checkbox-group"
-            @size
-            (if @isInline "inline")
-            part="label"
-          }}
-        >
+        <f.Label @class={{this.classes.label}}>
           {{@label}}
         </f.Label>
       {{/if}}
 
       {{#if @hint}}
-        <f.Hint
-          class={{useFrontileClass
-            "form-checkbox-group"
-            @size
-            (if @isInline "inline")
-            part="hint"
-          }}
-        >
+        <f.Hint @class={{this.classes.hint}}>
           {{@hint}}
         </f.Hint>
       {{/if}}
@@ -114,12 +112,7 @@ export default class FormCheckboxGroup extends Component<FormCheckboxGroupSignat
       {{yield
         (component
           FormCheckbox
-          privateContainerClass=(useFrontileClass
-            "form-checkbox-group"
-            @size
-            (if @isInline "inline")
-            part="form-checkbox"
-          )
+          privateContainerClass=this.classes.formCheckbox
           _parentOnChange=this.handleChange
           size=@size
         )
@@ -127,15 +120,7 @@ export default class FormCheckboxGroup extends Component<FormCheckboxGroupSignat
       }}
 
       {{#if this.showErrorFeedback}}
-        <f.Feedback
-          class={{useFrontileClass
-            "form-checkbox-group"
-            @size
-            (if @isInline "inline")
-            part="feedback"
-          }}
-          @errors={{@errors}}
-        />
+        <f.Feedback @class={{this.classes.feedback}} @errors={{@errors}} />
       {{/if}}
     </FormField>
   </template>

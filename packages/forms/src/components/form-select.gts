@@ -7,9 +7,9 @@ import PowerSelect, {
   type Select
 } from 'ember-power-select/components/power-select';
 import PowerSelectMultiple from 'ember-power-select/components/power-select-multiple';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import FormField from './form-field';
 import { concat } from '@ember/helper';
+import { useStyles } from '@frontile/theme';
 export type { Select } from 'ember-power-select/components/power-select';
 
 export interface FormSelectArgs extends PowerSelectArgs {
@@ -28,7 +28,7 @@ export interface FormSelectArgs extends PowerSelectArgs {
   /** CSS classes to be added in the container element */
   containerClass?: string;
   /** The size */
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
 
   /** If is multiple select instead of single */
   isMultiple?: boolean;
@@ -132,25 +132,35 @@ export default class FormSelect extends Component<FormSelectSignature> {
     this.args.onChange(selection, select, event);
   }
 
+  get classes() {
+    const { formSelect } = useStyles();
+
+    const { base, label, select, hint, feedback } = formSelect({
+      size: this.args.size
+    });
+
+    return {
+      base: base({
+        class: this.args.containerClass
+      }),
+      label: label(),
+      select: select(),
+      hint: hint(),
+      feedback: feedback()
+    };
+  }
+
   <template>
-    <FormField
-      @size={{@size}}
-      class={{useFrontileClass "form-select" @size class=@containerClass}}
-      as |f|
-    >
+    <FormField @size={{@size}} class={{this.classes.base}} as |f|>
 
       {{#if @label}}
-        <f.Label
-          @for=""
-          id={{f.id}}
-          class={{useFrontileClass "form-select" @size part="label"}}
-        >
+        <f.Label @for="" id={{f.id}} @class={{this.classes.label}}>
           {{@label}}
         </f.Label>
       {{/if}}
 
       {{#if @hint}}
-        <f.Hint class={{useFrontileClass "form-select" @size part="hint"}}>
+        <f.Hint @class={{this.classes.hint}}>
           {{@hint}}
         </f.Hint>
       {{/if}}
@@ -176,7 +186,7 @@ export default class FormSelect extends Component<FormSelectSignature> {
           @triggerClass="{{@triggerClass}} {{if
             @size
             (concat 'ember-power-select-trigger-' @size)
-          }} {{useFrontileClass 'form-select' @size part="select"}}"
+          }} {{this.classes.select}}"
           @highlightOnHover={{@highlightOnHover}}
           @placeholderComponent={{@placeholderComponent}}
           @searchMessage={{@searchMessage}}
@@ -231,10 +241,7 @@ export default class FormSelect extends Component<FormSelectSignature> {
       {{/let}}
 
       {{#if this.showErrorFeedback}}
-        <f.Feedback
-          class={{useFrontileClass "form-select" @size part="feedback"}}
-          @errors={{@errors}}
-        />
+        <f.Feedback @class={{this.classes.feedback}} @errors={{@errors}} />
       {{/if}}
     </FormField>
   </template>
