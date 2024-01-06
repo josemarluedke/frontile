@@ -10,17 +10,21 @@ This is an example of how to implement an input with a button next to it.
 <FormInput
   @value={{this.value}}
   @onInput={{this.setValue}}
-  @label="Referral Code"
+  @label='Referral Code'
   @errors={{this.validationErrors}}
   @onChange={{this.validate}}
-  placeholder="Input your URL or 6 Digit referral code"
-  class="rounded-r-none"
+  placeholder='Input your URL or 6 Digit referral code'
+  @inputClass='rounded-r-none'
 >
   <button
-    type="button"
-    {{on "click" this.validate}}
-    class="px-4 py-2 border text-gray-100 rounded-r
-    {{if this.isValid "bg-green-800 border-green-800 hover:bg-green-700" "bg-teal-600 border-teal-600 hover:bg-teal-700"}}"
+    type='button'
+    {{on 'click' this.validate}}
+    class='px-4 py-2 border text-gray-100 rounded-r
+      {{if
+        this.isValid
+        "bg-green-800 border-green-800 hover:bg-green-700"
+        "bg-teal-600 border-teal-600 hover:bg-teal-700"
+      }}'
   >
     {{#if this.isValid}}
       <span>

@@ -316,9 +316,6 @@ importers:
       '@frontile/core':
         specifier: ^0.16.2
         version: link:../core
-      '@frontile/tailwindcss-plugin-helpers':
-        specifier: ^0.16.2
-        version: link:../tailwindcss-plugin-helpers
       '@frontile/theme':
         specifier: ^0.16.2
         version: link:../theme
@@ -598,9 +595,15 @@ importers:
       lodash.kebabcase:
         specifier: ^4.1.1
         version: 4.1.1
+      mini-svg-data-uri:
+        specifier: ^1.4.3
+        version: 1.4.4
       tailwind-variants:
         specifier: ^0.1.20
         version: 0.1.20(tailwindcss@3.4.0)
+      tailwindcss-ember-power-select:
+        specifier: ^0.4.1
+        version: 0.4.1(tailwindcss@3.4.0)
     devDependencies:
       '@babel/core':
         specifier: 7.23.6

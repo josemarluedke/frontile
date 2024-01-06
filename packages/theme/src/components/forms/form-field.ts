@@ -48,7 +48,7 @@ const feedback = tv({
 const input = tv({
   base: [
     'appearance-none',
-    'flex',
+    'flex-1',
     'w-full',
     'bg-white',
     'text-gray-900',
@@ -82,8 +82,20 @@ const textarea = tv({
   base: 'min-h-24'
 });
 
-// TODO
-const checkbox = tv({
+const checkboxRadioBase = tv({
+  base: [
+    'appearance-none',
+    'inline-block',
+    'align-middle',
+    'select-none',
+    'shrink-0',
+    'h-[1em] w-[1em]',
+    'text-base',
+    'text-blue-500',
+    'border border-gray-400',
+    'bg-white',
+    'checked:bg-origin-border checked:border-transparent checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-gray-300'
+  ],
   variants: {
     size: {
       sm: '',
@@ -96,8 +108,24 @@ const checkbox = tv({
   }
 });
 
-// TODO
+const checkbox = tv({
+  extend: checkboxRadioBase,
+  base: ['checked-bg-checkbox', 'rounded-sm'],
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+      lg: ''
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
 const radio = tv({
+  extend: checkboxRadioBase,
+  base: ['checked-bg-radio', 'rounded-full'],
   variants: {
     size: {
       sm: '',
