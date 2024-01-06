@@ -8,7 +8,6 @@ import { on } from '@ember/modifier';
 import { fn, concat } from '@ember/helper';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';

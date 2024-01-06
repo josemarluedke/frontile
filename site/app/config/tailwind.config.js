@@ -1,6 +1,7 @@
 /* eslint-disable node/no-extraneous-require */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
+/* eslint-disable node/no-missing-require */
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = {
