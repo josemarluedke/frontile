@@ -5,10 +5,10 @@ import hbs from 'htmlbars-inline-precompile';
 
 module(
   'Integration | Component | @frontile/overlays/Drawer::Footer',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders, content and html attributes', async function(assert) {
+    test('it renders, content and html attributes', async function (assert) {
       await render(hbs`
       <Drawer::Footer data-test-id="footer" class="other-class">
         My Footer

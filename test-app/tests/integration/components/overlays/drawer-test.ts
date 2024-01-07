@@ -113,7 +113,7 @@ registerCustomStyles({
   })
 });
 
-module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
+module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`
@@ -140,7 +140,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     </Drawer>
   `;
 
-  test('it renders, header, body, footer, and close-btn', async function(assert) {
+  test('it renders, header, body, footer, and close-btn', async function (assert) {
     this.set('isOpen', true);
     await render(template);
 
@@ -151,7 +151,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"] .drawer__close-btn').hasText('Close');
   });
 
-  test('it renders accessibility attributes', async function(assert) {
+  test('it renders accessibility attributes', async function (assert) {
     this.set('isOpen', true);
     await render(template);
 
@@ -166,7 +166,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
       .hasAttribute('id', ariaLablledBy);
   });
 
-  test('it adds modifier class for size', async function(assert) {
+  test('it adds modifier class for size', async function (assert) {
     this.set('isOpen', true);
     await render(template);
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--md-horizontal');
@@ -194,7 +194,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--lg-vertical');
   });
 
-  test('it adds modifier class for placement', async function(assert) {
+  test('it adds modifier class for placement', async function (assert) {
     this.set('isOpen', true);
 
     await render(template);
@@ -210,7 +210,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--left');
   });
 
-  test('it closes drawer when close button is clicked', async function(assert) {
+  test('it closes drawer when close button is clicked', async function (assert) {
     assert.expect(3);
 
     this.set('disableTransitions', true);
@@ -229,7 +229,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 
-  test('it does not render close button when @allowCloseButton=false', async function(assert) {
+  test('it does not render close button when @allowCloseButton=false', async function (assert) {
     this.set('disableTransitions', true);
     this.set('isOpen', true);
     this.set('allowCloseButton', false);
@@ -244,7 +244,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"] .drawer__close-btn').doesNotExist();
   });
 
-  test('it closes drawer when backdrop is clicked', async function(assert) {
+  test('it closes drawer when backdrop is clicked', async function (assert) {
     assert.expect(3);
 
     this.set('disableTransitions', true);
@@ -262,7 +262,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 
-  test('when @closeOnOutsideClick={{false}} does not close drawer', async function(assert) {
+  test('when @closeOnOutsideClick={{false}} does not close drawer', async function (assert) {
     assert.expect(1);
 
     this.set('closeOnOutsideClick', false);
@@ -278,7 +278,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').exists();
   });
 
-  test('it closes drawer when pressing Escape', async function(assert) {
+  test('it closes drawer when pressing Escape', async function (assert) {
     assert.expect(2);
 
     this.set('isOpen', true);
@@ -297,7 +297,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 
-  test('when @closeOnEscapeKey={{false}} does not close drawer', async function(assert) {
+  test('when @closeOnEscapeKey={{false}} does not close drawer', async function (assert) {
     assert.expect(1);
 
     this.set('closeOnEscapeKey', false);
@@ -313,7 +313,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').exists();
   });
 
-  test('when @allowClosing={{false}} does not close drawer', async function(assert) {
+  test('when @allowClosing={{false}} does not close drawer', async function (assert) {
     assert.expect(4);
 
     this.set('allowClosing', false);
@@ -336,7 +336,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]').exists();
   });
 
-  test('when @renderInPlace={{true}} renders in place', async function(assert) {
+  test('when @renderInPlace={{true}} renders in place', async function (assert) {
     this.set('renderInPlace', true);
     this.set('isOpen', true);
 
@@ -346,7 +346,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function(hooks) {
     assert.dom('[data-test-id="drawer"]', this.element).exists();
   });
 
-  test('it executes onOpen when drawer is opened', async function(assert) {
+  test('it executes onOpen when drawer is opened', async function (assert) {
     assert.expect(1);
     this.set('isOpen', true);
     this.set('onOpen', () => {

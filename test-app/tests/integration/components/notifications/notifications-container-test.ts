@@ -30,7 +30,7 @@ registerCustomStyles({
 
 module(
   'Integration | Component | @frontile/notifications/NotificationsContainer',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
     const options: NotificationOptions = {
@@ -44,13 +44,13 @@ module(
       data-test-notifications
     />`;
 
-    test('it does not render if there are no notifications', async function(assert) {
+    test('it does not render if there are no notifications', async function (assert) {
       await render(template);
 
       assert.dom('[data-test-notifications]').doesNotExist();
     });
 
-    test('it render all notifications from service', async function(assert) {
+    test('it render all notifications from service', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
       ) as NotificationsService;
@@ -64,7 +64,7 @@ module(
       assert.dom('[data-test-notifications] > div').exists({ count: 2 });
     });
 
-    test('it adds placement classes', async function(assert) {
+    test('it adds placement classes', async function (assert) {
       (this.owner.lookup('service:notifications') as NotificationsService).add(
         'Message 1',
         options
@@ -109,7 +109,7 @@ module(
         .hasClass('notifications-container--bottom-right');
     });
 
-    test('it adds accessibility attributes', async function(assert) {
+    test('it adds accessibility attributes', async function (assert) {
       (this.owner.lookup('service:notifications') as NotificationsService).add(
         'Message 1',
         options

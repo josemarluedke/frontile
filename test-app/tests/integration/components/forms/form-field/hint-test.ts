@@ -23,10 +23,10 @@ registerCustomStyles({
 
 module(
   'Integration | Component | @frontile/forms/FormField::Hint',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders content, attributes and args', async function(assert) {
+    test('it renders content, attributes and args', async function (assert) {
       await render(
         hbs`<FormField::Hint @id="some-hint-id" class="something-else">Content</FormField::Hint>`
       );
@@ -43,7 +43,7 @@ module(
         .hasTextContaining('Content');
     });
 
-    test('it adds size classes for @size', async function(assert) {
+    test('it adds size classes for @size', async function (assert) {
       this.set('size', 'sm');
 
       await render(

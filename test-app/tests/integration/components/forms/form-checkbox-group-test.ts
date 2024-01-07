@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 
 module(
   'Integration | Component | @frontile/forms/FormCheckboxGroup',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
     const template = hbs`
@@ -40,14 +40,14 @@ module(
       </FormCheckboxGroup>
     </div>`;
 
-    test('it adds the accessibility html attributes', async function(assert) {
+    test('it adds the accessibility html attributes', async function (assert) {
       this.set('myValue', undefined);
       await render(template);
 
       assert.dom('[data-test-input-group]').hasAttribute('role', 'group');
     });
 
-    test('it renders the labels and options', async function(assert) {
+    test('it renders the labels and options', async function (assert) {
       this.set('myValue', undefined);
       await render(template);
 
@@ -59,7 +59,7 @@ module(
       assert.dom('.checkbox-2 label').hasText('Checkbox 2');
     });
 
-    test('show error messages when errors array has items', async function(assert) {
+    test('show error messages when errors array has items', async function (assert) {
       this.set('errors', ['This field is required']);
       await render(template);
 
@@ -74,7 +74,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('do not show error messages if errors has no elements', async function(assert) {
+    test('do not show error messages if errors has no elements', async function (assert) {
       this.set('errors', []);
       await render(template);
 
@@ -89,7 +89,7 @@ module(
       assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     });
 
-    test('do not show errors if hasError is false even if errors has elements', async function(assert) {
+    test('do not show errors if hasError is false even if errors has elements', async function (assert) {
       this.set('errors', ['This field is required']);
       this.set('hasError', false);
       await render(template);
@@ -105,7 +105,7 @@ module(
         .doesNotExist();
     });
 
-    test('always show error messages when hasSubmitted is true', async function(assert) {
+    test('always show error messages when hasSubmitted is true', async function (assert) {
       this.set('errors', ['This field is required']);
       this.set('hasSubmitted', true);
       await render(template);
@@ -116,7 +116,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('always show error messages when showError is true', async function(assert) {
+    test('always show error messages when showError is true', async function (assert) {
       this.set('errors', ['This field is required']);
       this.set('showError', true);
       await render(template);
@@ -127,7 +127,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('it adds container class from @containerClass arg', async function(assert) {
+    test('it adds container class from @containerClass arg', async function (assert) {
       this.set('containerClass', 'my-container-class');
       await render(template);
       assert.dom('.my-container-class').exists();
