@@ -4,6 +4,48 @@ import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Notification, NotificationsService } from '@frontile/notifications';
 import sinon from 'sinon';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  notificationCard: tv({
+    slots: {
+      base: '',
+      message: '',
+      customActions: '',
+      customActionButton: 'notification-card__custom-action-btn',
+      closeButton: 'notification-card__close-btn'
+    },
+
+    variants: {
+      appearance: {
+        info: {
+          base: 'notification-card--info',
+          closeButton: '',
+          customActionButton: ''
+        },
+        success: {
+          base: 'notification-card--success',
+          closeButton: '',
+          customActionButton: ''
+        },
+        warning: {
+          base: 'notification-card--warning',
+          closeButton: '',
+          customActionButton: ''
+        },
+        error: {
+          base: 'notification-card--error',
+          closeButton: '',
+          customActionButton: ''
+        }
+      }
+    },
+    defaultVariants: {
+      appearance: 'info'
+    }
+  })
+});
 
 declare module '@ember/test-helpers' {
   interface TestContext {
@@ -13,7 +55,7 @@ declare module '@ember/test-helpers' {
 
 module(
   'Integration | Component | @frontile/notifications/NotificationCard',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
     const template = hbs`
@@ -22,7 +64,7 @@ module(
       @notification={{this.notification}}
     />`;
 
-    test('it renders the notification content & close button', async function (assert) {
+    test('it renders the notification content & close button', async function(assert) {
       this;
       this.set('notification', new Notification('My message'));
 
@@ -34,7 +76,7 @@ module(
         .containsText('Close');
     });
 
-    test('it renders the correct appearance', async function (assert) {
+    test('it renders the correct appearance', async function(assert) {
       this.set('notification', new Notification('My message'));
 
       await render(template);
@@ -74,7 +116,7 @@ module(
         .hasClass('notification-card--error');
     });
 
-    test('it does not render close button when allowClosing=false', async function (assert) {
+    test('it does not render close button when allowClosing=false', async function(assert) {
       this.set(
         'notification',
         new Notification('My message', {
@@ -89,7 +131,7 @@ module(
         .doesNotExist();
     });
 
-    test('it calls remove function from service on close-btn click', async function (assert) {
+    test('it calls remove function from service on close-btn click', async function(assert) {
       assert.expect(1);
 
       this.set(
@@ -112,7 +154,7 @@ module(
       sinon.restore();
     });
 
-    test('it renders and calls custom actions', async function (assert) {
+    test('it renders and calls custom actions', async function(assert) {
       assert.expect(5);
 
       this.set(
@@ -169,7 +211,7 @@ module(
       sinon.restore();
     });
 
-    test('it pauses/resumes the timer on mouseenter/mouseleave', async function (assert) {
+    test('it pauses/resumes the timer on mouseenter/mouseleave', async function(assert) {
       assert.expect(2);
 
       this.set(

@@ -2,8 +2,50 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
 
-module('Integration | Component | @frontile/overlays/modal', function (hooks) {
+registerCustomStyles({
+  overlay: tv({
+    slots: {
+      base: '',
+      backdrop: 'overlay__backdrop',
+      content: 'overlay__content'
+    },
+    variants: {
+      inPlace: {
+        true: {
+          backdrop: '',
+          content: ''
+        }
+      }
+    }
+  }),
+  modal: tv({
+    slots: {
+      base: '',
+      closeButton: 'modal__close-btn',
+      header: 'modal__header',
+      body: 'modal__body',
+      footer: 'modal__footer'
+    },
+    variants: {
+      size: {
+        xs: 'modal--xs',
+        sm: 'modal--sm',
+        md: 'modal--md',
+        lg: 'modal--lg',
+        xl: 'modal--xl',
+        full: 'modal--full'
+      },
+      isCentered: {
+        true: 'modal--centered'
+      }
+    }
+  })
+});
+
+module('Integration | Component | @frontile/overlays/modal', function(hooks) {
   setupRenderingTest(hooks);
 
   const template = hbs`
@@ -30,7 +72,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     </Modal>
   `;
 
-  test('it renders, header, body, footer, and close-btn', async function (assert) {
+  test('it renders, header, body, footer, and close-btn', async function(assert) {
     this.set('isOpen', true);
     await render(template);
 
@@ -41,7 +83,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"] .modal__close-btn').hasText('Close');
   });
 
-  test('it renders accessibility attributes', async function (assert) {
+  test('it renders accessibility attributes', async function(assert) {
     this.set('isOpen', true);
     await render(template);
 
@@ -56,7 +98,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
       .hasAttribute('id', ariaLablledBy);
   });
 
-  test('it adds modifier class if @isCentered is set to true', async function (assert) {
+  test('it adds modifier class if @isCentered is set to true', async function(assert) {
     this.set('isOpen', true);
     this.set('isCentered', true);
     await render(template);
@@ -64,7 +106,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').hasClass('modal--centered');
   });
 
-  test('it adds modifier class for size', async function (assert) {
+  test('it adds modifier class for size', async function(assert) {
     this.set('isOpen', true);
 
     await render(template);
@@ -89,7 +131,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').hasClass('modal--full');
   });
 
-  test('it closes modal when close button is clicked', async function (assert) {
+  test('it closes modal when close button is clicked', async function(assert) {
     assert.expect(3);
 
     this.set('disableTransitions', true);
@@ -107,7 +149,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').doesNotExist();
   });
 
-  test('it does not render close button when @allowCloseButton=false', async function (assert) {
+  test('it does not render close button when @allowCloseButton=false', async function(assert) {
     this.set('disableTransitions', true);
     this.set('isOpen', true);
     this.set('allowCloseButton', false);
@@ -122,7 +164,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"] .modal__close-btn').doesNotExist();
   });
 
-  test('it closes modal when backdrop is clicked', async function (assert) {
+  test('it closes modal when backdrop is clicked', async function(assert) {
     assert.expect(3);
 
     this.set('disableTransitions', true);
@@ -140,7 +182,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').doesNotExist();
   });
 
-  test('when @closeOnOutsideClick={{false}} does not close modal', async function (assert) {
+  test('when @closeOnOutsideClick={{false}} does not close modal', async function(assert) {
     assert.expect(1);
 
     this.set('closeOnOutsideClick', false);
@@ -156,7 +198,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').exists();
   });
 
-  test('it closes modal when pressing Escape', async function (assert) {
+  test('it closes modal when pressing Escape', async function(assert) {
     assert.expect(2);
 
     this.set('isOpen', true);
@@ -175,7 +217,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').doesNotExist();
   });
 
-  test('when @closeOnEscapeKey={{false}} does not close modal', async function (assert) {
+  test('when @closeOnEscapeKey={{false}} does not close modal', async function(assert) {
     assert.expect(1);
 
     this.set('closeOnEscapeKey', false);
@@ -191,7 +233,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').exists();
   });
 
-  test('when @allowClosing={{false}} does not close modal', async function (assert) {
+  test('when @allowClosing={{false}} does not close modal', async function(assert) {
     assert.expect(4);
 
     this.set('allowClosing', false);
@@ -214,7 +256,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').exists();
   });
 
-  test('when @renderInPlace={{true}} renders in place', async function (assert) {
+  test('when @renderInPlace={{true}} renders in place', async function(assert) {
     this.set('renderInPlace', true);
     this.set('isOpen', true);
 
@@ -224,7 +266,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]', this.element).exists();
   });
 
-  test('it executes onOpen when modal is opened', async function (assert) {
+  test('it executes onOpen when modal is opened', async function(assert) {
     assert.expect(1);
     this.set('isOpen', true);
     this.set('onOpen', () => {

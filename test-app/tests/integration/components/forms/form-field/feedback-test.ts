@@ -2,15 +2,36 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  feedback: tv({
+    base: 'form-field-feedback' as never,
+    variants: {
+      isError: {
+        true: 'form-field-feedback--error'
+      },
+      size: {
+        sm: 'form-field-feedback--sm',
+        md: '',
+        lg: 'form-field-feedback--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'sm'
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/forms/FormField::Feedback',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
     const template = hbs`<FormField::Feedback @id="feedback-id" @errors={{this.errors}} />`;
 
-    test('it renders an array of errors', async function (assert) {
+    test('it renders an array of errors', async function(assert) {
       this.set('errors', ['Some error']);
       await render(template);
 
@@ -26,7 +47,7 @@ module(
         .hasClass('form-field-feedback--error');
     });
 
-    test('it renders an array of errors by joing elements', async function (assert) {
+    test('it renders an array of errors by joing elements', async function(assert) {
       this.set('errors', ['Some error', 'Another error']);
       await render(template);
       assert
@@ -37,7 +58,7 @@ module(
         .hasClass('form-field-feedback--error');
     });
 
-    test('it renders when passing an string', async function (assert) {
+    test('it renders when passing an string', async function(assert) {
       this.set('errors', 'Another error');
       await render(template);
       assert
@@ -48,7 +69,7 @@ module(
         .hasClass('form-field-feedback--error');
     });
 
-    test('it adds aria-live as assertive', async function (assert) {
+    test('it adds aria-live as assertive', async function(assert) {
       this.set('errors', 'An error');
       await render(template);
       assert
@@ -56,7 +77,7 @@ module(
         .hasAttribute('aria-live', 'assertive');
     });
 
-    test('it adds size classes for @size', async function (assert) {
+    test('it adds size classes for @size', async function(assert) {
       this.set('size', 'sm');
 
       await render(
@@ -68,7 +89,7 @@ module(
       assert.dom('[data-test-input]').hasClass('form-field-feedback--lg');
     });
 
-    test('it does not break if passed an undefined arg', async function (assert) {
+    test('it does not break if passed an undefined arg', async function(assert) {
       this.set('errors', undefined);
       await render(template);
       assert.dom('[data-test-id="form-field-feedback"]').exists();
@@ -80,7 +101,7 @@ module(
         .hasAttribute('aria-live', 'polite');
     });
 
-    test('it renders passed in block', async function (assert) {
+    test('it renders passed in block', async function(assert) {
       await render(
         hbs`<FormField::Feedback>Block content</FormField::Feedback>`
       );
@@ -92,7 +113,7 @@ module(
         .containsText('Block content');
     });
 
-    test('it adds errors class if @isError is passed in', async function (assert) {
+    test('it adds errors class if @isError is passed in', async function(assert) {
       await render(
         hbs`<FormField::Feedback @isError={{true}}>Block content</FormField::Feedback>`
       );

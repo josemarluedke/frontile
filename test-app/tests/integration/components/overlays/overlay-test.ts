@@ -8,10 +8,31 @@ import {
   find
 } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  overlay: tv({
+    slots: {
+      base: '',
+      backdrop: 'overlay__backdrop',
+      content: 'overlay__content'
+    },
+    variants: {
+      inPlace: {
+        true: {
+          base: 'overlay--in-place',
+          backdrop: '',
+          content: ''
+        }
+      }
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/overlays/Overlay',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
     const template = hbs`
@@ -38,7 +59,7 @@ module(
     </Overlay>
   `;
 
-    test('it renders the content, into destination and only when opened', async function (assert) {
+    test('it renders the content, into destination and only when opened', async function(assert) {
       this.set('disableTransitions', true);
       this.set('isOpen', true);
       await render(template);
@@ -57,7 +78,7 @@ module(
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
-    test('when @renderInPlace={{true}} renders in place', async function (assert) {
+    test('when @renderInPlace={{true}} renders in place', async function(assert) {
       this.set('disableTransitions', true);
       this.set('renderInPlace', true);
       this.set('isOpen', true);
@@ -69,7 +90,7 @@ module(
       assert.dom('[data-test-id="overlay"].overlay--in-place').exists();
     });
 
-    test('when @disableBackdrop=true does not render backdrop', async function (assert) {
+    test('when @disableBackdrop=true does not render backdrop', async function(assert) {
       this.set('disableTransitions', true);
       this.set('isOpen', true);
       this.set('disableBackdrop', true);
@@ -78,7 +99,7 @@ module(
       assert.dom('[data-test-id="overlay"] .overlay__backdrop').doesNotExist();
     });
 
-    test('it closes overlay when backdrop is clicked', async function (assert) {
+    test('it closes overlay when backdrop is clicked', async function(assert) {
       assert.expect(2);
 
       this.set('disableTransitions', true);
@@ -94,7 +115,7 @@ module(
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
-    test('when @closeOnOutsideClick={{false}} does not close overlay', async function (assert) {
+    test('when @closeOnOutsideClick={{false}} does not close overlay', async function(assert) {
       assert.expect(1);
 
       this.set('disableTransitions', true);
@@ -111,7 +132,7 @@ module(
       assert.dom('[data-test-id="overlay"]').exists();
     });
 
-    test('it closes overlay when pressing Escape', async function (assert) {
+    test('it closes overlay when pressing Escape', async function(assert) {
       assert.expect(2);
 
       this.set('disableTransitions', true);
@@ -131,7 +152,7 @@ module(
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
-    test('when @closeOnEscapeKey={{false}} does not close overlay', async function (assert) {
+    test('when @closeOnEscapeKey={{false}} does not close overlay', async function(assert) {
       assert.expect(1);
 
       this.set('disableTransitions', true);
@@ -148,7 +169,7 @@ module(
       assert.dom('[data-test-id="overlay"]').exists();
     });
 
-    test('it calles didClose when closed', async function (assert) {
+    test('it calles didClose when closed', async function(assert) {
       const calls: string[] = [];
 
       this.set('disableTransitions', true);
@@ -168,7 +189,7 @@ module(
       assert.deepEqual(calls, ['onClose', 'didClose']);
     });
 
-    test('it adds class to body to disable scroll', async function (assert) {
+    test('it adds class to body to disable scroll', async function(assert) {
       this.set('disableTransitions', true);
       this.set('isOpen', true);
 
@@ -176,7 +197,7 @@ module(
       assert.dom(document.body).hasStyle({ overflow: 'hidden' });
     });
 
-    test('it does not add class to body when renderInPlace', async function (assert) {
+    test('it does not add class to body when renderInPlace', async function(assert) {
       this.set('isOpen', true);
       this.set('renderInPlace', true);
       this.set('disableTransitions', true);
@@ -185,7 +206,7 @@ module(
       assert.dom(document.body).doesNotHaveStyle({ overflow: 'hidden' });
     });
 
-    test('it executes onOpen when overlay is opened', async function (assert) {
+    test('it executes onOpen when overlay is opened', async function(assert) {
       assert.expect(2);
       this.set('onOpen', () => {
         assert.ok(true);

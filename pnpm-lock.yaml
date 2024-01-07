@@ -1024,6 +1024,9 @@ importers:
       sinon:
         specifier: ^17.0.1
         version: 17.0.1
+      tailwind-variants:
+        specifier: ^0.1.20
+        version: 0.1.20(tailwindcss@3.4.0)
       tailwindcss:
         specifier: ^3.4.0
         version: 3.4.0
@@ -15877,7 +15880,6 @@ packages:
 
   /tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
-    dev: false
 
   /tailwind-variants@0.1.20(tailwindcss@3.4.0):
     resolution: {integrity: sha512-AMh7x313t/V+eTySKB0Dal08RHY7ggYK0MSn/ad8wKWOrDUIzyiWNayRUm2PIJ4VRkvRnfNuyRuKbLV3EN+ewQ==}
@@ -15887,7 +15889,6 @@ packages:
     dependencies:
       tailwind-merge: 1.14.0
       tailwindcss: 3.4.0
-    dev: false
 
   /tailwindcss-ember-power-select@0.4.1(tailwindcss@3.4.0):
     resolution: {integrity: sha512-pq2i4vMtRkXSW7eFGFnCnvWFeA+Z0KCPYsBUFoRrawVEIvKBTtBD7gLHaMhPZYUoq65TyYSjsRbGBdKnxFkUFw==}

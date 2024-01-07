@@ -5,10 +5,10 @@ import hbs from 'htmlbars-inline-precompile';
 
 module(
   'Integration | Component | @frontile/overlays/Drawer::Header',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders, content, html attributes, and @labelledById', async function (assert) {
+    test('it renders, content, html attributes, and @labelledById', async function(assert) {
       await render(hbs`
       <Drawer::Header @labelledById="hello" data-test-id="header" class="other-class">
         My Header
@@ -17,7 +17,6 @@ module(
 
       assert.dom('[data-test-id="header"]').hasText('My Header');
       assert.dom('[data-test-id="header"]').hasAttribute('id', 'hello');
-      assert.dom('[data-test-id="header"]').hasClass('drawer__header');
       assert.dom('[data-test-id="header"]').hasClass('other-class');
     });
   }

@@ -3,7 +3,7 @@ import * as components from './components';
 let localStyles = components;
 
 function registerCustomStyles(styles: Partial<typeof components>): void {
-  localStyles = { ...components, ...styles };
+  localStyles = { ...localStyles, ...styles };
 }
 
 function useStyles(): typeof components {

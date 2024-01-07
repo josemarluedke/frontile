@@ -3,12 +3,30 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  label: tv({
+    base: 'form-field-label' as never,
+    variants: {
+      size: {
+        sm: 'form-field-label--sm',
+        md: '',
+        lg: 'form-field-label--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'md'
+    }
+  })
+});
 module(
   'Integration | Component | @frontile/forms/FormField::Label',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders content, attributes and args', async function (assert) {
+    test('it renders content, attributes and args', async function(assert) {
       await render(
         hbs`<FormField::Label @for="some-input-id" class="something-else">My Label</FormField::Label>`
       );
@@ -27,7 +45,7 @@ module(
         .hasTextContaining('My Label');
     });
 
-    test('it adds size classes for @size', async function (assert) {
+    test('it adds size classes for @size', async function(assert) {
       this.set('size', 'sm');
 
       await render(

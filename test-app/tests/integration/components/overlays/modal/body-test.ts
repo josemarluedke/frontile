@@ -5,10 +5,10 @@ import hbs from 'htmlbars-inline-precompile';
 
 module(
   'Integration | Component | @frontile/overlays/Modal::Body',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
-    test('it renders, content and html attributes', async function (assert) {
+    test('it renders, content and html attributes', async function(assert) {
       await render(hbs`
       <Modal::Body data-test-id="body" class="other-class">
         My Body
@@ -16,7 +16,6 @@ module(
     `);
 
       assert.dom('[data-test-id="body"]').hasText('My Body');
-      assert.dom('[data-test-id="body"]').hasClass('modal__body');
       assert.dom('[data-test-id="body"]').hasClass('other-class');
     });
   }

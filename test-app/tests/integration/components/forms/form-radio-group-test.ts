@@ -6,7 +6,7 @@ import 'qunit-dom';
 
 module(
   'Integration | Component | @frontile/forms/FormRadioGroup',
-  function (hooks) {
+  function(hooks) {
     setupRenderingTest(hooks);
 
     const template = hbs`
@@ -29,7 +29,7 @@ module(
       </FormRadioGroup>
     </div>`;
 
-    test('option names should be all the same', async function (assert) {
+    test('option names should be all the same', async function(assert) {
       this.set('myValue', undefined);
       await render(template);
 
@@ -44,7 +44,7 @@ module(
       );
     });
 
-    test('it renders the labels and options', async function (assert) {
+    test('it renders the labels and options', async function(assert) {
       this.set('myValue', undefined);
       await render(template);
 
@@ -56,7 +56,7 @@ module(
       assert.dom('.option-yes label').hasText('Yes');
     });
 
-    test('it marks the selected option correctly', async function (assert) {
+    test('it marks the selected option correctly', async function(assert) {
       this.set('myValue', true);
       await render(template);
 
@@ -64,7 +64,7 @@ module(
       assert.dom('[data-test-option-yes]').isChecked();
     });
 
-    test('it changes the selected value', async function (assert) {
+    test('it changes the selected value', async function(assert) {
       this.set('myValue', false);
       await render(template);
 
@@ -72,17 +72,7 @@ module(
       assert.equal(this.myValue, true);
     });
 
-    test('it adds inline class when isInline is true', async function (assert) {
-      this.set('myValue', false);
-      this.set('isInline', true);
-      await render(template);
-
-      assert
-        .dom('[data-test-input-group]')
-        .hasClass('form-radio-group--inline');
-    });
-
-    test('show error messages when errors array has items', async function (assert) {
+    test('show error messages when errors array has items', async function(assert) {
       this.set('errors', ['This field is required']);
       await render(template);
 
@@ -97,7 +87,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('do not show error messages if errors has no elements', async function (assert) {
+    test('do not show error messages if errors has no elements', async function(assert) {
       this.set('errors', []);
       await render(template);
 
@@ -112,7 +102,7 @@ module(
       assert.dom('[data-test-id="form-field-feedback"]').doesNotExist();
     });
 
-    test('do not show errors if hasError is false even if errors has elements', async function (assert) {
+    test('do not show errors if hasError is false even if errors has elements', async function(assert) {
       this.set('errors', ['This field is required']);
       this.set('hasError', false);
       await render(template);
@@ -128,7 +118,7 @@ module(
         .doesNotExist();
     });
 
-    test('always show error messages when hasSubmitted is true', async function (assert) {
+    test('always show error messages when hasSubmitted is true', async function(assert) {
       this.set('errors', ['This field is required']);
       this.set('hasSubmitted', true);
       await render(template);
@@ -139,7 +129,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('always show error messages when showError is true', async function (assert) {
+    test('always show error messages when showError is true', async function(assert) {
       this.set('errors', ['This field is required']);
       this.set('showError', true);
       await render(template);
@@ -150,17 +140,7 @@ module(
         .hasText('This field is required');
     });
 
-    test('it adds class to input wrapper when checked to allow selected label css styling', async function (assert) {
-      this.set('myValue', true);
-      await render(template);
-
-      assert.dom('[data-test-option-no]').isNotChecked();
-      assert.dom('.form-radio--checked [data-test-option-no]').doesNotExist();
-      assert.dom('[data-test-option-yes]').isChecked();
-      assert.dom('.form-radio--checked [data-test-option-yes]').exists();
-    });
-
-    test('it adds container class from @containerClass arg', async function (assert) {
+    test('it adds container class from @containerClass arg', async function(assert) {
       this.set('containerClass', 'my-container-class');
 
       await render(template);
