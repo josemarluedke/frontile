@@ -87,7 +87,6 @@
       "./components/close-button.js": "./dist/_app_/components/close-button.js",
       "./components/collapsible/index.js": "./dist/_app_/components/collapsible/index.js",
       "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js",
-      "./helpers/use-frontile-class.js": "./dist/_app_/helpers/use-frontile-class.js",
       "./utils/safe-styles.js": "./dist/_app_/utils/safe-styles.js"
     }
   },
