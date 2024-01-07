@@ -313,9 +313,6 @@ importers:
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7
-      '@frontile/core':
-        specifier: ^0.16.2
-        version: link:../core
       '@frontile/theme':
         specifier: ^0.16.2
         version: link:../theme
