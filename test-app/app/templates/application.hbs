@@ -1,14 +1,16 @@
 <div class="container p-4 mx-auto">
   <div class="flex flex-wrap items-center justify-between mb-4">
-    <h2 class="inline-block text-3xl font-bold text-teal-700">
+    <h2 class="inline-block text-3xl font-bold text-primary">
       Frontile playground
     </h2>
-    <a
-      href="/tests?hidepassed"
-      class="px-4 py-2 text-gray-800 border rounded hover:bg-teal-700 hover:text-white"
-    >
-      Go to Tests
-    </a>
+    <Button @isRenderless={{true}} as |btn|>
+      <a
+        href="/tests?hidepassed"
+        class={{btn.classNames}}
+      >
+        Go to Tests
+      </a>
+    </Button>
   </div>
   <Navigation />
   {{outlet}}

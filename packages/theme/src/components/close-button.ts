@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 const closeButton = tv({
   slots: {
-    base: 'rounded-full hover:bg-gray-100 transition transition-200 focus-visable:ring text-inherit',
+    base: 'rounded-full hover:bg-default-100 transition transition-200 focus-visable:ring text-inherit',
     icon: 'size-[1em]'
   },
 

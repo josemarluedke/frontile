@@ -39,58 +39,55 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'default',
-      class: 'text-white bg-gray-700 hover:bg-gray-800 active:bg-gray-900'
+      class:
+        'bg-default-800 text-default-50 hover:bg-default-800/80 dark:bg-default dark:text-default-950 dark:hover:bg-default/40'
     },
     {
       appearance: 'default',
       intent: 'primary',
-      class: 'text-white bg-blue-700 hover:bg-blue-800 active:bg-blue-900'
+      class: 'bg-primary text-primary-foreground  hover:bg-primary/80'
     },
     {
       appearance: 'default',
       intent: 'success',
-      class: 'text-white bg-green-600 hover:bg-green-700 active:bg-green-800'
+      class: 'bg-success text-success-foreground hover:bg-success/80'
     },
     {
       appearance: 'default',
       intent: 'warning',
-      class: 'text-white bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800'
+      class: 'bg-warning text-warning-foreground hover:bg-warning/80'
     },
     {
       appearance: 'default',
       intent: 'danger',
-      class: 'text-white bg-red-600 hover:bg-red-700 active:bg-red-800'
+      class: 'bg-danger text-danger-foreground hover:bg-danger/80'
     },
 
     // APPEARANCE: minimal
     {
       appearance: 'minimal',
       intent: 'default',
-      class:
-        'text-gray-700 hover:text-white hover:bg-gray-800 active:bg-gray-900'
+      class: 'text-default-700 hover:text-default-foreground hover:bg-default'
     },
     {
       appearance: 'minimal',
       intent: 'primary',
-      class:
-        'text-blue-700 hover:text-white hover:bg-blue-800 active:bg-blue-900'
+      class: 'text-primary hover:text-primary-foreground hover:bg-primary'
     },
     {
       appearance: 'minimal',
       intent: 'success',
-      class:
-        'text-green-600 hover:text-white hover:bg-green-700 active:bg-green-800'
+      class: 'text-success hover:text-success-foreground hover:bg-success'
     },
     {
       appearance: 'minimal',
       intent: 'warning',
-      class:
-        'text-yellow-600 hover:text-white hover:bg-yellow-700 active:bg-yellow-800'
+      class: 'text-warning hover:text-warning-foreground hover:bg-warning'
     },
     {
       appearance: 'minimal',
       intent: 'danger',
-      class: 'text-red-600 hover:text-white hover:bg-red-700 active:bg-red-800'
+      class: 'text-danger hover:text-danger-foreground hover:bg-danger'
     },
 
     // APPEARANCE: outlined
@@ -98,58 +95,58 @@ const button = tv({
       appearance: 'outlined',
       intent: 'default',
       class:
-        'text-gray-700 border-gray-700 hover:text-white hover:bg-gray-700 active:bg-gray-800'
+        'text-default-700 hover:text-background border-default-700 hover:bg-default-700'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       class:
-        'text-blue-700 border-blue-700 hover:text-white hover:bg-blue-700 active:bg-blue-800'
+        'text-primary hover:text-primary-foreground border-primary hover:bg-primary'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       class:
-        'text-green-600 border-green-600 hover:text-white hover:bg-green-600 active:bg-green-700'
+        'text-success hover:text-success-foreground border-success hover:bg-success'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class:
-        'text-yellow-600 border-yellow-600 hover:text-white hover:bg-yellow-600 active:bg-yellow-700'
+        'text-warning hover:text-warning-foreground border-warning hover:bg-warning'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       class:
-        'text-red-600 border-red-600 hover:text-white hover:bg-red-600 active:bg-red-700'
+        'text-danger hover:text-danger-foreground border-danger hover:bg-danger'
     },
 
     // APPEARANCE: custom
     {
       appearance: 'custom',
       intent: 'default',
-      class: 'text-gray-700'
+      class: 'text-default-700'
     },
     {
       appearance: 'custom',
       intent: 'primary',
-      class: 'text-blue-700'
+      class: 'text-primary'
     },
     {
       appearance: 'custom',
       intent: 'success',
-      class: 'text-green-600'
+      class: 'text-success'
     },
     {
       appearance: 'custom',
       intent: 'warning',
-      class: 'text-yellow-600'
+      class: 'text-warning'
     },
     {
       appearance: 'custom',
       intent: 'danger',
-      class: 'text-red-600'
+      class: 'text-danger'
     }
   ],
   defaultVariants: {

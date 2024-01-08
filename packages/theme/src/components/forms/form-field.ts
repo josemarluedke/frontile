@@ -15,7 +15,7 @@ const label = tv({
 });
 
 const hint = tv({
-  base: 'text-gray-400 text-xs pb-1 last:pb-0',
+  base: 'text-default-400 text-xs pb-1 last:pb-0',
   variants: {
     size: {
       sm: '',
@@ -50,20 +50,20 @@ const input = tv({
     'appearance-none',
     'flex-1',
     'w-full',
-    'bg-white',
-    'text-gray-900',
-    'placeholder-gray-400',
+    'bg-white dark:bg-default-100',
+    'text-default-900',
+    'placeholder-default-400',
     'text-base',
     'border',
-    'border-gray-400',
+    'border-default-400',
     'rounded',
     'leading-tight',
     'focus:ring',
     'focus:outline-none',
-    'focus:border-blue-400',
-    'disabled:border-gray-200 disabled:text-gray-500',
-    'aria-invalid:border-red-600',
-    'aria-invalid:focus:ring-red-400'
+    'focus:border-primary-400',
+    'disabled:border-default-200 disabled:text-default-500',
+    'aria-invalid:border-danger-400',
+    'aria-invalid:focus:ring-danger-400'
   ],
   variants: {
     size: {
@@ -91,10 +91,10 @@ const checkboxRadioBase = tv({
     'shrink-0',
     'h-[1em] w-[1em]',
     'text-base',
-    'text-blue-500',
-    'border border-gray-400',
-    'bg-white',
-    'checked:bg-origin-border checked:border-transparent checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-gray-300'
+    'text-primary',
+    'border border-default-400',
+    'bg-white dark:bg-default-100',
+    'checked:bg-origin-border checked:border-transparent checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
   ],
   variants: {
     size: {

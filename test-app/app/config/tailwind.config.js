@@ -8,13 +8,9 @@ module.exports = {
     './node_modules/@frontile/theme/dist/**/*.{js,ts}'
   ],
 
-  theme: {
-    extend: {
-      colors: {
-        teal: colors.teal
-      }
-    }
-  },
+
+  darkMode: "class",
+
   plugins: [frontile()],
   safelist: [
     { pattern: /^js-focus-visible/ },

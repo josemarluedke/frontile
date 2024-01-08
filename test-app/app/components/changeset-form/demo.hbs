@@ -53,18 +53,13 @@
       <Radio @label="Lunch" @value="lunch" />
       <Radio @label="Dinner" @value="dinner" />
     </Form.RadioGroup>
-    <button
-      type="submit"
-      class="p-2 my-4 rounded
-        {{if
-          changeset.isInvalid
-          "bg-gray-100 text-gray-500"
-          "bg-gray-900 text-white"
-        }}"
+    <Button
+      @type="submit"
+      @class="my-4"
       disabled={{changeset.isInvalid}}
     >
       Submit
-    </button>
+    </Button>
     <div class="mb-4">
       <p>
         isPristine:

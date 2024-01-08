@@ -4,7 +4,7 @@ const btn = 'transition transition-200 focus-visible:ring';
 
 const notificationCard = tv({
   slots: {
-    base: 'text-white py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 text-sm rounded shadow transition-all transition-200 ease-in-out',
+    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 text-sm rounded shadow transition-all transition-200 ease-in-out',
     message: 'grow',
     customActions: 'flex flex-nowrap',
     customActionButton:
@@ -15,25 +15,24 @@ const notificationCard = tv({
   variants: {
     appearance: {
       info: {
-        base: 'text-white bg-gray-900',
-        closeButton: 'hover:bg-gray-800',
-        customActionButton: 'hover:bg-gray-800'
+        base: 'text-white bg-default-900 dark:text-foreground dark:bg-default-200',
+        closeButton: 'hover:bg-default-800 dark:hover:bg-default-300',
+        customActionButton: 'hover:bg-default-800 dark:hover:bg-default-300'
       },
       success: {
-        base: 'bg-green-700',
-        closeButton: 'hover:bg-green-800',
-        customActionButton: 'hover:bg-green-800'
+        base: 'bg-success text-success-foreground',
+        closeButton: 'hover:bg-success-600',
+        customActionButton: 'hover:bg-success-600'
       },
       warning: {
-        base: 'bg-yellow-600',
-
-        closeButton: 'hover:bg-yellow-700',
-        customActionButton: 'hover:bg-yellow-700'
+        base: 'bg-warning text-warning-foreground',
+        closeButton: 'hover:bg-warning-600',
+        customActionButton: 'hover:bg-warning-600'
       },
       error: {
-        base: 'bg-red-600',
-        closeButton: 'hover:bg-red-700',
-        customActionButton: 'hover:bg-red-700'
+        base: 'bg-danger text-danger-foreground',
+        closeButton: 'hover:bg-danger-600',
+        customActionButton: 'hover:bg-danger-600'
       }
     }
   },
