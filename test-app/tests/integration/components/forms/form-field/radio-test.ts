@@ -29,18 +29,6 @@ module(
       assert.dom('[data-test-radio]').hasAttribute('id', 'my-id');
     });
 
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-
-      await render(
-        hbs`<FormField::Radio data-test-input @size={{this.size}} />`
-      );
-
-      assert.dom('[data-test-input]').hasClass('form-field-radio--sm');
-      this.set('size', 'lg');
-      assert.dom('[data-test-input]').hasClass('form-field-radio--lg');
-    });
-
     test('it renders @name arg', async function (assert) {
       await render(hbs`<FormField::Radio @name="my-name" data-test-radio />`);
 

@@ -8,6 +8,27 @@ import {
   find
 } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  overlay: tv({
+    slots: {
+      base: '',
+      backdrop: 'overlay__backdrop',
+      content: 'overlay__content'
+    },
+    variants: {
+      inPlace: {
+        true: {
+          base: 'overlay--in-place',
+          backdrop: '',
+          content: ''
+        }
+      }
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/overlays/Overlay',

@@ -1,9 +1,7 @@
 import Component from '@glimmer/component';
-import type { DrawerArgs } from '../drawer';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 
-export interface DrawerBodyArgs extends Pick<DrawerArgs, 'placement'> {
-  size: string;
+export interface DrawerBodyArgs {
+  class?: string;
 }
 
 export interface DrawerBodySignature {
@@ -16,10 +14,7 @@ export interface DrawerBodySignature {
 
 export default class DrawerBody extends Component<DrawerBodySignature> {
   <template>
-    <div
-      class={{useFrontileClass "drawer" @placement @size part="body"}}
-      ...attributes
-    >
+    <div class={{@class}} ...attributes>
       {{yield}}
     </div>
   </template>

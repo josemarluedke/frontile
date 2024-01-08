@@ -23,19 +23,6 @@ module(
       assert.dom('[data-test-checkbox]').hasAttribute('id', 'my-id');
     });
 
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-
-      await render(
-        hbs`<FormField::Checkbox data-test-input @size={{this.size}} />`
-      );
-
-      assert.dom('[data-test-input]').hasClass('form-field-checkbox--sm');
-
-      this.set('size', 'lg');
-      assert.dom('[data-test-input]').hasClass('form-field-checkbox--lg');
-    });
-
     test('it renders id html attribute', async function (assert) {
       await render(hbs`<FormField::Checkbox id="my-id" data-test-checkbox />`);
 

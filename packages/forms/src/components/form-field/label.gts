@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldLabelArgs {
   for?: string;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
 }
 
 export interface FormFieldLabelSignature {
@@ -15,10 +16,16 @@ export interface FormFieldLabelSignature {
 }
 
 export default class FormFieldLabel extends Component<FormFieldLabelSignature> {
+  get classes() {
+    const { label } = useStyles();
+
+    return label({ size: this.args.size, class: this.args.class });
+  }
+
   <template>
     <label
       for={{@for}}
-      class={{useFrontileClass "form-field-label" @size}}
+      class={{this.classes}}
       data-test-id="form-field-label"
       ...attributes
     >

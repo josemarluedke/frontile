@@ -19,7 +19,6 @@ export default {
     // addon. Anything not listed here may get optimized away.
     addon.publicEntrypoints([
       'components/**/*.js',
-      'helpers/**/*.js',
       'utils/**/*.js',
       'template-registry.js'
     ]),
@@ -27,11 +26,7 @@ export default {
     // These are the modules that should get reexported into the traditional
     // "app" tree. Things in here should also be in publicEntrypoints above, but
     // not everything in publicEntrypoints necessarily needs to go here.
-    addon.appReexports([
-      'components/**/*.js',
-      'helpers/**/*.js',
-      'utils/**/*.js'
-    ]),
+    addon.appReexports(['components/**/*.js', 'utils/**/*.js']),
 
     // Follow the V2 Addon rules about dependencies. Your code can import from
     // `dependencies` and `peerDependencies` as well as standard Ember-provided

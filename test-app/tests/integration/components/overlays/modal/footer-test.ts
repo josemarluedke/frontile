@@ -16,7 +16,6 @@ module(
     `);
 
       assert.dom('[data-test-id="footer"]').hasText('My Footer');
-      assert.dom('[data-test-id="footer"]').hasClass('modal__footer');
       assert.dom('[data-test-id="footer"]').hasClass('other-class');
     });
   }

@@ -192,42 +192,5 @@ module(
         .dom('[data-test-id="form-field-feedback"]')
         .hasText('This field is required');
     });
-
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-      this.set('errors', ['something']);
-      this.set('hasSubmitted', true);
-
-      await render(template);
-
-      assert.dom('.my-container').hasClass('form-select--sm');
-      assert
-        .dom('.ember-power-select-trigger')
-        .hasClass('ember-power-select-trigger-sm');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-select--sm__label');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-select--sm__hint');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-select--sm__feedback');
-
-      this.set('size', 'lg');
-      assert.dom('.my-container').hasClass('form-select--lg');
-      assert
-        .dom('.ember-power-select-trigger')
-        .hasClass('ember-power-select-trigger-lg');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-select--lg__label');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-select--lg__hint');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-select--lg__feedback');
-    });
   }
 );

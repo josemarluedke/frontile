@@ -16,8 +16,7 @@
   "files": [
     "addon-main.js",
     "declarations",
-    "dist",
-    "tailwind"
+    "dist"
   ],
   "scripts": {
     "build": "concurrently -m 1 'npm:build:*'",
@@ -42,7 +41,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/tailwindcss-plugin-helpers": "^0.16.2"
+    "@frontile/theme": "^0.16.2"
   },
   "devDependencies": {
     "@babel/core": "7.23.6",
@@ -93,13 +92,7 @@
       "types": "./declarations/*.d.ts",
       "default": "./dist/*.js"
     },
-    "./addon-main.js": "./addon-main.js",
-    "./tailwind": {
-      "default": "./tailwind/index.js"
-    },
-    "./tailwind/*": {
-      "default": "./tailwind/*.js"
-    }
+    "./addon-main.js": "./addon-main.js"
   },
   "typesVersions": {
     "*": {

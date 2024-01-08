@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import { useStyles } from '@frontile/theme';
 
 export interface ButtonArgs {
   /**
@@ -19,7 +20,7 @@ export interface ButtonArgs {
   /**
    * The intent of the button
    */
-  intent?: 'primary' | 'success' | 'warning' | 'danger';
+  intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
 
   /**
    * The size of the button
@@ -30,6 +31,11 @@ export interface ButtonArgs {
    * Disable rendering the button element. It yields an object with classNames instead.
    */
   isRenderless?: boolean;
+
+  /**
+   * Custom class name, it will override the default ones using Tailwind Merge library.
+   */
+  class?: string;
 }
 
 export interface ButtonSignature {
@@ -49,27 +55,14 @@ export default class Button extends Component<ButtonSignature> {
   }
 
   get classNames(): string {
-    const names = [];
+    const { button } = useStyles();
 
-    if (this.args.appearance === 'outlined') {
-      names.push('btn-outlined');
-    } else if (this.args.appearance === 'minimal') {
-      names.push('btn-minimal');
-    } else if (this.args.appearance === 'custom') {
-      names.push('btn-custom');
-    } else {
-      names.push('btn');
-    }
-
-    if (this.args.size) {
-      names.push(`${names[0]}--${this.args.size}`);
-    }
-
-    if (this.args.intent) {
-      names.push(`${names[0]}--${this.args.intent}`);
-    }
-
-    return names.join(' ');
+    return button({
+      intent: this.args.intent || 'default',
+      size: this.args.size,
+      appearance: this.args.appearance || 'default',
+      class: this.args.class
+    });
   }
 
   <template>

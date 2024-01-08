@@ -145,37 +145,4 @@ module('Integration | Component | @frontile/forms/FormRadio', function (hooks) {
 
     assert.dom('.my-container-class').exists();
   });
-
-  test('it adds size classes for @size', async function (assert) {
-    this.set('size', 'sm');
-
-    await render(
-      hbs`<FormRadio
-            data-test-input
-            @containerClass="my-container"
-            @label="Label"
-            @hint="Hint"
-            @size={{this.size}}
-          />`
-    );
-
-    assert.dom('.my-container').hasClass('form-radio--sm');
-    assert.dom('[data-test-input]').hasClass('form-radio--sm__radio');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-radio--sm__label');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-radio--sm__hint');
-
-    this.set('size', 'lg');
-    assert.dom('.my-container').hasClass('form-radio--lg');
-    assert.dom('[data-test-input]').hasClass('form-radio--lg__radio');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-radio--lg__label');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-radio--lg__hint');
-  });
 });

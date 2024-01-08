@@ -16,7 +16,6 @@ module(
     `);
 
       assert.dom('[data-test-id="body"]').hasText('My Body');
-      assert.dom('[data-test-id="body"]').hasClass('drawer__body');
       assert.dom('[data-test-id="body"]').hasClass('other-class');
     });
   }

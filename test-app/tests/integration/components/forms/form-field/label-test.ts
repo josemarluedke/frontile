@@ -3,6 +3,24 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  label: tv({
+    base: 'form-field-label' as never,
+    variants: {
+      size: {
+        sm: 'form-field-label--sm',
+        md: '',
+        lg: 'form-field-label--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'md'
+    }
+  })
+});
 module(
   'Integration | Component | @frontile/forms/FormField::Label',
   function (hooks) {

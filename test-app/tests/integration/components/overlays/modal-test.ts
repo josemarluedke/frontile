@@ -2,6 +2,48 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  overlay: tv({
+    slots: {
+      base: '',
+      backdrop: 'overlay__backdrop',
+      content: 'overlay__content'
+    },
+    variants: {
+      inPlace: {
+        true: {
+          backdrop: '',
+          content: ''
+        }
+      }
+    }
+  }),
+  modal: tv({
+    slots: {
+      base: '',
+      closeButton: 'modal__close-btn',
+      header: 'modal__header',
+      body: 'modal__body',
+      footer: 'modal__footer'
+    },
+    variants: {
+      size: {
+        xs: 'modal--xs',
+        sm: 'modal--sm',
+        md: 'modal--md',
+        lg: 'modal--lg',
+        xl: 'modal--xl',
+        full: 'modal--full'
+      },
+      isCentered: {
+        true: 'modal--centered'
+      }
+    }
+  })
+});
 
 module('Integration | Component | @frontile/overlays/modal', function (hooks) {
   setupRenderingTest(hooks);

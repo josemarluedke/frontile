@@ -11,7 +11,7 @@ import FormFieldTextarea from './form-field/textarea';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface FormFieldArgs {
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export interface FormFieldSignature {

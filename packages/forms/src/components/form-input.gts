@@ -3,7 +3,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 import FormField from './form-field';
 
 export interface FormInputArgs {
@@ -34,7 +34,9 @@ export interface FormInputArgs {
   /** CSS classes to be added in the container element */
   containerClass?: string;
   /** The size */
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  /** CSS classes to be added in the input element */
+  inputClass?: string;
 
   /** Callback when oninput is triggered */
   onInput?: (value: string, event: InputEvent) => void;
@@ -101,20 +103,34 @@ export class FormInputBase<
 }
 
 export default class FormInput extends FormInputBase<FormInputSignature> {
+  get classes() {
+    const { formInput } = useStyles();
+
+    const { base, label, input, hint, feedback } = formInput({
+      size: this.args.size
+    });
+
+    return {
+      base: base({
+        class: this.args.containerClass
+      }),
+      label: label(),
+      input: input({ class: this.args.inputClass }),
+      hint: hint(),
+      feedback: feedback()
+    };
+  }
+
   <template>
-    <FormField
-      @size={{@size}}
-      class={{useFrontileClass "form-input" @size class=@containerClass}}
-      as |f|
-    >
+    <FormField @size={{@size}} class={{this.classes.base}} as |f|>
       {{#if @label}}
-        <f.Label class={{useFrontileClass "form-input" @size part="label"}}>
+        <f.Label @class={{this.classes.label}}>
           {{@label}}
         </f.Label>
       {{/if}}
 
       {{#if @hint}}
-        <f.Hint class={{useFrontileClass "form-input" @size part="hint"}}>
+        <f.Hint @class={{this.classes.hint}}>
           {{@hint}}
         </f.Hint>
       {{/if}}
@@ -126,11 +142,11 @@ export default class FormInput extends FormInputBase<FormInputSignature> {
         @onChange={{@onChange}}
         @value={{@value}}
         @type={{@type}}
-        class={{useFrontileClass "form-input" @size part="input"}}
+        @class={{this.classes.input}}
         aria-invalid={{if this.showErrorFeedback "true"}}
         aria-describedby="{{if @hint f.hintId}}{{if
           this.showErrorFeedback
-          (concat " " f.feedbackId)
+          (concat ' ' f.feedbackId)
         }}"
         ...attributes
       />
@@ -138,10 +154,7 @@ export default class FormInput extends FormInputBase<FormInputSignature> {
       {{yield}}
 
       {{#if this.showErrorFeedback}}
-        <f.Feedback
-          class={{useFrontileClass "form-input" @size part="feedback"}}
-          @errors={{@errors}}
-        />
+        <f.Feedback @class={{this.classes.feedback}} @errors={{@errors}} />
       {{/if}}
     </FormField>
   </template>

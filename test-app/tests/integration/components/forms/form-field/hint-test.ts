@@ -2,6 +2,24 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  hint: tv({
+    base: 'form-field-hint' as never,
+    variants: {
+      size: {
+        sm: 'form-field-hint--sm',
+        md: '',
+        lg: 'form-field-hint--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'md'
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/forms/FormField::Hint',

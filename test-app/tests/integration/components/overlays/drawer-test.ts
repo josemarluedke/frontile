@@ -2,6 +2,116 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  overlay: tv({
+    slots: {
+      base: '',
+      backdrop: 'overlay__backdrop',
+      content: 'overlay__content'
+    },
+    variants: {
+      inPlace: {
+        true: {
+          backdrop: '',
+          content: ''
+        }
+      }
+    }
+  }),
+  drawer: tv({
+    slots: {
+      base: '',
+      closeButton: 'drawer__close-btn',
+      header: 'drawer__header',
+      body: 'drawer__body',
+      footer: 'drawer__footer'
+    },
+    variants: {
+      size: {
+        xs: '',
+        sm: '',
+        md: '',
+        lg: '',
+        xl: '',
+        full: ''
+      },
+      placement: {
+        top: 'drawer--top',
+        bottom: 'drawer--bottom',
+        left: 'drawer--left',
+        right: 'drawer--right'
+      }
+    },
+    compoundVariants: [
+      // vertical
+      {
+        placement: ['top', 'bottom'],
+        size: 'xs',
+        class: 'drawer--xs-vertical'
+      },
+      {
+        placement: ['top', 'bottom'],
+        size: 'sm',
+        class: 'drawer--sm-vertical'
+      },
+      {
+        placement: ['top', 'bottom'],
+        size: 'md',
+        class: 'drawer--md-vertical'
+      },
+      {
+        placement: ['top', 'bottom'],
+        size: 'lg',
+        class: 'drawer--lg-vertical'
+      },
+      {
+        placement: ['top', 'bottom'],
+        size: 'xl',
+        class: 'drawer--xl-vertical'
+      },
+      {
+        placement: ['top', 'bottom'],
+        size: 'full',
+        class: 'drawer--full-vertical'
+      },
+
+      // horizontal
+      {
+        placement: ['right', 'left'],
+        size: 'xs',
+        class: 'drawer--xs-horizontal'
+      },
+      {
+        placement: ['right', 'left'],
+        size: 'sm',
+        class: 'drawer--sm-horizontal'
+      },
+      {
+        placement: ['right', 'left'],
+        size: 'md',
+        class: 'drawer--md-horizontal'
+      },
+      {
+        placement: ['right', 'left'],
+        size: 'lg',
+        class: 'drawer--lg-horizontal'
+      },
+      {
+        placement: ['right', 'left'],
+        size: 'xl',
+        class: 'drawer--xl-horizontal'
+      },
+      {
+        placement: ['right', 'left'],
+        size: 'full',
+        class: 'drawer--full-horizontal'
+      }
+    ]
+  })
+});
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);

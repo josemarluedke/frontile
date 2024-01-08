@@ -5,9 +5,9 @@ import Overlay, { type OverlayArgs } from './overlay';
 import DrawerBody from './drawer/body';
 import DrawerFooter from './drawer/footer';
 import DrawerHeader from './drawer/header';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
 import type { WithBoundArgs } from '@glint/template';
+import { useStyles } from '@frontile/theme';
 
 export interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
   /**
@@ -62,9 +62,9 @@ export interface DrawerSignature {
         CloseButton: WithBoundArgs<typeof CloseButton, 'onClick'> &
           WithBoundArgs<typeof CloseButton, 'class'>;
         Header: WithBoundArgs<typeof DrawerHeader, 'labelledById'> &
-          WithBoundArgs<typeof DrawerHeader, 'size'>;
-        Body: WithBoundArgs<typeof DrawerBody, 'size'>;
-        Footer: WithBoundArgs<typeof DrawerFooter, 'size'>;
+          WithBoundArgs<typeof DrawerHeader, 'class'>;
+        Body: WithBoundArgs<typeof DrawerBody, 'class'>;
+        Footer: WithBoundArgs<typeof DrawerFooter, 'class'>;
         headerId: string;
       }
     ];
@@ -89,12 +89,21 @@ export default class Drawer extends Component<DrawerSignature> {
     return this.args.placement || 'right';
   }
 
-  get size(): string {
-    const dir = ['top', 'bottom'].includes(this.placement)
-      ? 'vertical'
-      : 'horizontal';
+  get classes() {
+    const { drawer } = useStyles();
 
-    return `${this.args.size || 'md'}-${dir}`;
+    const { base, closeButton, header, body, footer } = drawer({
+      placement: this.placement,
+      size: this.args.size || 'md'
+    });
+
+    return {
+      base: base(),
+      closeButton: closeButton(),
+      header: header(),
+      body: body(),
+      footer: footer()
+    };
   }
 
   <template>
@@ -119,47 +128,40 @@ export default class Drawer extends Component<DrawerSignature> {
         (concat "overlay-transition--slide-from-" this.placement)
       }}
     >
-      {{#let
-        (useFrontileClass "drawer" this.placement this.size part="close-btn")
-        as |closeBtnClass|
-      }}
-        <div
-          class={{useFrontileClass "drawer" this.placement this.size}}
-          tabindex="0"
-          role="dialog"
-          aria-labelledby={{this.headerId}}
-          ...attributes
-        >
-          {{#if this.showCloseButton}}
-            <CloseButton
-              @onClick={{@onClose}}
-              @size={{@closeButtonSize}}
-              class={{closeBtnClass}}
-            />
-          {{/if}}
 
-          {{yield
-            (hash
-              CloseButton=(component
-                CloseButton onClick=@onClose class=closeBtnClass
-              )
-              Header=(component
-                DrawerHeader
-                labelledById=this.headerId
-                placement=this.placement
-                size=this.size
-              )
-              Body=(component
-                DrawerBody placement=this.placement size=this.size
-              )
-              Footer=(component
-                DrawerFooter placement=this.placement size=this.size
-              )
-              headerId=this.headerId
+      <div
+        class={{this.classes.base}}
+        tabindex="0"
+        role="dialog"
+        aria-labelledby={{this.headerId}}
+        ...attributes
+      >
+        {{#if this.showCloseButton}}
+          <CloseButton
+            @onClick={{@onClose}}
+            @size={{@closeButtonSize}}
+            @class={{this.classes.closeButton}}
+          />
+        {{/if}}
+
+        {{yield
+          (hash
+            CloseButton=(component
+              CloseButton onClick=@onClose class=this.classes.closeButton
             )
-          }}
-        </div>
-      {{/let}}
+            Header=(component
+              DrawerHeader labelledById=this.headerId class=this.classes.header
+            )
+            Body=(component
+              DrawerBody placement=this.placement class=this.classes.body
+            )
+            Footer=(component
+              DrawerFooter placement=this.placement class=this.classes.footer
+            )
+            headerId=this.headerId
+          )
+        }}
+      </div>
     </Overlay>
   </template>
 }

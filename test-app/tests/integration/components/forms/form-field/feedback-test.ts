@@ -2,6 +2,27 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  feedback: tv({
+    base: 'form-field-feedback' as never,
+    variants: {
+      isError: {
+        true: 'form-field-feedback--error'
+      },
+      size: {
+        sm: 'form-field-feedback--sm',
+        md: '',
+        lg: 'form-field-feedback--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'sm'
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/forms/FormField::Feedback',

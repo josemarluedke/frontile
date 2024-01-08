@@ -1,13 +1,14 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldCheckboxArgs {
   id?: string;
   checked?: boolean;
   name?: string;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
 
   // Callback when onchange is triggered
   onChange?: (value: boolean, event: Event) => void;
@@ -33,6 +34,15 @@ export default class FormFieldCheckbox extends Component<FormFieldCheckboxSignat
     }
   }
 
+  get classes() {
+    const { checkbox } = useStyles();
+
+    return checkbox({
+      size: this.args.size,
+      class: this.args.class
+    });
+  }
+
   <template>
     <input
       {{on "change" this.handleChange}}
@@ -40,7 +50,7 @@ export default class FormFieldCheckbox extends Component<FormFieldCheckboxSignat
       name={{@name}}
       checked={{this.isChecked}}
       type="checkbox"
-      class={{useFrontileClass "form-field-checkbox" @size}}
+      class={{this.classes}}
       data-test-id="form-field-checkbox"
       ...attributes
     />

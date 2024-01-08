@@ -4,6 +4,48 @@ import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Notification, NotificationsService } from '@frontile/notifications';
 import sinon from 'sinon';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  notificationCard: tv({
+    slots: {
+      base: '',
+      message: '',
+      customActions: '',
+      customActionButton: 'notification-card__custom-action-btn',
+      closeButton: 'notification-card__close-btn'
+    },
+
+    variants: {
+      appearance: {
+        info: {
+          base: 'notification-card--info',
+          closeButton: '',
+          customActionButton: ''
+        },
+        success: {
+          base: 'notification-card--success',
+          closeButton: '',
+          customActionButton: ''
+        },
+        warning: {
+          base: 'notification-card--warning',
+          closeButton: '',
+          customActionButton: ''
+        },
+        error: {
+          base: 'notification-card--error',
+          closeButton: '',
+          customActionButton: ''
+        }
+      }
+    },
+    defaultVariants: {
+      appearance: 'info'
+    }
+  })
+});
 
 declare module '@ember/test-helpers' {
   interface TestContext {

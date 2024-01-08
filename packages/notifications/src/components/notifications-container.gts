@@ -3,11 +3,11 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import NotificationCard from './notification-card';
 import type NotificationsService from '../services/notifications';
 import type Notification from '../-private/notification';
 import { type containerPlacement } from '../-private/types';
+import { useStyles } from '@frontile/theme';
 
 export interface NotificationsContainerArgs {
   /**
@@ -22,6 +22,11 @@ export interface NotificationsContainerArgs {
    * @defaultValue 16
    */
   spacing?: number;
+
+  /**
+   * Custom class name, it will override the default ones using Tailwind Merge library.
+   */
+  class?: string;
 }
 
 export interface NotificationsContainerSignature {
@@ -44,6 +49,15 @@ export default class NotificationsContainer extends Component<NotificationsConta
     }
   }
 
+  get classes() {
+    const { notificationsContainer } = useStyles();
+
+    return notificationsContainer({
+      placement: this.args.placement,
+      class: this.args.class
+    });
+  }
+
   @action addSpacing(element: HTMLElement): void {
     const spacing =
       typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
@@ -57,10 +71,7 @@ export default class NotificationsContainer extends Component<NotificationsConta
       <div
         {{didInsert this.addSpacing}}
         {{didUpdate this.addSpacing @spacing @placement}}
-        class={{useFrontileClass
-          "notifications-container"
-          (if @placement @placement "bottom-right")
-        }}
+        class={{this.classes}}
         role="alert"
         aria-live="assertive"
         aria-atomic="true"

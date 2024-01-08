@@ -2,6 +2,40 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  button: tv({
+    base: [],
+    variants: {
+      appearance: {
+        default: 'btn',
+        outlined: 'btn-outlined',
+        minimal: 'btn-minimal',
+        custom: 'btn-custom'
+      },
+      intent: {
+        default: 'intent-default',
+        primary: 'intent-primary',
+        success: 'intent-success',
+        warning: 'intent-warning',
+        danger: 'intent-danger'
+      },
+      size: {
+        xs: 'btn-xs',
+        sm: 'btn-sm',
+        md: 'btn-md',
+        lg: 'btn-lg',
+        xl: 'btn-xl'
+      }
+    },
+    defaultVariants: {
+      size: 'md',
+      intent: 'primary'
+    }
+  })
+});
 
 module('Integration | Component | @frontile/buttons', function (hooks) {
   setupRenderingTest(hooks);
@@ -72,49 +106,7 @@ module('Integration | Component | @frontile/buttons', function (hooks) {
           hbs`<Button @intent="primary" data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn--primary');
-        assert
-          .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-outlined--primary');
-        assert
-          .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-minimal--primary');
-      });
-
-      test('it adds class for the an intent with appearance=outlined', async function (assert) {
-        await render(
-          hbs`<Button
-                @appearance="outlined"
-                @intent="primary"
-                data-test-id="button"
-              >
-                My Button
-             </Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn-outlined--primary');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn--primary');
-        assert
-          .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-minimal--primary');
-      });
-
-      test('it adds class for the an intent with appearance=minimal', async function (assert) {
-        await render(
-          hbs`<Button
-                @appearance="minimal"
-                @intent="primary"
-                data-test-id="button"
-              >
-                My Button
-             </Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn-minimal--primary');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn--primary');
-        assert
-          .dom('[data-test-id="button"]')
-          .doesNotHaveClass('btn-outlined--primary');
+        assert.dom('[data-test-id="button"]').hasClass('intent-primary');
       });
     });
 
@@ -124,23 +116,7 @@ module('Integration | Component | @frontile/buttons', function (hooks) {
           hbs`<Button @size="xs" data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn--xs');
-      });
-
-      test('it adds class size sm', async function (assert) {
-        await render(
-          hbs`<Button @size="sm" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn--sm');
-      });
-
-      test('it adds class size lg', async function (assert) {
-        await render(
-          hbs`<Button @size="lg" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn--lg');
+        assert.dom('[data-test-id="button"]').hasClass('btn-xs');
       });
 
       test('it adds class size xl', async function (assert) {
@@ -148,15 +124,7 @@ module('Integration | Component | @frontile/buttons', function (hooks) {
           hbs`<Button @size="xl" data-test-id="button">My Button</Button>`
         );
 
-        assert.dom('[data-test-id="button"]').hasClass('btn--xl');
-      });
-
-      test('it adds class size with appearance', async function (assert) {
-        await render(
-          hbs`<Button @appearance="outlined" @size="lg" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn-outlined--lg');
+        assert.dom('[data-test-id="button"]').hasClass('btn-xl');
       });
     });
   });
@@ -167,6 +135,6 @@ module('Integration | Component | @frontile/buttons', function (hooks) {
             <div data-test-id="my-div">{{btn.classNames}}</div>
           </Button>`
     );
-    assert.dom('[data-test-id="my-div"]').hasText('btn');
+    assert.dom('[data-test-id="my-div"]').hasText('btn intent-default btn-md');
   });
 });

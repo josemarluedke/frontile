@@ -17,7 +17,6 @@ module(
 
       assert.dom('[data-test-id="header"]').hasText('My Header');
       assert.dom('[data-test-id="header"]').hasAttribute('id', 'hello');
-      assert.dom('[data-test-id="header"]').hasClass('modal__header');
       assert.dom('[data-test-id="header"]').hasClass('other-class');
     });
   }

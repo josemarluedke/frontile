@@ -1,8 +1,8 @@
 import { FormInputBase, type FormInputBaseSignature } from './form-input';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
-import FormField from './form-field';
 import { on } from '@ember/modifier';
 import { concat } from '@ember/helper';
+import { useStyles } from '@frontile/theme';
+import FormField from './form-field';
 
 export interface FormTextareaSignature extends FormInputBaseSignature {
   Element: HTMLTextAreaElement;
@@ -12,20 +12,34 @@ export interface FormTextareaSignature extends FormInputBaseSignature {
 }
 
 export default class FormTextarea extends FormInputBase<FormTextareaSignature> {
+  get classes() {
+    const { formInput } = useStyles();
+
+    const { base, label, input, hint, feedback } = formInput({
+      size: this.args.size
+    });
+
+    return {
+      base: base({
+        class: this.args.containerClass
+      }),
+      label: label(),
+      input: input({ class: this.args.inputClass }),
+      hint: hint(),
+      feedback: feedback()
+    };
+  }
+
   <template>
-    <FormField
-      @size={{@size}}
-      class={{useFrontileClass "form-textarea" @size class=@containerClass}}
-      as |f|
-    >
+    <FormField @size={{@size}} class={{this.classes.base}} as |f|>
       {{#if @label}}
-        <f.Label class={{useFrontileClass "form-textarea" @size part="label"}}>
+        <f.Label @class={{this.classes.label}}>
           {{@label}}
         </f.Label>
       {{/if}}
 
       {{#if @hint}}
-        <f.Hint class={{useFrontileClass "form-textarea" @size part="hint"}}>
+        <f.Hint @class={{this.classes.hint}}>
           {{@hint}}
         </f.Hint>
       {{/if}}
@@ -36,11 +50,11 @@ export default class FormTextarea extends FormInputBase<FormTextareaSignature> {
         @onInput={{@onInput}}
         @onChange={{@onChange}}
         @value={{@value}}
-        class={{useFrontileClass "form-textarea" @size part="textarea"}}
+        @class={{this.classes.input}}
         aria-invalid={{if this.showErrorFeedback "true"}}
         aria-describedby="{{if @hint f.hintId}}{{if
           this.showErrorFeedback
-          (concat " " f.feedbackId)
+          (concat ' ' f.feedbackId)
         }}"
         ...attributes
       />
@@ -48,10 +62,7 @@ export default class FormTextarea extends FormInputBase<FormTextareaSignature> {
       {{yield}}
 
       {{#if this.showErrorFeedback}}
-        <f.Feedback
-          class={{useFrontileClass "form-textarea" @size part="feedback"}}
-          @errors={{@errors}}
-        />
+        <f.Feedback @class={{this.classes.feedback}} @errors={{@errors}} />
       {{/if}}
     </FormField>
   </template>

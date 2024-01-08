@@ -1,8 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 import FormField from './form-field';
-import { array } from '@ember/helper';
 
 export interface FormCheckboxArgs {
   /** The input field label */
@@ -19,7 +18,7 @@ export interface FormCheckboxArgs {
   /** CSS classes to be added in the container element */
   containerClass?: string;
   /** The size */
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
   /** Callback when onchange is triggered */
   onChange: (value: boolean, event: Event) => void;
 
@@ -55,27 +54,38 @@ export default class FormCheckbox extends Component<FormCheckboxSignature> {
     }
   }
 
+  get classes() {
+    const { formCheckbox } = useStyles();
+
+    const { base, label, checkbox, hint, labelContainer, inputContainer } =
+      formCheckbox({
+        size: this.args.size
+      });
+
+    let containerClasses = '';
+    if (this.args.containerClass) {
+      containerClasses = this.args.containerClass;
+    }
+    if (this.args.privateContainerClass) {
+      containerClasses += ' ' + this.args.privateContainerClass;
+    }
+
+    return {
+      base: base({
+        class: containerClasses
+      }),
+      label: label(),
+      inputContainer: inputContainer(),
+      labelContainer: labelContainer(),
+      hint: hint(),
+      checkbox: checkbox()
+    };
+  }
+
   <template>
-    <FormField
-      @size={{@size}}
-      class={{useFrontileClass
-        "form-checkbox"
-        @size
-        (if @checked "checked")
-        class=(array @containerClass @privateContainerClass)
-      }}
-      as |f|
-    >
-      <div
-        class={{useFrontileClass "form-checkbox" @size part="label-container"}}
-      >
-        <div
-          class={{useFrontileClass
-            "form-checkbox"
-            @size
-            part="input-container"
-          }}
-        >
+    <FormField @size={{@size}} class={{this.classes.base}} as |f|>
+      <div class={{this.classes.labelContainer}}>
+        <div class={{this.classes.inputContainer}}>
           {{!  Zero-width space character, used to align checkbox properly }}
           {{! eslint-disable no-irregular-whitespace}}
           ​
@@ -83,13 +93,13 @@ export default class FormCheckbox extends Component<FormCheckboxSignature> {
             @onChange={{this.handleChange}}
             @checked={{@checked}}
             @name={{@name}}
-            class={{useFrontileClass "form-checkbox" @size part="checkbox"}}
+            @class={{this.classes.checkbox}}
             aria-describedby={{if @hint f.hintId}}
             ...attributes
           />
         </div>
 
-        <f.Label class={{useFrontileClass "form-checkbox" @size part="label"}}>
+        <f.Label @class={{this.classes.label}}>
           {{#if (has-block)}}
             {{yield}}
           {{else}}
@@ -99,7 +109,7 @@ export default class FormCheckbox extends Component<FormCheckboxSignature> {
       </div>
 
       {{#if @hint}}
-        <f.Hint class={{useFrontileClass "form-checkbox" @size part="hint"}}>
+        <f.Hint @class={{this.classes.hint}}>
           {{@hint}}
         </f.Hint>
       {{/if}}

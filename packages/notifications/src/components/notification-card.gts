@@ -8,9 +8,9 @@ import { on } from '@ember/modifier';
 import { fn, concat } from '@ember/helper';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import CloseButton from '@frontile/core/components/close-button';
 import { cssTransition } from 'ember-css-transitions';
+import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../services/notifications';
 import type Notification from '../-private/notification';
@@ -112,6 +112,23 @@ export default class NotificationCard extends Component<NotificationCardSignatur
     this.remove();
   }
 
+  get classes() {
+    const { notificationCard } = useStyles();
+
+    let { base, message, customActions, customActionButton, closeButton } =
+      notificationCard({
+        appearance: this.args.notification.appearance
+      });
+
+    return {
+      base: base(),
+      message: message(),
+      customActions: customActions(),
+      customActionButton: customActionButton(),
+      closeButton: closeButton()
+    };
+  }
+
   <template>
     {{! template-lint-disable no-invalid-interactive }}
     {{! template-lint-disable no-unnecessary-concat }}
@@ -129,39 +146,20 @@ export default class NotificationCard extends Component<NotificationCardSignatur
             (concat "notification-transition--slide-from-" @placement)
             isEnabled=true
           }}
-          class={{useFrontileClass
-            "notification-card"
-            @notification.appearance
-          }}
+          class={{this.classes.base}}
           style="{{this.styles}}"
           ...attributes
         >
-          <div
-            class={{useFrontileClass
-              "notification-card"
-              @notification.appearance
-              part="message"
-            }}
-          >
+          <div class={{this.classes.message}}>
             {{@notification.message}}
           </div>
 
           {{#if @notification.customActions}}
-            <div
-              class={{useFrontileClass
-                "notification-card"
-                @notification.appearance
-                part="custom-actions"
-              }}
-            >
+            <div class={{this.classes.customActions}}>
               {{#each @notification.customActions as |customAction|}}
                 <button
                   type="button"
-                  class={{useFrontileClass
-                    "notification-card"
-                    @notification.appearance
-                    part="custom-action-btn"
-                  }}
+                  class={{this.classes.customActionButton}}
                   {{on "click" (fn this.handleClickCustomAction customAction)}}
                 >
                   {{customAction.label}}
@@ -173,11 +171,8 @@ export default class NotificationCard extends Component<NotificationCardSignatur
           {{#if @notification.allowClosing}}
             <CloseButton
               @onClick={{this.remove}}
-              class={{useFrontileClass
-                "notification-card"
-                @notification.appearance
-                part="close-btn"
-              }}
+              @size="sm"
+              @class={{this.classes.closeButton}}
             />
           {{/if}}
         </div>

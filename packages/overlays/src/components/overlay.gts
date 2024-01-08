@@ -4,10 +4,10 @@ import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { getDOM, getElementById } from '../-private/dom';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
 import { cssTransition } from 'ember-css-transitions';
+import { useStyles } from '@frontile/theme';
 // @ts-ignore
 import { focusTrap } from 'ember-focus-trap';
 import type { TOC } from '@ember/component/template-only';
@@ -242,6 +242,16 @@ export default class Overlay extends Component<OverlaySignature> {
     }, duration);
   }
 
+  get classes() {
+    const { overlay } = useStyles();
+
+    const { base, backdrop, content } = overlay({
+      inPlace: this.args.renderInPlace
+    });
+
+    return { base: base(), backdrop: backdrop(), content: content() };
+  }
+
   <template>
     {{#if this.isVisible}}
       <MaybeInElement
@@ -249,7 +259,7 @@ export default class Overlay extends Component<OverlaySignature> {
         @destinationElement={{this.destinationElement}}
       >
         <div
-          class={{useFrontileClass "overlay" (if @renderInPlace "in-place")}}
+          class={{this.classes.base}}
           ...attributes
           {{focusTrap
             isActive=(if @disableFocusTrap false @isOpen)
@@ -259,11 +269,7 @@ export default class Overlay extends Component<OverlaySignature> {
           {{! template-lint-disable no-invalid-interactive }}
           {{#if this.isBackdropVisible}}
             <div
-              class={{useFrontileClass
-                "overlay"
-                (if @renderInPlace "in-place")
-                part="backdrop"
-              }}
+              class={{this.classes.backdrop}}
               {{on "click" this.handleOverlayClick}}
               {{cssTransition
                 (if
@@ -285,11 +291,7 @@ export default class Overlay extends Component<OverlaySignature> {
           {{#if @isOpen}}
             {{! template-lint-disable no-pointer-down-event-binding }}
             <div
-              class={{useFrontileClass
-                "overlay"
-                (if @renderInPlace "in-place")
-                part="content"
-              }}
+              class={{this.classes.content}}
               {{on "click" this.handleContentClick}}
               {{on "keydown" this.handleKeyDown}}
               {{on "mousedown" this.handleContentMouseDown}}

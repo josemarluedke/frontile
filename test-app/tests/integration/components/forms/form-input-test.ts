@@ -271,45 +271,4 @@ module('Integration | Component | @frontile/forms/FormInput', function (hooks) {
 
     assert.dom('.my-container-class').exists();
   });
-
-  test('it adds size classes for @size', async function (assert) {
-    this.set('size', 'sm');
-
-    await render(
-      hbs`<FormInput
-            data-test-input
-            @containerClass="my-container"
-            @label="Label"
-            @hint="Hint"
-            @errors="Error"
-            @hasSubmitted={{true}}
-            @size={{this.size}}
-          />`
-    );
-
-    assert.dom('.my-container').hasClass('form-input--sm');
-    assert.dom('[data-test-input]').hasClass('form-input--sm__input');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-input--sm__label');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-input--sm__hint');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form-input--sm__feedback');
-
-    this.set('size', 'lg');
-    assert.dom('.my-container').hasClass('form-input--lg');
-    assert.dom('[data-test-input]').hasClass('form-input--lg__input');
-    assert
-      .dom('[data-test-id="form-field-label"]')
-      .hasClass('form-input--lg__label');
-    assert
-      .dom('[data-test-id="form-field-hint"]')
-      .hasClass('form-input--lg__hint');
-    assert
-      .dom('[data-test-id="form-field-feedback"]')
-      .hasClass('form-input--lg__feedback');
-  });
 });

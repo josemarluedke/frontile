@@ -30,18 +30,6 @@ module(
       assert.dom('[data-test-textarea]').hasAttribute('id', 'my-id');
     });
 
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-
-      await render(
-        hbs`<FormField::Textarea data-test-input @size={{this.size}} />`
-      );
-
-      assert.dom('[data-test-input]').hasClass('form-field-textarea--sm');
-      this.set('size', 'lg');
-      assert.dom('[data-test-input]').hasClass('form-field-textarea--lg');
-    });
-
     test('renders @value arg, does not mutate it by default', async function (assert) {
       this.set('value', 'Josemar');
 

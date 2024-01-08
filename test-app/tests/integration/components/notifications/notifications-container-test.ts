@@ -6,6 +6,27 @@ import {
   NotificationsService,
   NotificationOptions
 } from '@frontile/notifications';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
+
+registerCustomStyles({
+  notificationsContainer: tv({
+    base: ['notifications-container'],
+    variants: {
+      placement: {
+        'top-left': 'notifications-container--top-left',
+        'top-center': 'notifications-container--top-center',
+        'top-right': 'notifications-container--top-right',
+        'bottom-left': 'notifications-container--bottom-left',
+        'bottom-center': 'notifications-container--bottom-center',
+        'bottom-right': 'notifications-container--bottom-right'
+      }
+    },
+    defaultVariants: {
+      placement: 'bottom-right'
+    }
+  })
+});
 
 module(
   'Integration | Component | @frontile/notifications/NotificationsContainer',

@@ -1,12 +1,13 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldTextareaArgs {
   id?: string;
   value?: string | number | boolean;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;
@@ -39,13 +40,22 @@ export default class FormFieldTextarea extends Component<FormFieldTextareaSignat
     }
   }
 
+  get classes() {
+    const { textarea } = useStyles();
+
+    return textarea({
+      size: this.args.size,
+      class: this.args.class
+    });
+  }
+
   <template>
     <textarea
       {{on "input" this.handleOnInput}}
       {{on "change" this.handleOnChange}}
       id={{@id}}
       value={{@value}}
-      class={{useFrontileClass "form-field-textarea" @size}}
+      class={{this.classes}}
       data-test-id="form-field-textarea"
       ...attributes
     >

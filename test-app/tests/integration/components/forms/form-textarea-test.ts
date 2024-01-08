@@ -269,46 +269,5 @@ module(
 
       assert.dom('.my-container-class').exists();
     });
-
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-
-      await render(
-        hbs`<FormTextarea
-            data-test-input
-            @containerClass="my-container"
-            @label="Label"
-            @hint="Hint"
-            @errors="Error"
-            @hasSubmitted={{true}}
-            @size={{this.size}}
-          />`
-      );
-
-      assert.dom('.my-container').hasClass('form-textarea--sm');
-      assert.dom('[data-test-input]').hasClass('form-textarea--sm__textarea');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-textarea--sm__label');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-textarea--sm__hint');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-textarea--sm__feedback');
-
-      this.set('size', 'lg');
-      assert.dom('.my-container').hasClass('form-textarea--lg');
-      assert.dom('[data-test-input]').hasClass('form-textarea--lg__textarea');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-textarea--lg__label');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-textarea--lg__hint');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-textarea--lg__feedback');
-    });
   }
 );

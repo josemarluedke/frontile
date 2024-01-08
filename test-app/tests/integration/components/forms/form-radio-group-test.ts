@@ -72,16 +72,6 @@ module(
       assert.equal(this.myValue, true);
     });
 
-    test('it adds inline class when isInline is true', async function (assert) {
-      this.set('myValue', false);
-      this.set('isInline', true);
-      await render(template);
-
-      assert
-        .dom('[data-test-input-group]')
-        .hasClass('form-radio-group--inline');
-    });
-
     test('show error messages when errors array has items', async function (assert) {
       this.set('errors', ['This field is required']);
       await render(template);
@@ -148,16 +138,6 @@ module(
       assert
         .dom('[data-test-id="form-field-feedback"]')
         .hasText('This field is required');
-    });
-
-    test('it adds class to input wrapper when checked to allow selected label css styling', async function (assert) {
-      this.set('myValue', true);
-      await render(template);
-
-      assert.dom('[data-test-option-no]').isNotChecked();
-      assert.dom('.form-radio--checked [data-test-option-no]').doesNotExist();
-      assert.dom('[data-test-option-yes]').isChecked();
-      assert.dom('.form-radio--checked [data-test-option-yes]').exists();
     });
 
     test('it adds container class from @containerClass arg', async function (assert) {

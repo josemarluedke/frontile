@@ -59,16 +59,6 @@ module(
       assert.dom('.checkbox-2 label').hasText('Checkbox 2');
     });
 
-    test('it adds inline class when isInline is true', async function (assert) {
-      this.set('myValue', undefined);
-      this.set('isInline', true);
-      await render(template);
-
-      assert
-        .dom('[data-test-input-group]')
-        .hasClass('form-checkbox-group--inline');
-    });
-
     test('show error messages when errors array has items', async function (assert) {
       this.set('errors', ['This field is required']);
       await render(template);
@@ -141,38 +131,6 @@ module(
       this.set('containerClass', 'my-container-class');
       await render(template);
       assert.dom('.my-container-class').exists();
-    });
-
-    test('it adds size classes for @size', async function (assert) {
-      this.set('size', 'sm');
-      this.set('errors', ['Error']);
-      this.set('hasSubmitted', true);
-      await render(template);
-
-      assert.dom('[data-test-input-group]').hasClass('form-checkbox-group--sm');
-      assert.dom('[data-test-checkbox-1]').hasClass('form-field-checkbox--sm');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-field-label--sm');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-field-hint--sm');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-field-feedback--sm');
-
-      this.set('size', 'lg');
-      assert.dom('[data-test-input-group]').hasClass('form-checkbox-group--lg');
-      assert.dom('[data-test-checkbox-1]').hasClass('form-field-checkbox--lg');
-      assert
-        .dom('[data-test-id="form-field-label"]')
-        .hasClass('form-field-label--lg');
-      assert
-        .dom('[data-test-id="form-field-hint"]')
-        .hasClass('form-field-hint--lg');
-      assert
-        .dom('[data-test-id="form-field-feedback"]')
-        .hasClass('form-field-feedback--lg');
     });
   }
 );

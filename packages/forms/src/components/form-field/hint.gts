@@ -1,9 +1,10 @@
 import Component from '@glimmer/component';
-import useFrontileClass from '@frontile/core/helpers/use-frontile-class';
+import { useStyles } from '@frontile/theme';
 
 export interface FormFieldHintArgs {
   id?: string;
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
 }
 
 export interface FormFieldHintSignature {
@@ -15,10 +16,19 @@ export interface FormFieldHintSignature {
 }
 
 export default class FormFieldHint extends Component<FormFieldHintSignature> {
+  get classes() {
+    const { hint } = useStyles();
+
+    return hint({
+      size: this.args.size,
+      class: this.args.class
+    });
+  }
+
   <template>
     <div
       id={{@id}}
-      class={{useFrontileClass "form-field-hint" @size}}
+      class={{this.classes}}
       data-test-id="form-field-hint"
       ...attributes
     >
