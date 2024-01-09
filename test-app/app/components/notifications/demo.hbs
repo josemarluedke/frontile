@@ -64,12 +64,11 @@
   {{action.label}}
 </FormSelect>
 
-<button
-  type="button"
+<Button
   {{on "click" this.addNotification}}
-  class="px-4 py-2 mt-6 text-white bg-teal-700 rounded hover:bg-teal-800"
+  @class="mt-6"
 >
   Add Notification
-</button>
+</Button>
 
 <NotificationsContainer @placement={{this.placement}} />
