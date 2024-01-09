@@ -4,10 +4,10 @@ const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content
 
 const overlay = tv({
   slots: {
-    base: 'z-[1000]',
-    backdrop: 'fixed inset-0 select-none z-1 bg-overlay/[.45]',
+    base: '',
+    backdrop: 'fixed inset-0 select-none z-10 bg-overlay/[.45]',
     content:
-      'flex items-center fixed inset-0 flex-col z-2 will-change-transform overflow-auto'
+      'flex items-center fixed inset-0 flex-col z-20 will-change-transform overflow-auto'
   },
   variants: {
     inPlace: {
@@ -22,7 +22,7 @@ const overlay = tv({
 const modal = tv({
   slots: {
     base: 'flex flex-col shrink-0 relative text-content1-foreground bg-content1 rounded my-24 w-full outline-none overflow-hidden z-0',
-    closeButton: 'absolute top-2 right-2 z-1 dark:hover:bg-content2',
+    closeButton: 'absolute top-2 right-2 z-10 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
     footer: `${obscurer} flex justify-end items-center relative border-t border-default-200 bg-content2 p-4`
@@ -45,7 +45,7 @@ const modal = tv({
 const drawer = tv({
   slots: {
     base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full z-0 shadow',
-    closeButton: 'absolute top-2 right-2 z-1 dark:hover:bg-content2',
+    closeButton: 'absolute top-2 right-2 z-10 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
     footer: `${obscurer} flex justify-end items-center relative border-t border-default-200 bg-content2 p-4`
