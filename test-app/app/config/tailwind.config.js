@@ -8,8 +8,7 @@ module.exports = {
     './node_modules/@frontile/theme/dist/**/*.{js,ts}'
   ],
 
-
-  darkMode: "class",
+  darkMode: 'class',
 
   plugins: [frontile()],
   safelist: [

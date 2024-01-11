@@ -21,6 +21,7 @@ export default {
       // 'components/**/*.js',
       'services/**/*.js',
       'index.js',
+      'colors.js',
       'plugin.js',
       'template-registry.js'
     ]),
