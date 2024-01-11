@@ -2,6 +2,7 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'tailwindcss/defaultConfig';
 import { readableColor } from 'color2k';
 import { swapColorValues } from './util';
+import { gray, blue, green, red, yellow } from './defaults';
 
 import type { ThemeColors, SemanticBaseColors } from './types';
 
@@ -13,45 +14,45 @@ const base: SemanticBaseColors = {
       DEFAULT: '#FFFFFF'
     },
     foreground: {
-      ...tw.colors.zinc,
-      DEFAULT: tw.colors.zinc[950]
+      ...gray,
+      DEFAULT: gray[950]
     },
     divider: {
       DEFAULT: 'rgba(17, 17, 17, 0.15)'
     },
     focus: {
-      DEFAULT: tw.colors.blue[500]
+      DEFAULT: blue[500]
     },
     overlay: {
       DEFAULT: '#000000'
     },
     content1: {
       DEFAULT: '#FFFFFF',
-      foreground: tw.colors.zinc[950]
+      foreground: gray[950]
     },
     content2: {
-      DEFAULT: tw.colors.zinc[100],
-      foreground: tw.colors.zinc[800]
+      DEFAULT: gray[100],
+      foreground: gray[800]
     },
     content3: {
-      DEFAULT: tw.colors.zinc[200],
-      foreground: tw.colors.zinc[700]
+      DEFAULT: gray[200],
+      foreground: gray[700]
     },
     content4: {
-      DEFAULT: tw.colors.zinc[300],
-      foreground: tw.colors.zinc[600]
+      DEFAULT: gray[300],
+      foreground: gray[600]
     }
   },
   dark: {
     background: {
-      DEFAULT: tw.colors.zinc[950]
+      DEFAULT: gray[950]
     },
     foreground: {
-      ...swapColorValues(tw.colors.zinc),
-      DEFAULT: tw.colors.zinc[50]
+      ...swapColorValues(gray),
+      DEFAULT: gray[50]
     },
     focus: {
-      DEFAULT: tw.colors.blue[500]
+      DEFAULT: blue[500]
     },
     overlay: {
       DEFAULT: '#000000'
@@ -60,79 +61,79 @@ const base: SemanticBaseColors = {
       DEFAULT: 'rgba(255, 255, 255, 0.15)'
     },
     content1: {
-      DEFAULT: tw.colors.zinc[900],
-      foreground: tw.colors.zinc[50]
+      DEFAULT: gray[900],
+      foreground: gray[50]
     },
     content2: {
-      DEFAULT: tw.colors.zinc[800],
-      foreground: tw.colors.zinc[100]
+      DEFAULT: gray[800],
+      foreground: gray[100]
     },
     content3: {
-      DEFAULT: tw.colors.zinc[700],
-      foreground: tw.colors.zinc[200]
+      DEFAULT: gray[700],
+      foreground: gray[200]
     },
     content4: {
-      DEFAULT: tw.colors.zinc[600],
-      foreground: tw.colors.zinc[300]
+      DEFAULT: gray[600],
+      foreground: gray[300]
     }
   }
 };
 
-export const themeColorsLight: ThemeColors = {
+const themeColorsLight: ThemeColors = {
   ...base.light,
   default: {
-    ...tw.colors.zinc,
-    foreground: readableColor(tw.colors.zinc[300]),
-    DEFAULT: tw.colors.zinc[300]
+    ...gray,
+    foreground: readableColor(gray[300]),
+    DEFAULT: gray[300]
   },
   primary: {
-    ...tw.colors.blue,
-    foreground: readableColor(tw.colors.blue[500]),
-    DEFAULT: tw.colors.blue[500]
+    ...blue,
+    foreground: readableColor(blue[500]),
+    DEFAULT: blue[500]
   },
   success: {
-    ...tw.colors.green,
-    foreground: readableColor(tw.colors.green[500]),
-    DEFAULT: tw.colors.green[500]
+    ...green,
+    foreground: readableColor(green[500]),
+    DEFAULT: green[500]
   },
   warning: {
-    ...tw.colors.yellow,
-    foreground: readableColor(tw.colors.yellow[500]),
-    DEFAULT: tw.colors.yellow[500]
+    ...yellow,
+    foreground: readableColor(yellow[500]),
+    DEFAULT: yellow[500]
   },
   danger: {
-    ...tw.colors.red,
+    ...red,
     foreground: tw.colors.white,
-    DEFAULT: tw.colors.red[500]
+    DEFAULT: red[500]
   }
 };
 
-export const themeColorsDark: ThemeColors = {
+const themeColorsDark: ThemeColors = {
   ...base.dark,
   default: {
-    ...swapColorValues(tw.colors.zinc),
-    foreground: readableColor(tw.colors.zinc[700]),
-    DEFAULT: tw.colors.zinc[700]
+    ...swapColorValues(gray),
+    foreground: readableColor(gray[700]),
+    DEFAULT: gray[700]
   },
   primary: {
-    ...swapColorValues(tw.colors.blue),
-    foreground: readableColor(tw.colors.blue[500]),
-    DEFAULT: tw.colors.blue[500]
+    ...swapColorValues(blue),
+    foreground: readableColor(blue[500]),
+    DEFAULT: blue[500]
   },
   success: {
-    ...swapColorValues(tw.colors.green),
-    foreground: readableColor(tw.colors.green[500]),
-    DEFAULT: tw.colors.green[500]
+    ...swapColorValues(green),
+    foreground: readableColor(green[500]),
+    DEFAULT: green[500]
   },
   warning: {
-    ...swapColorValues(tw.colors.yellow),
-    foreground: readableColor(tw.colors.yellow[500]),
-    DEFAULT: tw.colors.yellow[500]
+    ...swapColorValues(yellow),
+    foreground: readableColor(yellow[500]),
+    DEFAULT: yellow[500]
   },
   danger: {
-    ...swapColorValues(tw.colors.red),
+    ...swapColorValues(red),
     foreground: tw.colors.white,
-    DEFAULT: tw.colors.red[500]
+    DEFAULT: red[500]
   }
 };
 
