@@ -50,7 +50,7 @@ module.exports = {
         'test-app/testem.js',
         'test-app/config/**/*.js',
         'test-app/tests/dummy/config/**/*.js',
-        'test-app/**/tailwind.config.js',
+        'test-app/tailwind.config.js',
         'test-app/.docfy-config.js',
         'test-app/lib/docfy-theme/*.js'
       ],

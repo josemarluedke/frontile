@@ -8,6 +8,7 @@ module.exports = function(defaults) {
     autoImport: {
       watchDependencies: [
         '@frontile/buttons',
+        '@frontile/theme',
         '@frontile/core',
         '@frontile/notifications',
         '@frontile/overlays',
@@ -19,11 +20,10 @@ module.exports = function(defaults) {
     postcssOptions: {
       compile: {
         enabled: true,
-        cacheInclude: [/.*\.(css|hbs)$/, /tailwind\.config\.js$/],
+        includePaths: ['app', 'node_modules/@frontile/theme/dist'],
+        cacheInclude: [/.*\.(css|hbs|js)$/, /tailwind\.config\.js$/],
         plugins: [
-          require('tailwindcss')(
-            path.join('app', 'config', 'tailwind.config.js')
-          ),
+          require('tailwindcss')('./tailwind.config.js'),
           require('autoprefixer')
         ]
       }
