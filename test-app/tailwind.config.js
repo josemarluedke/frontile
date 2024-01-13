@@ -1,5 +1,4 @@
-/* eslint-disable node/no-extraneous-require */
-const colors = require('tailwindcss/colors');
+/* eslint-disable */
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = {

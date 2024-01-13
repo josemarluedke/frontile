@@ -1,4 +1,5 @@
 export * from './button';
+export * from './chip';
 export * from './close-button';
 
 export * from './notifications-container';
