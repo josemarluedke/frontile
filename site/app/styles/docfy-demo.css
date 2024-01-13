@@ -45,7 +45,7 @@
 
   pre {
     @apply p-4;
-    @apply flex text-gray-200 bg-gray-800;
+    @apply flex text-default-200 bg-default-800;
     @apply text-sm leading-normal;
     @apply font-mono;
     @apply rounded-b;
@@ -56,7 +56,7 @@
 
 .dark {
   .docfy-demo__example {
-    @apply bg-white text-gray-900;
+    @apply bg-content1;
     /* Temorary until Frontile supports dark mode */
   }
 
@@ -64,12 +64,12 @@
   .docfy-demo__description,
   .docfy-demo__snippets__tabs,
   .docfy-demo__snippet {
-    @apply border-gray-700;
+    @apply border-default-200;
   }
 
   .docfy-demo__snippet pre {
-    @apply bg-gray-900;
-    @apply border-gray-700;
+    @apply bg-content1;
+    @apply border-default-200;
   }
 
   .docfy-demo__description__header__title {

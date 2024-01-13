@@ -1,7 +1,7 @@
 import { tv } from 'tailwind-variants';
 
 const label = tv({
-  base: 'inline-block font-semibold leading-tight pb-1',
+  base: 'text-foreground inline-block font-semibold leading-tight pb-1',
   variants: {
     size: {
       sm: '',
@@ -53,7 +53,7 @@ const input = tv({
     'bg-white dark:bg-default-100',
     'text-default-900',
     'placeholder-default-400',
-    'text-base',
+    'text-base text-foreground',
     'border',
     'border-default-400',
     'rounded',

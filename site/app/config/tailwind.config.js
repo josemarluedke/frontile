@@ -3,6 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
 /* eslint-disable node/no-missing-require */
 const { frontile } = require('@frontile/theme/plugin');
+const { blue, gray } = require('@frontile/theme/colors');
 
 module.exports = {
   content: [
@@ -24,8 +25,7 @@ module.exports = {
           1000: '#12161f'
         },
         teal,
-        primary: teal,
-        brand: '#034166'
+        brand: blue[500]
       },
       zIndex: {
         1: '1'
@@ -37,10 +37,10 @@ module.exports = {
         DEFAULT: {
           css: {
             maxWidth: 'none',
-            color: theme('colors.gray.500'),
+            color: gray[500],
             fontFamily: ['Inter', ...defaultTheme.fontFamily.sans].join(', '),
             a: {
-              color: theme('colors.primary.700'),
+              color: blue[700],
               fontWeight: theme('fontWeight.medium'),
               textDecoration: 'none'
             },
@@ -49,7 +49,7 @@ module.exports = {
               fontWeight: 'inherit'
             },
             strong: {
-              color: theme('colors.gray.900'),
+              color: gray[900],
               fontWeight: theme('fontWeight.medium')
             },
             'a strong': {
@@ -59,7 +59,7 @@ module.exports = {
             code: {
               fontWeight: theme('fontWeight.normal'),
               padding: theme('padding.1'),
-              backgroundColor: theme('colors.gray.100'),
+              backgroundColor: gray[100],
               borderRadius: theme('borderRadius.sm')
             },
             'code::before': null,
