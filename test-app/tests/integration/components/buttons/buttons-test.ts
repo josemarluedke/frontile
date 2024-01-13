@@ -34,7 +34,7 @@ registerCustomStyles({
       size: 'md',
       intent: 'primary'
     }
-  })
+  }) as never
 });
 
 module('Integration | Component | @frontile/buttons', function (hooks) {
