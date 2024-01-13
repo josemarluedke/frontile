@@ -1,6 +1,6 @@
 {
   "name": "@frontile/changeset-form",
-  "version": "0.17.0-alpha.1",
+  "version": "0.17.0-alpha.2",
   "description": "Component Library for Ember Octane apps: ChangesetForm",
   "keywords": [
     "ember-addon",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/forms": "^0.17.0-alpha.1",
+    "@frontile/forms": "^0.17.0-alpha.2",
     "@glint/template": "1.2.1",
     "ember-changeset": "^4.1.2",
     "ember-changeset-validations": "^4.1.1"
