@@ -43,6 +43,28 @@ Chips are compact elements that represent an input, attribute, or action.
   <Chip @appearance="faded" @intent='danger'>Danger</Chip>
 </div>
 ```
+## Close Button
+
+If you pass the `@onClose` argument, the close button will be visible.
+  
+```gts preview
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import Chip from '@frontile/buttons/components/chip';
+
+export default class DemoComponent extends Component {
+  @action onClose() {
+    console.log('closed')
+  }
+  <template>
+    <Chip @appearance="faded" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance="faded" @intent="primary" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance="faded" @intent="success" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance="faded" @intent="warning" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance="faded" @intent="danger" @onClose={{this.onClose}}>My Chip</Chip>
+  </template>
+}
+```
 
 ## Chip Sizes
 

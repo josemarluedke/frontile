@@ -17,12 +17,10 @@ module.exports = {
   remarkPlugins: [autolinkHeadings, codeImport],
   rehypePlugins: [
     [
-      highlight
-      // {
-      // languages: {
-      // glimmer: require('highlightjs-glimmer').glimmer
-      // }
-      // }
+      highlight,
+      {
+        aliases: { 'javascript': 'gjs', 'typescript': 'gts' }
+      }
     ]
   ],
   sources: [

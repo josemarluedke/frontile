@@ -19,8 +19,8 @@
     "generate-args-data": "node lib/docfy-theme/generate-args-data.js"
   },
   "devDependencies": {
-    "@docfy/ember": "^0.7.0",
-    "@docfy/plugin-with-prose": "^0.7.0",
+    "@docfy/ember": "^0.8.0",
+    "@docfy/plugin-with-prose": "^0.8.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^3.2.0",
     "@embroider/compat": "^3.2.0",
