@@ -3,7 +3,11 @@
 </h2>
 <div class="mt-6">
   {{#each-in this.isSelected as |key val|}}
-    <ToggleButton @isSelected={{val}} @onChange={{(fn this.onChange key)}} @intent={{key}}>
+    <ToggleButton
+      @isSelected={{val}}
+      @onChange={{(fn this.onChange key)}}
+      @intent={{key}}
+    >
       Toggle
     </ToggleButton>
   {{/each-in}}
@@ -11,7 +15,12 @@
 
 <div class="mt-6">
   {{#each-in this.isSelected as |key val|}}
-    <ToggleButton @isSelected={{val}} @onChange={{(fn this.onChange key)}} @intent={{key}} disabled={{true}}>
+    <ToggleButton
+      @isSelected={{val}}
+      @onChange={{(fn this.onChange key)}}
+      @intent={{key}}
+      disabled={{true}}
+    >
       Toggle
     </ToggleButton>
   {{/each-in}}

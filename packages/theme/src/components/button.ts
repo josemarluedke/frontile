@@ -16,6 +16,13 @@ const baseButton = tv({
     appearance: {
       outlined: ''
     },
+    isInGroup: {
+      true: [
+        'rounded-none first:rounded-l last:rounded-r',
+        '[&:not(:first-child):not(:last-child)]:rounded-none',
+        '[&:not(:last-of-type)]:-me-[1px]'
+      ]
+    },
     intent: {
       default: '',
       primary: '',
@@ -213,4 +220,8 @@ const toggleButton = tv({
   ]
 });
 
-export { button, toggleButton };
+const buttonGroup = tv({
+  base: ['inline-flex items-center justify-center h-auto']
+});
+
+export { button, toggleButton, buttonGroup };

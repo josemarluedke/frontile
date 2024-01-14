@@ -4,7 +4,7 @@ import { useStyles } from '@frontile/theme';
 import type { ButtonArgs } from './button';
 
 export interface ToggleButtonArgs
-  extends Pick<ButtonArgs, 'intent' | 'size' | 'class'> {
+  extends Pick<ButtonArgs, 'intent' | 'size' | 'class' | 'isInGroup'> {
   /**
    * If the button is currently selected
    *
@@ -35,6 +35,7 @@ export default class ToggleButton extends Component<ToggleButtonSignature> {
       size: this.args.size,
       appearance: 'outlined',
       isSelected: this.isSelected,
+      isInGroup: this.args.isInGroup,
       class: this.args.class
     });
   }

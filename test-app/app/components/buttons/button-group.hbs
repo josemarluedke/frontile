@@ -1,0 +1,21 @@
+<h2 class="text-2xl mt-6">
+  ButtonGroup
+</h2>
+<div class="mt-6">
+  <ButtonGroup as |g|>
+    <g.Button>First</g.Button>
+    <g.Button>Second</g.Button>
+    <g.Button>Third</g.Button>
+  </ButtonGroup>
+
+  <ButtonGroup @size="sm" @intent="primary" as |g|>
+    {{#each-in this.isSelected as |key val|}}
+      <g.ToggleButton
+        @isSelected={{val}}
+        @onChange={{(fn this.onChange key)}}
+      >
+        {{key}}
+      </g.ToggleButton>
+    {{/each-in}}
+  </ButtonGroup>
+</div>
