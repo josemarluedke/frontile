@@ -20,11 +20,17 @@ const postcssPlugins = [
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
+    autoImport: {
+      watchDependencies: ['@docfy/ember']
+    },
     prember: {
       urls: ['/']
     },
     fastboot: {
       hostWhitelist: [/^localhost:\d+$/]
+    },
+    'ember-cli-babel': {
+      enableTypeScriptTransform: true
     },
     postcssOptions: {
       compile: {

@@ -791,9 +791,6 @@ importers:
       ember-cli-terser:
         specifier: ^4.0.2
         version: 4.0.2
-      ember-cli-typescript:
-        specifier: ^5.2.1
-        version: 5.2.1
       ember-fetch:
         specifier: ^8.1.2
         version: 8.1.2
@@ -1000,9 +997,6 @@ importers:
       ember-cli-terser:
         specifier: ^4.0.2
         version: 4.0.2
-      ember-cli-typescript:
-        specifier: ^5.2.1
-        version: 5.2.1
       ember-fetch:
         specifier: ^8.1.2
         version: 8.1.2

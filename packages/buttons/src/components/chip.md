@@ -54,8 +54,8 @@ import { Chip } from '@frontile/buttons';
 
 export default class DemoComponent extends Component {
   @action
-  onClose(o,a) {
-    console.log('close', Chip)
+  onClose() {
+    console.log('close')
   }
 
   <template>
