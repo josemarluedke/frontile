@@ -5,34 +5,37 @@ import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
-registerCustomStyles({
-  toggleButton: tv({
-    base: 'toggle-button',
-    variants: {
-      intent: {
-        default: 'intent-default',
-        primary: 'intent-primary',
-        success: 'intent-success',
-        warning: 'intent-warning',
-        danger: 'intent-danger'
-      },
-      size: {
-        sm: 'chip-sm',
-        md: 'chip-md',
-        lg: 'chip-lg'
-      }
-    },
-    defaultVariants: {
-      size: 'md',
-      intent: 'default'
-    }
-  }) as never
-});
-
 module(
   'Integration | Component | ToggleButton | @frontile/buttons',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    registerCustomStyles({
+      toggleButton: tv({
+        base: 'toggle-button',
+        variants: {
+          isInGroup: { true: ['in-group'] },
+          intent: {
+            default: 'intent-default',
+            primary: 'intent-primary',
+            success: 'intent-success',
+            warning: 'intent-warning',
+            danger: 'intent-danger'
+          },
+          size: {
+            xs: 'toggle-button-xs',
+            sm: 'toggle-button-sm',
+            md: 'toggle-button-md',
+            lg: 'toggle-button-lg',
+            xl: 'toggle-button-xl'
+          }
+        },
+        defaultVariants: {
+          size: 'md',
+          intent: 'default'
+        }
+      }) as never
+    });
 
     test('it renders', async function (assert) {
       await render(
@@ -87,7 +90,7 @@ module(
             hbs`<ToggleButton @size="sm" data-test-id="button">My ToggleButton</ToggleButton>`
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('chip-sm');
+          assert.dom('[data-test-id="button"]').hasClass('toggle-button-sm');
         });
 
         test('it adds class size lg', async function (assert) {
@@ -95,7 +98,7 @@ module(
             hbs`<ToggleButton @size="lg" data-test-id="button">My ToggleButton</ToggleButton>`
           );
 
-          assert.dom('[data-test-id="button"]').hasClass('chip-lg');
+          assert.dom('[data-test-id="button"]').hasClass('toggle-button-lg');
         });
       });
     });

@@ -5,6 +5,9 @@ const path = require('path');
 
 module.exports = function(defaults) {
   const app = new EmberApp(defaults, {
+    'ember-cli-babel': {
+      enableTypeScriptTransform: true
+    },
     autoImport: {
       watchDependencies: [
         '@frontile/buttons',

@@ -20,6 +20,7 @@ export default {
       'components/**/*.js',
       'helpers/**/*.js',
       'utils/**/*.js',
+      'index.js',
       'template-registry.js'
     ]),
 
