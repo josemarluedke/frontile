@@ -1,3 +1,6 @@
+---
+label: New
+---
 # ToggleButton
 
 A toggle button allows to toggle a selection on or off, for example switching 

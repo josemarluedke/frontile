@@ -1,3 +1,6 @@
+---
+label: New
+---
 # ButtonGroup
 
 A button group is used to group buttons whose actions are related.

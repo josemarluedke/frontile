@@ -52,6 +52,16 @@
                 @activeClass="text-primary-800 dark:text-primary-100 bg-primary-100 dark:bg-primary-900"
               >
                 {{page.title}}
+                {{#if page.frontmatter.label}}
+                  <Chip
+                    @size="sm"
+                    @appearance="outlined"
+                    @intent="primary"
+                    @class="ml-1"
+                  >
+                    {{page.frontmatter.label}}
+                  </Chip>
+                {{/if}}
               </DocfyLink>
             </li>
           {{/each}}
