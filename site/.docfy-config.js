@@ -19,7 +19,7 @@ module.exports = {
     [
       highlight,
       {
-        aliases: { 'javascript': 'gjs', 'typescript': 'gts' }
+        aliases: { javascript: 'gjs', typescript: 'gts' }
       }
     ]
   ],
