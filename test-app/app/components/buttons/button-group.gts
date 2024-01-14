@@ -4,9 +4,7 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { ButtonGroup } from '@frontile/buttons';
 
-interface ExampleArgs {}
-
-export default class Example extends Component<ExampleArgs> {
+export default class Example extends Component {
   @tracked
   isSelected = {
     first: false,
