@@ -19,7 +19,7 @@ export interface ButtonGroupSignature {
       }
     ];
   };
-  Element: HTMLButtonElement;
+  Element: HTMLDivElement;
 }
 
 export default class ButtonGroup extends Component<ButtonGroupSignature> {
@@ -32,7 +32,7 @@ export default class ButtonGroup extends Component<ButtonGroupSignature> {
   }
 
   <template>
-    <div class={{this.classNames}} role="group">
+    <div class={{this.classNames}} role="group" ...attributes>
       {{yield (hash
           Button=(component Button isInGroup=true appearance=@appearance intent=@intent size=@size)
           ToggleButton=(component ToggleButton isInGroup=true intent=@intent size=@size)

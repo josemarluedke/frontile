@@ -9,6 +9,7 @@ registerCustomStyles({
   button: tv({
     base: [],
     variants: {
+      isInGroup: { true: ['in-group'] },
       appearance: {
         default: 'btn',
         outlined: 'btn-outlined',
@@ -37,104 +38,115 @@ registerCustomStyles({
   }) as never
 });
 
-module('Integration | Component | @frontile/buttons', function (hooks) {
-  setupRenderingTest(hooks);
+module(
+  'Integration | Component | Button | @frontile/buttons',
+  function (hooks) {
+    setupRenderingTest(hooks);
 
-  test('it renders', async function (assert) {
-    await render(hbs`<Button data-test-id="button">My Button</Button>`);
+    test('it renders', async function (assert) {
+      await render(hbs`<Button data-test-id="button">My Button</Button>`);
 
-    assert.dom('[data-test-id="button"]').hasText('My Button');
-    assert.dom('[data-test-id="button"]').hasAttribute('type', 'button');
-  });
+      assert.dom('[data-test-id="button"]').hasText('My Button');
+      assert.dom('[data-test-id="button"]').hasAttribute('type', 'button');
+    });
 
-  test('it accepts @type argument', async function (assert) {
-    await render(
-      hbs`<Button @type="submit" data-test-id="button">My Button</Button>`
-    );
+    test('it accepts @type argument', async function (assert) {
+      await render(
+        hbs`<Button @type="submit" data-test-id="button">My Button</Button>`
+      );
 
-    assert.dom('[data-test-id="button"]').hasAttribute('type', 'submit');
-  });
+      assert.dom('[data-test-id="button"]').hasAttribute('type', 'submit');
+    });
 
-  module('Style classes', () => {
-    module('@appearance', () => {
-      test('it adds class for default appearance', async function (assert) {
-        await render(hbs`<Button data-test-id="button">My Button</Button>`);
+    module('Style classes', () => {
+      module('@appearance', () => {
+        test('it adds class for default appearance', async function (assert) {
+          await render(hbs`<Button data-test-id="button">My Button</Button>`);
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-        assert.dom('[data-test-id="button"]').hasClass('btn');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('btn-outlined');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
+          assert.dom('[data-test-id="button"]').hasClass('btn');
+        });
+
+        test('it adds class for outlined appearance', async function (assert) {
+          await render(
+            hbs`<Button @appearance="outlined" data-test-id="button">My Button</Button>`
+          );
+
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
+          assert.dom('[data-test-id="button"]').hasClass('btn-outlined');
+        });
+
+        test('it adds class for minimal appearance', async function (assert) {
+          await render(
+            hbs`<Button @appearance="minimal" data-test-id="button">My Button</Button>`
+          );
+
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('btn-outlined');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
+          assert.dom('[data-test-id="button"]').hasClass('btn-minimal');
+        });
+
+        test('it adds class for custom appearance', async function (assert) {
+          await render(
+            hbs`<Button @appearance="custom" data-test-id="button">My Button</Button>`
+          );
+
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
+          assert
+            .dom('[data-test-id="button"]')
+            .doesNotHaveClass('btn-outlined');
+          assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
+          assert.dom('[data-test-id="button"]').hasClass('btn-custom');
+        });
       });
 
-      test('it adds class for outlined appearance', async function (assert) {
-        await render(
-          hbs`<Button @appearance="outlined" data-test-id="button">My Button</Button>`
-        );
+      module('@intent', () => {
+        test('it adds class for the an intent', async function (assert) {
+          await render(
+            hbs`<Button @intent="primary" data-test-id="button">My Button</Button>`
+          );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-        assert.dom('[data-test-id="button"]').hasClass('btn-outlined');
+          assert.dom('[data-test-id="button"]').hasClass('intent-primary');
+        });
       });
 
-      test('it adds class for minimal appearance', async function (assert) {
-        await render(
-          hbs`<Button @appearance="minimal" data-test-id="button">My Button</Button>`
-        );
+      module('sizes', () => {
+        test('it adds class size xs"', async function (assert) {
+          await render(
+            hbs`<Button @size="xs" data-test-id="button">My Button</Button>`
+          );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-custom');
-        assert.dom('[data-test-id="button"]').hasClass('btn-minimal');
-      });
+          assert.dom('[data-test-id="button"]').hasClass('btn-xs');
+        });
 
-      test('it adds class for custom appearance', async function (assert) {
-        await render(
-          hbs`<Button @appearance="custom" data-test-id="button">My Button</Button>`
-        );
+        test('it adds class size xl', async function (assert) {
+          await render(
+            hbs`<Button @size="xl" data-test-id="button">My Button</Button>`
+          );
 
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-outlined');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('btn-minimal');
-        assert.dom('[data-test-id="button"]').hasClass('btn-custom');
+          assert.dom('[data-test-id="button"]').hasClass('btn-xl');
+        });
       });
     });
 
-    module('@intent', () => {
-      test('it adds class for the an intent', async function (assert) {
-        await render(
-          hbs`<Button @intent="primary" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('intent-primary');
-      });
-    });
-
-    module('sizes', () => {
-      test('it adds class size xs"', async function (assert) {
-        await render(
-          hbs`<Button @size="xs" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn-xs');
-      });
-
-      test('it adds class size xl', async function (assert) {
-        await render(
-          hbs`<Button @size="xl" data-test-id="button">My Button</Button>`
-        );
-
-        assert.dom('[data-test-id="button"]').hasClass('btn-xl');
-      });
-    });
-  });
-
-  test('it yields classNames when renderless', async function (assert) {
-    await render(
-      hbs`<Button @isRenderless={{true}} as |btn|>
+    test('it yields classNames when renderless', async function (assert) {
+      await render(
+        hbs`<Button @isRenderless={{true}} as |btn|>
             <div data-test-id="my-div">{{btn.classNames}}</div>
           </Button>`
-    );
-    assert.dom('[data-test-id="my-div"]').hasText('btn intent-default btn-md');
-  });
-});
+      );
+      assert
+        .dom('[data-test-id="my-div"]')
+        .hasText('btn intent-default btn-md');
+    });
+  }
+);
