@@ -1,10 +1,5 @@
 {
   "version": "0.17.0-alpha.3",
   "packages": ["packages/*", "test-app"],
-  "npmClient": "pnpm",
-  "command": {
-    "bootstrap": {
-      "npmClientArgs": ["--frozen-lockfile", "--non-interactive"]
-    }
-  }
+  "npmClient": "pnpm"
 }
