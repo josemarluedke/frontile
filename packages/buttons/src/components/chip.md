@@ -64,6 +64,22 @@ import { Chip } from '@frontile/buttons';
   </div>
 </template>
 ```
+
+## Chip with Dots
+
+```gjs preview
+import { Chip } from '@frontile/buttons';
+
+<template>
+  <div>
+    <Chip @appearance="outlined" @intent='default' @withDot={{true}}>Chip</Chip>
+    <Chip @appearance="outlined" @intent='primary' @withDot={{true}}>Primary</Chip>
+    <Chip @appearance="outlined" @intent='success' @withDot={{true}}>Success</Chip>
+    <Chip @appearance="outlined" @intent='warning' @withDot={{true}}>Warning</Chip>
+    <Chip @appearance="outlined" @intent='danger' @withDot={{true}}>Danger</Chip>
+  </div>
+</template>
+```
 ## Close Button
 
 If you pass the `@onClose` argument, the close button will be visible.
