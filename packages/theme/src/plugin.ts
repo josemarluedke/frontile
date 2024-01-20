@@ -81,6 +81,19 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
           },
           aria: {
             invalid: 'invalid="true"'
+          },
+          animation: {
+            loading: 'loading 1.5s linear infinite'
+          },
+          keyframes: {
+            loading: {
+              from: {
+                transform: 'translateX(-100%) scaleX(0)'
+              },
+              to: {
+                transform: 'translateX(200%) scaleX(3)'
+              }
+            }
           }
         }
       }

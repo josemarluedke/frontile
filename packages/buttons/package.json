@@ -84,6 +84,7 @@
       "./components/button-group.js": "./dist/_app_/components/button-group.js",
       "./components/button.js": "./dist/_app_/components/button.js",
       "./components/chip.js": "./dist/_app_/components/chip.js",
+      "./components/progress-bar.js": "./dist/_app_/components/progress-bar.js",
       "./components/toggle-button.js": "./dist/_app_/components/toggle-button.js"
     }
   },
