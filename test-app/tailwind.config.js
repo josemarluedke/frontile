@@ -3,7 +3,7 @@ const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = {
   content: [
-    './app/**/*.{html,js,ts,hbs}',
+    './app/**/*.{html,js,ts,hbs,gts}',
     './node_modules/@frontile/theme/dist/**/*.{js,ts}'
   ],
 

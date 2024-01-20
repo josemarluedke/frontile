@@ -3,7 +3,7 @@
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const path = require('path');
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     'ember-cli-babel': {
       enableTypeScriptTransform: true
@@ -24,7 +24,7 @@ module.exports = function(defaults) {
       compile: {
         enabled: true,
         includePaths: ['app', 'node_modules/@frontile/theme/dist'],
-        cacheInclude: [/.*\.(css|hbs|js)$/, /tailwind\.config\.js$/],
+        cacheInclude: [/.*\.(css|hbs|js|gts)$/, /tailwind\.config\.js$/],
         plugins: [
           require('tailwindcss')('./tailwind.config.js'),
           require('autoprefixer')
