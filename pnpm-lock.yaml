@@ -6,7 +6,6 @@ settings:
 
 overrides:
   '@ember/test-waiters': ^3.0.2
-  ember-element-helper: ^0.7.1
 
 importers:
 
@@ -76,6 +75,9 @@ importers:
       '@frontile/theme':
         specifier: ^0.17.0-alpha.3
         version: link:../theme
+      ember-element-helper:
+        specifier: ^0.8.5
+        version: 0.8.5(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)(ember-source@5.5.0)
       ember-modifier:
         specifier: ^4.1.0
         version: 4.1.0(ember-source@5.5.0)
@@ -92,6 +94,9 @@ importers:
       '@babel/plugin-transform-class-static-block':
         specifier: ^7.23.4
         version: 7.23.4(@babel/core@7.23.6)
+      '@babel/plugin-transform-private-methods':
+        specifier: ^7.23.3
+        version: 7.23.3(@babel/core@7.23.6)
       '@babel/preset-typescript':
         specifier: 7.23.3
         version: 7.23.3(@babel/core@7.23.6)
@@ -8097,7 +8102,7 @@ packages:
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 6.3.0
       ember-cli-typescript: 5.2.1
-      ember-element-helper: 0.7.1(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)(ember-source@5.5.0)
+      ember-element-helper: 0.8.5(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)(ember-source@5.5.0)
       ember-get-config: 2.1.1(@glint/template@1.3.0)
       ember-maybe-in-element: 2.1.0
       ember-modifier: 4.1.0(ember-source@5.5.0)
@@ -8727,8 +8732,8 @@ packages:
       - supports-color
     dev: false
 
-  /ember-element-helper@0.7.1(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)(ember-source@5.5.0):
-    resolution: {integrity: sha512-vpD/ZVXU3MCbW/oKw/Wg2z3H/KHYIiO9ej28By1POnN+HVw4sHHJVStxgVoztiK1P43JoGRpyoJvMB986xrGSw==}
+  /ember-element-helper@0.8.5(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)(ember-source@5.5.0):
+    resolution: {integrity: sha512-yZYzuasn6ZC8Nwv0MpaLYGtm68ZxIBSNSe/CYxNWkDdgcuAb2lAG1gx37XkwBIiwPQET0W2agwq7++/HwdMF8g==}
     engines: {node: 14.* || 16.* || >= 18}
     peerDependencies:
       ember-source: ^3.8 || ^4.0.0 || >= 5.0.0

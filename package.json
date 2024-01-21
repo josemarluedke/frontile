@@ -16,8 +16,7 @@
     "try:one": "pnpm --filter test-app try:one"
   },
   "resolutions": {
-    "@ember/test-waiters": "^3.0.2",
-    "ember-element-helper": "^0.7.1"
+    "@ember/test-waiters": "^3.0.2"
   },
   "dependencies": {
     "@ember/test-waiters": "^3.1.0",

@@ -4,3 +4,4 @@ export { default as ToggleButton } from './components/toggle-button';
 export { default as ButtonGroup } from './components/button-group';
 export { default as ProgressBar } from './components/progress-bar';
 export { default as Listbox } from './components/listbox';
+export { default as Divider } from './components/divider';

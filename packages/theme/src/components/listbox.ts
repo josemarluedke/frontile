@@ -4,17 +4,7 @@ const listbox = tv({
   slots: {
     base: 'w-full relative flex flex-col gap-1 p-1',
     list: 'w-full flex flex-col gap-0.5 outline-none'
-  },
-  variants: {
-    radius: {
-      none: 'rounded-none',
-      sm: 'rounded',
-      lg: 'rounded-lg',
-      full: 'rounded-full'
-    }
-  },
-  compoundVariants: [],
-  defaultVariants: {}
+  }
 });
 
 const listboxItem = tv({
@@ -67,10 +57,7 @@ const listboxItem = tv({
         base: 'border border-transparent bg-transparent'
       },
       faded: {
-        base: [
-          'border border-transparent hover:border-default data-[active=true]:bg-default-100'
-          // 'data-[selectable=true]:focus:border-default data-[selectable=true]:focus:bg-default-100'
-        ]
+        base: ['border border-transparent']
       }
     },
     intent: {
@@ -82,6 +69,12 @@ const listboxItem = tv({
       danger: {}
     },
     isActive: { true: { base: [] } },
+
+    withDivider: {
+      true: {
+        base: ['mb-1.5']
+      }
+    },
 
     isDisabled: {
       true: {
@@ -234,7 +227,7 @@ const listboxItem = tv({
         ]
       }
     },
-    //
+
     // appearence: faded
     {
       appearence: 'faded',

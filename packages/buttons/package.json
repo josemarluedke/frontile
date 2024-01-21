@@ -44,6 +44,7 @@
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/core": "^0.17.0-alpha.3",
     "@frontile/theme": "^0.17.0-alpha.3",
+    "ember-element-helper": "^0.8.5",
     "ember-modifier": "^4.1.0"
   },
   "devDependencies": {
@@ -88,6 +89,7 @@
       "./components/button.js": "./dist/_app_/components/button.js",
       "./components/chip.js": "./dist/_app_/components/chip.js",
       "./components/progress-bar.js": "./dist/_app_/components/progress-bar.js",
+      "./components/divider.js": "./dist/_app_/components/divider.js",
       "./components/listbox/index.js": "./dist/_app_/components/listbox/index.js",
       "./components/listbox/item.js": "./dist/_app_/components/listbox/item.js",
       "./components/listbox/listManager.js": "./dist/_app_/components/listbox/listManager.js",

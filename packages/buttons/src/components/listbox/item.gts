@@ -6,6 +6,7 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import { SetupListItem } from './setupListItemModfier';
+import Divider from '../divider';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, Node } from './listManager';
 
@@ -18,6 +19,7 @@ interface ItemSignature {
     shortcut?: string;
     onClick?: () => void;
     class?: string;
+    withDivider?: boolean;
 
     /**
      * The button appearance
@@ -111,7 +113,8 @@ class ListboxItem extends Component<ItemSignature> {
       intent: this.args.intent || 'default',
       isDisabled: this.node?.isDisabled,
       isSelected: this.node?.isSelected,
-      isActive: this.node?.isActive
+      isActive: this.node?.isActive,
+      withDivider: this.args.withDivider
     });
 
     return {
@@ -163,6 +166,9 @@ class ListboxItem extends Component<ItemSignature> {
 
       {{yield to="end"}}
     </li>
+    {{#if @withDivider}}
+      <Divider @as="li" />
+    {{/if}}
   </template>
 }
 
