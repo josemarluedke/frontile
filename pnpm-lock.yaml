@@ -24,7 +24,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -64,6 +64,9 @@ importers:
       '@babel/runtime':
         specifier: '>= 7'
         version: 7.23.6
+      '@ember/render-modifiers':
+        specifier: ^2.1.0
+        version: 2.1.0(@babel/core@7.23.6)(@glint/template@1.3.0)(ember-source@5.5.0)
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7
@@ -73,6 +76,9 @@ importers:
       '@frontile/theme':
         specifier: ^0.17.0-alpha.3
         version: link:../theme
+      ember-modifier:
+        specifier: ^4.1.0
+        version: 4.1.0(ember-source@5.5.0)
     devDependencies:
       '@babel/core':
         specifier: 7.23.6
@@ -103,7 +109,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -188,7 +194,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -273,7 +279,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -358,7 +364,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -446,7 +452,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -537,7 +543,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -634,7 +640,7 @@ importers:
         version: 1.3.0(typescript@5.3.3)
       '@glint/environment-ember-loose':
         specifier: 1.3.0
-        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+        version: 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/environment-ember-template-imports':
         specifier: 1.3.0
         version: 1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0)
@@ -2923,7 +2929,7 @@ packages:
         optional: true
     dependencies:
       '@embroider/macros': 1.13.4(@glint/template@1.3.0)
-      '@glint/environment-ember-loose': 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+      '@glint/environment-ember-loose': 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/template': 1.3.0
       broccoli-funnel: 3.0.8
       ember-cli-babel: 7.26.11
@@ -3213,7 +3219,7 @@ packages:
       - supports-color
     dev: true
 
-  /@glint/environment-ember-loose@1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0):
+  /@glint/environment-ember-loose@1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0):
     resolution: {integrity: sha512-kURIttax2zG1oYniJ4bd3rhJRuP588Ld4YAG5EFzjg4s01oLQKpfNskxwSwox07PUkygm2D+9v3Foo2TlYJSSg==}
     peerDependencies:
       '@glimmer/component': ^1.1.2
@@ -3243,6 +3249,7 @@ packages:
     dependencies:
       '@glimmer/component': 1.1.2(@babel/core@7.23.6)
       '@glint/template': 1.3.0
+      ember-modifier: 4.1.0(ember-source@5.5.0)
 
   /@glint/environment-ember-template-imports@1.3.0(@glint/environment-ember-loose@1.3.0)(@glint/template@1.3.0):
     resolution: {integrity: sha512-ynSc3AeFE4ZocvjI4rTS55L5sSrMexMvRtOYbVuY/u9t0PGXDjFuH/OiRiSCbHIL/jYH5Ie5uASZxs7TTCT8dw==}
@@ -3263,7 +3270,7 @@ packages:
       '@types/ember__routing':
         optional: true
     dependencies:
-      '@glint/environment-ember-loose': 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)
+      '@glint/environment-ember-loose': 1.3.0(@glimmer/component@1.1.2)(@glint/template@1.3.0)(ember-modifier@4.1.0)
       '@glint/template': 1.3.0
       ember-template-imports: 3.4.2
     transitivePeerDependencies:

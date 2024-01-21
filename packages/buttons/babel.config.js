@@ -20,6 +20,7 @@ module.exports = {
     ],
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-transform-class-static-block'
+    '@babel/plugin-transform-class-static-block',
+    '@babel/plugin-transform-private-methods'
   ]
 };
