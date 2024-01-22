@@ -15,6 +15,7 @@ export interface ListboxSignature {
     allowEmpty: boolean;
     items: unknown[];
     class?: string;
+    isKeyboardEventsEnabled?: boolean;
 
     onAction: (key: string) => void;
     onSelectionChange: (key: string[]) => void;
@@ -36,13 +37,9 @@ export default class Listbox extends Component<ListboxSignature> {
     onAction: this.args.onAction
   });
 
-  get isActive() {
-    return this.args.isActive;
-  }
-
   @action
   handleKeyPress(event: KeyboardEvent) {
-    if (this.isActive) {
+    if (this.args.isKeyboardEventsEnabled) {
       if (
         event.key === 'Enter' ||
         ((event.key === 'Space' || event.key === ' ') &&
@@ -59,7 +56,7 @@ export default class Listbox extends Component<ListboxSignature> {
 
   @action
   handleKeyDown(event: KeyboardEvent) {
-    if (!this.isActive) {
+    if (!this.args.isKeyboardEventsEnabled) {
       return;
     }
     if (
@@ -80,7 +77,7 @@ export default class Listbox extends Component<ListboxSignature> {
 
   @action
   handleKeyUp(event: KeyboardEvent) {
-    if (!this.isActive) {
+    if (!this.args.isKeyboardEventsEnabled) {
       return;
     }
     if (event.key === 'ArrowDown') {
@@ -123,6 +120,7 @@ export default class Listbox extends Component<ListboxSignature> {
         {{on 'keypress' this.handleKeyPress}}
         {{on 'keydown' this.handleKeyDown}}
         {{on 'keyup' this.handleKeyUp}}
+        data-test-id="listbox"
         class={{this.classNames.list}}
         ...attributes
       >

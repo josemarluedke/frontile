@@ -135,6 +135,9 @@ class ListboxItem extends Component<ItemSignature> {
       {{on 'click' this.onClick}}
       tabindex={{this.tabindex}}
       data-active="{{this.node.isActive}}"
+      data-selected="{{this.node.isSelected}}"
+      data-test-id="listbox-item"
+      data-key={{this.key}}
       disabled={{this.node.isDisabled}}
       class={{this.classNames.base}}
       ...attributes
@@ -143,19 +146,19 @@ class ListboxItem extends Component<ItemSignature> {
 
       {{#if @description}}
         <div class={{this.classNames.descriptionWrapper}}>
-          <span class={{this.classNames.label}}>{{yield to="default"}}</span>
-          <span class={{this.classNames.description}}>{{@description}}</span>
+          <span data-test-id="listbox-item-label" class={{this.classNames.label}}>{{yield to="default"}}</span>
+          <span data-test-id="listbox-item-description" class={{this.classNames.description}}>{{@description}}</span>
         </div>
       {{else}}
-        <span class={{this.classNames.label}}>{{yield to="default"}}</span>
+        <span data-test-id="listbox-item-label" class={{this.classNames.label}}>{{yield to="default"}}</span>
       {{/if}}
 
       {{#if @shortcut}}
-        <kbd class={{this.classNames.shortcut}}>{{@shortcut}}</kbd>
+        <kbd data-test-id="listbox-item-shortcut" class={{this.classNames.shortcut}}>{{@shortcut}}</kbd>
       {{/if}}
 
       {{#if this.node.isSelected}}
-        <span class={{this.classNames.selectedIcon}}>
+        <span data-test-id="listbox-item-selected-icon" class={{this.classNames.selectedIcon}}>
           {{#if (has-block "selectedIcon")}}
             {{yield to="selectedIcon"}}
           {{else}}
