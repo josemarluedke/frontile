@@ -7,7 +7,8 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
-    'ember/no-empty-glimmer-component-classes': 'off'
+    'ember/no-empty-glimmer-component-classes': 'off',
+    'ember/no-runloop': 'off'
   },
   overrides: [
     {
@@ -15,7 +16,8 @@ module.exports = {
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-useless-constructor': 'off'
+        '@typescript-eslint/no-useless-constructor': 'off',
+        'lines-between-class-members': 'off'
       }
     },
 

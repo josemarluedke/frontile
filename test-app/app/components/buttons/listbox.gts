@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { array } from '@ember/helper';
-import { Listbox, ToggleButton, Divider } from '@frontile/buttons';
+import { Listbox, Divider } from '@frontile/buttons';
 
 const animals = [
   'cheetah',
@@ -32,18 +32,17 @@ export default class Example extends Component {
 
   @action
   onAction(key: string) {
+    // eslint-disable-next-line
     console.log('Click on key', key);
   }
 
   @action
   onSelectionChange(keys: string[]) {
-    console.log('changed keys', keys);
     this.selectedKeys = keys;
   }
 
   @action
   onSelectionChange2(keys: string[]) {
-    console.log('changed keys', keys);
     this.selectedKeys2 = keys;
   }
 
@@ -80,10 +79,16 @@ export default class Example extends Component {
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
-        @disabledKeys={{(array 'option-3' 'option-4')}}
+        @disabledKeys={{(array "option-3" "option-4")}}
         as |l|
       >
-        <l.Item @key="option-1" @shortcut="⌘⇧E" @description="this is a cool option" @intent="warning" @appearance="faded">
+        <l.Item
+          @key="option-1"
+          @shortcut="⌘⇧E"
+          @description="this is a cool option"
+          @intent="warning"
+          @appearance="faded"
+        >
           <:default>
             Items 1
           </:default>
@@ -91,7 +96,13 @@ export default class Example extends Component {
         <l.Item @key="option-2" @shortcut="⌘⇧C">Items 2</l.Item>
         <l.Item @key="option-3">B something 1</l.Item>
         <l.Item @key="option-4" @withDivider={{true}}>C something 1</l.Item>
-        <l.Item @key="option-5" @shortcut="⌘⇧B" @intent="danger" @appearance="faded" @class="text-danger">A something 1</l.Item>
+        <l.Item
+          @key="option-5"
+          @shortcut="⌘⇧B"
+          @intent="danger"
+          @appearance="faded"
+          @class="text-danger"
+        >A something 1</l.Item>
       </Listbox>
     </div>
   </template>

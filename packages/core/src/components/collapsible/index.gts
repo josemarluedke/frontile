@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';

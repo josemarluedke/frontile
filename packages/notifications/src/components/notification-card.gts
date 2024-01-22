@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-at-ember-render-modifiers, ember/no-runloop */
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';

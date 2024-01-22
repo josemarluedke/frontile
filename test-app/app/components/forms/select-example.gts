@@ -17,9 +17,7 @@ const animals = [
 ];
 
 <template>
-  <Select
-    @options={{animals}}
-  >
+  <Select @options={{animals}}>
 
     <:option as |o|>
       <o.Option>
@@ -28,10 +26,7 @@ const animals = [
     </:option>
   </Select>
 
-  <Select
-    class="mt-8"
-    @options={{animals}}
-  >
+  <Select class="mt-8" @options={{animals}}>
     <:trigger>Trigger</:trigger>
   </Select>
 </template>
