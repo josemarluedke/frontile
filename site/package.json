@@ -67,7 +67,7 @@
     "postcss-import": "^15.1.0",
     "postcss-nested": "^6.0.1",
     "prember": "^2.0.0",
-    "prettier-plugin-ember-template-tag": "^1.0.2",
+    "prettier-plugin-ember-template-tag": "^2.0.0",
     "qunit": "^2.19.4",
     "qunit-dom": "^3.0.0",
     "rehype-highlight": "^4.1.0",
