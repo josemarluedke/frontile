@@ -14,6 +14,7 @@ class SetupListItem extends Modifier<SetupListItemModifierSignature> {
   element?: HTMLLIElement;
   manager?: ListManager;
 
+  /* eslint-disable-next-line */
   constructor(owner: any, args: ArgsFor<SetupListItemModifierSignature>) {
     super(owner, args);
     registerDestructor(this, this.unregister);

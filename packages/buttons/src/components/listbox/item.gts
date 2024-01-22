@@ -132,7 +132,7 @@ class ListboxItem extends Component<ItemSignature> {
       role="option"
       {{this.didInsert}}
       {{SetupListItem this.manager key=this.key textValue=@textValue}}
-      {{on 'click' this.onClick}}
+      {{on "click" this.onClick}}
       tabindex={{this.tabindex}}
       data-active="{{this.node.isActive}}"
       data-selected="{{this.node.isSelected}}"
@@ -146,19 +146,34 @@ class ListboxItem extends Component<ItemSignature> {
 
       {{#if @description}}
         <div class={{this.classNames.descriptionWrapper}}>
-          <span data-test-id="listbox-item-label" class={{this.classNames.label}}>{{yield to="default"}}</span>
-          <span data-test-id="listbox-item-description" class={{this.classNames.description}}>{{@description}}</span>
+          <span
+            data-test-id="listbox-item-label"
+            class={{this.classNames.label}}
+          >{{yield to="default"}}</span>
+          <span
+            data-test-id="listbox-item-description"
+            class={{this.classNames.description}}
+          >{{@description}}</span>
         </div>
       {{else}}
-        <span data-test-id="listbox-item-label" class={{this.classNames.label}}>{{yield to="default"}}</span>
+        <span
+          data-test-id="listbox-item-label"
+          class={{this.classNames.label}}
+        >{{yield to="default"}}</span>
       {{/if}}
 
       {{#if @shortcut}}
-        <kbd data-test-id="listbox-item-shortcut" class={{this.classNames.shortcut}}>{{@shortcut}}</kbd>
+        <kbd
+          data-test-id="listbox-item-shortcut"
+          class={{this.classNames.shortcut}}
+        >{{@shortcut}}</kbd>
       {{/if}}
 
       {{#if this.node.isSelected}}
-        <span data-test-id="listbox-item-selected-icon" class={{this.classNames.selectedIcon}}>
+        <span
+          data-test-id="listbox-item-selected-icon"
+          class={{this.classNames.selectedIcon}}
+        >
           {{#if (has-block "selectedIcon")}}
             {{yield to="selectedIcon"}}
           {{else}}
@@ -178,9 +193,20 @@ class ListboxItem extends Component<ItemSignature> {
 const CheckIcon: TOC<{
   Element: SVGElement;
 }> = <template>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" ...attributes>
-    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    ...attributes
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="m4.5 12.75 6 6 9-13.5"
+    />
   </svg>
-</template>
+</template>;
 
 export { ListboxItem };

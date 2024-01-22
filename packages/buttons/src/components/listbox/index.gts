@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
@@ -114,29 +115,46 @@ export default class Listbox extends Component<ListboxSignature> {
   <template>
     <div class={{this.classNames.base}}>
       <ul
-        tabindex='0'
-        role='listbox'
-        {{didUpdate this.updateListManager @selectedKeys @disabledKeys @selectionMode @allowEmpty}}
-        {{on 'keypress' this.handleKeyPress}}
-        {{on 'keydown' this.handleKeyDown}}
-        {{on 'keyup' this.handleKeyUp}}
+        tabindex="0"
+        role="listbox"
+        {{didUpdate
+          this.updateListManager
+          @selectedKeys
+          @disabledKeys
+          @selectionMode
+          @allowEmpty
+        }}
+        {{on "keypress" this.handleKeyPress}}
+        {{on "keydown" this.handleKeyDown}}
+        {{on "keyup" this.handleKeyUp}}
         data-test-id="listbox"
         class={{this.classNames.list}}
         ...attributes
       >
         {{#each @items as |item|}}
           {{#if (has-block "item")}}
-            {{yield (hash
-                      item=item
-                      Item=(component ListboxItem manager=this.listManager)
-            ) to="item"}}
+            {{yield
+              (hash
+                item=item Item=(component ListboxItem manager=this.listManager)
+              )
+              to="item"
+            }}
           {{else}}
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            <ListboxItem @manager={{this.listManager}} @key={{item}}>{{item}}</ListboxItem>
+            <ListboxItem
+              @manager={{this.listManager}}
+              {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
+              @key={{item}}
+            >
+              {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
+              {{item}}
+            </ListboxItem>
           {{/if}}
         {{/each}}
 
-        {{yield (hash Item=(component ListboxItem manager=this.listManager)) to="default"}}
+        {{yield
+          (hash Item=(component ListboxItem manager=this.listManager))
+          to="default"
+        }}
       </ul>
     </div>
   </template>

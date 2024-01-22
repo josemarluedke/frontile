@@ -28,11 +28,8 @@ const Divider: TOC<{
   Element: HTMLDivElement;
 }> = <template>
   {{#let (element (getTag @orientation @as)) as |Tag|}}
-    <Tag
-      class={{(divider (hash class=@class))}} role="separator"
-    >
-    </Tag>
+    <Tag class={{(divider (hash class=@class))}} role="separator" />
   {{/let}}
-</template>
+</template>;
 
 export default Divider;
