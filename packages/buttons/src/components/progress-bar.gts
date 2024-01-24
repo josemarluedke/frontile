@@ -184,7 +184,7 @@ export default class ProgressBar extends Component<ProgressBarSignature> {
       <div class={{this.classNames.base}}>
         <div
           role="progressbar"
-          aria-labelledby={{this.id}}
+          aria-labelledby={{if @label this.id}}
           aria-valuenow={{this.progress}}
           aria-valuemin={{this.minValue}}
           aria-valuemax={{this.maxValue}}
