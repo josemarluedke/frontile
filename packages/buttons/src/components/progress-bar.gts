@@ -122,7 +122,9 @@ export default class ProgressBar extends Component<ProgressBarSignature> {
   }
 
   get percentage(): number {
-    return ((this.progress - this.minValue) / (this.maxValue - this.minValue)) * 100;
+    return (
+      ((this.progress - this.minValue) / (this.maxValue - this.minValue)) * 100
+    );
   }
 
   get showValueLabel(): boolean {
