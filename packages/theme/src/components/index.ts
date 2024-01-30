@@ -1,5 +1,6 @@
 export * from './button';
 export * from './chip';
+export * from './progress-bar';
 export * from './close-button';
 
 export * from './notifications-container';
