@@ -4,6 +4,7 @@ import type ToggleButton from './components/toggle-button';
 import type ButtonGroup from './components/button-group';
 import type ProgressBar from './components/progress-bar';
 import type Listbox from './components/listbox';
+import type Dropdown from './components/dropdown';
 
 export default interface Registry {
   Button: typeof Button;
@@ -12,4 +13,5 @@ export default interface Registry {
   ButtonGroup: typeof ButtonGroup;
   ProgressBar: typeof ProgressBar;
   Listbox: typeof Listbox;
+  Dropdown: typeof Dropdown;
 }

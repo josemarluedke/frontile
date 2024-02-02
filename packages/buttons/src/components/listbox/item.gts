@@ -10,7 +10,7 @@ import Divider from '../divider';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, Node } from './listManager';
 
-interface ItemSignature {
+export interface ListboxItemSignature {
   Args: {
     manager: ListManager;
     key: string;
@@ -42,7 +42,7 @@ interface ItemSignature {
   };
 }
 
-class ListboxItem extends Component<ItemSignature> {
+class ListboxItem extends Component<ListboxItemSignature> {
   @tracked el?: HTMLLIElement;
 
   didInsert = modifier((el: HTMLElement) => {
