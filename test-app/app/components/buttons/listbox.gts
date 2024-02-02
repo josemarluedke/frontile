@@ -79,30 +79,28 @@ export default class Example extends Component {
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
-        @disabledKeys={{(array "option-3" "option-4")}}
+        @disabledKeys={{(array "notifications")}}
         as |l|
       >
-        <l.Item
-          @key="option-1"
-          @shortcut="⌘⇧E"
-          @description="this is a cool option"
-          @intent="warning"
-          @appearance="faded"
-        >
-          <:default>
-            Items 1
-          </:default>
+        <l.Item @key="profile" @description="View my profile">
+          My Provile
         </l.Item>
-        <l.Item @key="option-2" @shortcut="⌘⇧C">Items 2</l.Item>
-        <l.Item @key="option-3">B something 1</l.Item>
-        <l.Item @key="option-4" @withDivider={{true}}>C something 1</l.Item>
+        <l.Item @key="settings" @shortcut="⌘⇧S">Settings</l.Item>
+        <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
+          Notifications
+        </l.Item>
+        <l.Item @key="reset" @intent="danger" @class="text-danger">
+          Reset Settings
+        </l.Item>
         <l.Item
-          @key="option-5"
-          @shortcut="⌘⇧B"
+          @key="delete"
+          @shortcut="⌘⇧D"
           @intent="danger"
           @appearance="faded"
           @class="text-danger"
-        >A something 1</l.Item>
+        >
+          Delete Account
+        </l.Item>
       </Listbox>
     </div>
   </template>
