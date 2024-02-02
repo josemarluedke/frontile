@@ -7,7 +7,7 @@ const { blue, gray } = require('@frontile/theme/colors');
 
 module.exports = {
   content: [
-    './app/**/*.{html,js,ts,hbs}',
+    './app/**/*.{html,js,ts,hbs,gts,gjs}',
     './node_modules/@frontile/theme/dist/**/*.js',
     './lib/docfy-theme/addon/**/*.hbs',
     '../**/*.md',

@@ -1,4 +1,4 @@
-import flatten from 'flat';
+import { flatten } from 'flat';
 import kebabCase from 'lodash.kebabcase';
 import mapKeys from 'lodash.mapkeys';
 import Color from 'color';

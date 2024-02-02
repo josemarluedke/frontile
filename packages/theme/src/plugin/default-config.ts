@@ -1,7 +1,9 @@
 import { semanticColors } from '../colors/semantic';
 import type { LayoutTheme } from '../types';
 
-const baseLayout: LayoutTheme = {};
+const baseLayout: LayoutTheme = {
+  disabledOpacity: '.5'
+};
 
 const defaultConfig = {
   defaultTheme: 'light',

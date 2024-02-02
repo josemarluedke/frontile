@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-runloop */
 import { tracked } from '@glimmer/tracking';
 import { later, cancel } from '@ember/runloop';
 import type { Timer as EmberTimer } from '@ember/runloop';

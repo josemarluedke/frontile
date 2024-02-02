@@ -53,7 +53,7 @@ export default class ToggleButton extends Component<ToggleButtonSignature> {
   <template>
     <button
       type="button"
-      {{on 'click' this.onChange}}
+      {{on "click" this.onChange}}
       class={{this.classNames}}
       aria-pressed="{{this.isSelected}}"
       ...attributes

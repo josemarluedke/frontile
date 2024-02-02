@@ -9,6 +9,8 @@ export interface LayoutTheme {
    * @default .8
    */
   hoverOpacity?: string | number;
+
+  disabledOpacity?: string | number;
 }
 
 export type ConfigTheme = {

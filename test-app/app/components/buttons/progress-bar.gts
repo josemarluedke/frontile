@@ -97,11 +97,11 @@ import { hash } from '@ember/helper';
   </h2>
   <div class="mt-6 grid grid-cols-4 gap-4">
     <ProgressBar @progress={{50}} @label="With label" />
-   <ProgressBar
+    <ProgressBar
       @progress={{20}}
       @minValue={{10}}
       @maxValue={{50}}
-      @label='Interpolated progress'
+      @label="Interpolated progress"
     />
     <ProgressBar
       @progress={{50}}
@@ -113,7 +113,7 @@ import { hash } from '@ember/helper';
       @label="Custom label value"
       @valueLabel="4 out of 8"
     />
-     <ProgressBar
+    <ProgressBar
       @progress={{25}}
       @label="Custom label value"
       @valueLabel="1/4"

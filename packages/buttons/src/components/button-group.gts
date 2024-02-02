@@ -33,9 +33,18 @@ export default class ButtonGroup extends Component<ButtonGroupSignature> {
 
   <template>
     <div class={{this.classNames}} role="group" ...attributes>
-      {{yield (hash
-          Button=(component Button isInGroup=true appearance=@appearance intent=@intent size=@size)
-          ToggleButton=(component ToggleButton isInGroup=true intent=@intent size=@size)
+      {{yield
+        (hash
+          Button=(component
+            Button
+            isInGroup=true
+            appearance=@appearance
+            intent=@intent
+            size=@size
+          )
+          ToggleButton=(component
+            ToggleButton isInGroup=true intent=@intent size=@size
+          )
         )
       }}
     </div>

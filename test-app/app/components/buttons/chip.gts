@@ -55,7 +55,6 @@ import { Chip } from '@frontile/buttons';
     </Chip>
   </div>
 
-
   <h2 class="text-2xl mt-6">
     Outlined
   </h2>
@@ -139,16 +138,36 @@ import { Chip } from '@frontile/buttons';
     <Chip @appearance="faded" @onClose={{true}} @isDisabled={{true}}>
       Chip
     </Chip>
-    <Chip @appearance="faded" @intent="primary" @onClose={{true}} @isDisabled={{true}}>
+    <Chip
+      @appearance="faded"
+      @intent="primary"
+      @onClose={{true}}
+      @isDisabled={{true}}
+    >
       Primary
     </Chip>
-    <Chip @appearance="faded" @intent="success" @onClose={{true}} @isDisabled={{true}}>
+    <Chip
+      @appearance="faded"
+      @intent="success"
+      @onClose={{true}}
+      @isDisabled={{true}}
+    >
       Success
     </Chip>
-    <Chip @appearance="faded" @intent="warning" @onClose={{true}} @isDisabled={{true}}>
+    <Chip
+      @appearance="faded"
+      @intent="warning"
+      @onClose={{true}}
+      @isDisabled={{true}}
+    >
       Warning
     </Chip>
-    <Chip @appearance="faded" @intent="danger" @onClose={{true}} @isDisabled={{true}}>
+    <Chip
+      @appearance="faded"
+      @intent="danger"
+      @onClose={{true}}
+      @isDisabled={{true}}
+    >
       Danger
     </Chip>
   </div>
