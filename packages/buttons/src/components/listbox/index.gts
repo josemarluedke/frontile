@@ -20,6 +20,18 @@ export interface ListboxSignature {
 
     onAction: (key: string) => void;
     onSelectionChange: (key: string[]) => void;
+
+    /**
+     * The appearance of each item
+     *
+     * @defaultValue 'default'
+     */
+    appearance?: 'default' | 'outlined' | 'faded';
+
+    /**
+     * The intent of each item
+     */
+    intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -61,16 +73,9 @@ export default class Listbox extends Component<ListboxSignature> {
       return;
     }
     if (
-      [
-        'ArrowUp',
-        'ArrowDown',
-        'ArrowLeft',
-        'ArrowRight',
-        'PageUp',
-        'PageDown',
-        'Home',
-        'End'
-      ].includes(event.key)
+      ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(
+        event.key
+      )
     ) {
       event.preventDefault();
     }
@@ -83,11 +88,7 @@ export default class Listbox extends Component<ListboxSignature> {
     }
     if (event.key === 'ArrowDown') {
       this.listManager.setNextOptionActive();
-    } else if (event.key === 'ArrowRight') {
-      this.listManager.setNextOptionActive();
     } else if (event.key === 'ArrowUp') {
-      this.listManager.setPreviousOptionActive();
-    } else if (event.key === 'ArrowLeft') {
       this.listManager.setPreviousOptionActive();
     } else if (event.key === 'Home' || event.key === 'PageUp') {
       this.listManager.setFirstOptionActive();
@@ -135,7 +136,13 @@ export default class Listbox extends Component<ListboxSignature> {
           {{#if (has-block "item")}}
             {{yield
               (hash
-                item=item Item=(component ListboxItem manager=this.listManager)
+                item=item
+                Item=(component
+                  ListboxItem
+                  manager=this.listManager
+                  appearance=@appearance
+                  intent=@intent
+                )
               )
               to="item"
             }}
@@ -144,6 +151,8 @@ export default class Listbox extends Component<ListboxSignature> {
               @manager={{this.listManager}}
               {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
               @key={{item}}
+              @appearance={{@appearance}}
+              @intent={{@intent}}
             >
               {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
               {{item}}
@@ -152,7 +161,14 @@ export default class Listbox extends Component<ListboxSignature> {
         {{/each}}
 
         {{yield
-          (hash Item=(component ListboxItem manager=this.listManager))
+          (hash
+            Item=(component
+              ListboxItem
+              manager=this.listManager
+              appearance=@appearance
+              intent=@intent
+            )
+          )
           to="default"
         }}
       </ul>

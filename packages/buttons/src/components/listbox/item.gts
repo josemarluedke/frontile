@@ -22,14 +22,14 @@ interface ItemSignature {
     withDivider?: boolean;
 
     /**
-     * The button appearance
+     * The appearance of each item
      *
      * @defaultValue 'default'
      */
     appearance?: 'default' | 'outlined' | 'faded';
 
     /**
-     * The intent of the button
+     * The intent of each item
      */
     intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
   };
