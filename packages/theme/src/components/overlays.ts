@@ -219,10 +219,12 @@ const overlayTransitions = {
   scale: {
     enter: {
       opacity: '0',
-      transform: 'translate(scaleX(0.95) scaleY(0.95))'
+      transform: 'scale(0.95)'
     },
     enterActive: {
-      transition: 'all 200ms cubic-bezier(0, 0, 0.2, 1)'
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '200ms',
+      transitionTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
     },
     enterTo: {
       opacity: '1',
@@ -233,11 +235,13 @@ const overlayTransitions = {
       transform: 'translate(scaleX(1) scaleY(1))'
     },
     leaveActive: {
-      transition: 'all 75ms cubic-bezier(0.4, 0, 1, 1)'
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '100ms',
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)'
     },
     leaveTo: {
       opacity: '0',
-      transform: 'translate(scaleX(0.95) scaleY(0.95))'
+      transform: 'scale(0.95)'
     }
   }
 };
