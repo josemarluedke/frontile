@@ -145,6 +145,7 @@ class Content extends Component<ContentSignature> {
       @disableBackdrop={{true}}
       @onClose={{@onClose}}
       @customContentModifier={{this.loop}}
+      @contentTransitionName="overlay-transition--scale"
       @disableFlexContent={{true}}
     >
       <Listbox

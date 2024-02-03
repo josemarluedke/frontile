@@ -215,6 +215,30 @@ const overlayTransitions = {
       transform: 'translateY(0%)'
     },
     ...slideTransition
+  },
+  scale: {
+    enter: {
+      opacity: '0',
+      transform: 'translate(scaleX(0.95) scaleY(0.95))'
+    },
+    enterActive: {
+      transition: 'all 200ms cubic-bezier(0, 0, 0.2, 1)'
+    },
+    enterTo: {
+      opacity: '1',
+      transform: 'translate(scaleX(1) scaleY(1))'
+    },
+    leave: {
+      opacity: '1',
+      transform: 'translate(scaleX(1) scaleY(1))'
+    },
+    leaveActive: {
+      transition: 'all 75ms cubic-bezier(0.4, 0, 1, 1)'
+    },
+    leaveTo: {
+      opacity: '0',
+      transform: 'translate(scaleX(0.95) scaleY(0.95))'
+    }
   }
 };
 
