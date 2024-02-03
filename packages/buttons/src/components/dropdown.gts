@@ -25,7 +25,7 @@ export interface DropdownSignature {
     /**
      * Placement of the menu when open
      *
-     * @defaultValue 'bottom-end'
+     * @defaultValue 'bottom-start'
      */
     placement?:
       | 'top'
@@ -69,7 +69,7 @@ export default class Dropdown extends Component<DropdownSignature> {
 
   <template>
     <Velcro
-      @placement={{if @placement @placement "bottom-end"}}
+      @placement={{if @placement @placement "bottom-start"}}
       @offsetOptions={{5}}
       as |velcro|
     >
