@@ -18,7 +18,7 @@ export default class Example extends Component {
     <Dropdown as |d|>
       <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-      <d.Content @onAction={{this.onAction}} @intent="primary" as |Item|>
+      <d.Menu @onAction={{this.onAction}} @intent="primary" as |Item|>
         <Item @key="profile" @description="View my profile">
           My Provile
         </Item>
@@ -38,7 +38,7 @@ export default class Example extends Component {
         >
           Delete Account
         </Item>
-      </d.Content>
+      </d.Menu>
     </Dropdown>
   </template>
 }

@@ -13,6 +13,10 @@ type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
 
 export interface ListboxSignature<T = unknown> {
   Args: {
+    /**
+     * @default 'listbox'
+     */
+    type?: 'menu' | 'listbox';
     selectionMode?: SelectionMode;
     selectedKeys?: string[];
     disabledKeys?: string[];
@@ -115,10 +119,17 @@ export default class Listbox extends Component<ListboxSignature> {
     });
   }
 
+  get role() {
+    if (this.args.type === 'menu') {
+      return this.args.type;
+    }
+    return 'listbox';
+  }
+
   <template>
     <ul
       tabindex="0"
-      role="listbox"
+      role={{this.role}}
       {{didUpdate
         this.updateListManager
         @selectedKeys
@@ -143,6 +154,7 @@ export default class Listbox extends Component<ListboxSignature> {
                 manager=this.listManager
                 appearance=@appearance
                 intent=@intent
+                type=this.role
               )
             )
             to="item"
@@ -154,6 +166,7 @@ export default class Listbox extends Component<ListboxSignature> {
             @key={{item}}
             @appearance={{@appearance}}
             @intent={{@intent}}
+            @type={{this.role}}
           >
             {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
             {{item}}
@@ -168,6 +181,7 @@ export default class Listbox extends Component<ListboxSignature> {
             manager=this.listManager
             appearance=@appearance
             intent=@intent
+            type=this.role
           )
         )
         to="default"

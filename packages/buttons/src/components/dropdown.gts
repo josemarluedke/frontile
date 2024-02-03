@@ -1,15 +1,15 @@
-/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { hash } from '@ember/helper';
-import { Velcro } from 'ember-velcro';
-import type { ModifierLike } from '@glint/template';
 import Button, { type ButtonArgs } from './button';
-import { useStyles } from '@frontile/theme';
-import Overlay from '@frontile/overlays/components/overlay';
-import { assert } from '@ember/debug';
 import Listbox, { type ListboxSignature } from './listbox';
+import Overlay from '@frontile/overlays/components/overlay';
+import { tracked } from '@glimmer/tracking';
+import { Velcro } from 'ember-velcro';
+import { assert } from '@ember/debug';
+import { guidFor } from '@ember/object/internals';
+import { hash } from '@ember/helper';
+import { on } from '@ember/modifier';
+import { useStyles } from '@frontile/theme';
+import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from './listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
@@ -17,27 +17,46 @@ export interface DropdownSignature {
   Args: {
     /**
      * Whether the dropdown should close upon selecting an item.
-     * @default true
+     *
+     * @defaultValue true
      */
     closeOnItemSelect?: boolean;
+
+    /**
+     * Placement of the menu when open
+     *
+     * @defaultValue 'bottom-end'
+     */
+    placement?:
+      | 'top'
+      | 'top-start'
+      | 'top-end'
+      | 'right'
+      | 'right-start'
+      | 'right-end'
+      | 'bottom'
+      | 'bottom-start'
+      | 'bottom-end'
+      | 'left'
+      | 'left-start'
+      | 'left-end';
   };
   Element: HTMLUListElement;
   Blocks: {
     default: [
       {
-        hook: ModifierLike<{ Element: HTMLElement }>;
-        Trigger: WithBoundArgs<typeof Trigger, 'hook'> &
-          WithBoundArgs<typeof Trigger, 'onClick'>;
-
-        Content: WithBoundArgs<typeof Content, 'loop'> &
-          WithBoundArgs<typeof Content, 'isOpen'> &
-          WithBoundArgs<typeof Content, 'onClose'>;
+        Trigger: WithBoundArgs<typeof Trigger, 'hook' | 'onClick'>;
+        Menu: WithBoundArgs<
+          typeof Menu,
+          'loop' | 'isOpen' | 'id' | 'onClose' | 'closeOnItemSelect'
+        >;
       }
     ];
   };
 }
 
 export default class Dropdown extends Component<DropdownSignature> {
+  menuId = guidFor(this);
   @tracked isOpen = false;
 
   toggle = () => {
@@ -48,26 +67,27 @@ export default class Dropdown extends Component<DropdownSignature> {
     this.isOpen = false;
   };
 
-  get offsetOptions() {
-    return 5;
-  }
-
   <template>
     <Velcro
-      @placement="bottom-end"
-      @offsetOptions={{this.offsetOptions}}
+      @placement={{if @placement @placement "bottom-end"}}
+      @offsetOptions={{5}}
       as |velcro|
     >
       {{yield
         (hash
-          hook=velcro.hook
-          Trigger=(component Trigger hook=velcro.hook onClick=this.toggle)
-          Content=(component
-            Content
+          Trigger=(component
+            Trigger
+            hook=velcro.hook
+            onClick=this.toggle
+            isOpen=this.isOpen
+            menuId=this.menuId
+          )
+          Menu=(component
+            Menu
+            id=this.menuId
             loop=velcro.loop
             isOpen=this.isOpen
             onClose=this.close
-            onAction=this.close
             closeOnItemSelect=@closeOnItemSelect
           )
         )
@@ -85,10 +105,21 @@ interface TriggerArgs
    * @internal
    */
   hook: ModifierLike<{ Element: HTMLElement }>;
+
   /**
    * @internal
    */
   onClick: () => void;
+
+  /**
+   * @internal
+   */
+  isOpen?: boolean;
+
+  /**
+   * @internal
+   */
+  menuId?: string;
 }
 
 export interface TriggerSignature {
@@ -132,6 +163,9 @@ class Trigger extends Component<TriggerSignature> {
       @size={{@size}}
       @class={{@class}}
       @isInGroup={{@isInGroup}}
+      aria-haspopup="true"
+      aria-expanded="{{@isOpen}}"
+      aria-controls={{@menuId}}
       ...attributes
     >
       {{yield}}
@@ -139,12 +173,18 @@ class Trigger extends Component<TriggerSignature> {
   </template>
 }
 
-interface ContentArgs
-  extends Pick<ListboxSignature['Args'], 'appearance' | 'intent' | 'class'> {
-  /**
-   * @internal
-   */
-  hook: ModifierLike<{ Element: HTMLElement }>;
+interface MenuArgs
+  extends Pick<
+    ListboxSignature['Args'],
+    | 'appearance'
+    | 'intent'
+    | 'class'
+    | 'selectionMode'
+    | 'selectedKeys'
+    | 'disabledKeys'
+    | 'allowEmpty'
+    | 'onSelectionChange'
+  > {
   /**
    * @internal
    */
@@ -164,16 +204,25 @@ interface ContentArgs
    */
   onClose: () => void;
 
-  onAction: (key: string) => void;
+  onAction?: (key: string) => void;
+
+  disableTransitions?: boolean;
+
+  /**
+   * @defaultValue true
+   */
+  disableBackdrop?: boolean;
+
+  id: string;
 }
 
-export interface ContentSignature {
-  Args: ContentArgs;
+export interface MenuSignature {
+  Args: MenuArgs;
   Element: HTMLUListElement;
   Blocks: { default: [item: WithBoundArgs<typeof ListboxItem, 'manager'>] };
 }
 
-class Content extends Component<ContentSignature> {
+class Menu extends Component<MenuSignature> {
   get loop() {
     assert(
       `Dropdown Content does not have loop; Missing argument @loop`,
@@ -185,6 +234,10 @@ class Content extends Component<ContentSignature> {
   get classNames() {
     const { dropdownContent } = useStyles();
     return dropdownContent({ class: this.args.class });
+  }
+
+  get disableBackdrop() {
+    return this.args.disableBackdrop === false ? false : true;
   }
 
   onAction = (key: string) => {
@@ -200,24 +253,29 @@ class Content extends Component<ContentSignature> {
     }
   };
 
-  // TODO change role to menu
-
   <template>
     <Overlay
-      @isOpen={{@isOpen}}
-      @disableBackdrop={{true}}
-      @onClose={{@onClose}}
-      @customContentModifier={{this.loop}}
       @contentTransitionName="overlay-transition--scale"
+      @customContentModifier={{this.loop}}
+      @disableBackdrop={{this.disableBackdrop}}
       @disableFlexContent={{true}}
+      @disableTransitions={{@disableTransitions}}
+      @isOpen={{@isOpen}}
+      @onClose={{@onClose}}
     >
       <Listbox
-        @class={{this.classNames}}
-        @onAction={{this.onAction}}
-        @isKeyboardEventsEnabled={{true}}
-        @selectionMode="none"
+        @allowEmpty={{@allowEmpty}}
         @appearance={{@appearance}}
+        @class={{this.classNames}}
+        @disabledKeys={{@disabledKeys}}
         @intent={{@intent}}
+        @isKeyboardEventsEnabled={{true}}
+        @onAction={{this.onAction}}
+        @onSelectionChange={{@onSelectionChange}}
+        @selectedKeys={{@selectedKeys}}
+        @selectionMode={{if @selectionMode @selectionMode "none"}}
+        @type="menu"
+        id={{@id}}
         ...attributes
         as |l|
       >
