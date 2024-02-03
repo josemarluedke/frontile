@@ -5,16 +5,22 @@ import { on } from '@ember/modifier';
 import { hash } from '@ember/helper';
 import { Velcro } from 'ember-velcro';
 import type { ModifierLike } from '@glint/template';
-import Button from './button';
-import Listbox from './listbox';
+import Button, { type ButtonArgs } from './button';
 import { useStyles } from '@frontile/theme';
 import Overlay from '@frontile/overlays/components/overlay';
 import { assert } from '@ember/debug';
+import Listbox, { type ListboxSignature } from './listbox';
 import type { ListboxItem } from './listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface DropdownSignature {
-  Args: null;
+  Args: {
+    /**
+     * Whether the dropdown should close upon selecting an item.
+     * @default true
+     */
+    closeOnItemSelect?: boolean;
+  };
   Element: HTMLUListElement;
   Blocks: {
     default: [
@@ -62,6 +68,7 @@ export default class Dropdown extends Component<DropdownSignature> {
             isOpen=this.isOpen
             onClose=this.close
             onAction=this.close
+            closeOnItemSelect=@closeOnItemSelect
           )
         )
       }}
@@ -69,12 +76,24 @@ export default class Dropdown extends Component<DropdownSignature> {
   </template>
 }
 
+interface TriggerArgs
+  extends Pick<
+    ButtonArgs,
+    'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
+  > {
+  /**
+   * @internal
+   */
+  hook: ModifierLike<{ Element: HTMLElement }>;
+  /**
+   * @internal
+   */
+  onClick: () => void;
+}
+
 export interface TriggerSignature {
-  Args: {
-    hook: ModifierLike<{ Element: HTMLElement }>;
-    onClick: () => void;
-  };
-  Element: HTMLUListElement;
+  Args: TriggerArgs;
+  Element: HTMLButtonElement;
   Blocks: {
     default: [];
   };
@@ -107,20 +126,49 @@ class Trigger extends Component<TriggerSignature> {
       {{on "click" @onClick}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
+      @type="button"
+      @appearance={{@appearance}}
+      @intent={{@intent}}
+      @size={{@size}}
+      @class={{@class}}
+      @isInGroup={{@isInGroup}}
+      ...attributes
     >
       {{yield}}
     </Button>
   </template>
 }
 
+interface ContentArgs
+  extends Pick<ListboxSignature['Args'], 'appearance' | 'intent' | 'class'> {
+  /**
+   * @internal
+   */
+  hook: ModifierLike<{ Element: HTMLElement }>;
+  /**
+   * @internal
+   */
+  loop: ModifierLike<{ Element: HTMLElement }>;
+  /**
+   * @internal
+   */
+  isOpen: boolean;
+
+  /**
+   * @internal
+   */
+  closeOnItemSelect?: boolean;
+
+  /**
+   * @internal
+   */
+  onClose: () => void;
+
+  onAction: (key: string) => void;
+}
+
 export interface ContentSignature {
-  Args: {
-    loop: ModifierLike<{ Element: HTMLElement }>;
-    isOpen: boolean;
-    onClose: () => void;
-    onAction: (key: string) => void;
-    class?: string;
-  };
+  Args: ContentArgs;
   Element: HTMLUListElement;
   Blocks: { default: [item: WithBoundArgs<typeof ListboxItem, 'manager'>] };
 }
@@ -139,6 +187,21 @@ class Content extends Component<ContentSignature> {
     return dropdownContent({ class: this.args.class });
   }
 
+  onAction = (key: string) => {
+    if (typeof this.args.onAction === 'function') {
+      this.args.onAction(key);
+    }
+
+    if (
+      typeof this.args.onClose === 'function' &&
+      this.args.closeOnItemSelect !== false
+    ) {
+      this.args.onClose();
+    }
+  };
+
+  // TODO change role to menu
+
   <template>
     <Overlay
       @isOpen={{@isOpen}}
@@ -150,9 +213,12 @@ class Content extends Component<ContentSignature> {
     >
       <Listbox
         @class={{this.classNames}}
-        @onAction={{@onAction}}
+        @onAction={{this.onAction}}
         @isKeyboardEventsEnabled={{true}}
         @selectionMode="none"
+        @appearance={{@appearance}}
+        @intent={{@intent}}
+        ...attributes
         as |l|
       >
         {{yield (component l.Item)}}
