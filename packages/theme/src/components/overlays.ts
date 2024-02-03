@@ -4,14 +4,19 @@ const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content
 
 const overlay = tv({
   slots: {
-    base: '',
+    base: 'fixed inset-0',
     backdrop: 'fixed inset-0 select-none z-10 bg-overlay/[.45]',
-    content:
-      'flex items-center fixed inset-0 flex-col z-20 will-change-transform overflow-auto'
+    content: 'z-20 will-change-transform overflow-auto'
   },
   variants: {
+    enableFlexContent: {
+      true: {
+        content: 'flex items-center fixed inset-0 flex-col'
+      }
+    },
     inPlace: {
       true: {
+        base: 'absolute',
         backdrop: 'absolute',
         content: 'absolute'
       }

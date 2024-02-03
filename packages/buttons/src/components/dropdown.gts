@@ -144,9 +144,10 @@ class Content extends Component<ContentSignature> {
       @isOpen={{@isOpen}}
       @disableBackdrop={{true}}
       @onClose={{@onClose}}
+      @customContentModifier={{this.loop}}
+      @disableFlexContent={{true}}
     >
       <Listbox
-        {{this.loop}}
         @class={{this.classNames}}
         @onAction={{@onAction}}
         @isKeyboardEventsEnabled={{true}}

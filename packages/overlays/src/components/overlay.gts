@@ -1,17 +1,17 @@
-/* eslint-disable ember/no-at-ember-render-modifiers, ember/no-runloop */
+/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { getDOM, getElementById } from '../-private/dom';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import willDestroy from '@ember/render-modifiers/modifiers/will-destroy';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';
+import { modifier } from 'ember-modifier';
 // @ts-ignore
 import { focusTrap } from 'ember-focus-trap';
 import type { TOC } from '@ember/component/template-only';
+import type { ModifierLike } from '@glint/template';
 
 const MaybeInElement: TOC<{
   Args: {
@@ -130,6 +130,10 @@ export interface OverlayArgs {
    * @defaultValue 'overlay-transition--fade'
    */
   contentTransitionName?: string;
+
+  disableFlexContent?: boolean;
+  customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
+  contentClass?: string;
 }
 
 export interface OverlaySignature {
@@ -140,6 +144,9 @@ export interface OverlaySignature {
 
 export default class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
+
+  wrapperElement: HTMLElement | undefined;
+  backdropElement: HTMLElement | undefined;
   contentElement: HTMLElement | undefined;
   mouseDownContentElement: EventTarget | null = null;
 
@@ -170,12 +177,28 @@ export default class Overlay extends Component<OverlaySignature> {
   }
 
   get focusTrapOptions(): unknown {
-    return this.args.focusTrapOptions || { allowOutsideClick: true };
+    return (
+      this.args.focusTrapOptions || {
+        allowOutsideClick: (e: MouseEvent) => {
+          if (
+            e.target == this.backdropElement ||
+            e.target == this.wrapperElement
+          ) {
+            return true;
+          }
+          return false;
+        }
+      }
+    );
   }
 
-  @action handleOverlayClick(): void {
-    if (this.args.closeOnOutsideClick !== false) {
+  @action handleOverlayClick(e: MouseEvent): void {
+    if (
+      this.args.closeOnOutsideClick !== false &&
+      (e.target == this.backdropElement || e.target == this.wrapperElement)
+    ) {
       this.handleClose();
+      e.preventDefault();
     }
   }
 
@@ -191,7 +214,7 @@ export default class Overlay extends Component<OverlaySignature> {
   }
 
   @action handleClose(): void {
-    if (typeof this.args.onClose === 'function') {
+    if (this.args.isOpen && typeof this.args.onClose === 'function') {
       this.args.onClose();
     }
   }
@@ -208,8 +231,8 @@ export default class Overlay extends Component<OverlaySignature> {
     }
   }
 
-  @action setup(element: HTMLElement): void {
-    this.contentElement = element;
+  setupContent = modifier((el: HTMLDivElement) => {
+    this.contentElement = el;
     this.keepOpen = true;
 
     if (this.args.renderInPlace !== true) {
@@ -219,38 +242,64 @@ export default class Overlay extends Component<OverlaySignature> {
     if (typeof this.args.onOpen === 'function') {
       this.args.onOpen();
     }
-  }
+    return () => {
+      this.contentElement = undefined;
 
-  @action teardown(): void {
-    this.contentElement = undefined;
-
-    if (this.args.renderInPlace !== true && document.body.classList) {
-      document.body.style.overflow = '';
-    }
-
-    let duration = this.args.transitionDuration || 200;
-
-    if (this.args.disableTransitions === true) {
-      duration = 0;
-    }
-
-    const { didClose } = this.args;
-    later(() => {
-      if (!this.isDestroyed) this.keepOpen = false;
-      if (typeof didClose === 'function' && !this.isDestroyed) {
-        didClose();
+      if (this.args.renderInPlace !== true && document.body.classList) {
+        document.body.style.overflow = '';
       }
-    }, duration);
-  }
+
+      let duration = this.args.transitionDuration || 200;
+
+      if (this.args.disableTransitions === true) {
+        duration = 0;
+      }
+
+      const { didClose } = this.args;
+      later(() => {
+        if (!this.isDestroyed) this.keepOpen = false;
+        if (typeof didClose === 'function' && !this.isDestroyed) {
+          didClose();
+        }
+      }, duration);
+    };
+  });
+
+  setupBackdrop = modifier((el: HTMLDivElement) => {
+    this.backdropElement = el;
+    return () => {
+      this.backdropElement = undefined;
+    };
+  });
+
+  setupWrapper = modifier((el: HTMLDivElement) => {
+    this.wrapperElement = el;
+    return () => {
+      this.wrapperElement = undefined;
+    };
+  });
 
   get classes() {
     const { overlay } = useStyles();
 
     const { base, backdrop, content } = overlay({
-      inPlace: this.args.renderInPlace
+      inPlace: this.args.renderInPlace,
+      enableFlexContent: !(this.args.disableFlexContent === true)
     });
 
-    return { base: base(), backdrop: backdrop(), content: content() };
+    return {
+      base: base(),
+      backdrop: backdrop(),
+      content: content({ class: this.args.contentClass })
+    };
+  }
+
+  get customContentModifier() {
+    if (this.args.customContentModifier) {
+      return this.args.customContentModifier;
+    }
+
+    return modifier(() => {});
   }
 
   <template>
@@ -260,17 +309,16 @@ export default class Overlay extends Component<OverlaySignature> {
         @destinationElement={{this.destinationElement}}
       >
         <div
+          {{this.setupWrapper}}
           class={{this.classes.base}}
+          {{on "click" this.handleOverlayClick}}
           ...attributes
-          {{focusTrap
-            isActive=(if @disableFocusTrap false @isOpen)
-            focusTrapOptions=this.focusTrapOptions
-          }}
         >
+
           {{! template-lint-disable no-invalid-interactive }}
           {{#if this.isBackdropVisible}}
             <div
-              class={{this.classes.backdrop}}
+              {{this.setupBackdrop}}
               {{on "click" this.handleOverlayClick}}
               {{cssTransition
                 (if
@@ -280,24 +328,23 @@ export default class Overlay extends Component<OverlaySignature> {
                 )
                 isEnabled=this.isAnimationEnabled
               }}
+              class={{this.classes.backdrop}}
             ></div>
           {{/if}}
 
           {{!
-        This is required to make css-transition work with 2
-        sibling elements been removed at the same time.
-      }}
+            This is required to make css-transition work with 2
+            sibling elements been removed at the same time.
+          }}
           <span data-is-visible={{this.isVisible}}></span>
 
           {{#if @isOpen}}
             {{! template-lint-disable no-pointer-down-event-binding }}
             <div
-              class={{this.classes.content}}
+              {{this.setupContent}}
               {{on "click" this.handleContentClick}}
               {{on "keydown" this.handleKeyDown}}
               {{on "mousedown" this.handleContentMouseDown}}
-              {{didInsert this.setup}}
-              {{willDestroy this.teardown}}
               {{cssTransition
                 (if
                   @contentTransitionName
@@ -306,6 +353,13 @@ export default class Overlay extends Component<OverlaySignature> {
                 )
                 isEnabled=this.isAnimationEnabled
               }}
+              {{focusTrap
+                isActive=(if @disableFocusTrap false @isOpen)
+                focusTrapOptions=this.focusTrapOptions
+              }}
+              class={{this.classes.content}}
+              {{! Keep this custom modifer by last}}
+              {{this.customContentModifier}}
             >
               {{! template-lint-enable no-pointer-down-event-binding }}
               {{yield}}

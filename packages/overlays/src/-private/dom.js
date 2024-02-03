@@ -1,4 +1,4 @@
-import { getOwner } from '@ember/application';
+import { getOwner } from '@ember/owner';
 
 // adjusted from https://github.com/yapplabs/ember-wormhole/blob/0.5.4/addon/utils/dom.js#L45-L63
 // Copied from https://github.com/ember-intl/ember-intl/blob/a66560d0af9f08af20778a3eb3003045e19fbf16/addon/-private/utils/get-dom.js
