@@ -44,6 +44,7 @@
     "@ember/test-waiters": "^3.1.0",
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/theme": "workspace:0.17.0-alpha.3",
+    "ember-element-helper": "^0.8.5",
     "ember-auto-import": "^2.7.2",
     "focus-visible": "^5.2.0"
   },
@@ -84,8 +85,8 @@
     "type": "addon",
     "main": "addon-main.js",
     "app-js": {
-      "./components/close-button.js": "./dist/_app_/components/close-button.js",
       "./components/collapsible/index.js": "./dist/_app_/components/collapsible/index.js",
+      "./components/divider.js": "./dist/_app_/components/divider.js",
       "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js"
     }
   },

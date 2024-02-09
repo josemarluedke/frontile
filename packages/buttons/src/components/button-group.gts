@@ -6,10 +6,10 @@ import type { ButtonArgs } from './button';
 import ToggleButton from './toggle-button';
 import type { WithBoundArgs } from '@glint/template';
 
-export interface ButtonGroupArgs
+interface ButtonGroupArgs
   extends Pick<ButtonArgs, 'appearance' | 'intent' | 'size' | 'class'> {}
 
-export interface ButtonGroupSignature {
+interface ButtonGroupSignature {
   Args: ButtonGroupArgs;
   Blocks: {
     default: [
@@ -22,7 +22,7 @@ export interface ButtonGroupSignature {
   Element: HTMLDivElement;
 }
 
-export default class ButtonGroup extends Component<ButtonGroupSignature> {
+class ButtonGroup extends Component<ButtonGroupSignature> {
   get classNames(): string {
     const { buttonGroup } = useStyles();
 
@@ -50,3 +50,6 @@ export default class ButtonGroup extends Component<ButtonGroupSignature> {
     </div>
   </template>
 }
+
+export { ButtonGroup, type ButtonGroupSignature };
+export default ButtonGroup;

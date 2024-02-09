@@ -9,7 +9,7 @@ import { on } from '@ember/modifier';
 import { fn, concat } from '@ember/helper';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import didInsert from '@ember/render-modifiers/modifiers/did-insert';
-import CloseButton from '@frontile/utilities/components/close-button';
+import { CloseButton } from '@frontile/buttons';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';
 

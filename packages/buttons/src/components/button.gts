@@ -44,7 +44,7 @@ export interface ButtonArgs {
   isInGroup?: boolean;
 }
 
-export interface ButtonSignature {
+interface ButtonSignature {
   Args: ButtonArgs;
   Blocks: {
     default: [{ classNames: string }];
@@ -52,7 +52,7 @@ export interface ButtonSignature {
   Element: HTMLButtonElement;
 }
 
-export default class Button extends Component<ButtonSignature> {
+class Button extends Component<ButtonSignature> {
   get type(): string {
     if (this.args.type) {
       return this.args.type;
@@ -82,3 +82,6 @@ export default class Button extends Component<ButtonSignature> {
     {{/if}}
   </template>
 }
+
+export { Button, type ButtonSignature };
+export default Button;

@@ -6,7 +6,7 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import { SetupListItem } from './setupListItemModfier';
-import Divider from '../divider';
+import { Divider } from '@frontile/utilities';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, Node } from './listManager';

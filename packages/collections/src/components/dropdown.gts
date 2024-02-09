@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
-import Button, { type ButtonArgs } from './button';
-import Listbox, { type ListboxSignature } from './listbox';
-import Overlay from '@frontile/overlays/components/overlay';
+import { Button, type ButtonSignature } from '@frontile/buttons';
+import { Listbox, type ListboxSignature } from './listbox';
+import { Overlay } from '@frontile/overlays';
 import { tracked } from '@glimmer/tracking';
 import { Velcro } from 'ember-velcro';
 import { assert } from '@ember/debug';
@@ -103,7 +103,7 @@ export default class Dropdown extends Component<DropdownSignature> {
 
 interface TriggerArgs
   extends Pick<
-    ButtonArgs,
+    ButtonSignature['Args'],
     'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
   > {
   /**

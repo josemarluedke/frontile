@@ -1,45 +1,42 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import 'focus-visible/dist/focus-visible.js';
 import { on } from '@ember/modifier';
-import VisuallyHidden from './visually-hidden';
+import { VisuallyHidden } from '@frontile/utilities';
 import { useStyles } from '@frontile/theme';
 
-export interface CloseButtonArgs {
-  /**
-   * The title of the close button
-   *
-   * @defaultValue 'Close'
-   */
-  title?: string;
+interface CloseButtonSignature {
+  Args: {
+    /**
+     * The title of the close button
+     *
+     * @defaultValue 'Close'
+     */
+    title?: string;
 
-  /**
-   * The icon size
-   *
-   * @defaultValue 'lg'
-   */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    /**
+     * The icon size
+     *
+     * @defaultValue 'lg'
+     */
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-  /**
-   * The function to call when button is clicked
-   */
-  onClick?: (event: Event) => void;
+    /**
+     * The function to call when button is clicked
+     */
+    onClick?: (event: Event) => void;
 
-  /**
-   * Additional class for close button element
-   */
-  class?: string;
-}
-
-export interface CloseButtonSignature {
-  Args: CloseButtonArgs;
+    /**
+     * Additional class for close button element
+     */
+    class?: string;
+  };
   Blocks: {
     default: [string | null];
   };
   Element: HTMLButtonElement;
 }
 
-export default class CloseButton extends Component<CloseButtonSignature> {
+class CloseButton extends Component<CloseButtonSignature> {
   get classes() {
     const { closeButton } = useStyles();
 
@@ -93,3 +90,6 @@ export default class CloseButton extends Component<CloseButtonSignature> {
     </button>
   </template>
 }
+
+export { CloseButton, type CloseButtonSignature };
+export default CloseButton;

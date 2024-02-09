@@ -1,10 +1,11 @@
-import type Button from './components/button';
-import type Chip from './components/chip';
-import type ToggleButton from './components/toggle-button';
-import type ButtonGroup from './components/button-group';
-import type ProgressBar from './components/progress-bar';
-import type Listbox from './components/listbox';
-import type Dropdown from './components/dropdown';
+import type {
+  Button,
+  ButtonGroup,
+  Chip,
+  CloseButton,
+  ProgressBar,
+  ToggleButton
+} from './index';
 
 export default interface Registry {
   Button: typeof Button;
@@ -12,6 +13,5 @@ export default interface Registry {
   ToggleButton: typeof ToggleButton;
   ButtonGroup: typeof ButtonGroup;
   ProgressBar: typeof ProgressBar;
-  Listbox: typeof Listbox;
-  Dropdown: typeof Dropdown;
+  CloseButton: typeof CloseButton;
 }
