@@ -40,6 +40,8 @@ export interface DropdownSignature {
       | 'left'
       | 'left-start'
       | 'left-end';
+
+    onClose: () => void;
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -65,6 +67,9 @@ export default class Dropdown extends Component<DropdownSignature> {
 
   close = () => {
     this.isOpen = false;
+    if (typeof this.args.onClose === 'function') {
+      this.args.onClose();
+    }
   };
 
   <template>
@@ -166,6 +171,7 @@ class Trigger extends Component<TriggerSignature> {
       aria-haspopup="true"
       aria-expanded="{{@isOpen}}"
       aria-controls={{@menuId}}
+      data-test-id="dropdown-trigger"
       ...attributes
     >
       {{yield}}
@@ -214,6 +220,21 @@ interface MenuArgs
   disableBackdrop?: boolean;
 
   id: string;
+
+  /**
+   * Whether to render in place or in the specified/default destination
+   *
+   * @defaultValue false
+   */
+  renderInPlace?: boolean;
+
+  /**
+   * The destination where the menu will be inserted, defaults to
+   * `document.body`
+   *
+   * @defaultValue undefined
+   */
+  destinationElementId?: string;
 }
 
 export interface MenuSignature {
@@ -255,6 +276,8 @@ class Menu extends Component<MenuSignature> {
 
   <template>
     <Overlay
+      @destinationElementId={{@destinationElementId}}
+      @renderInPlace={{@renderInPlace}}
       @contentTransitionName="overlay-transition--scale"
       @customContentModifier={{this.loop}}
       @disableBackdrop={{this.disableBackdrop}}
