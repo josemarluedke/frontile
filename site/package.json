@@ -32,6 +32,8 @@
     "@frontile/forms": "workspace:*",
     "@frontile/notifications": "workspace:*",
     "@frontile/overlays": "workspace:*",
+    "@frontile/collections": "workspace:0.17.0-alpha.3",
+    "@frontile/status": "workspace:0.17.0-alpha.3",
     "@frontile/theme": "workspace:*",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",

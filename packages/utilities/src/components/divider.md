@@ -7,13 +7,13 @@ A Divider is designed to delineate and separate content.
 
 ## Import 
 ```js
-import { Divider } from '@frontile/buttons';
+import { Divider } from '@frontile/utilities';
 ```
 
 ## Usage
 
 ```gts preview
-import { Divider } from '@frontile/buttons';
+import { Divider } from '@frontile/utilities';
 
 <template>
   <div class="p-2 text-foreground not-prose">

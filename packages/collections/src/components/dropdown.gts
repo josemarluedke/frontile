@@ -13,7 +13,7 @@ import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from './listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
-export interface DropdownSignature {
+interface DropdownSignature {
   Args: {
     /**
      * Whether the dropdown should close upon selecting an item.
@@ -57,7 +57,7 @@ export interface DropdownSignature {
   };
 }
 
-export default class Dropdown extends Component<DropdownSignature> {
+class Dropdown extends Component<DropdownSignature> {
   menuId = guidFor(this);
   @tracked isOpen = false;
 
@@ -307,3 +307,6 @@ class Menu extends Component<MenuSignature> {
     </Overlay>
   </template>
 }
+
+export { Dropdown, type DropdownSignature };
+export default Dropdown;

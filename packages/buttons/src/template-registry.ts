@@ -3,7 +3,6 @@ import type {
   ButtonGroup,
   Chip,
   CloseButton,
-  ProgressBar,
   ToggleButton
 } from './index';
 
@@ -12,6 +11,5 @@ export default interface Registry {
   Chip: typeof Chip;
   ToggleButton: typeof ToggleButton;
   ButtonGroup: typeof ButtonGroup;
-  ProgressBar: typeof ProgressBar;
   CloseButton: typeof CloseButton;
 }

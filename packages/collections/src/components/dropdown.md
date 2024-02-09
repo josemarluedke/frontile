@@ -8,7 +8,7 @@ A menu, activated by a button, representing a set of actions or displaying a lis
 ## Import 
 
 ```js
-import { Dropdown } from '@frontile/buttons';
+import { Dropdown } from '@frontile/collections';
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ import { Dropdown } from '@frontile/buttons';
 ```gts preview
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { Dropdown } from '@frontile/buttons';
+import { Dropdown } from '@frontile/collections';
 
 export default class Example extends Component {
   @action

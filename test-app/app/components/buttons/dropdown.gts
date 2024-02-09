@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { Dropdown } from '@frontile/buttons';
+import { Dropdown } from '@frontile/collections';
 
 export default class Example extends Component {
   @action

@@ -17,10 +17,12 @@ applications today if you are in a supported Ember version. The project is
 still pre-version 1.0.0, so breaking changes can still occur.
 
 
-- `@frontile/utilities`: Core package providing essential a11y and base components.
+- `@frontile/buttons`: Components for working with buttons.
+- `@frontile/collections`: Components like Listbox and dropdown menu.
+- `@frontile/overlays`: Components to render content over the UI, like Modal Dialogs.
+- `@frontile/notifications`: Package that provides toast-like notifications.
 - `@frontile/forms`: Components for working with forms.
 - `@frontile/changeset-form`: Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
-- `@frontile/notifications`: Package that provides toast-like notifications.
-- `@frontile/overlays`: Components to render content over the UI, like Modal Dialogs.
-- `@frontile/buttons`: Components for working with buttons.
+- `@frontile/utilities`: Utility components.
+- `@frontile/status`: Components like progress bar.
 - `@frontile/theme`: Theming capabilities using [Tailwind Variants](https://www.tailwind-variants.org/).

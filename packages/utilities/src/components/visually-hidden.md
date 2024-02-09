@@ -1,7 +1,3 @@
----
-category: accessibility
----
-
 # VisuallyHidden
 
 This component provides text for screen readers that is visually hidden.

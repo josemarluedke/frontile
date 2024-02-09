@@ -10,7 +10,7 @@ for Select, Dropdowns, and other similar components.
 ## Import 
 
 ```js
-import { Listbox } from '@frontile/buttons';
+import { Listbox } from '@frontile/collections';
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ a dynamic item list, and it permits an empty selection (no items chosen).
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Listbox } from '@frontile/buttons';
+import { Listbox } from '@frontile/collections';
 
 export default class DemoComponent extends Component {
   @tracked selectedKeys: string[] = [];
@@ -83,7 +83,7 @@ shortcuts and distinct intents, all within a no-selection mode.
 ```gts preview
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { Listbox } from '@frontile/buttons';
+import { Listbox } from '@frontile/collections';
 
 const disabledKeys = ['reset']
 

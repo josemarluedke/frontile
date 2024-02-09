@@ -9,13 +9,13 @@ ProgressBars shows visually the progression of a process or task
 ## Import
 
 ```js
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 ```
 
 ## Usage
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 
 <template>
   <ProgressBar @progress={{50}} @label='Progress' />
@@ -25,7 +25,7 @@ import { ProgressBar } from '@frontile/buttons';
 ## ProgressBar Intents
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 
 <template>
   <div class='grid grid-cols-5 gap-4'>
@@ -61,7 +61,7 @@ import { ProgressBar } from '@frontile/buttons';
 ## ProgressBar Sizes
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 
 <template>
   <div class='mt-6 grid grid-cols-4 gap-4 items-center'>
@@ -91,7 +91,7 @@ import { ProgressBar } from '@frontile/buttons';
 ## ProgressBar Radius
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 
 <template>
   <div class='mt-6 grid grid-cols-4 gap-4'>
@@ -130,7 +130,7 @@ import { ProgressBar } from '@frontile/buttons';
 ## ProgressBar Labels
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 import { hash } from '@ember/helper';
 
 <template>
@@ -160,7 +160,7 @@ import { hash } from '@ember/helper';
 You can pass the argument `@isIndeterminate` to represent when the effort or duration can not be calculated
 
 ```gjs preview
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 
 <template>
   <ProgressBar @size='md' @label='Progress' @isIndeterminate={{true}} />

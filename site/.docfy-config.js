@@ -33,7 +33,9 @@ module.exports = {
     ...[
       'buttons',
       'changeset-form',
-      'core',
+      'utilities',
+      'status',
+      'collections',
       'forms',
       'notifications',
       'overlays'
@@ -50,7 +52,9 @@ module.exports = {
     accessibility: 'Accessibility',
     components: 'Components',
     docs: 'Documentation',
-    core: 'Core',
+    utilities: 'Utilities',
+    collections: 'Collections',
+    status: 'Status',
     buttons: 'Buttons',
     overlays: 'Overlays',
     notifications: 'Notifications',

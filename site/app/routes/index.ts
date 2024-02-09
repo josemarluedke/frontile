@@ -2,6 +2,10 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import RouterService from '@ember/routing/router-service';
 import * as buttons from '@frontile/buttons';
+import * as utilities from '@frontile/utilities';
+import * as collections from '@frontile/collections';
+import * as status from '@frontile/status';
+import * as overlays from '@frontile/overlays';
 
 export default class IndexRoute extends Route {
   @service router!: RouterService;
@@ -14,7 +18,11 @@ export default class IndexRoute extends Route {
   // but it is used in template imports
   something(): object {
     return {
-      buttons
+      buttons,
+      utilities,
+      collections,
+      status,
+      overlays
     };
   }
 }

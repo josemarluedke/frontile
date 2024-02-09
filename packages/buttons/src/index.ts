@@ -3,4 +3,3 @@ export * from './components/close-button';
 export * from './components/toggle-button';
 export * from './components/button-group';
 export * from './components/chip';
-export * from './components/progress-bar';
