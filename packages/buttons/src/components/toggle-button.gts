@@ -3,7 +3,7 @@ import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import type { ButtonArgs } from './button';
 
-export interface ToggleButtonArgs
+interface ToggleButtonArgs
   extends Pick<ButtonArgs, 'intent' | 'size' | 'class' | 'isInGroup'> {
   /**
    * If the button is currently selected
@@ -18,7 +18,7 @@ export interface ToggleButtonArgs
   onChange?: (isSelected: boolean) => void;
 }
 
-export interface ToggleButtonSignature {
+interface ToggleButtonSignature {
   Args: ToggleButtonArgs;
   Blocks: {
     default: [];
@@ -26,7 +26,7 @@ export interface ToggleButtonSignature {
   Element: HTMLButtonElement;
 }
 
-export default class ToggleButton extends Component<ToggleButtonSignature> {
+class ToggleButton extends Component<ToggleButtonSignature> {
   get classNames(): string {
     const { toggleButton } = useStyles();
 
@@ -62,3 +62,6 @@ export default class ToggleButton extends Component<ToggleButtonSignature> {
     </button>
   </template>
 }
+
+export { ToggleButton, type ToggleButtonSignature };
+export default ToggleButton;

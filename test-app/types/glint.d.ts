@@ -1,7 +1,7 @@
 import '@glint/environment-ember-loose';
 import '@glint/environment-ember-template-imports';
 
-import type FrontileCore from '@frontile/core/template-registry';
+import type FrontileCore from '@frontile/utilities/template-registry';
 import type FrontileButtons from '@frontile/buttons/template-registry';
 import type FrontileForms from '@frontile/forms/template-registry';
 import type FrontileChangesetForm from '@frontile/changeset-form/template-registry';

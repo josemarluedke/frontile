@@ -1,61 +1,59 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
-import CloseButton from '@frontile/core/components/close-button';
+import { CloseButton } from './close-button';
 
-export interface ChipArgs {
-  /**
-   * The chip appearance
-   *
-   * @defaultValue 'default'
-   */
-  appearance?: 'default' | 'outlined' | 'faded';
+interface ChipSignature {
+  Args: {
+    /**
+     * The chip appearance
+     *
+     * @defaultValue 'default'
+     */
+    appearance?: 'default' | 'outlined' | 'faded';
 
-  /**
-   * The intent of the chip
-   */
-  intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+    /**
+     * The intent of the chip
+     */
+    intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
 
-  /**
-   * The size of the chip
-   */
-  size?: 'sm' | 'md' | 'lg';
+    /**
+     * The size of the chip
+     */
+    size?: 'sm' | 'md' | 'lg';
 
-  /**
-   * The radius the chip
-   */
-  radius?: 'none' | 'sm' | 'lg' | 'full';
+    /**
+     * The radius the chip
+     */
+    radius?: 'none' | 'sm' | 'lg' | 'full';
 
-  /**
-   * Option to add dot to the chip
-   */
-  withDot?: boolean;
+    /**
+     * Option to add dot to the chip
+     */
+    withDot?: boolean;
 
-  /**
-   * Function to be called when clicking on the close button.
-   * If you pass this argument, the close button will be visible.
-   */
-  onClose?: () => void;
+    /**
+     * Function to be called when clicking on the close button.
+     * If you pass this argument, the close button will be visible.
+     */
+    onClose?: () => void;
 
-  /**
-   * Disables the clip and disables the close button if any.
-   */
-  isDisabled?: boolean;
+    /**
+     * Disables the clip and disables the close button if any.
+     */
+    isDisabled?: boolean;
 
-  /**
-   * Custom class name, it will override the default ones using Tailwind Merge library.
-   */
-  class?: string;
-}
-
-export interface ChipSignature {
-  Args: ChipArgs;
+    /**
+     * Custom class name, it will override the default ones using Tailwind Merge library.
+     */
+    class?: string;
+  };
   Blocks: {
     default: [];
   };
   Element: HTMLDivElement;
 }
 
-export default class Chip extends Component<ChipSignature> {
+class Chip extends Component<ChipSignature> {
   get classNames() {
     const { chip } = useStyles();
 
@@ -93,3 +91,6 @@ export default class Chip extends Component<ChipSignature> {
     </div>
   </template>
 }
+
+export { Chip, type ChipSignature };
+export default Chip;

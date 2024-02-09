@@ -28,7 +28,7 @@ registerCustomStyles({
 });
 
 module(
-  'Integration | Component | @frontile/core/CloseButton',
+  'Integration | Component | @frontile/utilities/CloseButton',
   function (hooks) {
     setupRenderingTest(hooks);
 

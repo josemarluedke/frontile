@@ -5,7 +5,7 @@ import Overlay, { type OverlayArgs } from './overlay';
 import ModalFooter from './modal/footer';
 import ModalBody from './modal/body';
 import ModalHeader from './modal/header';
-import CloseButton from '@frontile/core/components/close-button';
+import { CloseButton } from '@frontile/buttons';
 import { useStyles } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 

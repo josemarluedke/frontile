@@ -42,12 +42,8 @@
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/core": "workspace:0.17.0-alpha.3",
-    "@frontile/overlays": "workspace:0.17.0-alpha.3",
-    "@frontile/theme": "workspace:0.17.0-alpha.3",
-    "ember-element-helper": "^0.8.5",
-    "ember-modifier": "^4.1.0",
-    "ember-velcro": "^2.1.3"
+    "@frontile/utilities": "workspace:0.17.0-alpha.3",
+    "@frontile/theme": "workspace:0.17.0-alpha.3"
   },
   "devDependencies": {
     "@babel/core": "7.23.7",
@@ -90,10 +86,7 @@
       "./components/button-group.js": "./dist/_app_/components/button-group.js",
       "./components/button.js": "./dist/_app_/components/button.js",
       "./components/chip.js": "./dist/_app_/components/chip.js",
-      "./components/divider.js": "./dist/_app_/components/divider.js",
-      "./components/dropdown.js": "./dist/_app_/components/dropdown.js",
-      "./components/listbox.js": "./dist/_app_/components/listbox.js",
-      "./components/progress-bar.js": "./dist/_app_/components/progress-bar.js",
+      "./components/close-button.js": "./dist/_app_/components/close-button.js",
       "./components/toggle-button.js": "./dist/_app_/components/toggle-button.js"
     }
   },

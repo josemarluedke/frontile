@@ -14,9 +14,11 @@ package installed.
 
 
 ```sh
-ember install @frontile/core
+ember install @frontile/utilities
 ember install @frontile/theme
 ember install @frontile/buttons
+ember install @frontile/collections
+ember install @frontile/status
 ember install @frontile/forms
 ember install @frontile/changeset-form
 ember install @frontile/notifications

@@ -1,4 +1,4 @@
-import { ProgressBar } from '@frontile/buttons';
+import { ProgressBar } from '@frontile/status';
 import { hash } from '@ember/helper';
 
 <template>

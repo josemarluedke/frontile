@@ -12,7 +12,7 @@ module.exports = function (defaults) {
       watchDependencies: [
         '@frontile/buttons',
         '@frontile/theme',
-        '@frontile/core',
+        '@frontile/utilities',
         '@frontile/notifications',
         '@frontile/overlays',
         '@frontile/forms',

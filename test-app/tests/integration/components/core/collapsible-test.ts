@@ -4,7 +4,7 @@ import { render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
-  'Integration | Component | @frontile/core/Collapsible',
+  'Integration | Component | @frontile/utilities/Collapsible',
   function (hooks) {
     setupRenderingTest(hooks);
 
