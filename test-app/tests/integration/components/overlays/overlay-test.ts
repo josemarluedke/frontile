@@ -11,29 +11,29 @@ import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
-registerCustomStyles({
-  overlay: tv({
-    slots: {
-      base: '',
-      backdrop: 'overlay__backdrop',
-      content: 'overlay__content'
-    },
-    variants: {
-      inPlace: {
-        true: {
-          base: 'overlay--in-place',
-          backdrop: '',
-          content: ''
-        }
-      }
-    }
-  })
-});
-
 module(
   'Integration | Component | @frontile/overlays/Overlay',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    registerCustomStyles({
+      overlay: tv({
+        slots: {
+          base: 'overlay',
+          backdrop: 'overlay__backdrop',
+          content: 'overlay__content'
+        },
+        variants: {
+          inPlace: {
+            true: {
+              base: 'overlay--in-place',
+              backdrop: '',
+              content: ''
+            }
+          }
+        }
+      }) as never
+    });
 
     const template = hbs`
     <div id="my-destination"></div>
@@ -87,7 +87,7 @@ module(
       assert.dom('.my-destination > [data-test-id="overlay"]').doesNotExist();
       // @ts-ignore
       assert.dom('[data-test-id="overlay"]', this.element).exists();
-      assert.dom('[data-test-id="overlay"].overlay--in-place').exists();
+      assert.dom('[data-test-id="overlay"]').hasClass('overlay--in-place');
     });
 
     test('when @disableBackdrop=true does not render backdrop', async function (assert) {

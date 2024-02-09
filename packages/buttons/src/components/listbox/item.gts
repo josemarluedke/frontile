@@ -7,10 +7,11 @@ import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import { SetupListItem } from './setupListItemModfier';
 import Divider from '../divider';
+import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, Node } from './listManager';
 
-interface ItemSignature {
+export interface ListboxItemSignature {
   Args: {
     manager: ListManager;
     key: string;
@@ -32,6 +33,8 @@ interface ItemSignature {
      * The intent of each item
      */
     intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+
+    type?: 'menu' | 'listbox';
   };
   Element: HTMLLIElement;
   Blocks: {
@@ -42,7 +45,8 @@ interface ItemSignature {
   };
 }
 
-class ListboxItem extends Component<ItemSignature> {
+class ListboxItem extends Component<ListboxItemSignature> {
+  labelId = guidFor(this);
   @tracked el?: HTMLLIElement;
 
   didInsert = modifier((el: HTMLElement) => {
@@ -127,12 +131,20 @@ class ListboxItem extends Component<ItemSignature> {
     };
   }
 
+  get role() {
+    if (this.args.type === 'menu') {
+      return 'menuitem';
+    }
+    return 'option';
+  }
+
   <template>
     <li
-      role="option"
       {{this.didInsert}}
       {{SetupListItem this.manager key=this.key textValue=@textValue}}
       {{on "click" this.onClick}}
+      role={{this.role}}
+      aria-labelledby={{this.labelId}}
       tabindex={{this.tabindex}}
       data-active="{{this.node.isActive}}"
       data-selected="{{this.node.isSelected}}"
@@ -149,6 +161,7 @@ class ListboxItem extends Component<ItemSignature> {
           <span
             data-test-id="listbox-item-label"
             class={{this.classNames.label}}
+            id={{this.labelId}}
           >{{yield to="default"}}</span>
           <span
             data-test-id="listbox-item-description"
@@ -159,6 +172,7 @@ class ListboxItem extends Component<ItemSignature> {
         <span
           data-test-id="listbox-item-label"
           class={{this.classNames.label}}
+          id={{this.labelId}}
         >{{yield to="default"}}</span>
       {{/if}}
 

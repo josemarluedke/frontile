@@ -38,7 +38,8 @@ export interface ButtonArgs {
   class?: string;
 
   /**
-   * @internal
+   * If button is part of a group. Most of the time, this is automatically set
+   * when using the ButtonGroup component.
    */
   isInGroup?: boolean;
 }

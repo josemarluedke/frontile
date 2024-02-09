@@ -1,10 +1,7 @@
 import { tv } from 'tailwind-variants';
 
 const listbox = tv({
-  slots: {
-    base: 'w-full relative flex flex-col gap-1 p-1',
-    list: 'w-full flex flex-col gap-0.5 outline-none'
-  }
+  base: 'w-full flex flex-col gap-0.5 outline-none p-1'
 });
 
 const listboxItem = tv({

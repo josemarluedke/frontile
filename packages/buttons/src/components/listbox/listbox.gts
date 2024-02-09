@@ -7,19 +7,26 @@ import { useStyles } from '@frontile/theme';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import { ListManager, type SelectionMode } from './listManager';
 import { ListboxItem } from './item';
+import type { WithBoundArgs } from '@glint/template';
 
-export interface ListboxSignature {
+type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
+
+export interface ListboxSignature<T = unknown> {
   Args: {
-    selectionMode: SelectionMode;
-    selectedKeys: string[];
-    disabledKeys: string[];
-    allowEmpty: boolean;
-    items: unknown[];
+    /**
+     * @default 'listbox'
+     */
+    type?: 'menu' | 'listbox';
+    selectionMode?: SelectionMode;
+    selectedKeys?: string[];
+    disabledKeys?: string[];
+    allowEmpty?: boolean;
+    items?: T[];
     class?: string;
     isKeyboardEventsEnabled?: boolean;
 
-    onAction: (key: string) => void;
-    onSelectionChange: (key: string[]) => void;
+    onAction?: (key: string) => void;
+    onSelectionChange?: (key: string[]) => void;
 
     /**
      * The appearance of each item
@@ -35,8 +42,8 @@ export interface ListboxSignature {
   };
   Element: HTMLUListElement;
   Blocks: {
-    item: [unknown];
-    default: [unknown];
+    item: [{ item: T; Item: ItemCompBounded }];
+    default: [{ Item: ItemCompBounded }];
   };
 }
 
@@ -99,8 +106,7 @@ export default class Listbox extends Component<ListboxSignature> {
 
   get classNames() {
     const { listbox } = useStyles();
-    const { base, list } = listbox();
-    return { base: base({ class: this.args.class }), list: list() };
+    return listbox({ class: this.args.class });
   }
 
   @action
@@ -113,65 +119,73 @@ export default class Listbox extends Component<ListboxSignature> {
     });
   }
 
-  <template>
-    <div class={{this.classNames.base}}>
-      <ul
-        tabindex="0"
-        role="listbox"
-        {{didUpdate
-          this.updateListManager
-          @selectedKeys
-          @disabledKeys
-          @selectionMode
-          @allowEmpty
-        }}
-        {{on "keypress" this.handleKeyPress}}
-        {{on "keydown" this.handleKeyDown}}
-        {{on "keyup" this.handleKeyUp}}
-        data-test-id="listbox"
-        class={{this.classNames.list}}
-        ...attributes
-      >
-        {{#each @items as |item|}}
-          {{#if (has-block "item")}}
-            {{yield
-              (hash
-                item=item
-                Item=(component
-                  ListboxItem
-                  manager=this.listManager
-                  appearance=@appearance
-                  intent=@intent
-                )
-              )
-              to="item"
-            }}
-          {{else}}
-            <ListboxItem
-              @manager={{this.listManager}}
-              {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-              @key={{item}}
-              @appearance={{@appearance}}
-              @intent={{@intent}}
-            >
-              {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-              {{item}}
-            </ListboxItem>
-          {{/if}}
-        {{/each}}
+  get role() {
+    if (this.args.type === 'menu') {
+      return this.args.type;
+    }
+    return 'listbox';
+  }
 
-        {{yield
-          (hash
-            Item=(component
-              ListboxItem
-              manager=this.listManager
-              appearance=@appearance
-              intent=@intent
+  <template>
+    <ul
+      tabindex="0"
+      role={{this.role}}
+      {{didUpdate
+        this.updateListManager
+        @selectedKeys
+        @disabledKeys
+        @selectionMode
+        @allowEmpty
+      }}
+      {{on "keypress" this.handleKeyPress}}
+      {{on "keydown" this.handleKeyDown}}
+      {{on "keyup" this.handleKeyUp}}
+      data-test-id="listbox"
+      class={{this.classNames}}
+      ...attributes
+    >
+      {{#each @items as |item|}}
+        {{#if (has-block "item")}}
+          {{yield
+            (hash
+              item=item
+              Item=(component
+                ListboxItem
+                manager=this.listManager
+                appearance=@appearance
+                intent=@intent
+                type=this.role
+              )
             )
+            to="item"
+          }}
+        {{else}}
+          <ListboxItem
+            @manager={{this.listManager}}
+            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
+            @key={{item}}
+            @appearance={{@appearance}}
+            @intent={{@intent}}
+            @type={{this.role}}
+          >
+            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
+            {{item}}
+          </ListboxItem>
+        {{/if}}
+      {{/each}}
+
+      {{yield
+        (hash
+          Item=(component
+            ListboxItem
+            manager=this.listManager
+            appearance=@appearance
+            intent=@intent
+            type=this.role
           )
-          to="default"
-        }}
-      </ul>
-    </div>
+        )
+        to="default"
+      }}
+    </ul>
   </template>
 }

@@ -4,14 +4,19 @@ const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content
 
 const overlay = tv({
   slots: {
-    base: '',
+    base: 'fixed inset-0',
     backdrop: 'fixed inset-0 select-none z-10 bg-overlay/[.45]',
-    content:
-      'flex items-center fixed inset-0 flex-col z-20 will-change-transform overflow-auto'
+    content: 'z-20 will-change-transform overflow-auto'
   },
   variants: {
+    enableFlexContent: {
+      true: {
+        content: 'flex items-center fixed inset-0 flex-col'
+      }
+    },
     inPlace: {
       true: {
+        base: 'absolute',
         backdrop: 'absolute',
         content: 'absolute'
       }
@@ -210,6 +215,34 @@ const overlayTransitions = {
       transform: 'translateY(0%)'
     },
     ...slideTransition
+  },
+  scale: {
+    enter: {
+      opacity: '0',
+      transform: 'scale(0.95)'
+    },
+    enterActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '200ms',
+      transitionTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
+    },
+    enterTo: {
+      opacity: '1',
+      transform: 'translate(scaleX(1) scaleY(1))'
+    },
+    leave: {
+      opacity: '1',
+      transform: 'translate(scaleX(1) scaleY(1))'
+    },
+    leaveActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '100ms',
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)'
+    },
+    leaveTo: {
+      opacity: '0',
+      transform: 'scale(0.95)'
+    }
   }
 };
 
