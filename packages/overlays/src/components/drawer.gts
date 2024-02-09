@@ -5,7 +5,7 @@ import Overlay, { type OverlayArgs } from './overlay';
 import DrawerBody from './drawer/body';
 import DrawerFooter from './drawer/footer';
 import DrawerHeader from './drawer/header';
-import CloseButton from '@frontile/core/components/close-button';
+import CloseButton from '@frontile/utilities/components/close-button';
 import type { WithBoundArgs } from '@glint/template';
 import { useStyles } from '@frontile/theme';
 

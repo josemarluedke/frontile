@@ -42,7 +42,7 @@
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/core": "workspace:0.17.0-alpha.3",
+    "@frontile/utilities": "workspace:0.17.0-alpha.3",
     "@frontile/overlays": "workspace:0.17.0-alpha.3",
     "@frontile/theme": "workspace:0.17.0-alpha.3",
     "ember-element-helper": "^0.8.5",

@@ -28,7 +28,7 @@ There are a few packages available to use already; you can use them in your
 applications today if you are in a supported Ember version. The project is
 still pre-version 1.0.0, so breaking changes can still occur.
 
-- [@frontile/core](./packages/core): Core package providing essential a11y components.
+- [@frontile/utilities](./packages/core): Core package providing essential a11y components.
 - [@frontile/forms](./packages/forms): Components for working with forms.
 - [@frontile/changeset-form](./packages/forms): Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
 - [@frontile/notifications](./packages/notifications): Package that provides toast-like notifications.

@@ -17,7 +17,7 @@ applications today if you are in a supported Ember version. The project is
 still pre-version 1.0.0, so breaking changes can still occur.
 
 
-- `@frontile/core`: Core package providing essential a11y and base components.
+- `@frontile/utilities`: Core package providing essential a11y and base components.
 - `@frontile/forms`: Components for working with forms.
 - `@frontile/changeset-form`: Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
 - `@frontile/notifications`: Package that provides toast-like notifications.

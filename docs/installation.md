@@ -14,7 +14,7 @@ package installed.
 
 
 ```sh
-ember install @frontile/core
+ember install @frontile/utilities
 ember install @frontile/theme
 ember install @frontile/buttons
 ember install @frontile/forms

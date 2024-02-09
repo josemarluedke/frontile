@@ -1,4 +1,4 @@
-# @frontile/core
+# @frontile/utilities
 
 Component Library for Ember Octane apps: Core
 

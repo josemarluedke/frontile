@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
-import CloseButton from '@frontile/core/components/close-button';
+import CloseButton from '@frontile/utilities/components/close-button';
 
 export interface ChipArgs {
   /**

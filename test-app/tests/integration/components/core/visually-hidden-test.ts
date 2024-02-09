@@ -4,7 +4,7 @@ import { render, RenderingTestContext } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
-  'Integration | Component | @frontile/core/VisuallyHidden',
+  'Integration | Component | @frontile/utilities/VisuallyHidden',
   function (hooks) {
     setupRenderingTest(hooks);
 

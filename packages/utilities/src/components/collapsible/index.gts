@@ -6,7 +6,7 @@ import { on } from '@ember/modifier';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import safeStyles from '../../utils/safe-styles';
 
-const waiter = buildWaiter('@frontile/core:collapsible');
+const waiter = buildWaiter('@frontile/utilities:collapsible');
 
 export interface CollapsibleArgs {
   /**

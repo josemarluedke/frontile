@@ -1,7 +1,7 @@
 {
-  "name": "@frontile/core",
+  "name": "@frontile/utilities",
   "version": "0.17.0-alpha.3",
-  "description": "Component Library for Ember Octane apps: Core",
+  "description": "Component Library for Ember Octane apps: Utilities",
   "keywords": [
     "ember-addon",
     "frontile"
@@ -86,8 +86,7 @@
     "app-js": {
       "./components/close-button.js": "./dist/_app_/components/close-button.js",
       "./components/collapsible/index.js": "./dist/_app_/components/collapsible/index.js",
-      "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js",
-      "./utils/safe-styles.js": "./dist/_app_/utils/safe-styles.js"
+      "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js"
     }
   },
   "exports": {

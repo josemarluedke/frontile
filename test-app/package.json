@@ -26,7 +26,7 @@
     "@embroider/webpack": "^3.2.1",
     "@frontile/buttons": "workspace:0.17.0-alpha.3",
     "@frontile/changeset-form": "workspace:0.17.0-alpha.3",
-    "@frontile/core": "workspace:0.17.0-alpha.3",
+    "@frontile/utilities": "workspace:0.17.0-alpha.3",
     "@frontile/forms": "workspace:0.17.0-alpha.3",
     "@frontile/notifications": "workspace:0.17.0-alpha.3",
     "@frontile/overlays": "workspace:0.17.0-alpha.3",
