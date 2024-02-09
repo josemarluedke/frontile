@@ -1,4 +1,4 @@
-import type MyComponent from './components/my-component';
+import type { MyComponent } from './index';
 
 export default interface Registry {
   MyComponent: typeof MyComponent;

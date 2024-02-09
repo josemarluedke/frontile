@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 
-export interface MyComponentSignature {
+interface MyComponentSignature {
   Args: {
     MyArg?: string;
   };
@@ -10,10 +10,13 @@ export interface MyComponentSignature {
   Element: HTMLDivElement;
 }
 
-export default class MyComponent extends Component<MyComponentSignature> {
+class MyComponent extends Component<MyComponentSignature> {
   <template>
     <div ...attributes>
       My component
     </div>
   </template>
 }
+
+export { MyComponent, type MyComponentSignature };
+export default MyComponent;
