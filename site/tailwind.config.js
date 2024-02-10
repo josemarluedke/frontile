@@ -62,9 +62,6 @@ module.exports = {
     // Frontile Overlays
     { pattern: /^overlay/ },
     { pattern: /^modal/ },
-    { pattern: /^drawer/ },
-
-    // Power Select
-    { pattern: /^ember-power-select/ }
+    { pattern: /^drawer/ }
   ]
 };
