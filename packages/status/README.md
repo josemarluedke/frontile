@@ -1,6 +1,6 @@
-# @frontile/utilities
+# @frontile/status
 
-Component Library for Ember Octane apps: Core
+Component Library for Ember Octane apps: Status
 
 ## Compatibility
 
@@ -11,7 +11,7 @@ Component Library for Ember Octane apps: Core
 ## Installation
 
 ```sh
-ember install @frontile/changeset-form
+ember install @frontile/status
 ```
 
 ## Documentation

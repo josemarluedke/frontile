@@ -1,5 +1,4 @@
-import type NotificationCard from './components/notification-card';
-import type NotificationsContainer from './components/notifications-container';
+import type { NotificationCard, NotificationsContainer } from './index';
 
 export default interface Registry {
   NotificationCard: typeof NotificationCard;

@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/ember/tsconfig.json",
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "declarationDir": "declarations"
+  }
+}
