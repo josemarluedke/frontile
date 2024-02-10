@@ -1,6 +1,6 @@
 {
   "name": "frontile",
-  "version": "0.17.0-alpha.3",
+  "version": "0.17.0-alpha.4",
   "description": "Component Library for Ember Octane apps",
   "keywords": [
     "ember-addon",
@@ -39,13 +39,13 @@
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/buttons": "workspace:*",
-    "@frontile/utilities": "workspace:*",
+    "@frontile/collections": "workspace:*",
     "@frontile/forms": "workspace:*",
     "@frontile/notifications": "workspace:*",
     "@frontile/overlays": "workspace:*",
-    "@frontile/collections": "workspace:*",
     "@frontile/status": "workspace:*",
     "@frontile/theme": "workspace:*",
+    "@frontile/utilities": "workspace:*",
     "ember-auto-import": "^2.7.2"
   },
   "devDependencies": {
