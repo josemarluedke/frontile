@@ -10,8 +10,11 @@ import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 // @ts-ignore
 import { focusTrap } from 'ember-focus-trap';
+import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
+import { Backdrop, type BackdropSignature } from './backdrop';
 import type { TOC } from '@ember/component/template-only';
 import type { ModifierLike } from '@glint/template';
+import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 
 const MaybeInElement: TOC<{
   Args: {
@@ -31,122 +34,113 @@ const MaybeInElement: TOC<{
   {{/if}}
 </template>;
 
-export interface OverlayArgs {
-  /**
-   * Whether to render in place or in the specified/default destination
-   *
-   * @defaultValue false
-   */
-  renderInPlace?: boolean;
+interface OverlaySignature {
+  Args: {
+    /**
+     * Whether to render in place or in the specified/default destination
+     *
+     * @defaultValue false
+     */
+    renderInPlace?: boolean;
 
-  /**
-   * The destination where the overlay will be inserted, defaults to
-   * `document.body`
-   *
-   * @defaultValue undefined
-   */
-  destinationElementId?: string;
+    /**
+     * The destination where the overlay will be inserted, defaults to
+     * `document.body`
+     *
+     * @defaultValue undefined
+     */
+    destinationElementId?: string;
 
-  /**
-   * Duration of the animation
-   *
-   * @defaultValue 200
-   */
-  transitionDuration?: number;
+    /**
+     * Duration of the animation
+     *
+     * @defaultValue 200
+     */
+    transitionDuration?: number;
 
-  /**
-   * Whether to hide the backdrop or not
-   *
-   * @defaultValue false
-   */
-  disableBackdrop?: boolean;
+    backdrop?: BackdropSignature['Args']['type'];
 
-  /**
-   * Disable css transitions
-   *
-   * @defaultValue false
-   */
-  disableTransitions?: boolean;
+    backdropTransition?: BackdropSignature['Args']['transition'];
 
-  /**
-   * Whether the focus trap is disabled or not
-   *
-   * @defaultValue false
-   */
-  disableFocusTrap?: boolean;
+    /**
+     * Disable css transitions
+     *
+     * @defaultValue false
+     */
+    disableTransitions?: boolean;
 
-  /**
-   * Focus trap options
-   *
-   * @defaultValue { allowOutsideClick: true }
-   */
-  focusTrapOptions?: unknown;
+    /**
+     * Whether the focus trap is disabled or not
+     *
+     * @defaultValue false
+     */
+    disableFocusTrap?: boolean;
 
-  /**
-   * Whether it is open or not
-   */
-  isOpen: boolean;
+    /**
+     * Focus trap options
+     *
+     * @defaultValue { allowOutsideClick: true }
+     */
+    focusTrapOptions?: unknown;
 
-  /**
-   * A function that will be called when closed
-   */
-  onClose?: () => void;
+    /**
+     * Whether it is open or not
+     */
+    isOpen: boolean;
 
-  /**
-   * A function that will be called when closing is finished executing, this
-   * includes waiting for animations/transitions to finish.
-   */
-  didClose?: () => void;
+    /**
+     * A function that will be called when closed
+     */
+    onClose?: () => void;
 
-  /**
-   * A function that will be called when opened
-   */
-  onOpen?: () => void;
+    /**
+     * A function that will be called when closing is finished executing, this
+     * includes waiting for animations/transitions to finish.
+     */
+    didClose?: () => void;
 
-  /**
-   * Whether to close when the area outside (the backdrop) is clicked
-   *
-   * @defaultValue true
-   */
-  closeOnOutsideClick?: boolean;
+    /**
+     * A function that will be called when opened
+     */
+    onOpen?: () => void;
 
-  /**
-   * Whether to close when the escape key is pressed
-   *
-   * @defaultValue true
-   */
-  closeOnEscapeKey?: boolean;
+    /**
+     * Whether to close when the area outside (the backdrop) is clicked
+     *
+     * @defaultValue true
+     */
+    closeOnOutsideClick?: boolean;
 
-  /**
-   * The name of the transition to be used in the backdrop.
-   *
-   * @defaultValue 'overlay-transition--fade'
-   */
-  backdropTransitionName?: string;
+    /**
+     * Whether to close when the escape key is pressed
+     *
+     * @defaultValue true
+     */
+    closeOnEscapeKey?: boolean;
 
-  /**
-   * The name of the transition to be used in the content.
-   *
-   * @defaultValue 'overlay-transition--fade'
-   */
-  contentTransitionName?: string;
+    /**
+     * Transition options
+     *
+     * @defaultValue {name:'overlay-transition--fade'}
+     */
+    transition?: CssTransitionSignature['Args']['Named'];
 
-  disableFlexContent?: boolean;
-  customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
-  contentClass?: string;
-}
+    disableFlexContent?: boolean;
+    customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
+    contentClass?: string;
 
-export interface OverlaySignature {
-  Args: OverlayArgs;
+    /**
+     * @defaultValue true
+     */
+    blockScroll?: boolean;
+  };
   Element: HTMLDivElement;
   Blocks: { default: [] };
 }
 
-export default class Overlay extends Component<OverlaySignature> {
+class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
 
-  wrapperElement: HTMLElement | undefined;
-  backdropElement: HTMLElement | undefined;
   contentElement: HTMLElement | undefined;
   mouseDownContentElement: EventTarget | null = null;
 
@@ -164,44 +158,6 @@ export default class Overlay extends Component<OverlaySignature> {
     }
   }
 
-  get isVisible(): boolean {
-    return this.args.isOpen || this.keepOpen;
-  }
-
-  get isBackdropVisible(): boolean {
-    return Boolean(this.args.isOpen && this.args.disableBackdrop !== true);
-  }
-
-  get isAnimationEnabled(): boolean {
-    return !(this.args.disableTransitions === true);
-  }
-
-  get focusTrapOptions(): unknown {
-    return (
-      this.args.focusTrapOptions || {
-        allowOutsideClick: (e: MouseEvent) => {
-          if (
-            e.target == this.backdropElement ||
-            e.target == this.wrapperElement
-          ) {
-            return true;
-          }
-          return false;
-        }
-      }
-    );
-  }
-
-  @action handleOverlayClick(e: MouseEvent): void {
-    if (
-      this.args.closeOnOutsideClick !== false &&
-      (e.target == this.backdropElement || e.target == this.wrapperElement)
-    ) {
-      this.handleClose();
-      e.preventDefault();
-    }
-  }
-
   @action handleContentClick(event: MouseEvent): void {
     if (
       this.args.closeOnOutsideClick !== false &&
@@ -211,6 +167,13 @@ export default class Overlay extends Component<OverlaySignature> {
       this.handleClose();
     }
     this.mouseDownContentElement = null;
+  }
+
+  @action handleOutsideClick(e: Event): void {
+    if (this.args.closeOnOutsideClick !== false) {
+      this.handleClose();
+      e.preventDefault();
+    }
   }
 
   @action handleClose(): void {
@@ -235,7 +198,7 @@ export default class Overlay extends Component<OverlaySignature> {
     this.contentElement = el;
     this.keepOpen = true;
 
-    if (this.args.renderInPlace !== true) {
+    if (this.args.renderInPlace !== true && this.args.blockScroll !== false) {
       document.body.style.overflow = 'hidden';
     }
 
@@ -245,7 +208,7 @@ export default class Overlay extends Component<OverlaySignature> {
     return () => {
       this.contentElement = undefined;
 
-      if (this.args.renderInPlace !== true && document.body.classList) {
+      if (this.args.renderInPlace !== true && this.args.blockScroll !== false) {
         document.body.style.overflow = '';
       }
 
@@ -265,33 +228,36 @@ export default class Overlay extends Component<OverlaySignature> {
     };
   });
 
-  setupBackdrop = modifier((el: HTMLDivElement) => {
-    this.backdropElement = el;
-    return () => {
-      this.backdropElement = undefined;
-    };
-  });
+  get isVisible(): boolean {
+    return this.args.isOpen || this.keepOpen;
+  }
 
-  setupWrapper = modifier((el: HTMLDivElement) => {
-    this.wrapperElement = el;
-    return () => {
-      this.wrapperElement = undefined;
-    };
-  });
+  get backdrop(): BackdropSignature['Args']['type'] {
+    if (!this.args.isOpen) {
+      return 'none';
+    }
+    return this.args.backdrop || 'faded';
+  }
+
+  get isAnimationEnabled(): boolean {
+    return !(this.args.disableTransitions === true);
+  }
+
+  get focusTrapOptions(): unknown {
+    return (
+      this.args.focusTrapOptions || {
+        allowOutsideClick: true
+      }
+    );
+  }
 
   get classes() {
     const { overlay } = useStyles();
 
-    const { base, backdrop, content } = overlay({
+    return overlay({
       inPlace: this.args.renderInPlace,
       enableFlexContent: !(this.args.disableFlexContent === true)
     });
-
-    return {
-      base: base(),
-      backdrop: backdrop(),
-      content: content({ class: this.args.contentClass })
-    };
   }
 
   get customContentModifier() {
@@ -302,72 +268,77 @@ export default class Overlay extends Component<OverlaySignature> {
     return modifier(() => {});
   }
 
+  get backdropTransition() {
+    if (this.args.backdropTransition) {
+      return this.args.backdropTransition;
+    }
+
+    return { isEnabled: this.isAnimationEnabled };
+  }
+
+  get transition() {
+    let options: BackdropSignature['Args']['transition'] = {
+      name: 'overlay-transition--fade',
+      isEnabled: this.isAnimationEnabled
+    };
+
+    if (typeof this.args.transition === 'object') {
+      return { ...options, ...this.args.transition };
+    }
+
+    return options;
+  }
+
   <template>
+    {{! template-lint-disable no-invalid-interactive }}
+    {{! template-lint-disable no-pointer-down-event-binding }}
+
     {{#if this.isVisible}}
       <MaybeInElement
         @renderInPlace={{@renderInPlace}}
         @destinationElement={{this.destinationElement}}
       >
-        <div
-          {{this.setupWrapper}}
-          class={{this.classes.base}}
-          {{on "click" this.handleOverlayClick}}
-          ...attributes
-        >
+        <Backdrop
+          @type={{this.backdrop}}
+          @inPlace={{@renderInPlace}}
+          @transition={{this.backdropTransition}}
+        />
 
-          {{! template-lint-disable no-invalid-interactive }}
-          {{#if this.isBackdropVisible}}
-            <div
-              {{this.setupBackdrop}}
-              {{on "click" this.handleOverlayClick}}
-              {{cssTransition
-                (if
-                  @backdropTransitionName
-                  @backdropTransitionName
-                  "overlay-transition--fade"
-                )
-                isEnabled=this.isAnimationEnabled
-              }}
-              class={{this.classes.backdrop}}
-            ></div>
-          {{/if}}
-
-          {{!
-            This is required to make css-transition work with 2
-            sibling elements been removed at the same time.
-          }}
-          <span data-is-visible={{this.isVisible}}></span>
-
-          {{#if @isOpen}}
-            {{! template-lint-disable no-pointer-down-event-binding }}
-            <div
-              {{this.setupContent}}
-              {{on "click" this.handleContentClick}}
-              {{on "keydown" this.handleKeyDown}}
-              {{on "mousedown" this.handleContentMouseDown}}
-              {{cssTransition
-                (if
-                  @contentTransitionName
-                  @contentTransitionName
-                  "overlay-transition--fade"
-                )
-                isEnabled=this.isAnimationEnabled
-              }}
-              {{focusTrap
-                isActive=(if @disableFocusTrap false @isOpen)
-                focusTrapOptions=this.focusTrapOptions
-              }}
-              class={{this.classes.content}}
-              {{! Keep this custom modifer by last}}
-              {{this.customContentModifier}}
-            >
-              {{! template-lint-enable no-pointer-down-event-binding }}
-              {{yield}}
-            </div>
-          {{/if}}
-          {{! template-lint-enable no-invalid-interactive }}
-        </div>
+        {{#if @isOpen}}
+          <div
+            {{this.setupContent}}
+            {{on "click" this.handleContentClick}}
+            {{on "keydown" this.handleKeyDown}}
+            {{on "mousedown" this.handleContentMouseDown}}
+            {{cssTransition
+              didTransitionIn=this.transition.didTransitionIn
+              didTransitionOut=this.transition.didTransitionOut
+              enterClass=this.transition.enterClass
+              enterActiveClass=this.transition.enterActiveClass
+              enterToClass=this.transition.enterToClass
+              isEnabled=this.transition.isEnabled
+              leaveClass=this.transition.leaveClass
+              leaveActiveClass=this.transition.leaveActiveClass
+              leaveToClass=this.transition.leaveToClass
+              name=this.transition.name
+              parentSelector=this.transition.parentSelector
+            }}
+            {{onClickOutside this.handleOutsideClick}}
+            {{focusTrap
+              isActive=(if @disableFocusTrap false @isOpen)
+              focusTrapOptions=this.focusTrapOptions
+            }}
+            class={{this.classes}}
+            {{! Keep this custom modifer by last}}
+            {{this.customContentModifier}}
+          >
+            {{yield}}
+          </div>
+        {{/if}}
       </MaybeInElement>
     {{/if}}
   </template>
 }
+
+export { Overlay, type OverlaySignature };
+export default Overlay;

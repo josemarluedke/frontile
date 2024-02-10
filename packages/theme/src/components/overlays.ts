@@ -3,23 +3,28 @@ import { tv } from 'tailwind-variants';
 const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 
 const overlay = tv({
-  slots: {
-    base: 'fixed inset-0',
-    backdrop: 'fixed inset-0 select-none z-10 bg-overlay/[.45]',
-    content: 'z-20 will-change-transform overflow-auto'
-  },
+  base: 'z-20 will-change-transform overflow-auto',
   variants: {
     enableFlexContent: {
-      true: {
-        content: 'flex items-center fixed inset-0 flex-col'
-      }
+      true: 'flex items-center fixed inset-0 flex-col'
     },
     inPlace: {
-      true: {
-        base: 'absolute',
-        backdrop: 'absolute',
-        content: 'absolute'
-      }
+      true: 'absolute'
+    }
+  }
+});
+
+const backdrop = tv({
+  base: 'fixed inset-0 select-none z-10 ',
+  variants: {
+    type: {
+      none: '',
+      transparent: '',
+      blur: 'bg-overlay/[.45] backdrop-blur',
+      faded: 'bg-overlay/[.45]'
+    },
+    inPlace: {
+      true: 'absolute'
     }
   }
 });
@@ -246,4 +251,4 @@ const overlayTransitions = {
   }
 };
 
-export { overlay, drawer, modal, overlayTransitions };
+export { overlay, drawer, modal, overlayTransitions, backdrop };

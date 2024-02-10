@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import Overlay, { type OverlayArgs } from './overlay';
+import Overlay, { type OverlaySignature } from './overlay';
 import ModalFooter from './modal/footer';
 import ModalBody from './modal/body';
 import ModalHeader from './modal/header';
@@ -9,12 +9,30 @@ import { CloseButton } from '@frontile/buttons';
 import { useStyles } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
-export interface ModalArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
+export interface ModalArgs
+  extends Pick<
+    OverlaySignature['Args'],
+    | 'isOpen'
+    | 'onOpen'
+    | 'onClose'
+    | 'didClose'
+    | 'renderInPlace'
+    | 'destinationElementId'
+    | 'transitionDuration'
+    | 'backdrop'
+    | 'disableTransitions'
+    | 'disableFocusTrap'
+    | 'focusTrapOptions'
+    | 'closeOnOutsideClick'
+    | 'closeOnEscapeKey'
+    | 'backdropTransition'
+  > {
   /**
-   * The name of the transition to be used in the modal.
-   * @defaultValue 'overlay-transition--zoom'
+   * The transition to be used in the Modal.
+   *
+   * @defaultValue {name: 'overlay-transition--zoom'}
    */
-  transitionName?: string;
+  transition?: OverlaySignature['Args']['transition'];
 
   /**
    * If set to false, the close button will not be displayed,
@@ -104,6 +122,18 @@ export default class Modal extends Component<ModalSignature> {
     };
   }
 
+  get transition() {
+    let options: OverlaySignature['Args']['transition'] = {
+      name: 'overlay-transition--zoom'
+    };
+
+    if (typeof this.args.transition === 'object') {
+      return { ...options, ...this.args.transition };
+    }
+
+    return options;
+  }
+
   <template>
     <Overlay
       @isOpen={{@isOpen}}
@@ -113,18 +143,14 @@ export default class Modal extends Component<ModalSignature> {
       @renderInPlace={{@renderInPlace}}
       @destinationElementId={{@destinationElementId}}
       @transitionDuration={{@transitionDuration}}
-      @disableBackdrop={{@disableBackdrop}}
+      @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
       @disableFocusTrap={{@disableFocusTrap}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
       @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
-      @backdropTransitionName={{@backdropTransitionName}}
-      @contentTransitionName={{if
-        @transitionName
-        @transitionName
-        "overlay-transition--zoom"
-      }}
+      @backdropTransition={{@backdropTransition}}
+      @transition={{this.transition}}
     >
       <div
         class={{this.classes.base}}

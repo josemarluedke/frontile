@@ -1,9 +1,8 @@
-import type Overlay from './components/overlay';
-import type Drawer from './components/drawer';
-import type Modal from './components/modal';
+import type { Overlay, Modal, Drawer, Popover } from './index';
 
 export default interface Registry {
   Overlay: typeof Overlay;
   Drawer: typeof Drawer;
   Modal: typeof Modal;
+  Popover: typeof Popover;
 }
