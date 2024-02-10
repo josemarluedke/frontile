@@ -10,32 +10,30 @@ import type Notification from '../-private/notification';
 import { type containerPlacement } from '../-private/types';
 import { useStyles } from '@frontile/theme';
 
-export interface NotificationsContainerArgs {
-  /**
-   * The placement of the notifications
-   *
-   * @defaultValue 'bottom-right'
-   */
-  placement?: containerPlacement;
-  /**
-   * Spacing for each notification, in px.
-   *
-   * @defaultValue 16
-   */
-  spacing?: number;
+interface NotificationsContainerSignature {
+  Args: {
+    /**
+     * The placement of the notifications
+     *
+     * @defaultValue 'bottom-right'
+     */
+    placement?: containerPlacement;
+    /**
+     * Spacing for each notification, in px.
+     *
+     * @defaultValue 16
+     */
+    spacing?: number;
 
-  /**
-   * Custom class name, it will override the default ones using Tailwind Merge library.
-   */
-  class?: string;
-}
-
-export interface NotificationsContainerSignature {
-  Args: NotificationsContainerArgs;
+    /**
+     * Custom class name, it will override the default ones using Tailwind Merge library.
+     */
+    class?: string;
+  };
   Element: HTMLDivElement;
 }
 
-export default class NotificationsContainer extends Component<NotificationsContainerSignature> {
+class NotificationsContainer extends Component<NotificationsContainerSignature> {
   @service notifications!: NotificationsService;
 
   get isTopPlacement(): boolean {
@@ -89,3 +87,6 @@ export default class NotificationsContainer extends Component<NotificationsConta
     {{/if}}
   </template>
 }
+
+export { NotificationsContainer, type NotificationsContainerSignature };
+export default NotificationsContainer;

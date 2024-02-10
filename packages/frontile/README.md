@@ -1,17 +1,12 @@
-# @frontile/utilities
+# frontile
 
-Component Library for Ember Octane apps: Core
+Component Library for Ember Octane apps
 
-## Compatibility
-
-- Ember.js v3.16 or above
-- Ember CLI v2.13 or above
-- Node.js v10 or above
 
 ## Installation
 
 ```sh
-ember install @frontile/utilities
+ember install frontile
 ```
 
 ## Documentation

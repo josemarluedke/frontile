@@ -17,24 +17,22 @@ import type NotificationsService from '../services/notifications';
 import type Notification from '../-private/notification';
 import type { CustomAction, containerPlacement } from '../-private/types';
 
-export interface NotificationCardArgs {
-  notification: Notification;
-  placement: containerPlacement;
+interface NotificationCardSignature {
+  Args: {
+    notification: Notification;
+    placement: containerPlacement;
 
-  /**
-   * Spacing for each notification, in px.
-   *
-   * @defaultValue 16
-   */
-  spacing?: number;
-}
-
-export interface NotificationCardSignature {
-  Args: NotificationCardArgs;
+    /**
+     * Spacing for each notification, in px.
+     *
+     * @defaultValue 16
+     */
+    spacing?: number;
+  };
   Element: HTMLDivElement;
 }
 
-export default class NotificationCard extends Component<NotificationCardSignature> {
+class NotificationCard extends Component<NotificationCardSignature> {
   @service notifications!: NotificationsService;
   @tracked hasEntered = false;
 
@@ -181,3 +179,6 @@ export default class NotificationCard extends Component<NotificationCardSignatur
     </div>
   </template>
 }
+
+export { NotificationCard, type NotificationCardSignature };
+export default NotificationCard;

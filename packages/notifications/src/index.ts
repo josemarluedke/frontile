@@ -7,6 +7,8 @@ import type {
   CustomAction
 } from './-private/types';
 
-export { Notification, Timer, NotificationsService };
-
+export { Notification, Timer };
+export type { NotificationsService };
 export type { NotificationOptions, DefaultConfig, CustomAction };
+export * from './components/notification-card';
+export * from './components/notifications-container';
