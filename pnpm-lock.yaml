@@ -327,9 +327,6 @@ importers:
       ember-modifier:
         specifier: ^4.1.0
         version: 4.1.0(ember-source@5.5.0)
-      ember-velcro:
-        specifier: ^2.1.3
-        version: 2.1.3(ember-modifier@4.1.0)(ember-source@5.5.0)
     devDependencies:
       '@babel/core':
         specifier: 7.23.7

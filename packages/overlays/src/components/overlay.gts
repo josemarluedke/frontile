@@ -127,7 +127,7 @@ interface OverlaySignature {
 
     disableFlexContent?: boolean;
     customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
-    contentClass?: string;
+    class?: string;
 
     /**
      * @defaultValue true
@@ -255,6 +255,7 @@ class Overlay extends Component<OverlaySignature> {
     const { overlay } = useStyles();
 
     return overlay({
+      class: this.args.class,
       inPlace: this.args.renderInPlace,
       enableFlexContent: !(this.args.disableFlexContent === true)
     });
@@ -331,6 +332,7 @@ class Overlay extends Component<OverlaySignature> {
             class={{this.classes}}
             {{! Keep this custom modifer by last}}
             {{this.customContentModifier}}
+            ...attributes
           >
             {{yield}}
           </div>

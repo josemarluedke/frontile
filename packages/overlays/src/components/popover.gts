@@ -46,7 +46,9 @@ interface PopoverSignature {
      */
     strategy?: VelcroSignature['Args']['Named']['strategy'];
 
-    onClose: () => void;
+    // isOpen?: boolean;
+    // onOpenChange?: () => void;
+    onClose?: () => void;
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -57,7 +59,7 @@ interface PopoverSignature {
         trigger: ModifierLike<{ Element: HTMLElement }>;
         Content: WithBoundArgs<
           typeof Content,
-          'loop' | 'isOpen' | 'id' | 'onClose' | 'blockScroll' | 'backdrop'
+          'loop' | 'isOpen' | 'id' | 'toggle' | 'blockScroll' | 'backdrop'
         >;
       }
     ];
@@ -71,11 +73,7 @@ class Popover extends Component<PopoverSignature> {
 
   toggle = () => {
     this.isOpen = !this.isOpen;
-  };
-
-  close = () => {
-    this.isOpen = false;
-    if (typeof this.args.onClose === 'function') {
+    if (this.isOpen === false && typeof this.args.onClose === 'function') {
       this.args.onClose();
     }
   };
@@ -120,7 +118,7 @@ class Popover extends Component<PopoverSignature> {
             id=this.menuId
             loop=velcro.loop
             isOpen=this.isOpen
-            onClose=this.close
+            toggle=this.toggle
           )
         )
       }}
@@ -138,7 +136,6 @@ interface ContentArgs
     | 'transitionDuration'
     | 'backdrop'
     | 'disableTransitions'
-    | 'disableFocusTrap'
     | 'focusTrapOptions'
     | 'closeOnOutsideClick'
     | 'closeOnEscapeKey'
@@ -157,8 +154,11 @@ interface ContentArgs
   /**
    * @internal
    */
-  onClose: () => void;
+  toggle: () => void;
 
+  /**
+   * @internal
+   */
   id: string;
 
   class?: string;
@@ -169,9 +169,14 @@ interface ContentArgs
    * @defaultValue {name: 'overlay-transition--scale'}
    */
   transition?: OverlaySignature['Args']['transition'];
+
+  /**
+   * @defaultValue true
+   */
+  disableFocusTrap?: boolean;
 }
 
-export interface ContentSignature {
+interface ContentSignature {
   Args: ContentArgs;
   Element: HTMLUListElement;
   Blocks: { default: [] };
@@ -213,6 +218,14 @@ class Content extends Component<ContentSignature> {
     }
     return false;
   }
+
+  get disableFocusTrap() {
+    if (this.args.disableFocusTrap === false) {
+      return false;
+    }
+    return true;
+  }
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -221,25 +234,25 @@ class Content extends Component<ContentSignature> {
       @customContentModifier={{this.loop}}
       @disableFlexContent={{true}}
       @isOpen={{@isOpen}}
-      @onClose={{@onClose}}
+      @onClose={{@toggle}}
       @onOpen={{@onOpen}}
       @didClose={{@didClose}}
       @renderInPlace={{@renderInPlace}}
       @destinationElementId={{@destinationElementId}}
       @transitionDuration={{@transitionDuration}}
       @disableTransitions={{@disableTransitions}}
-      @disableFocusTrap={{@disableFocusTrap}}
+      @disableFocusTrap={{this.disableFocusTrap}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{@closeOnOutsideClick}}
       @closeOnEscapeKey={{@closeOnEscapeKey}}
       @backdropTransition={{@backdropTransition}}
+      @class={{this.classNames}}
+      id={{@id}}
     >
-      <div class={{this.classNames}} tabindex="0">
-        {{yield}}
-      </div>
+      {{yield}}
     </Overlay>
   </template>
 }
 
-export { Popover, type PopoverSignature };
+export { Popover, type PopoverSignature, type ContentSignature };
 export default Popover;

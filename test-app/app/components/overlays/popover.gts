@@ -8,7 +8,7 @@ export default class Example extends Component {
         Trigger
       </button>
 
-      <p.Content @blockScroll={{false}}>
+      <p.Content>
         Content here
       </p.Content>
     </Popover>

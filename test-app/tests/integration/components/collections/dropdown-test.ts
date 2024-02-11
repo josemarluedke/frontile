@@ -6,24 +6,17 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
 module(
-  'Integration | Component | Dropdown | @frontile/buttons',
+  'Integration | Component | Dropdown | @frontile/collections',
   function (hooks) {
     setupRenderingTest(hooks);
 
     registerCustomStyles({
+      backdrop: tv({ base: 'overlay__backdrop' }) as never,
       overlay: tv({
-        slots: {
-          base: 'overlay',
-          backdrop: 'overlay__backdrop',
-          content: 'overlay__content'
-        },
+        base: 'overlay__content',
         variants: {
           inPlace: {
-            true: {
-              base: 'overlay--in-place',
-              backdrop: '',
-              content: ''
-            }
+            true: 'overlay--in-place'
           }
         }
       }) as never
@@ -102,8 +95,8 @@ module(
         .hasAria('expanded', 'true');
     });
 
-    test('it shows backdrop when @disableBackdrop=false', async function (assert) {
-      this.set('disableBackdrop', true);
+    test('it shows backdrop when @backdrop=none', async function (assert) {
+      this.set('backdrop', 'none');
 
       await render(
         hbs`
@@ -112,7 +105,7 @@ module(
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
-              @disableBackdrop={{this.disableBackdrop}}
+              @backdrop={{this.backdrop}}
               @disableTransitions={{true}}
               @destinationElementId="my-destination"
               as |Item|
@@ -127,7 +120,7 @@ module(
 
       assert.dom('.overlay__backdrop').doesNotExist();
 
-      this.set('disableBackdrop', false);
+      this.set('backdrop', 'faded');
 
       assert.dom('.overlay__backdrop').exists();
     });
@@ -190,7 +183,7 @@ module(
       assert.dom('[data-test-id="listbox"]').exists();
     });
 
-    test('clicking outside (overlay) closes menu', async function (assert) {
+    test('clicking outside closes menu', async function (assert) {
       let calledClosed = false;
       this.set('onClose', () => {
         calledClosed = true;
@@ -198,7 +191,7 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
+          <div id="my-destination" tabindex="0"></div>
           <Dropdown @onClose={{this.onClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
@@ -217,7 +210,7 @@ module(
       await click('[data-test-id="dropdown-trigger"]');
       assert.dom('[data-test-id="listbox"]').exists();
 
-      await click('.overlay');
+      await click('#my-destination');
       assert.dom('[data-test-id="listbox"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called onClose argument');
     });

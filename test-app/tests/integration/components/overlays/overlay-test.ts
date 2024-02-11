@@ -17,19 +17,12 @@ module(
     setupRenderingTest(hooks);
 
     registerCustomStyles({
+      backdrop: tv({ base: 'overlay__backdrop' }) as never,
       overlay: tv({
-        slots: {
-          base: 'overlay',
-          backdrop: 'overlay__backdrop',
-          content: 'overlay__content'
-        },
+        base: 'overlay__content',
         variants: {
           inPlace: {
-            true: {
-              base: 'overlay--in-place',
-              backdrop: '',
-              content: ''
-            }
+            true: 'overlay--in-place'
           }
         }
       }) as never
@@ -45,7 +38,7 @@ module(
       @renderInPlace={{this.renderInPlace}}
       @destinationElementId="my-destination"
       @transitionDuration={{this.transitionDuration}}
-      @disableBackdrop={{this.disableBackdrop}}
+      @backdrop={{this.backdrop}}
       @disableTransitions={{this.disableTransitions}}
       @disableFocusTrap={{this.disableFocusTrap}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
@@ -66,10 +59,10 @@ module(
 
       assert.dom('[data-test-id="overlay"]').exists();
       assert
-        .dom('[data-test-id="overlay"] .overlay__content')
+        .dom('[data-test-id="overlay"]')
         .hasText('My Content Something focusable');
 
-      assert.dom('[data-test-id="overlay"] .overlay__backdrop').exists();
+      assert.dom('.overlay__backdrop').exists();
 
       assert.dom('#my-destination > [data-test-id="overlay"]').exists();
 
@@ -90,13 +83,13 @@ module(
       assert.dom('[data-test-id="overlay"]').hasClass('overlay--in-place');
     });
 
-    test('when @disableBackdrop=true does not render backdrop', async function (assert) {
+    test('when @backdrop=none does not render backdrop', async function (assert) {
       this.set('disableTransitions', true);
       this.set('isOpen', true);
-      this.set('disableBackdrop', true);
+      this.set('backdrop', 'none');
       await render(template);
 
-      assert.dom('[data-test-id="overlay"] .overlay__backdrop').doesNotExist();
+      assert.dom('.overlay__backdrop').doesNotExist();
     });
 
     test('it closes overlay when backdrop is clicked', async function (assert) {
@@ -111,7 +104,7 @@ module(
       });
 
       await render(template);
-      await click('[data-test-id="overlay"] .overlay__backdrop');
+      await click('.overlay__backdrop');
       assert.dom('[data-test-id="overlay"]').doesNotExist();
     });
 
@@ -128,7 +121,7 @@ module(
       });
 
       await render(template);
-      await click('[data-test-id="overlay"] .overlay__backdrop');
+      await click('.overlay__backdrop');
       assert.dom('[data-test-id="overlay"]').exists();
     });
 
@@ -145,7 +138,7 @@ module(
 
       await render(template);
       await triggerKeyEvent(
-        find('[data-test-id="overlay"] .overlay__content') as Element,
+        find('.overlay__content') as Element,
         'keydown',
         'Escape'
       );
@@ -185,7 +178,7 @@ module(
       });
 
       await render(template);
-      await click('[data-test-id="overlay"] .overlay__backdrop');
+      await click('.overlay__backdrop');
       assert.deepEqual(calls, ['onClose', 'didClose']);
     });
 
