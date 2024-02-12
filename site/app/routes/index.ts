@@ -6,6 +6,7 @@ import * as utilities from '@frontile/utilities';
 import * as collections from '@frontile/collections';
 import * as status from '@frontile/status';
 import * as overlays from '@frontile/overlays';
+import * as forms from '@frontile/forms';
 
 export default class IndexRoute extends Route {
   @service router!: RouterService;
@@ -22,7 +23,8 @@ export default class IndexRoute extends Route {
       utilities,
       collections,
       status,
-      overlays
+      overlays,
+      forms
     };
   }
 }
