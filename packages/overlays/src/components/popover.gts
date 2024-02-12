@@ -178,7 +178,7 @@ interface ContentArgs
 
 interface ContentSignature {
   Args: ContentArgs;
-  Element: HTMLUListElement;
+  Element: HTMLDivElement;
   Blocks: { default: [] };
 }
 
@@ -248,6 +248,7 @@ class Content extends Component<ContentSignature> {
       @backdropTransition={{@backdropTransition}}
       @class={{this.classNames}}
       id={{@id}}
+      ...attributes
     >
       {{yield}}
     </Overlay>
