@@ -24,6 +24,12 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
         addVariant(variant.name, variant.definition);
       });
 
+      addVariant('data-is-active', '&[data-active=true]');
+      addVariant(
+        'group-data-is-active',
+        ':merge(.group)[data-active="true"] &'
+      );
+
       addTransitions(
         addComponents,
         '.notification-transition',

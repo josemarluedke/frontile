@@ -94,7 +94,7 @@ const checkboxRadioBase = tv({
     'text-primary',
     'border border-default-400',
     'bg-white dark:bg-default-100',
-    'checked:bg-origin-border checked:border-transparent checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
+    'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
   ],
   variants: {
     size: {
