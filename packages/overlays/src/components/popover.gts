@@ -55,7 +55,10 @@ interface PopoverSignature {
     default: [
       {
         anchor: ModifierLike<{ Element: HTMLElement }>;
+        isOpen: boolean;
         toggle: () => void;
+        open: () => void;
+        close: () => void;
         trigger: ModifierLike<{ Element: HTMLElement }>;
         Content: WithBoundArgs<
           typeof Content,
@@ -72,7 +75,19 @@ class Popover extends Component<PopoverSignature> {
   @tracked isOpen = false;
 
   toggle = () => {
-    this.isOpen = !this.isOpen;
+    if (this.isOpen) {
+      this.close();
+    } else {
+      this.open();
+    }
+  };
+
+  open = () => {
+    this.isOpen = true;
+  };
+
+  close = () => {
+    this.isOpen = false;
     if (this.isOpen === false && typeof this.args.onClose === 'function') {
       this.args.onClose();
     }
@@ -111,6 +126,9 @@ class Popover extends Component<PopoverSignature> {
       {{yield
         (hash
           anchor=velcro.hook
+          isOpen=this.isOpen
+          open=this.open
+          close=this.close
           toggle=this.toggle
           trigger=this.trigger
           Content=(component
@@ -174,6 +192,13 @@ interface ContentArgs
    * @defaultValue true
    */
   disableFocusTrap?: boolean;
+
+  /**
+   * The size of the content.
+   *
+   * @defaultValue 'md'
+   */
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 interface ContentSignature {
@@ -193,7 +218,7 @@ class Content extends Component<ContentSignature> {
 
   get classNames() {
     const { popover } = useStyles();
-    return popover({ class: this.args.class });
+    return popover({ size: this.args.size, class: this.args.class });
   }
 
   get backdrop(): OverlaySignature['Args']['backdrop'] {

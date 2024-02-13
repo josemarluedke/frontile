@@ -69,6 +69,38 @@ import { FormInput } from '@frontile/forms';
 </template>
 ```
 
+
+## The Trigger
+
+Besides triggering the popover through a click event, alternative methods are
+available for managing the visibility of the content. The Popover component yields functions
+such as `open`, `close`, or `toggle`, offering convenient control over the popover's behavior.
+
+In the example below, the popover is showned when the user hovers the trigger button.
+
+```gjs preview
+import { on } from '@ember/modifier';
+import { Popover } from '@frontile/overlays';
+import { Button } from '@frontile/buttons';
+
+<template>
+  <Popover as |pop|>
+    <Button
+      {{pop.trigger}}
+      {{pop.anchor}}
+      {{on "mouseenter" pop.open}}
+      {{on "mouseleave" pop.close}}
+    >
+      Hover me
+    </Button>
+
+    <pop.Content @class="p-2">
+      Hovered content
+    </pop.Content>
+  </Popover>
+</template>
+```
+
 ## Blocking Window Scroll
 
 Prevent scrolling of the main window when the popover is open, focusing the 
@@ -97,7 +129,6 @@ import { FormInput } from '@frontile/forms';
   </Popover>
 </template>
 ```
-
 
 ## Backdrop Options
 
@@ -164,6 +195,38 @@ const placements = [
           {{placement}}
         </Button>
         <p.Content @class="p-4">
+          This is some example content for the popover. It can contain anything.
+        </p.Content>
+      </Popover>
+    {{/each}}
+  </div>
+</template>
+```
+
+## Size
+
+The size of the content. It can be overwritten by passing width Tailwind classes
+to the `Content` yielded component.
+
+```gjs preview
+import { Button } from '@frontile/buttons';
+import { Popover } from '@frontile/overlays';
+
+const sizes = [
+  'sm',
+  'md',
+  'lg',
+  'xl'
+];
+
+<template>
+  <div class="flex flex-wrap md:inline-grid md:grid-cols-4 gap-4">
+    {{#each sizes as |size|}}
+      <Popover as |p|>
+        <Button {{p.trigger}} {{p.anchor}}>
+          {{size}}
+        </Button>
+        <p.Content @size={{size}} @class="p-4">
           This is some example content for the popover. It can contain anything.
         </p.Content>
       </Popover>
