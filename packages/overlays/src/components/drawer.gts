@@ -151,6 +151,7 @@ export default class Drawer extends Component<DrawerSignature> {
       @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
       @backdropTransition={{@backdropTransition}}
       @transition={{this.transition}}
+      @closeOnOverlayElementClick={{true}}
     >
       <div
         class={{this.classes.base}}

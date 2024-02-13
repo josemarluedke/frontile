@@ -34,6 +34,24 @@ const MaybeInElement: TOC<{
   {{/if}}
 </template>;
 
+function hasNextSibblingOverlay(element: HTMLElement): boolean {
+  // Get the next sibling of the element
+  let nextSibling = element.nextElementSibling;
+
+  // Search for elements with the selector `[data-component="overlay"]` until the end of the DOM
+  while (nextSibling) {
+    if (
+      nextSibling.matches &&
+      nextSibling.matches('[data-component="overlay"]')
+    ) {
+      return true;
+    }
+    nextSibling = nextSibling.nextElementSibling;
+  }
+
+  return false;
+}
+
 interface OverlaySignature {
   Args: {
     /**
@@ -112,6 +130,13 @@ interface OverlaySignature {
     closeOnOutsideClick?: boolean;
 
     /**
+     * Whether to close when the overlay element is clicked, used for modal and drawer components.
+     *
+     * @defaultValue false
+     */
+    closeOnOverlayElementClick?: boolean;
+
+    /**
      * Whether to close when the escape key is pressed
      *
      * @defaultValue true
@@ -142,6 +167,7 @@ class Overlay extends Component<OverlaySignature> {
   @tracked keepOpen = false;
 
   contentElement: HTMLElement | undefined;
+  focusedElement: Element | null | undefined;
   mouseDownContentElement: EventTarget | null = null;
 
   get destinationElement(): HTMLElement | null {
@@ -158,9 +184,16 @@ class Overlay extends Component<OverlaySignature> {
     }
   }
 
+  handleClose(): void {
+    if (this.args.isOpen && typeof this.args.onClose === 'function') {
+      this.args.onClose();
+    }
+  }
+
   @action handleContentClick(event: MouseEvent): void {
     if (
       this.args.closeOnOutsideClick !== false &&
+      this.args.closeOnOverlayElementClick === true &&
       event.target === this.contentElement &&
       this.mouseDownContentElement == this.contentElement
     ) {
@@ -170,33 +203,46 @@ class Overlay extends Component<OverlaySignature> {
   }
 
   @action handleOutsideClick(e: Event): void {
-    if (this.args.closeOnOutsideClick !== false) {
+    if (
+      this.args.closeOnOutsideClick !== false &&
+      this.contentElement &&
+      !hasNextSibblingOverlay(this.contentElement)
+    ) {
       this.handleClose();
       e.preventDefault();
     }
   }
 
-  @action handleClose(): void {
-    if (this.args.isOpen && typeof this.args.onClose === 'function') {
-      this.args.onClose();
-    }
-  }
-
   @action
   handleContentMouseDown(event: MouseEvent): void {
-    this.mouseDownContentElement = event.target;
+    if (this.args.closeOnOverlayElementClick === true) {
+      this.mouseDownContentElement = event.target;
+    }
   }
 
   @action
   handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Escape' && this.args.closeOnEscapeKey !== false) {
       this.handleClose();
+      event.preventDefault();
+      event.stopImmediatePropagation();
     }
   }
 
   setupContent = modifier((el: HTMLDivElement) => {
+    let transitionDuration = this.args.transitionDuration || 200;
+    if (this.args.disableTransitions === true) {
+      transitionDuration = 0;
+    }
+    later(() => {
+      if (this.isDestroyed) return;
+      if (this.args.disableFocusTrap !== true) return;
+      el.focus();
+    }, transitionDuration);
+
     this.contentElement = el;
     this.keepOpen = true;
+    this.focusedElement = document.activeElement;
 
     if (this.args.renderInPlace !== true && this.args.blockScroll !== false) {
       document.body.style.overflow = 'hidden';
@@ -212,19 +258,22 @@ class Overlay extends Component<OverlaySignature> {
         document.body.style.overflow = '';
       }
 
-      let duration = this.args.transitionDuration || 200;
-
-      if (this.args.disableTransitions === true) {
-        duration = 0;
-      }
-
       const { didClose } = this.args;
       later(() => {
         if (!this.isDestroyed) this.keepOpen = false;
         if (typeof didClose === 'function' && !this.isDestroyed) {
           didClose();
         }
-      }, duration);
+
+        // restore focus
+        if (
+          this.focusedElement &&
+          (this.focusedElement as HTMLElement).tabIndex > -1 &&
+          typeof (this.focusedElement as HTMLElement).focus !== 'undefined'
+        ) {
+          (this.focusedElement as HTMLElement).focus();
+        }
+      }, transitionDuration);
     };
   });
 
@@ -324,7 +373,11 @@ class Overlay extends Component<OverlaySignature> {
               name=this.transition.name
               parentSelector=this.transition.parentSelector
             }}
-            {{onClickOutside this.handleOutsideClick}}
+            {{onClickOutside
+              this.handleOutsideClick
+              exceptSelector='[data-component="overlay"]'
+              capture=true
+            }}
             {{focusTrap
               isActive=(if @disableFocusTrap false @isOpen)
               focusTrapOptions=this.focusTrapOptions
@@ -332,6 +385,8 @@ class Overlay extends Component<OverlaySignature> {
             class={{this.classes}}
             {{! Keep this custom modifer by last}}
             {{this.customContentModifier}}
+            data-component="overlay"
+            tabindex="0"
             ...attributes
           >
             {{yield}}

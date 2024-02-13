@@ -172,5 +172,50 @@ const placements = [
 </template>
 ```
 
+## Stacking Popovers
+
+When stacking Popovers, the behavior is designed to accommodate multiple layers
+of interaction seamlessly. Each Popover instance maintains its own context,
+allowing for a stacked arrangement of overlays. This means that users can trigger
+a new Popover from within an existing one, creating a stacked structure. When
+the "escape" key is pressed, the system intelligently identifies the most recently
+added overlay and closes it, ensuring a natural and intuitive user experience.
+Similarly, clicking outside of the overlays prioritizes the most recent addition,
+closing it before proceeding to the underlying layers. 
+
+```gjs preview
+import { Popover } from '@frontile/overlays';
+import { Button } from '@frontile/buttons';
+
+<template>
+  <Popover as |pop|>
+    <Button {{pop.trigger}} {{pop.anchor}}>
+      Toggle Popover
+    </Button>
+
+    <pop.Content @class="p-4">
+      This is some example content for the popover. Check the nested popover by
+      clicking the button below.
+
+      <Popover @placement="right" as |pop|>
+        <Button {{pop.trigger}} {{pop.anchor}} @class="mt-2">
+          Second Popover
+        </Button>
+
+        <pop.Content @class="p-4">
+          <p>
+            More content here, the nested overlay.
+          </p>
+          <p class="mt-2">
+            Clicking outside or pressing Escape will close this Popover, and not
+            the root Popover.
+          </p>
+        </pop.Content>
+      </Popover>
+    </pop.Content>
+  </Popover>
+</template>
+```
+
 ## API
 
