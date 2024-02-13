@@ -9,19 +9,12 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
   setupRenderingTest(hooks);
 
   registerCustomStyles({
+    backdrop: tv({ base: 'overlay__backdrop' }) as never,
     overlay: tv({
-      slots: {
-        base: '',
-        backdrop: 'overlay__backdrop',
-        content: 'overlay__content'
-      },
+      base: 'overlay__content',
       variants: {
         inPlace: {
-          true: {
-            base: 'overlay--in-place',
-            backdrop: '',
-            content: ''
-          }
+          true: 'overlay--in-place'
         }
       }
     }) as never,

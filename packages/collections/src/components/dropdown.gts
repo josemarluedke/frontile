@@ -1,11 +1,12 @@
 import Component from '@glimmer/component';
 import { Button, type ButtonSignature } from '@frontile/buttons';
 import { Listbox, type ListboxSignature } from './listbox';
-import { Overlay } from '@frontile/overlays';
-import { tracked } from '@glimmer/tracking';
-import { Velcro } from 'ember-velcro';
+import {
+  Popover,
+  type PopoverSignature,
+  type ContentSignature
+} from '@frontile/overlays';
 import { assert } from '@ember/debug';
-import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
@@ -13,44 +14,35 @@ import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from './listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
+interface DropdownArgs
+  extends Pick<
+    PopoverSignature['Args'],
+    | 'placement'
+    | 'flipOptions'
+    | 'middleware'
+    | 'shiftOptions'
+    | 'offsetOptions'
+    | 'strategy'
+    | 'onClose'
+  > {
+  /**
+   * Whether the dropdown should close upon selecting an item.
+   *
+   * @defaultValue true
+   */
+  closeOnItemSelect?: boolean;
+}
+
 interface DropdownSignature {
-  Args: {
-    /**
-     * Whether the dropdown should close upon selecting an item.
-     *
-     * @defaultValue true
-     */
-    closeOnItemSelect?: boolean;
-
-    /**
-     * Placement of the menu when open
-     *
-     * @defaultValue 'bottom-start'
-     */
-    placement?:
-      | 'top'
-      | 'top-start'
-      | 'top-end'
-      | 'right'
-      | 'right-start'
-      | 'right-end'
-      | 'bottom'
-      | 'bottom-start'
-      | 'bottom-end'
-      | 'left'
-      | 'left-start'
-      | 'left-end';
-
-    onClose: () => void;
-  };
+  Args: DropdownArgs;
   Element: HTMLUListElement;
   Blocks: {
     default: [
       {
-        Trigger: WithBoundArgs<typeof Trigger, 'hook' | 'onClick'>;
+        Trigger: WithBoundArgs<typeof Trigger, 'anchor' | 'toggle' | 'trigger'>;
         Menu: WithBoundArgs<
           typeof Menu,
-          'loop' | 'isOpen' | 'id' | 'onClose' | 'closeOnItemSelect'
+          'toggle' | 'Content' | 'closeOnItemSelect'
         >;
       }
     ];
@@ -58,46 +50,31 @@ interface DropdownSignature {
 }
 
 class Dropdown extends Component<DropdownSignature> {
-  menuId = guidFor(this);
-  @tracked isOpen = false;
-
-  toggle = () => {
-    this.isOpen = !this.isOpen;
-  };
-
-  close = () => {
-    this.isOpen = false;
-    if (typeof this.args.onClose === 'function') {
-      this.args.onClose();
-    }
-  };
-
   <template>
-    <Velcro
-      @placement={{if @placement @placement "bottom-start"}}
-      @offsetOptions={{5}}
-      as |velcro|
+    <Popover
+      @placement={{@placement}}
+      @flipOptions={{@flipOptions}}
+      @middleware={{@middleware}}
+      @shiftOptions={{@shiftOptions}}
+      @offsetOptions={{@offsetOptions}}
+      @strategy={{@strategy}}
+      @onClose={{@onClose}}
+      as |p|
     >
       {{yield
         (hash
           Trigger=(component
-            Trigger
-            hook=velcro.hook
-            onClick=this.toggle
-            isOpen=this.isOpen
-            menuId=this.menuId
+            Trigger anchor=p.anchor trigger=p.trigger toggle=p.toggle
           )
           Menu=(component
             Menu
-            id=this.menuId
-            loop=velcro.loop
-            isOpen=this.isOpen
-            onClose=this.close
+            Content=p.Content
+            toggle=p.toggle
             closeOnItemSelect=@closeOnItemSelect
           )
         )
       }}
-    </Velcro>
+    </Popover>
   </template>
 }
 
@@ -109,22 +86,13 @@ interface TriggerArgs
   /**
    * @internal
    */
-  hook: ModifierLike<{ Element: HTMLElement }>;
+  anchor: ModifierLike<{ Element: HTMLElement }>;
+  trigger: ModifierLike<{ Element: HTMLElement }>;
 
   /**
    * @internal
    */
-  onClick: () => void;
-
-  /**
-   * @internal
-   */
-  isOpen?: boolean;
-
-  /**
-   * @internal
-   */
-  menuId?: string;
+  toggle: () => void;
 }
 
 export interface TriggerSignature {
@@ -136,12 +104,19 @@ export interface TriggerSignature {
 }
 
 class Trigger extends Component<TriggerSignature> {
-  get hook() {
+  get anchor() {
     assert(
-      `Dropdown Trigger does not have hook; Missing argument @hook`,
-      this.args.hook
+      `Dropdown Trigger does not have anchor modifier; Missing argument @anchor`,
+      this.args.anchor
     );
-    return this.args.hook;
+    return this.args.anchor;
+  }
+  get trigger() {
+    assert(
+      `Dropdown Trigger does not have trigger modifier; Missing argument @trigger`,
+      this.args.trigger
+    );
+    return this.args.trigger;
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -152,14 +127,14 @@ class Trigger extends Component<TriggerSignature> {
 
   handleKeyUp = (event: KeyboardEvent) => {
     if (event.key === 'ArrowDown' || event.key == 'ArrowUp') {
-      this.args.onClick();
+      this.args.toggle();
     }
   };
 
   <template>
     <Button
-      {{this.hook}}
-      {{on "click" @onClick}}
+      {{this.trigger}}
+      {{this.anchor}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
       @type="button"
@@ -168,9 +143,6 @@ class Trigger extends Component<TriggerSignature> {
       @size={{@size}}
       @class={{@class}}
       @isInGroup={{@isInGroup}}
-      aria-haspopup="true"
-      aria-expanded="{{@isOpen}}"
-      aria-controls={{@menuId}}
       data-test-id="dropdown-trigger"
       ...attributes
     >
@@ -181,25 +153,29 @@ class Trigger extends Component<TriggerSignature> {
 
 interface MenuArgs
   extends Pick<
-    ListboxSignature['Args'],
-    | 'appearance'
-    | 'intent'
-    | 'class'
-    | 'selectionMode'
-    | 'selectedKeys'
-    | 'disabledKeys'
-    | 'allowEmpty'
-    | 'onSelectionChange'
-  > {
-  /**
-   * @internal
-   */
-  loop: ModifierLike<{ Element: HTMLElement }>;
-  /**
-   * @internal
-   */
-  isOpen: boolean;
-
+      ListboxSignature['Args'],
+      | 'appearance'
+      | 'intent'
+      | 'class'
+      | 'selectionMode'
+      | 'selectedKeys'
+      | 'disabledKeys'
+      | 'allowEmpty'
+      | 'onSelectionChange'
+    >,
+    Pick<
+      ContentSignature['Args'],
+      | 'renderInPlace'
+      | 'destinationElementId'
+      | 'transitionDuration'
+      | 'backdrop'
+      | 'disableTransitions'
+      | 'focusTrapOptions'
+      | 'closeOnOutsideClick'
+      | 'closeOnEscapeKey'
+      | 'backdropTransition'
+      | 'transition'
+    > {
   /**
    * @internal
    */
@@ -208,33 +184,24 @@ interface MenuArgs
   /**
    * @internal
    */
-  onClose: () => void;
+  Content: PopoverSignature['Blocks']['default'][0]['Content'];
+
+  /**
+   * @internal
+   */
+  toggle: () => void;
 
   onAction?: (key: string) => void;
-
-  disableTransitions?: boolean;
 
   /**
    * @defaultValue true
    */
-  disableBackdrop?: boolean;
-
-  id: string;
+  blockScroll?: boolean;
 
   /**
-   * Whether to render in place or in the specified/default destination
-   *
    * @defaultValue false
    */
-  renderInPlace?: boolean;
-
-  /**
-   * The destination where the menu will be inserted, defaults to
-   * `document.body`
-   *
-   * @defaultValue undefined
-   */
-  destinationElementId?: string;
+  disableFocusTrap?: boolean;
 }
 
 export interface MenuSignature {
@@ -244,21 +211,9 @@ export interface MenuSignature {
 }
 
 class Menu extends Component<MenuSignature> {
-  get loop() {
-    assert(
-      `Dropdown Content does not have loop; Missing argument @loop`,
-      this.args.loop
-    );
-    return this.args.loop;
-  }
-
   get classNames() {
     const { dropdownContent } = useStyles();
     return dropdownContent({ class: this.args.class });
-  }
-
-  get disableBackdrop() {
-    return this.args.disableBackdrop === false ? false : true;
   }
 
   onAction = (key: string) => {
@@ -267,29 +222,45 @@ class Menu extends Component<MenuSignature> {
     }
 
     if (
-      typeof this.args.onClose === 'function' &&
+      typeof this.args.toggle === 'function' &&
       this.args.closeOnItemSelect !== false
     ) {
-      this.args.onClose();
+      this.args.toggle();
     }
   };
 
+  get blockScroll() {
+    if (this.args.blockScroll === false) {
+      return false;
+    }
+    return true;
+  }
+
+  get disableFocusTrap() {
+    if (this.args.disableFocusTrap === true) {
+      return true;
+    }
+    return false;
+  }
+
   <template>
-    <Overlay
+    <@Content
       @destinationElementId={{@destinationElementId}}
       @renderInPlace={{@renderInPlace}}
-      @contentTransitionName="overlay-transition--scale"
-      @customContentModifier={{this.loop}}
-      @disableBackdrop={{this.disableBackdrop}}
-      @disableFlexContent={{true}}
+      @disableFocusTrap={{this.disableFocusTrap}}
+      @blockScroll={{this.blockScroll}}
+      @transitionDuration={{@transitionDuration}}
+      @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
-      @isOpen={{@isOpen}}
-      @onClose={{@onClose}}
+      @focusTrapOptions={{@focusTrapOptions}}
+      @closeOnOutsideClick={{@closeOnOutsideClick}}
+      @closeOnEscapeKey={{@closeOnEscapeKey}}
+      @backdropTransition={{@backdropTransition}}
+      @transition={{@transition}}
     >
       <Listbox
         @allowEmpty={{@allowEmpty}}
         @appearance={{@appearance}}
-        @class={{this.classNames}}
         @disabledKeys={{@disabledKeys}}
         @intent={{@intent}}
         @isKeyboardEventsEnabled={{true}}
@@ -298,13 +269,12 @@ class Menu extends Component<MenuSignature> {
         @selectedKeys={{@selectedKeys}}
         @selectionMode={{if @selectionMode @selectionMode "none"}}
         @type="menu"
-        id={{@id}}
         ...attributes
         as |l|
       >
         {{yield (component l.Item)}}
       </Listbox>
-    </Overlay>
+    </@Content>
   </template>
 }
 

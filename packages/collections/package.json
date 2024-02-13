@@ -46,8 +46,7 @@
     "@frontile/overlays": "workspace:0.17.0-alpha.5",
     "@frontile/theme": "workspace:0.17.0-alpha.5",
     "@frontile/utilities": "workspace:0.17.0-alpha.5",
-    "ember-modifier": "^4.1.0",
-    "ember-velcro": "^2.1.3"
+    "ember-modifier": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.23.7",
@@ -88,11 +87,7 @@
     "main": "addon-main.js",
     "app-js": {
       "./components/dropdown.js": "./dist/_app_/components/dropdown.js",
-      "./components/listbox.js": "./dist/_app_/components/listbox.js",
-      "./components/listbox/item.js": "./dist/_app_/components/listbox/item.js",
-      "./components/listbox/listManager.js": "./dist/_app_/components/listbox/listManager.js",
-      "./components/listbox/listbox.js": "./dist/_app_/components/listbox/listbox.js",
-      "./components/listbox/setupListItemModfier.js": "./dist/_app_/components/listbox/setupListItemModfier.js"
+      "./components/listbox.js": "./dist/_app_/components/listbox.js"
     }
   },
   "exports": {

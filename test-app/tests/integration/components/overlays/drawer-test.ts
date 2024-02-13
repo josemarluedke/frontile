@@ -9,19 +9,12 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
 
   registerCustomStyles({
+    backdrop: tv({ base: 'overlay__backdrop' }) as never,
     overlay: tv({
-      slots: {
-        base: '',
-        backdrop: 'overlay__backdrop',
-        content: 'overlay__content'
-      },
+      base: 'overlay__content',
       variants: {
         inPlace: {
-          true: {
-            base: 'overlay--in-place',
-            backdrop: '',
-            content: ''
-          }
+          true: 'overlay--in-place'
         }
       }
     }) as never,
@@ -290,11 +283,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     });
 
     await render(template);
-    await triggerKeyEvent(
-      find('.overlay__content') as Element,
-      'keydown',
-      'Escape'
-    );
+    await triggerKeyEvent('.overlay__content', 'keydown', 'Escape');
     assert.dom('[data-test-id="drawer"]').doesNotExist();
   });
 

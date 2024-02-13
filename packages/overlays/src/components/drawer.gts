@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
-import { concat, hash } from '@ember/helper';
-import Overlay, { type OverlayArgs } from './overlay';
+import { hash } from '@ember/helper';
+import Overlay, { type OverlaySignature } from './overlay';
 import DrawerBody from './drawer/body';
 import DrawerFooter from './drawer/footer';
 import DrawerHeader from './drawer/header';
@@ -9,13 +9,30 @@ import { CloseButton } from '@frontile/buttons';
 import type { WithBoundArgs } from '@glint/template';
 import { useStyles } from '@frontile/theme';
 
-export interface DrawerArgs extends Omit<OverlayArgs, 'contentTransitionName'> {
+export interface DrawerArgs
+  extends Pick<
+    OverlaySignature['Args'],
+    | 'isOpen'
+    | 'onOpen'
+    | 'onClose'
+    | 'didClose'
+    | 'renderInPlace'
+    | 'destinationElementId'
+    | 'transitionDuration'
+    | 'backdrop'
+    | 'disableTransitions'
+    | 'disableFocusTrap'
+    | 'focusTrapOptions'
+    | 'closeOnOutsideClick'
+    | 'closeOnEscapeKey'
+    | 'backdropTransition'
+  > {
   /**
-   * The name of the transition to be used in the Drawer.
+   * The transition to be used in the Drawer.
    *
-   * @defaultValue 'overlay-transition--slide-from-[placement]'
+   * @defaultValue {name: 'overlay-transition--slide-from-[placement]'}
    */
-  transitionName?: string;
+  transition?: OverlaySignature['Args']['transition'];
 
   /**
    * If set to false, the close button will not be displayed,
@@ -105,6 +122,17 @@ export default class Drawer extends Component<DrawerSignature> {
       footer: footer()
     };
   }
+  get transition() {
+    let options: OverlaySignature['Args']['transition'] = {
+      name: `overlay-transition--slide-from-${this.placement}`
+    };
+
+    if (typeof this.args.transition === 'object') {
+      return { ...options, ...this.args.transition };
+    }
+
+    return options;
+  }
 
   <template>
     <Overlay
@@ -115,20 +143,16 @@ export default class Drawer extends Component<DrawerSignature> {
       @renderInPlace={{@renderInPlace}}
       @destinationElementId={{@destinationElementId}}
       @transitionDuration={{@transitionDuration}}
-      @disableBackdrop={{@disableBackdrop}}
+      @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
       @disableFocusTrap={{@disableFocusTrap}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{if this.preventClosing false @closeOnOutsideClick}}
       @closeOnEscapeKey={{if this.preventClosing false @closeOnEscapeKey}}
-      @backdropTransitionName={{@backdropTransitionName}}
-      @contentTransitionName={{if
-        @transitionName
-        @transitionName
-        (concat "overlay-transition--slide-from-" this.placement)
-      }}
+      @backdropTransition={{@backdropTransition}}
+      @transition={{this.transition}}
+      @closeOnOverlayElementClick={{true}}
     >
-
       <div
         class={{this.classes.base}}
         tabindex="0"
