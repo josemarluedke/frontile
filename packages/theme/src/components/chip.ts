@@ -42,27 +42,15 @@ const chip = tv({
       },
       success: {
         dot: 'bg-success',
-        closeButton: [
-          'bg-success-700',
-          'text-background',
-          'hover:bg-success-700/60'
-        ]
+        closeButton: ['bg-success', 'text-background', 'hover:bg-success/60']
       },
       warning: {
         dot: 'bg-warning',
-        closeButton: [
-          'bg-warning-700',
-          'text-background',
-          'hover:bg-warning-700/60'
-        ]
+        closeButton: ['bg-warning', 'text-background', 'hover:bg-warning/60']
       },
       danger: {
         dot: 'bg-danger',
-        closeButton: [
-          'bg-danger-700',
-          'text-background',
-          'hover:bg-danger-700/60'
-        ]
+        closeButton: ['bg-danger', 'text-background', 'hover:bg-danger/60']
       }
     },
     size: {
@@ -132,35 +120,35 @@ const chip = tv({
       appearance: 'faded',
       intent: 'default',
       class: {
-        base: 'text-default-700 border border-default-700 bg-default-700/20'
+        base: 'text-default-700 border border-default-700 bg-default-400/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'primary',
       class: {
-        base: 'text-primary-600 border border-primary-600 bg-primary/20'
+        base: 'text-primary border border-primary bg-primary-300/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'success',
       class: {
-        base: 'text-success-600 border border-success-600 bg-success/20'
+        base: 'text-success border border-success bg-success-300/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'warning',
       class: {
-        base: 'text-warning-600 border border-warning-600 bg-warning/20'
+        base: 'text-warning border border-warning bg-warning-300/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'danger',
       class: {
-        base: 'text-danger-600 border border-danger-600 bg-danger/20'
+        base: 'text-danger border border-danger bg-danger-300/20'
       }
     },
 

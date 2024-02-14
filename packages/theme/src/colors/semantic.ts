@@ -93,18 +93,18 @@ const themeColorsLight: ThemeColors = {
   },
   success: {
     ...green,
-    foreground: readableColor(green[500]),
-    DEFAULT: green[500]
+    foreground: readableColor(green[600]),
+    DEFAULT: green[600]
   },
   warning: {
     ...yellow,
-    foreground: readableColor(yellow[500]),
-    DEFAULT: yellow[500]
+    foreground: readableColor(yellow[700]),
+    DEFAULT: yellow[700]
   },
   danger: {
     ...red,
     foreground: tw.colors.white,
-    DEFAULT: red[500]
+    DEFAULT: red[600]
   }
 };
 
@@ -118,11 +118,11 @@ const themeColorsDark: ThemeColors = {
   primary: {
     ...swapColorValues(blue),
     foreground: readableColor(blue[500]),
-    DEFAULT: blue[500]
+    DEFAULT: blue[400]
   },
   success: {
     ...swapColorValues(green),
-    foreground: readableColor(green[500]),
+    foreground: tw.colors.white,
     DEFAULT: green[500]
   },
   warning: {
@@ -132,8 +132,8 @@ const themeColorsDark: ThemeColors = {
   },
   danger: {
     ...swapColorValues(red),
-    foreground: tw.colors.white,
-    DEFAULT: red[500]
+    foreground: readableColor(red[400]),
+    DEFAULT: red[400]
   }
 };
 
