@@ -17,16 +17,16 @@ const progressBar = tv({
         progress: 'bg-default-800 dark:bg-default'
       },
       primary: {
-        progress: 'bg-primary'
+        progress: 'bg-primary-500'
       },
       success: {
-        progress: 'bg-success'
+        progress: 'bg-success-500'
       },
       warning: {
-        progress: 'bg-warning'
+        progress: 'bg-warning-500'
       },
       danger: {
-        progress: 'bg-danger'
+        progress: 'bg-danger-500'
       }
     },
     size: {

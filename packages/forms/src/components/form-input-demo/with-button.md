@@ -19,7 +19,7 @@ This is an example of how to implement an input with a button next to it.
   <button
     type='button'
     {{on 'click' this.validate}}
-    class='px-4 py-2 border text-gray-100 rounded-r
+    class='px-4 py-2 border text-default-100 rounded-r
       {{if
         this.isValid
         "bg-green-800 border-green-800 hover:bg-green-700"

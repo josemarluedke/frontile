@@ -32,7 +32,7 @@ const feedback = tv({
   base: 'text-xs pt-1',
   variants: {
     isError: {
-      true: 'text-red-600'
+      true: 'text-danger'
     },
     size: {
       sm: 'text-xs',

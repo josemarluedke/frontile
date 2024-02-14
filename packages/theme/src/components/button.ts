@@ -99,22 +99,22 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'primary',
-      class: 'bg-primary text-primary-foreground  hover:bg-primary/80'
+      class: 'bg-primary-500 text-primary-foreground hover:bg-primary-500/80'
     },
     {
       appearance: 'default',
       intent: 'success',
-      class: 'bg-success text-success-foreground hover:bg-success/80'
+      class: 'bg-success-500 text-success-foreground hover:bg-success-500/80'
     },
     {
       appearance: 'default',
       intent: 'warning',
-      class: 'bg-warning text-warning-foreground hover:bg-warning/80'
+      class: 'bg-warning-500 text-black hover:bg-warning-500/80'
     },
     {
       appearance: 'default',
       intent: 'danger',
-      class: 'bg-danger text-danger-foreground hover:bg-danger/80'
+      class: 'bg-danger-500 text-danger-foreground hover:bg-danger-500/80'
     },
 
     // APPEARANCE: minimal
