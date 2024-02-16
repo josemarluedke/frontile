@@ -21,13 +21,13 @@
     </thead>
 
     <tbody>
-      {{#each this.component.args as |arg|}}
+      {{#each this.component.Args as |arg|}}
         {{#unless arg.tags.ignore}}
           <tr>
             <td>
               <code class="hljs-light-theme code-transparent">
                 <span class="hljs-name">
-                  {{arg.name}}
+                  {{arg.identifier}}
                 </span>
               </code>
             </td>
