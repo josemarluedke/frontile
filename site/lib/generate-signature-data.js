@@ -21,16 +21,23 @@ function highlight(property) {
   if (property.type) {
     let type = property.type.type;
 
-    if (type === 'enum') {
-      type = property.type.raw.replace(/"/g, "'");
-    }
-
+    type = property.type.type.replace(/"/g, "'");
     const typeTree = lowlight.highlight('ts', type).value;
     const typeHTML = processor
       .stringify({ type: 'root', children: typeTree })
       .toString();
 
     property.type.type = typeHTML;
+
+    if (property.type.raw) {
+      const raw = property.type.raw.replace(/"/g, "'");
+      const rawTree = lowlight.highlight('ts', raw).value;
+      const rawHTML = processor
+        .stringify({ type: 'root', children: rawTree })
+        .toString();
+
+      property.type.raw = rawHTML;
+    }
 
     if (property.type.items && property.type.items.length > 0) {
       property.type.items.forEach(highlight);

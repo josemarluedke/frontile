@@ -6,4 +6,4 @@ url: drawer
 
 ## API
 
-<Signature @module="overlays" @component="Drawer" />
+<Signature @package="overlays" @component="Drawer" />

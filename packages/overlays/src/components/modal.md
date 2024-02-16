@@ -6,4 +6,4 @@ url: modal
 
 ## API
 
-<Signature @module="overlays" @component="Modal" />
+<Signature @package="overlays" @component="Modal" />

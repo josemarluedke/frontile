@@ -26,4 +26,4 @@ import { CloseButton} from '@frontile/buttons';
 
 ## API
 
-<Signature @module="buttons" @component="CloseButton" />
+<Signature @package="buttons" @component="CloseButton" />

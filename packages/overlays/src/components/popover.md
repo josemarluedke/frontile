@@ -282,4 +282,6 @@ import { Button } from '@frontile/buttons';
 
 ## API
 
-<Signature @module="overlays" @component="Popover" />
+<Signature @package="overlays" @component="Popover" />
+
+<Signature @package="overlays" @module="popover" @component="Content" />

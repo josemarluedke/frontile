@@ -21,4 +21,4 @@ It contains all the core features necessary for a great experience.
 
 ## API
 
-<Signature @module="overlays" @component="Overlays" />
+<Signature @package="overlays" @component="Overlays" />

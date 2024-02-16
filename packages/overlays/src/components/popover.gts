@@ -59,7 +59,10 @@ interface PopoverSignature {
         toggle: () => void;
         open: () => void;
         close: () => void;
-        trigger: ModifierLike<{ Element: HTMLElement }>;
+        trigger: ModifierLike<{
+          Element: HTMLElement;
+          Args: { Positional: [eventType?: 'click' | 'hover'] };
+        }>;
         Content: WithBoundArgs<
           typeof Content,
           'loop' | 'isOpen' | 'id' | 'toggle' | 'blockScroll' | 'backdrop'
@@ -93,19 +96,30 @@ class Popover extends Component<PopoverSignature> {
     }
   };
 
-  trigger = modifier((el: HTMLElement) => {
-    this.triggerEl = el as HTMLLIElement;
+  trigger = modifier(
+    (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
+      this.triggerEl = el as HTMLLIElement;
+      if (eventType === 'hover') {
+        el.addEventListener('mouseenter', this.toggle);
+        el.addEventListener('mouseleave', this.toggle);
+      } else {
+        el.addEventListener('click', this.toggle);
+      }
+      el.setAttribute('aria-haspopup', 'true');
+      el.setAttribute('aria-controls', this.menuId);
+      el.setAttribute('aria-expanded', this.isOpen.toString());
 
-    el.addEventListener('click', this.toggle);
-    el.setAttribute('aria-haspopup', 'true');
-    el.setAttribute('aria-controls', this.menuId);
-    el.setAttribute('aria-expanded', this.isOpen.toString());
-
-    return () => {
-      el.removeEventListener('click', this.toggle);
-      this.triggerEl = undefined;
-    };
-  });
+      return () => {
+        if (eventType === 'hover') {
+          el.removeEventListener('mouseenter', this.toggle);
+          el.removeEventListener('mouseleave', this.toggle);
+        } else {
+          el.removeEventListener('click', this.toggle);
+        }
+        this.triggerEl = undefined;
+      };
+    }
+  );
 
   updateAriaExtanded = modifier((_: HTMLElement) => {
     if (this.triggerEl) {
@@ -207,6 +221,9 @@ interface ContentSignature {
   Blocks: { default: [] };
 }
 
+/**
+ * Component yielded from Popover
+ */
 class Content extends Component<ContentSignature> {
   get loop() {
     assert(

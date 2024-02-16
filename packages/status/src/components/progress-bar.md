@@ -173,4 +173,4 @@ argument `@class` will override and merge TailwindCSS class names.
 
 ## API
 
-<Signature @module="status" @component="ProgressBar" />
+<Signature @package="status" @component="ProgressBar" />

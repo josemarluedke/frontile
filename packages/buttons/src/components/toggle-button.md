@@ -120,4 +120,4 @@ import { ToggleButton } from '@frontile/buttons';
 
 ## API
 
-<Signature @module="buttons" @component="ToggleButton" />
+<Signature @package="buttons" @component="ToggleButton" />

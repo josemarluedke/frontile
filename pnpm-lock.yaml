@@ -1170,8 +1170,8 @@ importers:
         specifier: ^6.6.2
         version: 6.6.2
       glimmer-docgen-typescript:
-        specifier: ^0.3.2
-        version: 0.3.2
+        specifier: ^0.3.3
+        version: 0.3.3
       loader.js:
         specifier: ^4.7.0
         version: 4.7.0
@@ -11221,8 +11221,8 @@ packages:
     resolution: {integrity: sha512-wIh+gKBI9Nshz2o46B0B3f5k/W+WI9ZAv6y5Dn5WJ5SK1t0TnDimB4WE5rmTD05ZAIn8HALCZVmCsvj0w0v0lw==}
     dev: true
 
-  /glimmer-docgen-typescript@0.3.2:
-    resolution: {integrity: sha512-ySiYnlXwg37tDplrrvSGebFu2fWt8qBAD+FU3indrpOk/u1CueP0HwU+d7O5ZCcTAIs9831Axn+uhXkhWRxegw==}
+  /glimmer-docgen-typescript@0.3.3:
+    resolution: {integrity: sha512-Ezm31d9nxorxSqSZb7+xPvUyXgwv5b55BZu9uHN6KLRNXFnhC9rWIej5BRYJsQKd+Gfyv6rfI/U0+0Wqwws1Qg==}
     engines: {node: '>= 16.*'}
     dependencies:
       debug: 4.3.4(supports-color@8.1.1)

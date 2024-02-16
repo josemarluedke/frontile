@@ -16,7 +16,7 @@
     "test": "ember test",
     "test:all": "echo 'Tests ignored'",
     "try:one": "echo 'Tests ignored'",
-    "generate-sinature-data": "node lib/generate-signature-data.js"
+    "generate-signature-data": "node lib/generate-signature-data.js && pnpm prettier app/components/signature-data.ts --write"
   },
   "devDependencies": {
     "@docfy/core": "^0.8.0",
@@ -86,7 +86,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "webpack": "^5.90.2",
-    "glimmer-docgen-typescript": "^0.3.2",
+    "glimmer-docgen-typescript": "^0.3.3",
     "lowlight": "^1.20.0",
     "rehype-stringify": "^8.0.0",
     "unified": "^9.2.1"

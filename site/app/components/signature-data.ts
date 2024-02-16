@@ -21,7 +21,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[string]',
+          raw: '[<span class="hljs-built_in">string</span>]',
           items: [
             {
               identifier: '0',
@@ -57,8 +57,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
-          raw: '"default" | "outlined" | "minimal" | "custom"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
           items: ["'default'", "'outlined'", "'minimal'", "'custom'"]
         },
         isRequired: false,
@@ -79,8 +79,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -97,8 +97,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'"]
         },
         isRequired: false,
@@ -112,7 +112,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ Button: never; ToggleButton: never; }]',
+          raw: '[{ <span class="hljs-attr">Button</span>: <span class="hljs-built_in">never</span>; ToggleButton: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -168,8 +168,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
-          raw: '"default" | "outlined" | "minimal" | "custom"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
           items: ["'default'", "'outlined'", "'minimal'", "'custom'"]
         },
         isRequired: false,
@@ -190,8 +190,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -226,8 +226,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'"]
         },
         isRequired: false,
@@ -238,8 +238,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'button\'</span> | <span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'reset\'</span>',
-          raw: '"button" | "submit" | "reset"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'button\'</span> | <span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'reset\'</span>',
           items: ["'button'", "'submit'", "'reset'"]
         },
         isRequired: false,
@@ -254,7 +254,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ classNames: string; }]',
+          raw: '[{ <span class="hljs-attr">classNames</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -302,8 +302,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -324,8 +324,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -349,7 +349,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -359,8 +362,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'radius',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"sm" | "lg" | "none" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'sm'", "'lg'", "'none'", "'full'"]
         },
         isRequired: false,
@@ -371,8 +374,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -429,7 +432,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onClick',
         type: {
-          type: '(event: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -439,8 +443,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -464,7 +468,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[string]',
+          raw: '[<span class="hljs-built_in">string</span>]',
           items: [
             {
               identifier: '0',
@@ -508,7 +512,91 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'formatOptions',
-        type: { type: 'NumberFormatOptions' },
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'localeMatcher',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'style',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'currency',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'currencySign',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'useGrouping',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumIntegerDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumFractionDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'maximumFractionDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumSignificantDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'maximumSignificantDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -526,8 +614,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -588,8 +676,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'radius',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"sm" | "lg" | "none" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'sm'", "'lg'", "'none'", "'full'"]
         },
         isRequired: false,
@@ -609,8 +697,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -669,8 +757,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -705,7 +793,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(isSelected: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(isSelected: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -715,8 +804,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'"]
         },
         isRequired: false,
@@ -775,7 +864,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'middleware',
         type: {
-          type: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
         },
         isRequired: false,
         isInternal: false,
@@ -793,7 +883,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -802,8 +895,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'top-start\'</span> | <span class="hljs-string">\'top-end\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'right-start\'</span> | <span class="hljs-string">\'right-end\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'bottom-start\'</span> | <span class="hljs-string">\'bottom-end\'</span> | <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'left-start\'</span> | <span class="hljs-string">\'left-end\'</span>',
-          raw: '"top" | "top-start" | "top-end" | "right" | "right-start" | "right-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "left-start" | "left-end"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'top-start\'</span> | <span class="hljs-string">\'top-end\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'right-start\'</span> | <span class="hljs-string">\'right-end\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'bottom-start\'</span> | <span class="hljs-string">\'bottom-end\'</span> | <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'left-start\'</span> | <span class="hljs-string">\'left-end\'</span>',
           items: [
             "'top'",
             "'top-start'",
@@ -838,7 +931,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'strategy',
         type: {
-          type: 'Strategy',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'Strategy',
           items: ["'absolute'", "'fixed'"]
         },
@@ -854,7 +947,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ Trigger: never; Menu: never; }]',
+          raw: '[{ <span class="hljs-attr">Trigger</span>: <span class="hljs-built_in">never</span>; Menu: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -919,7 +1012,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'toggle',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: true,
         isInternal: true,
         description: '',
@@ -938,8 +1034,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
-          raw: '"default" | "outlined" | "minimal" | "custom"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'minimal\'</span> | <span class="hljs-string">\'custom\'</span>',
           items: ["'default'", "'outlined'", "'minimal'", "'custom'"]
         },
         isRequired: false,
@@ -960,8 +1056,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -987,8 +1083,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'"]
         },
         isRequired: false,
@@ -1036,7 +1132,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'toggle',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: true,
         isInternal: true,
         description: '',
@@ -1053,8 +1152,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -1066,8 +1165,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdrop',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -1078,7 +1177,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdropTransition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -1141,7 +1336,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'disabledKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -1183,8 +1381,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -1201,7 +1399,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onAction',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1211,7 +1410,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onSelectionChange',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1230,7 +1430,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'selectedKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -1239,7 +1442,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'selectionMode',
         type: {
-          type: 'SelectionMode',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'SelectionMode',
           items: ["'none'", "'single'", "'multiple'"]
         },
@@ -1251,7 +1454,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -1280,7 +1579,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[item: never]',
+          raw: '[item: <span class="hljs-built_in">never</span>]',
           items: [
             {
               identifier: '0',
@@ -1324,8 +1623,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -1377,7 +1676,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1396,8 +1696,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -1411,7 +1711,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[checkbox: never, api: { onChange: (value: unknown, event: Event) => void; }]',
+          raw: '[checkbox: <span class="hljs-built_in">never</span>, <span class="hljs-attr">api</span>: { <span class="hljs-attr">onChange</span>: <span class="hljs-function">(<span class="hljs-params">value: unknown, event: Event</span>) =></span> <span class="hljs-built_in">void</span>; }]',
           items: [
             {
               identifier: '0',
@@ -1429,7 +1729,8 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'onChange',
                     type: {
-                      type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+                      type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                      raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1478,7 +1779,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -1528,8 +1830,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -1540,7 +1842,8 @@ const data: ComponentDoc[] = [
       {
         identifier: '_parentOnChange',
         type: {
-          type: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1580,8 +1883,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -1595,7 +1898,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ id: string; hintId: string; feedbackId: string; Label: never; Hint: never; Feedback: never; Input: never; Textarea: never; Checkbox: never; Radio: never; }]',
+          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; hintId: <span class="hljs-built_in">string</span>; feedbackId: <span class="hljs-built_in">string</span>; Label: <span class="hljs-built_in">never</span>; Hint: <span class="hljs-built_in">never</span>; Feedback: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; Checkbox: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -1732,8 +2035,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -1785,7 +2088,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1795,7 +2099,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1805,7 +2110,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1815,7 +2121,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1833,8 +2140,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -1882,8 +2189,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -1935,7 +2242,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1945,7 +2253,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1955,7 +2264,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1965,7 +2275,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -1983,8 +2294,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -2034,8 +2345,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: true,
@@ -2054,8 +2365,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -2107,7 +2418,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2126,8 +2438,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -2141,7 +2453,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[radio: never]',
+          raw: '[radio: <span class="hljs-built_in">never</span>]',
           items: [
             {
               identifier: '0',
@@ -2186,7 +2498,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -2196,8 +2509,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: true,
@@ -2250,8 +2563,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -2262,7 +2575,8 @@ const data: ComponentDoc[] = [
       {
         identifier: '_parentOnChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2302,7 +2616,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(selection: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(selection: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -2312,8 +2627,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'options',
         type: {
-          type: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          raw: 'any[] | PromiseProxy<any[]>',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
           items: ['any[]', 'PromiseProxy<any[]>']
         },
         isRequired: true,
@@ -2340,7 +2655,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'buildSelection',
         type: {
-          type: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2374,8 +2690,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -2450,7 +2766,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'matcher',
-        type: { type: 'MatcherFn' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'MatcherFn'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -2483,7 +2802,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onBlur',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2493,7 +2813,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onClose',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2503,7 +2824,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocus',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2513,7 +2835,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2523,7 +2846,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2533,7 +2857,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2543,7 +2868,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onKeydown',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2553,7 +2879,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onOpen',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2579,7 +2906,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'registerAPI',
         type: {
-          type: '(select: Select) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2589,7 +2917,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'scrollTo',
         type: {
-          type: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2599,7 +2928,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'search',
         type: {
-          type: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
         },
         isRequired: false,
         isInternal: false,
@@ -2649,8 +2979,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -2661,8 +2991,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'tabindex',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
-          raw: 'string | number',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
           items: ['string', 'number']
         },
         isRequired: false,
@@ -2680,7 +3010,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'typeAheadOptionMatcher',
-        type: { type: 'MatcherFn' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'MatcherFn'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -2725,7 +3058,10 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'options',
-                    type: { type: '<span class="hljs-built_in">any</span>[]' },
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: '<span class="hljs-built_in">any</span>[]'
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2733,7 +3069,10 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'results',
-                    type: { type: '<span class="hljs-built_in">any</span>[]' },
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: '<span class="hljs-built_in">any</span>[]'
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2785,7 +3124,110 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'actions',
-                    type: { type: 'SelectActions' },
+                    type: {
+                      type: '<span class="hljs-built_in">Object</span>',
+                      items: [
+                        {
+                          identifier: 'search',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(term: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'highlight',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'select',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'choose',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'scrollTo',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'toggle',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'close',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event, skipFocus?: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'open',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'reposition',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(...args: <span class="hljs-built_in">any</span>[]) => RepositionChanges'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        }
+                      ]
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2869,8 +3311,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -2922,7 +3364,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2932,7 +3375,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2942,7 +3386,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2952,7 +3397,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -2970,8 +3416,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -3030,7 +3476,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: 'containerPlacement',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'containerPlacement',
           items: [
             "'top-left'",
@@ -3085,7 +3531,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: 'containerPlacement',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'containerPlacement',
           items: [
             "'top-left'",
@@ -3150,7 +3596,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3160,8 +3702,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -3230,8 +3772,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdrop',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -3242,7 +3784,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdropTransition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3252,8 +3890,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'closeButtonSize',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -3292,7 +3930,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'didClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -3334,7 +3975,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when closed',
@@ -3342,7 +3986,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onOpen',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when opened',
@@ -3351,8 +3998,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>',
-          raw: '"top" | "right" | "bottom" | "left"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>',
           items: ["'top'", "'right'", "'bottom'", "'left'"]
         },
         isRequired: false,
@@ -3375,8 +4022,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'", "'full'"]
         },
         isRequired: false,
@@ -3388,7 +4035,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3417,7 +4160,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ CloseButton: never; Header: never; Body: never; Footer: never; headerId: string; }]',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -3524,8 +4267,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdrop',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -3536,7 +4279,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdropTransition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3546,8 +4385,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'closeButtonSize',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -3586,7 +4425,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'didClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -3637,7 +4479,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when closed',
@@ -3645,7 +4490,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onOpen',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when opened',
@@ -3664,8 +4512,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'", "'full'"]
         },
         isRequired: false,
@@ -3677,7 +4525,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3706,7 +4650,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ CloseButton: never; Header: never; Body: never; Footer: never; headerId: string; }]',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -3794,8 +4738,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdrop',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -3806,7 +4750,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdropTransition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -3881,7 +4921,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'didClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -3931,7 +4974,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when closed',
@@ -3939,7 +4985,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onOpen',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when opened',
@@ -3958,7 +5007,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -4022,7 +5167,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'middleware',
         type: {
-          type: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
         },
         isRequired: false,
         isInternal: false,
@@ -4040,7 +5186,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4049,8 +5198,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'top-start\'</span> | <span class="hljs-string">\'top-end\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'right-start\'</span> | <span class="hljs-string">\'right-end\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'bottom-start\'</span> | <span class="hljs-string">\'bottom-end\'</span> | <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'left-start\'</span> | <span class="hljs-string">\'left-end\'</span>',
-          raw: '"top" | "top-start" | "top-end" | "right" | "right-start" | "right-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "left-start" | "left-end"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'top-start\'</span> | <span class="hljs-string">\'top-end\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'right-start\'</span> | <span class="hljs-string">\'right-end\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'bottom-start\'</span> | <span class="hljs-string">\'bottom-end\'</span> | <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'left-start\'</span> | <span class="hljs-string">\'left-end\'</span>',
           items: [
             "'top'",
             "'top-start'",
@@ -4085,7 +5234,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'strategy',
         type: {
-          type: 'Strategy',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'Strategy',
           items: ["'absolute'", "'fixed'"]
         },
@@ -4101,7 +5250,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ anchor: ModifierLike<{ Element: HTMLElement; }>; isOpen: boolean; toggle: () => void; open: () => void; close: () => void; trigger: ModifierLike<{ Element: HTMLElement; }>; Content: never; }]',
+          raw: '[{ <span class="hljs-attr">anchor</span>: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; }>; isOpen: <span class="hljs-built_in">boolean</span>; toggle: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; open: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; close: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; trigger: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; Args: { ...; }; }>; Content: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -4131,7 +5280,8 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'toggle',
                     type: {
-                      type: '() => <span class="hljs-built_in">void</span>'
+                      type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                      raw: '() => <span class="hljs-built_in">void</span>'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -4141,7 +5291,8 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'open',
                     type: {
-                      type: '() => <span class="hljs-built_in">void</span>'
+                      type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                      raw: '() => <span class="hljs-built_in">void</span>'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -4151,7 +5302,8 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'close',
                     type: {
-                      type: '() => <span class="hljs-built_in">void</span>'
+                      type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                      raw: '() => <span class="hljs-built_in">void</span>'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -4161,7 +5313,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'trigger',
                     type: {
-                      type: 'ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; }>'
+                      type: 'ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; Args: { <span class="hljs-attr">Positional</span>: [eventType?: <span class="hljs-string">\'click\'</span> | <span class="hljs-string">\'hover\'</span>]; }; }>'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -4234,7 +5386,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'toggle',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: true,
         isInternal: true,
         description: '',
@@ -4243,8 +5398,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdrop',
         type: {
-          type: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
-          raw: '"faded" | "none" | "transparent" | "blur"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
           items: ["'faded'", "'none'", "'transparent'", "'blur'"]
         },
         isRequired: false,
@@ -4255,7 +5410,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'backdropTransition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -4310,7 +5561,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'didClose',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -4352,7 +5606,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onOpen',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: 'A function that will be called when opened',
@@ -4371,8 +5628,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -4384,7 +5641,103 @@ const data: ComponentDoc[] = [
       {
         identifier: 'transition',
         type: {
-          type: '{ didTransitionIn?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; didTransitionOut?: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; enterClass?: <span class="hljs-built_in">string</span>; enterActiveClass?: <span class="hljs-built_in">string</span>; enterToClass?: <span class="hljs-built_in">string</span>; isEnabled?: <span class="hljs-built_in">boolean</span>; leaveClass?: <span class="hljs-built_in">string</span>; leaveActiveClass?: <span class="hljs-built_in">string</span>; leaveToClass?: <span class="hljs-built_in">string</span>; name?: <span class="hljs-built_in">string</span>; parentSelector?: <span class="hljs-built_in">string</span>; }'
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
         },
         isRequired: false,
         isInternal: false,
@@ -4428,7 +5781,7 @@ const data: ComponentDoc[] = [
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
     },
-    description: '',
+    description: 'Component yielded from Popover',
     tags: {}
   },
   {
@@ -4451,7 +5804,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[string]',
+          raw: '[<span class="hljs-built_in">string</span>]',
           items: [
             {
               identifier: '0',
@@ -4495,7 +5848,91 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'formatOptions',
-        type: { type: 'NumberFormatOptions' },
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'localeMatcher',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'style',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'currency',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'currencySign',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'useGrouping',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumIntegerDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumFractionDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'maximumFractionDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'minimumSignificantDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'maximumSignificantDigits',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
         isRequired: false,
         isInternal: false,
         description:
@@ -4513,8 +5950,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -4575,8 +6012,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'radius',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"sm" | "lg" | "none" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'sm'", "'lg'", "'none'", "'full'"]
         },
         isRequired: false,
@@ -4596,8 +6033,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -4655,7 +6092,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onClick',
         type: {
-          type: '(event: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -4665,8 +6103,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -4690,7 +6128,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[string]',
+          raw: '[<span class="hljs-built_in">string</span>]',
           items: [
             {
               identifier: '0',
@@ -4771,8 +6209,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -4800,8 +6238,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -4817,7 +6255,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClick',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4842,8 +6283,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
-          raw: '"menu" | "listbox"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
           items: ["'menu'", "'listbox'"]
         },
         isRequired: false,
@@ -4936,8 +6377,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -4956,7 +6397,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'disabledKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4965,8 +6409,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -4990,7 +6434,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'items',
-        type: { type: 'unknown[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'unknown[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4999,7 +6446,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onAction',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5009,7 +6457,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onSelectionChange',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5018,7 +6467,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'selectedKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5027,7 +6479,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'selectionMode',
         type: {
-          type: 'SelectionMode',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'SelectionMode',
           items: ["'none'", "'single'", "'multiple'"]
         },
@@ -5039,8 +6491,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
-          raw: '"menu" | "listbox"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
           items: ["'menu'", "'listbox'"]
         },
         isRequired: false,
@@ -5054,7 +6506,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ item: unknown; Item: never; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: unknown; Item: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -5095,7 +6547,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ Item: never; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -5161,7 +6613,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onReset',
         type: {
-          type: '(data: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(data: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5171,7 +6624,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onSubmit',
         type: {
-          type: '(data: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(data: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5203,7 +6657,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ Input: never; Textarea: never; Select: never; Checkbox: never; CheckboxGroup: never; Radio: never; RadioGroup: never; state: { hasSubmitted: boolean; }; }]',
+          raw: '[{ <span class="hljs-attr">Input</span>: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; Select: <span class="hljs-built_in">never</span>; Checkbox: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; state: { <span class="hljs-attr">hasSubmitted</span>: <span class="hljs-built_in">boolean</span>; }; }]',
           items: [
             {
               identifier: '0',
@@ -5269,7 +6723,19 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'state',
                     type: {
-                      type: '{ <span class="hljs-attr">hasSubmitted</span>: <span class="hljs-built_in">boolean</span>; }'
+                      type: '<span class="hljs-built_in">Object</span>',
+                      items: [
+                        {
+                          identifier: 'hasSubmitted',
+                          type: {
+                            type: '<span class="hljs-built_in">boolean</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        }
+                      ]
                     },
                     isRequired: true,
                     isInternal: false,
@@ -5293,9 +6759,12 @@ const data: ComponentDoc[] = [
     ],
     Element: {
       identifier: 'Element',
-      type: { type: 'HTMLFormElement' },
+      type: {
+        type: '<span class="hljs-built_in">Array</span>',
+        raw: 'HTMLFormElement'
+      },
       description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement'
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/Array'
     },
     description: '',
     tags: {}
@@ -5325,8 +6794,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -5354,8 +6823,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -5371,7 +6840,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'onClick',
-        type: { type: '() => <span class="hljs-built_in">void</span>' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5396,8 +6868,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
-          raw: '"menu" | "listbox"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
           items: ["'menu'", "'listbox'"]
         },
         isRequired: false,
@@ -5491,8 +6963,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'appearance',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
-          raw: '"default" | "outlined" | "faded"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
           items: ["'default'", "'outlined'", "'faded'"]
         },
         isRequired: false,
@@ -5511,7 +6983,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'disabledKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5520,8 +6995,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'intent',
         type: {
-          type: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
-          raw: '"default" | "primary" | "success" | "warning" | "danger"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
           items: [
             "'default'",
             "'primary'",
@@ -5545,7 +7020,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'items',
-        type: { type: 'unknown[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'unknown[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5554,7 +7032,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onAction',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5564,7 +7043,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onSelectionChange',
         type: {
-          type: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5573,7 +7053,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'selectedKeys',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5582,7 +7065,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'selectionMode',
         type: {
-          type: 'SelectionMode',
+          type: '<span class="hljs-built_in">enum</span>',
           raw: 'SelectionMode',
           items: ["'none'", "'single'", "'multiple'"]
         },
@@ -5594,8 +7077,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'type',
         type: {
-          type: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
-          raw: '"menu" | "listbox"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
           items: ["'menu'", "'listbox'"]
         },
         isRequired: false,
@@ -5609,7 +7092,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ item: unknown; Item: never; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: unknown; Item: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -5650,7 +7133,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ Item: never; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -5730,7 +7213,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5740,8 +7224,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -5777,8 +7261,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -5805,8 +7289,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -5863,8 +7347,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -5921,7 +7405,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5931,7 +7416,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -5941,8 +7427,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -6002,8 +7488,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -6076,7 +7562,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -6086,8 +7573,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -6098,8 +7585,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: false,
@@ -6143,7 +7630,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -6153,7 +7641,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -6163,8 +7652,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -6175,8 +7664,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: false,
@@ -6346,8 +7835,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'closeButtonSize',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -6358,8 +7847,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'placement',
         type: {
-          type: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>',
-          raw: '"top" | "right" | "bottom" | "left"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>',
           items: ["'top'", "'right'", "'bottom'", "'left'"]
         },
         isRequired: false,
@@ -6372,8 +7861,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'", "'full'"]
         },
         isRequired: false,
@@ -6403,7 +7892,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ CloseButton: any; Header: never; Body: never; Footer: never; headerId: string; }]',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: <span class="hljs-built_in">any</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -6624,8 +8113,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'closeButtonSize',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
         },
         isRequired: false,
@@ -6645,8 +8134,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
-          raw: '"xs" | "sm" | "lg" | "xl" | "md" | "full"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'full\'</span>',
           items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'", "'full'"]
         },
         isRequired: false,
@@ -6676,7 +8165,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ CloseButton: any; Header: never; Body: never; Footer: never; headerId: string; }]',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: <span class="hljs-built_in">any</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -6822,8 +8311,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -6869,7 +8358,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'errors',
-        type: { type: '<span class="hljs-built_in">string</span>[]' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -6927,7 +8419,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -6946,8 +8439,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -6961,7 +8454,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[checkbox: never]',
+          raw: '[checkbox: <span class="hljs-built_in">never</span>]',
           items: [
             {
               identifier: '0',
@@ -7023,7 +8516,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -7041,8 +8535,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -7085,8 +8579,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -7105,7 +8599,8 @@ const data: ComponentDoc[] = [
       {
         identifier: '_parentOnChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7179,8 +8674,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -7232,7 +8727,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7242,7 +8738,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7252,7 +8749,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7262,7 +8760,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7280,8 +8779,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -7348,8 +8847,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: true,
@@ -7368,8 +8867,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -7421,7 +8920,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7440,8 +8940,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -7455,7 +8955,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[radio: ComponentLike<FormRadioSignature>]',
+          raw: '[radio: ComponentLike&#x3C;FormRadioSignature>]',
           items: [
             {
               identifier: '0',
@@ -7517,7 +9017,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -7527,8 +9028,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'value',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
-          raw: 'string | number | boolean',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>',
           items: ['string', 'number', 'false', 'true']
         },
         isRequired: true,
@@ -7548,8 +9049,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -7593,8 +9094,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -7605,7 +9106,8 @@ const data: ComponentDoc[] = [
       {
         identifier: '_parentOnChange',
         type: {
-          type: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: unknown, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7662,7 +9164,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(selection: unknown, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(selection: unknown, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
         isInternal: false,
@@ -7672,8 +9175,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'options',
         type: {
-          type: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          raw: 'any[] | PromiseProxy<any[]>',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
           items: ['any[]', 'PromiseProxy<any[]>']
         },
         isRequired: true,
@@ -7700,7 +9203,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'buildSelection',
         type: {
-          type: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7734,8 +9238,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -7810,7 +9314,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'matcher',
-        type: { type: 'MatcherFn' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'MatcherFn'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7843,7 +9350,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onBlur',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7853,7 +9361,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onClose',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7863,7 +9372,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocus',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7873,7 +9383,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7883,7 +9394,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7893,7 +9405,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7903,7 +9416,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onKeydown',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7913,7 +9427,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onOpen',
         type: {
-          type: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7939,7 +9454,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'registerAPI',
         type: {
-          type: '(select: Select) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(select: Select) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7949,7 +9465,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'scrollTo',
         type: {
-          type: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7959,7 +9476,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'search',
         type: {
-          type: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
         },
         isRequired: false,
         isInternal: false,
@@ -8009,8 +9527,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
@@ -8021,8 +9539,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'tabindex',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
-          raw: 'string | number',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
           items: ['string', 'number']
         },
         isRequired: false,
@@ -8040,7 +9558,10 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'typeAheadOptionMatcher',
-        type: { type: 'MatcherFn' },
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'MatcherFn'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -8052,7 +9573,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[option: unknown, select: Select]',
+          raw: '[option: unknown, <span class="hljs-attr">select</span>: Select]',
           items: [
             {
               identifier: '0',
@@ -8085,7 +9606,10 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'options',
-                    type: { type: '<span class="hljs-built_in">any</span>[]' },
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: '<span class="hljs-built_in">any</span>[]'
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8093,7 +9617,10 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'results',
-                    type: { type: '<span class="hljs-built_in">any</span>[]' },
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: '<span class="hljs-built_in">any</span>[]'
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8145,7 +9672,110 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'actions',
-                    type: { type: 'SelectActions' },
+                    type: {
+                      type: '<span class="hljs-built_in">Object</span>',
+                      items: [
+                        {
+                          identifier: 'search',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(term: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'highlight',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'select',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'choose',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'scrollTo',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'toggle',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'close',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event, skipFocus?: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'open',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'reposition',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(...args: <span class="hljs-built_in">any</span>[]) => RepositionChanges'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        }
+                      ]
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8246,8 +9876,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'errors',
         type: {
-          type: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
-          raw: 'string | string[]',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
         isRequired: false,
@@ -8299,7 +9929,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onChange',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -8309,7 +9940,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusIn',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -8319,7 +9951,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onFocusOut',
         type: {
-          type: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -8329,7 +9962,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'onInput',
         type: {
-          type: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -8347,8 +9981,8 @@ const data: ComponentDoc[] = [
       {
         identifier: 'size',
         type: {
-          type: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          raw: '"sm" | "lg" | "md"',
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
           items: ["'sm'", "'lg'", "'md'"]
         },
         isRequired: false,
