@@ -16,7 +16,7 @@
     "test": "ember test",
     "test:all": "echo 'Tests ignored'",
     "try:one": "echo 'Tests ignored'",
-    "generate-args-data": "node lib/docfy-theme/generate-args-data.js"
+    "generate-sinature-data": "node lib/generate-signature-data.js"
   },
   "devDependencies": {
     "@docfy/core": "^0.8.0",
