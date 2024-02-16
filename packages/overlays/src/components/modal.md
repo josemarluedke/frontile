@@ -6,4 +6,4 @@ url: modal
 
 ## API
 
-<ArgsTable @of="Modal" />
+<Signature @package="overlays" @component="Modal" />

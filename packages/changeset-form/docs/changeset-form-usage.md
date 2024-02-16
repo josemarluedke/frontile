@@ -113,7 +113,7 @@ export default class Demo extends Component {
 
 ### Args
 
-<ArgsTable @of="ChangesetForm" class="mb-8" />
+<Signature @package="changeset-form" @component="ChangesetForm" class="mb-8" />
 
 ### Blocks
 

@@ -1,5 +1,10 @@
-import Modifier from 'ember-modifier';
+import Modifier, {
+  type ArgsFor,
+  type PositionalArgs,
+  type NamedArgs
+} from 'ember-modifier';
 import { action } from '@ember/object';
+import { registerDestructor } from '@ember/destroyable';
 
 interface Heading {
   id: string;
@@ -17,30 +22,33 @@ function getHeadingIds(headings: Heading[], output: string[] = []): string[] {
   return output;
 }
 
-interface Args {
-  named: {
-    headings: Heading[];
-    onIntersect: (headingId: string) => void;
+interface Signature {
+  Args: {
+    Named: {
+      headings: Heading[];
+      onIntersect: (headingId: string) => void;
+    };
+    Positional: unknown[];
   };
-  positional: unknown[];
+  Element: Element;
 }
 
-export default class IntersectHeadingsModifier extends Modifier<Args> {
-  handler = null;
-  headings = [];
-  observer = null;
-  activeIndex = null;
+export default class IntersectHeadingsModifier extends Modifier<Signature> {
+  handler: ((headingId: string) => void) | null = null;
+  headings: string[] = [];
+  observer: IntersectionObserver | null = null;
+  activeIndex: number = -1;
 
   @action
   handleObserver(elements: IntersectionObserverEntry[]): void {
     // Based on https://taylor.callsen.me/modern-navigation-menus-with-css-position-sticky-and-intersectionobservers/
 
     // current index must be memoized or tracked outside of function for comparison
-    let localActiveIndex = this.activeIndex;
+    let localActiveIndex: number = this.activeIndex || -1;
 
     // track which elements register above or below the document's current position
-    const aboveIndeces = [];
-    const belowIndeces = [];
+    const aboveIndeces: number[] = [];
+    const belowIndeces: number[] = [];
 
     // loop through each intersection element
     //  due to the asychronous nature of observers, callbacks must be designed to handle 1 or many intersecting elements
@@ -51,10 +59,10 @@ export default class IntersectHeadingsModifier extends Modifier<Args> {
           ? element.boundingClientRect.y
           : element.boundingClientRect.top;
       const rootBoundsY =
-        typeof element.rootBounds.y !== 'undefined'
+        typeof element.rootBounds?.y !== 'undefined'
           ? element.rootBounds.y
-          : element.rootBounds.top;
-      const isAbove = boundingClientRectY < rootBoundsY;
+          : element.rootBounds?.top;
+      const isAbove = boundingClientRectY < (rootBoundsY || 0);
 
       const id = element.target.getAttribute('id');
       const intersectingElemIdx = this.headings.findIndex((item) => item == id);
@@ -81,7 +89,9 @@ export default class IntersectHeadingsModifier extends Modifier<Args> {
     if (localActiveIndex != this.activeIndex) {
       this.activeIndex = localActiveIndex;
 
-      this.handler(this.headings[this.activeIndex]);
+      if (typeof this.handler === 'function') {
+        this.handler(this.headings[this.activeIndex] as string);
+      }
     }
   }
 
@@ -95,7 +105,7 @@ export default class IntersectHeadingsModifier extends Modifier<Args> {
       this.headings.forEach((id) => {
         const el = document.getElementById(id);
         if (el) {
-          this.observer.observe(el);
+          this.observer?.observe(el);
         }
       });
     }
@@ -107,18 +117,29 @@ export default class IntersectHeadingsModifier extends Modifier<Args> {
     }
   }
 
-  didUpdateArguments(): void {
-    this.unobserve();
-  }
-
-  didReceiveArguments(): void {
-    this.handler = this.args.named.onIntersect;
-    this.headings = getHeadingIds(this.args.named.headings);
+  constructor(owner: unknown, args: ArgsFor<Signature>) {
+    super(owner as never, args);
+    this.handler = args.named.onIntersect;
+    this.headings = getHeadingIds(args.named.headings);
 
     this.observe();
+
+    registerDestructor(this, this.unobserve);
   }
 
-  willRemove(): void {
-    this.unobserve();
+  modify(
+    element: HTMLElement,
+    _: PositionalArgs<Signature>,
+    args: NamedArgs<Signature>
+  ): void {
+    if (this.observer) {
+      this.unobserve();
+    }
+    this.handler = args.onIntersect;
+    this.headings = getHeadingIds(args.headings);
+
+    this.observe();
+
+    registerDestructor(this, this.unobserve);
   }
 }

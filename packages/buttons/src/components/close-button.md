@@ -26,4 +26,4 @@ import { CloseButton} from '@frontile/buttons';
 
 ## API
 
-<ArgsTable @of="CloseButton" />
+<Signature @package="buttons" @component="CloseButton" />

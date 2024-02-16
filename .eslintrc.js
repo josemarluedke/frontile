@@ -47,7 +47,7 @@ module.exports = {
         'site/tests/dummy/config/**/*.js',
         'site/**/tailwind.config.js',
         'site/.docfy-config.js',
-        'site/lib/docfy-theme/*.js',
+        'site/lib/*.js',
         'test-app/ember-cli-build.js',
         'test-app/testem.js',
         'test-app/config/**/*.js',

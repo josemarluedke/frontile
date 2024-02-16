@@ -2,4 +2,4 @@
 
 ## API
 
-<ArgsTable @of="FormCheckbox" />
+<Signature @package="forms" @component="FormCheckbox" />

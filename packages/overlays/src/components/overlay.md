@@ -21,4 +21,4 @@ It contains all the core features necessary for a great experience.
 
 ## API
 
-<ArgsTable @of="Overlay" />
+<Signature @package="overlays" @component="Overlays" />

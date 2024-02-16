@@ -4,4 +4,4 @@ This component provides unstyled collapsible ability.
 
 ## API
 
-<ArgsTable @of="Collapsible" />
+<Signature @package="utilities" @component="Collapsible" />

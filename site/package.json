@@ -16,9 +16,10 @@
     "test": "ember test",
     "test:all": "echo 'Tests ignored'",
     "try:one": "echo 'Tests ignored'",
-    "generate-args-data": "node lib/docfy-theme/generate-args-data.js"
+    "generate-signature-data": "node lib/generate-signature-data.js && pnpm prettier app/components/signature-data.ts --write"
   },
   "devDependencies": {
+    "@docfy/core": "^0.8.0",
     "@docfy/ember": "^0.8.0",
     "@docfy/plugin-with-prose": "^0.8.0",
     "@ember/optional-features": "^2.0.0",
@@ -37,7 +38,11 @@
     "@frontile/utilities": "workspace:*",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
+    "@glint/core": "1.3.0",
+    "@glint/environment-ember-loose": "1.3.0",
+    "@glint/environment-ember-template-imports": "1.3.0",
     "@tailwindcss/typography": "^0.5.10",
+    "@tsconfig/ember": "^3.0.3",
     "@types/htmlbars-inline-precompile": "^3.0.3",
     "@types/qunit": "^2.19.10",
     "@types/rsvp": "^4.0.9",
@@ -59,11 +64,14 @@
     "ember-focus-trap": "^1.1.0",
     "ember-load-initializers": "^2.1.2",
     "ember-maybe-import-regenerator": "^1.0.0",
+    "ember-modifier": "^4.1.0",
     "ember-page-title": "^8.2.2",
     "ember-qunit": "^8.0.2",
     "ember-resolver": "^11.0.1",
+    "ember-route-template": "^1.0.3",
     "ember-source": "~5.6.0",
     "ember-template-imports": "^4.1.0",
+    "fuse.js": "^6.6.2",
     "loader.js": "^4.7.0",
     "npm-run-all": "^4.1.5",
     "postcss-import": "^16.0.1",
@@ -77,17 +85,16 @@
     "remark-code-import": "^0.3.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.90.2"
+    "webpack": "^5.90.2",
+    "glimmer-docgen-typescript": "^0.3.3",
+    "lowlight": "^1.20.0",
+    "rehype-stringify": "^8.0.0",
+    "unified": "^9.2.1"
   },
   "engines": {
     "node": "10.* || >= 12"
   },
   "ember": {
     "edition": "octane"
-  },
-  "ember-addon": {
-    "paths": [
-      "lib/docfy-theme"
-    ]
   }
 }

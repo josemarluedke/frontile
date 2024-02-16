@@ -2,4 +2,4 @@
 
 ## API
 
-<ArgsTable @of="FormRadioGroup" />
+<Signature @package="forms" @component="FormRadioGroup" />

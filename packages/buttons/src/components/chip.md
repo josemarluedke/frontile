@@ -153,3 +153,4 @@ argument `@class` will override and merge TailwindCSS class names.
 
 ## API
 
+<Signature @package="buttons" @component="Chip" />

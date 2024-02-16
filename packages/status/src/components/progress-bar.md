@@ -172,3 +172,5 @@ Using the class attribute will just append the class names passed in, while the
 argument `@class` will override and merge TailwindCSS class names.
 
 ## API
+
+<Signature @package="status" @component="ProgressBar" />
