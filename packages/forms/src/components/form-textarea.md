@@ -2,4 +2,4 @@
 
 ## API
 
-<ArgsTable @of="FormTextarea" />
+<Signature @package="forms" @component="FormTextarea" />

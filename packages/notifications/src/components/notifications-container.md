@@ -6,4 +6,4 @@ category: components
 
 ## API
 
-<ArgsTable @of="NotificationsContainer" />
+<Signature @package="notifications" @component="NotificationsContainer" />

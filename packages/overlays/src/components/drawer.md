@@ -6,4 +6,4 @@ url: drawer
 
 ## API
 
-<ArgsTable @of="Drawer" />
+<Signature @module="overlays" @component="Drawer" />

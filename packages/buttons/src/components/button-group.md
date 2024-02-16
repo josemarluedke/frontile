@@ -105,3 +105,4 @@ import { ButtonGroup } from '@frontile/buttons';
 
 ## API
 
+<Signature @module="buttons" @component="ButtonGroup" />

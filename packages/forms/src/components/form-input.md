@@ -2,4 +2,4 @@
 
 ## API
 
-<ArgsTable @of="FormInput" />
+<Signature @package="forms" @component="FormInput" />

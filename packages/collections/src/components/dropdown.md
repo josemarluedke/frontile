@@ -63,3 +63,4 @@ export default class Example extends Component {
 
 ## API
 
+<Signature @module="collections" @component="Dropdown" />

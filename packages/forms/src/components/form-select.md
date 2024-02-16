@@ -8,4 +8,4 @@ In the example below, we have a label, hint, error validation, search and `allow
 
 ## API
 
-<ArgsTable @of="FormSelect" />
+<Signature @package="forms" @component="FormSelect" />

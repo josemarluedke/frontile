@@ -30,3 +30,4 @@ import { Divider } from '@frontile/utilities';
 
 ## API
 
+<Signature @package="utilities" @component="Divider" />
