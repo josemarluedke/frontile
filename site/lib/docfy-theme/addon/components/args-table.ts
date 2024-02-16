@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import data from './args-data';
+import data from './signature-data';
 
 interface ArgsTableArgs {
   /**

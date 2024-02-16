@@ -10,13 +10,13 @@ const processor = unified().use(rehypeStringify);
 const components = docgen.parse([
   {
     root: path.resolve(path.join(__dirname, '../../../')),
-    pattern: 'packages/**/addon/components/**/*.ts'
+    pattern: 'packages/*/declarations/components/**/*.ts'
   }
 ]);
 
 components.forEach((component) => {
-  component.args.forEach((arg) => {
-    let type = arg.type.name;
+  component.Args.forEach((arg) => {
+    let type = arg.type.type;
 
     if (type === 'enum') {
       type = arg.type.raw.replace(/"/g, "'");
@@ -41,6 +41,6 @@ components.forEach((component) => {
 });
 
 fs.writeFileSync(
-  path.join(__dirname, 'addon/components/args-data.js'),
+  path.join(__dirname, 'addon/components/signature-data.js'),
   `export default ${JSON.stringify(components)};`
 );
