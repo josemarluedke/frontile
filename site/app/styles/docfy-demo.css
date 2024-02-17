@@ -18,6 +18,7 @@
 
     &__edit-url {
       @apply text-xs;
+
       &:hover {
         @apply text-primary-600;
       }
@@ -44,8 +45,9 @@
   @apply border rounded-b;
 
   pre {
+    @apply m-0;
     @apply p-4;
-    @apply flex text-default-200 bg-default-800;
+    @apply flex text-gray-200 bg-gray-800;
     @apply text-sm leading-normal;
     @apply font-mono;
     @apply rounded-b;
@@ -68,7 +70,6 @@
   }
 
   .docfy-demo__snippet pre {
-    @apply bg-content1;
     @apply border-default-200;
   }
 

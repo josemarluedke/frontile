@@ -4,7 +4,6 @@ import DocfyThemeSwitcher from './docfy-theme-switcher';
 
 interface DocfyHeaderSignature {
   Args: {
-    darkOnly?: boolean;
     indexRoute?: string;
     githubUrl: string;
     disableThemeSwitcher?: boolean;
@@ -19,31 +18,26 @@ interface DocfyHeaderSignature {
 
 export default class DocfyHeader extends Component<DocfyHeaderSignature> {
   <template>
-    <div class="sticky top-0 z-1 {{if @darkOnly 'dark'}}">
+    <div class="sticky top-0 z-1 dark">
       <div
-        class="h-16 border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 backdrop-filter backdrop-blur
-          {{if
-            @darkOnly
-            'dark:bg-opacity-90'
-            'bg-opacity-50 dark:bg-opacity-50'
-          }}"
+        class="h-16 border-b border-primary-200 bg-primary-200 backdrop-filter backdrop-blur bg-opacity-90"
         ...attributes
       >
         <div class="flex h-full px-4 mx-auto sm:px-6 max-w-screen-2xl">
           <div class="flex items-center mr-4">
             <LinkTo
               @route={{if @indexRoute @indexRoute "index"}}
-              class="text-black dark:text-white text-lg font-bold outline-none focus-visible:ring"
+              class="text-white text-lg font-bold outline-none focus-visible:ring"
             >
               {{yield to="title"}}
             </LinkTo>
           </div>
           <div
-            class="flex items-center justify-between flex-grow px-2 md:px-6 text-gray-800 dark:text-gray-200"
+            class="flex items-center justify-between flex-grow px-2 md:px-6 text-default-800"
           >
             {{#let
-              "transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-primary-700 dark:hover:border-primary-500 outline-none focus-visible:ring hover:text-gray-800 dark:hover:text-gray-400"
-              "border-primary-700 dark:border-primary-500"
+              "transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-primary-500 outline-none focus-visible:ring hover:text-default-600"
+              "border-primary-500"
               as |linkClass linkClassActive|
             }}
               <div class="flex items-center gap-4">
@@ -57,7 +51,7 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
                   href={{@githubUrl}}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition text-gray-800 dark:text-gray-200 outline-none focus-visible:ring hover:text-gray-800 dark:hover:text-gray-400"
+                  class="transition text-default-800 outline-none focus-visible:ring hover:text-default-600"
                 >
                   <svg viewBox="0 0 20 20" class="w-6 h-6 fill-current">
                     <title>

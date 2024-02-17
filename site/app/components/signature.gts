@@ -82,7 +82,10 @@ const PropertiesTable: TOC<{
     items?: ComponentDoc['Args'];
   };
 }> = <template>
-  <div class="prose dark:prose-light mt-8 overflow-x-scroll" ...attributes>
+  <div
+    class="prose dark:prose-invert mt-8 overflow-x-scroll hljs-light-theme"
+    ...attributes
+  >
     <table class="text-sm">
       <thead>
         <tr>
@@ -105,7 +108,7 @@ const PropertiesTable: TOC<{
           {{#unless (shouldIgnoreTag arg.tags)}}
             <tr>
               <td class="">
-                <code class="hljs-light-theme code-transparent">
+                <code class="code-transparent">
                   <span class="hljs-name">
                     {{arg.identifier}}
                   </span>
@@ -136,7 +139,7 @@ const PropertiesTable: TOC<{
                 {{/if}}
               </td>
               <td class="flex items-center">
-                <code class="hljs-light-theme code-transparent">
+                <code class="code-transparent">
                   {{! template-lint-disable  }}
                   {{{arg.type.type}}}
                   {{! template-lint-enable }}
@@ -155,9 +158,9 @@ const PropertiesTable: TOC<{
                     <pop.Content
                       @closeOnOutsideClick={{false}}
                       @size="lg"
-                      @class="p-4"
+                      @class="p-4 hljs-light-theme"
                     >
-                      <code class="hljs-light-theme code-transparent">
+                      <code class="code-transparent">
                         {{! template-lint-disable  }}
                         {{{arg.type.raw}}}
                         {{! template-lint-enable }}
@@ -168,8 +171,7 @@ const PropertiesTable: TOC<{
               </td>
               <td>
                 {{#if arg.defaultValue}}
-
-                  <code class="hljs-light-theme code-transparent">
+                  <code class="code-transparent">
                     {{! template-lint-disable  }}
                     {{{arg.defaultValue}}}
                     {{! template-lint-enable }}

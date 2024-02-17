@@ -12,6 +12,7 @@ interface Signature {
 declare const FastBoot: unknown;
 
 const DARK_MODE_CLASS = 'dark';
+const LIGHT_MODE_CLASS = 'light';
 
 export default class DocfyThemeSwitcher extends Component<Signature> {
   @tracked prefersDark = false;
@@ -52,9 +53,11 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
     body.style.transitionDelay = '0s, 0s';
 
     if (this.prefersDark) {
+      document.documentElement.classList.remove(LIGHT_MODE_CLASS);
       document.documentElement.classList.add(DARK_MODE_CLASS);
     } else {
       document.documentElement.classList.remove(DARK_MODE_CLASS);
+      document.documentElement.classList.add(LIGHT_MODE_CLASS);
     }
 
     later(

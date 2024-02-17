@@ -1014,11 +1014,11 @@ importers:
         specifier: ^0.8.0
         version: 0.8.0
       '@docfy/ember':
-        specifier: ^0.8.0
-        version: 0.8.0(@babel/core@7.23.9)(@glint/template@1.3.0)
+        specifier: ^0.8.4
+        version: 0.8.4(@babel/core@7.23.9)(@glint/template@1.3.0)
       '@docfy/plugin-with-prose':
-        specifier: ^0.8.0
-        version: 0.8.0
+        specifier: ^0.8.4
+        version: 0.8.4
       '@ember/optional-features':
         specifier: ^2.0.0
         version: 2.0.0
@@ -2893,8 +2893,8 @@ packages:
       - supports-color
     dev: true
 
-  /@docfy/ember@0.8.0(@babel/core@7.23.9)(@glint/template@1.3.0):
-    resolution: {integrity: sha512-Wcvx/UAFOrhjNiYNEnd92ICU12UEMl8QItiQCj8zytBFbxZ9Ta/+vz/xNMbAohbuQ0k/YGfAivCdAOQWxDwgqg==}
+  /@docfy/ember@0.8.4(@babel/core@7.23.9)(@glint/template@1.3.0):
+    resolution: {integrity: sha512-RS4SdqNVMSnHaucHzYiYsjUDOCcrCxKS4yDCT7Eg/2K5JTWZEELGD5uk9oxSJgvnEz2jmzt7ARtKIGz9Cd2dkA==}
     engines: {node: '>= 12'}
     dependencies:
       '@docfy/core': 0.8.0
@@ -2922,8 +2922,8 @@ packages:
       - supports-color
     dev: true
 
-  /@docfy/plugin-with-prose@0.8.0:
-    resolution: {integrity: sha512-oaob3CDuBSSzv/a8D9ShuD5YqkwAH0QGRp3zwEyyOcCULFFlTF/Y+M47h0E36bgoohPW/mevabB0Sf2PLOhO2w==}
+  /@docfy/plugin-with-prose@0.8.4:
+    resolution: {integrity: sha512-ejHSZEslPYK/AiI8cynbWWnIX13tQg4GWOAnYuaw4NlJ8iV3tRrfiRc18GkkHvTVCKStZ/T8ZEKeUFsMgsIsOQ==}
     engines: {node: '>= 12.*'}
     dependencies:
       '@docfy/core': 0.8.0
@@ -9387,7 +9387,7 @@ packages:
     resolution: {integrity: sha512-diD+HwwY8QqpEk5DnDYfH7onYwl6NOgr1qv1ENbXih+/iiWYUVS/e0S/PlM7A4gdorD9spn1bnisnTLTf49Wpw==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.13.4(@glint/template@1.3.0)
+      '@embroider/macros': 1.13.5(@glint/template@1.3.0)
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
       - '@glint/template'

@@ -75,10 +75,8 @@ export interface ModalSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick'> &
-          WithBoundArgs<typeof CloseButton, 'class'>;
-        Header: WithBoundArgs<typeof ModalHeader, 'labelledById'> &
-          WithBoundArgs<typeof ModalHeader, 'class'>;
+        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick' | 'class'>;
+        Header: WithBoundArgs<typeof ModalHeader, 'labelledById' | 'class'>;
         Body: WithBoundArgs<typeof ModalBody, 'class'>;
         Footer: WithBoundArgs<typeof ModalFooter, 'class'>;
         headerId: string;
