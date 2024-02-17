@@ -100,8 +100,8 @@ class Popover extends Component<PopoverSignature> {
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
       if (eventType === 'hover') {
-        el.addEventListener('mouseenter', this.toggle);
-        el.addEventListener('mouseleave', this.toggle);
+        el.addEventListener('mouseenter', this.open);
+        el.addEventListener('mouseleave', this.close);
       } else {
         el.addEventListener('click', this.toggle);
       }
@@ -111,8 +111,8 @@ class Popover extends Component<PopoverSignature> {
 
       return () => {
         if (eventType === 'hover') {
-          el.removeEventListener('mouseenter', this.toggle);
-          el.removeEventListener('mouseleave', this.toggle);
+          el.removeEventListener('mouseenter', this.open);
+          el.removeEventListener('mouseleave', this.close);
         } else {
           el.removeEventListener('click', this.toggle);
         }

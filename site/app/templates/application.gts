@@ -9,7 +9,6 @@ import { VisuallyHidden } from '@frontile/utilities';
 const application = <template>
   {{pageTitle "Frontile"}}
   <DocfyHeader
-    @darkOnly={{true}}
     @githubUrl="https://github.com/josemarluedke/frontile"
     class="overflow-x-scroll sm:overflow-x-auto"
   >

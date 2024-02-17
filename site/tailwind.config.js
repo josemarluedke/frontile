@@ -140,6 +140,7 @@ module.exports = {
   safelist: [
     { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
+    { pattern: /^not-prose/ },
 
     // Frontile Notifications
     { pattern: /^notification-transition/ },

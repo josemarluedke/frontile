@@ -13,7 +13,7 @@ module.exports = {
     editBranch: 'main'
   },
   tocMaxDepth: 3,
-  plugins: [withProse({ className: 'prose dark:prose-light' })],
+  plugins: [withProse({ className: 'prose dark:prose-invert' })],
   remarkPlugins: [autolinkHeadings, codeImport],
   rehypePlugins: [
     [

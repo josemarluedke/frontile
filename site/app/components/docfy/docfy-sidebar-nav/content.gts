@@ -22,8 +22,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
           <li>
             <DocfyLink
               @to={{page.url}}
-              class="transition pl-2 py-1 hover:text-primary-800 text-sm block rounded hover:bg-primary-100 outline-none focus-visible:ring ring-inset"
-              @activeClass="text-primary-800"
+              class="transition pl-2 py-1 hover:text-primary-950 text-sm block rounded hover:bg-primary-50 outline-none focus-visible:ring ring-inset"
+              @activeClass="text-foreground"
             >
               {{page.title}}
             </DocfyLink>
@@ -41,8 +41,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li class="truncate">
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition pl-6 py-1 hover:text-primary-800 text-sm block rounded hover:bg-primary-100 outline-none focus-visible:ring ring-inset"
-                    @activeClass="text-primary-800 d bg-primary-100 0"
+                    class="transition pl-6 py-1 hover:text-primary-950 text-sm block rounded hover:bg-primary-50 outline-none focus-visible:ring ring-inset"
+                    @activeClass="text-foreground d bg-primary-50"
                   >
                     {{page.title}}
                     {{#if page.frontmatter.label}}
@@ -70,8 +70,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                       <li class="truncate">
                         <DocfyLink
                           @to={{page.url}}
-                          class="transition pl-10 py-1 hover:text-primary-800 text-sm block rounded hover:bg-primary-100 outline-none focus-visible:ring ring-inset"
-                          @activeClass="text-primary-800 bg-primary-100 "
+                          class="transition pl-10 py-1 hover:text-primary-950 text-sm block rounded hover:bg-primary-50 outline-none focus-visible:ring ring-inset"
+                          @activeClass="text-foreground bg-primary-50"
                         >
                           {{page.title}}
                         </DocfyLink>
