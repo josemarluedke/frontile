@@ -3,7 +3,12 @@ import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import { ListManager, type SelectionMode } from './listManager';
+import {
+  ListManager,
+  keyAndLabelForItem,
+  type SelectionMode,
+  type Node
+} from './listManager';
 import { ListboxItem, type ListboxItemSignature } from './item';
 import type { WithBoundArgs } from '@glint/template';
 
@@ -40,7 +45,7 @@ interface ListboxSignature<T = unknown> {
   };
   Element: HTMLUListElement;
   Blocks: {
-    item: [{ item: T; Item: ItemCompBounded }];
+    item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
     default: [{ Item: ItemCompBounded }];
   };
 }
@@ -132,33 +137,36 @@ class Listbox extends Component<ListboxSignature> {
       ...attributes
     >
       {{#each @items as |item|}}
-        {{#if (has-block "item")}}
-          {{yield
-            (hash
-              item=item
-              Item=(component
-                ListboxItem
-                manager=this.listManager
-                appearance=@appearance
-                intent=@intent
-                type=this.role
+        {{#let (keyAndLabelForItem item) as |keyLabel|}}
+          {{#if (has-block "item")}}
+            {{yield
+              (hash
+                item=item
+                key=keyLabel.key
+                label=keyLabel.label
+                Item=(component
+                  ListboxItem
+                  manager=this.listManager
+                  appearance=@appearance
+                  intent=@intent
+                  type=this.role
+                  key=keyLabel.key
+                )
               )
-            )
-            to="item"
-          }}
-        {{else}}
-          <ListboxItem
-            @manager={{this.listManager}}
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            @key={{item}}
-            @appearance={{@appearance}}
-            @intent={{@intent}}
-            @type={{this.role}}
-          >
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            {{item}}
-          </ListboxItem>
-        {{/if}}
+              to="item"
+            }}
+          {{else}}
+            <ListboxItem
+              @manager={{this.listManager}}
+              @key={{keyLabel.key}}
+              @appearance={{@appearance}}
+              @intent={{@intent}}
+              @type={{this.role}}
+            >
+              {{keyLabel.label}}
+            </ListboxItem>
+          {{/if}}
+        {{/let}}
       {{/each}}
 
       {{yield
@@ -181,6 +189,7 @@ export {
   Listbox,
   ListboxItem,
   type ListboxSignature,
-  type ListboxItemSignature
+  type ListboxItemSignature,
+  type Node as ListItemNode
 };
 export default Listbox;

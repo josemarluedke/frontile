@@ -5,17 +5,17 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
-import { ListManager, type Node } from './listbox/listManager';
+import {
+  ListManager,
+  keyAndLabelForItem,
+  type Node
+} from './listbox/listManager';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
 interface NativeSelectSignature<T = unknown> {
   Args: {
-    /**
-     * @default 'listbox'
-     */
-    type?: 'menu' | 'listbox';
     selectionMode?: 'single' | 'multiple';
     selectedKeys?: string[];
     disabledKeys?: string[];
@@ -32,25 +32,13 @@ interface NativeSelectSignature<T = unknown> {
     onSelectionChange?: (key: string[]) => void;
 
     /**
-     * The appearance of each item
-     *
-     * @defaultValue 'default'
-     */
-    appearance?: 'default' | 'outlined' | 'faded';
-
-    /**
-     * The intent of each item
-     */
-    intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
-
-    /**
      * @internal
      */
     onItemsChange?: (nodes: Node[], action: 'add' | 'remove') => void;
   };
-  Element: HTMLUListElement | HTMLSelectElement;
+  Element: HTMLSelectElement;
   Blocks: {
-    item: [{ item: T; Item: ItemCompBounded }];
+    item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
     default: [{ Item: ItemCompBounded }];
   };
 }
@@ -124,42 +112,30 @@ class NativeSelect extends Component<NativeSelectSignature> {
         </NativeSelectItem>
       {{/if}}
       {{#each @items as |item|}}
-        {{#if (has-block "item")}}
-          {{yield
-            (hash
-              item=item
-              Item=(component
-                NativeSelectItem
-                manager=this.listManager
-                appearance=@appearance
-                intent=@intent
+        {{#let (keyAndLabelForItem item) as |keyLabel|}}
+          {{#if (has-block "item")}}
+            {{yield
+              (hash
+                item=item
+                key=keyLabel.key
+                label=keyLabel.label
+                Item=(component NativeSelectItem manager=this.listManager)
               )
-            )
-            to="item"
-          }}
-        {{else}}
-          <NativeSelectItem
-            @manager={{this.listManager}}
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            @key={{item}}
-            @appearance={{@appearance}}
-            @intent={{@intent}}
-          >
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            {{item}}
-          </NativeSelectItem>
-        {{/if}}
+              to="item"
+            }}
+          {{else}}
+            <NativeSelectItem
+              @manager={{this.listManager}}
+              @key={{keyLabel.key}}
+            >
+              {{keyLabel.label}}
+            </NativeSelectItem>
+          {{/if}}
+        {{/let}}
       {{/each}}
 
       {{yield
-        (hash
-          Item=(component
-            NativeSelectItem
-            manager=this.listManager
-            appearance=@appearance
-            intent=@intent
-          )
-        )
+        (hash Item=(component NativeSelectItem manager=this.listManager))
         to="default"
       }}
     </select>
@@ -172,7 +148,7 @@ export interface SelectItemSignature {
     key: string;
     textValue?: string;
   };
-  Element: HTMLOptionElement | HTMLLIElement;
+  Element: HTMLOptionElement;
   Blocks: {
     default: [];
     selectedIcon: [];

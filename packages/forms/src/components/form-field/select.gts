@@ -1,11 +1,14 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import {
+  NativeSelect,
   Listbox,
   type ListboxSignature,
-  type ListboxItem
+  type ListItemNode
 } from '@frontile/collections';
 import { useStyles } from '@frontile/theme';
+import { VisuallyHidden } from '@frontile/utilities';
 import {
   Popover,
   type PopoverSignature,
@@ -32,7 +35,6 @@ interface FormFieldSelectArgs<T = unknown>
       | 'appearance'
       | 'intent'
       | 'class'
-      | 'selectionMode'
       | 'selectedKeys'
       | 'disabledKeys'
       | 'allowEmpty'
@@ -52,8 +54,10 @@ interface FormFieldSelectArgs<T = unknown>
       | 'backdropTransition'
       | 'transition'
     > {
+  selectionMode?: 'single' | 'multiple';
+
   /**
-   * Whether the dropdown should close upon selecting an item.
+   * Whether the select should close upon selecting an item.
    *
    * @defaultValue true
    */
@@ -71,11 +75,13 @@ interface FormFieldSelectArgs<T = unknown>
 
 interface FormFieldSelectSignature {
   Args: FormFieldSelectArgs;
-  Element: HTMLUListElement;
+  Element: HTMLUListElement | HTMLSelectElement;
   Blocks: ListboxSignature['Blocks'];
 }
 
 class FormFieldSelect extends Component<FormFieldSelectSignature> {
+  @tracked nodes: ListItemNode[] = [];
+
   get blockScroll() {
     if (this.args.blockScroll === false) {
       return false;
@@ -98,6 +104,27 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
     return this.args.selectedKeys?.join(', ');
   }
 
+  onItemsChange = (nodes: ListItemNode[], _: 'add' | 'remove') => {
+    this.nodes = nodes;
+  };
+
+  get selectedTextValue(): string {
+    let selectedTextValues: string[] = [];
+    for (let node of this.nodes) {
+      if (this.args.selectedKeys?.includes(node.key)) {
+        selectedTextValues.push(node.textValue);
+      }
+    }
+    return selectedTextValues.join(', ');
+  }
+
+  get backdrop() {
+    if (typeof this.args.backdrop === 'undefined') {
+      return 'transparent';
+    }
+    return this.args.backdrop;
+  }
+
   <template>
     <Popover
       @placement={{@placement}}
@@ -109,12 +136,36 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
       @onClose={{@onClose}}
       as |p|
     >
-      <input
-        value={{this.selectedText}}
-        {{p.trigger}}
-        {{p.anchor}}
-        data-test-id="dropdown-trigger"
-      />
+      <VisuallyHidden>
+        <NativeSelect
+          @items={{@items}}
+          @allowEmpty={{@allowEmpty}}
+          @disabledKeys={{@disabledKeys}}
+          @onSelectionChange={{@onSelectionChange}}
+          @selectedKeys={{@selectedKeys}}
+          @selectionMode={{if @selectionMode @selectionMode "single"}}
+          @onItemsChange={{this.onItemsChange}}
+          ...attributes
+        >
+          <:item as |l|>
+            {{#if (has-block "item")}}
+              {{yield l to="item"}}
+            {{else}}
+              <l.Item @key={{l.key}}>
+                {{l.label}}
+              </l.Item>
+            {{/if}}
+          </:item>
+          <:default as |l|>
+            {{yield l to="default"}}
+          </:default>
+        </NativeSelect>
+      </VisuallyHidden>
+
+      <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
+        {{this.selectedTextValue}}
+        BUTTON
+      </button>
 
       <p.Content
         @destinationElementId={{@destinationElementId}}
@@ -122,7 +173,7 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
         @disableFocusTrap={{this.disableFocusTrap}}
         @blockScroll={{this.blockScroll}}
         @transitionDuration={{@transitionDuration}}
-        @backdrop={{@backdrop}}
+        @backdrop={{this.backdrop}}
         @disableTransitions={{@disableTransitions}}
         @focusTrapOptions={{@focusTrapOptions}}
         @closeOnOutsideClick={{@closeOnOutsideClick}}
@@ -130,46 +181,38 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
         @backdropTransition={{@backdropTransition}}
         @transition={{@transition}}
       >
-        {{#if (has-block "item")}}
-          <Listbox
-            @items={{@items}}
-            @allowEmpty={{@allowEmpty}}
-            @appearance={{@appearance}}
-            @disabledKeys={{@disabledKeys}}
-            @intent={{@intent}}
-            @isKeyboardEventsEnabled={{true}}
-            @onAction={{this.onAction}}
-            @onSelectionChange={{@onSelectionChange}}
-            @selectedKeys={{@selectedKeys}}
-            @selectionMode={{if @selectionMode @selectionMode "single"}}
-            @type="menu"
-            ...attributes
-          >
-            <:item as |options|>
-              {{yield options to="item"}}
-            </:item>
-          </Listbox>
-        {{else}}
-          <Listbox
-            @items={{@items}}
-            @allowEmpty={{@allowEmpty}}
-            @appearance={{@appearance}}
-            @disabledKeys={{@disabledKeys}}
-            @intent={{@intent}}
-            @isKeyboardEventsEnabled={{true}}
-            @onAction={{this.onAction}}
-            @onSelectionChange={{@onSelectionChange}}
-            @selectedKeys={{@selectedKeys}}
-            @selectionMode={{if @selectionMode @selectionMode "single"}}
-            @type="menu"
-            ...attributes
-            as |l|
-          >
-            {{yield (hash Item=(component l.Item)) to="default"}}
-          </Listbox>
-        {{/if}}
+        <Listbox
+          @items={{@items}}
+          @allowEmpty={{@allowEmpty}}
+          @appearance={{@appearance}}
+          @disabledKeys={{@disabledKeys}}
+          @intent={{@intent}}
+          @isKeyboardEventsEnabled={{true}}
+          @onAction={{this.onAction}}
+          @onSelectionChange={{@onSelectionChange}}
+          @selectedKeys={{@selectedKeys}}
+          @selectionMode={{if @selectionMode @selectionMode "single"}}
+          @type="listbox"
+          ...attributes
+        >
+          <:item as |l|>
+            {{#if (has-block "item")}}
+              {{yield l to="item"}}
+            {{else}}
+              <l.Item
+                @key={{l.key}}
+                @appearance={{@appearance}}
+                @intent={{@intent}}
+              >
+                {{l.label}}
+              </l.Item>
+            {{/if}}
+          </:item>
+          <:default as |l|>
+            {{yield l to="default"}}
+          </:default>
+        </Listbox>
       </p.Content>
-
     </Popover>
   </template>
 }

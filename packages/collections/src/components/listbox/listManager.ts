@@ -104,6 +104,10 @@ class ListManager {
     if (options.onSelectionChange) {
       this.#onSelectionChange = options.onSelectionChange;
     }
+
+    if (options.onNodesChange) {
+      this.#onNodesChange = options.onNodesChange;
+    }
   }
 
   selectActiveNode(): void {
@@ -346,6 +350,22 @@ class ListManager {
     }
   );
 }
+function keyAndLabelForItem(item: unknown): {
+  key: string;
+  label: string;
+} {
+  if (typeof item === 'string' || typeof item === 'number') {
+    return { key: item.toString(), label: item.toString() };
+  } else if (typeof item === 'object' && item !== null) {
+    const typedItem = item as { key: string; label: string };
+    if ('key' in typedItem && 'label' in typedItem) {
+      return { key: typedItem.key, label: typedItem.label };
+    } else {
+      return { key: item.toString(), label: item.toString() };
+    }
+  }
+  return { key: '', label: '' };
+}
 
 export type { Node, NodeArgs, SelectionMode };
-export { ListManager };
+export { ListManager, keyAndLabelForItem };

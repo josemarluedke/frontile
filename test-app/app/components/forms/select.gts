@@ -2,8 +2,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { array } from '@ember/helper';
-// import Select from '@frontile/forms/components/form-field/select';
-import { NativeSelect } from '@frontile/collections';
+import Select from '@frontile/forms/components/form-field/select';
+// import { Select } from '@frontile/collections';
 import { Divider } from '@frontile/utilities';
 
 const animals = [
@@ -21,6 +21,23 @@ const animals = [
   'penguin',
   'tiger',
   'zebra'
+];
+
+const animalsAsOject = [
+  { key: 'cheetah', label: 'Cheetah' },
+  { key: 'crocodile', label: 'Crocodile' },
+  { key: 'elephant', label: 'Elephant' },
+  { key: 'giraffe', label: 'Giraffe' },
+  { key: 'kangaroo', label: 'Kangaroo' },
+  { key: 'koala', label: 'Koala' },
+  { key: 'lemming', label: 'Lemming' },
+  { key: 'lemur', label: 'Lemur' },
+  { key: 'lion', label: 'Lion' },
+  { key: 'lobster', label: 'Lobster' },
+  { key: 'panda', label: 'Panda' },
+  { key: 'penguin', label: 'Penguin' },
+  { key: 'tiger', label: 'Tiger' },
+  { key: 'zebra', label: 'Zebra' }
 ];
 
 export default class Example extends Component {
@@ -55,7 +72,7 @@ export default class Example extends Component {
   }
 
   <template>
-    <NativeSelect
+    <Select
       @selectionMode="multiple"
       @items={{animals}}
       @onAction={{this.onAction}}
@@ -67,15 +84,16 @@ export default class Example extends Component {
           {{o.item}}
         </o.Item>
       </:item>
-    </NativeSelect>
+    </Select>
     Values:
     {{this.selectedKeys}}
     <Divider @class="my-8" />
-    <NativeSelect
+    <Select
       @placeholder="select an option my friend"
       @allowEmpty={{true}}
       @selectionMode="single"
-      @items={{animals}}
+      @items={{animalsAsOject}}
+      @intent="primary"
       @selectedKeys={{this.selectedKeys2}}
       @onAction={{this.onAction}}
       @onSelectionChange={{this.onSelectionChange2}}
@@ -83,7 +101,7 @@ export default class Example extends Component {
     Values:
     {{this.selectedKeys2}}
     <Divider @class="my-8" />
-    <NativeSelect
+    <Select
       @onAction={{this.onAction}}
       @disabledKeys={{(array "notifications")}}
       @selectedKeys={{this.selectedKeys3}}
@@ -98,7 +116,12 @@ export default class Example extends Component {
         Notifications
       </l.Item>
       <l.Item @key="reset" @intent="danger" @class="text-danger">
-        Reset Settings
+        <:start>
+          <div>Start</div>
+        </:start>
+        <:default>
+          Reset Settings
+        </:default>
       </l.Item>
       <l.Item
         @key="delete"
@@ -109,7 +132,7 @@ export default class Example extends Component {
       >
         Delete Account
       </l.Item>
-    </NativeSelect>
+    </Select>
     Values:
     {{this.selectedKeys3}}
   </template>
