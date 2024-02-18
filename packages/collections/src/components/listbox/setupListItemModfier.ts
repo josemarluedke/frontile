@@ -7,11 +7,11 @@ interface SetupListItemModifierSignature {
     Positional: [manager: ListManager];
     Named: Pick<NodeArgs, 'key' | 'textValue'>;
   };
-  Element: HTMLLIElement;
+  Element: HTMLLIElement | HTMLOptionElement;
 }
 
 class SetupListItem extends Modifier<SetupListItemModifierSignature> {
-  element?: HTMLLIElement;
+  element?: HTMLLIElement | HTMLOptionElement;
   manager?: ListManager;
 
   /* eslint-disable-next-line */

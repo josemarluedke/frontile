@@ -1,12 +1,10 @@
-/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
 import { ListManager, type SelectionMode } from './listManager';
-import { ListboxItem } from './item';
+import { ListboxItem, type ListboxItemSignature } from './item';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
@@ -109,16 +107,6 @@ class Listbox extends Component<ListboxSignature> {
     return listbox({ class: this.args.class });
   }
 
-  @action
-  updateListManager() {
-    this.listManager.update({
-      selectionMode: this.args.selectionMode,
-      disabledKeys: this.args.disabledKeys,
-      selectedKeys: this.args.selectedKeys,
-      allowEmpty: this.args.allowEmpty
-    });
-  }
-
   get role() {
     if (this.args.type === 'menu') {
       return this.args.type;
@@ -130,12 +118,11 @@ class Listbox extends Component<ListboxSignature> {
     <ul
       tabindex="0"
       role={{this.role}}
-      {{didUpdate
-        this.updateListManager
-        @selectedKeys
-        @disabledKeys
-        @selectionMode
-        @allowEmpty
+      {{this.listManager.onUpdate
+        selectedKeys=@selectedKeys
+        disabledKeys=@disabledKeys
+        selectionMode=@selectionMode
+        allowEmpty=@allowEmpty
       }}
       {{on "keypress" this.handleKeyPress}}
       {{on "keydown" this.handleKeyDown}}
@@ -190,5 +177,10 @@ class Listbox extends Component<ListboxSignature> {
   </template>
 }
 
-export { Listbox, type ListboxSignature };
+export {
+  Listbox,
+  ListboxItem,
+  type ListboxSignature,
+  type ListboxItemSignature
+};
 export default Listbox;

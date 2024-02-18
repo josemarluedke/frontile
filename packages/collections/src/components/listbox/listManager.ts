@@ -1,11 +1,12 @@
 /* eslint-disable ember/no-runloop */
 import { tracked } from '@glimmer/tracking';
 import { debounce } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 
 class Node {
-  el: HTMLLIElement;
+  el: HTMLLIElement | HTMLOptionElement;
   key: string;
   textValue: string;
 
@@ -13,7 +14,7 @@ class Node {
   @tracked isDisabled: boolean;
   @tracked isActive: boolean;
 
-  constructor(el: HTMLLIElement, args: Required<NodeArgs>) {
+  constructor(el: HTMLLIElement | HTMLOptionElement, args: Required<NodeArgs>) {
     this.el = el;
     this.key = args.key;
     this.textValue = args.textValue;
@@ -38,6 +39,7 @@ interface ListManagerOptions {
   allowEmpty?: boolean;
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
+  onNodesChange?: (nodes: Node[], action: 'add' | 'remove') => void;
 }
 
 class ListManager {
@@ -50,21 +52,37 @@ class ListManager {
   #allowEmpty: boolean = false;
   #onAction?: (key: string) => void;
   #onSelectionChange?: (key: string[]) => void;
+  #onNodesChange?: (nodes: Node[], action: 'add' | 'remove') => void;
 
   constructor(options: ListManagerOptions = {}) {
     this.update(options);
   }
 
-  register(el: HTMLLIElement, args: Required<NodeArgs>): void {
+  register(
+    el: HTMLLIElement | HTMLOptionElement,
+    args: Required<NodeArgs>
+  ): void {
     this.#nodes.push(new Node(el, args));
+
+    if (typeof this.#onNodesChange === 'function') {
+      this.#onNodesChange(this.#nodes, 'add');
+    }
   }
 
-  unregister(el: HTMLLIElement): void {
+  unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#nodes = this.#nodes.filter((node) => node.el !== el);
+
+    if (typeof this.#onNodesChange === 'function') {
+      this.#onNodesChange(this.#nodes, 'remove');
+    }
   }
 
-  at(el?: HTMLLIElement): Node | undefined {
+  at(el?: HTMLLIElement | HTMLOptionElement): Node | undefined {
     return this.#nodes.find((node) => node.el === el);
+  }
+
+  atKey(key: string): Node | undefined {
+    return this.#nodes.find((node) => node.key === key);
   }
 
   update(options: ListManagerOptions): void {
@@ -254,6 +272,79 @@ class ListManager {
       }
     }
   }
+
+  onUpdate = modifier(
+    (
+      _el: HTMLUListElement | HTMLSelectElement,
+      _: unknown[],
+      args: ListManagerOptions
+    ) => {
+      this.update({
+        selectionMode: args.selectionMode,
+        disabledKeys: args.disabledKeys,
+        selectedKeys: args.selectedKeys,
+        allowEmpty: args.allowEmpty
+      });
+    }
+  );
+
+  setupItem = modifier(
+    (
+      el: HTMLLIElement | HTMLOptionElement,
+      _: unknown[],
+      args: Pick<NodeArgs, 'key' | 'textValue'> & {
+        onRegister?: (node: Node) => void;
+      }
+    ) => {
+      let textValue = args.textValue;
+      if (
+        typeof textValue === 'undefined' ||
+        textValue === '' ||
+        textValue === null
+      ) {
+        const labelId = el.getAttribute('aria-labelledby');
+        if (labelId) {
+          const labelElement = el.querySelector(`#${labelId}`);
+          if (labelElement) {
+            textValue = labelElement.textContent?.trim() || '';
+          }
+        } else {
+          textValue = el.textContent?.trim() || '';
+        }
+      }
+      this.register(el as HTMLLIElement, {
+        key: args.key,
+        textValue: textValue || '',
+        isActive: false,
+        isDisabled: this.isKeyDisabled(args.key),
+        isSelected: this.isKeySelected(args.key)
+      });
+      const node = this.at(el);
+      if (node && typeof args.onRegister === 'function') {
+        args.onRegister(node);
+      }
+
+      const mouseEnter = (): void => {
+        this.activateNode(node);
+      };
+
+      const mouseLeave = (): void => {
+        if (node) {
+          node.isActive = false;
+        }
+      };
+
+      el.addEventListener('mouseenter', mouseEnter);
+      el.addEventListener('mouseleave', mouseLeave);
+
+      return (): void => {
+        this.unregister(el);
+
+        el.removeEventListener('mouseenter', mouseEnter);
+        el.removeEventListener('mouseleave', mouseLeave);
+      };
+    }
+  );
 }
 
 export type { Node, NodeArgs, SelectionMode };

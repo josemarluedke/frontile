@@ -403,6 +403,12 @@ importers:
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7
+      '@frontile/collections':
+        specifier: workspace:0.17.0-alpha.6
+        version: link:../collections
+      '@frontile/overlays':
+        specifier: workspace:0.17.0-alpha.6
+        version: link:../overlays
       '@frontile/theme':
         specifier: workspace:0.17.0-alpha.6
         version: link:../theme

@@ -1,11 +1,9 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { modifier } from 'ember-modifier';
 import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import { SetupListItem } from './setupListItemModfier';
 import { Divider } from '@frontile/utilities';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
@@ -47,22 +45,7 @@ export interface ListboxItemSignature {
 
 class ListboxItem extends Component<ListboxItemSignature> {
   labelId = guidFor(this);
-  @tracked el?: HTMLLIElement;
-
-  didInsert = modifier((el: HTMLElement) => {
-    this.el = el as HTMLLIElement;
-
-    return () => {
-      this.el = undefined;
-    };
-  });
-
-  get node(): Node | undefined {
-    if (this.el) {
-      return this.manager.at(this.el);
-    }
-    return undefined;
-  }
+  @tracked node?: Node;
 
   get manager(): ListManager {
     assert(
@@ -83,12 +66,17 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   @action
+  onRegister(node: Node) {
+    this.node = node;
+  }
+
+  @action
   onClick(): void {
     if (this.node?.isDisabled) {
       return;
     }
 
-    this.manager.selectNode(this.manager.at(this.el));
+    this.manager.selectNode(this.node);
 
     if (typeof this.args.onClick === 'function') {
       this.args.onClick();
@@ -140,8 +128,11 @@ class ListboxItem extends Component<ListboxItemSignature> {
 
   <template>
     <li
-      {{this.didInsert}}
-      {{SetupListItem this.manager key=this.key textValue=@textValue}}
+      {{this.manager.setupItem
+        key=this.key
+        textValue=@textValue
+        onRegister=this.onRegister
+      }}
       {{on "click" this.onClick}}
       role={{this.role}}
       aria-labelledby={{this.labelId}}
