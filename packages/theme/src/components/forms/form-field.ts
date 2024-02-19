@@ -138,4 +138,17 @@ const radio = tv({
   }
 });
 
-export { label, hint, feedback, input, textarea, checkbox, radio };
+const select = tv({
+  slots: {
+    base: [
+      input(),
+      'flex items-center justify-between',
+      'disabled:cursor-not-allowed disabled:opacity-50'
+    ],
+    icon: 'w-5 h-5'
+  }
+});
+
+// flex h-9 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-[180px]
+
+export { label, hint, feedback, input, textarea, checkbox, radio, select };

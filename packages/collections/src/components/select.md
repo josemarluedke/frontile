@@ -1,3 +1,18 @@
+---
+label: New
+---
+# Select
+
+
+## Import 
+
+```js
+import { Select } from '@frontile/collections';
+```
+
+## Usage
+
+```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -137,3 +152,5 @@ export default class Example extends Component {
     {{this.selectedKeys3}}
   </template>
 }
+```
+

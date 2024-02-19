@@ -7,12 +7,12 @@ import { tv } from 'tailwind-variants';
 
 module(
   'Integration | Component | Listbox | @frontile/buttons',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
-    test('it render static items', async function(assert) {
+    test('it render static items', async function (assert) {
       const clickedOn: string[] = [];
-      this.set('onAction', function(key: string) {
+      this.set('onAction', function (key: string) {
         clickedOn.push(key);
       });
 
@@ -90,7 +90,7 @@ module(
       assert.dom('[data-key="item-2"]').hasAttribute('data-selected', 'false');
     });
 
-    test('it render dynamic items without yield of item selectionMode = single / multiple', async function(assert) {
+    test('it render dynamic items without yield of item selectionMode = single / multiple', async function (assert) {
       this.set('selectionMode', 'single');
       this.set('allowEmpty', false);
       this.set('animals', ['cheetah', 'crocodile', 'elephant']);
@@ -187,7 +187,7 @@ module(
       assert.equal(selectedKeys.length, 0);
     });
 
-    test('it render dynamic items yielding of item', async function(assert) {
+    test('it render dynamic items yielding of item', async function (assert) {
       this.set('selectionMode', 'single');
       this.set('allowEmpty', false);
       this.set('animals', [
@@ -229,7 +229,7 @@ module(
       assert.dom('[data-key="elephant-key"]').containsText('elephant-value');
     });
 
-    test('keyboard navigation works', async function(assert) {
+    test('keyboard navigation works', async function (assert) {
       this.set('selectionMode', 'single');
       this.set('allowEmpty', false);
       this.set('animals', ['cheetah', 'crocodile', 'elephant']);
@@ -313,9 +313,9 @@ module(
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
     });
 
-    test('it render item with blocks', async function(assert) {
+    test('it render item with blocks', async function (assert) {
       const clickedOn: string[] = [];
-      this.set('onAction', function(key: string) {
+      this.set('onAction', function (key: string) {
         clickedOn.push(key);
       });
 
@@ -367,7 +367,7 @@ module(
     });
 
     module('style classes', () => {
-      test('it adds class for default appearance', async function(assert) {
+      test('it adds class for default appearance', async function (assert) {
         registerCustomStyles({
           listboxItem: tv({
             slots: {

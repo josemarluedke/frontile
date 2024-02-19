@@ -1,12 +1,8 @@
 import Component from '@glimmer/component';
+import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import {
-  NativeSelect,
-  Listbox,
-  type ListboxSignature,
-  type ListItemNode
-} from '@frontile/collections';
+import { NativeSelect } from './native-select';
+import { Listbox, type ListboxSignature, type ListItemNode } from './listbox';
 import { useStyles } from '@frontile/theme';
 import { VisuallyHidden } from '@frontile/utilities';
 import {
@@ -14,12 +10,8 @@ import {
   type PopoverSignature,
   type ContentSignature
 } from '@frontile/overlays';
-import { assert } from '@ember/debug';
-import { hash } from '@ember/helper';
-import type { ModifierLike } from '@glint/template';
-import type { WithBoundArgs } from '@glint/template';
 
-interface FormFieldSelectArgs<T = unknown>
+interface SelectArgs<T = unknown>
   extends Pick<
       PopoverSignature['Args'],
       | 'placement'
@@ -28,7 +20,7 @@ interface FormFieldSelectArgs<T = unknown>
       | 'shiftOptions'
       | 'offsetOptions'
       | 'strategy'
-      | 'onClose'
+      | 'didClose'
     >,
     Pick<
       ListboxSignature<T>['Args'],
@@ -40,6 +32,7 @@ interface FormFieldSelectArgs<T = unknown>
       | 'allowEmpty'
       | 'onSelectionChange'
       | 'items'
+      | 'onAction'
     >,
     Pick<
       ContentSignature['Args'],
@@ -73,14 +66,19 @@ interface FormFieldSelectArgs<T = unknown>
   disableFocusTrap?: boolean;
 }
 
-interface FormFieldSelectSignature {
-  Args: FormFieldSelectArgs;
+interface SelectSignature {
+  Args: SelectArgs;
   Element: HTMLUListElement | HTMLSelectElement;
   Blocks: ListboxSignature['Blocks'];
 }
 
-class FormFieldSelect extends Component<FormFieldSelectSignature> {
+class Select extends Component<SelectSignature> {
   @tracked nodes: ListItemNode[] = [];
+  @tracked isOpen = false;
+
+  onOpenChange = (isOpen: boolean) => {
+    this.isOpen = isOpen;
+  };
 
   get blockScroll() {
     if (this.args.blockScroll === false) {
@@ -97,7 +95,16 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
   }
 
   onAction = (key: string) => {
-    // todo
+    if (typeof this.args.onAction === 'function') {
+      this.args.onAction(key);
+    }
+
+    if (
+      this.args.closeOnItemSelect !== false &&
+      this.args.selectionMode !== 'multiple'
+    ) {
+      this.isOpen = false;
+    }
   };
 
   get selectedText() {
@@ -125,6 +132,15 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
     return this.args.backdrop;
   }
 
+  get classNames() {
+    const { select } = useStyles();
+    const { base, icon } = select();
+    return {
+      base: base({ class: this.args.class }),
+      icon: icon()
+    };
+  }
+
   <template>
     <Popover
       @placement={{@placement}}
@@ -133,7 +149,9 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
       @shiftOptions={{@shiftOptions}}
       @offsetOptions={{@offsetOptions}}
       @strategy={{@strategy}}
-      @onClose={{@onClose}}
+      @didClose={{@didClose}}
+      @isOpen={{this.isOpen}}
+      @onOpenChange={{this.onOpenChange}}
       as |p|
     >
       <VisuallyHidden>
@@ -149,6 +167,7 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
         >
           <:item as |l|>
             {{#if (has-block "item")}}
+              {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
               {{yield l to="item"}}
             {{else}}
               <l.Item @key={{l.key}}>
@@ -157,14 +176,23 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
             {{/if}}
           </:item>
           <:default as |l|>
+            {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
             {{yield l to="default"}}
           </:default>
         </NativeSelect>
       </VisuallyHidden>
 
-      <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
-        {{this.selectedTextValue}}
-        BUTTON
+      <button
+        {{p.trigger}}
+        {{p.anchor}}
+        data-test-id="trigger"
+        class={{this.classNames.base}}
+      >
+        <span>
+          {{this.selectedTextValue}}
+        </span>
+
+        <Icon class={{this.classNames.icon}} />
       </button>
 
       <p.Content
@@ -217,5 +245,25 @@ class FormFieldSelect extends Component<FormFieldSelectSignature> {
   </template>
 }
 
-export { FormFieldSelect, type FormFieldSelectSignature };
-export default FormFieldSelect;
+const Icon: TOC<{
+  Element: SVGElement;
+}> = <template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    aria-hidden="true"
+    ...attributes
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+    />
+  </svg>
+</template>;
+
+export { Select, type SelectSignature };
+export default Select;

@@ -88,7 +88,8 @@
     "app-js": {
       "./components/dropdown.js": "./dist/_app_/components/dropdown.js",
       "./components/listbox.js": "./dist/_app_/components/listbox.js",
-      "./components/native-select.js": "./dist/_app_/components/native-select.js"
+      "./components/native-select.js": "./dist/_app_/components/native-select.js",
+      "./components/select.js": "./dist/_app_/components/select.js"
     }
   },
   "exports": {
