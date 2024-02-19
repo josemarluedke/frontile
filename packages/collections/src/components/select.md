@@ -153,4 +153,9 @@ export default class Example extends Component {
   </template>
 }
 ```
+## API
 
+<Signature @package="collections" @component="Select" />
+<Signature @package="collections" @component="SelectItem" />
+<Signature @package="collections" @component="NativeSelect" />
+<Signature @package="collections" @component="NativeSelectItem" />

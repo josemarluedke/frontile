@@ -844,6 +844,14 @@ const data: ComponentDoc[] = [
     fileName: 'packages/collections/declarations/components/dropdown-new.d.ts',
     Args: [
       {
+        identifier: 'onClose',
+        type: { type: 'unknown' },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'closeOnItemSelect',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -880,17 +888,6 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { defaultValue: { name: 'defaultValue', value: '5' } },
         defaultValue: '<span class="hljs-number">5</span>'
-      },
-      {
-        identifier: 'onClose',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '() => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
       },
       {
         identifier: 'placement',
@@ -2614,77 +2611,11 @@ const data: ComponentDoc[] = [
     fileName: 'packages/forms/declarations/components/form-select.d.ts',
     Args: [
       {
-        identifier: 'onChange',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(selection: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'options',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          items: ['any[]', 'PromiseProxy<any[]>']
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'selected',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'beforeOptionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'buildSelection',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'closeOnSelect',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
         identifier: 'containerClass',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: 'CSS classes to be added in the container element',
-        tags: {}
-      },
-      {
-        identifier: 'defaultHighlighted',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
         tags: {}
       },
       {
@@ -2697,14 +2628,6 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'A list of errors or a single text describing the error',
-        tags: {}
-      },
-      {
-        identifier: 'groupComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
         tags: {}
       },
       {
@@ -2725,27 +2648,11 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'highlightOnHover',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
         identifier: 'hint',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: 'A help text to be displayed',
-        tags: {}
-      },
-      {
-        identifier: 'initiallyOpened',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
         tags: {}
       },
       {
@@ -2762,210 +2669,6 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'The input field label',
-        tags: {}
-      },
-      {
-        identifier: 'matcher',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: 'MatcherFn'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'matchTriggerWidth',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'noMatchesMessage',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'noMatchesMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onClose',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onFocus',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onFocusIn',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onFocusOut',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onInput',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onKeydown',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onOpen',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'optionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'placeholderComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'registerAPI',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'scrollTo',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'search',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchEnabled',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchField',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchMessage',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
         tags: {}
       },
       {
@@ -2987,37 +2690,6 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The size',
         tags: {}
-      },
-      {
-        identifier: 'tabindex',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
-          items: ['string', 'number']
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'triggerComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'typeAheadOptionMatcher',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: 'MatcherFn'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
       }
     ],
     Blocks: [
@@ -3025,250 +2697,8 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[unknown, Select]',
-          items: [
-            {
-              identifier: '0',
-              type: { type: 'unknown' },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: {}
-            },
-            {
-              identifier: '1',
-              type: {
-                type: '<span class="hljs-built_in">Object</span>',
-                items: [
-                  {
-                    identifier: 'selected',
-                    type: { type: '<span class="hljs-built_in">any</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'highlighted',
-                    type: { type: '<span class="hljs-built_in">any</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'options',
-                    type: {
-                      type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'results',
-                    type: {
-                      type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'resultsCount',
-                    type: { type: '<span class="hljs-built_in">number</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'loading',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'isActive',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'searchText',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'lastSearchedText',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'actions',
-                    type: {
-                      type: '<span class="hljs-built_in">Object</span>',
-                      items: [
-                        {
-                          identifier: 'search',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(term: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'highlight',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'select',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'choose',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'scrollTo',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'toggle',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'close',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event, skipFocus?: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'open',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'reposition',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(...args: <span class="hljs-built_in">any</span>[]) => RepositionChanges'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        }
-                      ]
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'uniqueId',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'disabled',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'isOpen',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  }
-                ]
-              },
-              isRequired: true,
-              isInternal: false,
-              description: '',
-              tags: {}
-            }
-          ]
+          raw: '[]',
+          items: []
         },
         isRequired: true,
         isInternal: false,
@@ -5157,8 +4587,27 @@ const data: ComponentDoc[] = [
     fileName: 'packages/overlays/declarations/components/popover.d.ts',
     Args: [
       {
+        identifier: 'didClose',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'flipOptions',
         type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isOpen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5185,10 +4634,10 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-number">5</span>'
       },
       {
-        identifier: 'onClose',
+        identifier: 'onOpenChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '() => <span class="hljs-built_in">void</span>'
+          raw: '(isOpen: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -7092,7 +6541,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: unknown; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: unknown; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -7102,6 +6551,22 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'item',
                     type: { type: 'unknown' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7601,6 +7066,636 @@ const data: ComponentDoc[] = [
       type: { type: 'HTMLInputElement' },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'unknown',
+    module: 'select',
+    name: 'FormFieldSelect',
+    fileName: 'packages/forms/declarations/components/form-field/select.d.ts',
+    Args: [
+      {
+        identifier: 'onClose',
+        type: { type: 'unknown' },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'allowEmpty',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
+          items: ["'default'", "'outlined'", "'faded'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The appearance of each item',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>'
+      },
+      {
+        identifier: 'backdrop',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'blur\'</span>',
+          items: ["'faded'", "'none'", "'transparent'", "'blur'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'backdropTransition',
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'blockScroll',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'closeOnEscapeKey',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether to close when the escape key is pressed',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
+      },
+      {
+        identifier: 'closeOnItemSelect',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether the select should close upon selecting an item.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
+      },
+      {
+        identifier: 'closeOnOutsideClick',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to close when the area outside (the backdrop) is clicked',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
+      },
+      {
+        identifier: 'destinationElementId',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The destination where the overlay will be inserted, defaults to\n`document.body`',
+        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
+        defaultValue: '<span class="hljs-literal">undefined</span>'
+      },
+      {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'disableFocusTrap',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
+        identifier: 'disableTransitions',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Disable css transitions',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
+        identifier: 'flipOptions',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'focusTrapOptions',
+        type: { type: 'unknown' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Focus trap options',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: '{ allowOutsideClick: true }'
+          }
+        },
+        defaultValue:
+          '{ <span class="hljs-attr">allowOutsideClick</span>: <span class="hljs-literal">true</span> }'
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'"
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The intent of each item',
+        tags: {}
+      },
+      {
+        identifier: 'items',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'unknown[]'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'middleware',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'offsetOptions',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: '5' } },
+        defaultValue: '<span class="hljs-number">5</span>'
+      },
+      {
+        identifier: 'onSelectionChange',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'placement',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'top-start\'</span> | <span class="hljs-string">\'top-end\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'right-start\'</span> | <span class="hljs-string">\'right-end\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'bottom-start\'</span> | <span class="hljs-string">\'bottom-end\'</span> | <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'left-start\'</span> | <span class="hljs-string">\'left-end\'</span>',
+          items: [
+            "'top'",
+            "'top-start'",
+            "'top-end'",
+            "'right'",
+            "'right-start'",
+            "'right-end'",
+            "'bottom'",
+            "'bottom-start'",
+            "'bottom-end'",
+            "'left'",
+            "'left-start'",
+            "'left-end'"
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Placement of the menu when open',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'bottom-start'" }
+        },
+        defaultValue: '<span class="hljs-string">\'bottom-start\'</span>'
+      },
+      {
+        identifier: 'renderInPlace',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to render in place or in the specified/default destination',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
+        identifier: 'selectedKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'selectionMode',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'single\'</span> | <span class="hljs-string">\'multiple\'</span>',
+          items: ["'single'", "'multiple'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'shiftOptions',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'strategy',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'Strategy',
+          items: ["'absolute'", "'fixed'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
+        defaultValue: '<span class="hljs-string">\'absolute\'</span>'
+      },
+      {
+        identifier: 'transition',
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'didTransitionIn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'didTransitionOut',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '() => <span class="hljs-built_in">void</span>'
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'enterToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'isEnabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveActiveClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'leaveToClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            },
+            {
+              identifier: 'parentSelector',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The transition to be used in the Modal.',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: "{name: 'overlay-transition--scale'}"
+          }
+        },
+        defaultValue:
+          '{<span class="hljs-attr">name</span>: <span class="hljs-string">\'overlay-transition--scale\'</span>}'
+      },
+      {
+        identifier: 'transitionDuration',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Duration of the animation',
+        tags: { defaultValue: { name: 'defaultValue', value: '200' } },
+        defaultValue: '<span class="hljs-number">200</span>'
+      }
+    ],
+    Blocks: [
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">item</span>: unknown; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: 'unknown' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  },
+                  {
+                    identifier: 'Item',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  }
+                ]
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Item',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  }
+                ]
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="hljs-built_in">enum</span>',
+        raw: 'HTMLUListElement | HTMLSelectElement',
+        items: ['HTMLUListElement', 'HTMLSelectElement']
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum'
     },
     description: '',
     tags: {}
@@ -9165,56 +9260,9 @@ const data: ComponentDoc[] = [
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(selection: unknown, <span class="hljs-attr">select</span>: Select, event?: Event) => <span class="hljs-built_in">void</span>'
+          raw: '(selection: unknown, <span class="hljs-attr">select</span>: unknown, event?: Event) => <span class="hljs-built_in">void</span>'
         },
         isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'options',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          items: ['any[]', 'PromiseProxy<any[]>']
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'selected',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'beforeOptionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'buildSelection',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'closeOnSelect',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
@@ -9228,28 +9276,12 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'defaultHighlighted',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
         identifier: 'errors',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
           raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]']
         },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'groupComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -9273,27 +9305,11 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'highlightOnHover',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
         identifier: 'hint',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: 'A help text to be displayed',
-        tags: {}
-      },
-      {
-        identifier: 'initiallyOpened',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
         tags: {}
       },
       {
@@ -9313,78 +9329,10 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'matcher',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: 'MatcherFn'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'matchTriggerWidth',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'noMatchesMessage',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'noMatchesMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
         identifier: 'onClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onFocus',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onFocusIn',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          raw: '(select: unknown, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
         },
         isRequired: false,
         isInternal: false,
@@ -9395,122 +9343,8 @@ const data: ComponentDoc[] = [
         identifier: 'onFocusOut',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
+          raw: '(select: unknown, <span class="hljs-attr">event</span>: FocusEvent) => <span class="hljs-built_in">void</span>'
         },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onInput',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">string</span> | <span class="hljs-literal">false</span> | <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onKeydown',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: KeyboardEvent) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'onOpen',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select, <span class="hljs-attr">e</span>: Event) => <span class="hljs-built_in">boolean</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'optionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'placeholderComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'registerAPI',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(select: Select) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'scrollTo',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(option: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">void</span>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'search',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchEnabled',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchField',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchMessage',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'searchMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -9535,37 +9369,6 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The size',
         tags: {}
-      },
-      {
-        identifier: 'tabindex',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
-          items: ['string', 'number']
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'triggerComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'typeAheadOptionMatcher',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: 'MatcherFn'
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
       }
     ],
     Blocks: [
@@ -9573,7 +9376,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[option: unknown, <span class="hljs-attr">select</span>: Select]',
+          raw: '[option: unknown, <span class="hljs-attr">select</span>: unknown]',
           items: [
             {
               identifier: '0',
@@ -9585,233 +9388,8 @@ const data: ComponentDoc[] = [
             },
             {
               identifier: '1',
-              type: {
-                type: '<span class="hljs-built_in">Object</span>',
-                items: [
-                  {
-                    identifier: 'selected',
-                    type: { type: '<span class="hljs-built_in">any</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'highlighted',
-                    type: { type: '<span class="hljs-built_in">any</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'options',
-                    type: {
-                      type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'results',
-                    type: {
-                      type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'resultsCount',
-                    type: { type: '<span class="hljs-built_in">number</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'loading',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'isActive',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'searchText',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'lastSearchedText',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'actions',
-                    type: {
-                      type: '<span class="hljs-built_in">Object</span>',
-                      items: [
-                        {
-                          identifier: 'search',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(term: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'highlight',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'select',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'choose',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(selected: <span class="hljs-built_in">any</span>, e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'scrollTo',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(option: <span class="hljs-built_in">any</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'toggle',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'close',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event, skipFocus?: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'open',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(e?: Event) => <span class="hljs-built_in">void</span>'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        },
-                        {
-                          identifier: 'reposition',
-                          type: {
-                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                            raw: '(...args: <span class="hljs-built_in">any</span>[]) => RepositionChanges'
-                          },
-                          isRequired: true,
-                          isInternal: false,
-                          description: '',
-                          tags: {}
-                        }
-                      ]
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'uniqueId',
-                    type: { type: '<span class="hljs-built_in">string</span>' },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'disabled',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  },
-                  {
-                    identifier: 'isOpen',
-                    type: {
-                      type: '<span class="hljs-built_in">boolean</span>'
-                    },
-                    isRequired: true,
-                    isInternal: false,
-                    description: '',
-                    tags: {}
-                  }
-                ]
-              },
-              isRequired: true,
+              type: { type: 'unknown' },
+              isRequired: false,
               isInternal: false,
               description: '',
               tags: {}
