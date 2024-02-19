@@ -9,7 +9,7 @@ module.exports = {
   content: [
     './app/**/*.{html,js,ts,hbs,gts,gjs}',
     './node_modules/@frontile/theme/dist/**/*.js',
-    './lib/docfy-theme/addon/**/*.hbs',
+    '.docfy-config.js',
     '../**/*.md',
     './node_modules/**/*.hbs',
     '../node_modules/**/*.hbs'
