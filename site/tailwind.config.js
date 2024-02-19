@@ -33,100 +33,12 @@ module.exports = {
       maxHeight: {
         '(screen-16)': 'calc(100vh - 4rem)'
       },
-      typography: (theme) => ({
+      typography: () => ({
         DEFAULT: {
           css: {
-            maxWidth: 'none',
-            color: gray[500],
-            fontFamily: ['Inter', ...defaultTheme.fontFamily.sans].join(', '),
-            a: {
-              color: blue[700],
-              fontWeight: theme('fontWeight.medium'),
-              textDecoration: 'none'
-            },
-            'a code': {
-              color: 'inherit',
-              fontWeight: 'inherit'
-            },
-            strong: {
-              color: gray[900],
-              fontWeight: theme('fontWeight.medium')
-            },
-            'a strong': {
-              color: 'inherit',
-              fontWeight: 'inherit'
-            },
-            code: {
-              fontWeight: theme('fontWeight.normal'),
-              padding: theme('padding.1'),
-              backgroundColor: gray[100],
-              borderRadius: theme('borderRadius.sm')
-            },
             'code::before': null,
             'code::after': null
           }
-        },
-        light: {
-          css: [
-            {
-              color: theme('colors.gray.300'),
-              '[class~="lead"]': {
-                color: theme('colors.gray.200')
-              },
-              a: {
-                color: theme('colors.white')
-              },
-              strong: {
-                color: theme('colors.white')
-              },
-              'ol > li::before': {
-                color: theme('colors.gray.400')
-              },
-              'ul > li::before': {
-                backgroundColor: theme('colors.gray.600')
-              },
-              hr: {
-                borderColor: theme('colors.gray.200')
-              },
-              blockquote: {
-                color: theme('colors.gray.200'),
-                borderLeftColor: theme('colors.gray.600')
-              },
-              h1: {
-                color: theme('colors.white')
-              },
-              h2: {
-                color: theme('colors.white')
-              },
-              h3: {
-                color: theme('colors.white')
-              },
-              h4: {
-                color: theme('colors.white')
-              },
-              'figure figcaption': {
-                color: theme('colors.gray.400')
-              },
-              code: {
-                backgroundColor: theme('colors.gray.900'),
-                color: theme('colors.white')
-              },
-              'a code': {
-                color: theme('colors.white')
-              },
-              pre: {
-                color: theme('colors.gray.200'),
-                backgroundColor: theme('colors.gray.900')
-              },
-              thead: {
-                color: theme('colors.white'),
-                borderBottomColor: theme('colors.gray.400')
-              },
-              'tbody tr': {
-                borderBottomColor: theme('colors.gray.600')
-              }
-            }
-          ]
         }
       })
     }
@@ -141,6 +53,8 @@ module.exports = {
     { pattern: /^js-focus-visible/ },
     { pattern: /^sr-only/ },
     { pattern: /^not-prose/ },
+    { pattern: /^prose"/ },
+    { pattern: /^dark:prose-invert"/ },
 
     // Frontile Notifications
     { pattern: /^notification-transition/ },

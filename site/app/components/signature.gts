@@ -83,7 +83,7 @@ const PropertiesTable: TOC<{
   };
 }> = <template>
   <div
-    class="prose dark:prose-invert mt-8 overflow-x-scroll hljs-light-theme"
+    class="prose max-w-none dark:prose-invert mt-8 overflow-x-scroll hljs-light-theme"
     ...attributes
   >
     <table class="text-sm">

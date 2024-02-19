@@ -45,9 +45,11 @@
   @apply border rounded-b;
 
   pre {
+    color: var(--tw-prose-pre-code);
+    background-color: var(--tw-prose-pre-bg);
     @apply m-0;
     @apply p-4;
-    @apply flex text-gray-200 bg-gray-800;
+    @apply flex;
     @apply text-sm leading-normal;
     @apply font-mono;
     @apply rounded-b;
@@ -66,11 +68,11 @@
   .docfy-demo__description,
   .docfy-demo__snippets__tabs,
   .docfy-demo__snippet {
-    @apply border-default-200;
+    @apply border-default-100;
   }
 
   .docfy-demo__snippet pre {
-    @apply border-default-200;
+    @apply border-default-100;
   }
 
   .docfy-demo__description__header__title {
