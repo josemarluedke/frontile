@@ -25,13 +25,14 @@ const Divider: TOC<{
     as: string;
     class?: string;
   };
-  Element: HTMLDivElement;
+  Element: Element;
 }> = <template>
   {{#let (element (getTag @orientation @as)) as |Tag|}}
     <Tag
       class={{(divider (hash class=@class))}}
       role="separator"
       data-test-id="divider"
+      ...attributes
     />
   {{/let}}
 </template>;

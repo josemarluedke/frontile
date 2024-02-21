@@ -139,5 +139,48 @@ module(
       assert.dom('[data-test-id="content"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called didClose argument');
     });
+
+    test('controlled isOpen', async function (assert) {
+      let isOpen = false;
+      this.set('isOpen', false);
+      this.set('onOpenChange', (value: boolean) => {
+        isOpen = value;
+        this.set('isOpen', value);
+      });
+
+      await render(
+        hbs`
+          <div id="my-destination" tabindex="0"></div>
+          <Popover @isOpen={{this.isOpen}} @onOpenChange={{this.onOpenChange}} as |p|>
+            <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
+              Trigger
+            </button>
+
+            <p.Content
+              @destinationElementId="my-destination"
+              @backdrop={{this.backdrop}}
+              @disableTransitions={{true}}
+              data-test-id="content"
+            >
+              Content here
+            </p.Content>
+          </Popover>`
+      );
+
+      assert.dom('[data-test-id="content"]').doesNotExist();
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists();
+      assert.equal(isOpen, true);
+
+      await click('#my-destination');
+      assert.dom('[data-test-id="content"]').doesNotExist();
+      assert.equal(isOpen, false);
+
+      this.set('isOpen', true);
+      assert.dom('[data-test-id="content"]').exists();
+
+      this.set('isOpen', false);
+      assert.dom('[data-test-id="content"]').doesNotExist();
+    });
   }
 );
