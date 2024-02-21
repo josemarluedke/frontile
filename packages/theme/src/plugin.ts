@@ -5,6 +5,7 @@ import svgToDataUri from 'mini-svg-data-uri';
 
 import { resolveThemes, resolveConfig } from './plugin/resolve';
 import { modalSizes, drawerSizes } from './plugin/overlays';
+import { registerPowerSelectComponents } from './plugin/power-select';
 import { addTransitions } from './plugin/transitions';
 import type { PluginConfig } from './types';
 export { swapColorValues } from './colors/util';
@@ -71,6 +72,8 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
           backgroundImage: `url("${svgToDataUri(radioIcon)}")`
         }
       });
+
+      registerPowerSelectComponents(addComponents, c.prefix);
     },
     {
       theme: {
