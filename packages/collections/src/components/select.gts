@@ -134,10 +134,11 @@ class Select extends Component<SelectSignature> {
 
   get classNames() {
     const { select } = useStyles();
-    const { base, icon } = select();
+    const { base, icon, listbox } = select();
     return {
       base: base({ class: this.args.class }),
-      icon: icon()
+      icon: icon(),
+      listbox: listbox()
     };
   }
 
@@ -221,6 +222,7 @@ class Select extends Component<SelectSignature> {
           @selectedKeys={{@selectedKeys}}
           @selectionMode={{if @selectionMode @selectionMode "single"}}
           @type="listbox"
+          @class={{this.classNames.listbox}}
           ...attributes
         >
           <:item as |l|>
