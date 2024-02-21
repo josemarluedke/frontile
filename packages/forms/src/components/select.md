@@ -7,7 +7,7 @@ label: New
 ## Import 
 
 ```js
-import { Select } from '@frontile/collections';
+import { Select } from '@frontile/forms';
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { array } from '@ember/helper';
-import { Select } from '@frontile/collections';
+import { Select } from '@frontile/forms';
 import { Divider } from '@frontile/utilities';
 
 const animals = [
@@ -155,7 +155,7 @@ export default class Example extends Component {
 ```
 ## API
 
-<Signature @package="collections" @component="Select" />
-<Signature @package="collections" @component="SelectItem" />
-<Signature @package="collections" @component="NativeSelect" />
-<Signature @package="collections" @component="NativeSelectItem" />
+<Signature @package="forms" @component="Select" />
+<Signature @package="forms" @component="SelectItem" />
+<Signature @package="forms" @component="NativeSelect" />
+<Signature @package="forms" @component="NativeSelectItem" />
