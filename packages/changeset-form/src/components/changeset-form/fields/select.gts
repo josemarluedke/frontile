@@ -1,22 +1,21 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import FormSelect, {
-  type FormSelectArgs,
-  type Select
+  type FormSelectArgs
 } from '@frontile/forms/components/form-select';
 
 export interface ChangesetFormFieldsSelectArgs
   extends BaseArgs,
     FormSelectArgs {
-  onChange: (selection: unknown, select: Select, event?: Event) => void;
-  onFocusOut?: (select: Select, event: FocusEvent) => void;
-  onClose?: (select: Select, e: Event) => boolean | undefined;
+  onChange: (selection: unknown, select: unknown, event?: Event) => void;
+  onFocusOut?: (select: unknown, event: FocusEvent) => void;
+  onClose?: (select: unknown, e: Event) => boolean | undefined;
 }
 
 export interface ChangesetFormFieldsSelectSignature extends BaseSignature {
   Args: ChangesetFormFieldsSelectArgs;
   Blocks: {
-    default: [option: unknown, select: Select];
+    default: [option: unknown, select: unknown];
   };
   Element: HTMLDivElement;
 }
@@ -25,7 +24,7 @@ export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsS
   @action
   async handleChange(
     selection: unknown,
-    select: Select,
+    select: unknown,
     event?: Event
   ): Promise<void> {
     this.args.changeset.set(this.args.fieldName, selection);
@@ -37,7 +36,7 @@ export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsS
   }
 
   @action
-  async handleFocusOut(select: Select, event: FocusEvent): Promise<void> {
+  async handleFocusOut(select: unknown, event: FocusEvent): Promise<void> {
     await this.validate();
 
     if (typeof this.args.onFocusOut === 'function') {
@@ -46,7 +45,7 @@ export default class ChangesetFormFieldsSelect extends Base<ChangesetFormFieldsS
   }
 
   @action
-  async handleClose(select: Select, event: Event): Promise<void> {
+  async handleClose(select: unknown, event: Event): Promise<void> {
     await this.validate();
 
     if (typeof this.args.onClose === 'function') {

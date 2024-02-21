@@ -46,9 +46,9 @@ interface PopoverSignature {
      */
     strategy?: VelcroSignature['Args']['Named']['strategy'];
 
-    // isOpen?: boolean;
-    // onOpenChange?: () => void;
-    onClose?: () => void;
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+    didClose?: () => void;
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -75,7 +75,18 @@ interface PopoverSignature {
 class Popover extends Component<PopoverSignature> {
   triggerEl?: HTMLElement;
   menuId = guidFor(this);
-  @tracked isOpen = false;
+  @tracked _isOpen = false;
+
+  get isOpen(): boolean {
+    if (
+      typeof this.args.isOpen !== 'undefined' &&
+      typeof this.args.onOpenChange === 'function'
+    ) {
+      return this.args.isOpen;
+    }
+
+    return this._isOpen;
+  }
 
   toggle = () => {
     if (this.isOpen) {
@@ -86,13 +97,22 @@ class Popover extends Component<PopoverSignature> {
   };
 
   open = () => {
-    this.isOpen = true;
+    if (typeof this.args.onOpenChange === 'function') {
+      this.args.onOpenChange(true);
+    } else {
+      this._isOpen = true;
+    }
   };
 
   close = () => {
-    this.isOpen = false;
-    if (this.isOpen === false && typeof this.args.onClose === 'function') {
-      this.args.onClose();
+    if (typeof this.args.onOpenChange === 'function') {
+      this.args.onOpenChange(false);
+    } else {
+      this._isOpen = false;
+    }
+
+    if (typeof this.args.didClose === 'function') {
+      this.args.didClose();
     }
   };
 

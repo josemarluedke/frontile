@@ -1,15 +1,13 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { modifier } from 'ember-modifier';
 import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import { SetupListItem } from './setupListItemModfier';
 import { Divider } from '@frontile/utilities';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
-import type { ListManager, Node } from './listManager';
+import type { ListManager, ListItem } from '../../utils/listManager';
 
 export interface ListboxItemSignature {
   Args: {
@@ -47,22 +45,7 @@ export interface ListboxItemSignature {
 
 class ListboxItem extends Component<ListboxItemSignature> {
   labelId = guidFor(this);
-  @tracked el?: HTMLLIElement;
-
-  didInsert = modifier((el: HTMLElement) => {
-    this.el = el as HTMLLIElement;
-
-    return () => {
-      this.el = undefined;
-    };
-  });
-
-  get node(): Node | undefined {
-    if (this.el) {
-      return this.manager.at(this.el);
-    }
-    return undefined;
-  }
+  @tracked listItem?: ListItem;
 
   get manager(): ListManager {
     assert(
@@ -83,12 +66,17 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   @action
+  onRegister(item: ListItem) {
+    this.listItem = item;
+  }
+
+  @action
   onClick(): void {
-    if (this.node?.isDisabled) {
+    if (this.listItem?.isDisabled) {
       return;
     }
 
-    this.manager.selectNode(this.manager.at(this.el));
+    this.manager.selectItem(this.listItem);
 
     if (typeof this.args.onClick === 'function') {
       this.args.onClick();
@@ -96,7 +84,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   get tabindex() {
-    if (this.node?.isActive || this.node?.isSelected) {
+    if (this.listItem?.isActive || this.listItem?.isSelected) {
       return 0;
     }
     return -1;
@@ -115,9 +103,9 @@ class ListboxItem extends Component<ListboxItemSignature> {
     } = listboxItem({
       appearence: this.args.appearance || 'default',
       intent: this.args.intent || 'default',
-      isDisabled: this.node?.isDisabled,
-      isSelected: this.node?.isSelected,
-      isActive: this.node?.isActive,
+      isDisabled: this.listItem?.isDisabled,
+      isSelected: this.listItem?.isSelected,
+      isActive: this.listItem?.isActive,
       withDivider: this.args.withDivider
     });
 
@@ -140,17 +128,21 @@ class ListboxItem extends Component<ListboxItemSignature> {
 
   <template>
     <li
-      {{this.didInsert}}
-      {{SetupListItem this.manager key=this.key textValue=@textValue}}
+      {{this.manager.setupItem
+        key=this.key
+        textValue=@textValue
+        onRegister=this.onRegister
+      }}
       {{on "click" this.onClick}}
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       tabindex={{this.tabindex}}
-      data-active="{{this.node.isActive}}"
-      data-selected="{{this.node.isSelected}}"
+      data-active="{{this.listItem.isActive}}"
+      data-selected="{{this.listItem.isSelected}}"
       data-test-id="listbox-item"
+      data-component="listbox-item"
       data-key={{this.key}}
-      disabled={{this.node.isDisabled}}
+      disabled={{this.listItem.isDisabled}}
       class={{this.classNames.base}}
       ...attributes
     >
@@ -183,7 +175,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         >{{@shortcut}}</kbd>
       {{/if}}
 
-      {{#if this.node.isSelected}}
+      {{#if this.listItem.isSelected}}
         <span
           data-test-id="listbox-item-selected-icon"
           class={{this.classNames.selectedIcon}}

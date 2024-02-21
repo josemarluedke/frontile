@@ -138,4 +138,18 @@ const radio = tv({
   }
 });
 
-export { label, hint, feedback, input, textarea, checkbox, radio };
+const select = tv({
+  slots: {
+    base: [],
+    trigger: [
+      input(),
+      'flex items-center justify-between',
+      'disabled:cursor-not-allowed disabled:opacity-50'
+    ],
+    placeholder: 'text-default-400',
+    listbox: 'scroll-py-6 max-h-64',
+    icon: 'w-5 h-5'
+  }
+});
+
+export { label, hint, feedback, input, textarea, checkbox, radio, select };

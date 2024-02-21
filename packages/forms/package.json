@@ -42,6 +42,9 @@
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/theme": "workspace:0.17.0-alpha.6",
+    "@frontile/overlays": "workspace:0.17.0-alpha.6",
+    "@frontile/collections": "workspace:0.17.0-alpha.6",
+    "@frontile/utilities": "workspace:0.17.0-alpha.6",
     "@glint/template": "1.3.0",
     "ember-basic-dropdown": "^7.3.0",
     "ember-power-select": "^7.2.0"
@@ -96,7 +99,9 @@
       "./components/form-radio-group.js": "./dist/_app_/components/form-radio-group.js",
       "./components/form-radio.js": "./dist/_app_/components/form-radio.js",
       "./components/form-select.js": "./dist/_app_/components/form-select.js",
-      "./components/form-textarea.js": "./dist/_app_/components/form-textarea.js"
+      "./components/form-textarea.js": "./dist/_app_/components/form-textarea.js",
+      "./components/native-select.js": "./dist/_app_/components/native-select.js",
+      "./components/select.js": "./dist/_app_/components/select.js"
     }
   },
   "exports": {

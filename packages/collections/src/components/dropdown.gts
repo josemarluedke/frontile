@@ -23,7 +23,7 @@ interface DropdownArgs
     | 'shiftOptions'
     | 'offsetOptions'
     | 'strategy'
-    | 'onClose'
+    | 'didClose'
   > {
   /**
    * Whether the dropdown should close upon selecting an item.
@@ -58,7 +58,7 @@ class Dropdown extends Component<DropdownSignature> {
       @shiftOptions={{@shiftOptions}}
       @offsetOptions={{@offsetOptions}}
       @strategy={{@strategy}}
-      @onClose={{@onClose}}
+      @didClose={{@didClose}}
       as |p|
     >
       {{yield

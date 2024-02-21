@@ -81,27 +81,33 @@ export default class Example extends Component {
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
         @disabledKeys={{(array "notifications")}}
-        as |l|
       >
-        <l.Item @key="profile" @description="View my profile">
-          My Provile
-        </l.Item>
-        <l.Item @key="settings" @shortcut="⌘⇧S">Settings</l.Item>
-        <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
-          Notifications
-        </l.Item>
-        <l.Item @key="reset" @intent="danger" @class="text-danger">
-          Reset Settings
-        </l.Item>
-        <l.Item
-          @key="delete"
-          @shortcut="⌘⇧D"
-          @intent="danger"
-          @appearance="faded"
-          @class="text-danger"
-        >
-          Delete Account
-        </l.Item>
+        <:item as |o|>
+          <o.Item @key={{o.item}} @intent="default" @appearance="faded">
+            {{o.item}}
+          </o.Item>
+        </:item>
+        <:default as |l|>
+          <l.Item @key="profile" @description="View my profile">
+            My Provile
+          </l.Item>
+          <l.Item @key="settings" @shortcut="⌘⇧S">Settings</l.Item>
+          <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
+            Notifications
+          </l.Item>
+          <l.Item @key="reset" @intent="danger" @class="text-danger">
+            Reset Settings
+          </l.Item>
+          <l.Item
+            @key="delete"
+            @shortcut="⌘⇧D"
+            @intent="danger"
+            @appearance="faded"
+            @class="text-danger"
+          >
+            Delete Account
+          </l.Item>
+        </:default>
       </Listbox>
     </div>
   </template>

@@ -1,12 +1,15 @@
-/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
-import { ListManager, type SelectionMode } from './listManager';
-import { ListboxItem } from './item';
+import {
+  ListManager,
+  keyAndLabelForItem,
+  type SelectionMode,
+  type ListItem
+} from '../../utils/listManager';
+import { ListboxItem, type ListboxItemSignature } from './item';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
@@ -42,7 +45,7 @@ interface ListboxSignature<T = unknown> {
   };
   Element: HTMLUListElement;
   Blocks: {
-    item: [{ item: T; Item: ItemCompBounded }];
+    item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
     default: [{ Item: ItemCompBounded }];
   };
 }
@@ -65,7 +68,7 @@ class Listbox extends Component<ListboxSignature> {
         ((event.key === 'Space' || event.key === ' ') &&
           this.listManager.searchKeys == '')
       ) {
-        this.listManager.selectActiveNode();
+        this.listManager.selectActiveItem();
         event.preventDefault();
         event.stopPropagation();
       } else if (event.key.length === 1) {
@@ -109,16 +112,6 @@ class Listbox extends Component<ListboxSignature> {
     return listbox({ class: this.args.class });
   }
 
-  @action
-  updateListManager() {
-    this.listManager.update({
-      selectionMode: this.args.selectionMode,
-      disabledKeys: this.args.disabledKeys,
-      selectedKeys: this.args.selectedKeys,
-      allowEmpty: this.args.allowEmpty
-    });
-  }
-
   get role() {
     if (this.args.type === 'menu') {
       return this.args.type;
@@ -130,48 +123,52 @@ class Listbox extends Component<ListboxSignature> {
     <ul
       tabindex="0"
       role={{this.role}}
-      {{didUpdate
-        this.updateListManager
-        @selectedKeys
-        @disabledKeys
-        @selectionMode
-        @allowEmpty
+      {{this.listManager.setup
+        selectedKeys=@selectedKeys
+        disabledKeys=@disabledKeys
+        selectionMode=@selectionMode
+        allowEmpty=@allowEmpty
+        isKeyboardEventsEnabled=true
       }}
       {{on "keypress" this.handleKeyPress}}
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
       data-test-id="listbox"
+      data-component="listbox"
       class={{this.classNames}}
       ...attributes
     >
       {{#each @items as |item|}}
-        {{#if (has-block "item")}}
-          {{yield
-            (hash
-              item=item
-              Item=(component
-                ListboxItem
-                manager=this.listManager
-                appearance=@appearance
-                intent=@intent
-                type=this.role
+        {{#let (keyAndLabelForItem item) as |keyLabel|}}
+          {{#if (has-block "item")}}
+            {{yield
+              (hash
+                item=item
+                key=keyLabel.key
+                label=keyLabel.label
+                Item=(component
+                  ListboxItem
+                  manager=this.listManager
+                  appearance=@appearance
+                  intent=@intent
+                  type=this.role
+                  key=keyLabel.key
+                )
               )
-            )
-            to="item"
-          }}
-        {{else}}
-          <ListboxItem
-            @manager={{this.listManager}}
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            @key={{item}}
-            @appearance={{@appearance}}
-            @intent={{@intent}}
-            @type={{this.role}}
-          >
-            {{! @glint-expect-error: if we get to this option, we are assuming the option is primitive value}}
-            {{item}}
-          </ListboxItem>
-        {{/if}}
+              to="item"
+            }}
+          {{else}}
+            <ListboxItem
+              @manager={{this.listManager}}
+              @key={{keyLabel.key}}
+              @appearance={{@appearance}}
+              @intent={{@intent}}
+              @type={{this.role}}
+            >
+              {{keyLabel.label}}
+            </ListboxItem>
+          {{/if}}
+        {{/let}}
       {{/each}}
 
       {{yield
@@ -190,5 +187,11 @@ class Listbox extends Component<ListboxSignature> {
   </template>
 }
 
-export { Listbox, type ListboxSignature };
+export {
+  Listbox,
+  ListboxItem,
+  type ListboxSignature,
+  type ListboxItemSignature,
+  type ListItem
+};
 export default Listbox;
