@@ -7,7 +7,7 @@ import { useStyles } from '@frontile/theme';
 import { Divider } from '@frontile/utilities';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
-import type { ListManager, Node } from './listManager';
+import type { ListManager, ListItem } from '../../utils/listManager';
 
 export interface ListboxItemSignature {
   Args: {
@@ -45,7 +45,7 @@ export interface ListboxItemSignature {
 
 class ListboxItem extends Component<ListboxItemSignature> {
   labelId = guidFor(this);
-  @tracked node?: Node;
+  @tracked listItem?: ListItem;
 
   get manager(): ListManager {
     assert(
@@ -66,17 +66,17 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   @action
-  onRegister(node: Node) {
-    this.node = node;
+  onRegister(item: ListItem) {
+    this.listItem = item;
   }
 
   @action
   onClick(): void {
-    if (this.node?.isDisabled) {
+    if (this.listItem?.isDisabled) {
       return;
     }
 
-    this.manager.selectNode(this.node);
+    this.manager.selectItem(this.listItem);
 
     if (typeof this.args.onClick === 'function') {
       this.args.onClick();
@@ -84,7 +84,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
   }
 
   get tabindex() {
-    if (this.node?.isActive || this.node?.isSelected) {
+    if (this.listItem?.isActive || this.listItem?.isSelected) {
       return 0;
     }
     return -1;
@@ -103,9 +103,9 @@ class ListboxItem extends Component<ListboxItemSignature> {
     } = listboxItem({
       appearence: this.args.appearance || 'default',
       intent: this.args.intent || 'default',
-      isDisabled: this.node?.isDisabled,
-      isSelected: this.node?.isSelected,
-      isActive: this.node?.isActive,
+      isDisabled: this.listItem?.isDisabled,
+      isSelected: this.listItem?.isSelected,
+      isActive: this.listItem?.isActive,
       withDivider: this.args.withDivider
     });
 
@@ -137,11 +137,11 @@ class ListboxItem extends Component<ListboxItemSignature> {
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       tabindex={{this.tabindex}}
-      data-active="{{this.node.isActive}}"
-      data-selected="{{this.node.isSelected}}"
+      data-active="{{this.listItem.isActive}}"
+      data-selected="{{this.listItem.isSelected}}"
       data-test-id="listbox-item"
       data-key={{this.key}}
-      disabled={{this.node.isDisabled}}
+      disabled={{this.listItem.isDisabled}}
       class={{this.classNames.base}}
       ...attributes
     >
@@ -174,7 +174,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         >{{@shortcut}}</kbd>
       {{/if}}
 
-      {{#if this.node.isSelected}}
+      {{#if this.listItem.isSelected}}
         <span
           data-test-id="listbox-item-selected-icon"
           class={{this.classNames.selectedIcon}}

@@ -5,7 +5,15 @@ import { modifier } from 'ember-modifier';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 
-class Node {
+interface ListItemArgs {
+  key: string;
+  textValue?: string;
+  isSelected?: boolean;
+  isDisabled?: boolean;
+  isActive?: boolean;
+}
+
+class ListItem {
   el: HTMLLIElement | HTMLOptionElement;
   key: string;
   textValue: string;
@@ -14,7 +22,10 @@ class Node {
   @tracked isDisabled: boolean;
   @tracked isActive: boolean;
 
-  constructor(el: HTMLLIElement | HTMLOptionElement, args: Required<NodeArgs>) {
+  constructor(
+    el: HTMLLIElement | HTMLOptionElement,
+    args: Required<ListItemArgs>
+  ) {
     this.el = el;
     this.key = args.key;
     this.textValue = args.textValue;
@@ -24,14 +35,6 @@ class Node {
   }
 }
 
-interface NodeArgs {
-  key: string;
-  textValue?: string;
-  isSelected?: boolean;
-  isDisabled?: boolean;
-  isActive?: boolean;
-}
-
 interface ListManagerOptions {
   selectionMode?: SelectionMode;
   selectedKeys?: string[];
@@ -39,20 +42,20 @@ interface ListManagerOptions {
   allowEmpty?: boolean;
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
-  onNodesChange?: (nodes: Node[], action: 'add' | 'remove') => void;
+  onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
 }
 
 class ListManager {
   searchKeys: string = '';
 
   #selectionMode: SelectionMode = 'none';
-  #nodes: Node[] = [];
+  #items: ListItem[] = [];
   #selectedKeys: string[] = [];
   #disabledKeys: string[] = [];
   #allowEmpty: boolean = false;
   #onAction?: (key: string) => void;
   #onSelectionChange?: (key: string[]) => void;
-  #onNodesChange?: (nodes: Node[], action: 'add' | 'remove') => void;
+  #onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
 
   constructor(options: ListManagerOptions = {}) {
     this.update(options);
@@ -60,29 +63,29 @@ class ListManager {
 
   register(
     el: HTMLLIElement | HTMLOptionElement,
-    args: Required<NodeArgs>
+    args: Required<ListItemArgs>
   ): void {
-    this.#nodes.push(new Node(el, args));
+    this.#items.push(new ListItem(el, args));
 
-    if (typeof this.#onNodesChange === 'function') {
-      this.#onNodesChange(this.#nodes, 'add');
+    if (typeof this.#onListItemsChange === 'function') {
+      this.#onListItemsChange(this.#items, 'add');
     }
   }
 
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
-    this.#nodes = this.#nodes.filter((node) => node.el !== el);
+    this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (typeof this.#onNodesChange === 'function') {
-      this.#onNodesChange(this.#nodes, 'remove');
+    if (typeof this.#onListItemsChange === 'function') {
+      this.#onListItemsChange(this.#items, 'remove');
     }
   }
 
-  at(el?: HTMLLIElement | HTMLOptionElement): Node | undefined {
-    return this.#nodes.find((node) => node.el === el);
+  at(el?: HTMLLIElement | HTMLOptionElement): ListItem | undefined {
+    return this.#items.find((item) => item.el === el);
   }
 
-  atKey(key: string): Node | undefined {
-    return this.#nodes.find((node) => node.key === key);
+  atKey(key: string): ListItem | undefined {
+    return this.#items.find((item) => item.key === key);
   }
 
   update(options: ListManagerOptions): void {
@@ -91,10 +94,10 @@ class ListManager {
     this.#disabledKeys = options.disabledKeys || [];
     this.#allowEmpty = options.allowEmpty || false;
 
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i] as Node;
-      node.isSelected = this.isKeySelected(node.key);
-      node.isDisabled = this.isKeyDisabled(node.key);
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i] as ListItem;
+      item.isSelected = this.isKeySelected(item.key);
+      item.isDisabled = this.isKeyDisabled(item.key);
     }
 
     if (options.onAction) {
@@ -105,79 +108,79 @@ class ListManager {
       this.#onSelectionChange = options.onSelectionChange;
     }
 
-    if (options.onNodesChange) {
-      this.#onNodesChange = options.onNodesChange;
+    if (options.onListItemsChange) {
+      this.#onListItemsChange = options.onListItemsChange;
     }
   }
 
-  selectActiveNode(): void {
-    const node = this.#activeNode;
-    if (node) {
-      node.el.click();
+  selectActiveItem(): void {
+    const item = this.#activeItem;
+    if (item) {
+      item.el.click();
     }
   }
 
-  selectNode(node?: Node): void {
-    if (node) {
+  selectItem(item?: ListItem): void {
+    if (item) {
       if (this.#selectionMode !== 'none') {
-        this.activateNode(node);
+        this.activateItem(item);
       }
       if (typeof this.#onAction === 'function') {
-        this.#onAction(node.key);
+        this.#onAction(item.key);
       }
 
       if (
         typeof this.#onSelectionChange === 'function' &&
         this.#selectionMode !== 'none'
       ) {
-        this.#onSelectionChange(this.#toggleSelectedKey(node));
+        this.#onSelectionChange(this.#toggleSelectedItem(item));
       }
     }
   }
 
-  activateNode(node?: Node): void {
-    if (node) {
+  activateItem(item?: ListItem): void {
+    if (item) {
       this.#clearActive();
-      node.isActive = true;
-      node.el.focus();
+      item.isActive = true;
+      item.el.focus();
     }
   }
 
   setNextOptionActive(): void {
-    for (let i = this.#indexOfActiveNode + 1; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i];
-      if (node && !node.isDisabled) {
-        this.activateNode(node);
+    for (let i = this.#indexofActiveItem + 1; i < this.#items.length; i++) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled) {
+        this.activateItem(item);
         break;
       }
     }
   }
 
   setPreviousOptionActive(): void {
-    for (let i = this.#indexOfActiveNode - 1; i >= 0; i--) {
-      const node = this.#nodes[i];
-      if (node && !node.isDisabled) {
-        this.activateNode(node);
+    for (let i = this.#indexofActiveItem - 1; i >= 0; i--) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled) {
+        this.activateItem(item);
         break;
       }
     }
   }
 
   setFirstOptionActive(): void {
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i];
-      if (node && !node.isDisabled) {
-        this.activateNode(node);
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled) {
+        this.activateItem(item);
         break;
       }
     }
   }
 
   setLastOptionActive(): void {
-    for (let i = this.#nodes.length - 1; i >= 0; i--) {
-      const node = this.#nodes[i];
-      if (node && !node.isDisabled) {
-        this.activateNode(node);
+    for (let i = this.#items.length - 1; i >= 0; i--) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled) {
+        this.activateItem(item);
         break;
       }
     }
@@ -187,15 +190,15 @@ class ListManager {
     debounce(this, this.#clearSeaerch, 500);
     this.searchKeys += key.toLowerCase();
 
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i] as Node;
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i] as ListItem;
 
       if (
-        !node.isDisabled &&
+        !item.isDisabled &&
         this.searchKeys &&
-        node.textValue.trim().toLowerCase().startsWith(this.searchKeys)
+        item.textValue.trim().toLowerCase().startsWith(this.searchKeys)
       ) {
-        this.activateNode(node);
+        this.activateItem(item);
         break;
       }
     }
@@ -209,57 +212,57 @@ class ListManager {
     return this.#selectedKeys.includes(key);
   }
 
-  get #indexOfActiveNode(): number {
-    let node = this.#activeNode;
+  get #indexofActiveItem(): number {
+    let item = this.#activeItem;
 
-    if (!node) {
-      for (let i = 0; i < this.#nodes.length; i++) {
-        const n = this.#nodes[i] as Node;
+    if (!item) {
+      for (let i = 0; i < this.#items.length; i++) {
+        const n = this.#items[i] as ListItem;
         if (n.isSelected) {
-          node = n;
+          item = n;
           break;
         }
       }
     }
-    if (!node) {
+    if (!item) {
       return -1;
     }
-    return this.#nodes.indexOf(node);
+    return this.#items.indexOf(item);
   }
 
-  #toggleSelectedKey(node: Node): string[] {
+  #toggleSelectedItem(item: ListItem): string[] {
     let selectedKeys: string[] = [];
 
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i] as Node;
-      if (node.isSelected) {
-        selectedKeys.push(node.key);
+    for (let i = 0; i < this.#items.length; i++) {
+      const _item = this.#items[i] as ListItem;
+      if (_item.isSelected) {
+        selectedKeys.push(_item.key);
       }
     }
 
     if (
-      selectedKeys.includes(node.key) &&
+      selectedKeys.includes(item.key) &&
       ((this.#allowEmpty && selectedKeys.length == 1) ||
         selectedKeys.length > 1)
     ) {
-      const indexToRemove = selectedKeys.indexOf(node.key);
+      const indexToRemove = selectedKeys.indexOf(item.key);
       selectedKeys.splice(indexToRemove, 1);
     } else {
       if (this.#selectionMode === 'single') {
-        selectedKeys = [node.key];
-      } else if (!selectedKeys.includes(node.key)) {
-        selectedKeys.push(node.key);
+        selectedKeys = [item.key];
+      } else if (!selectedKeys.includes(item.key)) {
+        selectedKeys.push(item.key);
       }
     }
 
     return selectedKeys;
   }
 
-  get #activeNode(): Node | undefined {
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i] as Node;
-      if (node.isActive) {
-        return node;
+  get #activeItem(): ListItem | undefined {
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i] as ListItem;
+      if (item.isActive) {
+        return item;
       }
     }
   }
@@ -269,10 +272,10 @@ class ListManager {
   }
 
   #clearActive(): void {
-    for (let i = 0; i < this.#nodes.length; i++) {
-      const node = this.#nodes[i] as Node;
-      if (node.isActive) {
-        node.isActive = false;
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i] as ListItem;
+      if (item.isActive) {
+        item.isActive = false;
       }
     }
   }
@@ -296,8 +299,8 @@ class ListManager {
     (
       el: HTMLLIElement | HTMLOptionElement,
       _: unknown[],
-      args: Pick<NodeArgs, 'key' | 'textValue'> & {
-        onRegister?: (node: Node) => void;
+      args: Pick<ListItemArgs, 'key' | 'textValue'> & {
+        onRegister?: (item: ListItem) => void;
       }
     ) => {
       let textValue = args.textValue;
@@ -323,18 +326,18 @@ class ListManager {
         isDisabled: this.isKeyDisabled(args.key),
         isSelected: this.isKeySelected(args.key)
       });
-      const node = this.at(el);
-      if (node && typeof args.onRegister === 'function') {
-        args.onRegister(node);
+      const item = this.at(el);
+      if (item && typeof args.onRegister === 'function') {
+        args.onRegister(item);
       }
 
       const mouseEnter = (): void => {
-        this.activateNode(node);
+        this.activateItem(item);
       };
 
       const mouseLeave = (): void => {
-        if (node) {
-          node.isActive = false;
+        if (item) {
+          item.isActive = false;
         }
       };
 
@@ -367,5 +370,5 @@ function keyAndLabelForItem(item: unknown): {
   return { key: '', label: '' };
 }
 
-export type { Node, NodeArgs, SelectionMode };
+export type { ListItem, ListItemArgs, SelectionMode };
 export { ListManager, keyAndLabelForItem };

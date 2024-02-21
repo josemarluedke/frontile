@@ -8,8 +8,8 @@ import { useStyles } from '@frontile/theme';
 import {
   ListManager,
   keyAndLabelForItem,
-  type Node
-} from './listbox/listManager';
+  type ListItem
+} from '../utils/listManager';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
@@ -34,7 +34,7 @@ interface NativeSelectSignature<T = unknown> {
     /**
      * @internal
      */
-    onItemsChange?: (nodes: Node[], action: 'add' | 'remove') => void;
+    onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
   };
   Element: HTMLSelectElement;
   Blocks: {
@@ -51,7 +51,7 @@ class NativeSelect extends Component<NativeSelectSignature> {
     allowEmpty: this.args.allowEmpty,
     onSelectionChange: this.args.onSelectionChange,
     onAction: this.args.onAction,
-    onNodesChange: this.args.onItemsChange
+    onListItemsChange: this.args.onItemsChange
   });
 
   get classNames() {
@@ -98,7 +98,7 @@ class NativeSelect extends Component<NativeSelectSignature> {
         disabledKeys=@disabledKeys
         selectionMode=@selectionMode
         allowEmpty=@allowEmpty
-        onNodesChange=@onItemsChange
+        onListItemsChange=@onItemsChange
       }}
       {{on "change" this.handleOnChange}}
       multiple={{this.isMultiple}}
@@ -158,7 +158,7 @@ export interface SelectItemSignature {
 }
 
 class NativeSelectItem extends Component<SelectItemSignature> {
-  @tracked node?: Node;
+  @tracked listItem?: ListItem;
 
   get manager(): ListManager {
     assert(
@@ -181,8 +181,8 @@ class NativeSelectItem extends Component<SelectItemSignature> {
   }
 
   @action
-  onRegister(node: Node) {
-    this.node = node;
+  onRegister(item: ListItem) {
+    this.listItem = item;
   }
 
   <template>
@@ -192,12 +192,12 @@ class NativeSelectItem extends Component<SelectItemSignature> {
         textValue=@textValue
         onRegister=this.onRegister
       }}
-      data-selected="{{this.node.isSelected}}"
+      data-selected="{{this.listItem.isSelected}}"
       data-test-id="select-option"
       data-key={{this.key}}
-      selected={{this.node.isSelected}}
+      selected={{this.listItem.isSelected}}
       value={{this.key}}
-      disabled={{this.node.isDisabled}}
+      disabled={{this.listItem.isDisabled}}
       ...attributes
     >
       {{yield}}
@@ -205,5 +205,5 @@ class NativeSelectItem extends Component<SelectItemSignature> {
   </template>
 }
 
-export { NativeSelect, type NativeSelectSignature };
+export { NativeSelect, type NativeSelectSignature, type ListItem };
 export default NativeSelect;

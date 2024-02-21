@@ -7,8 +7,8 @@ import {
   ListManager,
   keyAndLabelForItem,
   type SelectionMode,
-  type Node
-} from './listManager';
+  type ListItem
+} from '../../utils/listManager';
 import { ListboxItem, type ListboxItemSignature } from './item';
 import type { WithBoundArgs } from '@glint/template';
 
@@ -68,7 +68,7 @@ class Listbox extends Component<ListboxSignature> {
         ((event.key === 'Space' || event.key === ' ') &&
           this.listManager.searchKeys == '')
       ) {
-        this.listManager.selectActiveNode();
+        this.listManager.selectActiveItem();
         event.preventDefault();
         event.stopPropagation();
       } else if (event.key.length === 1) {
@@ -190,6 +190,6 @@ export {
   ListboxItem,
   type ListboxSignature,
   type ListboxItemSignature,
-  type Node as ListItemNode
+  type ListItem
 };
 export default Listbox;

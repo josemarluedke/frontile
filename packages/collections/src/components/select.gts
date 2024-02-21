@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
-import { NativeSelect } from './native-select';
-import { Listbox, type ListboxSignature, type ListItemNode } from './listbox';
+import { NativeSelect, type ListItem } from './native-select';
+import { Listbox, type ListboxSignature } from './listbox';
 import { useStyles } from '@frontile/theme';
 import { VisuallyHidden } from '@frontile/utilities';
 import {
@@ -73,7 +73,7 @@ interface SelectSignature {
 }
 
 class Select extends Component<SelectSignature> {
-  @tracked nodes: ListItemNode[] = [];
+  @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
 
   onOpenChange = (isOpen: boolean) => {
@@ -111,7 +111,7 @@ class Select extends Component<SelectSignature> {
     return this.args.selectedKeys?.join(', ');
   }
 
-  onItemsChange = (nodes: ListItemNode[], _: 'add' | 'remove') => {
+  onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
     this.nodes = nodes;
   };
 
