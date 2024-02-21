@@ -6,7 +6,7 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
 module(
-  'Integration | Component | Listbox | @frontile/buttons',
+  'Integration | Component | Listbox | @frontile/collections',
   function (hooks) {
     setupRenderingTest(hooks);
 

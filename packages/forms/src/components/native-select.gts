@@ -103,7 +103,7 @@ class NativeSelect extends Component<NativeSelectSignature> {
       }}
       {{on "change" this.handleOnChange}}
       multiple={{this.isMultiple}}
-      data-test-id="select"
+      data-test-id="native-select"
       class={{this.classNames}}
       ...attributes
     >
@@ -194,7 +194,7 @@ class NativeSelectItem extends Component<SelectItemSignature> {
         onRegister=this.onRegister
       }}
       data-selected="{{this.listItem.isSelected}}"
-      data-test-id="select-option"
+      data-test-id="option"
       data-key={{this.key}}
       selected={{this.listItem.isSelected}}
       value={{this.key}}
