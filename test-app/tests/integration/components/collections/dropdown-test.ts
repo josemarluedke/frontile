@@ -125,16 +125,16 @@ module(
       assert.dom('.overlay__backdrop').exists();
     });
 
-    test('on item click, closes menu, calls @onClose', async function (assert) {
+    test('on item click, closes menu, calls @didClose', async function (assert) {
       let calledClosed = false;
-      this.set('onClose', () => {
+      this.set('didClose', () => {
         calledClosed = true;
       });
 
       await render(
         hbs`
           <div id="my-destination"></div>
-          <Dropdown @onClose={{this.onClose}} as |d|>
+          <Dropdown @didClose={{this.didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
@@ -154,7 +154,7 @@ module(
 
       await click('[data-key="profile"]');
       assert.dom('[data-test-id="listbox"]').doesNotExist();
-      assert.equal(calledClosed, true, 'should called onClose argument');
+      assert.equal(calledClosed, true, 'should called didClose argument');
     });
 
     test('on item click, does not close menu when @closeOnItemSelect=false', async function (assert) {
@@ -185,14 +185,14 @@ module(
 
     test('clicking outside closes menu', async function (assert) {
       let calledClosed = false;
-      this.set('onClose', () => {
+      this.set('didClose', () => {
         calledClosed = true;
       });
 
       await render(
         hbs`
           <div id="my-destination" tabindex="0"></div>
-          <Dropdown @onClose={{this.onClose}} as |d|>
+          <Dropdown @didClose={{this.didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
@@ -212,7 +212,7 @@ module(
 
       await click('#my-destination');
       assert.dom('[data-test-id="listbox"]').doesNotExist();
-      assert.equal(calledClosed, true, 'should called onClose argument');
+      assert.equal(calledClosed, true, 'should called didClose argument');
     });
 
     test('on pressing arrow up/down key, opens the menu', async function (assert) {
