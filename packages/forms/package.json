@@ -99,7 +99,9 @@
       "./components/form-radio-group.js": "./dist/_app_/components/form-radio-group.js",
       "./components/form-radio.js": "./dist/_app_/components/form-radio.js",
       "./components/form-select.js": "./dist/_app_/components/form-select.js",
-      "./components/form-textarea.js": "./dist/_app_/components/form-textarea.js"
+      "./components/form-textarea.js": "./dist/_app_/components/form-textarea.js",
+      "./components/native-select.js": "./dist/_app_/components/native-select.js",
+      "./components/select.js": "./dist/_app_/components/select.js"
     }
   },
   "exports": {

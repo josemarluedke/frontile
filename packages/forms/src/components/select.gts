@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
 import { NativeSelect, type ListItem } from './native-select';
-import { Listbox, type ListboxSignature } from './listbox';
+import { Listbox, type ListboxSignature } from '@frontile/collections';
 import { useStyles } from '@frontile/theme';
 import { VisuallyHidden } from '@frontile/utilities';
 import {

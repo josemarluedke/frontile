@@ -9,7 +9,7 @@ import {
   ListManager,
   keyAndLabelForItem,
   type ListItem
-} from '../utils/listManager';
+} from '@frontile/collections/utils/listManager';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
