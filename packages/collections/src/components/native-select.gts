@@ -93,12 +93,13 @@ class NativeSelect extends Component<NativeSelectSignature> {
 
   <template>
     <select
-      {{this.listManager.onUpdate
+      {{this.listManager.setup
         selectedKeys=@selectedKeys
         disabledKeys=@disabledKeys
         selectionMode=@selectionMode
         allowEmpty=@allowEmpty
         onListItemsChange=@onItemsChange
+        isKeyboardEventsEnabled=false
       }}
       {{on "change" this.handleOnChange}}
       multiple={{this.isMultiple}}

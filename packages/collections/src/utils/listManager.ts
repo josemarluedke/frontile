@@ -280,11 +280,11 @@ class ListManager {
     }
   }
 
-  onUpdate = modifier(
+  setup = modifier(
     (
       _el: HTMLUListElement | HTMLSelectElement,
       _: unknown[],
-      args: ListManagerOptions
+      args: ListManagerOptions & { isKeyboardEventsEnabled?: boolean }
     ) => {
       this.update({
         selectionMode: args.selectionMode,
@@ -301,6 +301,7 @@ class ListManager {
       _: unknown[],
       args: Pick<ListItemArgs, 'key' | 'textValue'> & {
         onRegister?: (item: ListItem) => void;
+        disableEvents?: boolean;
       }
     ) => {
       let textValue = args.textValue;
@@ -341,14 +342,24 @@ class ListManager {
         }
       };
 
-      el.addEventListener('mouseenter', mouseEnter);
-      el.addEventListener('mouseleave', mouseLeave);
+      if (!args.disableEvents) {
+        el.addEventListener('mouseenter', mouseEnter);
+        el.addEventListener('mouseleave', mouseLeave);
+
+        el.addEventListener('focusin', mouseEnter);
+        el.addEventListener('focusout', mouseLeave);
+      }
 
       return (): void => {
         this.unregister(el);
 
-        el.removeEventListener('mouseenter', mouseEnter);
-        el.removeEventListener('mouseleave', mouseLeave);
+        if (!args.disableEvents) {
+          el.removeEventListener('mouseenter', mouseEnter);
+          el.removeEventListener('mouseleave', mouseLeave);
+
+          el.removeEventListener('focusin', mouseEnter);
+          el.removeEventListener('focusout', mouseLeave);
+        }
       };
     }
   );

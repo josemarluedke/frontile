@@ -123,11 +123,12 @@ class Listbox extends Component<ListboxSignature> {
     <ul
       tabindex="0"
       role={{this.role}}
-      {{this.listManager.onUpdate
+      {{this.listManager.setup
         selectedKeys=@selectedKeys
         disabledKeys=@disabledKeys
         selectionMode=@selectionMode
         allowEmpty=@allowEmpty
+        isKeyboardEventsEnabled=true
       }}
       {{on "keypress" this.handleKeyPress}}
       {{on "keydown" this.handleKeyDown}}
