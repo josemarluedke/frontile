@@ -18,7 +18,7 @@ const postcssPlugins = [
   require('autoprefixer')
 ];
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     autoImport: {
       watchDependencies: ['@docfy/ember']

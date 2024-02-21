@@ -3,7 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
 /* eslint-disable node/no-missing-require */
 const { frontile } = require('@frontile/theme/plugin');
-const { blue, gray } = require('@frontile/theme/colors');
+const { blue } = require('@frontile/theme/colors');
 
 module.exports = {
   content: [
