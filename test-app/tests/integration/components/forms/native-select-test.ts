@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, triggerEvent } from '@ember/test-helpers';
+import { render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 function selectNativeOptionByKey(
@@ -73,8 +73,6 @@ module(
       this.set('onSelectionChange', function (keys: string[]) {
         selectedKeys = keys;
       });
-
-      assert.ok;
 
       await render(
         hbs`
@@ -202,7 +200,6 @@ module(
       assert.equal(selectedKeys.length, 1);
       assert.equal(selectedKeys[0], 'elephant');
 
-      await click('[data-key="elephant"]');
       await toggleNativeOptionByKey(
         '[data-test-id="native-select"]',
         'elephant'

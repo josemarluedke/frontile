@@ -140,6 +140,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       data-active="{{this.listItem.isActive}}"
       data-selected="{{this.listItem.isSelected}}"
       data-test-id="listbox-item"
+      data-component="listbox-item"
       data-key={{this.key}}
       disabled={{this.listItem.isDisabled}}
       class={{this.classNames.base}}

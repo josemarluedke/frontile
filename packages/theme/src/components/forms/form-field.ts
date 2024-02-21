@@ -140,7 +140,8 @@ const radio = tv({
 
 const select = tv({
   slots: {
-    base: [
+    base: [],
+    trigger: [
       input(),
       'flex items-center justify-between',
       'disabled:cursor-not-allowed disabled:opacity-50'

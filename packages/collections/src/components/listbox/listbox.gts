@@ -134,6 +134,7 @@ class Listbox extends Component<ListboxSignature> {
       {{on "keydown" this.handleKeyDown}}
       {{on "keyup" this.handleKeyUp}}
       data-test-id="listbox"
+      data-component="listbox"
       class={{this.classNames}}
       ...attributes
     >

@@ -104,6 +104,7 @@ class NativeSelect extends Component<NativeSelectSignature> {
       {{on "change" this.handleOnChange}}
       multiple={{this.isMultiple}}
       data-test-id="native-select"
+      data-component="native-select"
       class={{this.classNames}}
       ...attributes
     >

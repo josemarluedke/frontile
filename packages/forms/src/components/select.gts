@@ -68,7 +68,7 @@ interface SelectArgs<T = unknown>
 
 interface SelectSignature {
   Args: SelectArgs;
-  Element: HTMLUListElement | HTMLSelectElement;
+  Element: HTMLDivElement;
   Blocks: ListboxSignature['Blocks'];
 }
 
@@ -134,116 +134,118 @@ class Select extends Component<SelectSignature> {
 
   get classNames() {
     const { select } = useStyles();
-    const { base, icon, listbox } = select();
+    const { base, icon, trigger, listbox } = select();
     return {
       base: base({ class: this.args.class }),
+      trigger: trigger(),
       icon: icon(),
       listbox: listbox()
     };
   }
 
   <template>
-    <Popover
-      @placement={{@placement}}
-      @flipOptions={{@flipOptions}}
-      @middleware={{@middleware}}
-      @shiftOptions={{@shiftOptions}}
-      @offsetOptions={{@offsetOptions}}
-      @strategy={{@strategy}}
-      @didClose={{@didClose}}
-      @isOpen={{this.isOpen}}
-      @onOpenChange={{this.onOpenChange}}
-      as |p|
-    >
-      <VisuallyHidden>
-        <NativeSelect
-          @items={{@items}}
-          @allowEmpty={{@allowEmpty}}
-          @disabledKeys={{@disabledKeys}}
-          @onSelectionChange={{@onSelectionChange}}
-          @selectedKeys={{@selectedKeys}}
-          @selectionMode={{if @selectionMode @selectionMode "single"}}
-          @onItemsChange={{this.onItemsChange}}
-          ...attributes
-        >
-          <:item as |l|>
-            {{#if (has-block "item")}}
-              {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
-              {{yield l to="item"}}
-            {{else}}
-              <l.Item @key={{l.key}}>
-                {{l.label}}
-              </l.Item>
-            {{/if}}
-          </:item>
-          <:default as |l|>
-            {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
-            {{yield l to="default"}}
-          </:default>
-        </NativeSelect>
-      </VisuallyHidden>
-
-      <button
-        {{p.trigger}}
-        {{p.anchor}}
-        data-test-id="trigger"
-        class={{this.classNames.base}}
+    <div class={{this.classNames.base}} ...attributes>
+      <Popover
+        @placement={{@placement}}
+        @flipOptions={{@flipOptions}}
+        @middleware={{@middleware}}
+        @shiftOptions={{@shiftOptions}}
+        @offsetOptions={{@offsetOptions}}
+        @strategy={{@strategy}}
+        @didClose={{@didClose}}
+        @isOpen={{this.isOpen}}
+        @onOpenChange={{this.onOpenChange}}
+        as |p|
       >
-        <span>
-          {{this.selectedTextValue}}
-        </span>
+        <VisuallyHidden>
+          <NativeSelect
+            @items={{@items}}
+            @allowEmpty={{@allowEmpty}}
+            @disabledKeys={{@disabledKeys}}
+            @onSelectionChange={{@onSelectionChange}}
+            @selectedKeys={{@selectedKeys}}
+            @selectionMode={{if @selectionMode @selectionMode "single"}}
+            @onItemsChange={{this.onItemsChange}}
+          >
+            <:item as |l|>
+              {{#if (has-block "item")}}
+                {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
+                {{yield l to="item"}}
+              {{else}}
+                <l.Item @key={{l.key}}>
+                  {{l.label}}
+                </l.Item>
+              {{/if}}
+            </:item>
+            <:default as |l|>
+              {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
+              {{yield l to="default"}}
+            </:default>
+          </NativeSelect>
+        </VisuallyHidden>
 
-        <Icon class={{this.classNames.icon}} />
-      </button>
-
-      <p.Content
-        @destinationElementId={{@destinationElementId}}
-        @renderInPlace={{@renderInPlace}}
-        @disableFocusTrap={{this.disableFocusTrap}}
-        @blockScroll={{this.blockScroll}}
-        @transitionDuration={{@transitionDuration}}
-        @backdrop={{this.backdrop}}
-        @disableTransitions={{@disableTransitions}}
-        @focusTrapOptions={{@focusTrapOptions}}
-        @closeOnOutsideClick={{@closeOnOutsideClick}}
-        @closeOnEscapeKey={{@closeOnEscapeKey}}
-        @backdropTransition={{@backdropTransition}}
-        @transition={{@transition}}
-      >
-        <Listbox
-          @items={{@items}}
-          @allowEmpty={{@allowEmpty}}
-          @appearance={{@appearance}}
-          @disabledKeys={{@disabledKeys}}
-          @intent={{@intent}}
-          @isKeyboardEventsEnabled={{true}}
-          @onAction={{this.onAction}}
-          @onSelectionChange={{@onSelectionChange}}
-          @selectedKeys={{@selectedKeys}}
-          @selectionMode={{if @selectionMode @selectionMode "single"}}
-          @type="listbox"
-          @class={{this.classNames.listbox}}
-          ...attributes
+        <button
+          {{p.trigger}}
+          {{p.anchor}}
+          data-test-id="trigger"
+          data-component="select-trigger"
+          class={{this.classNames.trigger}}
         >
-          <:item as |l|>
-            {{#if (has-block "item")}}
-              {{yield l to="item"}}
-            {{else}}
-              <l.Item
-                @key={{l.key}}
-                @appearance={{@appearance}}
-                @intent={{@intent}}
-              >
-                {{l.label}}
-              </l.Item>
-            {{/if}}
-          </:item>
-          <:default as |l|>
-            {{yield l to="default"}}
-          </:default>
-        </Listbox>
-      </p.Content>
-    </Popover>
+          <span>
+            {{this.selectedTextValue}}
+          </span>
+
+          <Icon class={{this.classNames.icon}} />
+        </button>
+
+        <p.Content
+          @destinationElementId={{@destinationElementId}}
+          @renderInPlace={{@renderInPlace}}
+          @disableFocusTrap={{this.disableFocusTrap}}
+          @blockScroll={{this.blockScroll}}
+          @transitionDuration={{@transitionDuration}}
+          @backdrop={{this.backdrop}}
+          @disableTransitions={{@disableTransitions}}
+          @focusTrapOptions={{@focusTrapOptions}}
+          @closeOnOutsideClick={{@closeOnOutsideClick}}
+          @closeOnEscapeKey={{@closeOnEscapeKey}}
+          @backdropTransition={{@backdropTransition}}
+          @transition={{@transition}}
+        >
+          <Listbox
+            @items={{@items}}
+            @allowEmpty={{@allowEmpty}}
+            @appearance={{@appearance}}
+            @disabledKeys={{@disabledKeys}}
+            @intent={{@intent}}
+            @isKeyboardEventsEnabled={{true}}
+            @onAction={{this.onAction}}
+            @onSelectionChange={{@onSelectionChange}}
+            @selectedKeys={{@selectedKeys}}
+            @selectionMode={{if @selectionMode @selectionMode "single"}}
+            @type="listbox"
+            @class={{this.classNames.listbox}}
+          >
+            <:item as |l|>
+              {{#if (has-block "item")}}
+                {{yield l to="item"}}
+              {{else}}
+                <l.Item
+                  @key={{l.key}}
+                  @appearance={{@appearance}}
+                  @intent={{@intent}}
+                >
+                  {{l.label}}
+                </l.Item>
+              {{/if}}
+            </:item>
+            <:default as |l|>
+              {{yield l to="default"}}
+            </:default>
+          </Listbox>
+        </p.Content>
+      </Popover>
+    </div>
   </template>
 }
 
