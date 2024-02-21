@@ -64,6 +64,12 @@ interface SelectArgs<T = unknown>
    * @defaultValue false
    */
   disableFocusTrap?: boolean;
+
+  placeholder?: string;
+
+  isDisabled?: boolean;
+
+  name?: string;
 }
 
 interface SelectSignature {
@@ -134,12 +140,13 @@ class Select extends Component<SelectSignature> {
 
   get classNames() {
     const { select } = useStyles();
-    const { base, icon, trigger, listbox } = select();
+    const { base, icon, trigger, listbox, placeholder } = select();
     return {
       base: base({ class: this.args.class }),
       trigger: trigger(),
       icon: icon(),
-      listbox: listbox()
+      listbox: listbox(),
+      placeholder: placeholder()
     };
   }
 
@@ -166,6 +173,10 @@ class Select extends Component<SelectSignature> {
             @selectedKeys={{@selectedKeys}}
             @selectionMode={{if @selectionMode @selectionMode "single"}}
             @onItemsChange={{this.onItemsChange}}
+            @placeholder={{@placeholder}}
+            tabindex="-1"
+            disabled={{@isDisabled}}
+            name={{@name}}
           >
             <:item as |l|>
               {{#if (has-block "item")}}
@@ -189,11 +200,18 @@ class Select extends Component<SelectSignature> {
           {{p.anchor}}
           data-test-id="trigger"
           data-component="select-trigger"
+          disabled={{@isDisabled}}
           class={{this.classNames.trigger}}
         >
-          <span>
-            {{this.selectedTextValue}}
-          </span>
+          {{#if this.selectedText}}
+            <span>
+              {{this.selectedTextValue}}
+            </span>
+          {{else}}
+            <span class={{this.classNames.placeholder}}>
+              {{@placeholder}}
+            </span>
+          {{/if}}
 
           <Icon class={{this.classNames.icon}} />
         </button>

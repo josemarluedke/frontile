@@ -77,6 +77,7 @@ export default class Example extends Component {
       @onAction={{this.onAction}}
       @selectedKeys={{this.selectedKeys}}
       @onSelectionChange={{this.onSelectionChange}}
+      @placeholder="Select your favorite animals"
     >
       <:item as |o|>
         <o.Item @key={{o.item}} @intent="default" @appearance="faded">
@@ -88,7 +89,7 @@ export default class Example extends Component {
     {{this.selectedKeys}}
     <Divider @class="my-8" />
     <Select
-      @placeholder="select an option my friend"
+      @placeholder="Select an animal"
       @allowEmpty={{true}}
       @selectionMode="single"
       @items={{animalsAsOject}}
@@ -106,6 +107,7 @@ export default class Example extends Component {
       @disabledKeys={{(array "notifications")}}
       @selectedKeys={{this.selectedKeys3}}
       @onSelectionChange={{this.onSelectionChange3}}
+      @isDisabled={{true}}
       as |l|
     >
       <l.Item @key="profile" @description="View my profile">

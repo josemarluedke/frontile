@@ -292,7 +292,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         </Select>`
     );
 
-    assert.dom('[data-test-id="native-select"]').exists();
+    assert.dom('[data-component="native-select"]').exists();
 
     assert.dom('[data-key="cheetah-key"]').exists();
     assert.dom('[data-key="crocodile-key"]').exists();
@@ -383,5 +383,35 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.equal(selectedKeys.length, 1);
     assert.equal(selectedKeys[0], 'item-2');
+  });
+
+  test('it renders disabled select', async function (assert) {
+    this.set('animals', ['tiger']);
+    await render(
+      hbs`
+        <div id="my-destination"></div>
+        <Select
+          @destinationElementId="my-destination"
+          @items={{this.animals}}
+          @isDisabled={{true}}
+        />`
+    );
+    assert.dom('[data-component="native-select"]').exists();
+    assert.dom('[data-component="native-select"]').isDisabled;
+    assert.dom('[data-component="select-trigger"]').isDisabled;
+  });
+
+  test('it renders select with placeholder', async function (assert) {
+    this.set('animals', ['tiger']);
+    await render(
+      hbs`
+        <div id="my-destination"></div>
+        <Select
+          @destinationElementId="my-destination"
+          @items={{this.animals}}
+          @placeholder="Select an animal"
+        />`
+    );
+    assert.dom('[data-component="select-trigger"]').hasText('Select an animal');
   });
 });

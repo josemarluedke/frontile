@@ -4810,6 +4810,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'items',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -4826,6 +4834,14 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-built_in">Array</span>',
           raw: '{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; options?: <span class="hljs-built_in">any</span>; fn: <span class="hljs-function">(<span class="hljs-params">state: { placement: Placement; strategy: Strategy; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span>; initialPlacement: Placement; middlewareData: MiddlewareData; rects: ElementRects; platform: Platform; elements: Elements; }</span>) =></span> Promisable&#x3C;...>; }[]'
         },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4857,6 +4873,14 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>'
         },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'placeholder',
+        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5161,13 +5185,9 @@ const data: ComponentDoc[] = [
     ],
     Element: {
       identifier: 'Element',
-      type: {
-        type: '<span class="hljs-built_in">enum</span>',
-        raw: 'HTMLUListElement | HTMLSelectElement',
-        items: ['HTMLUListElement', 'HTMLSelectElement']
-      },
+      type: { type: 'HTMLDivElement' },
       description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum'
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
     },
     description: '',
     tags: {}
