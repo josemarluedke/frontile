@@ -52,6 +52,18 @@ function hasNextSibblingOverlay(element: HTMLElement): boolean {
   return false;
 }
 
+// finds if the el has a parent with the id `ember-basic-dropdown-wormhole`
+function hasWormholeParentElement(el: HTMLElement) {
+  let parent = el.parentElement;
+  while (parent) {
+    if (parent.id === 'ember-basic-dropdown-wormhole') {
+      return true;
+    }
+    parent = parent.parentElement;
+  }
+  return false;
+}
+
 interface OverlaySignature {
   Args: {
     /**
@@ -97,7 +109,7 @@ interface OverlaySignature {
     /**
      * Focus trap options
      *
-     * @defaultValue { allowOutsideClick: true }
+     * @defaultValue { clickOutsideDeactivates: true, allowOutsideClick: true }
      */
     focusTrapOptions?: unknown;
 
@@ -206,7 +218,8 @@ class Overlay extends Component<OverlaySignature> {
     if (
       this.args.closeOnOutsideClick !== false &&
       this.contentElement &&
-      !hasNextSibblingOverlay(this.contentElement)
+      !hasNextSibblingOverlay(this.contentElement) &&
+      !hasWormholeParentElement(e.target as HTMLElement)
     ) {
       this.handleClose();
       e.preventDefault();
@@ -295,6 +308,7 @@ class Overlay extends Component<OverlaySignature> {
   get focusTrapOptions(): unknown {
     return (
       this.args.focusTrapOptions || {
+        clickOutsideDeactivates: true,
         allowOutsideClick: true
       }
     );
