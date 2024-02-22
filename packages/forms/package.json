@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms",
-  "version": "0.17.0-alpha.7",
+  "version": "0.17.0-alpha.8",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon",
@@ -41,8 +41,8 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/collections": "workspace:0.17.0-alpha.7",
-    "@frontile/overlays": "workspace:0.17.0-alpha.7",
+    "@frontile/collections": "workspace:0.17.0-alpha.8",
+    "@frontile/overlays": "workspace:0.17.0-alpha.8",
     "@frontile/theme": "workspace:0.17.0-alpha.7",
     "@frontile/utilities": "workspace:0.17.0-alpha.7",
     "@glint/template": "1.3.0",
