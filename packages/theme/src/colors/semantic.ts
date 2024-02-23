@@ -15,7 +15,7 @@ const base: SemanticBaseColors = {
     },
     foreground: {
       ...gray,
-      DEFAULT: gray[950]
+      DEFAULT: gray[800]
     },
     divider: {
       DEFAULT: 'rgba(17, 17, 17, 0.15)'
@@ -28,7 +28,7 @@ const base: SemanticBaseColors = {
     },
     content1: {
       DEFAULT: '#FFFFFF',
-      foreground: gray[950]
+      foreground: gray[800]
     },
     content2: {
       DEFAULT: gray[100],
@@ -36,11 +36,11 @@ const base: SemanticBaseColors = {
     },
     content3: {
       DEFAULT: gray[200],
-      foreground: gray[700]
+      foreground: gray[800]
     },
     content4: {
       DEFAULT: gray[300],
-      foreground: gray[600]
+      foreground: gray[800]
     }
   },
   dark: {
@@ -49,7 +49,7 @@ const base: SemanticBaseColors = {
     },
     foreground: {
       ...swapColorValues(gray),
-      DEFAULT: gray[50]
+      DEFAULT: gray[200]
     },
     focus: {
       DEFAULT: blue[500]
@@ -62,19 +62,19 @@ const base: SemanticBaseColors = {
     },
     content1: {
       DEFAULT: gray[900],
-      foreground: gray[50]
+      foreground: gray[200]
     },
     content2: {
       DEFAULT: gray[800],
-      foreground: gray[100]
+      foreground: gray[200]
     },
     content3: {
       DEFAULT: gray[700],
-      foreground: gray[200]
+      foreground: gray[100]
     },
     content4: {
       DEFAULT: gray[600],
-      foreground: gray[300]
+      foreground: gray[50]
     }
   }
 };

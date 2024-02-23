@@ -144,7 +144,7 @@ const select = tv({
     trigger: [
       input(),
       'flex items-center justify-between',
-      'disabled:cursor-not-allowed disabled:opacity-50'
+      'disabled:cursor-not-allowed'
     ],
     placeholder: 'text-default-400',
     listbox: 'scroll-py-6 max-h-64',

@@ -93,8 +93,7 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'default',
-      class:
-        'bg-default-800 text-default-50 hover:bg-default-800/80 dark:bg-default dark:text-default-950 dark:hover:bg-default/40'
+      class: 'bg-default-800 text-default-100 hover:bg-default-800/80'
     },
     {
       appearance: 'default',
@@ -114,7 +113,7 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'danger',
-      class: 'bg-danger-500 text-danger-foreground hover:bg-danger-500/80'
+      class: 'bg-danger text-danger-foreground hover:bg-danger/80'
     },
 
     // APPEARANCE: minimal
