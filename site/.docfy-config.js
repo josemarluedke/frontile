@@ -37,6 +37,7 @@ module.exports = {
       'status',
       'collections',
       'forms',
+      'forms-legacy',
       'notifications',
       'overlays'
     ].map((pkgName) => {
@@ -59,6 +60,7 @@ module.exports = {
     overlays: 'Overlays',
     notifications: 'Notifications',
     forms: 'Forms',
+    'forms-legacy': 'Forms (Legacy)',
     'changeset-form': 'Changeset Form'
   }
 };

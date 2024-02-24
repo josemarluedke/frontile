@@ -25,7 +25,7 @@ registerCustomStyles({
 });
 
 module(
-  'Integration | Component | @frontile/forms/FormField::Feedback',
+  'Integration | Component | @frontile/forms-legacy/FormField::Feedback',
   function (hooks) {
     setupRenderingTest(hooks);
 

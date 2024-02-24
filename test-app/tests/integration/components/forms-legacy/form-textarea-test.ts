@@ -4,7 +4,7 @@ import { render, fillIn, blur, focus, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
-  'Integration | Component | @frontile/forms/FormTextarea',
+  'Integration | Component | @frontile/forms-legacy/FormTextarea',
   function (hooks) {
     setupRenderingTest(hooks);
 

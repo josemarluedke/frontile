@@ -13,7 +13,7 @@ declare module '@ember/test-helpers' {
 }
 
 module(
-  'Integration | Component | @frontile/forms/FormCheckbox',
+  'Integration | Component | @frontile/forms-legacy/FormCheckbox',
   function (hooks) {
     setupRenderingTest(hooks);
 

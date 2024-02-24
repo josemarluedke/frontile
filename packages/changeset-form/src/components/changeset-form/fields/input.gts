@@ -3,7 +3,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormInput, {
   type FormInputArgs
-} from '@frontile/forms/components/form-input';
+} from '@frontile/forms-legacy/components/form-input';
 
 export interface ChangesetFormFieldsInputArgs extends BaseArgs, FormInputArgs {
   onInput?: (value: string, event: InputEvent) => void;

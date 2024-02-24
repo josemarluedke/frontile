@@ -4,7 +4,7 @@ import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
-  'Integration | Component | @frontile/forms/FormField::Radio',
+  'Integration | Component | @frontile/forms-legacy/FormField::Radio',
   function (hooks) {
     setupRenderingTest(hooks);
 

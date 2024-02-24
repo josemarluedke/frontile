@@ -4,7 +4,7 @@ import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module(
-  'Integration | Component | @frontile/forms/FormCheckboxGroup',
+  'Integration | Component | @frontile/forms-legacy/FormCheckboxGroup',
   function (hooks) {
     setupRenderingTest(hooks);
 

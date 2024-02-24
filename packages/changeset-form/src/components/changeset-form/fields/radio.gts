@@ -3,7 +3,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import FormRadio, {
   type FormRadioArgs
-} from '@frontile/forms/components/form-radio';
+} from '@frontile/forms-legacy/components/form-radio';
 
 export interface ChangesetFormFieldsRadioArgs extends BaseArgs, FormRadioArgs {
   onChange: (value: unknown, event: Event) => void;

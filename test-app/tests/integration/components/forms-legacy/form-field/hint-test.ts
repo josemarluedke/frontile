@@ -22,7 +22,7 @@ registerCustomStyles({
 });
 
 module(
-  'Integration | Component | @frontile/forms/FormField::Hint',
+  'Integration | Component | @frontile/forms-legacy/FormField::Hint',
   function (hooks) {
     setupRenderingTest(hooks);
 

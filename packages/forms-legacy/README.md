@@ -1,6 +1,6 @@
-# @frontile/changeset-form
+# @frontile/forms
 
-Integration between @frontile/forms-legacy package and [Changeset](https://github.com/poteto/ember-changeset).
+Component Library for Ember Octane apps: Forms
 
 ## Compatibility
 
@@ -11,7 +11,7 @@ Integration between @frontile/forms-legacy package and [Changeset](https://githu
 ## Installation
 
 ```sh
-ember install @frontile/changeset-form
+ember install @frontile/forms
 ```
 
 ### Styles
@@ -23,7 +23,7 @@ module.exports = {
   theme: {
     // ...
   },
-  plugins: [require('@frontile/forms-legacy/tailwind')]
+  plugins: [require('@frontile/forms/tailwind')]
 };
 ```
 
