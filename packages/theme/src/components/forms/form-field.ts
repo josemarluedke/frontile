@@ -1,12 +1,19 @@
 import { tv } from 'tailwind-variants';
 
 const label = tv({
-  base: 'text-foreground inline-block font-semibold leading-tight pb-1',
+  slots: {
+    base: 'text-foreground inline-block font-semibold leading-tight pb-1',
+    asterisk: 'text-danger'
+  },
   variants: {
     size: {
-      sm: '',
-      md: '',
-      lg: ''
+      sm: {
+        base: 'text-xs'
+      },
+      md: {},
+      lg: {
+        base: 'text-lg'
+      }
     }
   },
   defaultVariants: {
@@ -14,13 +21,13 @@ const label = tv({
   }
 });
 
-const hint = tv({
+const formDescription = tv({
   base: 'text-default-400 text-xs pb-1 last:pb-0',
   variants: {
     size: {
-      sm: '',
+      sm: 'text-xs',
       md: '',
-      lg: ''
+      lg: 'text-lg'
     }
   },
   defaultVariants: {
@@ -28,16 +35,19 @@ const hint = tv({
   }
 });
 
-const feedback = tv({
+const formFeedback = tv({
   base: 'text-xs pt-1',
   variants: {
-    isError: {
-      true: 'text-danger'
+    intent: {
+      primary: 'text-primary',
+      success: 'text-success',
+      danger: 'text-danger',
+      warning: 'text-warning'
     },
     size: {
       sm: 'text-xs',
       md: '',
-      lg: 'text-sm'
+      lg: 'text-lg'
     }
   },
   defaultVariants: {
@@ -153,4 +163,13 @@ const select = tv({
   }
 });
 
-export { label, hint, feedback, input, textarea, checkbox, radio, select };
+export {
+  label,
+  formDescription,
+  formFeedback,
+  input,
+  textarea,
+  checkbox,
+  radio,
+  select
+};

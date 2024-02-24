@@ -8,7 +8,10 @@ import { tv } from 'tailwind-variants';
 
 registerCustomStyles({
   label: tv({
-    base: 'form-field-label' as never,
+    slots: {
+      base: 'form-field-label',
+      asterisk: ''
+    },
     variants: {
       size: {
         sm: 'form-field-label--sm',
@@ -19,7 +22,7 @@ registerCustomStyles({
     defaultVariants: {
       size: 'md'
     }
-  })
+  }) as never
 });
 module(
   'Integration | Component | @frontile/forms-legacy/FormField::Label',

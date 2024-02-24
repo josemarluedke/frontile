@@ -85,8 +85,15 @@
     "type": "addon",
     "main": "addon-main.js",
     "app-js": {
+      "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
+      "./components/form-description.js": "./dist/_app_/components/form-description.js",
+      "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",
+      "./components/input.js": "./dist/_app_/components/input.js",
+      "./components/label.js": "./dist/_app_/components/label.js",
       "./components/native-select.js": "./dist/_app_/components/native-select.js",
-      "./components/select.js": "./dist/_app_/components/select.js"
+      "./components/radio.js": "./dist/_app_/components/radio.js",
+      "./components/select.js": "./dist/_app_/components/select.js",
+      "./components/textarea.js": "./dist/_app_/components/textarea.js"
     }
   },
   "exports": {

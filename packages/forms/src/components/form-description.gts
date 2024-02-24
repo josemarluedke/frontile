@@ -1,26 +1,28 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 
-export interface FormFieldHintArgs {
-  id?: string;
-  size?: 'sm' | 'md' | 'lg';
-  class?: string;
-}
+interface FormDescriptionSignature {
+  Args: {
+    id?: string;
+    /*
+     * @defaultValue 'md'
+     */
+    size?: 'sm' | 'md' | 'lg';
 
-export interface FormFieldHintSignature {
-  Args: FormFieldHintArgs;
+    class?: string;
+  };
   Element: HTMLDivElement;
   Blocks: {
     default: [];
   };
 }
 
-export default class FormFieldHint extends Component<FormFieldHintSignature> {
+class FormDescription extends Component<FormDescriptionSignature> {
   get classes() {
     const { formDescription } = useStyles();
 
     return formDescription({
-      size: this.args.size,
+      size: this.args.size || 'md',
       class: this.args.class
     });
   }
@@ -29,10 +31,13 @@ export default class FormFieldHint extends Component<FormFieldHintSignature> {
     <div
       id={{@id}}
       class={{this.classes}}
-      data-test-id="form-field-hint"
+      data-component="form-description"
       ...attributes
     >
       {{yield}}
     </div>
   </template>
 }
+
+export { FormDescription, type FormDescriptionSignature };
+export default FormDescription;

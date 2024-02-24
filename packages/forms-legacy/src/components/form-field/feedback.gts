@@ -25,11 +25,11 @@ export default class FormFieldFeedback extends Component<FormFieldFeedbackSignat
   }
 
   get classes() {
-    const { feedback } = useStyles();
+    const { formFeedback } = useStyles();
 
-    return feedback({
+    return formFeedback({
       size: this.args.size,
-      isError: this.isError,
+      intent: this.isError ? 'danger' : 'primary',
       class: this.args.class
     });
   }

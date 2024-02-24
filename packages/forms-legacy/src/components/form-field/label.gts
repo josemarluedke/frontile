@@ -19,7 +19,10 @@ export default class FormFieldLabel extends Component<FormFieldLabelSignature> {
   get classes() {
     const { label } = useStyles();
 
-    return label({ size: this.args.size, class: this.args.class });
+    const { base } = label({
+      size: this.args.size || 'md'
+    });
+    return base({ class: this.args.class });
   }
 
   <template>

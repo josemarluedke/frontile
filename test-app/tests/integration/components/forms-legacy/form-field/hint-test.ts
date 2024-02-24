@@ -6,7 +6,7 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
 registerCustomStyles({
-  hint: tv({
+  formDescription: tv({
     base: 'form-field-hint' as never,
     variants: {
       size: {
