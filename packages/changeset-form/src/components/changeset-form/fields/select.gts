@@ -2,7 +2,7 @@ import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import FormSelect, {
   type FormSelectArgs
-} from '@frontile/forms/components/form-select';
+} from '@frontile/forms-legacy/components/form-select';
 
 export interface ChangesetFormFieldsSelectArgs
   extends BaseArgs,

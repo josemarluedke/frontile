@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import 'qunit-dom';
 
 module(
-  'Integration | Component | @frontile/forms/FormRadioGroup',
+  'Integration | Component | @frontile/forms-legacy/FormRadioGroup',
   function (hooks) {
     setupRenderingTest(hooks);
 

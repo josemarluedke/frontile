@@ -22,7 +22,7 @@ registerCustomStyles({
   })
 });
 module(
-  'Integration | Component | @frontile/forms/FormField::Label',
+  'Integration | Component | @frontile/forms-legacy/FormField::Label',
   function (hooks) {
     setupRenderingTest(hooks);
 

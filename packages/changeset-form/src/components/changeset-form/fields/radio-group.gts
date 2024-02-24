@@ -1,9 +1,9 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
-import type { FormRadioSignature } from '@frontile/forms/components/form-radio';
+import type { FormRadioSignature } from '@frontile/forms-legacy/components/form-radio';
 import FormRadioGroup, {
   type FormRadioGroupArgs
-} from '@frontile/forms/components/form-radio-group';
+} from '@frontile/forms-legacy/components/form-radio-group';
 import type { ComponentLike } from '@glint/template';
 
 export interface ChangesetFormFieldsRadioGroupArgs

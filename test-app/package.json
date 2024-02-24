@@ -28,6 +28,7 @@
     "@frontile/changeset-form": "workspace:0.17.0-alpha.11",
     "@frontile/collections": "workspace:0.17.0-alpha.11",
     "@frontile/forms": "workspace:0.17.0-alpha.11",
+    "@frontile/forms-legacy": "workspace:0.17.0-alpha.11",
     "@frontile/notifications": "workspace:0.17.0-alpha.11",
     "@frontile/overlays": "workspace:0.17.0-alpha.11",
     "@frontile/status": "workspace:0.17.0-alpha.11",

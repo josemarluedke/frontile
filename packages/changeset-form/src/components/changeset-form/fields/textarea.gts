@@ -1,8 +1,8 @@
 import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import FormTextarea from '@frontile/forms/components/form-textarea';
-import { type FormInputArgs } from '@frontile/forms/components/form-input';
+import FormTextarea from '@frontile/forms-legacy/components/form-textarea';
+import { type FormInputArgs } from '@frontile/forms-legacy/components/form-input';
 
 export interface ChangesetFormFieldsTextareaArgs
   extends BaseArgs,

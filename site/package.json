@@ -31,6 +31,7 @@
     "@frontile/changeset-form": "workspace:*",
     "@frontile/collections": "workspace:*",
     "@frontile/forms": "workspace:*",
+    "@frontile/forms-legacy": "workspace:*",
     "@frontile/notifications": "workspace:*",
     "@frontile/overlays": "workspace:*",
     "@frontile/status": "workspace:*",

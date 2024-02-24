@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import ChangesetFormFieldsCheckbox from './checkbox';
 import FormCheckboxGroup, {
   type FormCheckboxGroupArgs
-} from '@frontile/forms/components/form-checkbox-group';
+} from '@frontile/forms-legacy/components/form-checkbox-group';
 import type { BaseArgs, BaseSignature } from './base';
 import type { BufferedChangeset } from 'ember-changeset/types';
 import type { WithBoundArgs } from '@glint/template';

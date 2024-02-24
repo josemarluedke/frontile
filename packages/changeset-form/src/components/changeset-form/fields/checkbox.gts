@@ -2,7 +2,7 @@ import Base, { type BaseArgs, type BaseSignature } from './base';
 import { action } from '@ember/object';
 import FormCheckbox, {
   type FormCheckboxArgs
-} from '@frontile/forms/components/form-checkbox';
+} from '@frontile/forms-legacy/components/form-checkbox';
 
 export interface ChangesetFormFieldsCheckboxArgs
   extends BaseArgs,

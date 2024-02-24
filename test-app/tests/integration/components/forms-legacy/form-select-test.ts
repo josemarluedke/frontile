@@ -8,7 +8,7 @@ import {
 } from 'ember-power-select/test-support/helpers';
 
 module(
-  'Integration | Component | @frontile/forms/FormSelect',
+  'Integration | Component | @frontile/forms-legacy/FormSelect',
   function (hooks) {
     setupRenderingTest(hooks);
 
