@@ -14,7 +14,7 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
-interface NativeSelectSignature<T = unknown> {
+interface NativeSelectSignature<T> {
   Args: {
     selectionMode?: 'single' | 'multiple';
     selectedKeys?: string[];
@@ -43,7 +43,7 @@ interface NativeSelectSignature<T = unknown> {
   };
 }
 
-class NativeSelect extends Component<NativeSelectSignature> {
+class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
   listManager = new ListManager({
     selectionMode: this.args.selectionMode,
     selectedKeys: this.args.selectedKeys,

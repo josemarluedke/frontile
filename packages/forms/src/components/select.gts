@@ -11,7 +11,7 @@ import {
   type ContentSignature
 } from '@frontile/overlays';
 
-interface SelectArgs<T = unknown>
+interface SelectArgs<T>
   extends Pick<
       PopoverSignature['Args'],
       | 'placement'
@@ -72,13 +72,13 @@ interface SelectArgs<T = unknown>
   name?: string;
 }
 
-interface SelectSignature {
-  Args: SelectArgs;
+interface SelectSignature<T> {
+  Args: SelectArgs<T>;
   Element: HTMLDivElement;
-  Blocks: ListboxSignature['Blocks'];
+  Blocks: ListboxSignature<T>['Blocks'];
 }
 
-class Select extends Component<SelectSignature> {
+class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
 
