@@ -27,11 +27,6 @@ export default class Example extends Component {
   @tracked selectedKeys2: string[] = [];
 
   @action
-  onChange(value: boolean): void {
-    this.isSelected = value;
-  }
-
-  @action
   onAction(key: string) {
     // eslint-disable-next-line
     console.log('Click on key', key);
@@ -82,11 +77,6 @@ export default class Example extends Component {
         @onAction={{this.onAction}}
         @disabledKeys={{(array "notifications")}}
       >
-        <:item as |o|>
-          <o.Item @key={{o.item}} @intent="default" @appearance="faded">
-            {{o.item}}
-          </o.Item>
-        </:item>
         <:default as |l|>
           <l.Item @key="profile" @description="View my profile">
             My Provile

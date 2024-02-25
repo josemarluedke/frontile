@@ -1,6 +1,7 @@
 import { Button } from '@frontile/buttons';
+import type { TOC } from '@ember/component/template-only';
 
-<template>
+const Comp: TOC<null> = <template>
   <h2 class="text-2xl mt-6">
     Default
   </h2>
@@ -232,4 +233,6 @@ import { Button } from '@frontile/buttons';
       XLarge
     </Button>
   </div>
-</template>
+</template>;
+
+export default Comp;

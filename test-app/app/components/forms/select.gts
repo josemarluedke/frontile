@@ -45,11 +45,6 @@ export default class Example extends Component {
   @tracked selectedKeys3: string[] = [];
 
   @action
-  onChange(value: boolean): void {
-    this.isSelected = value;
-  }
-
-  @action
   onAction(key: string) {
     // eslint-disable-next-line
     console.log('Click on key', key);
