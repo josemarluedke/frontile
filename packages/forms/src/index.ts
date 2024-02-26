@@ -6,3 +6,4 @@ export * from './components/label';
 export * from './components/native-select';
 export * from './components/select';
 export * from './components/textarea';
+export * from './components/form-control';

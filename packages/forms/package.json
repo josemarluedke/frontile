@@ -86,6 +86,7 @@
     "main": "addon-main.js",
     "app-js": {
       "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
+      "./components/form-control.js": "./dist/_app_/components/form-control.js",
       "./components/form-description.js": "./dist/_app_/components/form-description.js",
       "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",
       "./components/input.js": "./dist/_app_/components/input.js",

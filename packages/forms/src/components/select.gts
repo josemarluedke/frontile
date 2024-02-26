@@ -49,6 +49,11 @@ interface SelectArgs<T>
     > {
   selectionMode?: 'single' | 'multiple';
 
+  id?: string;
+
+  // TODO implement
+  size?: 'sm' | 'md' | 'lg';
+
   /**
    * Whether the select should close upon selecting an item.
    *
@@ -174,6 +179,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             @selectionMode={{if @selectionMode @selectionMode "single"}}
             @onItemsChange={{this.onItemsChange}}
             @placeholder={{@placeholder}}
+            @id={{@id}}
             tabindex="-1"
             disabled={{@isDisabled}}
             name={{@name}}
