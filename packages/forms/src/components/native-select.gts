@@ -5,6 +5,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
+import { FormControl } from './form-control';
 import {
   ListManager,
   keyAndLabelForItem,
@@ -27,6 +28,12 @@ interface NativeSelectSignature<T> {
     // TODO implement
     size?: 'sm' | 'md' | 'lg';
     name?: string;
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
 
     /**
      * Placeholder text used when `allowEmpty` is set to `true`.
@@ -97,57 +104,68 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
   }
 
   <template>
-    <select
-      {{this.listManager.setup
-        selectedKeys=@selectedKeys
-        disabledKeys=@disabledKeys
-        selectionMode=@selectionMode
-        allowEmpty=@allowEmpty
-        onListItemsChange=@onItemsChange
-        isKeyboardEventsEnabled=false
-      }}
-      {{on "change" this.handleOnChange}}
-      multiple={{this.isMultiple}}
-      data-test-id="native-select"
-      data-component="native-select"
-      class={{this.classNames}}
-      id={{@id}}
-      name={{@name}}
-      ...attributes
+    <FormControl
+      @id={{@id}}
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+      as |c|
     >
-      {{#if this.args.allowEmpty}}
-        <NativeSelectItem @manager={{this.listManager}} @key="">
-          {{this.args.placeholder}}
-        </NativeSelectItem>
-      {{/if}}
-      {{#each @items as |item|}}
-        {{#let (keyAndLabelForItem item) as |keyLabel|}}
-          {{#if (has-block "item")}}
-            {{yield
-              (hash
-                item=item
-                key=keyLabel.key
-                label=keyLabel.label
-                Item=(component NativeSelectItem manager=this.listManager)
-              )
-              to="item"
-            }}
-          {{else}}
-            <NativeSelectItem
-              @manager={{this.listManager}}
-              @key={{keyLabel.key}}
-            >
-              {{keyLabel.label}}
-            </NativeSelectItem>
-          {{/if}}
-        {{/let}}
-      {{/each}}
+      <select
+        {{this.listManager.setup
+          selectedKeys=@selectedKeys
+          disabledKeys=@disabledKeys
+          selectionMode=@selectionMode
+          allowEmpty=@allowEmpty
+          onListItemsChange=@onItemsChange
+          isKeyboardEventsEnabled=false
+        }}
+        {{on "change" this.handleOnChange}}
+        multiple={{this.isMultiple}}
+        data-test-id="native-select"
+        data-component="native-select"
+        class={{this.classNames}}
+        id={{c.id}}
+        name={{@name}}
+        ...attributes
+      >
+        {{#if this.args.allowEmpty}}
+          <NativeSelectItem @manager={{this.listManager}} @key="">
+            {{this.args.placeholder}}
+          </NativeSelectItem>
+        {{/if}}
+        {{#each @items as |item|}}
+          {{#let (keyAndLabelForItem item) as |keyLabel|}}
+            {{#if (has-block "item")}}
+              {{yield
+                (hash
+                  item=item
+                  key=keyLabel.key
+                  label=keyLabel.label
+                  Item=(component NativeSelectItem manager=this.listManager)
+                )
+                to="item"
+              }}
+            {{else}}
+              <NativeSelectItem
+                @manager={{this.listManager}}
+                @key={{keyLabel.key}}
+              >
+                {{keyLabel.label}}
+              </NativeSelectItem>
+            {{/if}}
+          {{/let}}
+        {{/each}}
 
-      {{yield
-        (hash Item=(component NativeSelectItem manager=this.listManager))
-        to="default"
-      }}
-    </select>
+        {{yield
+          (hash Item=(component NativeSelectItem manager=this.listManager))
+          to="default"
+        }}
+      </select>
+    </FormControl>
   </template>
 }
 

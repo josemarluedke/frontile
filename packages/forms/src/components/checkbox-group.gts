@@ -1,44 +1,43 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
-import {
-  FormControlCheckbox,
-  type FormControlCheckboxSignature
-} from './form-control-checkbox';
-import { Checkbox } from './checkbox';
+import { Checkbox, type CheckboxSignature } from './checkbox';
+import { FormControl } from './form-control';
 
 import type { WithBoundArgs } from '@glint/template';
 
 interface CheckboxGroupSignature {
   Args: {
     name?: string;
-    onChange?: FormControlCheckboxSignature['Args']['onChange'];
-    size?: FormControlCheckboxSignature['Args']['size'];
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
+
+    onChange?: CheckboxSignature['Args']['onChange'];
+    size?: CheckboxSignature['Args']['size'];
   };
   Blocks: {
-    default: [
-      {
-        ControlCheckbox: WithBoundArgs<
-          typeof FormControlCheckbox,
-          'name' | 'onChange'
-        >;
-        Checkbox: WithBoundArgs<typeof Checkbox, 'name' | 'onChange'>;
-      }
-    ];
+    default: [Checkbox: WithBoundArgs<typeof Checkbox, 'name' | 'onChange'>];
   };
   Element: HTMLDivElement;
 }
 
 class CheckboxGroup extends Component<CheckboxGroupSignature> {
   <template>
-    {{yield
-      (hash
-        ControlCheckbox=(component
-          FormControlCheckbox name=@name onChange=@onChange size=@size
-        )
-        Checkbox=(component Checkbox name=@name onChange=@onChange size=@size)
-      )
-      to="default"
-    }}
+    <FormControl
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+    >
+      {{yield
+        (component Checkbox name=@name onChange=@onChange size=@size)
+        to="default"
+      }}
+    </FormControl>
   </template>
 }
 

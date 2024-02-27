@@ -9,8 +9,8 @@ import type {
   Select,
   Textarea,
   FormControl,
-  FormControlCheckbox,
-  FormControlRadio
+  RadioGroup,
+  CheckboxGroup
 } from './index';
 
 export default interface Registry {
@@ -24,6 +24,6 @@ export default interface Registry {
   Select: typeof Select;
   Textarea: typeof Textarea;
   FormControl: typeof FormControl;
-  FormControlCheckbox: typeof FormControlCheckbox;
-  FormControlRadio: typeof FormControlRadio;
+  CheckboxGroup: typeof CheckboxGroup;
+  RadioGroup: typeof RadioGroup;
 }

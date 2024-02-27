@@ -1,10 +1,6 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
-import {
-  FormControlRadio,
-  type FormControlRadioSignature
-} from './form-control-radio';
-import { Radio } from './radio';
+import { Radio, type RadioSignature } from './radio';
+import { FormControl } from './form-control';
 
 import type { WithBoundArgs } from '@glint/template';
 
@@ -12,18 +8,18 @@ interface RadioGroupSignature {
   Args: {
     name?: string;
     value?: string;
-    onChange?: FormControlRadioSignature['Args']['onChange'];
-    size?: FormControlRadioSignature['Args']['size'];
+    onChange?: RadioSignature['Args']['onChange'];
+    size?: RadioSignature['Args']['size'];
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
   };
   Blocks: {
     default: [
-      {
-        ControlRadio: WithBoundArgs<
-          typeof FormControlRadio,
-          'name' | 'onChange' | 'checked'
-        >;
-        Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checked'>;
-      }
+      Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checked'>
     ];
   };
   Element: HTMLDivElement;
@@ -31,21 +27,21 @@ interface RadioGroupSignature {
 
 class RadioGroup extends Component<RadioGroupSignature> {
   <template>
-    {{yield
-      (hash
-        ControlRadio=(component
-          FormControlRadio
-          name=@name
-          onChange=@onChange
-          size=@size
-          checked=@value
-        )
-        Radio=(component
+    <FormControl
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+    >
+      {{yield
+        (component
           Radio name=@name onChange=@onChange size=@size checked=@value
         )
-      )
-      to="default"
-    }}
+        to="default"
+      }}
+    </FormControl>
   </template>
 }
 

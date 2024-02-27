@@ -10,6 +10,7 @@ import {
   type PopoverSignature,
   type ContentSignature
 } from '@frontile/overlays';
+import { FormControl } from './form-control';
 
 interface SelectArgs<T>
   extends Pick<
@@ -52,6 +53,12 @@ interface SelectArgs<T>
   id?: string;
   // TODO implement
   size?: 'sm' | 'md' | 'lg';
+
+  label?: string;
+  isRequired?: boolean;
+  description?: string;
+  errors?: string[] | string;
+  isInvalid?: boolean;
 
   /**
    * Whether the select should close upon selecting an item.
@@ -156,118 +163,129 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   <template>
     <div class={{this.classNames.base}} ...attributes>
-      <Popover
-        @placement={{@placement}}
-        @flipOptions={{@flipOptions}}
-        @middleware={{@middleware}}
-        @shiftOptions={{@shiftOptions}}
-        @offsetOptions={{@offsetOptions}}
-        @strategy={{@strategy}}
-        @didClose={{@didClose}}
-        @isOpen={{this.isOpen}}
-        @onOpenChange={{this.onOpenChange}}
-        as |p|
+      <FormControl
+        @id={{@id}}
+        @size={{@size}}
+        @label={{@label}}
+        @isRequired={{@isRequired}}
+        @description={{@description}}
+        @errors={{@errors}}
+        @isInvalid={{@isInvalid}}
+        as |c|
       >
-        <VisuallyHidden>
-          <NativeSelect
-            @items={{@items}}
-            @allowEmpty={{@allowEmpty}}
-            @disabledKeys={{@disabledKeys}}
-            @onSelectionChange={{@onSelectionChange}}
-            @selectedKeys={{@selectedKeys}}
-            @selectionMode={{if @selectionMode @selectionMode "single"}}
-            @onItemsChange={{this.onItemsChange}}
-            @placeholder={{@placeholder}}
-            @id={{@id}}
-            @name={{@name}}
-            tabindex="-1"
+        <Popover
+          @placement={{@placement}}
+          @flipOptions={{@flipOptions}}
+          @middleware={{@middleware}}
+          @shiftOptions={{@shiftOptions}}
+          @offsetOptions={{@offsetOptions}}
+          @strategy={{@strategy}}
+          @didClose={{@didClose}}
+          @isOpen={{this.isOpen}}
+          @onOpenChange={{this.onOpenChange}}
+          as |p|
+        >
+          <VisuallyHidden>
+            <NativeSelect
+              @items={{@items}}
+              @allowEmpty={{@allowEmpty}}
+              @disabledKeys={{@disabledKeys}}
+              @onSelectionChange={{@onSelectionChange}}
+              @selectedKeys={{@selectedKeys}}
+              @selectionMode={{if @selectionMode @selectionMode "single"}}
+              @onItemsChange={{this.onItemsChange}}
+              @placeholder={{@placeholder}}
+              @id={{c.id}}
+              @name={{@name}}
+              tabindex="-1"
+              disabled={{@isDisabled}}
+            >
+              <:item as |l|>
+                {{#if (has-block "item")}}
+                  {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
+                  {{yield l to="item"}}
+                {{else}}
+                  <l.Item @key={{l.key}}>
+                    {{l.label}}
+                  </l.Item>
+                {{/if}}
+              </:item>
+              <:default as |l|>
+                {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
+                {{yield l to="default"}}
+              </:default>
+            </NativeSelect>
+          </VisuallyHidden>
+
+          <button
+            {{p.trigger}}
+            {{p.anchor}}
+            data-test-id="trigger"
+            data-component="select-trigger"
             disabled={{@isDisabled}}
+            class={{this.classNames.trigger}}
           >
-            <:item as |l|>
-              {{#if (has-block "item")}}
-                {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
-                {{yield l to="item"}}
-              {{else}}
-                <l.Item @key={{l.key}}>
-                  {{l.label}}
-                </l.Item>
-              {{/if}}
-            </:item>
-            <:default as |l|>
-              {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
-              {{yield l to="default"}}
-            </:default>
-          </NativeSelect>
-        </VisuallyHidden>
+            {{#if this.selectedText}}
+              <span>
+                {{this.selectedTextValue}}
+              </span>
+            {{else}}
+              <span class={{this.classNames.placeholder}}>
+                {{@placeholder}}
+              </span>
+            {{/if}}
 
-        <button
-          {{p.trigger}}
-          {{p.anchor}}
-          data-test-id="trigger"
-          data-component="select-trigger"
-          disabled={{@isDisabled}}
-          class={{this.classNames.trigger}}
-        >
-          {{#if this.selectedText}}
-            <span>
-              {{this.selectedTextValue}}
-            </span>
-          {{else}}
-            <span class={{this.classNames.placeholder}}>
-              {{@placeholder}}
-            </span>
-          {{/if}}
+            <Icon class={{this.classNames.icon}} />
+          </button>
 
-          <Icon class={{this.classNames.icon}} />
-        </button>
-
-        <p.Content
-          @destinationElementId={{@destinationElementId}}
-          @renderInPlace={{@renderInPlace}}
-          @disableFocusTrap={{this.disableFocusTrap}}
-          @blockScroll={{this.blockScroll}}
-          @transitionDuration={{@transitionDuration}}
-          @backdrop={{this.backdrop}}
-          @disableTransitions={{@disableTransitions}}
-          @focusTrapOptions={{@focusTrapOptions}}
-          @closeOnOutsideClick={{@closeOnOutsideClick}}
-          @closeOnEscapeKey={{@closeOnEscapeKey}}
-          @backdropTransition={{@backdropTransition}}
-          @transition={{@transition}}
-        >
-          <Listbox
-            @items={{@items}}
-            @allowEmpty={{@allowEmpty}}
-            @appearance={{@appearance}}
-            @disabledKeys={{@disabledKeys}}
-            @intent={{@intent}}
-            @isKeyboardEventsEnabled={{true}}
-            @onAction={{this.onAction}}
-            @onSelectionChange={{@onSelectionChange}}
-            @selectedKeys={{@selectedKeys}}
-            @selectionMode={{if @selectionMode @selectionMode "single"}}
-            @type="listbox"
-            @class={{this.classNames.listbox}}
+          <p.Content
+            @destinationElementId={{@destinationElementId}}
+            @renderInPlace={{@renderInPlace}}
+            @disableFocusTrap={{this.disableFocusTrap}}
+            @blockScroll={{this.blockScroll}}
+            @transitionDuration={{@transitionDuration}}
+            @backdrop={{this.backdrop}}
+            @disableTransitions={{@disableTransitions}}
+            @focusTrapOptions={{@focusTrapOptions}}
+            @closeOnOutsideClick={{@closeOnOutsideClick}}
+            @closeOnEscapeKey={{@closeOnEscapeKey}}
+            @backdropTransition={{@backdropTransition}}
+            @transition={{@transition}}
           >
-            <:item as |l|>
-              {{#if (has-block "item")}}
-                {{yield l to="item"}}
-              {{else}}
-                <l.Item
-                  @key={{l.key}}
-                  @appearance={{@appearance}}
-                  @intent={{@intent}}
-                >
-                  {{l.label}}
-                </l.Item>
-              {{/if}}
-            </:item>
-            <:default as |l|>
-              {{yield l to="default"}}
-            </:default>
-          </Listbox>
-        </p.Content>
-      </Popover>
+            <Listbox
+              @items={{@items}}
+              @allowEmpty={{@allowEmpty}}
+              @appearance={{@appearance}}
+              @disabledKeys={{@disabledKeys}}
+              @intent={{@intent}}
+              @isKeyboardEventsEnabled={{true}}
+              @onAction={{this.onAction}}
+              @onSelectionChange={{@onSelectionChange}}
+              @selectedKeys={{@selectedKeys}}
+              @selectionMode={{if @selectionMode @selectionMode "single"}}
+              @type="listbox"
+              @class={{this.classNames.listbox}}
+            >
+              <:item as |l|>
+                {{#if (has-block "item")}}
+                  {{yield l to="item"}}
+                {{else}}
+                  <l.Item
+                    @key={{l.key}}
+                    @appearance={{@appearance}}
+                    @intent={{@intent}}
+                  >
+                    {{l.label}}
+                  </l.Item>
+                {{/if}}
+              </:item>
+              <:default as |l|>
+                {{yield l to="default"}}
+              </:default>
+            </Listbox>
+          </p.Content>
+        </Popover>
+      </FormControl>
     </div>
   </template>
 }

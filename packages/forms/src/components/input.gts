@@ -2,15 +2,21 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
+import { FormControl } from './form-control';
 
 interface InputSignature {
   Args: {
-    id?: string;
     type?: string;
     size?: 'sm' | 'md' | 'lg';
     class?: string;
     value?: string;
     name?: string;
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
 
     // Callback when oninput is triggered
     onInput?: (value: string, event: InputEvent) => void;
@@ -57,17 +63,28 @@ class Input extends Component<InputSignature> {
   }
 
   <template>
-    <input
-      {{on "input" this.handleOnInput}}
-      {{on "change" this.handleOnChange}}
-      id={{@id}}
-      name={{@name}}
-      value={{@value}}
-      type={{this.type}}
-      class={{this.classes}}
-      data-component="input"
-      ...attributes
-    />
+    <FormControl
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+      as |c|
+    >
+      <input
+        {{on "input" this.handleOnInput}}
+        {{on "change" this.handleOnChange}}
+        id={{c.id}}
+        name={{@name}}
+        value={{@value}}
+        type={{this.type}}
+        class={{this.classes}}
+        data-component="input"
+        aria-invalid={{this.args.isInvalid}}
+        ...attributes
+      />
+    </FormControl>
   </template>
 }
 

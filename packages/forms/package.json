@@ -87,8 +87,6 @@
     "app-js": {
       "./components/checkbox-group.js": "./dist/_app_/components/checkbox-group.js",
       "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
-      "./components/form-control-checkbox.js": "./dist/_app_/components/form-control-checkbox.js",
-      "./components/form-control-radio.js": "./dist/_app_/components/form-control-radio.js",
       "./components/form-control.js": "./dist/_app_/components/form-control.js",
       "./components/form-description.js": "./dist/_app_/components/form-description.js",
       "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",

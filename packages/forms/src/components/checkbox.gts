@@ -1,15 +1,21 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
+import { FormControl } from './form-control';
 import { useStyles } from '@frontile/theme';
 
 interface CheckboxSignature {
   Args: {
-    id?: string;
     checked?: boolean;
     name?: string;
     size?: 'sm' | 'md' | 'lg';
     class?: string;
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
 
     /*
      * Callback when onchange is triggered
@@ -44,16 +50,33 @@ class Checkbox extends Component<CheckboxSignature> {
   }
 
   <template>
-    <input
-      {{on "change" this.handleChange}}
-      id={{@id}}
-      name={{@name}}
-      checked={{this.isChecked}}
-      type="checkbox"
-      class={{this.classes}}
-      data-component="checkbox"
-      ...attributes
-    />
+    <FormControl
+      @isInvalid={{@isInvalid}}
+      @errors={{@errors}}
+      @class={{@class}}
+      @size={{@size}}
+      @isRequired={{@isRequired}}
+      as |c|
+    >
+      <input
+        {{on "change" this.handleChange}}
+        id={{c.id}}
+        name={{@name}}
+        checked={{this.isChecked}}
+        type="checkbox"
+        class={{this.classes}}
+        data-component="checkbox"
+        ...attributes
+      />
+      <div>
+        {{#if @label}}
+          <c.Label>{{@label}}</c.Label>
+        {{/if}}
+        {{#if @description}}
+          <c.Description>{{@description}}</c.Description>
+        {{/if}}
+      </div>
+    </FormControl>
   </template>
 }
 

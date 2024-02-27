@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
+import { FormControl } from './form-control';
 import { useStyles } from '@frontile/theme';
 
 interface TextareaSignature {
@@ -10,6 +11,12 @@ interface TextareaSignature {
     size?: 'sm' | 'md' | 'lg';
     class?: string;
     name?: string;
+
+    label?: string;
+    isRequired?: boolean;
+    description?: string;
+    errors?: string[] | string;
+    isInvalid?: boolean;
 
     // Callback when oninput is triggered
     onInput?: (value: string, event: InputEvent) => void;
@@ -49,17 +56,26 @@ class Textarea extends Component<TextareaSignature> {
   }
 
   <template>
-    <textarea
-      {{on "input" this.handleOnInput}}
-      {{on "change" this.handleOnChange}}
-      id={{@id}}
-      name={{@name}}
-      value={{@value}}
-      class={{this.classes}}
-      data-component="textarea"
-      ...attributes
+    <FormControl
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+      as |c|
     >
-    </textarea>
+      <textarea
+        {{on "input" this.handleOnInput}}
+        {{on "change" this.handleOnChange}}
+        id={{c.id}}
+        name={{@name}}
+        value={{@value}}
+        class={{this.classes}}
+        data-component="textarea"
+        ...attributes
+      />
+    </FormControl>
   </template>
 }
 export { Textarea, type TextareaSignature };
