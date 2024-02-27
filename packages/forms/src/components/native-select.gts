@@ -26,6 +26,7 @@ interface NativeSelectSignature<T> {
     id?: string;
     // TODO implement
     size?: 'sm' | 'md' | 'lg';
+    name?: string;
 
     /**
      * Placeholder text used when `allowEmpty` is set to `true`.
@@ -111,6 +112,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       data-component="native-select"
       class={{this.classNames}}
       id={{@id}}
+      name={{@name}}
       ...attributes
     >
       {{#if this.args.allowEmpty}}

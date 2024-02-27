@@ -9,6 +9,7 @@ interface TextareaSignature {
     value?: string | number | boolean;
     size?: 'sm' | 'md' | 'lg';
     class?: string;
+    name?: string;
 
     // Callback when oninput is triggered
     onInput?: (value: string, event: InputEvent) => void;
@@ -52,6 +53,7 @@ class Textarea extends Component<TextareaSignature> {
       {{on "input" this.handleOnInput}}
       {{on "change" this.handleOnChange}}
       id={{@id}}
+      name={{@name}}
       value={{@value}}
       class={{this.classes}}
       data-component="textarea"

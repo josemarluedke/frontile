@@ -1,3 +1,4 @@
+export * from './components/form';
 export * from './components/checkbox';
 export * from './components/form-description';
 export * from './components/form-feedback';
@@ -7,3 +8,5 @@ export * from './components/native-select';
 export * from './components/select';
 export * from './components/textarea';
 export * from './components/form-control';
+export * from './components/form-control-checkbox';
+export * from './components/form-control-radio';

@@ -6,14 +6,14 @@ import { useStyles } from '@frontile/theme';
 interface RadioSignature {
   Args: {
     id?: string;
-    value?: string | number | boolean;
+    value?: string;
     checked?: unknown;
     name?: string;
     size?: 'sm' | 'md' | 'lg';
     class?: string;
 
     // Callback when onchange is triggered
-    onChange?: (value: unknown, event: Event) => void;
+    onChange?: (value: string | undefined, event: Event) => void;
   };
   Element: HTMLInputElement;
 }

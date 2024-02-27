@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 
+// TODO add option to have regular font weight for checkbox and radio
+
 interface LabelSignature {
   Args: {
     /**

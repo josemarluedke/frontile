@@ -1,4 +1,5 @@
 import type {
+  Form,
   Checkbox,
   FormDescription,
   FormFeedback,
@@ -6,10 +7,14 @@ import type {
   Label,
   NativeSelect,
   Select,
-  Textarea
+  Textarea,
+  FormControl,
+  FormControlCheckbox,
+  FormControlRadio
 } from './index';
 
 export default interface Registry {
+  Form: typeof Form;
   Checkbox: typeof Checkbox;
   FormDescription: typeof FormDescription;
   FormFeedback: typeof FormFeedback;
@@ -18,4 +23,7 @@ export default interface Registry {
   NativeSelect: typeof NativeSelect;
   Select: typeof Select;
   Textarea: typeof Textarea;
+  FormControl: typeof FormControl;
+  FormControlCheckbox: typeof FormControlCheckbox;
+  FormControlRadio: typeof FormControlRadio;
 }

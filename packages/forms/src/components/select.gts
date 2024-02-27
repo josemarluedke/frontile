@@ -50,7 +50,6 @@ interface SelectArgs<T>
   selectionMode?: 'single' | 'multiple';
 
   id?: string;
-
   // TODO implement
   size?: 'sm' | 'md' | 'lg';
 
@@ -180,9 +179,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             @onItemsChange={{this.onItemsChange}}
             @placeholder={{@placeholder}}
             @id={{@id}}
+            @name={{@name}}
             tabindex="-1"
             disabled={{@isDisabled}}
-            name={{@name}}
           >
             <:item as |l|>
               {{#if (has-block "item")}}

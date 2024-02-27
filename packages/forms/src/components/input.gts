@@ -10,6 +10,7 @@ interface InputSignature {
     size?: 'sm' | 'md' | 'lg';
     class?: string;
     value?: string;
+    name?: string;
 
     // Callback when oninput is triggered
     onInput?: (value: string, event: InputEvent) => void;
@@ -60,6 +61,7 @@ class Input extends Component<InputSignature> {
       {{on "input" this.handleOnInput}}
       {{on "change" this.handleOnChange}}
       id={{@id}}
+      name={{@name}}
       value={{@value}}
       type={{this.type}}
       class={{this.classes}}

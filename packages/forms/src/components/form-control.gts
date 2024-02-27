@@ -10,6 +10,8 @@ import Radio from './radio';
 import Select from './select';
 import NativeSelect from './native-select';
 import Textarea from './textarea';
+import RadioGroup from './radio-group';
+import CheckboxGroup from './checkbox-group';
 import type { WithBoundArgs } from '@glint/template';
 
 // TODO add isInvalid to inputs, aria-invalid
@@ -20,6 +22,8 @@ import type { WithBoundArgs } from '@glint/template';
 interface FormControlSignature {
   Args: {
     size?: 'sm' | 'md' | 'lg';
+
+    name?: string;
 
     label?: string;
     description?: string;
@@ -37,10 +41,12 @@ interface FormControlSignature {
         Label: WithBoundArgs<typeof Label, 'for' | 'size' | 'isRequired'>;
         Description: WithBoundArgs<typeof Description, 'id' | 'size'>;
         Feedback: WithBoundArgs<typeof Feedback, 'id' | 'size' | 'messages'>;
-        Input: WithBoundArgs<typeof Input, 'id' | 'size'>;
-        Textarea: WithBoundArgs<typeof Textarea, 'id' | 'size'>;
-        Checkbox: WithBoundArgs<typeof Checkbox, 'id' | 'size'>;
-        Radio: WithBoundArgs<typeof Radio, 'id' | 'size'>;
+        Input: WithBoundArgs<typeof Input, 'id' | 'size' | 'name'>;
+        Textarea: WithBoundArgs<typeof Textarea, 'id' | 'size' | 'name'>;
+        Checkbox: WithBoundArgs<typeof Checkbox, 'id' | 'size' | 'name'>;
+        Radio: WithBoundArgs<typeof Radio, 'id' | 'size' | 'name'>;
+        CheckboxGroup: WithBoundArgs<typeof CheckboxGroup, 'size' | 'name'>;
+        RadioGroup: WithBoundArgs<typeof RadioGroup, 'size' | 'name'>;
         NativeSelect: typeof NativeSelect;
         Select: typeof Select;
       }
@@ -57,6 +63,10 @@ function or(arg1: unknown, arg2: unknown): boolean {
 
 class FormControl extends Component<FormControlSignature> {
   id = guidFor(this);
+
+  get name(): string {
+    return this.args.name || this.id;
+  }
 
   get descriptionId(): string {
     return this.id + '-description';
@@ -145,12 +155,16 @@ class FormControl extends Component<FormControlSignature> {
             class=this.classes.feedback
             messages=@errors
           )
-          Input=(component Input id=this.id size=@size)
-          Textarea=(component Textarea id=this.id size=@size)
-          Checkbox=(component Checkbox id=this.id size=@size)
-          Radio=(component Radio id=this.id size=@size)
-          NativeSelect=(component NativeSelect id=this.id size=@size)
-          Select=(component Select id=this.id size=@size)
+          Input=(component Input id=this.id size=@size name=this.name)
+          Textarea=(component Textarea id=this.id size=@size name=this.name)
+          Checkbox=(component Checkbox id=this.id size=@size name=this.name)
+          Radio=(component Radio id=this.id size=@size name=this.name)
+          RadioGroup=(component RadioGroup size=@size name=this.name)
+          CheckboxGroup=(component CheckboxGroup size=@size name=this.name)
+          NativeSelect=(component
+            NativeSelect id=this.id size=@size name=this.name
+          )
+          Select=(component Select id=this.id size=@size name=this.name)
         )
         to="default"
       }}
