@@ -61,6 +61,7 @@ const input = tv({
     'focus:ring',
     'focus:outline-none',
     'focus:border-primary-400',
+    'selection:bg-content3',
     'disabled:border-default-200 disabled:text-default-500',
     'aria-invalid:border-danger-400',
     'aria-invalid:focus:ring-danger-400'
