@@ -23,11 +23,24 @@ class Form extends Component<FormSignature> {
     event: Event | SubmitEvent,
     eventType: 'input' | 'submit' = 'input'
   ) => {
-    if (
-      'currentTarget' in event &&
-      event.currentTarget instanceof HTMLFormElement
-    ) {
-      let formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    if (form instanceof HTMLFormElement) {
+      let formData = new FormData(form);
+
+      for (let i = 0; i < form.elements.length; i++) {
+        const element = form.elements[i] as HTMLSelectElement;
+        if (element.type === 'select-multiple') {
+          const selectedValues = [];
+          for (let j = 0; j < element.options.length; j++) {
+            const option = element.options[j];
+            if (option && option.selected) {
+              selectedValues.push(option.value);
+            }
+          }
+          formData.append(element.name, selectedValues.join(','));
+        }
+      }
+
       let data = Object.fromEntries(formData.entries());
 
       this.args.onChange(data, eventType, event);

@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
+import { modifier } from 'ember-modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import { useStyles } from '@frontile/theme';
@@ -11,6 +12,21 @@ import {
   type ContentSignature
 } from '@frontile/overlays';
 import { FormControl } from './form-control';
+
+function triggerFormInputEvent(element: HTMLElement | null): void {
+  if (!element) return;
+
+  let parent = element.parentElement;
+  while (parent) {
+    if (parent.tagName === 'FORM') {
+      (parent as HTMLFormElement).dispatchEvent(
+        new Event('input', { bubbles: true })
+      );
+      break;
+    }
+    parent = parent.parentElement;
+  }
+}
 
 interface SelectArgs<T>
   extends Pick<
@@ -92,6 +108,36 @@ interface SelectSignature<T> {
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
+  @tracked _selectedKeys: string[] = [];
+
+  el: HTMLElement | null = null;
+
+  registerEl = modifier((element: HTMLElement) => {
+    this.el = element;
+  });
+
+  get selectedKeys(): string[] {
+    if (
+      typeof this.args.selectedKeys !== 'undefined' &&
+      typeof this.args.onSelectionChange === 'function'
+    ) {
+      return this.args.selectedKeys;
+    }
+
+    return this._selectedKeys;
+  }
+
+  onSelectionChange = (keys: string[]) => {
+    if (typeof this.args.onSelectionChange === 'function') {
+      this.args.onSelectionChange(keys);
+    } else {
+      this._selectedKeys = keys;
+    }
+
+    requestAnimationFrame(() => {
+      triggerFormInputEvent(this.el);
+    });
+  };
 
   onOpenChange = (isOpen: boolean) => {
     this.isOpen = isOpen;
@@ -125,7 +171,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   get selectedText() {
-    return this.args.selectedKeys?.join(', ');
+    return this.selectedKeys?.join(', ');
   }
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
@@ -135,7 +181,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get selectedTextValue(): string {
     let selectedTextValues: string[] = [];
     for (let node of this.nodes) {
-      if (this.args.selectedKeys?.includes(node.key)) {
+      if (this.selectedKeys?.includes(node.key)) {
         selectedTextValues.push(node.textValue);
       }
     }
@@ -162,7 +208,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   <template>
-    <div class={{this.classNames.base}} ...attributes>
+    <div {{this.registerEl}} class={{this.classNames.base}} ...attributes>
       <FormControl
         @id={{@id}}
         @size={{@size}}
@@ -190,8 +236,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @items={{@items}}
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
-              @onSelectionChange={{@onSelectionChange}}
-              @selectedKeys={{@selectedKeys}}
+              @onSelectionChange={{this.onSelectionChange}}
+              @selectedKeys={{this.selectedKeys}}
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @onItemsChange={{this.onItemsChange}}
               @placeholder={{@placeholder}}
@@ -260,8 +306,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @intent={{@intent}}
               @isKeyboardEventsEnabled={{true}}
               @onAction={{this.onAction}}
-              @onSelectionChange={{@onSelectionChange}}
-              @selectedKeys={{@selectedKeys}}
+              @onSelectionChange={{this.onSelectionChange}}
+              @selectedKeys={{this.selectedKeys}}
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @type="listbox"
               @class={{this.classNames.listbox}}

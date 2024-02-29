@@ -39,8 +39,9 @@ export default class FormExample extends Component<FormExampleArgs> {
   };
 
   <template>
-    <Form @onChange={{this.onChange}}>
+    <Form @onChange={{this.onChange}} enctype="multipart/form-data">
       <Input
+        @name="field-1"
         @label="My field"
         @description="Cool field"
         @errors="it should be cool"
@@ -55,6 +56,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Checkbox
+        @name="field-3"
         @label="My field 3"
         @description="description"
         @errors="error message here"
@@ -62,12 +64,14 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Textarea
+        @name="field-4"
         @label="My field 4"
         @description="description"
         @errors="error message here"
       />
 
       <Select
+        @name="all-fav-animals"
         @selectionMode="multiple"
         @items={{animals}}
         @placeholder="Select your favorite animals"
