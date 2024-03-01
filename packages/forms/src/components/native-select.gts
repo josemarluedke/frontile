@@ -24,6 +24,7 @@ interface NativeSelectSignature<T> {
     items?: T[];
     class?: string;
 
+    containerClass?: string;
     id?: string;
     size?: 'sm' | 'md' | 'lg';
     name?: string;
@@ -120,6 +121,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @class={{@containerClass}}
       as |c|
     >
       <select

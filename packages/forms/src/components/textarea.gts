@@ -12,6 +12,7 @@ interface TextareaSignature {
     class?: string;
     name?: string;
 
+    containerClass?: string;
     label?: string;
     isRequired?: boolean;
     description?: string;
@@ -68,6 +69,7 @@ class Textarea extends Component<TextareaSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @class={{@containerClass}}
       as |c|
     >
       <textarea

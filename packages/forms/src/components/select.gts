@@ -108,7 +108,7 @@ interface SelectSignature<T> {
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
-  @tracked _selectedKeys: string[] = [];
+  @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
 
   el: HTMLElement | null = null;
 

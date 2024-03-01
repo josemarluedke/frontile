@@ -11,6 +11,7 @@ interface CheckboxSignature {
     size?: 'sm' | 'md' | 'lg';
     class?: string;
 
+    containerClass?: string;
     label?: string;
     isRequired?: boolean;
     description?: string;
@@ -48,7 +49,7 @@ class Checkbox extends Component<CheckboxSignature> {
     });
 
     return {
-      base: base(),
+      base: base({ class: this.args.containerClass }),
       input: input({
         class: this.args.class
       }),

@@ -6,11 +6,12 @@ import { useStyles } from '@frontile/theme';
 
 interface RadioSignature {
   Args: {
-    value?: string;
-    checked?: unknown;
+    value?: string | boolean | number;
+    checked?: string | boolean | number;
     name?: string;
     size?: 'sm' | 'md' | 'lg';
     class?: string;
+    containerClass?: string;
 
     label?: string;
     isRequired?: boolean;
@@ -19,7 +20,10 @@ interface RadioSignature {
     isInvalid?: boolean;
 
     // Callback when onchange is triggered
-    onChange?: (value: string | undefined, event: Event) => void;
+    onChange?: (
+      value: string | boolean | number | undefined,
+      event: Event
+    ) => void;
   };
   Element: HTMLInputElement;
 }
@@ -44,7 +48,7 @@ class Radio extends Component<RadioSignature> {
     });
 
     return {
-      base: base(),
+      base: base({ class: this.args.containerClass }),
       input: input({
         class: this.args.class
       }),

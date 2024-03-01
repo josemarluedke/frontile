@@ -33,24 +33,27 @@ interface CheckboxGroupSignature {
 class CheckboxGroup extends Component<CheckboxGroupSignature> {
   get classes() {
     const { radioGroup } = useStyles();
-    const { base, optionsContainer } = radioGroup({
+    const { base, optionsContainer, label } = radioGroup({
       size: this.args.size
     });
 
     return {
       base: base(),
+      label: label(),
       optionsContainer: optionsContainer()
     };
   }
   <template>
     <FormControl
       @size={{@size}}
-      @label={{@label}}
       @isRequired={{@isRequired}}
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      ...attributes
+      as |c|
     >
+      <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
       <div
         class={{this.classes.optionsContainer}}
         data-orientation={{if @orientation @orientation "vertical"}}

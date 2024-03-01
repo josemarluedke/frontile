@@ -12,6 +12,7 @@ interface InputSignature {
     value?: string;
     name?: string;
 
+    containerClass?: string;
     label?: string;
     isRequired?: boolean;
     description?: string;
@@ -75,6 +76,7 @@ class Input extends Component<InputSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @class={{@containerClass}}
       as |c|
     >
       <input

@@ -133,7 +133,8 @@ const checkboxRadioGroupBase = tv({
     base: '',
     optionsContainer: [
       'flex flex-col flex-wrap gap-4 data-[orientation=horizontal]:flex-row'
-    ]
+    ],
+    label: 'pb-2'
   }
 });
 
