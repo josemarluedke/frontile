@@ -64,6 +64,8 @@ class Radio extends Component<RadioSignature> {
         type="radio"
         class={{this.classes}}
         data-component="radio"
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
       <div>

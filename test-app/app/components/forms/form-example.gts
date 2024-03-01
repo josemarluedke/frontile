@@ -44,7 +44,6 @@ export default class FormExample extends Component<FormExampleArgs> {
         @name="field-1"
         @label="My field"
         @description="Cool field"
-        @errors="it should be cool"
         @isRequired={{true}}
       />
 

@@ -25,7 +25,6 @@ interface NativeSelectSignature<T> {
     class?: string;
 
     id?: string;
-    // TODO implement
     size?: 'sm' | 'md' | 'lg';
     name?: string;
 
@@ -67,8 +66,8 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
   });
 
   get classNames() {
-    const { listbox } = useStyles();
-    return listbox({ class: this.args.class });
+    const { nativeSelect } = useStyles();
+    return nativeSelect({ class: this.args.class, size: this.args.size });
   }
 
   get isMultiple() {
@@ -130,6 +129,8 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         class={{this.classNames}}
         id={{c.id}}
         name={{@name}}
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       >
         {{#if this.args.allowEmpty}}

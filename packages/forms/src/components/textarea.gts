@@ -73,6 +73,8 @@ class Textarea extends Component<TextareaSignature> {
         value={{@value}}
         class={{this.classes}}
         data-component="textarea"
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
     </FormControl>

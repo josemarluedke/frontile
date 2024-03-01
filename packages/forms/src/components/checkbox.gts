@@ -66,6 +66,8 @@ class Checkbox extends Component<CheckboxSignature> {
         type="checkbox"
         class={{this.classes}}
         data-component="checkbox"
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
       <div>

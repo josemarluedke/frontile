@@ -160,7 +160,22 @@ const select = tv({
     placeholder: 'text-default-400',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5'
+  },
+  variants: {
+    size: {
+      sm: { trigger: 'p-2' },
+      md: { trigger: 'p-3' },
+      lg: { trigger: 'p-4' }
+    }
+  },
+  defaultVariants: {
+    size: 'md'
   }
+});
+
+const nativeSelect = tv({
+  extend: input,
+  base: ['appearance-auto']
 });
 
 export {
@@ -171,5 +186,6 @@ export {
   textarea,
   checkbox,
   radio,
-  select
+  select,
+  nativeSelect
 };

@@ -81,7 +81,8 @@ class Input extends Component<InputSignature> {
         type={{this.type}}
         class={{this.classes}}
         data-component="input"
-        aria-invalid={{this.args.isInvalid}}
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
     </FormControl>

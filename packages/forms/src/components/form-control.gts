@@ -6,10 +6,7 @@ import Description from './form-description';
 import Label from './label';
 import type { WithBoundArgs } from '@glint/template';
 
-// TODO add isInvalid to inputs, aria-invalid
-// TODO add aria-describedby to inputs
 // TODO allowClear or isClearable
-// TODO Add Name ?
 
 interface FormControlSignature {
   Args: {
@@ -27,6 +24,10 @@ interface FormControlSignature {
       {
         id: string;
         isInvalid: boolean;
+        describedBy: (
+          hasDescription?: string | boolean,
+          hasFeedback?: string | boolean
+        ) => string | undefined;
         Label: WithBoundArgs<typeof Label, 'for' | 'size' | 'isRequired'>;
         Description: WithBoundArgs<typeof Description, 'id' | 'size'>;
         Feedback: WithBoundArgs<typeof Feedback, 'id' | 'size' | 'messages'>;
@@ -52,6 +53,25 @@ class FormControl extends Component<FormControlSignature> {
   get feedbackId(): string {
     return this.id + '-feedback';
   }
+
+  describedBy = (
+    hasDescription?: string | boolean,
+    hasFeedback?: string | boolean
+  ): string | undefined => {
+    const ids = [];
+
+    if (hasDescription) {
+      ids.push(this.descriptionId);
+    }
+
+    if (hasFeedback) {
+      ids.push(this.feedbackId);
+    }
+
+    if (ids.length > 0) {
+      return ids.join(' ');
+    }
+  };
 
   get classes() {
     // const { formControl } = useStyles();
@@ -112,6 +132,7 @@ class FormControl extends Component<FormControlSignature> {
         (hash
           id=this.id
           isInvalid=this.isInvalid
+          describedBy=this.describedBy
           Label=(component
             Label
             for=this.id

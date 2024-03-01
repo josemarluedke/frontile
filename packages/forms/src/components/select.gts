@@ -67,8 +67,8 @@ interface SelectArgs<T>
   selectionMode?: 'single' | 'multiple';
 
   id?: string;
-  // TODO implement
-  size?: 'sm' | 'md' | 'lg';
+  inputSize?: 'sm' | 'md' | 'lg';
+  popoverSize?: 'sm' | 'md' | 'lg';
 
   label?: string;
   isRequired?: boolean;
@@ -200,7 +200,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const { base, icon, trigger, listbox, placeholder } = select();
     return {
       base: base({ class: this.args.class }),
-      trigger: trigger(),
+      trigger: trigger({ size: this.args.inputSize }),
       icon: icon(),
       listbox: listbox(),
       placeholder: placeholder()
@@ -211,7 +211,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     <div {{this.registerEl}} class={{this.classNames.base}} ...attributes>
       <FormControl
         @id={{@id}}
-        @size={{@size}}
+        @size={{@inputSize}}
         @label={{@label}}
         @isRequired={{@isRequired}}
         @description={{@description}}
@@ -285,6 +285,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           </button>
 
           <p.Content
+            @size={{@popoverSize}}
             @destinationElementId={{@destinationElementId}}
             @renderInPlace={{@renderInPlace}}
             @disableFocusTrap={{this.disableFocusTrap}}
