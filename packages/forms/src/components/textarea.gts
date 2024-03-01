@@ -49,10 +49,15 @@ class Textarea extends Component<TextareaSignature> {
   get classes() {
     const { textarea } = useStyles();
 
-    return textarea({
-      size: this.args.size,
-      class: this.args.class
+    const { input } = textarea({
+      size: this.args.size
     });
+
+    return {
+      input: input({
+        class: this.args.class
+      })
+    };
   }
 
   <template>
@@ -71,7 +76,7 @@ class Textarea extends Component<TextareaSignature> {
         id={{c.id}}
         name={{@name}}
         value={{@value}}
-        class={{this.classes}}
+        class={{this.classes.input}}
         data-component="textarea"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}

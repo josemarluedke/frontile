@@ -52,7 +52,8 @@ export default class FormFieldInput extends Component<FormFieldInputSignature> {
     const { input } = useStyles();
 
     return input({
-      size: this.args.size,
+      size: this.args.size
+    }).input({
       class: this.args.class
     });
   }

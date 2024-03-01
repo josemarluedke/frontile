@@ -44,7 +44,8 @@ export default class FormFieldTextarea extends Component<FormFieldTextareaSignat
     const { textarea } = useStyles();
 
     return textarea({
-      size: this.args.size,
+      size: this.args.size
+    }).input({
       class: this.args.class
     });
   }

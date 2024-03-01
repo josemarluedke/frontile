@@ -17,6 +17,7 @@ interface FormControlSignature {
     description?: string;
     errors?: string[] | string;
     isInvalid?: boolean;
+    preventErrorFeedback?: boolean;
     class?: string;
   };
   Blocks: {
@@ -30,7 +31,10 @@ interface FormControlSignature {
         ) => string | undefined;
         Label: WithBoundArgs<typeof Label, 'for' | 'size' | 'isRequired'>;
         Description: WithBoundArgs<typeof Description, 'id' | 'size'>;
-        Feedback: WithBoundArgs<typeof Feedback, 'id' | 'size' | 'messages'>;
+        Feedback: WithBoundArgs<
+          typeof Feedback,
+          'id' | 'size' | 'messages' | 'intent'
+        >;
       }
     ];
     label: [];
@@ -73,27 +77,6 @@ class FormControl extends Component<FormControlSignature> {
     }
   };
 
-  get classes() {
-    // const { formControl } = useStyles();
-    // const { base, label, description, feedback } = formControl({
-    //   size: this.args.size
-    // });
-    // return {
-    //   base: base({
-    //     class: this.args.class
-    //   }),
-    //   label: label(),
-    //   description: description(),
-    //   feedback: feedback()
-    // };
-    return {
-      base: '',
-      label: '',
-      description: '',
-      feedback: ''
-    };
-  }
-
   get isInvalid(): boolean {
     if (
       this.args.isInvalid ||
@@ -105,24 +88,24 @@ class FormControl extends Component<FormControlSignature> {
     }
   }
 
+  get showErrorFeedback(): boolean {
+    if (!(this.args.preventErrorFeedback === true) && this.isInvalid) {
+      return true;
+    }
+    return false;
+  }
+
   <template>
-    <div ...attributes>
+    <div class={{@class}} ...attributes>
       {{#if (or @label (has-block "label"))}}
-        <Label
-          @for={{this.id}}
-          @class={{this.classes.label}}
-          @isRequired={{this.args.isRequired}}
-        >
+        <Label @for={{this.id}} @isRequired={{@isRequired}} @size={{@size}}>
           {{@label}}
           {{yield to="label"}}
         </Label>
       {{/if}}
 
       {{#if (or @description (has-block "Description"))}}
-        <Description
-          @id={{this.descriptionId}}
-          @class={{this.classes.description}}
-        >
+        <Description @id={{this.descriptionId}} @size={{@size}}>
           {{@description}}
           {{yield to="description"}}
         </Description>
@@ -133,33 +116,23 @@ class FormControl extends Component<FormControlSignature> {
           id=this.id
           isInvalid=this.isInvalid
           describedBy=this.describedBy
-          Label=(component
-            Label
-            for=this.id
-            size=@size
-            isRequired=@isRequired
-            class=this.classes.label
-          )
-          Description=(component
-            Description
-            id=this.descriptionId
-            size=@size
-            class=this.classes.description
-          )
+          Label=(component Label for=this.id size=@size isRequired=@isRequired)
+          Description=(component Description id=this.descriptionId size=@size)
           Feedback=(component
             Feedback
             id=this.feedbackId
             size=@size
-            class=this.classes.feedback
             messages=@errors
+            intent="danger"
           )
         )
         to="default"
       }}
 
-      {{#if this.isInvalid}}
+      {{#if this.showErrorFeedback}}
         <Feedback
-          @class={{this.classes.feedback}}
+          @id={{this.feedbackId}}
+          @size={{@size}}
           @messages={{@errors}}
           @intent="danger"
         />

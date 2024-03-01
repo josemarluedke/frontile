@@ -38,7 +38,8 @@ export default class FormFieldCheckbox extends Component<FormFieldCheckboxSignat
     const { checkbox } = useStyles();
 
     return checkbox({
-      size: this.args.size,
+      size: this.args.size
+    }).input({
       class: this.args.class
     });
   }

@@ -56,10 +56,15 @@ class Input extends Component<InputSignature> {
   get classes() {
     const { input } = useStyles();
 
-    return input({
-      size: this.args.size,
-      class: this.args.class
+    const { input: inputElement } = input({
+      size: this.args.size
     });
+
+    return {
+      input: inputElement({
+        class: this.args.class
+      })
+    };
   }
 
   <template>
@@ -79,7 +84,7 @@ class Input extends Component<InputSignature> {
         name={{@name}}
         value={{@value}}
         type={{this.type}}
-        class={{this.classes}}
+        class={{this.classes.input}}
         data-component="input"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}

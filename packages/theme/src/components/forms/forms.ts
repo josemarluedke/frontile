@@ -56,31 +56,34 @@ const formFeedback = tv({
 });
 
 const input = tv({
-  base: [
-    'appearance-none',
-    'flex-1',
-    'w-full',
-    'bg-white dark:bg-default-100',
-    'text-default-900',
-    'placeholder-default-400',
-    'text-base text-foreground',
-    'border',
-    'border-default-400',
-    'rounded',
-    'leading-tight',
-    'focus:ring',
-    'focus:outline-none',
-    'focus:border-primary-400',
-    'selection:bg-content3',
-    'disabled:border-default-200 disabled:text-default-500',
-    'aria-invalid:border-danger-400',
-    'aria-invalid:focus:ring-danger-400'
-  ],
+  slots: {
+    base: '',
+    input: [
+      'appearance-none',
+      'flex-1',
+      'w-full',
+      'bg-white dark:bg-default-100',
+      'text-default-900',
+      'placeholder-default-400',
+      'text-base text-foreground',
+      'border',
+      'border-default-400',
+      'rounded',
+      'leading-tight',
+      'focus:ring',
+      'focus:outline-none',
+      'focus:border-primary-400',
+      'selection:bg-content3',
+      'disabled:border-default-200 disabled:text-default-500',
+      'aria-invalid:border-danger-400',
+      'aria-invalid:focus:ring-danger-400'
+    ]
+  },
   variants: {
     size: {
-      sm: 'p-2',
-      md: 'p-3',
-      lg: 'p-4'
+      sm: { input: 'p-2' },
+      md: { input: 'p-3' },
+      lg: { input: 'p-4' }
     }
   },
   defaultVariants: {
@@ -90,28 +93,34 @@ const input = tv({
 
 const textarea = tv({
   extend: input,
-  base: 'min-h-24'
+  slots: { input: 'min-h-24' }
 });
 
 const checkboxRadioBase = tv({
-  base: [
-    'appearance-none',
-    'inline-block',
-    'align-middle',
-    'select-none',
-    'shrink-0',
-    'h-[1em] w-[1em]',
-    'text-base',
-    'text-primary',
-    'border border-default-400',
-    'bg-white dark:bg-default-100',
-    'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
-  ],
+  slots: {
+    base: ['max-w-fit flex items-center justify-start'],
+
+    input: [
+      'appearance-none',
+      'inline-block',
+      'align-middle',
+      'select-none',
+      'shrink-0',
+      'h-[1em] w-[1em]',
+      'text-base',
+      'text-primary',
+      'border border-default-400',
+      'bg-white dark:bg-default-100',
+      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
+    ],
+    labelContainer: ['flex flex-col ml-2'],
+    label: 'font-normal pb-0'
+  },
   variants: {
     size: {
-      sm: '',
-      md: '',
-      lg: ''
+      sm: { input: '' },
+      md: { input: '' },
+      lg: { input: '' }
     }
   },
   defaultVariants: {
@@ -119,14 +128,25 @@ const checkboxRadioBase = tv({
   }
 });
 
+const checkboxRadioGroupBase = tv({
+  slots: {
+    base: '',
+    optionsContainer: [
+      'flex flex-col flex-wrap gap-4 data-[orientation=horizontal]:flex-row'
+    ]
+  }
+});
+
 const checkbox = tv({
   extend: checkboxRadioBase,
-  base: ['checked-bg-checkbox', 'rounded-sm'],
+  slots: {
+    input: ['checked-bg-checkbox', 'rounded-sm']
+  },
   variants: {
     size: {
-      sm: '',
-      md: '',
-      lg: ''
+      sm: { input: '' },
+      md: { input: '' },
+      lg: { input: '' }
     }
   },
   defaultVariants: {
@@ -136,12 +156,14 @@ const checkbox = tv({
 
 const radio = tv({
   extend: checkboxRadioBase,
-  base: ['checked-bg-radio', 'rounded-full'],
+  slots: {
+    input: ['checked-bg-radio', 'rounded-full']
+  },
   variants: {
     size: {
-      sm: '',
-      md: '',
-      lg: ''
+      sm: { input: '' },
+      md: { input: '' },
+      lg: { input: '' }
     }
   },
   defaultVariants: {
@@ -149,11 +171,19 @@ const radio = tv({
   }
 });
 
+const radioGroup = tv({
+  extend: checkboxRadioGroupBase
+});
+
+const checkboxGroup = tv({
+  extend: checkboxRadioGroupBase
+});
+
 const select = tv({
   slots: {
     base: [],
     trigger: [
-      input(),
+      input().input(),
       'flex items-center justify-between',
       'disabled:cursor-not-allowed'
     ],
@@ -175,7 +205,9 @@ const select = tv({
 
 const nativeSelect = tv({
   extend: input,
-  base: ['appearance-auto']
+  slots: {
+    input: ['appearance-auto']
+  }
 });
 
 export {
@@ -187,5 +219,7 @@ export {
   checkbox,
   radio,
   select,
-  nativeSelect
+  nativeSelect,
+  checkboxGroup,
+  radioGroup
 };

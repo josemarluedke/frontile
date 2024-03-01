@@ -67,7 +67,16 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
 
   get classNames() {
     const { nativeSelect } = useStyles();
-    return nativeSelect({ class: this.args.class, size: this.args.size });
+
+    const { input } = nativeSelect({
+      size: this.args.size
+    });
+
+    return {
+      input: input({
+        class: this.args.class
+      })
+    };
   }
 
   get isMultiple() {
@@ -126,7 +135,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         multiple={{this.isMultiple}}
         data-test-id="native-select"
         data-component="native-select"
-        class={{this.classNames}}
+        class={{this.classNames.input}}
         id={{c.id}}
         name={{@name}}
         aria-invalid={{if c.isInvalid "true"}}

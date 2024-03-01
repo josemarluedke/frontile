@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { Radio, type RadioSignature } from './radio';
 import { FormControl } from './form-control';
+import { useStyles } from '@frontile/theme';
 
 import type { WithBoundArgs } from '@glint/template';
 
@@ -16,6 +17,12 @@ interface RadioGroupSignature {
     description?: string;
     errors?: string[] | string;
     isInvalid?: boolean;
+
+    /*
+     *
+     * @defaultValue 'vertical'
+     */
+    orientation?: 'horizontal' | 'vertical';
   };
   Blocks: {
     default: [
@@ -26,6 +33,17 @@ interface RadioGroupSignature {
 }
 
 class RadioGroup extends Component<RadioGroupSignature> {
+  get classes() {
+    const { radioGroup } = useStyles();
+    const { base, optionsContainer } = radioGroup({
+      size: this.args.size
+    });
+
+    return {
+      base: base(),
+      optionsContainer: optionsContainer()
+    };
+  }
   <template>
     <FormControl
       @size={{@size}}
@@ -35,12 +53,17 @@ class RadioGroup extends Component<RadioGroupSignature> {
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
     >
-      {{yield
-        (component
-          Radio name=@name onChange=@onChange size=@size checked=@value
-        )
-        to="default"
-      }}
+      <div
+        class={{this.classes.optionsContainer}}
+        data-orientation={{if @orientation @orientation "vertical"}}
+      >
+        {{yield
+          (component
+            Radio name=@name onChange=@onChange size=@size checked=@value
+          )
+          to="default"
+        }}
+      </div>
     </FormControl>
   </template>
 }

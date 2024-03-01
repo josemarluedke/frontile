@@ -39,7 +39,7 @@ export default class FormExample extends Component<FormExampleArgs> {
   };
 
   <template>
-    <Form @onChange={{this.onChange}} enctype="multipart/form-data">
+    <Form @onChange={{this.onChange}} class="flex flex-1 flex-col gap-4">
       <Input
         @name="field-1"
         @label="My field"
@@ -104,6 +104,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @errors="Please select an account"
         @name="accountType"
         @value="personal"
+        @orientation="horizontal"
         as |Radio|
       >
         <Radio @value="personal" @label="Personal" />
@@ -118,10 +119,11 @@ export default class FormExample extends Component<FormExampleArgs> {
       <CheckboxGroup
         @label="Interests"
         @errors="Please select an intereset"
+        @orientation="horizontal"
         as |Checkbox|
       >
-        <Checkbox @name="iot" @label="IoT" @description="Internet of things" />
         <Checkbox @name="music" @label="Music" />
+        <Checkbox @name="iot" @label="IoT" @description="Internet of things" />
         <Checkbox
           @checked={{true}}
           @name="enterntainment"
@@ -130,7 +132,9 @@ export default class FormExample extends Component<FormExampleArgs> {
         />
       </CheckboxGroup>
 
-      <Button @type="submit">Submit</Button>
+      <div>
+        <Button @type="submit">Submit</Button>
+      </div>
     </Form>
     <pre>{{JSON.stringify this.data null 3}}</pre>
   </template>

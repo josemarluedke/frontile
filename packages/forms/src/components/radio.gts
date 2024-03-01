@@ -39,20 +39,28 @@ class Radio extends Component<RadioSignature> {
 
   get classes() {
     const { radio } = useStyles();
-
-    return radio({
-      size: this.args.size,
-      class: this.args.class
+    const { base, input, labelContainer, label } = radio({
+      size: this.args.size
     });
+
+    return {
+      base: base(),
+      input: input({
+        class: this.args.class
+      }),
+      labelContainer: labelContainer(),
+      label: label()
+    };
   }
 
   <template>
     <FormControl
       @isInvalid={{@isInvalid}}
       @errors={{@errors}}
-      @class={{@class}}
       @size={{@size}}
       @isRequired={{@isRequired}}
+      @class={{this.classes.base}}
+      @preventErrorFeedback={{true}}
       as |c|
     >
       <input
@@ -62,18 +70,21 @@ class Radio extends Component<RadioSignature> {
         value={{@value}}
         checked={{this.isChecked}}
         type="radio"
-        class={{this.classes}}
+        class={{this.classes.input}}
         data-component="radio"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
-      <div>
+      <div class={{this.classes.labelContainer}}>
         {{#if @label}}
-          <c.Label>{{@label}}</c.Label>
+          <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
         {{/if}}
         {{#if @description}}
           <c.Description>{{@description}}</c.Description>
+        {{/if}}
+        {{#if c.isInvalid}}
+          <c.Feedback />
         {{/if}}
       </div>
     </FormControl>
