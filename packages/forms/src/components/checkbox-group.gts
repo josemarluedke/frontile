@@ -1,29 +1,23 @@
 import Component from '@glimmer/component';
 import { Checkbox, type CheckboxSignature } from './checkbox';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import { useStyles } from '@frontile/theme';
-
 import type { WithBoundArgs } from '@glint/template';
 
+interface Args extends FormControlSharedArgs {
+  name?: string;
+  onChange?: CheckboxSignature['Args']['onChange'];
+  size?: CheckboxSignature['Args']['size'];
+
+  /*
+   *
+   * @defaultValue 'vertical'
+   */
+  orientation?: 'horizontal' | 'vertical';
+}
+
 interface CheckboxGroupSignature {
-  Args: {
-    name?: string;
-
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-
-    onChange?: CheckboxSignature['Args']['onChange'];
-    size?: CheckboxSignature['Args']['size'];
-
-    /*
-     *
-     * @defaultValue 'vertical'
-     */
-    orientation?: 'horizontal' | 'vertical';
-  };
+  Args: Args;
   Blocks: {
     default: [Checkbox: WithBoundArgs<typeof Checkbox, 'name' | 'onChange'>];
   };

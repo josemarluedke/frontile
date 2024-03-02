@@ -12,6 +12,7 @@ import {
   RadioGroup,
   CheckboxGroup
 } from '@frontile/forms';
+
 const animals = [
   'cheetah',
   'crocodile',
@@ -29,8 +30,11 @@ const animals = [
   'zebra'
 ];
 
-interface FormExampleArgs {}
+const MyCustomLabel = <template>
+  This is a custom label. <span class="text-primary">Cool right?</span>
+</template> as never;
 
+interface FormExampleArgs {}
 export default class FormExample extends Component<FormExampleArgs> {
   @tracked data = {};
 
@@ -42,7 +46,7 @@ export default class FormExample extends Component<FormExampleArgs> {
     <Form @onChange={{this.onChange}} class="flex flex-1 flex-col gap-4">
       <Input
         @name="field-1"
-        @label="My field"
+        @label={{MyCustomLabel}}
         @description="Cool field"
         @isRequired={{true}}
       />

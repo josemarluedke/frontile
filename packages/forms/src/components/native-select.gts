@@ -5,7 +5,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
 import { useStyles } from '@frontile/theme';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import {
   ListManager,
   keyAndLabelForItem,
@@ -15,39 +15,35 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
+interface Args<T> extends FormControlSharedArgs {
+  selectionMode?: 'single' | 'multiple';
+  selectedKeys?: string[];
+  disabledKeys?: string[];
+  allowEmpty?: boolean;
+  items?: T[];
+  class?: string;
+
+  containerClass?: string;
+  id?: string;
+  size?: 'sm' | 'md' | 'lg';
+  name?: string;
+
+  /**
+   * Placeholder text used when `allowEmpty` is set to `true`.
+   */
+  placeholder?: string;
+
+  onAction?: (key: string) => void;
+  onSelectionChange?: (key: string[]) => void;
+
+  /**
+   * @internal
+   */
+  onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
+}
+
 interface NativeSelectSignature<T> {
-  Args: {
-    selectionMode?: 'single' | 'multiple';
-    selectedKeys?: string[];
-    disabledKeys?: string[];
-    allowEmpty?: boolean;
-    items?: T[];
-    class?: string;
-
-    containerClass?: string;
-    id?: string;
-    size?: 'sm' | 'md' | 'lg';
-    name?: string;
-
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-
-    /**
-     * Placeholder text used when `allowEmpty` is set to `true`.
-     */
-    placeholder?: string;
-
-    onAction?: (key: string) => void;
-    onSelectionChange?: (key: string[]) => void;
-
-    /**
-     * @internal
-     */
-    onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
-  };
+  Args: Args<T>;
   Element: HTMLSelectElement;
   Blocks: {
     item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];

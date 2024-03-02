@@ -1,29 +1,24 @@
 import Component from '@glimmer/component';
 import { Radio, type RadioSignature } from './radio';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import { useStyles } from '@frontile/theme';
-
 import type { WithBoundArgs } from '@glint/template';
 
+interface Args extends FormControlSharedArgs {
+  name?: string;
+  value?: string;
+  onChange?: RadioSignature['Args']['onChange'];
+  size?: RadioSignature['Args']['size'];
+
+  /*
+   *
+   * @defaultValue 'vertical'
+   */
+  orientation?: 'horizontal' | 'vertical';
+}
+
 interface RadioGroupSignature {
-  Args: {
-    name?: string;
-    value?: string;
-    onChange?: RadioSignature['Args']['onChange'];
-    size?: RadioSignature['Args']['size'];
-
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-
-    /*
-     *
-     * @defaultValue 'vertical'
-     */
-    orientation?: 'horizontal' | 'vertical';
-  };
+  Args: Args;
   Blocks: {
     default: [
       Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checked'>

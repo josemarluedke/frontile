@@ -1,30 +1,27 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import { useStyles } from '@frontile/theme';
 
+interface Args extends FormControlSharedArgs {
+  id?: string;
+  value?: string | number | boolean;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  name?: string;
+
+  containerClass?: string;
+
+  // Callback when oninput is triggered
+  onInput?: (value: string, event: InputEvent) => void;
+
+  // Callback when onchange is triggered
+  onChange?: (value: string, event: InputEvent) => void;
+}
+
 interface TextareaSignature {
-  Args: {
-    id?: string;
-    value?: string | number | boolean;
-    size?: 'sm' | 'md' | 'lg';
-    class?: string;
-    name?: string;
-
-    containerClass?: string;
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-
-    // Callback when oninput is triggered
-    onInput?: (value: string, event: InputEvent) => void;
-
-    // Callback when onchange is triggered
-    onChange?: (value: string, event: InputEvent) => void;
-  };
+  Args: Args;
   Element: HTMLTextAreaElement;
 }
 

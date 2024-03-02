@@ -1,30 +1,26 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import { useStyles } from '@frontile/theme';
 
+interface Args extends FormControlSharedArgs {
+  value?: string | boolean | number;
+  checked?: string | boolean | number;
+  name?: string;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  containerClass?: string;
+
+  // Callback when onchange is triggered
+  onChange?: (
+    value: string | boolean | number | undefined,
+    event: Event
+  ) => void;
+}
+
 interface RadioSignature {
-  Args: {
-    value?: string | boolean | number;
-    checked?: string | boolean | number;
-    name?: string;
-    size?: 'sm' | 'md' | 'lg';
-    class?: string;
-    containerClass?: string;
-
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-
-    // Callback when onchange is triggered
-    onChange?: (
-      value: string | boolean | number | undefined,
-      event: Event
-    ) => void;
-  };
+  Args: Args;
   Element: HTMLInputElement;
 }
 

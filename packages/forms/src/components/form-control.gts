@@ -8,18 +8,23 @@ import type { WithBoundArgs } from '@glint/template';
 
 // TODO allowClear or isClearable
 
+interface FormControlSharedArgs {
+  label?: string;
+  isRequired?: boolean;
+  description?: string;
+  errors?: string[] | string;
+  isInvalid?: boolean;
+}
+
+interface Args extends FormControlSharedArgs {
+  id?: string;
+  size?: 'sm' | 'md' | 'lg';
+  preventErrorFeedback?: boolean;
+  class?: string;
+}
+
 interface FormControlSignature {
-  Args: {
-    id?: string;
-    size?: 'sm' | 'md' | 'lg';
-    label?: string;
-    isRequired?: boolean;
-    description?: string;
-    errors?: string[] | string;
-    isInvalid?: boolean;
-    preventErrorFeedback?: boolean;
-    class?: string;
-  };
+  Args: Args;
   Blocks: {
     default: [
       {
@@ -141,5 +146,5 @@ class FormControl extends Component<FormControlSignature> {
   </template>
 }
 
-export { FormControl, type FormControlSignature };
+export { FormControl, type FormControlSignature, type FormControlSharedArgs };
 export default FormControl;

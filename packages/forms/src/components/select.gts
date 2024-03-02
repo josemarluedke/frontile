@@ -11,7 +11,7 @@ import {
   type PopoverSignature,
   type ContentSignature
 } from '@frontile/overlays';
-import { FormControl } from './form-control';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 
 function triggerFormInputEvent(element: HTMLElement | null): void {
   if (!element) return;
@@ -63,18 +63,13 @@ interface SelectArgs<T>
       | 'closeOnEscapeKey'
       | 'backdropTransition'
       | 'transition'
-    > {
+    >,
+    FormControlSharedArgs {
   selectionMode?: 'single' | 'multiple';
 
   id?: string;
   inputSize?: 'sm' | 'md' | 'lg';
   popoverSize?: 'sm' | 'md' | 'lg';
-
-  label?: string;
-  isRequired?: boolean;
-  description?: string;
-  errors?: string[] | string;
-  isInvalid?: boolean;
 
   /**
    * Whether the select should close upon selecting an item.
