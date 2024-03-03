@@ -172,6 +172,6 @@ const Comp: TOC<null> = <template>
       Danger
     </Chip>
   </div>
-</template>
+</template>;
 
 export default Comp;

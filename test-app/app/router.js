@@ -8,14 +8,14 @@ export default class Router extends EmberRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function() {
+Router.map(function () {
   this.route('buttons');
   this.route('changeset-form');
   this.route('core');
-  this.route('forms', function() {
+  this.route('forms', function () {
     this.route('style-variants');
   });
-  this.route('forms-legacy', function() {
+  this.route('forms-legacy', function () {
     this.route('style-variants');
   });
   this.route('notifications');
