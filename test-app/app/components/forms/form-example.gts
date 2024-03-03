@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Button } from '@frontile/buttons';
+import { hash } from '@ember/helper';
 import {
   Form,
   Input,
@@ -31,7 +32,7 @@ const animals = [
 ];
 
 const MyCustomLabel = <template>
-  This is a custom label. <span class="text-primary">Cool right?</span>
+  This is a custom label. <span class="text-danger">Cool right?</span>
 </template> as never;
 
 interface FormExampleArgs {}
@@ -56,6 +57,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @label="My field 2"
         @description="Nice nice nice"
         @errors="it should be cool, really cool"
+        @classes={{hash label="text-primary"}}
       />
 
       <Checkbox

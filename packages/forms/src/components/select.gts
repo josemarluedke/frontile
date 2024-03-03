@@ -4,7 +4,12 @@ import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type SelectSlots,
+  type SelectVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 import { VisuallyHidden } from '@frontile/utilities';
 import {
   Popover,
@@ -43,7 +48,6 @@ interface SelectArgs<T>
       ListboxSignature<T>['Args'],
       | 'appearance'
       | 'intent'
-      | 'class'
       | 'selectedKeys'
       | 'disabledKeys'
       | 'allowEmpty'
@@ -68,8 +72,9 @@ interface SelectArgs<T>
   selectionMode?: 'single' | 'multiple';
 
   id?: string;
-  inputSize?: 'sm' | 'md' | 'lg';
+  inputSize?: SelectVariants['size'];
   popoverSize?: 'sm' | 'md' | 'lg';
+  classes?: SlotsToClasses<SelectSlots>;
 
   /**
    * Whether the select should close upon selecting an item.
@@ -190,20 +195,19 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return this.args.backdrop;
   }
 
-  get classNames() {
+  get classes() {
     const { select } = useStyles();
-    const { base, icon, trigger, listbox, placeholder } = select();
-    return {
-      base: base({ class: this.args.class }),
-      trigger: trigger({ size: this.args.inputSize }),
-      icon: icon(),
-      listbox: listbox(),
-      placeholder: placeholder()
-    };
+    return select({
+      size: this.args.inputSize
+    });
   }
 
   <template>
-    <div {{this.registerEl}} class={{this.classNames.base}} ...attributes>
+    <div
+      {{this.registerEl}}
+      class={{this.classes.base class=@classes.base}}
+      ...attributes
+    >
       <FormControl
         @id={{@id}}
         @size={{@inputSize}}
@@ -264,19 +268,21 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             data-test-id="trigger"
             data-component="select-trigger"
             disabled={{@isDisabled}}
-            class={{this.classNames.trigger}}
+            class={{this.classes.trigger class=@classes.trigger}}
           >
             {{#if this.selectedText}}
               <span>
                 {{this.selectedTextValue}}
               </span>
             {{else}}
-              <span class={{this.classNames.placeholder}}>
+              <span
+                class={{this.classes.placeholder class=@classes.placeholder}}
+              >
                 {{@placeholder}}
               </span>
             {{/if}}
 
-            <Icon class={{this.classNames.icon}} />
+            <Icon class={{this.classes.icon class=@classes.icon}} />
           </button>
 
           <p.Content
@@ -306,7 +312,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @selectedKeys={{this.selectedKeys}}
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @type="listbox"
-              @class={{this.classNames.listbox}}
+              @class={{this.classes.listbox class=@classes.listbox}}
             >
               <:item as |l|>
                 {{#if (has-block "item")}}

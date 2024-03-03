@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { useStyles } from '@frontile/theme';
+import { useStyles, type FormDescriptionVariants } from '@frontile/theme';
 
 interface FormDescriptionSignature {
   Args: {
@@ -7,7 +7,7 @@ interface FormDescriptionSignature {
     /*
      * @defaultValue 'md'
      */
-    size?: 'sm' | 'md' | 'lg';
+    size?: FormDescriptionVariants['size'];
 
     class?: string;
   };

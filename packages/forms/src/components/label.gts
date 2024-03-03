@@ -1,7 +1,10 @@
 import Component from '@glimmer/component';
-import { useStyles } from '@frontile/theme';
-
-// TODO add option to have regular font weight for checkbox and radio
+import {
+  useStyles,
+  type LabelSlots,
+  type LabelVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 
 interface LabelSignature {
   Args: {
@@ -13,14 +16,19 @@ interface LabelSignature {
     /*
      * @defaultValue 'md'
      */
-    size?: 'sm' | 'md' | 'lg';
+    size?: LabelVariants['size'];
+    classes?: SlotsToClasses<LabelSlots>;
+
+    /**
+     * The class name to be passed to the label base slot.
+     */
+    class?: string;
 
     /*
      * Whether the field is required or not, if true, an asterisk will be added to the label.
      * @defaultValue false
      */
     isRequired?: boolean;
-    class?: string;
   };
   Element: HTMLLabelElement;
   Blocks: {
@@ -31,26 +39,32 @@ interface LabelSignature {
 class Label extends Component<LabelSignature> {
   get classes() {
     const { label } = useStyles();
-    const { base, asterisk } = label({
+    return label({
       size: this.args.size || 'md'
     });
+  }
 
-    return {
-      base: base({ class: this.args.class }),
-      asterisk: asterisk()
-    };
+  get baseClasses() {
+    const val = [];
+    if (this.args.class) val.push(this.args.class);
+    if (this.classes.base && Array.isArray(this.classes.base)) {
+      val.push(...this.classes.base);
+    } else if (this.classes.base) {
+      val.push(this.classes.base);
+    }
+    return val;
   }
 
   <template>
     <label
       for={{@for}}
-      class={{this.classes.base}}
+      class={{this.classes.base class=this.baseClasses}}
       data-component="label"
       ...attributes
     >
       {{yield}}
       {{#if @isRequired}}
-        <span class={{this.classes.asterisk}}>*</span>
+        <span class={{this.classes.asterisk class=@classes.asterisk}}>*</span>
       {{/if}}
     </label>
   </template>

@@ -1,17 +1,20 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type InputSlots,
+  type InputVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 import { FormControl, type FormControlSharedArgs } from './form-control';
 
 interface Args extends FormControlSharedArgs {
   type?: string;
-  size?: 'sm' | 'md' | 'lg';
-  class?: string;
   value?: string;
   name?: string;
-
-  containerClass?: string;
+  size?: InputVariants['size'];
+  classes?: SlotsToClasses<InputSlots>;
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;
@@ -53,16 +56,9 @@ class Input extends Component<InputSignature> {
 
   get classes() {
     const { input } = useStyles();
-
-    const { input: inputElement } = input({
+    return input({
       size: this.args.size
     });
-
-    return {
-      input: inputElement({
-        class: this.args.class
-      })
-    };
   }
 
   <template>
@@ -73,7 +69,7 @@ class Input extends Component<InputSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
-      @class={{@containerClass}}
+      @class={{this.classes.base class=@classes.base}}
       as |c|
     >
       <input
@@ -83,7 +79,7 @@ class Input extends Component<InputSignature> {
         name={{@name}}
         value={{@value}}
         type={{this.type}}
-        class={{this.classes.input}}
+        class={{this.classes.input class=@classes.input}}
         data-component="input"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}

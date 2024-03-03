@@ -1,14 +1,20 @@
 import Component from '@glimmer/component';
 import { Radio, type RadioSignature } from './radio';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type RadioGroupSlots,
+  type RadioVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 interface Args extends FormControlSharedArgs {
   name?: string;
   value?: string;
   onChange?: RadioSignature['Args']['onChange'];
-  size?: RadioSignature['Args']['size'];
+  size?: RadioVariants['size'];
+  classes?: SlotsToClasses<RadioGroupSlots>;
 
   /*
    *
@@ -30,16 +36,11 @@ interface RadioGroupSignature {
 class RadioGroup extends Component<RadioGroupSignature> {
   get classes() {
     const { radioGroup } = useStyles();
-    const { base, optionsContainer, label } = radioGroup({
+    return radioGroup({
       size: this.args.size
     });
-
-    return {
-      base: base(),
-      label: label(),
-      optionsContainer: optionsContainer()
-    };
   }
+
   <template>
     <FormControl
       @size={{@size}}
@@ -47,12 +48,15 @@ class RadioGroup extends Component<RadioGroupSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @class={{this.classes.base class=@classes.base}}
       ...attributes
       as |c|
     >
-      <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
+      <c.Label @class={{this.classes.label class=@classes.label}}>
+        {{@label}}
+      </c.Label>
       <div
-        class={{this.classes.optionsContainer}}
+        class={{this.classes.optionsContainer class=@classes.optionsContainer}}
         data-orientation={{if @orientation @orientation "vertical"}}
       >
         {{yield

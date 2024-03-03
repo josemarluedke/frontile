@@ -2,15 +2,20 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type SlotsToClasses,
+  type RadioVariants,
+  type RadioSlots
+} from '@frontile/theme';
 
 interface Args extends FormControlSharedArgs {
   value?: string | boolean | number;
   checked?: string | boolean | number;
   name?: string;
-  size?: 'sm' | 'md' | 'lg';
-  class?: string;
-  containerClass?: string;
+
+  size?: RadioVariants['size'];
+  classes?: SlotsToClasses<RadioSlots>;
 
   // Callback when onchange is triggered
   onChange?: (
@@ -39,18 +44,9 @@ class Radio extends Component<RadioSignature> {
 
   get classes() {
     const { radio } = useStyles();
-    const { base, input, labelContainer, label } = radio({
+    return radio({
       size: this.args.size
     });
-
-    return {
-      base: base({ class: this.args.containerClass }),
-      input: input({
-        class: this.args.class
-      }),
-      labelContainer: labelContainer(),
-      label: label()
-    };
   }
 
   <template>
@@ -59,7 +55,7 @@ class Radio extends Component<RadioSignature> {
       @errors={{@errors}}
       @size={{@size}}
       @isRequired={{@isRequired}}
-      @class={{this.classes.base}}
+      @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
       as |c|
     >
@@ -70,15 +66,17 @@ class Radio extends Component<RadioSignature> {
         value={{@value}}
         checked={{this.isChecked}}
         type="radio"
-        class={{this.classes.input}}
+        class={{this.classes.input class=@classes.input}}
         data-component="radio"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
-      <div class={{this.classes.labelContainer}}>
+      <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
         {{#if @label}}
-          <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
+          <c.Label
+            @class={{(this.classes.label class=@classes.label)}}
+          >{{@label}}</c.Label>
         {{/if}}
         {{#if @description}}
           <c.Description>{{@description}}</c.Description>

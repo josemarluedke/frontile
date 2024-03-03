@@ -4,7 +4,12 @@ import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type NativeSelectSlots,
+  type NativeSelectVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import {
   ListManager,
@@ -21,12 +26,10 @@ interface Args<T> extends FormControlSharedArgs {
   disabledKeys?: string[];
   allowEmpty?: boolean;
   items?: T[];
-  class?: string;
-
-  containerClass?: string;
   id?: string;
-  size?: 'sm' | 'md' | 'lg';
   name?: string;
+  size?: NativeSelectVariants['size'];
+  classes?: SlotsToClasses<NativeSelectSlots>;
 
   /**
    * Placeholder text used when `allowEmpty` is set to `true`.
@@ -62,18 +65,11 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
     onListItemsChange: this.args.onItemsChange
   });
 
-  get classNames() {
+  get classes() {
     const { nativeSelect } = useStyles();
-
-    const { input } = nativeSelect({
+    return nativeSelect({
       size: this.args.size
     });
-
-    return {
-      input: input({
-        class: this.args.class
-      })
-    };
   }
 
   get isMultiple() {
@@ -117,7 +113,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
-      @class={{@containerClass}}
+      @class={{this.classes.base class=@classes.base}}
       as |c|
     >
       <select
@@ -133,7 +129,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         multiple={{this.isMultiple}}
         data-test-id="native-select"
         data-component="native-select"
-        class={{this.classNames.input}}
+        class={{this.classes.input class=@classes.input}}
         id={{c.id}}
         name={{@name}}
         aria-invalid={{if c.isInvalid "true"}}

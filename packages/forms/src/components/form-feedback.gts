@@ -1,23 +1,24 @@
 import Component from '@glimmer/component';
-import { useStyles } from '@frontile/theme';
+import { useStyles, type FormFeedbackVariants } from '@frontile/theme';
 
 interface FormFeedbackSignature {
   Args: {
     id?: string;
     /*
-     * The intent of the feedback
-     * @defaultValue 'danger'
-     */
-    intent?: 'primary' | 'success' | 'danger' | 'warning';
-
-    /*
      * A list of messages or a single message string
      */
     messages?: string[] | string;
+
+    /*
+     * The intent of the feedback
+     * @defaultValue 'danger'
+     */
+    intent?: FormFeedbackVariants['intent'];
+
     /*
      * @defaultValue 'md'
      */
-    size?: 'sm' | 'md' | 'lg';
+    size?: FormFeedbackVariants['size'];
     class?: string;
   };
   Element: HTMLDivElement;

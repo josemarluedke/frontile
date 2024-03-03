@@ -1,13 +1,19 @@
 import Component from '@glimmer/component';
 import { Checkbox, type CheckboxSignature } from './checkbox';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type CheckboxGroupVariants,
+  type CheckboxGroupSlots,
+  type SlotsToClasses
+} from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 interface Args extends FormControlSharedArgs {
   name?: string;
   onChange?: CheckboxSignature['Args']['onChange'];
-  size?: CheckboxSignature['Args']['size'];
+  size?: CheckboxGroupVariants['size'];
+  classes?: SlotsToClasses<CheckboxGroupSlots>;
 
   /*
    *
@@ -26,17 +32,12 @@ interface CheckboxGroupSignature {
 
 class CheckboxGroup extends Component<CheckboxGroupSignature> {
   get classes() {
-    const { radioGroup } = useStyles();
-    const { base, optionsContainer, label } = radioGroup({
+    const { checkboxGroup } = useStyles();
+    return checkboxGroup({
       size: this.args.size
     });
-
-    return {
-      base: base(),
-      label: label(),
-      optionsContainer: optionsContainer()
-    };
   }
+
   <template>
     <FormControl
       @size={{@size}}
@@ -47,9 +48,11 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
       ...attributes
       as |c|
     >
-      <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
+      <c.Label @class={{this.classes.label class=@classes.label}}>
+        {{@label}}
+      </c.Label>
       <div
-        class={{this.classes.optionsContainer}}
+        class={{this.classes.optionsContainer class=@classes.optionsContainer}}
         data-orientation={{if @orientation @orientation "vertical"}}
       >
         {{yield

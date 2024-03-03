@@ -2,14 +2,18 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type CheckboxVariants,
+  type CheckboxSlots,
+  type SlotsToClasses
+} from '@frontile/theme';
 
 interface Args extends FormControlSharedArgs {
   checked?: boolean;
   name?: string;
-  size?: 'sm' | 'md' | 'lg';
-  class?: string;
-  containerClass?: string;
+  size?: CheckboxVariants['size'];
+  classes?: SlotsToClasses<CheckboxSlots>;
 
   /*
    * Callback when onchange is triggered
@@ -39,19 +43,9 @@ class Checkbox extends Component<CheckboxSignature> {
 
   get classes() {
     const { checkbox } = useStyles();
-
-    const { base, input, labelContainer, label } = checkbox({
+    return checkbox({
       size: this.args.size
     });
-
-    return {
-      base: base({ class: this.args.containerClass }),
-      input: input({
-        class: this.args.class
-      }),
-      labelContainer: labelContainer(),
-      label: label()
-    };
   }
 
   <template>
@@ -60,7 +54,7 @@ class Checkbox extends Component<CheckboxSignature> {
       @errors={{@errors}}
       @size={{@size}}
       @isRequired={{@isRequired}}
-      @class={{this.classes.base}}
+      @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
       as |c|
     >
@@ -70,15 +64,17 @@ class Checkbox extends Component<CheckboxSignature> {
         name={{@name}}
         checked={{this.isChecked}}
         type="checkbox"
-        class={{this.classes.input}}
+        class={{this.classes.input class=@classes.input}}
         data-component="checkbox"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
-      <div class={{this.classes.labelContainer}}>
+      <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
         {{#if @label}}
-          <c.Label @class={{this.classes.label}}>{{@label}}</c.Label>
+          <c.Label @class={{this.classes.label class=@classes.label}}>
+            {{@label}}
+          </c.Label>
         {{/if}}
         {{#if @description}}
           <c.Description>{{@description}}</c.Description>

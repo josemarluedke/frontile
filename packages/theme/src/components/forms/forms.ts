@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv, type VariantProps } from '../../tw';
 
 const label = tv({
   slots: {
@@ -93,7 +93,14 @@ const input = tv({
 
 const textarea = tv({
   extend: input,
-  slots: { input: 'min-h-24' }
+  slots: { input: 'min-h-24' },
+  variants: {
+    size: {
+      sm: {},
+      md: {},
+      lg: {}
+    }
+  }
 });
 
 const checkboxRadioBase = tv({
@@ -135,6 +142,13 @@ const checkboxRadioGroupBase = tv({
       'flex flex-col flex-wrap gap-4 data-[orientation=horizontal]:flex-row'
     ],
     label: 'pb-2'
+  },
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+      lg: ''
+    }
   }
 });
 
@@ -208,8 +222,38 @@ const nativeSelect = tv({
   extend: input,
   slots: {
     input: ['appearance-auto']
+  },
+  variants: {
+    size: {
+      sm: {},
+      md: {},
+      lg: {}
+    }
   }
 });
+
+export type LabelVariants = VariantProps<typeof label>;
+export type LabelSlots = keyof ReturnType<typeof label>;
+export type FormDescriptionVariants = VariantProps<typeof formDescription>;
+export type FormDescriptionSlots = keyof ReturnType<typeof formDescription>;
+export type FormFeedbackVariants = VariantProps<typeof formFeedback>;
+export type FormFeedbackSlots = keyof ReturnType<typeof formFeedback>;
+export type InputVariants = VariantProps<typeof input>;
+export type InputSlots = keyof ReturnType<typeof input>;
+export type TextareaVariants = VariantProps<typeof textarea>;
+export type TextareaSlots = keyof ReturnType<typeof textarea>;
+export type CheckboxVariants = VariantProps<typeof checkbox>;
+export type CheckboxSlots = keyof ReturnType<typeof checkbox>;
+export type RadioVariants = VariantProps<typeof radio>;
+export type RadioSlots = keyof ReturnType<typeof radio>;
+export type SelectVariants = VariantProps<typeof select>;
+export type SelectSlots = keyof ReturnType<typeof select>;
+export type NativeSelectVariants = VariantProps<typeof nativeSelect>;
+export type NativeSelectSlots = keyof ReturnType<typeof nativeSelect>;
+export type CheckboxGroupVariants = VariantProps<typeof checkboxGroup>;
+export type CheckboxGroupSlots = keyof ReturnType<typeof checkboxGroup>;
+export type RadioGroupVariants = VariantProps<typeof radioGroup>;
+export type RadioGroupSlots = keyof ReturnType<typeof radioGroup>;
 
 export {
   label,

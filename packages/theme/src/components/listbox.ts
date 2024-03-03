@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv } from '../tw';
 
 const listbox = tv({
   base: 'w-full flex flex-col gap-0.5 outline-none p-1'

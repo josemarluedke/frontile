@@ -2,16 +2,20 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type TextareaSlots,
+  type TextareaVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
 
 interface Args extends FormControlSharedArgs {
   id?: string;
   value?: string | number | boolean;
-  size?: 'sm' | 'md' | 'lg';
-  class?: string;
   name?: string;
 
-  containerClass?: string;
+  size?: TextareaVariants['size'];
+  classes?: SlotsToClasses<TextareaSlots>;
 
   // Callback when oninput is triggered
   onInput?: (value: string, event: InputEvent) => void;
@@ -46,16 +50,9 @@ class Textarea extends Component<TextareaSignature> {
 
   get classes() {
     const { textarea } = useStyles();
-
-    const { input } = textarea({
+    return textarea({
       size: this.args.size
     });
-
-    return {
-      input: input({
-        class: this.args.class
-      })
-    };
   }
 
   <template>
@@ -66,7 +63,7 @@ class Textarea extends Component<TextareaSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
-      @class={{@containerClass}}
+      @class={{this.classes.base class=@classes.base}}
       as |c|
     >
       <textarea
@@ -75,7 +72,7 @@ class Textarea extends Component<TextareaSignature> {
         id={{c.id}}
         name={{@name}}
         value={{@value}}
-        class={{this.classes.input}}
+        class={{this.classes.input class=@classes.input}}
         data-component="textarea"
         aria-invalid={{if c.isInvalid "true"}}
         aria-describedby={{c.describedBy @description c.isInvalid}}
