@@ -9,10 +9,10 @@ import {
 } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
-interface Args extends FormControlSharedArgs {
+interface Args<T> extends FormControlSharedArgs {
   name?: string;
-  value?: string;
-  onChange?: RadioSignature['Args']['onChange'];
+  value?: T;
+  onChange?: RadioSignature<T>['Args']['onChange'];
   size?: RadioVariants['size'];
   classes?: SlotsToClasses<RadioGroupSlots>;
 
@@ -23,17 +23,19 @@ interface Args extends FormControlSharedArgs {
   orientation?: 'horizontal' | 'vertical';
 }
 
-interface RadioGroupSignature {
-  Args: Args;
+interface RadioGroupSignature<T> {
+  Args: Args<T>;
   Blocks: {
     default: [
-      Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checked'>
+      Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checkedValue'>
     ];
   };
   Element: HTMLDivElement;
 }
 
-class RadioGroup extends Component<RadioGroupSignature> {
+class RadioGroup<T extends string | number | boolean> extends Component<
+  RadioGroupSignature<T>
+> {
   get classes() {
     const { radioGroup } = useStyles();
     return radioGroup({
@@ -59,11 +61,11 @@ class RadioGroup extends Component<RadioGroupSignature> {
         class={{this.classes.optionsContainer class=@classes.optionsContainer}}
         data-orientation={{if @orientation @orientation "vertical"}}
       >
+        {{! @glint-nocheck: Radio has a type param, glint cannt handle that with WithboundArgs}}
         {{yield
           (component
-            Radio name=@name onChange=@onChange size=@size checked=@value
+            Radio name=@name onChange=@onChange size=@size checkedValue=@value
           )
-          to="default"
         }}
       </div>
     </FormControl>

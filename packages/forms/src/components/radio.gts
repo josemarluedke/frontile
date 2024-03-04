@@ -9,29 +9,28 @@ import {
   type RadioSlots
 } from '@frontile/theme';
 
-interface Args extends FormControlSharedArgs {
-  value?: string | boolean | number;
-  checked?: string | boolean | number;
+interface Args<T> extends FormControlSharedArgs {
+  value: T;
+  checkedValue?: T | undefined | null;
   name?: string;
 
   size?: RadioVariants['size'];
   classes?: SlotsToClasses<RadioSlots>;
 
   // Callback when onchange is triggered
-  onChange?: (
-    value: string | boolean | number | undefined,
-    event: Event
-  ) => void;
+  onChange?: (value: T, event: Event) => void;
 }
 
-interface RadioSignature {
-  Args: Args;
+interface RadioSignature<T> {
+  Args: Args<T>;
   Element: HTMLInputElement;
 }
 
-class Radio extends Component<RadioSignature> {
+class Radio<T extends string | boolean | number> extends Component<
+  RadioSignature<T>
+> {
   get isChecked(): boolean {
-    return this.args.checked === this.args.value;
+    return this.args.checkedValue === this.args.value;
   }
 
   @action handleChange(event: Event): void {
@@ -74,9 +73,9 @@ class Radio extends Component<RadioSignature> {
       />
       <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
         {{#if @label}}
-          <c.Label
-            @class={{(this.classes.label class=@classes.label)}}
-          >{{@label}}</c.Label>
+          <c.Label @class={{(this.classes.label class=@classes.label)}}>
+            {{@label}}
+          </c.Label>
         {{/if}}
         {{#if @description}}
           <c.Description>{{@description}}</c.Description>
