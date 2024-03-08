@@ -1,14 +1,29 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "@tsconfig/ember/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
-      "@frontile/notifications": ["../packages/notifications/addon"],
-      "@frontile/notifications/*": ["../packages/notifications/addon/*"],
-      "@frontile/utilities": ["../packages/core/addon"],
-      "@frontile/utilities/*": ["../packages/core/addon/*"],
-      "*": ["types/*"]
+      "test-app/tests/*": [
+        "tests/*"
+      ],
+      "test-app/*": [
+        "app/*"
+      ],
+      "*": [
+        "types/*"
+      ]
     }
   },
-  "include": ["app/**/*", "addon/**/*", "tests/**/*", "types/**/*"]
+  "glint": {
+    "environment": [
+      "ember-loose",
+      "ember-template-imports"
+    ]
+  },
+  "include": [
+    "app/**/*",
+    "tests/**/*",
+    "types/**/*"
+  ]
 }

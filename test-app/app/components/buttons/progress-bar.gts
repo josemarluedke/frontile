@@ -1,7 +1,8 @@
 import { ProgressBar } from '@frontile/status';
 import { hash } from '@ember/helper';
+import type { TOC } from '@ember/component/template-only';
 
-<template>
+const Comp: TOC<null> = <template>
   <h2 class="text-2xl mt-6">
     Intents
   </h2>
@@ -131,4 +132,6 @@ import { hash } from '@ember/helper';
     <ProgressBar @size="md" @label="Progress" @isIndeterminate={{true}} />
   </div>
   <div class="pt-16"></div>
-</template>
+</template>;
+
+export default Comp;

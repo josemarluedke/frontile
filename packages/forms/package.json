@@ -40,14 +40,14 @@
     "ember-source": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
+    "@ember/test-waiters": "^3.0.2",
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/collections": "workspace:0.17.0-alpha.12",
     "@frontile/overlays": "workspace:0.17.0-alpha.12",
     "@frontile/theme": "workspace:0.17.0-alpha.12",
     "@frontile/utilities": "workspace:0.17.0-alpha.12",
     "@glint/template": "1.3.0",
-    "ember-basic-dropdown": "^7.3.0",
-    "ember-power-select": "^7.2.0"
+    "ember-modifier": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.23.9",
@@ -85,8 +85,19 @@
     "type": "addon",
     "main": "addon-main.js",
     "app-js": {
+      "./components/checkbox-group.js": "./dist/_app_/components/checkbox-group.js",
+      "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
+      "./components/form-control.js": "./dist/_app_/components/form-control.js",
+      "./components/form-description.js": "./dist/_app_/components/form-description.js",
+      "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",
+      "./components/form.js": "./dist/_app_/components/form.js",
+      "./components/input.js": "./dist/_app_/components/input.js",
+      "./components/label.js": "./dist/_app_/components/label.js",
       "./components/native-select.js": "./dist/_app_/components/native-select.js",
-      "./components/select.js": "./dist/_app_/components/select.js"
+      "./components/radio-group.js": "./dist/_app_/components/radio-group.js",
+      "./components/radio.js": "./dist/_app_/components/radio.js",
+      "./components/select.js": "./dist/_app_/components/select.js",
+      "./components/textarea.js": "./dist/_app_/components/textarea.js"
     }
   },
   "exports": {

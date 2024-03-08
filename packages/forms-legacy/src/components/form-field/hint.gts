@@ -17,9 +17,9 @@ export interface FormFieldHintSignature {
 
 export default class FormFieldHint extends Component<FormFieldHintSignature> {
   get classes() {
-    const { hint } = useStyles();
+    const { formDescription } = useStyles();
 
-    return hint({
+    return formDescription({
       size: this.args.size,
       class: this.args.class
     });

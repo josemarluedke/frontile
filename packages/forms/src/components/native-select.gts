@@ -4,7 +4,13 @@ import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type NativeSelectSlots,
+  type NativeSelectVariants,
+  type SlotsToClasses
+} from '@frontile/theme';
+import { FormControl, type FormControlSharedArgs } from './form-control';
 import {
   ListManager,
   keyAndLabelForItem,
@@ -14,28 +20,33 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
-interface NativeSelectSignature<T = unknown> {
-  Args: {
-    selectionMode?: 'single' | 'multiple';
-    selectedKeys?: string[];
-    disabledKeys?: string[];
-    allowEmpty?: boolean;
-    items?: T[];
-    class?: string;
+interface Args<T> extends FormControlSharedArgs {
+  selectionMode?: 'single' | 'multiple';
+  selectedKeys?: string[];
+  disabledKeys?: string[];
+  allowEmpty?: boolean;
+  items?: T[];
+  id?: string;
+  name?: string;
+  size?: NativeSelectVariants['size'];
+  classes?: SlotsToClasses<NativeSelectSlots>;
 
-    /**
-     * Placeholder text used when `allowEmpty` is set to `true`.
-     */
-    placeholder?: string;
+  /**
+   * Placeholder text used when `allowEmpty` is set to `true`.
+   */
+  placeholder?: string;
 
-    onAction?: (key: string) => void;
-    onSelectionChange?: (key: string[]) => void;
+  onAction?: (key: string) => void;
+  onSelectionChange?: (key: string[]) => void;
 
-    /**
-     * @internal
-     */
-    onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
-  };
+  /**
+   * @internal
+   */
+  onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
+}
+
+interface NativeSelectSignature<T> {
+  Args: Args<T>;
   Element: HTMLSelectElement;
   Blocks: {
     item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
@@ -43,7 +54,7 @@ interface NativeSelectSignature<T = unknown> {
   };
 }
 
-class NativeSelect extends Component<NativeSelectSignature> {
+class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
   listManager = new ListManager({
     selectionMode: this.args.selectionMode,
     selectedKeys: this.args.selectedKeys,
@@ -54,9 +65,11 @@ class NativeSelect extends Component<NativeSelectSignature> {
     onListItemsChange: this.args.onItemsChange
   });
 
-  get classNames() {
-    const { listbox } = useStyles();
-    return listbox({ class: this.args.class });
+  get classes() {
+    const { nativeSelect } = useStyles();
+    return nativeSelect({
+      size: this.args.size
+    });
   }
 
   get isMultiple() {
@@ -92,55 +105,71 @@ class NativeSelect extends Component<NativeSelectSignature> {
   }
 
   <template>
-    <select
-      {{this.listManager.setup
-        selectedKeys=@selectedKeys
-        disabledKeys=@disabledKeys
-        selectionMode=@selectionMode
-        allowEmpty=@allowEmpty
-        onListItemsChange=@onItemsChange
-        isKeyboardEventsEnabled=false
-      }}
-      {{on "change" this.handleOnChange}}
-      multiple={{this.isMultiple}}
-      data-test-id="native-select"
-      data-component="native-select"
-      class={{this.classNames}}
-      ...attributes
+    <FormControl
+      @id={{@id}}
+      @size={{@size}}
+      @label={{@label}}
+      @isRequired={{@isRequired}}
+      @description={{@description}}
+      @errors={{@errors}}
+      @isInvalid={{@isInvalid}}
+      @class={{this.classes.base class=@classes.base}}
+      as |c|
     >
-      {{#if this.args.allowEmpty}}
-        <NativeSelectItem @manager={{this.listManager}} @key="">
-          {{this.args.placeholder}}
-        </NativeSelectItem>
-      {{/if}}
-      {{#each @items as |item|}}
-        {{#let (keyAndLabelForItem item) as |keyLabel|}}
-          {{#if (has-block "item")}}
-            {{yield
-              (hash
-                item=item
-                key=keyLabel.key
-                label=keyLabel.label
-                Item=(component NativeSelectItem manager=this.listManager)
-              )
-              to="item"
-            }}
-          {{else}}
-            <NativeSelectItem
-              @manager={{this.listManager}}
-              @key={{keyLabel.key}}
-            >
-              {{keyLabel.label}}
-            </NativeSelectItem>
-          {{/if}}
-        {{/let}}
-      {{/each}}
+      <select
+        {{this.listManager.setup
+          selectedKeys=@selectedKeys
+          disabledKeys=@disabledKeys
+          selectionMode=@selectionMode
+          allowEmpty=@allowEmpty
+          onListItemsChange=@onItemsChange
+          isKeyboardEventsEnabled=false
+        }}
+        {{on "change" this.handleOnChange}}
+        multiple={{this.isMultiple}}
+        data-test-id="native-select"
+        data-component="native-select"
+        class={{this.classes.input class=@classes.input}}
+        id={{c.id}}
+        name={{@name}}
+        aria-invalid={{if c.isInvalid "true"}}
+        aria-describedby={{c.describedBy @description c.isInvalid}}
+        ...attributes
+      >
+        {{#if this.args.allowEmpty}}
+          <NativeSelectItem @manager={{this.listManager}} @key="">
+            {{this.args.placeholder}}
+          </NativeSelectItem>
+        {{/if}}
+        {{#each @items as |item|}}
+          {{#let (keyAndLabelForItem item) as |keyLabel|}}
+            {{#if (has-block "item")}}
+              {{yield
+                (hash
+                  item=item
+                  key=keyLabel.key
+                  label=keyLabel.label
+                  Item=(component NativeSelectItem manager=this.listManager)
+                )
+                to="item"
+              }}
+            {{else}}
+              <NativeSelectItem
+                @manager={{this.listManager}}
+                @key={{keyLabel.key}}
+              >
+                {{keyLabel.label}}
+              </NativeSelectItem>
+            {{/if}}
+          {{/let}}
+        {{/each}}
 
-      {{yield
-        (hash Item=(component NativeSelectItem manager=this.listManager))
-        to="default"
-      }}
-    </select>
+        {{yield
+          (hash Item=(component NativeSelectItem manager=this.listManager))
+          to="default"
+        }}
+      </select>
+    </FormControl>
   </template>
 }
 

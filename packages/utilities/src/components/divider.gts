@@ -22,7 +22,7 @@ const { divider } = useStyles();
 const Divider: TOC<{
   Args: {
     orientation?: 'horizontal' | 'vertical';
-    as: string;
+    as?: string;
     class?: string;
   };
   Element: Element;

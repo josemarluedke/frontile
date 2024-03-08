@@ -6,11 +6,11 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 
 registerCustomStyles({
-  feedback: tv({
+  formFeedback: tv({
     base: 'form-field-feedback' as never,
     variants: {
-      isError: {
-        true: 'form-field-feedback--error'
+      intent: {
+        danger: 'form-field-feedback--error'
       },
       size: {
         sm: 'form-field-feedback--sm',

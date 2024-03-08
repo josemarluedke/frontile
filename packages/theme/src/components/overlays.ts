@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv } from '../tw';
 
 const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 

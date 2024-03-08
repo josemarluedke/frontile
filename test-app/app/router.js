@@ -15,6 +15,9 @@ Router.map(function () {
   this.route('forms', function () {
     this.route('style-variants');
   });
+  this.route('forms-legacy', function () {
+    this.route('style-variants');
+  });
   this.route('notifications');
   this.route('overlays');
 });

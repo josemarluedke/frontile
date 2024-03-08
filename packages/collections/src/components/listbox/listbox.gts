@@ -14,7 +14,7 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
 
-interface ListboxSignature<T = unknown> {
+interface ListboxSignature<T> {
   Args: {
     /**
      * @default 'listbox'
@@ -50,7 +50,7 @@ interface ListboxSignature<T = unknown> {
   };
 }
 
-class Listbox extends Component<ListboxSignature> {
+class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
   listManager = new ListManager({
     selectionMode: this.args.selectionMode,
     selectedKeys: this.args.selectedKeys,

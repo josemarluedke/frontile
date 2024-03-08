@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv } from '../../tw';
 
 const base = tv({
   slots: {
@@ -83,4 +83,56 @@ const formRadioGroup = tv({
   }
 });
 
-export { formCheckbox, formRadio, formCheckboxGroup, formRadioGroup };
+const formInput = tv({
+  slots: {
+    base: 'flex flex-wrap	flex-row',
+    label: 'flex-[1_100%]',
+    input: '',
+    hint: 'flex-[1_100%]',
+    feedback: 'flex-[1_100%]'
+  },
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+      lg: ''
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+const formTextarea = tv({
+  extend: formInput
+});
+
+const formSelect = tv({
+  slots: {
+    base: 'flex flex-wrap	flex-row',
+    label: 'flex-[1_100%]',
+    select: '',
+    hint: 'flex-[1_100%]',
+    feedback: 'flex-[1_100%]'
+  },
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+      lg: ''
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
+export {
+  formInput,
+  formTextarea,
+  formCheckbox,
+  formRadio,
+  formCheckboxGroup,
+  formRadioGroup,
+  formSelect
+};

@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv } from '../tw';
 
 const btn = 'transition transition-200 focus-visible:ring';
 

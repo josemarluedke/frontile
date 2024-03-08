@@ -1,4 +1,4 @@
-import { tv } from 'tailwind-variants';
+import { tv } from '../tw';
 
 const popover = tv({
   base: 'bg-content1 rounded border border-default-200',

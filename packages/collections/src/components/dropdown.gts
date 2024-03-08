@@ -153,7 +153,7 @@ class Trigger extends Component<TriggerSignature> {
 
 interface MenuArgs
   extends Pick<
-      ListboxSignature['Args'],
+      ListboxSignature<unknown>['Args'],
       | 'appearance'
       | 'intent'
       | 'class'

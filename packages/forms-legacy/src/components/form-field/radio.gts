@@ -37,7 +37,8 @@ export default class FormFieldRadio extends Component<FormFieldRadioSignature> {
     const { radio } = useStyles();
 
     return radio({
-      size: this.args.size,
+      size: this.args.size
+    }).input({
       class: this.args.class
     });
   }
