@@ -1,7 +1,7 @@
 {
   "name": "@frontile/addon-blueprint",
   "private": true,
-  "version": "0.17.0-alpha.12",
+  "version": "0.17.0-alpha.13",
   "description": "Component Library for Ember Octane apps",
   "keywords": [
     "ember-addon",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/theme": "workspace:0.17.0-alpha.12"
+    "@frontile/theme": "workspace:0.17.0-alpha.13"
   },
   "devDependencies": {
     "@babel/core": "7.23.9",
