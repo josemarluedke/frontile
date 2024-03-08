@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
+import { buildWaiter } from '@ember/test-waiters';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -32,6 +33,8 @@ function triggerFormInputEvent(element: HTMLElement | null): void {
     parent = parent.parentElement;
   }
 }
+
+const waiter = buildWaiter('@frontile/forms:select');
 
 interface SelectArgs<T>
   extends Pick<
@@ -128,6 +131,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   onSelectionChange = (keys: string[]) => {
+    const waiterToken = waiter.beginAsync();
+
     if (typeof this.args.onSelectionChange === 'function') {
       this.args.onSelectionChange(keys);
     } else {
@@ -136,6 +141,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
     requestAnimationFrame(() => {
       triggerFormInputEvent(this.el);
+      waiter.endAsync(waiterToken);
     });
   };
 
@@ -263,6 +269,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           </VisuallyHidden>
 
           <button
+            type="button"
             {{p.trigger}}
             {{p.anchor}}
             data-test-id="trigger"

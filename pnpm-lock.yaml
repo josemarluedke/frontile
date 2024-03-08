@@ -397,6 +397,9 @@ importers:
       '@babel/runtime':
         specifier: '>= 7'
         version: 7.23.6
+      '@ember/test-waiters':
+        specifier: ^3.0.2
+        version: 3.1.0
       '@embroider/addon-shim':
         specifier: ^1.8.7
         version: 1.8.7

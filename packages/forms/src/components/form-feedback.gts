@@ -30,9 +30,8 @@ interface FormFeedbackSignature {
 class FormFeedback extends Component<FormFeedbackSignature> {
   get isError(): boolean {
     return (
-      typeof this.args.messages !== 'undefined' ||
-      this.args.intent === 'danger' ||
-      typeof this.args.intent === 'undefined'
+      typeof this.args.messages !== 'undefined' &&
+      (this.args.intent === 'danger' || typeof this.args.intent === 'undefined')
     );
   }
 

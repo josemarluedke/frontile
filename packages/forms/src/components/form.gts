@@ -2,13 +2,13 @@ import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
 
 type FormDataEntryValue = NonNullable<ReturnType<FormData['get']>>;
-type Data = Record<string, FormDataEntryValue>;
+type FormResultData = Record<string, FormDataEntryValue>;
 
 interface FormSignature {
   Element: HTMLFormElement;
   Args: {
     onChange: (
-      data: Data,
+      data: FormResultData,
       eventType: 'input' | 'submit',
       event: Event | SubmitEvent
     ) => void;
@@ -63,5 +63,5 @@ class Form extends Component<FormSignature> {
   </template>
 }
 
-export { Form, type FormSignature };
+export { Form, type FormSignature, type FormResultData };
 export default Form;
