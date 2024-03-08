@@ -45,6 +45,7 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
       @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
+      @class={{this.classes.base class=@classes.base}}
       ...attributes
       as |c|
     >
