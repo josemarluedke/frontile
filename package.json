@@ -13,7 +13,8 @@
     "lint:js": "eslint . --ext .js,.ts,.gts,.gjs",
     "start": "pnpm --filter test-app start",
     "test": "pnpm --filter test-app test",
-    "try:one": "pnpm --filter test-app try:one"
+    "try:one": "pnpm --filter test-app try:one",
+    "clean:declarations": "rm -rf packages/*/declarations"
   },
   "resolutions": {
     "@ember/test-waiters": "^3.0.2"
