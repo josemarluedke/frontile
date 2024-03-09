@@ -1,9 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { modifier } from 'ember-modifier';
 
 module(
   'Integration | Component | Listbox | @frontile/collections',
@@ -250,6 +251,7 @@ module(
           @items={{this.animals}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
+          @autoActivateFirstItem={{false}}
         />`
       );
 
@@ -261,24 +263,24 @@ module(
 
       // ArrowDown & ArrowUp navigation
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keyup', 'ArrowDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keyup', 'ArrowDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keyup', 'ArrowUp');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowUp');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
 
       // PageDown & PageUp
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keyup', 'PageDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'PageDown');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'true');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keyup', 'PageUp');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'PageUp');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'false');
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
@@ -364,6 +366,83 @@ module(
       assert
         .dom('[data-key="item-1"] [data-test-id="end"]')
         .hasText('End content');
+    });
+
+    test('automatically activate first item', async function (assert) {
+      this.set('autoActivateFirstItem', true);
+      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+
+      await render(
+        hbs`
+        <Listbox
+          @items={{this.animals}}
+          @autoActivateFirstItem={{this.autoActivateFirstItem}}
+        />`
+      );
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+      this.set('animals', ['crocodile', 'elephant']);
+
+      assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
+    });
+
+    test('it calls onActiveItemChange when a new item is activated', async function (assert) {
+      const activeItems: string[] = [];
+      this.set('onActiveItemChange', (key?: string) => {
+        activeItems.push(key || '');
+      });
+      this.set('autoActivateFirstItem', true);
+      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+
+      await render(
+        hbs`
+        <Listbox
+          @items={{this.animals}}
+          @autoActivateFirstItem={{this.autoActivateFirstItem}}
+          @isKeyboardEventsEnabled={{true}}
+          @onActiveItemChange={{this.onActiveItemChange}}
+        />`
+      );
+
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+
+      assert.deepEqual(activeItems, ['cheetah', 'crocodile', 'elephant']);
+    });
+
+    test('it adds keyboard events to element passed in args', async function (assert) {
+      this.set('elementToAddKeyboardEvents', undefined);
+
+      this.set(
+        'modifier',
+        modifier((element: HTMLElement) => {
+          this.set('elementToAddKeyboardEvents', element);
+        })
+      );
+
+      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+
+      await render(
+        hbs`
+        <input type="text" data-test-input {{this.modifier}} />
+        <Listbox
+          @items={{this.animals}}
+          @autoActivateFirstItem={{false}}
+          @isKeyboardEventsEnabled={{true}}
+          @elementToAddKeyboardEvents={{this.elementToAddKeyboardEvents}}
+        />`
+      );
+
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
+      await triggerKeyEvent('[data-test-input]', 'keydown', 'ArrowDown');
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+      await triggerKeyEvent('[data-test-input]', 'keypress', 'E');
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+      await fillIn('[data-test-input]', 'e');
+      assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
+
+      await triggerKeyEvent('[data-test-input]', 'keydown', 'ArrowDown');
+      assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
     });
 
     module('style classes', () => {

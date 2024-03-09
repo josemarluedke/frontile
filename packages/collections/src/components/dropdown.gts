@@ -269,6 +269,7 @@ class Menu extends Component<MenuSignature> {
         @selectedKeys={{@selectedKeys}}
         @selectionMode={{if @selectionMode @selectionMode "none"}}
         @type="menu"
+        @autoActivateFirstItem={{false}}
         ...attributes
         as |l|
       >
