@@ -2,4 +2,4 @@
 
 ## API
 
-<Signature @package="forms" @component="FormRadio" />
+<Signature @package="forms-legacy" @component="FormRadio" />

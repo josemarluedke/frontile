@@ -2,4 +2,4 @@
 
 ## API
 
-<Signature @package="forms" @component="FormInput" />
+<Signature @package="forms-legacy" @component="FormInput" />

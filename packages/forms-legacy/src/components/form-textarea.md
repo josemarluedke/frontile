@@ -2,4 +2,4 @@
 
 ## API
 
-<Signature @package="forms" @component="FormTextarea" />
+<Signature @package="forms-legacy" @component="FormTextarea" />
