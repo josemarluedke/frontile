@@ -366,18 +366,17 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-component="listbox"] [data-key="item-4"]').exists();
     assert.dom('[data-component="listbox"] [data-key="item-5"]').exists();
 
-    await triggerKeyEvent('[data-component="listbox"]', 'keyup', 'ArrowDown');
     assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'true');
 
-    await triggerKeyEvent('[data-component="listbox"]', 'keyup', 'ArrowDown');
+    await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowDown');
     assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'false');
     assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'true');
 
-    await triggerKeyEvent('[data-component="listbox"]', 'keyup', 'ArrowUp');
+    await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowUp');
     assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'true');
     assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'false');
 
-    await triggerKeyEvent('[data-component="listbox"]', 'keyup', 'ArrowDown');
+    await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowDown');
     await triggerKeyEvent('[data-component="listbox"]', 'keypress', 'Enter');
     assert.dom('[data-component="listbox"]').doesNotExist();
 

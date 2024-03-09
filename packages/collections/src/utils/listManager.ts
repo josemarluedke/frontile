@@ -35,48 +35,58 @@ class ListItem {
   }
 }
 
-interface ListManagerOptions {
+interface ListManagerArgs {
   selectionMode?: SelectionMode;
   selectedKeys?: string[];
   disabledKeys?: string[];
   allowEmpty?: boolean;
+  autoActivateFirstItem?: boolean;
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
   onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
+  onActiveItemChange?: (key?: string) => void;
 }
 
 class ListManager {
-  searchKeys: string = '';
-
-  #selectionMode: SelectionMode = 'none';
   #items: ListItem[] = [];
-  #selectedKeys: string[] = [];
-  #disabledKeys: string[] = [];
-  #allowEmpty: boolean = false;
-  #onAction?: (key: string) => void;
-  #onSelectionChange?: (key: string[]) => void;
-  #onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
 
-  constructor(options: ListManagerOptions = {}) {
-    this.update(options);
+  searchKeys: string = '';
+  args: ListManagerArgs = {
+    selectionMode: 'none',
+    selectedKeys: [],
+    disabledKeys: [],
+    allowEmpty: false,
+    autoActivateFirstItem: false
+  };
+
+  constructor(args: ListManagerArgs = {}) {
+    this.updateArgs(args);
   }
 
   register(
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
   ): void {
+    if (this.args.autoActivateFirstItem && this.#items.length === 0) {
+      args.isActive = true;
+      this.args.onActiveItemChange?.(args.key);
+    }
     this.#items.push(new ListItem(el, args));
 
-    if (typeof this.#onListItemsChange === 'function') {
-      this.#onListItemsChange(this.#items, 'add');
+    if (typeof this.args.onListItemsChange === 'function') {
+      this.args.onListItemsChange(this.#items, 'add');
     }
   }
 
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (typeof this.#onListItemsChange === 'function') {
-      this.#onListItemsChange(this.#items, 'remove');
+    if (this.args.autoActivateFirstItem && this.#items.length >= 1) {
+      this.activateItem(this.#items[0]);
+    }
+
+    if (typeof this.args.onListItemsChange === 'function') {
+      this.args.onListItemsChange(this.#items, 'remove');
     }
   }
 
@@ -88,11 +98,11 @@ class ListManager {
     return this.#items.find((item) => item.key === key);
   }
 
-  update(options: ListManagerOptions): void {
-    this.#selectionMode = options.selectionMode || 'none';
-    this.#selectedKeys = options.selectedKeys || [];
-    this.#disabledKeys = options.disabledKeys || [];
-    this.#allowEmpty = options.allowEmpty || false;
+  updateArgs(args: ListManagerArgs): void {
+    this.args.selectedKeys = args.selectedKeys || [];
+    this.args.disabledKeys = args.disabledKeys || [];
+    this.args.allowEmpty = args.allowEmpty || false;
+    this.args.autoActivateFirstItem = args.autoActivateFirstItem || false;
 
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
@@ -100,16 +110,24 @@ class ListManager {
       item.isDisabled = this.isKeyDisabled(item.key);
     }
 
-    if (options.onAction) {
-      this.#onAction = options.onAction;
+    if (args.selectionMode) {
+      this.args.selectionMode = args.selectionMode;
     }
 
-    if (options.onSelectionChange) {
-      this.#onSelectionChange = options.onSelectionChange;
+    if (args.onAction) {
+      this.args.onAction = args.onAction;
     }
 
-    if (options.onListItemsChange) {
-      this.#onListItemsChange = options.onListItemsChange;
+    if (args.onSelectionChange) {
+      this.args.onSelectionChange = args.onSelectionChange;
+    }
+
+    if (args.onListItemsChange) {
+      this.args.onListItemsChange = args.onListItemsChange;
+    }
+
+    if (args.onActiveItemChange) {
+      this.args.onActiveItemChange = args.onActiveItemChange;
     }
   }
 
@@ -122,18 +140,18 @@ class ListManager {
 
   selectItem(item?: ListItem): void {
     if (item) {
-      if (this.#selectionMode !== 'none') {
+      if (this.args.selectionMode !== 'none') {
         this.activateItem(item);
       }
-      if (typeof this.#onAction === 'function') {
-        this.#onAction(item.key);
+      if (typeof this.args.onAction === 'function') {
+        this.args.onAction(item.key);
       }
 
       if (
-        typeof this.#onSelectionChange === 'function' &&
-        this.#selectionMode !== 'none'
+        typeof this.args.onSelectionChange === 'function' &&
+        this.args.selectionMode !== 'none'
       ) {
-        this.#onSelectionChange(this.#toggleSelectedItem(item));
+        this.args.onSelectionChange(this.#toggleSelectedItem(item));
       }
     }
   }
@@ -142,7 +160,7 @@ class ListManager {
     if (item) {
       this.#clearActive();
       item.isActive = true;
-      item.el.focus();
+      this.args.onActiveItemChange?.(item.key);
     }
   }
 
@@ -205,11 +223,11 @@ class ListManager {
   }
 
   isKeyDisabled(key: string): boolean {
-    return this.#disabledKeys.includes(key);
+    return this.args.disabledKeys?.includes(key) || false;
   }
 
   isKeySelected(key: string): boolean {
-    return this.#selectedKeys.includes(key);
+    return this.args.selectedKeys?.includes(key) || false;
   }
 
   get #indexofActiveItem(): number {
@@ -242,13 +260,13 @@ class ListManager {
 
     if (
       selectedKeys.includes(item.key) &&
-      ((this.#allowEmpty && selectedKeys.length == 1) ||
+      ((this.args.allowEmpty && selectedKeys.length == 1) ||
         selectedKeys.length > 1)
     ) {
       const indexToRemove = selectedKeys.indexOf(item.key);
       selectedKeys.splice(indexToRemove, 1);
     } else {
-      if (this.#selectionMode === 'single') {
+      if (this.args.selectionMode === 'single') {
         selectedKeys = [item.key];
       } else if (!selectedKeys.includes(item.key)) {
         selectedKeys.push(item.key);
@@ -284,13 +302,14 @@ class ListManager {
     (
       _el: HTMLUListElement | HTMLSelectElement,
       _: unknown[],
-      args: ListManagerOptions & { isKeyboardEventsEnabled?: boolean }
+      args: ListManagerArgs
     ) => {
-      this.update({
+      this.updateArgs({
         selectionMode: args.selectionMode,
         disabledKeys: args.disabledKeys,
         selectedKeys: args.selectedKeys,
-        allowEmpty: args.allowEmpty
+        allowEmpty: args.allowEmpty,
+        autoActivateFirstItem: args.autoActivateFirstItem
       });
     }
   );
