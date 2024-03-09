@@ -135,4 +135,5 @@ Kindly be aware that the implementation of shortcut event handling is your respo
 
 ## API
 
-<Signature @package="collections" @component="Listbox" />
+<Signature @component="Listbox" />
+<Signature @component="ListboxItem" />
