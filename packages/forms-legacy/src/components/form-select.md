@@ -8,4 +8,4 @@ In the example below, we have a label, hint, error validation, search and `allow
 
 ## API
 
-<Signature @package="forms" @component="FormSelect" />
+<Signature @package="forms-legacy" @component="FormSelect" />

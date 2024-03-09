@@ -2,4 +2,4 @@
 
 ## API
 
-<Signature @package="forms" @component="FormRadioGroup" />
+<Signature @package="forms-legacy" @component="FormRadioGroup" />

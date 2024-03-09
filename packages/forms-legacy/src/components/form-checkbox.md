@@ -2,4 +2,4 @@
 
 ## API
 
-<Signature @package="forms" @component="FormCheckbox" />
+<Signature @package="forms-legacy" @component="FormCheckbox" />
