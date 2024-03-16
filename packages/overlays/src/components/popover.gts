@@ -65,7 +65,13 @@ interface PopoverSignature {
         }>;
         Content: WithBoundArgs<
           typeof Content,
-          'loop' | 'isOpen' | 'id' | 'toggle' | 'blockScroll' | 'backdrop'
+          | 'loop'
+          | 'isOpen'
+          | 'id'
+          | 'toggle'
+          | 'internalDidClose'
+          | 'blockScroll'
+          | 'backdrop'
         >;
       }
     ];
@@ -76,6 +82,7 @@ class Popover extends Component<PopoverSignature> {
   triggerEl?: HTMLElement;
   menuId = guidFor(this);
   @tracked _isOpen = false;
+  @tracked isClosing = false;
 
   get isOpen(): boolean {
     if (
@@ -97,6 +104,9 @@ class Popover extends Component<PopoverSignature> {
   };
 
   open = () => {
+    if (this.isClosing) {
+      return;
+    }
     if (typeof this.args.onOpenChange === 'function') {
       this.args.onOpenChange(true);
     } else {
@@ -105,6 +115,7 @@ class Popover extends Component<PopoverSignature> {
   };
 
   close = () => {
+    this.isClosing = true;
     if (typeof this.args.onOpenChange === 'function') {
       this.args.onOpenChange(false);
     } else {
@@ -147,6 +158,10 @@ class Popover extends Component<PopoverSignature> {
     }
   });
 
+  didClose = () => {
+    this.isClosing = false;
+  };
+
   <template>
     <Velcro
       @placement={{if @placement @placement "bottom-start"}}
@@ -171,6 +186,7 @@ class Popover extends Component<PopoverSignature> {
             loop=velcro.loop
             isOpen=this.isOpen
             toggle=this.toggle
+            internalDidClose=this.didClose
           )
         )
       }}
@@ -207,6 +223,11 @@ interface ContentArgs
    * @internal
    */
   toggle: () => void;
+
+  /**
+   * @ignore
+   */
+  internalDidClose: () => void;
 
   /**
    * @internal
@@ -288,6 +309,16 @@ class Content extends Component<ContentSignature> {
     return true;
   }
 
+  didClose = () => {
+    if (typeof this.args.internalDidClose === 'function') {
+      this.args.internalDidClose();
+    }
+
+    if (typeof this.args.didClose === 'function') {
+      this.args.didClose();
+    }
+  };
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -298,7 +329,7 @@ class Content extends Component<ContentSignature> {
       @isOpen={{@isOpen}}
       @onClose={{@toggle}}
       @onOpen={{@onOpen}}
-      @didClose={{@didClose}}
+      @didClose={{this.didClose}}
       @renderInPlace={{@renderInPlace}}
       @destinationElementId={{@destinationElementId}}
       @transitionDuration={{@transitionDuration}}
