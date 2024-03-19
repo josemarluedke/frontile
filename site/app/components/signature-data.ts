@@ -8105,6 +8105,108 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'utilities',
+    module: 'divider',
+    name: 'Divider',
+    fileName: 'packages/utilities/declarations/components/divider.d.ts',
+    Args: [
+      {
+        identifier: 'as',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'orientation',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'horizontal\'</span> | <span class="hljs-string">\'vertical\'</span>',
+          items: ["'horizontal'", "'vertical'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'Element' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/Element'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'utilities',
+    module: 'spinner',
+    name: 'Spinner',
+    fileName: 'packages/utilities/declarations/components/spinner.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'"
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>'
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>'
+      }
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'SVGElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'utilities',
     module: 'visually-hidden',
     name: 'VisuallyHidden',
     fileName: 'packages/utilities/declarations/components/visually-hidden.d.ts',

@@ -6,7 +6,7 @@
     <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-primary">
       CloseButton
     </h1>
-    <div class="flex items-center mt-10 space-x-2">
+    <div class="flex items-center space-x-2">
       <CloseButton @size="xs" />
       <CloseButton @size="sm" />
       <CloseButton @size="md" />
@@ -14,9 +14,30 @@
       <CloseButton @size="xl" />
     </div>
 
-    <hr class="mb-4 divide-gray-200" />
+    <Divider />
 
-    <h1 class="inline-block mb-6 text-2xl font-bold border-b-4 border-primary">
+    <h1 class="inline-block my-6 text-2xl font-bold border-b-4 border-primary">
+      Spinner
+    </h1>
+    <div class="flex items-center space-x-2">
+      <Spinner @size="xs" />
+      <Spinner @size="sm" />
+      <Spinner @size="md" />
+      <Spinner @size="lg" />
+      <Spinner @size="xl" />
+    </div>
+
+    <div class="flex items-center my-4 space-x-2">
+      <Spinner @intent="default" />
+      <Spinner @intent="primary" />
+      <Spinner @intent="success" />
+      <Spinner @intent="warning" />
+      <Spinner @intent="danger" />
+    </div>
+
+    <Divider />
+
+    <h1 class="inline-block my-6 text-2xl font-bold border-b-4 border-primary">
       Collapsible
     </h1>
 
