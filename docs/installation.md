@@ -57,7 +57,7 @@ module.exports = {
 
     // Power Select
     { pattern: /^ember-power-select/ }
-  }
+  ]
   // ...
 };
 
