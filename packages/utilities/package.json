@@ -87,6 +87,7 @@
     "app-js": {
       "./components/collapsible/index.js": "./dist/_app_/components/collapsible/index.js",
       "./components/divider.js": "./dist/_app_/components/divider.js",
+      "./components/spinner.js": "./dist/_app_/components/spinner.js",
       "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js"
     }
   },
