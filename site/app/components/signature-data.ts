@@ -1953,7 +1953,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -2063,7 +2063,32 @@ const data: ComponentDoc[] = [
         tags: {}
       }
     ],
-    Blocks: [],
+    Blocks: [
+      {
+        identifier: 'startContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'endContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
     Element: {
       identifier: 'Element',
       type: { type: 'HTMLInputElement' },
@@ -2166,7 +2191,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -3534,7 +3559,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -7440,6 +7465,17 @@ const data: ComponentDoc[] = [
         isInternal: true,
         description: '',
         tags: { internal: { name: 'internal', value: '' } }
+      },
+      {
+        identifier: 'internalDidClose',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '() => <span class="hljs-built_in">void</span>'
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: { ignore: { name: 'ignore', value: '' } }
       },
       {
         identifier: 'isOpen',

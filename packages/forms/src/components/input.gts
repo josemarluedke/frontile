@@ -25,6 +25,10 @@ interface Args extends FormControlSharedArgs {
 
 interface InputSignature {
   Args: Args;
+  Blocks: {
+    startContent: [];
+    endContent: [];
+  };
   Element: HTMLInputElement;
 }
 
@@ -72,19 +76,35 @@ class Input extends Component<InputSignature> {
       @class={{this.classes.base class=@classes.base}}
       as |c|
     >
-      <input
-        {{on "input" this.handleOnInput}}
-        {{on "change" this.handleOnChange}}
-        id={{c.id}}
-        name={{@name}}
-        value={{@value}}
-        type={{this.type}}
-        class={{this.classes.input class=@classes.input}}
-        data-component="input"
-        aria-invalid={{if c.isInvalid "true"}}
-        aria-describedby={{c.describedBy @description c.isInvalid}}
-        ...attributes
-      />
+      <div class={{this.classes.innerContainer class=@classes.innerContainer}}>
+        {{#if (has-block "startContent")}}
+          <div class={{this.classes.startContent class=@classes.startContent}}>
+            {{yield to="startContent"}}
+          </div>
+        {{/if}}
+        <input
+          {{on "input" this.handleOnInput}}
+          {{on "change" this.handleOnChange}}
+          id={{c.id}}
+          name={{@name}}
+          value={{@value}}
+          type={{this.type}}
+          class={{this.classes.input
+            class=@classes.input
+            hasStartContent=(has-block "startContent")
+            hasEndContent=(has-block "endContent")
+          }}
+          data-component="input"
+          aria-invalid={{if c.isInvalid "true"}}
+          aria-describedby={{c.describedBy @description c.isInvalid}}
+          ...attributes
+        />
+        {{#if (has-block "endContent")}}
+          <div class={{this.classes.endContent class=@classes.endContent}}>
+            {{yield to="endContent"}}
+          </div>
+        {{/if}}
+      </div>
     </FormControl>
   </template>
 }

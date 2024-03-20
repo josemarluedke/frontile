@@ -58,6 +58,11 @@ const formFeedback = tv({
 const input = tv({
   slots: {
     base: '',
+    innerContainer: 'relative flex',
+    startContent:
+      'absolute inset-y-0 left-0 flex items-center pointer-events-none',
+    endContent:
+      'absolute inset-y-0 right-0 flex items-center pointer-events-none',
     input: [
       'appearance-none',
       'flex-1',
@@ -81,9 +86,15 @@ const input = tv({
   },
   variants: {
     size: {
-      sm: { input: 'p-2' },
-      md: { input: 'p-3' },
-      lg: { input: 'p-4' }
+      sm: { input: 'p-2', startContent: 'pl-2', endContent: 'pr-2' },
+      md: { input: 'p-3', startContent: 'pl-3', endContent: 'pr-3' },
+      lg: { input: 'p-4', startContent: 'pl-4', endContent: 'pr-4' }
+    },
+    hasStartContent: {
+      true: { input: 'ps-8' }
+    },
+    hasEndContent: {
+      true: { input: 'pe-10' }
     }
   },
   defaultVariants: {

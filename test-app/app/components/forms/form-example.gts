@@ -13,6 +13,7 @@ import {
   RadioGroup,
   CheckboxGroup
 } from '@frontile/forms';
+import { Spinner } from '@frontile/utilities';
 
 const animals = [
   'cheetah',
@@ -45,6 +46,15 @@ export default class FormExample extends Component<FormExampleArgs> {
 
   <template>
     <Form @onChange={{this.onChange}} class="flex flex-1 flex-col gap-4">
+      <Input @name="field-0" @label="field 0">
+        <:startContent>
+          @
+        </:startContent>
+        <:endContent>
+          <Spinner @size="sm" />
+        </:endContent>
+      </Input>
+
       <Input
         @name="field-1"
         @label={{MyCustomLabel}}

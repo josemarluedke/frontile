@@ -44,21 +44,10 @@ class Label extends Component<LabelSignature> {
     });
   }
 
-  get baseClasses() {
-    const val = [];
-    if (this.args.class) val.push(this.args.class);
-    if (this.classes.base && Array.isArray(this.classes.base)) {
-      val.push(...this.classes.base);
-    } else if (this.classes.base) {
-      val.push(this.classes.base);
-    }
-    return val;
-  }
-
   <template>
     <label
       for={{@for}}
-      class={{this.classes.base class=this.baseClasses}}
+      class={{this.classes.base class=@class}}
       data-component="label"
       ...attributes
     >

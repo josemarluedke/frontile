@@ -53,17 +53,24 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
     assert.dom('[data-component="label"]').hasAttribute('for', id);
   });
 
-  // test('it renders yielded block next to input', async function (assert) {
-  //   await render(
-  //     <template>
-  //       <Input @label="Name" data-test-input>
-  //         <button type="submit">My Button</button>
-  //       </Input>
-  //     </template>
-  //   );
+  test('it renders named blocks startContent and endContent', async function (assert) {
+    const classes = { innerContainer: 'input-container' };
+    await render(
+      <template>
+        <Input @label="Name" @classes={{classes}}>
+          <:startContent>Start</:startContent>
+          <:endContent>End</:endContent>
+        </Input>
+      </template>
+    );
 
-  //   assert.dom('[data-test-input] + button').exists();
-  // });
+    assert.dom('[data-component="input"]').exists();
+    assert.dom('.input-container div:first-child').exists();
+    assert.dom('.input-container div:first-child').hasTextContaining('Start');
+
+    assert.dom('.input-container div:last-child').exists();
+    assert.dom('.input-container div:last-child').hasTextContaining('End');
+  });
 
   test('should mutate the value using onInput action', async function (assert) {
     const myInputValue = cell('Josemar');
