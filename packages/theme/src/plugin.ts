@@ -9,6 +9,7 @@ import { registerPowerSelectComponents } from './plugin/power-select';
 import { addTransitions } from './plugin/transitions';
 import type { PluginConfig } from './types';
 export { swapColorValues } from './colors/util';
+export { safelist } from './plugin/safelist';
 
 function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
   const c = resolveConfig(config);

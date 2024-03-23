@@ -2,7 +2,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 const { teal } = require('tailwindcss/colors');
 /* eslint-disable node/no-missing-require */
-const { frontile } = require('@frontile/theme/plugin');
+const { frontile, safelist } = require('@frontile/theme/plugin');
 const { blue } = require('@frontile/theme/colors');
 
 module.exports = {
@@ -50,21 +50,11 @@ module.exports = {
   },
   plugins: [frontile(), require('@tailwindcss/typography')],
   safelist: [
-    { pattern: /^js-focus-visible/ },
-    { pattern: /^sr-only/ },
+    ...safelist,
+
     { pattern: /^not-prose/ },
     { pattern: /^prose"/ },
     { pattern: /^dark:prose-invert"/ },
-
-    // Frontile Notifications
-    { pattern: /^notification-transition/ },
-
-    // Frontile Overlays
-    { pattern: /^overlay/ },
-    { pattern: /^modal/ },
-    { pattern: /^drawer/ },
-
-    // Power Select
     { pattern: /^ember-power-select/ }
   ]
 };
