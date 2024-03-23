@@ -1,16 +1,15 @@
-import Component from '@glimmer/component';
+import type { TOC } from '@ember/component/template-only';
 
-export interface VisuallyHiddenSignature {
+const VisuallyHidden: TOC<{
   Element: HTMLDivElement;
   Blocks: {
     default: [];
   };
-}
+}> = <template>
+  <div class="sr-only" ...attributes>
+    {{yield}}
+  </div>
+</template>;
 
-export default class VisuallyHidden extends Component<VisuallyHiddenSignature> {
-  <template>
-    <div class="sr-only" ...attributes>
-      {{yield}}
-    </div>
-  </template>
-}
+export { VisuallyHidden };
+export default VisuallyHidden;

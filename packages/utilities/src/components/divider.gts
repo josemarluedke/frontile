@@ -37,4 +37,5 @@ const Divider: TOC<{
   {{/let}}
 </template>;
 
+export { Divider };
 export default Divider;

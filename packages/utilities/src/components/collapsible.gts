@@ -4,11 +4,11 @@ import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
 import { on } from '@ember/modifier';
 import didUpdate from '@ember/render-modifiers/modifiers/did-update';
-import safeStyles from '../../utils/safe-styles';
+import safeStyles from '../utils/safe-styles';
 
 const waiter = buildWaiter('@frontile/utilities:collapsible');
 
-export interface CollapsibleArgs {
+interface CollapsibleArgs {
   /**
    * If true, the content will be visible
    */
@@ -23,7 +23,7 @@ export interface CollapsibleArgs {
   initialHeight?: string;
 }
 
-export interface CollapsibleSignature {
+interface CollapsibleSignature {
   Args: CollapsibleArgs;
   Element: HTMLDivElement;
   Blocks: {
@@ -31,7 +31,7 @@ export interface CollapsibleSignature {
   };
 }
 
-export default class Collapsible extends Component<CollapsibleSignature> {
+class Collapsible extends Component<CollapsibleSignature> {
   isInitiallyOpen = false;
   waiterToken?: unknown;
   isCurrentlyOpen = false; // Internal value to track if open or not
@@ -164,3 +164,6 @@ export default class Collapsible extends Component<CollapsibleSignature> {
     </div>
   </template>
 }
+
+export { Collapsible, type CollapsibleSignature };
+export default Collapsible;
