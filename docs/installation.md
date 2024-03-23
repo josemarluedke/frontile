@@ -31,7 +31,7 @@ Add `frontile` plugin to your tailwind `tailwind.config.js`, add options to `con
 
 ```js
 // tailwind.config.js
-const { frontile } = require('@frontile/theme/plugin');
+const { frontile, safelist } = require('@frontile/theme/plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -44,16 +44,7 @@ module.exports = {
   ],
 
   safelist: [
-    { pattern: /^js-focus-visible/ },
-    { pattern: /^sr-only/ },
-
-    // Frontile Notifications Transistions
-    { pattern: /^notification-transition/ },
-
-    // Frontile Overlays Transistions and Sizes
-    { pattern: /^overlay/ },
-    { pattern: /^modal/ },
-    { pattern: /^drawer/ },
+    ...safelist,
 
     // Power Select
     { pattern: /^ember-power-select/ }
