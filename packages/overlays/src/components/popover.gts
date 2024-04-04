@@ -83,6 +83,7 @@ class Popover extends Component<PopoverSignature> {
   menuId = guidFor(this);
   @tracked _isOpen = false;
   @tracked isClosing = false;
+  @tracked preventFocusRestore = false;
 
   get isOpen(): boolean {
     if (
@@ -136,6 +137,7 @@ class Popover extends Component<PopoverSignature> {
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
       if (eventType === 'hover') {
+        this.preventFocusRestore = true;
         el.addEventListener('mouseenter', this.open);
         el.addEventListener('mouseleave', this.close);
       } else {
@@ -192,6 +194,7 @@ class Popover extends Component<PopoverSignature> {
             isOpen=this.isOpen
             toggle=this.toggle
             internalDidClose=this.didClose
+            preventFocusRestore=this.preventFocusRestore
           )
         )
       }}
@@ -238,6 +241,11 @@ interface ContentArgs
    * @internal
    */
   id: string;
+
+  /**
+   * @internal
+   */
+  preventFocusRestore?: boolean;
 
   class?: string;
 
@@ -345,6 +353,7 @@ class Content extends Component<ContentSignature> {
       @closeOnEscapeKey={{@closeOnEscapeKey}}
       @backdropTransition={{@backdropTransition}}
       @class={{this.classNames}}
+      @preventFocusRestore={{@preventFocusRestore}}
       id={{@id}}
       ...attributes
     >

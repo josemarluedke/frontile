@@ -165,6 +165,10 @@ interface OverlaySignature {
     disableFlexContent?: boolean;
     customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
     class?: string;
+    /**
+     * @defaultValue false
+     */
+    preventFocusRestore?: boolean;
 
     /**
      * @defaultValue true
@@ -280,6 +284,7 @@ class Overlay extends Component<OverlaySignature> {
 
         // restore focus
         if (
+          !this.args.preventFocusRestore &&
           this.focusedElement &&
           (this.focusedElement as HTMLElement).tabIndex > -1 &&
           typeof (this.focusedElement as HTMLElement).focus !== 'undefined'

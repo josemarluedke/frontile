@@ -29,6 +29,7 @@ module(
     });
 
     const template = hbs`
+    <button type="button" data-test-id="some-button">Button</button>
     <div id="my-destination"></div>
     <Overlay
       @isOpen={{this.isOpen}}
@@ -40,6 +41,7 @@ module(
       @transitionDuration={{this.transitionDuration}}
       @backdrop={{this.backdrop}}
       @disableTransitions={{this.disableTransitions}}
+      @preventFocusRestore={{this.preventFocusRestore}}
       @disableFocusTrap={{this.disableFocusTrap}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
@@ -208,6 +210,64 @@ module(
       this.set('isOpen', true);
       this.set('isOpen', false);
       this.set('isOpen', true);
+    });
+
+    test('it manages focusing in content and restoration when focusTrap is disabled', async function (assert) {
+      this.set('disableTransitions', true);
+      this.set('disableFocusTrap', true);
+      this.set('isOpen', false);
+
+      await render(template);
+
+      (find('[data-test-id="some-button"]') as HTMLButtonElement).focus();
+      this.set('isOpen', true);
+      await settled();
+      assert.dom('[data-test-id="overlay"]').exists();
+
+      assert
+        .dom(document.activeElement)
+        .hasAttribute(
+          'data-test-id',
+          'overlay',
+          'should have focused in the overlay'
+        );
+
+      this.set('isOpen', false);
+      await settled();
+      assert.dom('[data-test-id="overlay"]').doesNotExist();
+
+      assert
+        .dom(document.activeElement)
+        .hasAttribute(
+          'data-test-id',
+          'some-button',
+          'should have restored the focus'
+        );
+
+      // Test when preventFocusRestore is true
+      // *************************************
+
+      this.set('preventFocusRestore', true);
+      this.set('isOpen', true);
+      await settled();
+      assert
+        .dom(document.activeElement)
+        .hasAttribute(
+          'data-test-id',
+          'overlay',
+          'should have focused in the overlay'
+        );
+
+      this.set('isOpen', false);
+      await settled();
+      assert.dom('[data-test-id="overlay"]').doesNotExist();
+
+      assert
+        .dom(document.activeElement)
+        .doesNotHaveAttribute(
+          'data-test-id',
+          'should have not restored the focus'
+        );
     });
   }
 );
