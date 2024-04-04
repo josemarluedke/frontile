@@ -69,7 +69,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -145,10 +145,10 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../utilities
     devDependencies:
       '@babel/core':
@@ -227,7 +227,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/forms-legacy':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../forms-legacy
       '@glint/template':
         specifier: 1.3.0
@@ -309,16 +309,16 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/buttons':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../buttons
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../utilities
       ember-modifier:
         specifier: ^4.1.0
@@ -403,16 +403,16 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/collections':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../collections
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../utilities
       '@glint/template':
         specifier: 1.3.0
@@ -491,7 +491,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       '@glint/template':
         specifier: 1.3.0
@@ -643,10 +643,10 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/buttons':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -731,10 +731,10 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/buttons':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       '@glint/template':
         specifier: 1.3.0
@@ -825,7 +825,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -1019,7 +1019,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -1345,34 +1345,34 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(@embroider/core@3.4.6)(webpack@5.90.3)
       '@frontile/buttons':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/buttons
       '@frontile/changeset-form':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/changeset-form
       '@frontile/collections':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/collections
       '@frontile/forms':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/forms
       '@frontile/forms-legacy':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/forms-legacy
       '@frontile/notifications':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/notifications
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/overlays
       '@frontile/status':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/status
       '@frontile/theme':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-alpha.14
+        specifier: workspace:0.17.0-alpha.15
         version: link:../packages/utilities
       '@glimmer/component':
         specifier: ^1.1.2
