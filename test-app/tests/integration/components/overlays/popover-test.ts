@@ -182,5 +182,35 @@ module(
       this.set('isOpen', false);
       assert.dom('[data-test-id="content"]').doesNotExist();
     });
+
+    test('it prevents trigger event bubbling', async function (assert) {
+      assert.expect(1);
+
+      this.set('parentClick', () => {
+        assert.ok(false, 'popover trigger should not bubble click event');
+      });
+
+      await render(
+        hbs`
+          <div id="my-destination"></div>
+          <Popover as |p|>
+            <button {{on "click" this.parentClick}}>
+              <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
+                Trigger
+              </button>
+<           </button>
+            <p.Content
+              @destinationElementId="my-destination"
+              data-test-id="content"
+            >
+              Content here
+            </p.Content>
+          </Popover>`
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      assert.dom('[data-test-id="content"]').exists();
+    });
   }
 );
