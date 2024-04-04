@@ -95,7 +95,12 @@ class Popover extends Component<PopoverSignature> {
     return this._isOpen;
   }
 
-  toggle = () => {
+  toggle = (event?: Event) => {
+    // stops event bubbling to prevent parent click event
+    if (typeof event?.stopPropagation === 'function') {
+      event.stopPropagation();
+    }
+
     if (this.isOpen) {
       this.close();
     } else {
