@@ -7076,6 +7076,15 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'preventFocusRestore',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
         identifier: 'renderInPlace',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -7727,6 +7736,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'preventFocusRestore',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
+      },
+      {
         identifier: 'renderInPlace',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -8114,6 +8131,54 @@ const data: ComponentDoc[] = [
         description:
           "The content to display as the value's label (e.g. 1 of 4).",
         tags: {}
+      }
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLDivElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'utilities',
+    module: 'collapsible',
+    name: 'Collapsible',
+    fileName: 'packages/utilities/declarations/components/collapsible.d.ts',
+    Args: [
+      {
+        identifier: 'isOpen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: true,
+        isInternal: false,
+        description: 'If true, the content will be visible',
+        tags: {}
+      },
+      {
+        identifier: 'initialHeight',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
+        tags: { defaultValue: { name: 'defaultValue', value: '0' } },
+        defaultValue: '<span class="hljs-number">0</span>'
       }
     ],
     Blocks: [
