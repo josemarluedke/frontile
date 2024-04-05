@@ -6,8 +6,6 @@ import Description from './form-description';
 import Label from './label';
 import type { WithBoundArgs } from '@glint/template';
 
-// TODO allowClear or isClearable
-
 interface FormControlSharedArgs {
   label?: string;
   isRequired?: boolean;

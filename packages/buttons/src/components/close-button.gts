@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { VisuallyHidden } from '@frontile/utilities';
-import { useStyles } from '@frontile/theme';
+import { useStyles, type CloseButtonVariants } from '@frontile/theme';
 
 interface CloseButtonSignature {
   Args: {
@@ -18,7 +18,12 @@ interface CloseButtonSignature {
      *
      * @defaultValue 'lg'
      */
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    size?: CloseButtonVariants['size'];
+
+    /**
+     * @defaultValue 'transparent'
+     */
+    variant?: CloseButtonVariants['variant'];
 
     /**
      * The function to call when button is clicked
@@ -41,7 +46,8 @@ class CloseButton extends Component<CloseButtonSignature> {
     const { closeButton } = useStyles();
 
     let { base, icon } = closeButton({
-      size: this.args.size || 'md'
+      size: this.args.size || 'md',
+      variant: this.args.variant || 'transparent'
     });
 
     return {

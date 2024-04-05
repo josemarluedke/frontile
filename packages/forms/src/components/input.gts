@@ -11,6 +11,7 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../utils';
 import { ref } from '@frontile/utilities';
+import { CloseButton } from '@frontile/buttons';
 
 interface Args extends FormControlSharedArgs {
   type?: string;
@@ -19,25 +20,35 @@ interface Args extends FormControlSharedArgs {
   size?: InputVariants['size'];
   classes?: SlotsToClasses<InputSlots>;
 
-  // Whether to include a clear button
+  /**
+   * Whether to include a clear button
+   */
   isClearable?: boolean;
 
-  /* Controls pointer-events property of startContent.
+  /**
+   * Controls pointer-events property of startContent.
    * If you want to pass the click event to the input, set it to `none`.
+   *
    * @defaultValue 'auto'
    */
   startContentPointerEvents?: 'none' | 'auto';
 
-  /* Controls pointer-events property of endContent.
+  /**
+   * Controls pointer-events property of endContent.
    * If you want to pass the click event to the input, set it to `none`.
+   *
    * @defaultValue 'auto'
    */
   endContentPointerEvents?: 'none' | 'auto';
 
-  // Callback when oninput is triggered
+  /**
+   * Callback when oninput is triggered
+   */
   onInput?: (value: string, event?: InputEvent) => void;
 
-  // Callback when onchange is triggered
+  /**
+   * Callback when onchange is triggered
+   */
   onChange?: (value: string, event?: InputEvent) => void;
 }
 
@@ -183,13 +194,13 @@ class Input extends Component<InputSignature> {
             {{yield to="endContent"}}
 
             {{#if this.isClearable}}
-              <button
+              <CloseButton
+                @title="Clear"
+                @variant="subtle"
+                @size="xs"
                 data-test-id="input-clear-button"
-                type="button"
-                {{on "click" this.clearValue}}
-              >
-                x
-              </button>
+                @onClick={{this.clearValue}}
+              />
             {{/if}}
           </div>
         {{/if}}
