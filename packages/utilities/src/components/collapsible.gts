@@ -3,7 +3,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
 import { on } from '@ember/modifier';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
+import { modifier } from 'ember-modifier';
 import safeStyles from '../utils/safe-styles';
 
 const waiter = buildWaiter('@frontile/utilities:collapsible');
@@ -66,7 +66,14 @@ class Collapsible extends Component<CollapsibleSignature> {
     return safeStyles(styles);
   }
 
-  @action update(element: HTMLElement, [isOpen]: boolean[]): void {
+  hasSetupUpdate = false;
+  update = modifier((element: HTMLElement, [isOpen]: boolean[]) => {
+    // do not run update on the initial setup of modifier
+    if (!this.hasSetupUpdate) {
+      this.hasSetupUpdate = true;
+      return;
+    }
+
     if (this.isCurrentlyOpen !== !!isOpen) {
       this.waiterToken = waiter.beginAsync();
     }
@@ -76,7 +83,7 @@ class Collapsible extends Component<CollapsibleSignature> {
     } else {
       this.contract(element);
     }
-  }
+  });
 
   @action onTransitionEnd(event: TransitionEvent): void {
     if (
@@ -157,7 +164,7 @@ class Collapsible extends Component<CollapsibleSignature> {
     <div
       style={{this.styles}}
       ...attributes
-      {{didUpdate this.update @isOpen}}
+      {{this.update @isOpen}}
       {{on "transitionend" this.onTransitionEnd}}
     >
       {{yield}}

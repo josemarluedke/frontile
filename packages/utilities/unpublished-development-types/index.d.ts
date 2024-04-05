@@ -4,13 +4,10 @@
 
 import 'ember-source/types';
 import '@glint/environment-ember-template-imports';
-import type RenderModifiersRegistry from '@ember/render-modifiers/template-registry';
 import type CoreRegistry from '../src/template-registry.ts';
 
 declare module '@glint/environment-ember-loose/registry' {
-  export default interface Registry
-    extends RenderModifiersRegistry,
-      CoreRegistry {
+  export default interface Registry extends CoreRegistry {
     // ...
   }
 }
