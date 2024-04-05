@@ -40,13 +40,13 @@
     "ember-source": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
-    "@ember/render-modifiers": "^2.1.0",
     "@ember/test-waiters": "^3.0.2",
     "@embroider/addon-shim": "^1.8.7",
     "@frontile/theme": "workspace:0.17.0-alpha.15",
     "ember-auto-import": "^2.7.2",
     "ember-element-helper": "^0.8.5",
-    "focus-visible": "^5.2.0"
+    "focus-visible": "^5.2.0",
+    "ember-modifier": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.24.0",
