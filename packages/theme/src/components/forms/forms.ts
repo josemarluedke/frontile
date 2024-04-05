@@ -59,10 +59,8 @@ const input = tv({
   slots: {
     base: '',
     innerContainer: 'relative flex',
-    startContent:
-      'absolute inset-y-0 left-0 flex items-center pointer-events-none',
-    endContent:
-      'absolute inset-y-0 right-0 flex items-center pointer-events-none',
+    startContent: 'absolute inset-y-0 left-0 flex items-center',
+    endContent: 'absolute inset-y-0 right-0 flex items-center',
     input: [
       'appearance-none',
       'flex-1',
@@ -95,6 +93,14 @@ const input = tv({
     },
     hasEndContent: {
       true: { input: 'pe-10' }
+    },
+    startContentPointerEvents: {
+      auto: { startContent: 'pointer-events-auto' },
+      none: { startContent: 'pointer-events-none' }
+    },
+    endContentPointerEvents: {
+      auto: { endContent: 'pointer-events-auto' },
+      none: { endContent: 'pointer-events-none' }
     }
   },
   defaultVariants: {

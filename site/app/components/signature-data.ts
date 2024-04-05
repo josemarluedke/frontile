@@ -413,6 +413,21 @@ const data: ComponentDoc[] = [
         description: 'The title of the close button',
         tags: { defaultValue: { name: 'defaultValue', value: "'Close'" } },
         defaultValue: '<span class="hljs-string">\'Close\'</span>'
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'subtle\'</span>',
+          items: ["'transparent'", "'subtle'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'transparent'" }
+        },
+        defaultValue: '<span class="hljs-string">\'transparent\'</span>'
       }
     ],
     Blocks: [
@@ -1969,6 +1984,20 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'endContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of endContent.\nIf you want to pass the click event to the input, set it to `none`.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>'
+      },
+      {
         identifier: 'errors',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -1978,6 +2007,14 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isClearable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether to include a clear button',
         tags: {}
       },
       {
@@ -2016,22 +2053,22 @@ const data: ComponentDoc[] = [
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          raw: '(value: <span class="hljs-built_in">string</span>, event?: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onchange is triggered',
         tags: {}
       },
       {
         identifier: 'onInput',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(value: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>: InputEvent) => <span class="hljs-built_in">void</span>'
+          raw: '(value: <span class="hljs-built_in">string</span>, event?: InputEvent) => <span class="hljs-built_in">void</span>'
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when oninput is triggered',
         tags: {}
       },
       {
@@ -2045,6 +2082,20 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'startContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>'
       },
       {
         identifier: 'type',
@@ -2968,7 +3019,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'trigger\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'icon\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'trigger\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span>>'
         },
         isRequired: false,
         isInternal: false,

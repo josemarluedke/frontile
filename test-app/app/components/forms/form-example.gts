@@ -46,7 +46,12 @@ export default class FormExample extends Component<FormExampleArgs> {
 
   <template>
     <Form @onChange={{this.onChange}} class="flex flex-1 flex-col gap-4">
-      <Input @name="field-0" @label="field 0">
+      <Input
+        @name="field-0"
+        @label="field 0"
+        @endContentPointerEvents="none"
+        @startContentPointerEvents="none"
+      >
         <:startContent>
           @
         </:startContent>
@@ -60,6 +65,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @label={{MyCustomLabel}}
         @description="Cool field"
         @isRequired={{true}}
+        @isClearable={{true}}
       />
 
       <Radio

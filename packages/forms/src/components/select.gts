@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
-import { buildWaiter } from '@ember/test-waiters';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -18,23 +17,7 @@ import {
   type ContentSignature
 } from '@frontile/overlays';
 import { FormControl, type FormControlSharedArgs } from './form-control';
-
-function triggerFormInputEvent(element: HTMLElement | null): void {
-  if (!element) return;
-
-  let parent = element.parentElement;
-  while (parent) {
-    if (parent.tagName === 'FORM') {
-      (parent as HTMLFormElement).dispatchEvent(
-        new Event('input', { bubbles: true })
-      );
-      break;
-    }
-    parent = parent.parentElement;
-  }
-}
-
-const waiter = buildWaiter('@frontile/forms:select');
+import { triggerFormInputEvent } from '../utils';
 
 interface SelectArgs<T>
   extends Pick<
@@ -131,18 +114,13 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   onSelectionChange = (keys: string[]) => {
-    const waiterToken = waiter.beginAsync();
-
     if (typeof this.args.onSelectionChange === 'function') {
       this.args.onSelectionChange(keys);
     } else {
       this._selectedKeys = keys;
     }
 
-    requestAnimationFrame(() => {
-      triggerFormInputEvent(this.el);
-      waiter.endAsync(waiterToken);
-    });
+    triggerFormInputEvent(this.el);
   };
 
   onOpenChange = (isOpen: boolean) => {

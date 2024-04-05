@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import {
@@ -8,6 +9,9 @@ import {
   type SlotsToClasses
 } from '@frontile/theme';
 import { FormControl, type FormControlSharedArgs } from './form-control';
+import { triggerFormInputEvent } from '../utils';
+import { ref } from '@frontile/utilities';
+import { CloseButton } from '@frontile/buttons';
 
 interface Args extends FormControlSharedArgs {
   type?: string;
@@ -16,11 +20,36 @@ interface Args extends FormControlSharedArgs {
   size?: InputVariants['size'];
   classes?: SlotsToClasses<InputSlots>;
 
-  // Callback when oninput is triggered
-  onInput?: (value: string, event: InputEvent) => void;
+  /**
+   * Whether to include a clear button
+   */
+  isClearable?: boolean;
 
-  // Callback when onchange is triggered
-  onChange?: (value: string, event: InputEvent) => void;
+  /**
+   * Controls pointer-events property of startContent.
+   * If you want to pass the click event to the input, set it to `none`.
+   *
+   * @defaultValue 'auto'
+   */
+  startContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * Controls pointer-events property of endContent.
+   * If you want to pass the click event to the input, set it to `none`.
+   *
+   * @defaultValue 'auto'
+   */
+  endContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * Callback when oninput is triggered
+   */
+  onInput?: (value: string, event?: InputEvent) => void;
+
+  /**
+   * Callback when onchange is triggered
+   */
+  onChange?: (value: string, event?: InputEvent) => void;
 }
 
 interface InputSignature {
@@ -32,7 +61,26 @@ interface InputSignature {
   Element: HTMLInputElement;
 }
 
+function or(arg1: unknown, arg2: unknown): boolean {
+  return !!(arg1 || arg2);
+}
+
 class Input extends Component<InputSignature> {
+  @tracked uncontrolledValue: string = '';
+
+  inputRef = ref<HTMLInputElement>();
+
+  get isControlled() {
+    return (
+      typeof this.args.onChange === 'function' ||
+      typeof this.args.onInput === 'function'
+    );
+  }
+
+  get value(): string | undefined {
+    return this.isControlled ? this.args.value : this.uncontrolledValue;
+  }
+
   get type(): string {
     if (typeof this.args.type === 'string') {
       return this.args.type;
@@ -41,21 +89,46 @@ class Input extends Component<InputSignature> {
   }
 
   @action handleOnInput(event: Event): void {
-    if (typeof this.args.onInput === 'function') {
-      this.args.onInput(
-        (event.target as HTMLInputElement).value,
-        event as InputEvent
-      );
+    const value = (event.target as HTMLInputElement).value;
+
+    if (this.isControlled) {
+      this.args.onInput?.(value, event as InputEvent);
+    } else {
+      this.uncontrolledValue = value;
     }
   }
 
   @action handleOnChange(event: Event): void {
-    if (typeof this.args.onChange === 'function') {
-      this.args.onChange(
-        (event.target as HTMLInputElement).value,
-        event as InputEvent
-      );
+    const value = (event.target as HTMLInputElement).value;
+
+    if (this.isControlled) {
+      this.args.onChange?.(value, event as InputEvent);
+    } else {
+      this.uncontrolledValue = value;
     }
+  }
+
+  @action clearValue(): void {
+    if (this.isControlled) {
+      this.args.onChange?.('');
+      this.args.onInput?.('');
+    } else {
+      this.uncontrolledValue = '';
+    }
+
+    this.inputRef.element?.focus();
+    triggerFormInputEvent(this.inputRef.element);
+  }
+
+  get isClearable(): boolean {
+    if (
+      this.args.isClearable === true &&
+      this.value !== '' &&
+      typeof this.value !== 'undefined'
+    ) {
+      return true;
+    }
+    return false;
   }
 
   get classes() {
@@ -78,30 +151,57 @@ class Input extends Component<InputSignature> {
     >
       <div class={{this.classes.innerContainer class=@classes.innerContainer}}>
         {{#if (has-block "startContent")}}
-          <div class={{this.classes.startContent class=@classes.startContent}}>
+          <div
+            data-test-id="input-start-content"
+            class={{this.classes.startContent
+              class=@classes.startContent
+              startContentPointerEvents=(if
+                @startContentPointerEvents @startContentPointerEvents "auto"
+              )
+            }}
+          >
             {{yield to="startContent"}}
           </div>
         {{/if}}
         <input
+          {{this.inputRef.setup}}
           {{on "input" this.handleOnInput}}
           {{on "change" this.handleOnChange}}
           id={{c.id}}
           name={{@name}}
-          value={{@value}}
+          value={{this.value}}
           type={{this.type}}
           class={{this.classes.input
             class=@classes.input
             hasStartContent=(has-block "startContent")
-            hasEndContent=(has-block "endContent")
+            hasEndContent=(or (has-block "endContent") this.isClearable)
           }}
           data-component="input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           ...attributes
         />
-        {{#if (has-block "endContent")}}
-          <div class={{this.classes.endContent class=@classes.endContent}}>
+        {{#if (or (has-block "endContent") this.isClearable)}}
+          <div
+            data-test-id="input-end-content"
+            class={{this.classes.endContent
+              class=@classes.endContent
+              endContentPointerEvents=(if
+                @endContentPointerEvents @endContentPointerEvents "auto"
+              )
+            }}
+          >
             {{yield to="endContent"}}
+
+            {{#if this.isClearable}}
+              <CloseButton
+                @title="Clear"
+                @variant="subtle"
+                @size="xs"
+                data-test-id="input-clear-button"
+                @onClick={{this.clearValue}}
+              />
+            {{/if}}
           </div>
         {{/if}}
       </div>
