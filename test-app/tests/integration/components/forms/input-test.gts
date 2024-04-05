@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, find, settled } from '@ember/test-helpers';
+import { render, fillIn, find, settled, click } from '@ember/test-helpers';
 
 import { Input } from '@frontile/forms';
 import { cell } from 'ember-resources';
@@ -70,6 +70,55 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     assert.dom('.input-container div:last-child').exists();
     assert.dom('.input-container div:last-child').hasTextContaining('End');
+  });
+
+  test('it respect options for start/end content pointer events', async function (assert) {
+    const classes = { innerContainer: 'input-container' };
+
+    const startContentPointerEvents = cell<'none' | 'auto'>('none');
+    const endContentPointerEvents = cell<'none' | 'auto'>('none');
+
+    await render(
+      <template>
+        <Input
+          @label="Name"
+          @classes={{classes}}
+          @startContentPointerEvents={{startContentPointerEvents.current}}
+          @endContentPointerEvents={{endContentPointerEvents.current}}
+        >
+          <:startContent>
+            <button>
+              Start
+            </button>
+          </:startContent>
+          <:endContent>
+            <button>
+              Start
+            </button>
+          </:endContent>
+        </Input>
+      </template>
+    );
+
+    assert.dom('[data-component="input"]').exists();
+    assert
+      .dom('[data-test-id="input-start-content"]')
+      .hasClass(/pointer-events-none/);
+    assert
+      .dom('[data-test-id="input-end-content"]')
+      .hasClass(/pointer-events-none/);
+
+    startContentPointerEvents.current = 'auto';
+    endContentPointerEvents.current = 'auto';
+    await settled();
+
+    assert.dom('[data-component="input"]').exists();
+    assert
+      .dom('[data-test-id="input-start-content"]')
+      .hasClass(/pointer-events-auto/);
+    assert
+      .dom('[data-test-id="input-end-content"]')
+      .hasClass(/pointer-events-auto/);
   });
 
   test('should mutate the value using onInput action', async function (assert) {
@@ -156,5 +205,33 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     assert.dom('.my-base-class').exists();
     assert.dom('.my-input-class').exists();
+  });
+
+  test('clear button', async function (assert) {
+    const value = cell('');
+
+    const onInput = (val: string) => {
+      value.current = val;
+    };
+
+    await render(
+      <template>
+        <Input
+          data-test-input
+          @value={{value.current}}
+          @onInput={{onInput}}
+          @isClearable={{true}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="input-clear-button"]').doesNotExist();
+    await fillIn('[data-test-input]', 'Josemar');
+    assert.equal(value.current, 'Josemar');
+
+    assert.dom('[data-test-id="input-clear-button"]').exists();
+
+    await click('[data-test-id="input-clear-button"]');
+    assert.equal(value.current, '');
   });
 });
