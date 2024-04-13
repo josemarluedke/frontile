@@ -1,7 +1,5 @@
 import Component from '@glimmer/component';
-import type { TOC } from '@ember/component/template-only';
 import { tracked } from '@glimmer/tracking';
-import { modifier } from 'ember-modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -10,7 +8,7 @@ import {
   type SelectVariants,
   type SlotsToClasses
 } from '@frontile/theme';
-import { VisuallyHidden } from '@frontile/utilities';
+import { VisuallyHidden, ref } from '@frontile/utilities';
 import {
   Popover,
   type PopoverSignature,
@@ -18,6 +16,8 @@ import {
 } from '@frontile/overlays';
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../utils';
+import { CloseButton } from '@frontile/buttons';
+import { IconChevronUpDown } from './icons';
 
 interface SelectArgs<T>
   extends Pick<
@@ -83,12 +83,40 @@ interface SelectArgs<T>
   isDisabled?: boolean;
 
   name?: string;
+
+  /**
+   * Whether to include a clear button.
+   * It ignores the option allowEmpty.
+   * @defaultValue false
+   */
+  isClearable?: boolean;
+
+  /**
+   * Controls pointer-events property of startContent.
+   * If you want to pass the click event to the input, set it to `none`.
+   *
+   * @defaultValue 'auto'
+   */
+  startContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * Controls pointer-events property of endContent.
+   * Defauled to `none` to pass the click event to the input. If your content
+   * needs to capture events, consider adding `pointer-events-auto` class to that
+   * element only.
+   *
+   * @defaultValue 'none'
+   */
+  endContentPointerEvents?: 'none' | 'auto';
 }
 
 interface SelectSignature<T> {
   Args: SelectArgs<T>;
   Element: HTMLDivElement;
-  Blocks: ListboxSignature<T>['Blocks'];
+  Blocks: ListboxSignature<T>['Blocks'] & {
+    startContent: [];
+    endContent: [];
+  };
 }
 
 class Select<T = unknown> extends Component<SelectSignature<T>> {
@@ -96,11 +124,21 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked isOpen = false;
   @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
 
-  el: HTMLElement | null = null;
+  containerRef = ref<HTMLDivElement>();
 
-  registerEl = modifier((element: HTMLElement) => {
-    this.el = element;
-  });
+  onSelectionChange = (keys: string[]) => {
+    if (typeof this.args.onSelectionChange === 'function') {
+      this.args.onSelectionChange(keys);
+    } else {
+      this._selectedKeys = keys;
+    }
+
+    triggerFormInputEvent(this.containerRef.element);
+  };
+
+  onOpenChange = (isOpen: boolean) => {
+    this.isOpen = isOpen;
+  };
 
   get selectedKeys(): string[] {
     if (
@@ -112,20 +150,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
     return this._selectedKeys;
   }
-
-  onSelectionChange = (keys: string[]) => {
-    if (typeof this.args.onSelectionChange === 'function') {
-      this.args.onSelectionChange(keys);
-    } else {
-      this._selectedKeys = keys;
-    }
-
-    triggerFormInputEvent(this.el);
-  };
-
-  onOpenChange = (isOpen: boolean) => {
-    this.isOpen = isOpen;
-  };
 
   get blockScroll() {
     if (this.args.blockScroll === false) {
@@ -154,13 +178,18 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }
   };
 
-  get selectedText() {
-    return this.selectedKeys?.join(', ');
-  }
+  clearSelectedKeys = (event: Event) => {
+    this.onSelectionChange([]);
+    event.stopPropagation();
+  };
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
     this.nodes = nodes;
   };
+
+  get selectedText() {
+    return this.selectedKeys?.join(', ');
+  }
 
   get selectedTextValue(): string {
     let selectedTextValues: string[] = [];
@@ -186,9 +215,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     });
   }
 
+  get isClearable() {
+    return (
+      this.args.isClearable && this.selectedKeys && this.selectedKeys.length > 0
+    );
+  }
+
   <template>
     <div
-      {{this.registerEl}}
+      {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       ...attributes
     >
@@ -246,29 +281,74 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             </NativeSelect>
           </VisuallyHidden>
 
-          <button
-            type="button"
-            {{p.trigger}}
-            {{p.anchor}}
-            data-test-id="trigger"
-            data-component="select-trigger"
-            disabled={{@isDisabled}}
-            class={{this.classes.trigger class=@classes.trigger}}
+          <div
+            class={{this.classes.innerContainer class=@classes.innerContainer}}
           >
-            {{#if this.selectedText}}
-              <span>
-                {{this.selectedTextValue}}
-              </span>
-            {{else}}
-              <span
-                class={{this.classes.placeholder class=@classes.placeholder}}
+            {{#if (has-block "startContent")}}
+              <div
+                data-test-id="input-start-content"
+                class={{this.classes.startContent
+                  class=@classes.startContent
+                  startContentPointerEvents=(if
+                    @startContentPointerEvents @startContentPointerEvents "auto"
+                  )
+                }}
               >
-                {{@placeholder}}
-              </span>
+                {{yield to="startContent"}}
+              </div>
             {{/if}}
+            <button
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+              data-test-id="trigger"
+              data-component="select-trigger"
+              disabled={{@isDisabled}}
+              class={{this.classes.input
+                class=@classes.input
+                hasStartContent=(has-block "startContent")
+                hasEndContent=true
+              }}
+            >
+              {{#if this.selectedText}}
+                <span>
+                  {{this.selectedTextValue}}
+                </span>
+              {{else}}
+                <span
+                  class={{this.classes.placeholder class=@classes.placeholder}}
+                >
+                  {{@placeholder}}
+                </span>
+              {{/if}}
+            </button>
+            <div
+              data-test-id="input-end-content"
+              class={{this.classes.endContent
+                class=@classes.endContent
+                endContentPointerEvents=(if
+                  @endContentPointerEvents @endContentPointerEvents "none"
+                )
+              }}
+            >
+              {{yield to="endContent"}}
 
-            <Icon class={{this.classes.icon class=@classes.icon}} />
-          </button>
+              {{#if this.isClearable}}
+                <CloseButton
+                  @title="Clear"
+                  @variant="subtle"
+                  @size="xs"
+                  @class={{this.classes.clearButton class=@classes.clearButton}}
+                  data-test-id="input-clear-button"
+                  @onClick={{this.clearSelectedKeys}}
+                />
+              {{else}}
+                <IconChevronUpDown
+                  class={{this.classes.icon class=@classes.icon}}
+                />
+              {{/if}}
+            </div>
+          </div>
 
           <p.Content
             @size={{@popoverSize}}
@@ -322,26 +402,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     </div>
   </template>
 }
-
-const Icon: TOC<{
-  Element: SVGElement;
-}> = <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke-width="1.5"
-    stroke="currentColor"
-    aria-hidden="true"
-    ...attributes
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-    />
-  </svg>
-</template>;
 
 export { Select, type SelectSignature };
 export default Select;

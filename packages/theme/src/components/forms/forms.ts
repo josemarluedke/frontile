@@ -68,7 +68,7 @@ const input = tv({
       'bg-white dark:bg-default-100',
       'text-default-900',
       'placeholder-default-400',
-      'text-base text-foreground',
+      'text-base text-left text-foreground',
       'border',
       'border-default-400',
       'rounded',
@@ -212,22 +212,19 @@ const checkboxGroup = tv({
 });
 
 const select = tv({
+  extend: input,
   slots: {
     base: [],
-    trigger: [
-      input().input(),
-      'flex items-center justify-between',
-      'disabled:cursor-not-allowed'
-    ],
     placeholder: 'text-default-400',
     listbox: 'scroll-py-6 max-h-64',
-    icon: 'w-5 h-5'
+    icon: 'w-5 h-5',
+    clearButton: 'pointer-events-auto'
   },
   variants: {
     size: {
-      sm: { trigger: 'p-2' },
-      md: { trigger: 'p-3' },
-      lg: { trigger: 'p-4' }
+      sm: {},
+      md: {},
+      lg: {}
     }
   },
   defaultVariants: {
@@ -238,7 +235,8 @@ const select = tv({
 const nativeSelect = tv({
   extend: input,
   slots: {
-    input: ['appearance-auto']
+    input: ['appearance-none'],
+    icon: 'w-5 h-5'
   },
   variants: {
     size: {

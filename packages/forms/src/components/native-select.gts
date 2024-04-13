@@ -16,6 +16,7 @@ import {
   keyAndLabelForItem,
   type ListItem
 } from '@frontile/collections/utils/listManager';
+import { IconChevronUpDown } from './icons';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
@@ -43,6 +44,24 @@ interface Args<T> extends FormControlSharedArgs {
    * @internal
    */
   onItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
+
+  /**
+   * Controls pointer-events property of startContent.
+   * If you want to pass the click event to the input, set it to `none`.
+   *
+   * @defaultValue 'auto'
+   */
+  startContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * Controls pointer-events property of endContent.
+   * Defauled to `none` to pass the click event to the input. If your content
+   * needs to capture events, consider adding `pointer-events-auto` class to that
+   * element only.
+   *
+   * @defaultValue 'none'
+   */
+  endContentPointerEvents?: 'none' | 'auto';
 }
 
 interface NativeSelectSignature<T> {
@@ -51,6 +70,8 @@ interface NativeSelectSignature<T> {
   Blocks: {
     item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
     default: [{ Item: ItemCompBounded }];
+    startContent: [];
+    endContent: [];
   };
 }
 
@@ -116,59 +137,91 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       @class={{this.classes.base class=@classes.base}}
       as |c|
     >
-      <select
-        {{this.listManager.setup
-          selectedKeys=@selectedKeys
-          disabledKeys=@disabledKeys
-          selectionMode=@selectionMode
-          allowEmpty=@allowEmpty
-          onListItemsChange=@onItemsChange
-          isKeyboardEventsEnabled=false
-        }}
-        {{on "change" this.handleOnChange}}
-        multiple={{this.isMultiple}}
-        data-test-id="native-select"
-        data-component="native-select"
-        class={{this.classes.input class=@classes.input}}
-        id={{c.id}}
-        name={{@name}}
-        aria-invalid={{if c.isInvalid "true"}}
-        aria-describedby={{c.describedBy @description c.isInvalid}}
-        ...attributes
-      >
-        {{#if this.args.allowEmpty}}
-          <NativeSelectItem @manager={{this.listManager}} @key="">
-            {{this.args.placeholder}}
-          </NativeSelectItem>
+      <div class={{this.classes.innerContainer class=@classes.innerContainer}}>
+        {{#if (has-block "startContent")}}
+          <div
+            data-test-id="input-start-content"
+            class={{this.classes.startContent
+              class=@classes.startContent
+              startContentPointerEvents=(if
+                @startContentPointerEvents @startContentPointerEvents "auto"
+              )
+            }}
+          >
+            {{yield to="startContent"}}
+          </div>
         {{/if}}
-        {{#each @items as |item|}}
-          {{#let (keyAndLabelForItem item) as |keyLabel|}}
-            {{#if (has-block "item")}}
-              {{yield
-                (hash
-                  item=item
-                  key=keyLabel.key
-                  label=keyLabel.label
-                  Item=(component NativeSelectItem manager=this.listManager)
-                )
-                to="item"
-              }}
-            {{else}}
-              <NativeSelectItem
-                @manager={{this.listManager}}
-                @key={{keyLabel.key}}
-              >
-                {{keyLabel.label}}
-              </NativeSelectItem>
-            {{/if}}
-          {{/let}}
-        {{/each}}
+        <select
+          {{this.listManager.setup
+            selectedKeys=@selectedKeys
+            disabledKeys=@disabledKeys
+            selectionMode=@selectionMode
+            allowEmpty=@allowEmpty
+            onListItemsChange=@onItemsChange
+            isKeyboardEventsEnabled=false
+          }}
+          {{on "change" this.handleOnChange}}
+          multiple={{this.isMultiple}}
+          data-test-id="native-select"
+          data-component="native-select"
+          class={{this.classes.input
+            class=@classes.input
+            hasStartContent=(has-block "startContent")
+            hasEndContent=true
+          }}
+          id={{c.id}}
+          name={{@name}}
+          aria-invalid={{if c.isInvalid "true"}}
+          aria-describedby={{c.describedBy @description c.isInvalid}}
+          ...attributes
+        >
+          {{#if this.args.allowEmpty}}
+            <NativeSelectItem @manager={{this.listManager}} @key="">
+              {{this.args.placeholder}}
+            </NativeSelectItem>
+          {{/if}}
+          {{#each @items as |item|}}
+            {{#let (keyAndLabelForItem item) as |keyLabel|}}
+              {{#if (has-block "item")}}
+                {{yield
+                  (hash
+                    item=item
+                    key=keyLabel.key
+                    label=keyLabel.label
+                    Item=(component NativeSelectItem manager=this.listManager)
+                  )
+                  to="item"
+                }}
+              {{else}}
+                <NativeSelectItem
+                  @manager={{this.listManager}}
+                  @key={{keyLabel.key}}
+                >
+                  {{keyLabel.label}}
+                </NativeSelectItem>
+              {{/if}}
+            {{/let}}
+          {{/each}}
 
-        {{yield
-          (hash Item=(component NativeSelectItem manager=this.listManager))
-          to="default"
-        }}
-      </select>
+          {{yield
+            (hash Item=(component NativeSelectItem manager=this.listManager))
+            to="default"
+          }}
+        </select>
+        <div
+          data-test-id="input-end-content"
+          class={{this.classes.endContent
+            class=@classes.endContent
+            endContentPointerEvents=(if
+              @endContentPointerEvents @endContentPointerEvents "none"
+            )
+          }}
+        >
+          {{yield to="endContent"}}
+
+          <IconChevronUpDown class={{this.classes.icon class=@classes.icon}} />
+        </div>
+      </div>
     </FormControl>
   </template>
 }
