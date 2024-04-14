@@ -413,4 +413,62 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
     assert.dom('[data-component="select-trigger"]').hasText('Select an animal');
   });
+
+  test('it renders named blocks startContent and endContent', async function (assert) {
+    const classes = { innerContainer: 'input-container' };
+    this.set('animals', ['tiger']);
+    this.set('classes', classes);
+    await render(
+      hbs`
+        <div id="my-destination"></div>
+        <Select
+          @destinationElementId="my-destination"
+          @items={{this.animals}}
+          @placeholder="Select an animal"
+          @classes={{this.classes}}
+        >
+          <:startContent>Start</:startContent>
+          <:endContent>End</:endContent>
+      </Select>`
+    );
+
+    assert.dom('.input-container div:first-child').exists();
+    assert.dom('.input-container div:first-child').hasTextContaining('Start');
+
+    assert.dom('.input-container div:last-child').exists();
+    assert.dom('.input-container div:last-child').hasTextContaining('End');
+  });
+
+  test('it clears selectedKeys when isClearable is set and clear button clicked', async function (assert) {
+    let selectedKeys: string[] = [];
+    this.set('selectedKeys', []);
+    this.set('onSelectionChange', (keys: string[]) => {
+      selectedKeys = keys;
+      this.set('selectedKeys', keys);
+    });
+
+    await render(
+      hbs`
+          <div id="my-destination"></div>
+          <Select
+            @destinationElementId="my-destination"
+            @onSelectionChange={{this.onSelectionChange}}
+            @selectedKeys={{this.selectedKeys}}
+            @isClearable={{true}}
+            as |l|
+          >
+            <l.Item @key="item-1">Item 1</l.Item>
+            <l.Item @key="item-2">Item 2</l.Item>
+            <l.Item @key="item-3">Item 3</l.Item>
+          </Select>`
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="item-1"]');
+    assert.equal(selectedKeys.length, 1);
+    assert.equal(selectedKeys[0], 'item-1');
+
+    await click('[data-test-id="input-clear-button"]');
+    assert.equal(selectedKeys.length, 0);
+  });
 });

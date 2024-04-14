@@ -92,6 +92,7 @@
       "./components/form-description.js": "./dist/_app_/components/form-description.js",
       "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",
       "./components/form.js": "./dist/_app_/components/form.js",
+      "./components/icons.js": "./dist/_app_/components/icons.js",
       "./components/input.js": "./dist/_app_/components/input.js",
       "./components/label.js": "./dist/_app_/components/label.js",
       "./components/native-select.js": "./dist/_app_/components/native-select.js",

@@ -99,6 +99,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @label="My field 5"
         @description="description"
         @errors="error message here"
+        @isClearable={{true}}
       >
         <:item as |o|>
           <o.Item @key={{o.item}} @intent="default" @appearance="faded">

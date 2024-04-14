@@ -249,5 +249,28 @@ module(
       assert.dom('[data-key="crocodile-key"]').containsText('crocodile-value');
       assert.dom('[data-key="elephant-key"]').containsText('elephant-value');
     });
+
+    test('it renders named blocks startContent and endContent', async function (assert) {
+      const classes = { innerContainer: 'input-container' };
+      this.set('animals', ['tiger']);
+      this.set('classes', classes);
+      await render(
+        hbs`
+        <NativeSelect
+          @items={{this.animals}}
+          @placeholder="Select an animal"
+          @classes={{this.classes}}
+        >
+          <:startContent>Start</:startContent>
+          <:endContent>End</:endContent>
+      </NativeSelect>`
+      );
+
+      assert.dom('.input-container div:first-child').exists();
+      assert.dom('.input-container div:first-child').hasTextContaining('Start');
+
+      assert.dom('.input-container div:last-child').exists();
+      assert.dom('.input-container div:last-child').hasTextContaining('End');
+    });
   }
 );
