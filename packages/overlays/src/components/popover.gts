@@ -208,7 +208,7 @@ interface ContentArgs
     | 'onOpen'
     | 'didClose'
     | 'renderInPlace'
-    | 'destinationElementId'
+    | 'target'
     | 'transitionDuration'
     | 'backdrop'
     | 'disableTransitions'
@@ -344,7 +344,7 @@ class Content extends Component<ContentSignature> {
       @onOpen={{@onOpen}}
       @didClose={{this.didClose}}
       @renderInPlace={{@renderInPlace}}
-      @destinationElementId={{@destinationElementId}}
+      @target={{@target}}
       @transitionDuration={{@transitionDuration}}
       @disableTransitions={{@disableTransitions}}
       @disableFocusTrap={{this.disableFocusTrap}}

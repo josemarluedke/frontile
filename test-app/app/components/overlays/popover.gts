@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Popover } from '@frontile/overlays';
+import { Popover, Portal } from '@frontile/overlays';
 import { Divider } from '@frontile/utilities';
 import { Button } from '@frontile/buttons';
 
@@ -40,5 +40,15 @@ export default class Example extends Component {
         <Button {{on "click" this.close}}>Close Popover</Button>
       </pop.Content>
     </Popover>
+
+    <Portal class="absolute w-content bg-default left-10">
+      First portal
+      <Portal class="absolute w-content bg-primary left-12">
+        Second portal
+        <Portal class="absolute w-content bg-danger left-14">
+          Last portal
+        </Portal>
+      </Portal>
+    </Portal>
   </template>
 }
