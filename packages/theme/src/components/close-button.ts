@@ -2,7 +2,7 @@ import { tv, type VariantProps } from '../tw';
 
 const closeButton = tv({
   slots: {
-    base: 'rounded-full transition transition-200 focus-visable:ring text-inherit',
+    base: 'rounded-full transition transition-200 focus-visible:ring text-inherit',
     icon: 'size-[1em]'
   },
 
