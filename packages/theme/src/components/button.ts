@@ -10,7 +10,7 @@ const baseButton = tv({
     'rounded',
     'disabled:cursor-not-allowed',
     'disabled:opacity-40',
-    'focus-visable:ring'
+    'focus-visible:ring'
   ],
   variants: {
     appearance: {
