@@ -17,7 +17,7 @@ export interface ModalArgs
     | 'onClose'
     | 'didClose'
     | 'renderInPlace'
-    | 'destinationElementId'
+    | 'target'
     | 'transitionDuration'
     | 'backdrop'
     | 'disableTransitions'
@@ -139,7 +139,7 @@ export default class Modal extends Component<ModalSignature> {
       @onOpen={{@onOpen}}
       @didClose={{@didClose}}
       @renderInPlace={{@renderInPlace}}
-      @destinationElementId={{@destinationElementId}}
+      @target={{@target}}
       @transitionDuration={{@transitionDuration}}
       @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}

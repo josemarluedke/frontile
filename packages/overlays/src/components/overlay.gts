@@ -4,7 +4,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
-import { getDOM, getElementById } from '../-private/dom';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
@@ -12,41 +11,19 @@ import { modifier } from 'ember-modifier';
 import { focusTrap } from 'ember-focus-trap';
 import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
 import { Backdrop, type BackdropSignature } from './backdrop';
-import type { TOC } from '@ember/component/template-only';
+import { Portal, findParentPortal, type PortalSignature } from './portal';
+import { getElementByAttribute } from '../-private/dom';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 
-const MaybeInElement: TOC<{
-  Args: {
-    destinationElement?: Element | null;
-    renderInPlace?: boolean;
-  };
-  Blocks: {
-    default: [];
-  };
-}> = <template>
-  {{#if @renderInPlace}}
-    {{yield}}
-  {{else if @destinationElement}}
-    {{#in-element @destinationElement insertBefore=null}}
-      {{yield}}
-    {{/in-element}}
-  {{/if}}
-</template>;
-
-function hasNextSibblingOverlay(element: HTMLElement): boolean {
-  // Get the next sibling of the element
-  let nextSibling = element.nextElementSibling;
-
-  // Search for elements with the selector `[data-component="overlay"]` until the end of the DOM
-  while (nextSibling) {
-    if (
-      nextSibling.matches &&
-      nextSibling.matches('[data-component="overlay"]')
-    ) {
-      return true;
-    }
-    nextSibling = nextSibling.nextElementSibling;
+function hasNestedPortals(element: HTMLElement): boolean {
+  const portal = findParentPortal(element);
+  if (!portal) {
+    return false;
+  }
+  const childPortal = getElementByAttribute(portal, 'data-portal');
+  if (childPortal) {
+    return true;
   }
 
   return false;
@@ -63,118 +40,105 @@ function hasWormholeParentElement(el: HTMLElement) {
   }
   return false;
 }
+interface Args
+  extends Pick<PortalSignature['Args'], 'renderInPlace' | 'target'> {
+  /**
+   * Duration of the animation
+   *
+   * @defaultValue 200
+   */
+  transitionDuration?: number;
+
+  backdrop?: BackdropSignature['Args']['type'];
+
+  backdropTransition?: BackdropSignature['Args']['transition'];
+
+  /**
+   * Disable css transitions
+   *
+   * @defaultValue false
+   */
+  disableTransitions?: boolean;
+
+  /**
+   * Whether the focus trap is disabled or not
+   *
+   * @defaultValue false
+   */
+  disableFocusTrap?: boolean;
+
+  /**
+   * Focus trap options
+   *
+   * @defaultValue { clickOutsideDeactivates: true, allowOutsideClick: true }
+   */
+  focusTrapOptions?: unknown;
+
+  /**
+   * Whether it is open or not
+   */
+  isOpen: boolean;
+
+  /**
+   * A function that will be called when closed
+   */
+  onClose?: () => void;
+
+  /**
+   * A function that will be called when closing is finished executing, this
+   * includes waiting for animations/transitions to finish.
+   */
+  didClose?: () => void;
+
+  /**
+   * A function that will be called when opened
+   */
+  onOpen?: () => void;
+
+  /**
+   * Whether to close when the area outside (the backdrop) is clicked
+   *
+   * @defaultValue true
+   */
+  closeOnOutsideClick?: boolean;
+
+  /**
+   * Whether to close when the overlay element is clicked, used for modal and drawer components.
+   *
+   * @defaultValue false
+   */
+  closeOnOverlayElementClick?: boolean;
+
+  /**
+   * Whether to close when the escape key is pressed
+   *
+   * @defaultValue true
+   */
+  closeOnEscapeKey?: boolean;
+
+  /**
+   * Transition options
+   *
+   * @defaultValue {name:'overlay-transition--fade'}
+   */
+  transition?: CssTransitionSignature['Args']['Named'];
+
+  disableFlexContent?: boolean;
+  customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
+  class?: string;
+  /**
+   * @defaultValue false
+   */
+  preventFocusRestore?: boolean;
+
+  /**
+   * @defaultValue true
+   */
+  blockScroll?: boolean;
+}
 
 interface OverlaySignature {
-  Args: {
-    /**
-     * Whether to render in place or in the specified/default destination
-     *
-     * @defaultValue false
-     */
-    renderInPlace?: boolean;
-
-    /**
-     * The destination where the overlay will be inserted, defaults to
-     * `document.body`
-     *
-     * @defaultValue undefined
-     */
-    destinationElementId?: string;
-
-    /**
-     * Duration of the animation
-     *
-     * @defaultValue 200
-     */
-    transitionDuration?: number;
-
-    backdrop?: BackdropSignature['Args']['type'];
-
-    backdropTransition?: BackdropSignature['Args']['transition'];
-
-    /**
-     * Disable css transitions
-     *
-     * @defaultValue false
-     */
-    disableTransitions?: boolean;
-
-    /**
-     * Whether the focus trap is disabled or not
-     *
-     * @defaultValue false
-     */
-    disableFocusTrap?: boolean;
-
-    /**
-     * Focus trap options
-     *
-     * @defaultValue { clickOutsideDeactivates: true, allowOutsideClick: true }
-     */
-    focusTrapOptions?: unknown;
-
-    /**
-     * Whether it is open or not
-     */
-    isOpen: boolean;
-
-    /**
-     * A function that will be called when closed
-     */
-    onClose?: () => void;
-
-    /**
-     * A function that will be called when closing is finished executing, this
-     * includes waiting for animations/transitions to finish.
-     */
-    didClose?: () => void;
-
-    /**
-     * A function that will be called when opened
-     */
-    onOpen?: () => void;
-
-    /**
-     * Whether to close when the area outside (the backdrop) is clicked
-     *
-     * @defaultValue true
-     */
-    closeOnOutsideClick?: boolean;
-
-    /**
-     * Whether to close when the overlay element is clicked, used for modal and drawer components.
-     *
-     * @defaultValue false
-     */
-    closeOnOverlayElementClick?: boolean;
-
-    /**
-     * Whether to close when the escape key is pressed
-     *
-     * @defaultValue true
-     */
-    closeOnEscapeKey?: boolean;
-
-    /**
-     * Transition options
-     *
-     * @defaultValue {name:'overlay-transition--fade'}
-     */
-    transition?: CssTransitionSignature['Args']['Named'];
-
-    disableFlexContent?: boolean;
-    customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
-    class?: string;
-    /**
-     * @defaultValue false
-     */
-    preventFocusRestore?: boolean;
-
-    /**
-     * @defaultValue true
-     */
-    blockScroll?: boolean;
-  };
+  Args: Args;
   Element: HTMLDivElement;
   Blocks: { default: [] };
 }
@@ -185,20 +149,6 @@ class Overlay extends Component<OverlaySignature> {
   contentElement: HTMLElement | undefined;
   focusedElement: Element | null | undefined;
   mouseDownContentElement: EventTarget | null = null;
-
-  get destinationElement(): HTMLElement | null {
-    const doc = getDOM(this);
-
-    if (!doc) {
-      return null;
-    }
-
-    if (this.args.destinationElementId) {
-      return getElementById(doc, this.args.destinationElementId);
-    } else {
-      return doc.body;
-    }
-  }
 
   handleClose(): void {
     if (this.args.isOpen && typeof this.args.onClose === 'function') {
@@ -211,7 +161,9 @@ class Overlay extends Component<OverlaySignature> {
       this.args.closeOnOutsideClick !== false &&
       this.args.closeOnOverlayElementClick === true &&
       event.target === this.contentElement &&
-      this.mouseDownContentElement == this.contentElement
+      this.mouseDownContentElement == this.contentElement &&
+      !hasNestedPortals(this.contentElement) &&
+      !hasWormholeParentElement(event.target as HTMLElement)
     ) {
       this.handleClose();
     }
@@ -222,7 +174,7 @@ class Overlay extends Component<OverlaySignature> {
     if (
       this.args.closeOnOutsideClick !== false &&
       this.contentElement &&
-      !hasNextSibblingOverlay(this.contentElement) &&
+      !hasNestedPortals(this.contentElement) &&
       !hasWormholeParentElement(e.target as HTMLElement)
     ) {
       this.handleClose();
@@ -363,10 +315,7 @@ class Overlay extends Component<OverlaySignature> {
     {{! template-lint-disable no-pointer-down-event-binding }}
 
     {{#if this.isVisible}}
-      <MaybeInElement
-        @renderInPlace={{@renderInPlace}}
-        @destinationElement={{this.destinationElement}}
-      >
+      <Portal @renderInPlace={{@renderInPlace}} @target={{@target}}>
         <Backdrop
           @type={{this.backdrop}}
           @inPlace={{@renderInPlace}}
@@ -392,11 +341,7 @@ class Overlay extends Component<OverlaySignature> {
               name=this.transition.name
               parentSelector=this.transition.parentSelector
             }}
-            {{onClickOutside
-              this.handleOutsideClick
-              exceptSelector='[data-component="overlay"]'
-              capture=true
-            }}
+            {{onClickOutside this.handleOutsideClick capture=true}}
             {{focusTrap
               isActive=(if @disableFocusTrap false @isOpen)
               focusTrapOptions=this.focusTrapOptions
@@ -411,7 +356,7 @@ class Overlay extends Component<OverlaySignature> {
             {{yield}}
           </div>
         {{/if}}
-      </MaybeInElement>
+      </Portal>
     {{/if}}
   </template>
 }
