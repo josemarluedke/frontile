@@ -104,7 +104,7 @@ export default class DemoComponent extends Component {
         as |l|
       >
         <l.Item @key="profile" @description="View my profile">
-          My Provile
+          My Profile
         </l.Item>
         <l.Item @key="settings" @shortcut="⌘⇧S">Settings</l.Item>
         <l.Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
