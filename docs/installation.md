@@ -9,13 +9,13 @@ want in your project. Here you can find information on how to install all the pa
 
 ## Packages
 
-Independently of which packages you will use, you will need to have the Core and Theme
-package installed.
-
-
 ```sh
+# Independently of which other packages you will use,
+# you will need to have those two packages installed:
 ember install @frontile/utilities
 ember install @frontile/theme
+
+# Optional packages:
 ember install @frontile/buttons
 ember install @frontile/collections
 ember install @frontile/status
