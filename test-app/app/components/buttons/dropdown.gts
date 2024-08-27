@@ -20,7 +20,7 @@ export default class Example extends Component {
 
       <d.Menu @onAction={{this.onAction}} @intent="primary" as |Item|>
         <Item @key="profile" @description="View my profile">
-          My Provile
+          My Profile
         </Item>
         <Item @key="settings" @shortcut="⌘⇧S">Settings</Item>
         <Item @key="notifications" @shortcut="⌘⇧N" @withDivider={{true}}>
