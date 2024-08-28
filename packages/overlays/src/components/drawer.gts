@@ -17,7 +17,7 @@ export interface DrawerArgs
     | 'onClose'
     | 'didClose'
     | 'renderInPlace'
-    | 'destinationElementId'
+    | 'target'
     | 'transitionDuration'
     | 'backdrop'
     | 'disableTransitions'
@@ -141,7 +141,7 @@ export default class Drawer extends Component<DrawerSignature> {
       @onOpen={{@onOpen}}
       @didClose={{@didClose}}
       @renderInPlace={{@renderInPlace}}
-      @destinationElementId={{@destinationElementId}}
+      @target={{@target}}
       @transitionDuration={{@transitionDuration}}
       @backdrop={{@backdrop}}
       @disableTransitions={{@disableTransitions}}
