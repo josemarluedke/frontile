@@ -45,12 +45,12 @@ class Backdrop extends Component<BackdropSignature> {
     return options;
   }
 
-  get isVisiable() {
+  get isVisible() {
     return this.args.type !== 'none';
   }
 
   <template>
-    {{#if this.isVisiable}}
+    {{#if this.isVisible}}
       <div
         {{cssTransition
           didTransitionIn=this.transition.didTransitionIn
