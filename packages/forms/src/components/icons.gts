@@ -21,3 +21,7 @@ const IconChevronUpDown: TOC<{
 </template>;
 
 export { IconChevronUpDown };
+
+<template>
+  @frontile/froms Icons component is empty, use template imports.
+</template>
