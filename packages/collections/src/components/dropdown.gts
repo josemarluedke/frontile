@@ -166,7 +166,7 @@ interface MenuArgs
     Pick<
       ContentSignature['Args'],
       | 'renderInPlace'
-      | 'destinationElementId'
+      | 'target'
       | 'transitionDuration'
       | 'backdrop'
       | 'disableTransitions'
@@ -245,7 +245,7 @@ class Menu extends Component<MenuSignature> {
 
   <template>
     <@Content
-      @destinationElementId={{@destinationElementId}}
+      @target={{@target}}
       @renderInPlace={{@renderInPlace}}
       @disableFocusTrap={{this.disableFocusTrap}}
       @blockScroll={{this.blockScroll}}

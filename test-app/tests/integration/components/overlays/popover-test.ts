@@ -25,14 +25,12 @@ module(
     test('it works with trigger and opening content', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Popover as |p|>
             <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
               Trigger
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               data-test-id="content"
             >
               Content here
@@ -57,7 +55,6 @@ module(
     test('it works with trigger hover mode, prevents focus restore', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <button type="button" data-test-id="focused-element">Button</button>
           <Popover as |p|>
             <button {{p.trigger "hover"}} {{p.anchor}} data-test-id="trigger">
@@ -65,7 +62,6 @@ module(
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               data-test-id="content"
             >
               Content here
@@ -102,14 +98,12 @@ module(
     test('it renders accessibility attributes', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Popover as |p|>
             <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
               Trigger
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               data-test-id="content"
             >
               Content here
@@ -132,14 +126,12 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Popover as |p|>
             <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
               Trigger
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               @backdrop={{this.backdrop}}
               @disableTransitions={{true}}
               data-test-id="content"
@@ -166,14 +158,13 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination" tabindex="0"></div>
+          <div id="outside" tabindex="0"></div>
           <Popover @didClose={{this.didClose}} as |p|>
             <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
               Trigger
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               @backdrop={{this.backdrop}}
               @disableTransitions={{true}}
               data-test-id="content"
@@ -187,7 +178,7 @@ module(
       await click('[data-test-id="trigger"]');
       assert.dom('[data-test-id="content"]').exists();
 
-      await click('#my-destination');
+      await click('#outside');
       assert.dom('[data-test-id="content"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called didClose argument');
       assert
@@ -209,14 +200,13 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination" tabindex="0"></div>
+          <div id="outside" tabindex="0"></div>
           <Popover @isOpen={{this.isOpen}} @onOpenChange={{this.onOpenChange}} as |p|>
             <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
               Trigger
             </button>
 
             <p.Content
-              @destinationElementId="my-destination"
               @backdrop={{this.backdrop}}
               @disableTransitions={{true}}
               data-test-id="content"
@@ -231,7 +221,7 @@ module(
       assert.dom('[data-test-id="content"]').exists();
       assert.equal(isOpen, true);
 
-      await click('#my-destination');
+      await click('#outside');
       assert.dom('[data-test-id="content"]').doesNotExist();
       assert.equal(isOpen, false);
 
@@ -251,7 +241,6 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Popover as |p|>
             <button {{on "click" this.parentClick}}>
               <button {{p.trigger}} {{p.anchor}} data-test-id="trigger">
@@ -259,7 +248,6 @@ module(
               </button>
 <           </button>
             <p.Content
-              @destinationElementId="my-destination"
               data-test-id="content"
             >
               Content here

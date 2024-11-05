@@ -111,7 +111,6 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   });
 
   const template = hbs`
-    <div id="my-destination"></div>
     <Drawer
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
@@ -120,7 +119,6 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
       @placement={{this.placement}}
       @allowClosing={{this.allowClosing}}
       @renderInPlace={{this.renderInPlace}}
-      @destinationElementId="my-destination"
       @disableTransitions={{true}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
@@ -331,7 +329,7 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     this.set('isOpen', true);
 
     await render(template);
-    assert.dom('.my-destination > [data-test-id="drawer"]').doesNotExist();
+    assert.dom('[data-portal-target] > [data-test-id="drawer"]').doesNotExist();
     // @ts-ignore
     assert.dom('[data-test-id="drawer"]', this.element).exists();
   });

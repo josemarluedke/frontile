@@ -30,14 +30,12 @@ module(
 
     const template = hbs`
     <button type="button" data-test-id="some-button">Button</button>
-    <div id="my-destination"></div>
     <Overlay
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
       @onOpen={{this.onOpen}}
       @didClose={{this.didClose}}
       @renderInPlace={{this.renderInPlace}}
-      @destinationElementId="my-destination"
       @transitionDuration={{this.transitionDuration}}
       @backdrop={{this.backdrop}}
       @disableTransitions={{this.disableTransitions}}
@@ -54,7 +52,7 @@ module(
     </Overlay>
   `;
 
-    test('it renders the content, into destination and only when opened', async function (assert) {
+    test('it renders the content, into portal and only when opened', async function (assert) {
       this.set('disableTransitions', true);
       this.set('isOpen', true);
       await render(template);
@@ -66,7 +64,7 @@ module(
 
       assert.dom('.overlay__backdrop').exists();
 
-      assert.dom('#my-destination > [data-test-id="overlay"]').exists();
+      assert.dom('[data-portal] > [data-test-id="overlay"]').exists();
 
       this.set('isOpen', false);
       await settled();
@@ -79,7 +77,9 @@ module(
       this.set('isOpen', true);
 
       await render(template);
-      assert.dom('.my-destination > [data-test-id="overlay"]').doesNotExist();
+      assert
+        .dom('[data-portal-target] > [data-test-id="overlay"]')
+        .doesNotExist();
       // @ts-ignore
       assert.dom('[data-test-id="overlay"]', this.element).exists();
       assert.dom('[data-test-id="overlay"]').hasClass('overlay--in-place');

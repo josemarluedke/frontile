@@ -5,9 +5,20 @@ import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import { VisuallyHidden } from '@frontile/utilities';
+import { Portal } from '@frontile/overlays/components/portal';
 
 const application = <template>
   {{pageTitle "Frontile"}}
+  <Portal>
+    My Portal 1 Content
+  </Portal>
+  <Portal>
+    My Portal 2 Content
+
+    <Portal>
+      My Nested Portal Content
+    </Portal>
+  </Portal>
   <DocfyHeader
     @githubUrl="https://github.com/josemarluedke/frontile"
     class="overflow-x-scroll sm:overflow-x-auto"

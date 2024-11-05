@@ -43,7 +43,6 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
   });
 
   const template = hbs`
-    <div id="my-destination"></div>
     <Modal
       @isOpen={{this.isOpen}}
       @onClose={{this.onClose}}
@@ -51,7 +50,6 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
       @isCentered={{this.isCentered}}
       @allowClosing={{this.allowClosing}}
       @renderInPlace={{this.renderInPlace}}
-      @destinationElementId="my-destination"
       @disableTransitions={{true}}
       @closeOnOutsideClick={{this.closeOnOutsideClick}}
       @closeOnEscapeKey={{this.closeOnEscapeKey}}
@@ -255,7 +253,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     this.set('isOpen', true);
 
     await render(template);
-    assert.dom('.my-destination > [data-test-id="modal"]').doesNotExist();
+    assert.dom('[data-portal-target] > [data-test-id="modal"]').doesNotExist();
     // @ts-ignore
     assert.dom('[data-test-id="modal"]', this.element).exists();
   });

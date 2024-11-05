@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import { gray, blue, green, red, yellow, purple } from '@frontile/theme/colors';
+import { gray, blue, green, red, yellow } from '@frontile/theme/colors';
 import { htmlSafe } from '@ember/template';
 
 export default class IndexRoute extends Route {
@@ -11,8 +11,7 @@ export default class IndexRoute extends Route {
         { name: 'Blue', colors: blue },
         { name: 'Green', colors: green },
         { name: 'Red', colors: red },
-        { name: 'Yellow', colors: yellow },
-        { name: 'Purple', colors: purple }
+        { name: 'Yellow', colors: yellow }
       ]
     };
   }

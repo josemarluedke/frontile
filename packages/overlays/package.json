@@ -41,9 +41,10 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
+    "@embroider/macros": "^1.15.1",
     "@frontile/buttons": "workspace:0.17.0-alpha.16",
     "@frontile/theme": "workspace:0.17.0-alpha.16",
-    "@glint/template": "1.3.0",
+    "@glint/template": "1.5.0",
     "ember-click-outside": "^6.1.0",
     "ember-css-transitions": "^4.4.0",
     "ember-focus-trap": "^1.1.0",
@@ -59,9 +60,9 @@
     "@embroider/addon-dev": "4.2.1",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "@glint/core": "1.3.0",
-    "@glint/environment-ember-loose": "1.3.0",
-    "@glint/environment-ember-template-imports": "1.3.0",
+    "@glint/core": "1.5.0",
+    "@glint/environment-ember-loose": "1.5.0",
+    "@glint/environment-ember-template-imports": "1.5.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@tsconfig/ember": "^3.0.5",
     "babel-plugin-ember-template-compilation": "^2.2.1",
@@ -96,7 +97,9 @@
       "./components/modal/footer.js": "./dist/_app_/components/modal/footer.js",
       "./components/modal/header.js": "./dist/_app_/components/modal/header.js",
       "./components/overlay.js": "./dist/_app_/components/overlay.js",
-      "./components/popover.js": "./dist/_app_/components/popover.js"
+      "./components/popover.js": "./dist/_app_/components/popover.js",
+      "./components/portal-target.js": "./dist/_app_/components/portal-target.js",
+      "./components/portal.js": "./dist/_app_/components/portal.js"
     }
   },
   "exports": {

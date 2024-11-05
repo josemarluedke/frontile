@@ -42,7 +42,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
   hooks.beforeEach(async function () {
     await render(
       <template>
-        <div id="my-destination"></div>
         <Form data-test-form @onChange={{onChange}}>
           <Input @name="firstName" />
           <Checkbox @name="acceptTerms" />
@@ -54,7 +53,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
           <NativeSelect @name="country" @items={{countries}} />
 
           <Select
-            @destinationElementId="my-destination"
             @name="traveledTo"
             @items={{countries}}
             @selectionMode="multiple"
