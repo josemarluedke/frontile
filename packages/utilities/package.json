@@ -1,6 +1,6 @@
 {
   "name": "@frontile/utilities",
-  "version": "0.17.0-alpha.15",
+  "version": "0.17.0-alpha.16",
   "description": "Component Library for Ember Octane apps: Utilities",
   "keywords": [
     "ember-addon",
@@ -42,11 +42,11 @@
   "dependencies": {
     "@ember/test-waiters": "^3.0.2",
     "@embroider/addon-shim": "^1.8.7",
-    "@frontile/theme": "workspace:0.17.0-alpha.15",
+    "@frontile/theme": "workspace:0.17.0-alpha.16",
     "ember-auto-import": "^2.7.2",
     "ember-element-helper": "^0.8.5",
-    "focus-visible": "^5.2.0",
-    "ember-modifier": "^4.1.0"
+    "ember-modifier": "^4.1.0",
+    "focus-visible": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.24.0",

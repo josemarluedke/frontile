@@ -41,7 +41,7 @@ module(
               @disableTransitions={{true}}
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -72,7 +72,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -110,7 +110,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -142,7 +142,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -169,7 +169,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -200,7 +200,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`
@@ -227,7 +227,7 @@ module(
               @destinationElementId="my-destination"
               as |Item|
             >
-              <Item @key="profile">My Provile</Item>
+              <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
           </Dropdown>`

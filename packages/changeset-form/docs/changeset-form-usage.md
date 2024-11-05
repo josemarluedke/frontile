@@ -3,7 +3,7 @@ title: Usage
 url: /usage
 ---
 
-# Using ChangesetFornm
+# Using ChangesetForm
 
 Almost every single app out there has some kind of form. It might be a user preference
 page or a core part of the experience you are providing your user. Usually,
