@@ -7,7 +7,7 @@ import { tv } from 'tailwind-variants';
 
 module(
   'Integration | Component | Popover | @frontile/overlays',
-  function(hooks) {
+  function (hooks) {
     setupRenderingTest(hooks);
 
     registerCustomStyles({
@@ -22,7 +22,7 @@ module(
       }) as never
     });
 
-    test('it works with trigger and opening content', async function(assert) {
+    test('it works with trigger and opening content', async function (assert) {
       await render(
         hbs`
           <Popover as |p|>
@@ -52,7 +52,7 @@ module(
         );
     });
 
-    test('it works with trigger hover mode, prevents focus restore', async function(assert) {
+    test('it works with trigger hover mode, prevents focus restore', async function (assert) {
       await render(
         hbs`
           <button type="button" data-test-id="focused-element">Button</button>
@@ -95,7 +95,7 @@ module(
         );
     });
 
-    test('it renders accessibility attributes', async function(assert) {
+    test('it renders accessibility attributes', async function (assert) {
       await render(
         hbs`
           <Popover as |p|>
@@ -121,7 +121,7 @@ module(
       assert.dom('[data-test-id="content"]').hasAttribute('id');
     });
 
-    test('it shows backdrop when @backdrop=none', async function(assert) {
+    test('it shows backdrop when @backdrop=none', async function (assert) {
       this.set('backdrop', 'none');
 
       await render(
@@ -150,7 +150,7 @@ module(
       assert.dom('.overlay__backdrop').exists();
     });
 
-    test('clicking outside closes menu', async function(assert) {
+    test('clicking outside closes menu', async function (assert) {
       let calledClosed = false;
       this.set('didClose', () => {
         calledClosed = true;
@@ -190,7 +190,7 @@ module(
         );
     });
 
-    test('controlled isOpen', async function(assert) {
+    test('controlled isOpen', async function (assert) {
       let isOpen = false;
       this.set('isOpen', false);
       this.set('onOpenChange', (value: boolean) => {
@@ -232,7 +232,7 @@ module(
       assert.dom('[data-test-id="content"]').doesNotExist();
     });
 
-    test('it prevents trigger event bubbling', async function(assert) {
+    test('it prevents trigger event bubbling', async function (assert) {
       assert.expect(1);
 
       this.set('parentClick', () => {
