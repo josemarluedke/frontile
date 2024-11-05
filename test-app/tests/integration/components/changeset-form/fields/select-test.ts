@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { Changeset } from 'ember-changeset';
 import lookupValidator from 'ember-changeset-validations';
 import { run } from '@ember/runloop';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support';
 
 module(
   'Integration | Component | @frontile/changeset-form/ChangesetForm::Fields::Select',

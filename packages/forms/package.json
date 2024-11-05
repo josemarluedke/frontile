@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@ember/test-waiters": "^3.0.2",
-    "@embroider/addon-shim": "^1.8.7",
+    "@embroider/addon-shim": "^1.9.0",
     "@frontile/buttons": "workspace:0.17.0-alpha.16",
     "@frontile/collections": "workspace:0.17.0-alpha.16",
     "@frontile/overlays": "workspace:0.17.0-alpha.16",
