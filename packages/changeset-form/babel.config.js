@@ -10,6 +10,7 @@ module.exports = {
     ]
   ],
   plugins: [
+    'ember-concurrency/async-arrow-task-transform',
     '@embroider/addon-dev/template-colocation-plugin',
     [
       'babel-plugin-ember-template-compilation',

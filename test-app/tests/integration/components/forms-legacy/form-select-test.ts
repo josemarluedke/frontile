@@ -2,10 +2,8 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, focus, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import {
-  selectChoose,
-  clickTrigger
-} from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 module(
   'Integration | Component | @frontile/forms-legacy/FormSelect',
