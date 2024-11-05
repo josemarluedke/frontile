@@ -5,7 +5,7 @@ import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import { VisuallyHidden } from '@frontile/utilities';
-import { Portal } from '@frontile/overlays/components/portal'
+import { Portal } from '@frontile/overlays/components/portal';
 
 const application = <template>
   {{pageTitle "Frontile"}}
