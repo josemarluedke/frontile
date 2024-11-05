@@ -44,7 +44,7 @@ interface SelectArgs<T>
     Pick<
       ContentSignature['Args'],
       | 'renderInPlace'
-      | 'destinationElementId'
+      | 'target'
       | 'transitionDuration'
       | 'backdrop'
       | 'disableTransitions'
@@ -352,7 +352,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
           <p.Content
             @size={{@popoverSize}}
-            @destinationElementId={{@destinationElementId}}
+            @target={{@target}}
             @renderInPlace={{@renderInPlace}}
             @disableFocusTrap={{this.disableFocusTrap}}
             @blockScroll={{this.blockScroll}}

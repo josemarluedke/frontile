@@ -589,7 +589,9 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'flipOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -608,7 +610,15 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'offsetOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'OffsetOptions',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>'
+          ]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -645,7 +655,9 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'shiftOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; rootBoundary?: RootBoundary; elementContext?: ElementContext; altBoundary?: <span class="hljs-built_in">boolean</span>; padding?: Padding; limiter?: { ...; }; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -1048,16 +1060,6 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'disabledKeys',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -1172,6 +1174,19 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
+        tags: {}
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {}
       },
       {
@@ -1961,6 +1976,22 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'forms',
+    module: 'icons',
+    name: 'IconChevronUpDown',
+    fileName: 'packages/forms/declarations/components/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'SVGElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'forms',
     module: 'input',
     name: 'Input',
     fileName: 'packages/forms/declarations/components/input.d.ts',
@@ -2242,7 +2273,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -2267,6 +2298,20 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'endContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of endContent.\nDefauled to `none` to pass the click event to the input. If your content\nneeds to capture events, consider adding `pointer-events-auto` class to that\nelement only.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
+        defaultValue: '<span class="hljs-string">\'none\'</span>'
       },
       {
         identifier: 'errors',
@@ -2404,6 +2449,20 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'startContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>'
       }
     ],
     Blocks: [
@@ -2491,6 +2550,30 @@ const data: ComponentDoc[] = [
               tags: {}
             }
           ]
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'startContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'endContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
         },
         isRequired: true,
         isInternal: false,
@@ -3019,7 +3102,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'trigger\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -3063,16 +3146,6 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'didClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -3113,6 +3186,20 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
+        identifier: 'endContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of endContent.\nDefauled to `none` to pass the click event to the input. If your content\nneeds to capture events, consider adding `pointer-events-auto` class to that\nelement only.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
+        defaultValue: '<span class="hljs-string">\'none\'</span>'
+      },
+      {
         identifier: 'errors',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -3126,7 +3213,9 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'flipOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -3184,6 +3273,16 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'The intent of each item',
         tags: {}
+      },
+      {
+        identifier: 'isClearable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to include a clear button.\nIt ignores the option allowEmpty.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'isDisabled',
@@ -3246,7 +3345,15 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'offsetOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'OffsetOptions',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>'
+          ]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -3358,11 +3465,27 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'shiftOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; rootBoundary?: RootBoundary; elementContext?: ElementContext; altBoundary?: <span class="hljs-built_in">boolean</span>; padding?: Padding; limiter?: { ...; }; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'startContentPointerEvents',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'none'", "'auto'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>'
       },
       {
         identifier: 'strategy',
@@ -3376,6 +3499,19 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { defaultValue: { name: 'defaultValue', value: "'absolute'" } },
         defaultValue: '<span class="hljs-string">\'absolute\'</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
       },
       {
         identifier: 'transition',
@@ -3585,6 +3721,30 @@ const data: ComponentDoc[] = [
               tags: {}
             }
           ]
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'startContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'endContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
         },
         isRequired: true,
         isInternal: false,
@@ -4756,28 +4916,72 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'options',
+        identifier: 'afterOptionsComponent',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          items: ['any[]', 'PromiseProxy<any[]>']
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
         },
-        isRequired: true,
+        isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
       },
       {
-        identifier: 'selected',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: true,
+        identifier: 'allowClear',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'animationEnabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaDescribedBy',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaInvalid',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaLabel',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaLabelledBy',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
       },
       {
         identifier: 'beforeOptionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4788,6 +4992,17 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'calculatePosition',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'CalculatePosition'
         },
         isRequired: false,
         isInternal: false,
@@ -4819,6 +5034,54 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'destination',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'disabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'dropdownClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ebdContentComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ebdTriggerComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'errors',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -4831,8 +5094,28 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'groupComponent',
+        identifier: 'eventType',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'extra',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'groupComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4872,6 +5155,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'horizontalPosition',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'initiallyOpened',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -4893,6 +5184,54 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'The input field label',
+        tags: {}
+      },
+      {
+        identifier: 'labelClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelClickAction',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TLabelClickAction',
+          items: ["'focus'", "'open'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelText',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'loadingMessage',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
         tags: {}
       },
       {
@@ -4924,7 +5263,11 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'noMatchesMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5019,7 +5362,31 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'options',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[] | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]>',
+          items: ['readonly any[]', 'Promise<readonly any[]>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'optionsComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'placeholder',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
@@ -5028,7 +5395,19 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'placeholderComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'preventScroll',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5039,6 +5418,45 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: '(select: Select) => <span class="hljs-built_in">void</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'renderInPlace',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'required',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'resultCountMessage',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(resultCount: <span class="hljs-built_in">number</span>) => <span class="hljs-built_in">string</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'rootEventType',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TRootEventType',
+          items: ["'click'", "'mousedown'"]
         },
         isRequired: false,
         isInternal: false,
@@ -5060,7 +5478,7 @@ const data: ComponentDoc[] = [
         identifier: 'search',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[] | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]>'
         },
         isRequired: false,
         isInternal: false,
@@ -5093,7 +5511,39 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'searchMessageComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'searchPlaceholder',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'selected',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'selectedItemComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5132,7 +5582,43 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'title',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'triggerComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerId',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerRole',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
@@ -5145,6 +5631,14 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: 'MatcherFn'
         },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'verticalPosition',
+        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -5191,7 +5685,7 @@ const data: ComponentDoc[] = [
                     identifier: 'options',
                     type: {
                       type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
+                      raw: '<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -5202,7 +5696,7 @@ const data: ComponentDoc[] = [
                     identifier: 'results',
                     type: {
                       type: '<span class="hljs-built_in">Array</span>',
-                      raw: '<span class="hljs-built_in">any</span>[]'
+                      raw: '<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]'
                     },
                     isRequired: true,
                     isInternal: false,
@@ -5314,6 +5808,17 @@ const data: ComponentDoc[] = [
                           tags: {}
                         },
                         {
+                          identifier: 'labelClick',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e: MouseEvent) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
                           identifier: 'toggle',
                           type: {
                             type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -5351,6 +5856,39 @@ const data: ComponentDoc[] = [
                           type: {
                             type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
                             raw: '(...args: <span class="hljs-built_in">any</span>[]) => RepositionChanges'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'registerTriggerElement',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e: HTMLElement) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'registerDropdownElement',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '(e: HTMLElement) => <span class="hljs-built_in">void</span>'
+                          },
+                          isRequired: true,
+                          isInternal: false,
+                          description: '',
+                          tags: {}
+                        },
+                        {
+                          identifier: 'getTriggerElement',
+                          type: {
+                            type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                            raw: '() => HTMLElement'
                           },
                           isRequired: true,
                           isInternal: false,
@@ -6051,16 +6589,6 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'didClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -6163,6 +6691,19 @@ const data: ComponentDoc[] = [
         description: 'The Drawer size.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
       },
       {
         identifier: 'transition',
@@ -6546,16 +7087,6 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'didClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -6653,6 +7184,19 @@ const data: ComponentDoc[] = [
         description: 'The Modal size.',
         tags: { defaultValue: { name: 'defaultValue', value: "'lg'" } },
         defaultValue: '<span class="hljs-string">\'lg\'</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
       },
       {
         identifier: 'transition',
@@ -7042,16 +7586,6 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'didClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -7144,6 +7678,19 @@ const data: ComponentDoc[] = [
           'Whether to render in place or in the specified/default destination',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
       },
       {
         identifier: 'transition',
@@ -7310,7 +7857,9 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'flipOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7337,7 +7886,15 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'offsetOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'OffsetOptions',
+          items: [
+            'number',
+            '{ mainAxis?: number; crossAxis?: number; alignmentAxis?: number; }',
+            'Derivable<OffsetValue>'
+          ]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7385,7 +7942,9 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'shiftOptions',
-        type: { type: '<span class="hljs-built_in">any</span>' },
+        type: {
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; rootBoundary?: RootBoundary; elementContext?: ElementContext; altBoundary?: <span class="hljs-built_in">boolean</span>; padding?: Padding; limiter?: { ...; }; boundary?: Boundary; }'
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7721,16 +8280,6 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
-        identifier: 'destinationElementId',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'The destination where the overlay will be inserted, defaults to\n`document.body`',
-        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
-        defaultValue: '<span class="hljs-literal">undefined</span>'
-      },
-      {
         identifier: 'didClose',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -7816,6 +8365,19 @@ const data: ComponentDoc[] = [
         description: 'The size of the content.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
       },
       {
         identifier: 'transition',
@@ -7964,6 +8526,106 @@ const data: ComponentDoc[] = [
     tags: {}
   },
   {
+    package: 'overlays',
+    module: 'portal-target',
+    name: 'PortalTarget',
+    fileName: 'packages/overlays/declarations/components/portal-target.d.ts',
+    Args: [
+      {
+        identifier: 'for',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Target name',
+        tags: {}
+      }
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'overlays',
+    module: 'portal',
+    name: 'Portal',
+    fileName: 'packages/overlays/declarations/components/portal.d.ts',
+    Args: [
+      {
+        identifier: 'appendToParentPortal',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
+      },
+      {
+        identifier: 'renderInPlace',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether to render in place or in the specified/default destination',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
+        identifier: 'target',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | Element',
+          items: ['string', 'Element']
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+        tags: {}
+      }
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLDivElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
     package: 'status',
     module: 'progress-bar',
     name: 'ProgressBar',
@@ -7985,7 +8647,11 @@ const data: ComponentDoc[] = [
           items: [
             {
               identifier: 'localeMatcher',
-              type: { type: '<span class="hljs-built_in">string</span>' },
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: '<span class="hljs-string">\'lookup\'</span> | <span class="hljs-string">\'best fit\'</span>',
+                items: ["'lookup'", "'best fit'"]
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -7993,7 +8659,11 @@ const data: ComponentDoc[] = [
             },
             {
               identifier: 'style',
-              type: { type: '<span class="hljs-built_in">string</span>' },
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: 'keyof NumberFormatOptionsStyleRegistry',
+                items: ["'decimal'", "'percent'", "'currency'"]
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -8008,8 +8678,12 @@ const data: ComponentDoc[] = [
               tags: {}
             },
             {
-              identifier: 'currencySign',
-              type: { type: '<span class="hljs-built_in">string</span>' },
+              identifier: 'currencyDisplay',
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: 'keyof NumberFormatOptionsCurrencyDisplayRegistry',
+                items: ["'symbol'", "'name'", "'code'"]
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -9779,55 +10453,6 @@ const data: ComponentDoc[] = [
     tags: {}
   },
   {
-    package: 'utilities',
-    module: 'collapsible',
-    name: 'Collapsible',
-    fileName:
-      'packages/utilities/declarations/components/collapsible/index.d.ts',
-    Args: [
-      {
-        identifier: 'isOpen',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: true,
-        isInternal: false,
-        description: 'If true, the content will be visible',
-        tags: {}
-      },
-      {
-        identifier: 'initialHeight',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
-        tags: { defaultValue: { name: 'defaultValue', value: '0' } },
-        defaultValue: '<span class="hljs-number">0</span>'
-      }
-    ],
-    Blocks: [
-      {
-        identifier: 'default',
-        type: {
-          type: '<span class="hljs-built_in">Array</span>',
-          raw: '[]',
-          items: []
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {}
-      }
-    ],
-    Element: {
-      identifier: 'Element',
-      type: { type: 'HTMLDivElement' },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
-    },
-    description: '',
-    tags: {}
-  },
-  {
     package: 'unknown',
     module: 'base',
     name: 'ChangesetFormFieldsBase',
@@ -10715,28 +11340,72 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'options',
+        identifier: 'afterOptionsComponent',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>',
-          items: ['any[]', 'PromiseProxy<any[]>']
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
         },
-        isRequired: true,
+        isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
       },
       {
-        identifier: 'selected',
-        type: { type: '<span class="hljs-built_in">any</span>' },
-        isRequired: true,
+        identifier: 'allowClear',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'animationEnabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaDescribedBy',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaInvalid',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaLabel',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ariaLabelledBy',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
         isInternal: false,
         description: '',
         tags: {}
       },
       {
         identifier: 'beforeOptionsComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -10747,6 +11416,17 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: '(selected: <span class="hljs-built_in">any</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'calculatePosition',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: 'CalculatePosition'
         },
         isRequired: false,
         isInternal: false,
@@ -10778,6 +11458,54 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'destination',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'disabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'dropdownClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ebdContentComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'ebdTriggerComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'errors',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -10790,8 +11518,28 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
-        identifier: 'groupComponent',
+        identifier: 'eventType',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'extra',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'groupComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -10831,6 +11579,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'horizontalPosition',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'initiallyOpened',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -10852,6 +11608,54 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'The input field label',
+        tags: {}
+      },
+      {
+        identifier: 'labelClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelClickAction',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TLabelClickAction',
+          items: ["'focus'", "'open'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'labelText',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'loadingMessage',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
         tags: {}
       },
       {
@@ -10883,7 +11687,11 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'noMatchesMessageComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -10978,7 +11786,31 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'options',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[] | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]>',
+          items: ['readonly any[]', 'Promise<readonly any[]>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'optionsComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'placeholder',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
@@ -10987,7 +11819,19 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'placeholderComponent',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'preventScroll',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -10998,6 +11842,45 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: '(select: Select) => <span class="hljs-built_in">void</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'renderInPlace',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'required',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'resultCountMessage',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(resultCount: <span class="hljs-built_in">number</span>) => <span class="hljs-built_in">string</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'rootEventType',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TRootEventType',
+          items: ["'click'", "'mousedown'"]
         },
         isRequired: false,
         isInternal: false,
@@ -11019,7 +11902,7 @@ const data: ComponentDoc[] = [
         identifier: 'search',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-built_in">any</span>[] | PromiseProxy&#x3C;<span class="hljs-built_in">any</span>[]>'
+          raw: '(term: <span class="hljs-built_in">string</span>, <span class="hljs-attr">select</span>: Select) => <span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[] | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-keyword">readonly</span> <span class="hljs-built_in">any</span>[]>'
         },
         isRequired: false,
         isInternal: false,
@@ -11052,7 +11935,39 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'searchMessageComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'searchPlaceholder',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'selected',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'selectedItemComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -11091,7 +12006,43 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'title',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerClass',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'triggerComponent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | ComponentLike&#x3C;<span class="hljs-built_in">any</span>>',
+          items: ['string', 'ComponentLike<any>']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerId',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'triggerRole',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
@@ -11104,6 +12055,14 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
           raw: 'MatcherFn'
         },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'verticalPosition',
+        type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
         description: '',

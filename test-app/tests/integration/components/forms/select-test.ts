@@ -86,9 +86,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await render(
       hbs`
-          <div id="my-destination"></div>
           <Select
-            @destinationElementId="my-destination"
             @onSelectionChange={{this.onSelectionChange}}
             @selectedKeys={{this.selectedKeys}}
             @disabledKeys={{(array "item-3" "item-4")}}
@@ -200,9 +198,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await render(
       hbs`
-        <div id="my-destination"></div>
         <Select
-          @destinationElementId="my-destination"
           @allowEmpty={{true}}
           @selectionMode={{this.selectionMode}}
           @items={{this.animals}}
@@ -275,9 +271,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await render(
       hbs`
-        <div id="my-destination"></div>
         <Select
-          @destinationElementId="my-destination"
           @allowEmpty={{this.allowEmpty}}
           @selectionMode={{this.selectionMode}}
           @items={{this.animals}}
@@ -333,9 +327,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await render(
       hbs`
-          <div id="my-destination"></div>
           <Select
-            @destinationElementId="my-destination"
             @onSelectionChange={{this.onSelectionChange}}
             @selectedKeys={{this.selectedKeys}}
             @disabledKeys={{(array "item-3" "item-4")}}
@@ -366,15 +358,25 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-component="listbox"] [data-key="item-4"]').exists();
     assert.dom('[data-component="listbox"] [data-key="item-5"]').exists();
 
-    assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'true');
+    assert
+      .dom('[data-component="listbox"] [data-key="item-1"]')
+      .hasAttribute('data-active', 'true');
 
     await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowDown');
-    assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'false');
-    assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'true');
+    assert
+      .dom('[data-component="listbox"] [data-key="item-1"]')
+      .hasAttribute('data-active', 'false');
+    assert
+      .dom('[data-component="listbox"] [data-key="item-2"]')
+      .hasAttribute('data-active', 'true');
 
     await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowUp');
-    assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'true');
-    assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'false');
+    assert
+      .dom('[data-component="listbox"] [data-key="item-1"]')
+      .hasAttribute('data-active', 'true');
+    assert
+      .dom('[data-component="listbox"] [data-key="item-2"]')
+      .hasAttribute('data-active', 'false');
 
     await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowDown');
     await triggerKeyEvent('[data-component="listbox"]', 'keypress', 'Enter');
@@ -388,9 +390,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     this.set('animals', ['tiger']);
     await render(
       hbs`
-        <div id="my-destination"></div>
         <Select
-          @destinationElementId="my-destination"
           @items={{this.animals}}
           @isDisabled={{true}}
         />`
@@ -404,9 +404,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     this.set('animals', ['tiger']);
     await render(
       hbs`
-        <div id="my-destination"></div>
         <Select
-          @destinationElementId="my-destination"
           @items={{this.animals}}
           @placeholder="Select an animal"
         />`
@@ -420,9 +418,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     this.set('classes', classes);
     await render(
       hbs`
-        <div id="my-destination"></div>
         <Select
-          @destinationElementId="my-destination"
           @items={{this.animals}}
           @placeholder="Select an animal"
           @classes={{this.classes}}
@@ -449,9 +445,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await render(
       hbs`
-          <div id="my-destination"></div>
           <Select
-            @destinationElementId="my-destination"
             @onSelectionChange={{this.onSelectionChange}}
             @selectedKeys={{this.selectedKeys}}
             @isClearable={{true}}

@@ -32,6 +32,8 @@ const animals = [
   'zebra'
 ];
 
+const stringify = JSON.stringify;
+
 const MyCustomLabel = <template>
   This is a custom label. <span class="text-danger">Cool right?</span>
 </template> as never;
@@ -159,6 +161,6 @@ export default class FormExample extends Component<FormExampleArgs> {
         <Button @type="submit">Submit</Button>
       </div>
     </Form>
-    <pre>{{JSON.stringify this.data null 3}}</pre>
+    <pre>{{stringify this.data null 3}}</pre>
   </template>
 }

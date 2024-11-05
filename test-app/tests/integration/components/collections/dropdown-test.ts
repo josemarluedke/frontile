@@ -30,14 +30,12 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @onAction={{this.onAction}}
               @intent="primary"
-              @destinationElementId="my-destination"
               @disableTransitions={{true}}
               as |Item|
             >
@@ -63,13 +61,11 @@ module(
     test('it renders accessibility attributes', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
@@ -100,14 +96,12 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @backdrop={{this.backdrop}}
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
@@ -133,13 +127,11 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown @didClose={{this.didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
@@ -160,13 +152,11 @@ module(
     test('on item click, does not close menu when @closeOnItemSelect=false', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown @closeOnItemSelect={{false}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
@@ -191,13 +181,12 @@ module(
 
       await render(
         hbs`
-          <div id="my-destination" tabindex="0"></div>
+          <div id="outside" tabindex="0"></div>
           <Dropdown @didClose={{this.didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
@@ -210,7 +199,7 @@ module(
       await click('[data-test-id="dropdown-trigger"]');
       assert.dom('[data-test-id="listbox"]').exists();
 
-      await click('#my-destination');
+      await click('#outside');
       assert.dom('[data-test-id="listbox"]').doesNotExist();
       assert.equal(calledClosed, true, 'should called didClose argument');
     });
@@ -218,13 +207,11 @@ module(
     test('on pressing arrow up/down key, opens the menu', async function (assert) {
       await render(
         hbs`
-          <div id="my-destination"></div>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
               @disableTransitions={{true}}
-              @destinationElementId="my-destination"
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
