@@ -1,3 +1,7 @@
+---
+label: New
+---
+
 # Portal & PortalTarget
 
 The `Portal` and `PortalTarget` components are designed to make it easy to render content into a different part of the DOM. This is useful for scenarios such as rendering modals, popovers, or other UI elements that should not be restricted by parent container overflow or need to be placed in a specific area of the page for accessibility or UX considerations.
