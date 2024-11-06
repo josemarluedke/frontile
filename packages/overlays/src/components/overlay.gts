@@ -29,17 +29,21 @@ function hasNestedPortals(element: HTMLElement): boolean {
   return false;
 }
 
-// finds if the el has a parent with the id `ember-basic-dropdown-wormhole`
-function hasWormholeParentElement(el: HTMLElement) {
+// finds if the el has a parent with the id `ember-basic-dropdown-wormhole` or a role of `alert`
+function hasWormholeOrAlertParentElement(el: HTMLElement) {
   let parent = el.parentElement;
   while (parent) {
-    if (parent.id === 'ember-basic-dropdown-wormhole') {
+    if (
+      parent.id === 'ember-basic-dropdown-wormhole' ||
+      parent.role === 'alert'
+    ) {
       return true;
     }
     parent = parent.parentElement;
   }
   return false;
 }
+
 interface Args
   extends Pick<PortalSignature['Args'], 'renderInPlace' | 'target'> {
   /**
@@ -163,7 +167,7 @@ class Overlay extends Component<OverlaySignature> {
       event.target === this.contentElement &&
       this.mouseDownContentElement == this.contentElement &&
       !hasNestedPortals(this.contentElement) &&
-      !hasWormholeParentElement(event.target as HTMLElement)
+      !hasWormholeOrAlertParentElement(event.target as HTMLElement)
     ) {
       this.handleClose();
     }
@@ -175,7 +179,7 @@ class Overlay extends Component<OverlaySignature> {
       this.args.closeOnOutsideClick !== false &&
       this.contentElement &&
       !hasNestedPortals(this.contentElement) &&
-      !hasWormholeParentElement(e.target as HTMLElement)
+      !hasWormholeOrAlertParentElement(e.target as HTMLElement)
     ) {
       this.handleClose();
       e.preventDefault();
