@@ -316,7 +316,7 @@ importers:
         specifier: workspace:0.17.0-alpha.18
         version: link:../buttons
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../overlays
       '@frontile/theme':
         specifier: workspace:0.17.0-alpha.18
@@ -410,10 +410,10 @@ importers:
         specifier: workspace:0.17.0-alpha.18
         version: link:../buttons
       '@frontile/collections':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../collections
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../overlays
       '@frontile/theme':
         specifier: workspace:0.17.0-alpha.18
@@ -1364,10 +1364,10 @@ importers:
         specifier: workspace:0.17.0-alpha.18
         version: link:../packages/changeset-form
       '@frontile/collections':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../packages/collections
       '@frontile/forms':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../packages/forms
       '@frontile/forms-legacy':
         specifier: workspace:0.17.0-alpha.18
@@ -1376,7 +1376,7 @@ importers:
         specifier: workspace:0.17.0-alpha.18
         version: link:../packages/notifications
       '@frontile/overlays':
-        specifier: workspace:0.17.0-alpha.18
+        specifier: workspace:0.17.0-alpha.19
         version: link:../packages/overlays
       '@frontile/status':
         specifier: workspace:0.17.0-alpha.18

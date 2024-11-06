@@ -1,6 +1,6 @@
 {
   "name": "@frontile/overlays",
-  "version": "0.17.0-alpha.18",
+  "version": "0.17.0-alpha.19",
   "description": "Component Library for Ember Octane apps: overlays",
   "keywords": [
     "ember-addon",
