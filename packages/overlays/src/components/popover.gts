@@ -7,6 +7,7 @@ import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import { debounce } from '@ember/runloop';
 import type { ModifierLike } from '@glint/template';
 import type { WithBoundArgs } from '@glint/template';
 import type { Signature as VelcroSignature } from 'ember-velcro/modifiers/velcro';
@@ -131,26 +132,40 @@ class Popover extends Component<PopoverSignature> {
     if (typeof this.args.didClose === 'function') {
       this.args.didClose();
     }
+
+    debounce(this, this.didClose, 90);
   };
 
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
+
+      const debounceDuration = 100;
+
+      const open = () => {
+        debounce(this, this.open, debounceDuration);
+      };
+
+      const close = () => {
+        debounce(this, this.close, debounceDuration);
+      };
+
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
-        el.addEventListener('mouseenter', this.open);
-        el.addEventListener('mouseleave', this.close);
+        el.addEventListener('mouseenter', open);
+        el.addEventListener('mouseleave', close);
       } else {
         el.addEventListener('click', this.toggle);
       }
+
       el.setAttribute('aria-haspopup', 'true');
       el.setAttribute('aria-controls', this.menuId);
       el.setAttribute('aria-expanded', this.isOpen.toString());
 
       return () => {
         if (eventType === 'hover') {
-          el.removeEventListener('mouseenter', this.open);
-          el.removeEventListener('mouseleave', this.close);
+          el.removeEventListener('mouseenter', open);
+          el.removeEventListener('mouseleave', close);
         } else {
           el.removeEventListener('click', this.toggle);
         }
@@ -166,7 +181,9 @@ class Popover extends Component<PopoverSignature> {
   });
 
   didClose = () => {
-    this.isClosing = false;
+    if (!this.isDestroyed || !this.isDestroying) {
+      this.isClosing = false;
+    }
   };
 
   <template>
