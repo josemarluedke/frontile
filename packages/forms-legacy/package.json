@@ -1,6 +1,6 @@
 {
   "name": "@frontile/forms-legacy",
-  "version": "0.17.0-alpha.16",
+  "version": "0.17.0-alpha.17",
   "description": "Component Library for Ember Octane apps: Forms",
   "keywords": [
     "ember-addon",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.17.0-alpha.16",
+    "@frontile/theme": "workspace:0.17.0-alpha.17",
     "@glint/template": "1.5.0",
     "ember-basic-dropdown": "^8.3.0",
     "ember-power-select": "^8.3.1"
