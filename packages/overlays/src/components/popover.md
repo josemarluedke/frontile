@@ -4,21 +4,21 @@ label: New
 
 # Popover
 
-A Popover component is a UI element that presents supplementary information or 
-actions related to a specific trigger element, typically appearing in a small overlay. 
-It offers a convenient way to display contextual content such as tooltips, forms, 
-or menus without cluttering the main interface, enhancing user experience and interaction. 
-Popovers can be triggered by various user actions like hovering, clicking, or focusing on an 
+A Popover component is a UI element that presents supplementary information or
+actions related to a specific trigger element, typically appearing in a small overlay.
+It offers a convenient way to display contextual content such as tooltips, forms,
+or menus without cluttering the main interface, enhancing user experience and interaction.
+Popovers can be triggered by various user actions like hovering, clicking, or focusing on an
 element, providing flexibility in design and functionality.
 
-The Popover component is built upon the [Overlay](./overlay.md) component, 
-inheriting its functionality and extending it to cater specifically to popover 
+The Popover component is built upon the [Overlay](./overlay.md) component,
+inheriting its functionality and extending it to cater specifically to popover
 behavior. This means that all options available in the Overlay component are also accessible as arguments in the
 `Content` yielded component. Thus, users can leverage the full range of
 customization options provided by the Overlay component seamlessly within the
 context of popovers, ensuring consistency and flexibility in UI design and behavior.
 
-## Import 
+## Import
 
 ```js
 import { Popover } from '@frontile/overlays';
@@ -36,23 +36,23 @@ import { Popover } from '@frontile/overlays';
       Toggle Popover
     </Button>
 
-    <p.Content @class="p-2">
+    <p.Content @class='p-2'>
       This is some example content for the popover. It can contain anything.
     </p.Content>
   </Popover>
 </template>
 ```
 
-## Focus Trapping 
+## Focus Trapping
 
-Prevents the user from tabbing outside of the popover content while it's open, 
-ensuring better accessibility and usability. To enable this option, ensure a 
+Prevents the user from tabbing outside of the popover content while it's open,
+ensuring better accessibility and usability. To enable this option, ensure a
 focusable element is rendered at all times within the popover content.
 
 ```gjs preview
 import { Button } from '@frontile/buttons';
 import { Popover } from '@frontile/overlays';
-import { FormInput } from '@frontile/forms';
+import { Input } from '@frontile/forms';
 
 <template>
   <Popover as |p|>
@@ -60,15 +60,14 @@ import { FormInput } from '@frontile/forms';
       Toggle Popover
     </Button>
 
-    <p.Content @disableFocusTrap={{false}} @class="p-4">
-      <FormInput @label="First Name" class="mb-2" />
-      <FormInput @label="Last Name" class="mb-2" />
+    <p.Content @disableFocusTrap={{false}} @class='p-4'>
+      <Input @label='First Name' class='mb-2' />
+      <Input @label='Last Name' class='mb-2' />
       <Button>Save</Button>
     </p.Content>
   </Popover>
 </template>
 ```
-
 
 ## The Trigger
 
@@ -88,13 +87,13 @@ import { Button } from '@frontile/buttons';
     <Button
       {{pop.trigger}}
       {{pop.anchor}}
-      {{on "mouseenter" pop.open}}
-      {{on "mouseleave" pop.close}}
+      {{on 'mouseenter' pop.open}}
+      {{on 'mouseleave' pop.close}}
     >
       Hover me
     </Button>
 
-    <pop.Content @class="p-2">
+    <pop.Content @class='p-2'>
       Hovered content
     </pop.Content>
   </Popover>
@@ -103,13 +102,13 @@ import { Button } from '@frontile/buttons';
 
 ## Blocking Window Scroll
 
-Prevent scrolling of the main window when the popover is open, focusing the 
+Prevent scrolling of the main window when the popover is open, focusing the
 user's attention on the popover content.
 
 ```gjs preview
 import { Button } from '@frontile/buttons';
 import { Popover } from '@frontile/overlays';
-import { FormInput } from '@frontile/forms';
+import { Input } from '@frontile/forms';
 
 <template>
   <Popover as |p|>
@@ -117,13 +116,9 @@ import { FormInput } from '@frontile/forms';
       Toggle Popover
     </Button>
 
-    <p.Content 
-      @blockScroll={{true}}
-      @disableFocusTrap={{false}} 
-      @class="p-4"
-    >
-      <FormInput @label="First Name" class="mb-2" />
-      <FormInput @label="Last Name" class="mb-2" />
+    <p.Content @blockScroll={{true}} @disableFocusTrap={{false}} @class='p-4'>
+      <Input @label='First Name' class='mb-2' />
+      <Input @label='Last Name' class='mb-2' />
       <Button>Save</Button>
     </p.Content>
   </Popover>
@@ -137,7 +132,7 @@ Choose from various backdrop options such as none, faded, blur, or transparent.
 ```gjs preview
 import { Button } from '@frontile/buttons';
 import { Popover } from '@frontile/overlays';
-import { FormInput } from '@frontile/forms';
+import { Input } from '@frontile/forms';
 
 const backdrops = ['none', 'faded', 'blur', 'transparent'];
 
@@ -148,14 +143,14 @@ const backdrops = ['none', 'faded', 'blur', 'transparent'];
         {{backdrop}}
       </Button>
 
-      <p.Content 
+      <p.Content
         @backdrop={{backdrop}}
         @blockScroll={{true}}
-        @disableFocusTrap={{false}} 
-        @class="p-4"
+        @disableFocusTrap={{false}}
+        @class='p-4'
       >
-        <FormInput @label="First Name" class="mb-2" />
-        <FormInput @label="Last Name" class="mb-2" />
+        <Input @label='First Name' class='mb-2' />
+        <Input @label='Last Name' class='mb-2' />
         <Button>Save</Button>
       </p.Content>
     </Popover>
@@ -165,7 +160,7 @@ const backdrops = ['none', 'faded', 'blur', 'transparent'];
 
 ## Placement
 
-Easily specify the placement of the popover relative to its trigger element, 
+Easily specify the placement of the popover relative to its trigger element,
 ensuring optimal positioning in various UI layouts.
 
 ```gjs preview
@@ -188,13 +183,13 @@ const placements = [
 ];
 
 <template>
-  <div class="flex flex-wrap md:inline-grid md:grid-cols-3 gap-4">
+  <div class='flex flex-wrap md:inline-grid md:grid-cols-3 gap-4'>
     {{#each placements as |placement|}}
       <Popover @placement={{placement}} as |p|>
         <Button {{p.trigger}} {{p.anchor}}>
           {{placement}}
         </Button>
-        <p.Content @class="p-4">
+        <p.Content @class='p-4'>
           This is some example content for the popover. It can contain anything.
         </p.Content>
       </Popover>
@@ -212,21 +207,16 @@ to the `Content` yielded component.
 import { Button } from '@frontile/buttons';
 import { Popover } from '@frontile/overlays';
 
-const sizes = [
-  'sm',
-  'md',
-  'lg',
-  'xl'
-];
+const sizes = ['sm', 'md', 'lg', 'xl'];
 
 <template>
-  <div class="flex flex-wrap md:inline-grid md:grid-cols-4 gap-4">
+  <div class='flex flex-wrap md:inline-grid md:grid-cols-4 gap-4'>
     {{#each sizes as |size|}}
       <Popover as |p|>
         <Button {{p.trigger}} {{p.anchor}}>
           {{size}}
         </Button>
-        <p.Content @size={{size}} @class="p-4">
+        <p.Content @size={{size}} @class='p-4'>
           This is some example content for the popover. It can contain anything.
         </p.Content>
       </Popover>
@@ -264,8 +254,8 @@ export default class Example extends Component {
   };
 
   <template>
-    <Button {{on "click" this.open}}>Open</Button>
-    <Divider class="my-4" />
+    <Button {{on 'click' this.open}}>Open</Button>
+    <Divider class='my-4' />
 
     <Popover
       @isOpen={{this.isOpen}}
@@ -276,11 +266,11 @@ export default class Example extends Component {
         Toggle Popover
       </Button>
 
-      <pop.Content @class="p-4">
+      <pop.Content @class='p-4'>
         This is some example content for the popover. Check the nested popover
         by clicking the button below.
 
-        <Button {{on "click" this.close}}>Close Popover</Button>
+        <Button {{on 'click' this.close}}>Close Popover</Button>
       </pop.Content>
     </Popover>
   </template>
@@ -296,7 +286,7 @@ a new Popover from within an existing one, creating a stacked structure. When
 the "escape" key is pressed, the system intelligently identifies the most recently
 added overlay and closes it, ensuring a natural and intuitive user experience.
 Similarly, clicking outside of the overlays prioritizes the most recent addition,
-closing it before proceeding to the underlying layers. 
+closing it before proceeding to the underlying layers.
 
 ```gjs preview
 import { Popover } from '@frontile/overlays';
@@ -308,20 +298,20 @@ import { Button } from '@frontile/buttons';
       Toggle Popover
     </Button>
 
-    <pop.Content @class="p-4">
+    <pop.Content @class='p-4'>
       This is some example content for the popover. Check the nested popover by
       clicking the button below.
 
-      <Popover @placement="right" as |pop|>
-        <Button {{pop.trigger}} {{pop.anchor}} @class="mt-2">
+      <Popover @placement='right' as |pop|>
+        <Button {{pop.trigger}} {{pop.anchor}} @class='mt-2'>
           Second Popover
         </Button>
 
-        <pop.Content @class="p-4">
+        <pop.Content @class='p-4'>
           <p>
             More content here, the nested overlay.
           </p>
-          <p class="mt-2">
+          <p class='mt-2'>
             Clicking outside or pressing Escape will close this Popover, and not
             the root Popover.
           </p>
