@@ -15,6 +15,7 @@ import { Portal, findParentPortal, type PortalSignature } from './portal';
 import { getElementByAttribute } from '../-private/dom';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
+import { isTesting, macroCondition } from '@embroider/macros';
 
 function hasNestedPortals(element: HTMLElement): boolean {
   const portal = findParentPortal(element);
@@ -204,7 +205,7 @@ class Overlay extends Component<OverlaySignature> {
 
   setupContent = modifier((el: HTMLDivElement) => {
     let transitionDuration = this.args.transitionDuration || 200;
-    if (this.args.disableTransitions === true) {
+    if (!this.isAnimationEnabled) {
       transitionDuration = 0;
     }
     later(() => {
@@ -263,6 +264,9 @@ class Overlay extends Component<OverlaySignature> {
   }
 
   get isAnimationEnabled(): boolean {
+    if (macroCondition(isTesting())) {
+      return false;
+    }
     return !(this.args.disableTransitions === true);
   }
 
