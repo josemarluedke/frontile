@@ -7,7 +7,12 @@ import DrawerFooter from './drawer/footer';
 import DrawerHeader from './drawer/header';
 import { CloseButton } from '@frontile/buttons';
 import type { WithBoundArgs } from '@glint/template';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type SlotsToClasses,
+  type DrawerSlots,
+  type DrawerVariants
+} from '@frontile/theme';
 
 export interface DrawerArgs
   extends Pick<
@@ -61,14 +66,16 @@ export interface DrawerArgs
    *
    * @defaultValue 'right'
    */
-  placement?: 'top' | 'bottom' | 'left' | 'right';
+  placement?: DrawerVariants['placement'];
 
   /**
    * The Drawer size.
    *
    * @defaultValue 'md'
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: DrawerVariants['size'];
+
+  classes?: SlotsToClasses<DrawerSlots>;
 }
 
 export interface DrawerSignature {
@@ -79,9 +86,9 @@ export interface DrawerSignature {
         CloseButton: WithBoundArgs<typeof CloseButton, 'onClick'> &
           WithBoundArgs<typeof CloseButton, 'class'>;
         Header: WithBoundArgs<typeof DrawerHeader, 'labelledById'> &
-          WithBoundArgs<typeof DrawerHeader, 'class'>;
-        Body: WithBoundArgs<typeof DrawerBody, 'class'>;
-        Footer: WithBoundArgs<typeof DrawerFooter, 'class'>;
+          WithBoundArgs<typeof DrawerHeader, 'classFromParent'>;
+        Body: WithBoundArgs<typeof DrawerBody, 'classFromParent'>;
+        Footer: WithBoundArgs<typeof DrawerFooter, 'classFromParent'>;
         headerId: string;
       }
     ];
@@ -109,18 +116,10 @@ export default class Drawer extends Component<DrawerSignature> {
   get classes() {
     const { drawer } = useStyles();
 
-    const { base, closeButton, header, body, footer } = drawer({
+    return drawer({
       placement: this.placement,
       size: this.args.size || 'md'
     });
-
-    return {
-      base: base(),
-      closeButton: closeButton(),
-      header: header(),
-      body: body(),
-      footer: footer()
-    };
   }
   get transition() {
     let options: OverlaySignature['Args']['transition'] = {
@@ -154,7 +153,7 @@ export default class Drawer extends Component<DrawerSignature> {
       @closeOnOverlayElementClick={{true}}
     >
       <div
-        class={{this.classes.base}}
+        class={{this.classes.base class=@classes.base}}
         tabindex="0"
         role="dialog"
         aria-labelledby={{this.headerId}}
@@ -164,23 +163,31 @@ export default class Drawer extends Component<DrawerSignature> {
           <CloseButton
             @onClick={{@onClose}}
             @size={{@closeButtonSize}}
-            @class={{this.classes.closeButton}}
+            @class={{this.classes.closeButton class=@classes.closeButton}}
           />
         {{/if}}
 
         {{yield
           (hash
             CloseButton=(component
-              CloseButton onClick=@onClose class=this.classes.closeButton
+              CloseButton
+              onClick=@onClose
+              class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component
-              DrawerHeader labelledById=this.headerId class=this.classes.header
+              DrawerHeader
+              labelledById=this.headerId
+              classFromParent=(this.classes.header class=@classes.header)
             )
             Body=(component
-              DrawerBody placement=this.placement class=this.classes.body
+              DrawerBody
+              placement=this.placement
+              classFromParent=(this.classes.body class=@classes.body)
             )
             Footer=(component
-              DrawerFooter placement=this.placement class=this.classes.footer
+              DrawerFooter
+              placement=this.placement
+              classFromParent=(this.classes.footer class=@classes.footer)
             )
             headerId=this.headerId
           )

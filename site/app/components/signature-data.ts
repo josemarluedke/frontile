@@ -6558,6 +6558,16 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'closeButton\'</span> | <span class="hljs-string">\'header\'</span> | <span class="hljs-string">\'body\'</span> | <span class="hljs-string">\'footer\'</span>>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'closeButtonSize',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -7049,6 +7059,16 @@ const data: ComponentDoc[] = [
               tags: {}
             }
           ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'closeButton\'</span> | <span class="hljs-string">\'header\'</span> | <span class="hljs-string">\'body\'</span> | <span class="hljs-string">\'footer\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -10220,6 +10240,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [
@@ -10258,6 +10286,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [
@@ -10305,6 +10341,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [
@@ -10343,6 +10387,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [
@@ -10381,6 +10433,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [
@@ -10427,6 +10487,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: '',
         tags: {}
+      },
+      {
+        identifier: 'classFromParent',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: '' } }
       }
     ],
     Blocks: [

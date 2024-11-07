@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { twMerge } from '@frontile/theme';
 
 export interface ModalHeaderArgs {
   class?: string;
@@ -6,6 +7,11 @@ export interface ModalHeaderArgs {
    * The id used to reference labelledById in Modal component
    */
   labelledById: string;
+
+  /**
+   * @internal
+   */
+  classFromParent?: string;
 }
 
 export interface ModalHeaderSignature {
@@ -18,7 +24,11 @@ export interface ModalHeaderSignature {
 
 export default class ModalHeader extends Component<ModalHeaderSignature> {
   <template>
-    <div id={{@labelledById}} class={{@class}} ...attributes>
+    <div
+      id={{@labelledById}}
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>
