@@ -1,7 +1,13 @@
 import Component from '@glimmer/component';
+import { twMerge } from '@frontile/theme';
 
 export interface ModalFooterArgs {
   class?: string;
+
+  /**
+   * @internal
+   */
+  classFromParent?: string;
 }
 
 export interface ModalFooterSignature {
@@ -14,7 +20,7 @@ export interface ModalFooterSignature {
 
 export default class ModalFooter extends Component<ModalFooterSignature> {
   <template>
-    <div class={{@class}} ...attributes>
+    <div class={{twMerge @classFromParent @class}} ...attributes>
       {{yield}}
     </div>
   </template>

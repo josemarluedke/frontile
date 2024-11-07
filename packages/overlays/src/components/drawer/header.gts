@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { twMerge } from '@frontile/theme';
 
 export interface DrawerHeaderArgs {
   /**
@@ -7,6 +8,11 @@ export interface DrawerHeaderArgs {
   labelledById: string;
 
   class?: string;
+
+  /**
+   * @internal
+   */
+  classFromParent?: string;
 }
 
 export interface DrawerHeaderSignature {
@@ -18,7 +24,11 @@ export interface DrawerHeaderSignature {
 }
 export default class DrawerHeader extends Component<DrawerHeaderSignature> {
   <template>
-    <div id={{@labelledById}} class={{@class}} ...attributes>
+    <div
+      id={{@labelledById}}
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>

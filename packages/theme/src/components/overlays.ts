@@ -1,4 +1,4 @@
-import { tv } from '../tw';
+import { tv, type VariantProps } from '../tw';
 
 const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 
@@ -250,5 +250,14 @@ const overlayTransitions = {
     }
   }
 };
+
+export type OverlayVariants = VariantProps<typeof overlay>;
+export type OverlaySlots = keyof ReturnType<typeof overlay>;
+export type DrawerVariants = VariantProps<typeof drawer>;
+export type DrawerSlots = keyof ReturnType<typeof drawer>;
+export type ModalVariants = VariantProps<typeof modal>;
+export type ModalSlots = keyof ReturnType<typeof modal>;
+export type BackdropVariants = VariantProps<typeof backdrop>;
+export type BackdropSlots = keyof ReturnType<typeof backdrop>;
 
 export { overlay, drawer, modal, overlayTransitions, backdrop };

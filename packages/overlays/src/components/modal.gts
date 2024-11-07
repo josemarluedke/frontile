@@ -6,7 +6,12 @@ import ModalFooter from './modal/footer';
 import ModalBody from './modal/body';
 import ModalHeader from './modal/header';
 import { CloseButton } from '@frontile/buttons';
-import { useStyles } from '@frontile/theme';
+import {
+  useStyles,
+  type SlotsToClasses,
+  type ModalSlots,
+  type ModalVariants
+} from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface ModalArgs
@@ -67,7 +72,9 @@ export interface ModalArgs
    *
    * @defaultValue 'lg'
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: ModalVariants['size'];
+
+  classes?: SlotsToClasses<ModalSlots>;
 }
 
 export interface ModalSignature {
@@ -76,9 +83,12 @@ export interface ModalSignature {
     default: [
       {
         CloseButton: WithBoundArgs<typeof CloseButton, 'onClick' | 'class'>;
-        Header: WithBoundArgs<typeof ModalHeader, 'labelledById' | 'class'>;
-        Body: WithBoundArgs<typeof ModalBody, 'class'>;
-        Footer: WithBoundArgs<typeof ModalFooter, 'class'>;
+        Header: WithBoundArgs<
+          typeof ModalHeader,
+          'labelledById' | 'classFromParent'
+        >;
+        Body: WithBoundArgs<typeof ModalBody, 'classFromParent'>;
+        Footer: WithBoundArgs<typeof ModalFooter, 'classFromParent'>;
         headerId: string;
       }
     ];
@@ -106,18 +116,10 @@ export default class Modal extends Component<ModalSignature> {
   get classes() {
     const { modal } = useStyles();
 
-    const { base, closeButton, header, body, footer } = modal({
+    return modal({
       size: this.size,
       isCentered: this.args.isCentered
     });
-
-    return {
-      base: base(),
-      closeButton: closeButton(),
-      header: header(),
-      body: body(),
-      footer: footer()
-    };
   }
 
   get transition() {
@@ -152,7 +154,7 @@ export default class Modal extends Component<ModalSignature> {
       @closeOnOverlayElementClick={{true}}
     >
       <div
-        class={{this.classes.base}}
+        class={{this.classes.base class=@classes.base}}
         tabindex="0"
         role="dialog"
         aria-labelledby={{this.headerId}}
@@ -162,20 +164,29 @@ export default class Modal extends Component<ModalSignature> {
           <CloseButton
             @onClick={{@onClose}}
             @size={{@closeButtonSize}}
-            @class={{this.classes.closeButton}}
+            @class={{this.classes.closeButton class=@classes.closeButton}}
           />
         {{/if}}
 
         {{yield
           (hash
             CloseButton=(component
-              CloseButton onClick=@onClose class=this.classes.closeButton
+              CloseButton
+              onClick=@onClose
+              class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component
-              ModalHeader labelledById=this.headerId class=this.classes.header
+              ModalHeader
+              labelledById=this.headerId
+              classFromParent=(this.classes.header class=@classes.header)
             )
-            Body=(component ModalBody class=this.classes.body)
-            Footer=(component ModalFooter class=this.classes.footer)
+            Body=(component
+              ModalBody classFromParent=(this.classes.body class=@classes.body)
+            )
+            Footer=(component
+              ModalFooter
+              classFromParent=(this.classes.footer class=@classes.footer)
+            )
             headerId=this.headerId
           )
         }}
