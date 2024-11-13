@@ -37,14 +37,14 @@
   },
   "peerDependencies": {
     "@babel/runtime": ">= 7",
-    "ember-source": "^4.0.0 || ^5.0.0"
+    "ember-source": ">= 4.12.0"
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
     "@frontile/theme": "workspace:0.17.0-alpha.21",
     "@glint/template": "1.5.0",
-    "ember-basic-dropdown": "^8.3.0",
-    "ember-power-select": "^8.3.1"
+    "ember-basic-dropdown": "^8.4.0",
+    "ember-power-select": "^8.4.0"
   },
   "devDependencies": {
     "@babel/core": "7.26.0",
