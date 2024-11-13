@@ -21,7 +21,7 @@
     "ember-concurrency": "^4.0.2"
   },
   "dependencies": {
-    "@ember/test-waiters": "^3.0.2",
+    "@ember/test-waiters": "^3.1.0",
     "@embroider/test-setup": "^4.0.0"
   },
   "devDependencies": {
