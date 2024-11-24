@@ -23,6 +23,7 @@
     "@docfy/ember": "^0.8.5",
     "@docfy/plugin-with-prose": "^0.8.5",
     "@ember/optional-features": "^2.1.0",
+    "@ember/string": "^3.1.1",
     "@ember/test-helpers": "^4.0.4",
     "@embroider/compat": "^3.7.0",
     "@embroider/core": "^3.4.6",
