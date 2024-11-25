@@ -51,6 +51,7 @@ module.exports = {
   ],
   labels: {
     accessibility: 'Accessibility',
+    customization: 'Customization',
     components: 'Components',
     docs: 'Documentation',
     utilities: 'Utilities',
