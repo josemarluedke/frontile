@@ -1,6 +1,6 @@
-## @frontile/notifications
+## @frontile/theme
 
-Component Library for Ember Octane apps: Notifications
+Component Library for Ember Octane apps: Theme
 
 ## Compatibility
 
@@ -11,7 +11,7 @@ Component Library for Ember Octane apps: Notifications
 ## Installation
 
 ```sh
-ember install @frontile/notifications
+ember install @frontile/theme
 ```
 
 ### Styles
@@ -19,11 +19,22 @@ ember install @frontile/notifications
 ```js
 // tailwind.config.js
 
+const { frontile, safelist } = require('@frontile/theme/plugin');
+
 module.exports = {
+  content: []
+    './app/**/*.{html,js,ts,hbs,gts,gjs}',
+    './node_modules/@frontile/theme/dist/**/*.js',
+  ],
+  safelist: [
+    ...safelist,
+  ],
+  darkMode: "class",
   theme: {
-    // ...
+    extend: {},
   },
-  plugins: [require('@frontile/notifications/tailwind')]
+  plugins: [frontile()],
+  // ...
 };
 ```
 
