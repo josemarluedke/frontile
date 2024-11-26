@@ -1,6 +1,7 @@
 ---
 title: Usage
 url: /usage
+label: Deprecated
 ---
 
 # Using ChangesetForm

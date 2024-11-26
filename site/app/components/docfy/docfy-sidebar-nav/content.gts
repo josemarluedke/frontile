@@ -12,6 +12,31 @@ interface Signature {
   Element: HTMLDivElement;
 }
 
+class Label extends Component<{ Args: { label: string } }> {
+  get intent() {
+    if (this.args.label.toLowerCase() == 'new') {
+      return 'primary';
+    } else if (this.args.label.toLowerCase() == 'updated') {
+      return 'success';
+    } else if (this.args.label.toLowerCase() == 'deprecated') {
+      return 'danger';
+    } else {
+      return 'default';
+    }
+  }
+
+  <template>
+    <Chip
+      @size="sm"
+      @appearance="outlined"
+      @intent={{this.intent}}
+      @class="ml-1"
+    >
+      {{@label}}
+    </Chip>
+  </template>
+}
+
 export default class DocfySidebarNavContent extends Component<Signature> {
   <template>
     <div ...attributes>
@@ -46,14 +71,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                   >
                     {{page.title}}
                     {{#if page.frontmatter.label}}
-                      <Chip
-                        @size="sm"
-                        @appearance="outlined"
-                        @intent="primary"
-                        @class="ml-1"
-                      >
-                        {{page.frontmatter.label}}
-                      </Chip>
+                      <Label @label={{page.frontmatter.label}} />
                     {{/if}}
                   </DocfyLink>
                 </li>
