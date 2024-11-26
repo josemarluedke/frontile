@@ -1,6 +1,7 @@
 ---
 category: customization
 title: Component Styles
+label: New
 ---
 
 # Customizing Component Styles

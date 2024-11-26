@@ -1,6 +1,7 @@
 ---
 order: 1
 category: customization
+label: New
 ---
 
 # Theme
