@@ -15,8 +15,7 @@ module.exports = {
     [
       'babel-plugin-ember-template-compilation',
       {
-        targetFormat: 'hbs',
-        compilerPath: 'ember-source/dist/ember-template-compiler'
+        targetFormat: 'hbs'
       }
     ],
     ['@babel/plugin-proposal-decorators', { legacy: true }],
