@@ -1,9 +1,13 @@
 import Application from 'site/app';
-import config from 'site/config/environment';
 import QUnit from 'qunit';
+import config from 'site-app/config/environment';
+import { loadTests } from 'ember-qunit/test-loader';
 import { setApplication } from '@ember/test-helpers';
-import { start } from 'ember-qunit';
 import { setup } from 'qunit-dom';
+import { start, setupEmberOnerrorValidation } from 'ember-qunit';
+
+setupEmberOnerrorValidation();
+loadTests();
 
 setApplication(Application.create(config.APP));
 
