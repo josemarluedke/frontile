@@ -7,7 +7,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
   setupTest(hooks);
 
   test('it creates with default values', async function (assert) {
-    const notification = new Notification('Message');
+    const notification = new Notification({}, 'Message');
 
     assert.equal(notification.message, 'Message');
     assert.equal(notification.appearance, 'info');
@@ -18,7 +18,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
   });
 
   test('it can create with custom options', async function (assert) {
-    const notification = new Notification('Message', {
+    const notification = new Notification({}, 'Message', {
       appearance: 'success',
       duration: 1,
       transitionDuration: 0,
@@ -43,14 +43,14 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
   });
 
   test('it can set isRemoving', async function (assert) {
-    const notification = new Notification('Message');
+    const notification = new Notification({}, 'Message');
 
     notification.isRemoving = true;
     assert.ok(notification.isRemoving);
   });
 
   test('it can set a timer', async function (assert) {
-    const notification = new Notification('Message');
+    const notification = new Notification({}, 'Message');
 
     notification.timer = new Timer(0, () => {
       // empty

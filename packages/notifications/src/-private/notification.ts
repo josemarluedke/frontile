@@ -1,7 +1,7 @@
 import { tracked } from '@glimmer/tracking';
 import Timer from './timer';
 import { getConfigOption } from './get-config';
-import type { NotificationOptions, CustomAction } from './types';
+import type { NotificationOptions, CustomAction, DefaultConfig } from './types';
 
 export default class Notification {
   readonly message: string;
@@ -14,16 +14,21 @@ export default class Notification {
   @tracked timer?: Timer;
   @tracked isRemoving = false;
 
-  constructor(message: string, options: NotificationOptions = {}) {
+  constructor(
+    config: DefaultConfig,
+    message: string,
+    options: NotificationOptions = {}
+  ) {
     this.message = message;
     this.appearance =
-      options.appearance || getConfigOption('appearance', 'info');
+      options.appearance || getConfigOption(config, 'appearance', 'info');
     this.customActions = options.customActions;
-    this.duration = options.duration || getConfigOption('duration', 5000);
+    this.duration =
+      options.duration || getConfigOption(config, 'duration', 5000);
     this.transitionDuration =
       typeof options.transitionDuration !== 'undefined'
         ? options.transitionDuration
-        : getConfigOption('transitionDuration', 200);
+        : getConfigOption(config, 'transitionDuration', 200);
 
     if (options.allowClosing === false) {
       this.allowClosing = false;
