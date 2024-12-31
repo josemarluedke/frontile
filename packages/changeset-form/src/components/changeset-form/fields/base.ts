@@ -3,6 +3,7 @@ import type { BufferedChangeset } from 'ember-changeset/types';
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
+import type Owner from '@ember/owner';
 
 export interface BaseArgs {
   changeset: BufferedChangeset;
@@ -18,7 +19,7 @@ export default class ChangesetFormFieldsBase<
   T extends BaseSignature,
   V = unknown
 > extends Component<T> {
-  constructor(owner: unknown, args: T['Args']) {
+  constructor(owner: Owner, args: T['Args']) {
     super(owner, args);
 
     assert(

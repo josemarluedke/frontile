@@ -14,6 +14,7 @@ import ChangesetFormFieldsRadio from './fields/radio';
 import ChangesetFormFieldsRadioGroup from './fields/radio-group';
 import type { BufferedChangeset } from 'ember-changeset/types';
 import type { WithBoundArgs } from '@glint/template';
+import type Owner from '@ember/owner';
 
 export interface ChangesetFormArgs {
   /** Changeset Object */
@@ -91,7 +92,7 @@ export interface ChangesetFormSignature {
 export default class ChangesetForm extends Component<ChangesetFormSignature> {
   @tracked hasSubmitted = false;
 
-  constructor(owner: unknown, args: ChangesetFormArgs) {
+  constructor(owner: Owner, args: ChangesetFormArgs) {
     super(owner, args);
     assert(
       '@changeset must be defined on <ChangesetForm> component',

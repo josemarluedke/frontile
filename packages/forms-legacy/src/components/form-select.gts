@@ -10,6 +10,7 @@ import PowerSelectMultiple from 'ember-power-select/components/power-select-mult
 import FormField from './form-field';
 import { concat } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
+import type Owner from '@ember/owner';
 
 export interface FormSelectArgs extends PowerSelectArgs {
   /** The input field label */
@@ -50,7 +51,7 @@ export default class FormSelect extends Component<FormSelectSignature> {
   @tracked shouldShowErrorFeedback = false;
   @tracked isOpen = false;
 
-  constructor(owner: unknown, args: FormSelectArgs) {
+  constructor(owner: Owner, args: FormSelectArgs) {
     super(owner, args);
     assert(
       '<FormSelect> requires an `@onChange` function',
