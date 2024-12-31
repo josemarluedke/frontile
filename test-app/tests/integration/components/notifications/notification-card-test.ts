@@ -66,7 +66,7 @@ module(
 
     test('it renders the notification content & close button', async function (assert) {
       this;
-      this.set('notification', new Notification('My message'));
+      this.set('notification', new Notification({}, 'My message'));
 
       await render(template);
 
@@ -77,7 +77,7 @@ module(
     });
 
     test('it renders the correct appearance', async function (assert) {
-      this.set('notification', new Notification('My message'));
+      this.set('notification', new Notification({}, 'My message'));
 
       await render(template);
 
@@ -87,7 +87,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', {
+        new Notification({}, 'My message', {
           appearance: 'success'
         })
       );
@@ -97,7 +97,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', {
+        new Notification({}, 'My message', {
           appearance: 'warning'
         })
       );
@@ -107,7 +107,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', {
+        new Notification({}, 'My message', {
           appearance: 'error'
         })
       );
@@ -119,7 +119,7 @@ module(
     test('it does not render close button when allowClosing=false', async function (assert) {
       this.set(
         'notification',
-        new Notification('My message', {
+        new Notification({}, 'My message', {
           allowClosing: false
         })
       );
@@ -136,7 +136,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', { transitionDuration: 1 })
+        new Notification({}, 'My message', { transitionDuration: 1 })
       );
 
       const service = this.owner.lookup(
@@ -159,7 +159,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', {
+        new Notification({}, 'My message', {
           transitionDuration: 1,
           customActions: [
             {
@@ -216,7 +216,7 @@ module(
 
       this.set(
         'notification',
-        new Notification('My message', { transitionDuration: 1 })
+        new Notification({}, 'My message', { transitionDuration: 1 })
       );
 
       // @ts-ignore

@@ -4,7 +4,7 @@ import NotificationsManager from '../-private/manager';
 import type { NotificationOptions } from '../-private/types';
 
 export default class NotificationsService extends Service {
-  manager = new NotificationsManager();
+  manager = new NotificationsManager(this);
 
   get notifications(): Notification[] {
     return this.manager.notifications;
