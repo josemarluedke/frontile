@@ -54,7 +54,7 @@
     "@embroider/addon-dev": "7.0.0",
     "@tsconfig/ember": "^3.0.5",
     "concurrently": "^9.1.0",
-    "ember-source": "^6.0.0",
+    "ember-source": "^6.1.0",
     "rollup": "^4.25.0",
     "rollup-plugin-ts": "^3.4.5",
     "tailwindcss": "^3.4.1",
