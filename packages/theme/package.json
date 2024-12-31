@@ -50,7 +50,7 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.mapkeys": "^4.6.0",
     "mini-svg-data-uri": "^1.4.4",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^2.6.0",
     "tailwind-variants": "^0.3.0",
     "tailwindcss-ember-power-select": "^0.4.2"
   },
@@ -60,7 +60,7 @@
     "@babel/plugin-proposal-decorators": "7.25.9",
     "@babel/plugin-transform-class-static-block": "^7.23.4",
     "@babel/preset-typescript": "7.26.0",
-    "@embroider/addon-dev": "7.0.0",
+    "@embroider/addon-dev": "7.1.1",
     "@embroider/addon-shim": "^1.8.6",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
@@ -68,7 +68,7 @@
     "@glint/environment-ember-loose": "1.5.0",
     "@glint/environment-ember-template-imports": "1.5.0",
     "@glint/template": "1.5.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@tsconfig/ember": "^3.0.5",
     "@types/color": "^4.2.0",
     "@types/flat": "^5.0.5",
@@ -77,10 +77,10 @@
     "babel-plugin-ember-template-compilation": "^2.2.1",
     "concurrently": "^9.1.0",
     "ember-source": "^6.1.0",
-    "rollup": "^4.25.0",
+    "rollup": "^4.29.1",
     "rollup-plugin-ts": "^3.4.5",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.4.2"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": "10.* || >= 12"
