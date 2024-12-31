@@ -5,6 +5,7 @@ import { buildWaiter } from '@ember/test-waiters';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import safeStyles from '../utils/safe-styles';
+import type Owner from '@ember/owner';
 
 const waiter = buildWaiter('@frontile/utilities:collapsible');
 
@@ -36,7 +37,7 @@ class Collapsible extends Component<CollapsibleSignature> {
   waiterToken?: unknown;
   isCurrentlyOpen = false; // Internal value to track if open or not
 
-  constructor(owner: unknown, args: CollapsibleArgs) {
+  constructor(owner: Owner, args: CollapsibleArgs) {
     super(owner, args);
 
     if (this.args.isOpen) {

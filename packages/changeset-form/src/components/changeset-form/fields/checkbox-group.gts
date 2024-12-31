@@ -8,6 +8,7 @@ import FormCheckboxGroup, {
 import type { BaseArgs, BaseSignature } from './base';
 import type { BufferedChangeset } from 'ember-changeset/types';
 import type { WithBoundArgs } from '@glint/template';
+import type Owner from '@ember/owner';
 
 export interface ChangesetFormFieldsGroupArgs
   extends BaseArgs,
@@ -36,7 +37,7 @@ export interface ChangesetFormFieldsCheckboxGroupSignature
 }
 
 export default class ChangesetFormFieldsCheckboxGroup extends Component<ChangesetFormFieldsCheckboxGroupSignature> {
-  constructor(owner: unknown, args: ChangesetFormFieldsGroupArgs) {
+  constructor(owner: Owner, args: ChangesetFormFieldsGroupArgs) {
     super(owner, args);
 
     assert(

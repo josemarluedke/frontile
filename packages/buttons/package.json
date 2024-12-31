@@ -51,22 +51,22 @@
     "@babel/plugin-transform-class-static-block": "^7.23.4",
     "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/preset-typescript": "7.26.0",
-    "@embroider/addon-dev": "7.0.0",
-    "@glimmer/component": "^1.1.2",
+    "@embroider/addon-dev": "7.1.1",
+    "@glimmer/component": "^2.0.0",
     "@glimmer/tracking": "^1.1.2",
     "@glint/core": "1.5.0",
     "@glint/environment-ember-loose": "1.5.0",
     "@glint/environment-ember-template-imports": "1.5.0",
     "@glint/template": "1.5.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@tsconfig/ember": "^3.0.5",
     "babel-plugin-ember-template-compilation": "^2.2.1",
     "concurrently": "^9.1.0",
     "ember-source": "^6.1.0",
-    "rollup": "^4.25.0",
+    "rollup": "^4.29.1",
     "rollup-plugin-ts": "^3.4.5",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.4.2"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": "10.* || >= 12"
