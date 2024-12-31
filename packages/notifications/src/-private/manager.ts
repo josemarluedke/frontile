@@ -1,14 +1,15 @@
 /* eslint-disable ember/no-runloop */
 import Notification from './notification';
 import Timer from './timer';
-import { getConfigOption } from './get-config';
 import { tracked } from '@glimmer/tracking';
-import { later } from '@ember/runloop';
-import { getOwner } from '@ember/owner';
-import type { NotificationOptions } from './types';
-import type Owner from '@ember/owner';
 import { assert } from '@ember/debug';
+import { getConfigOption } from './get-config';
+import { getOwner } from '@ember/owner';
+import { isDestroyed } from '@ember/destroyable';
+import { later } from '@ember/runloop';
+import type Owner from '@ember/owner';
 import type { DefaultConfig } from './types';
+import type { NotificationOptions } from './types';
 
 export default class NotificationsManager {
   @tracked notifications: Notification[] = [];
@@ -16,6 +17,9 @@ export default class NotificationsManager {
   config: DefaultConfig = {};
 
   constructor(context: object) {
+    if (isDestroyed(context)) {
+      return;
+    }
     const owner = getOwner(context) as Owner;
     assert('NotificationsManager context must have an owner', owner);
     const configFactory = owner.factoryFor('config:environment');
