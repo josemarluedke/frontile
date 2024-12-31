@@ -71,7 +71,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -147,10 +147,10 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../utilities
     devDependencies:
       '@babel/core':
@@ -229,7 +229,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/forms-legacy':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../forms-legacy
       '@glint/template':
         specifier: 1.5.0
@@ -314,16 +314,16 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/buttons':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../buttons
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../utilities
       ember-modifier:
         specifier: ^4.1.0
@@ -408,19 +408,19 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/buttons':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../buttons
       '@frontile/collections':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../collections
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../utilities
       '@glint/template':
         specifier: 1.5.0
@@ -499,7 +499,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       '@glint/template':
         specifier: 1.5.0
@@ -654,10 +654,10 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/buttons':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -742,10 +742,10 @@ importers:
         specifier: ^1.16.10
         version: 1.16.10(@glint/template@1.5.0)
       '@frontile/buttons':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       '@glint/template':
         specifier: 1.5.0
@@ -836,7 +836,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -1030,7 +1030,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -1380,34 +1380,34 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9(@embroider/core@3.4.20)(webpack@5.97.1)
       '@frontile/buttons':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/buttons
       '@frontile/changeset-form':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/changeset-form
       '@frontile/collections':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/collections
       '@frontile/forms':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/forms
       '@frontile/forms-legacy':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/forms-legacy
       '@frontile/notifications':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/notifications
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/overlays
       '@frontile/status':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/status
       '@frontile/theme':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/theme
       '@frontile/utilities':
-        specifier: workspace:0.17.0-beta.4
+        specifier: workspace:0.17.0-beta.5
         version: link:../packages/utilities
       '@glimmer/component':
         specifier: ^2.0.0
@@ -2932,7 +2932,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.26.0(supports-color@8.1.1)
+      '@babel/core': 7.26.0
       '@babel/helper-plugin-utils': 7.25.9
 
   /@babel/plugin-transform-private-methods@7.25.9(@babel/core@7.26.0):
