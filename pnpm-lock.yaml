@@ -445,6 +445,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.26.0
         version: 7.26.0(@babel/core@7.26.0)
+      '@ember/test-helpers':
+        specifier: ^4.0.4
+        version: 4.0.4(@babel/core@7.26.0)(@glint/template@1.5.2)(ember-source@6.1.0(@glimmer/component@2.0.0)(@glint/template@1.5.2)(rsvp@4.8.5)(webpack@5.97.1))
       '@embroider/addon-dev':
         specifier: 7.1.1
         version: 7.1.1(@glint/template@1.5.2)(rollup@4.29.1)

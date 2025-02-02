@@ -1,50 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  click,
-  render,
-  triggerEvent,
-  triggerKeyEvent,
-  fillIn
-} from '@ember/test-helpers';
+import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Select } from '@frontile/forms';
 import { array } from '@ember/helper';
-
-function selectNativeOptionByKey(
-  selectSelector: string,
-  key: string
-): Promise<void> {
-  return changeOption('selectNativeOptionByKey', selectSelector, key, false);
-}
-
-function changeOption(
-  functionName: string,
-  selectSelector: string,
-  key: string,
-  toggle: boolean
-): Promise<void> {
-  const select = document.querySelector(selectSelector);
-  if (!select) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no select was found using selector "${selectSelector}"`
-    );
-  }
-  const option = select.querySelector(`[data-key="${key}"]`) as
-    | HTMLOptionElement
-    | undefined;
-  if (!option) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`
-    );
-  }
-  if (option.selected && toggle) {
-    option.selected = false;
-  } else {
-    option.selected = true;
-  }
-  return triggerEvent(select, 'change');
-}
+import { selectOptionByKey } from '@frontile/forms/test-support';
 
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   setupRenderingTest(hooks);
@@ -136,7 +96,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       '[data-component="native-select"] [data-key="item-2"]'
     );
 
-    await selectNativeOptionByKey('[data-component="native-select"]', 'item-2');
+    await selectOptionByKey('[data-component="native-select"]', 'item-2');
 
     assert.deepEqual(selectedKeys.current, ['item-2']);
     isSelected(assert, '[data-key="item-2"]');

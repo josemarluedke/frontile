@@ -1,49 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerEvent } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-
-function selectNativeOptionByKey(
-  selectSelector: string,
-  key: string
-): Promise<void> {
-  return changeOption('selectNativeOptionByKey', selectSelector, key, false);
-}
-
-function toggleNativeOptionByKey(
-  selectSelector: string,
-  key: string
-): Promise<void> {
-  return changeOption('toggleNativeOptionByKey', selectSelector, key, true);
-}
-
-function changeOption(
-  functionName: string,
-  selectSelector: string,
-  key: string,
-  toggle: boolean
-): Promise<void> {
-  const select = document.querySelector(selectSelector);
-  if (!select) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no select was found using selector "${selectSelector}"`
-    );
-  }
-  const option = select.querySelector(`[data-key="${key}"]`) as
-    | HTMLOptionElement
-    | undefined;
-  if (!option) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`
-    );
-  }
-  if (option.selected && toggle) {
-    option.selected = false;
-  } else {
-    option.selected = true;
-  }
-  return triggerEvent(select, 'change');
-}
+import {
+  selectOptionByKey,
+  toggleOptionByKey
+} from '@frontile/forms/test-support';
 
 module(
   'Integration | Component | NativeSelect | @frontile/forms',
@@ -114,7 +76,7 @@ module(
 
       isNotSelected(assert, '[data-key="item-2"]');
 
-      await selectNativeOptionByKey('[data-test-id="native-select"]', 'item-2');
+      await selectOptionByKey('[data-test-id="native-select"]', 'item-2');
 
       assert.deepEqual(selectedKeys, ['item-2']);
       isSelected(assert, '[data-key="item-2"]');
@@ -150,24 +112,18 @@ module(
       assert.dom('[data-key="elephant"]').exists();
 
       // Selection Mode single
-      await selectNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'cheetah'
-      );
+      await selectOptionByKey('[data-test-id="native-select"]', 'cheetah');
 
       assert.equal(selectedKeys.length, 1);
       assert.equal(selectedKeys[0], 'cheetah');
 
-      await selectNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'crocodile'
-      );
+      await selectOptionByKey('[data-test-id="native-select"]', 'crocodile');
       assert.equal(selectedKeys.length, 1);
       assert.equal(selectedKeys[0], 'crocodile');
 
       // Slect empty option when  allowEmpty = true
       this.set('allowEmpty', true);
-      await selectNativeOptionByKey('[data-test-id="native-select"]', '');
+      await selectOptionByKey('[data-test-id="native-select"]', '');
       assert.equal(selectedKeys.length, 0);
 
       // Selection Mode multiple
@@ -175,35 +131,23 @@ module(
       this.set('selectedKeys', []);
       selectedKeys = [];
 
-      await selectNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'elephant'
-      );
+      await selectOptionByKey('[data-test-id="native-select"]', 'elephant');
 
       assert.equal(selectedKeys.length, 1);
       assert.equal(selectedKeys[0], 'elephant');
 
-      await selectNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'crocodile'
-      );
+      await selectOptionByKey('[data-test-id="native-select"]', 'crocodile');
       assert.equal(selectedKeys.length, 2);
 
       assert.ok(selectedKeys.includes('elephant'));
       assert.ok(selectedKeys.includes('crocodile'));
 
-      await toggleNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'crocodile'
-      );
+      await toggleOptionByKey('[data-test-id="native-select"]', 'crocodile');
 
       assert.equal(selectedKeys.length, 1);
       assert.equal(selectedKeys[0], 'elephant');
 
-      await toggleNativeOptionByKey(
-        '[data-test-id="native-select"]',
-        'elephant'
-      );
+      await toggleOptionByKey('[data-test-id="native-select"]', 'elephant');
 
       assert.equal(selectedKeys.length, 0);
     });
