@@ -67,8 +67,6 @@ class ListManager {
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
   ): void {
-    const newItem = new ListItem(el, args);
-
     if (
       this.args.autoActivateFirstItem &&
       this.#items.length === 0 &&
@@ -77,7 +75,7 @@ class ListManager {
       args.isActive = true;
       this.args.onActiveItemChange?.(args.key);
     }
-
+    const newItem = new ListItem(el, args);
     this.#items.push(newItem);
     this.#syncItemsOrderWithDOM();
 
@@ -171,7 +169,7 @@ class ListManager {
   }
 
   activateItem(item?: ListItem): void {
-    if (item) {
+    if (item && !item.isActive) {
       this.#clearActive();
       item.isActive = true;
       this.args.onActiveItemChange?.(item.key);
@@ -186,7 +184,7 @@ class ListManager {
   setNextOptionActive(): void {
     for (let i = this.#indexofActiveItem + 1; i < this.#items.length; i++) {
       const item = this.#items[i];
-      if (item && !item.isDisabled) {
+      if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
       }
@@ -196,7 +194,7 @@ class ListManager {
   setPreviousOptionActive(): void {
     for (let i = this.#indexofActiveItem - 1; i >= 0; i--) {
       const item = this.#items[i];
-      if (item && !item.isDisabled) {
+      if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
       }
