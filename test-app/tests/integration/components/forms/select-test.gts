@@ -4,9 +4,12 @@ import {
   click,
   render,
   triggerEvent,
-  triggerKeyEvent
+  triggerKeyEvent,
+  fillIn
 } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { cell } from 'ember-resources';
+import { Select } from '@frontile/forms';
 
 function selectNativeOptionByKey(
   selectSelector: string,
@@ -464,5 +467,119 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await click('[data-test-id="input-clear-button"]');
     assert.equal(selectedKeys.length, 0);
+  });
+
+  test('it filters options when isFilterable is enabled', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    assert.dom('[data-component="listbox"]').exists();
+
+    await fillIn('[data-test-id="trigger"]', 'App');
+    assert.dom('[data-key="Apple"]').exists();
+    assert.dom('[data-key="Banana"]').doesNotExist();
+    assert.dom('[data-key="Cherry"]').doesNotExist();
+
+    await fillIn('[data-test-id="trigger"]', 'a');
+    assert.dom('[data-key="Apple"]').exists();
+    assert.dom('[data-key="Banana"]').exists();
+    assert.dom('[data-key="Cherry"]').doesNotExist();
+  });
+
+  test('it shows empty content when no options match the filter', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').exists();
+    assert.dom('[data-test-id="empty-content"]').hasText('No results found.');
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        >
+          <:emptyContent>No results found from blocks.</:emptyContent>
+        </Select>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').exists();
+    assert
+      .dom('[data-test-id="empty-content"]')
+      .hasText('No results found from blocks.');
+  });
+
+  test('it does not show empty content when hideEmptyContent is true', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @hideEmptyContent={{true}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').doesNotExist();
+  });
+
+  test('it shows loading spinner when isLoading is true', async function (assert) {
+    const items = ['Apple', 'Banana'];
+
+    await render(
+      <template><Select @items={{items}} @isLoading={{true}} /></template>
+    );
+
+    assert.dom('[data-test-id="loading-spinner"]').exists();
+  });
+
+  test('it hides loading spinner when isLoading is false', async function (assert) {
+    const items = ['Apple', 'Banana'];
+
+    await render(
+      <template><Select @items={{items}} @isLoading={{false}} /></template>
+    );
+
+    assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
   });
 });

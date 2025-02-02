@@ -492,7 +492,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               {{yield to="endContent"}}
 
               {{#if @isLoading}}
-                <Spinner @size={{if (isSm @inputSize) "xs" "sm"}} />
+                <Spinner
+                  @size={{if (isSm @inputSize) "xs" "sm"}}
+                  data-test-id="loading-spinner"
+                />
               {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
@@ -561,6 +564,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             {{#if this.showEmptyContent}}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
+                data-test-id="empty-content"
               >
                 {{#if (has-block "emptyContent")}}
                   {{yield to="emptyContent"}}
