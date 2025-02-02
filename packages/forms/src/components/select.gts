@@ -8,7 +8,7 @@ import {
   type SelectVariants,
   type SlotsToClasses
 } from '@frontile/theme';
-import { VisuallyHidden, ref } from '@frontile/utilities';
+import { Spinner, VisuallyHidden, ref } from '@frontile/utilities';
 import {
   Popover,
   type PopoverSignature,
@@ -18,6 +18,8 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../utils';
 import { CloseButton } from '@frontile/buttons';
 import { IconChevronUpDown } from './icons';
+import { on } from '@ember/modifier';
+import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
 
 interface SelectArgs<T>
   extends Pick<
@@ -74,13 +76,17 @@ interface SelectArgs<T>
   blockScroll?: boolean;
 
   /**
-   * @defaultValue false
+   * @defaultValue true
    */
   disableFocusTrap?: boolean;
 
   placeholder?: string;
 
   isDisabled?: boolean;
+
+  isSearchable?: boolean;
+
+  isLoading?: boolean;
 
   name?: string;
 
@@ -124,7 +130,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked isOpen = false;
   @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
 
+  @tracked searchValue?: string;
+
   containerRef = ref<HTMLDivElement>();
+  triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
 
   onSelectionChange = (keys: string[]) => {
     if (typeof this.args.onSelectionChange === 'function') {
@@ -133,11 +142,17 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       this._selectedKeys = keys;
     }
 
+    this.searchValue = undefined;
     triggerFormInputEvent(this.containerRef.element);
   };
 
   onOpenChange = (isOpen: boolean) => {
     this.isOpen = isOpen;
+  };
+
+  onSearchChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    this.searchValue = target.value;
   };
 
   get selectedKeys(): string[] {
@@ -159,10 +174,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   get disableFocusTrap() {
-    if (this.args.disableFocusTrap === true) {
-      return true;
+    if (this.args.disableFocusTrap === false) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   onAction = (key: string) => {
@@ -185,6 +200,13 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
     this.nodes = nodes;
+  };
+
+  didClose = () => {
+    this.searchValue = undefined;
+    if (typeof this.args.didClose === 'function') {
+      this.args.didClose();
+    }
   };
 
   get selectedText() {
@@ -221,6 +243,25 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     );
   }
 
+  get searchFieldText() {
+    if (this.searchValue !== undefined) {
+      return this.searchValue;
+    }
+    return this.selectedTextValue;
+  }
+
+  get filteredItems() {
+    if (this.searchValue === undefined) {
+      return this.args.items;
+    }
+
+    return this.args.items?.filter((item) =>
+      keyAndLabelForItem(item)
+        .label.toLowerCase()
+        .includes(this.searchValue!.toLowerCase())
+    );
+  }
+
   <template>
     <div
       {{this.containerRef.setup}}
@@ -244,14 +285,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           @shiftOptions={{@shiftOptions}}
           @offsetOptions={{@offsetOptions}}
           @strategy={{@strategy}}
-          @didClose={{@didClose}}
+          @didClose={{this.didClose}}
           @isOpen={{this.isOpen}}
           @onOpenChange={{this.onOpenChange}}
           as |p|
         >
           <VisuallyHidden>
             <NativeSelect
-              @items={{@items}}
+              @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
               @onSelectionChange={{this.onSelectionChange}}
@@ -297,31 +338,54 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
-            <button
-              type="button"
-              {{p.trigger}}
-              {{p.anchor}}
-              data-test-id="trigger"
-              data-component="select-trigger"
-              disabled={{@isDisabled}}
-              class={{this.classes.input
-                class=@classes.input
-                hasStartContent=(has-block "startContent")
-                hasEndContent=true
-              }}
-            >
-              {{#if this.selectedText}}
-                <span>
-                  {{this.selectedTextValue}}
-                </span>
-              {{else}}
-                <span
-                  class={{this.classes.placeholder class=@classes.placeholder}}
-                >
-                  {{@placeholder}}
-                </span>
-              {{/if}}
-            </button>
+            {{#if @isSearchable}}
+              <input
+                type="text"
+                {{p.trigger}}
+                {{p.anchor}}
+                {{this.triggerRef.setup}}
+                data-test-id="trigger"
+                data-component="select-trigger"
+                disabled={{@isDisabled}}
+                placeholder={{@placeholder}}
+                class={{this.classes.input
+                  class=@classes.input
+                  hasStartContent=(has-block "startContent")
+                  hasEndContent=true
+                }}
+                value={{this.searchFieldText}}
+                {{on "input" this.onSearchChange}}
+              />
+            {{else}}
+              <button
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+                {{this.triggerRef.setup}}
+                data-test-id="trigger"
+                data-component="select-trigger"
+                disabled={{@isDisabled}}
+                class={{this.classes.input
+                  class=@classes.input
+                  hasStartContent=(has-block "startContent")
+                  hasEndContent=true
+                }}
+              >
+                {{#if this.selectedText}}
+                  <span>
+                    {{this.selectedTextValue}}
+                  </span>
+                {{else}}
+                  <span
+                    class={{this.classes.placeholder
+                      class=@classes.placeholder
+                    }}
+                  >
+                    {{@placeholder}}
+                  </span>
+                {{/if}}
+              </button>
+            {{/if}}
             <div
               data-test-id="input-end-content"
               class={{this.classes.endContent
@@ -333,7 +397,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             >
               {{yield to="endContent"}}
 
-              {{#if this.isClearable}}
+              {{#if @isLoading}}
+                <Spinner @size={{if (isSm @inputSize) "xs" "sm"}} />
+              {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
                   @variant="subtle"
@@ -364,9 +430,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             @closeOnEscapeKey={{@closeOnEscapeKey}}
             @backdropTransition={{@backdropTransition}}
             @transition={{@transition}}
+            @preventAutoFocus={{true}}
           >
             <Listbox
-              @items={{@items}}
+              @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
               @appearance={{@appearance}}
               @disabledKeys={{@disabledKeys}}
@@ -378,6 +445,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @type="listbox"
               @class={{this.classes.listbox class=@classes.listbox}}
+              @elementToAddKeyboardEvents={{this.triggerRef.element}}
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
@@ -402,6 +470,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     </div>
   </template>
 }
+
+const isSm = (size: SelectVariants['size']) => size === 'sm';
 
 export { Select, type SelectSignature };
 export default Select;

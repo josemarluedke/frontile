@@ -137,6 +137,12 @@ interface Args
   preventFocusRestore?: boolean;
 
   /**
+   * When focusTrap is disabled, by default Oberlay will be auto focused. This option prevents that.
+   * @defaultValue false
+   */
+  preventAutoFocus?: boolean;
+
+  /**
    * @defaultValue true
    */
   blockScroll?: boolean;
@@ -196,6 +202,7 @@ class Overlay extends Component<OverlaySignature> {
 
   @action
   handleKeyDown(event: KeyboardEvent): void {
+    console.log('Overlay keydown');
     if (event.key === 'Escape' && this.args.closeOnEscapeKey !== false) {
       this.handleClose();
       event.preventDefault();
@@ -211,6 +218,7 @@ class Overlay extends Component<OverlaySignature> {
     later(() => {
       if (this.isDestroyed) return;
       if (this.args.disableFocusTrap !== true) return;
+      if (this.args.preventAutoFocus === true) return;
       el.focus();
     }, transitionDuration);
 

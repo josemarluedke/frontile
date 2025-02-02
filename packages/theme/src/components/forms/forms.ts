@@ -218,7 +218,8 @@ const select = tv({
     placeholder: 'text-default-400',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
-    clearButton: 'pointer-events-auto'
+    clearButton: 'pointer-events-auto',
+    input: '[&:is(button)]:cursor-default'
   },
   variants: {
     size: {

@@ -150,11 +150,34 @@ class Popover extends Component<PopoverSignature> {
         debounce(this, this.close, debounceDuration);
       };
 
+      const onKeydown = (event: KeyboardEvent) => {
+        if (this.isOpen && event.key === 'Escape') {
+          this.close();
+        }
+        if (
+          !this.isOpen &&
+          (event.key === 'ArrowDown' || event.key === 'ArrowUp')
+        ) {
+          this.open();
+        }
+
+        if (this.isOpen && event.key === 'Tab') {
+          this.preventFocusRestore = true;
+          this.close();
+        }
+
+        // Open when a letter is pressed
+        if (!this.isOpen && event.code === `Key${event.key.toUpperCase()}`) {
+          this.open();
+        }
+      };
+
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
         el.addEventListener('mouseenter', open);
         el.addEventListener('mouseleave', close);
       } else {
+        el.addEventListener('keydown', onKeydown);
         el.addEventListener('click', this.toggle);
       }
 
@@ -168,6 +191,7 @@ class Popover extends Component<PopoverSignature> {
           el.removeEventListener('mouseleave', close);
         } else {
           el.removeEventListener('click', this.toggle);
+          el.removeEventListener('keydown', onKeydown);
         }
         this.triggerEl = undefined;
       };
@@ -234,6 +258,7 @@ interface ContentArgs
     | 'closeOnEscapeKey'
     | 'backdropTransition'
     | 'blockScroll'
+    | 'preventAutoFocus'
   > {
   /**
    * @internal
@@ -371,6 +396,7 @@ class Content extends Component<ContentSignature> {
       @backdropTransition={{@backdropTransition}}
       @class={{this.classNames}}
       @preventFocusRestore={{@preventFocusRestore}}
+      @preventAutoFocus={{@preventAutoFocus}}
       id={{@id}}
       ...attributes
     >

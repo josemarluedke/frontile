@@ -67,14 +67,28 @@ class ListManager {
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
   ): void {
-    if (this.args.autoActivateFirstItem && this.#items.length === 0) {
+    const newItem = new ListItem(el, args);
+
+    if (
+      this.args.autoActivateFirstItem &&
+      this.#items.length === 0 &&
+      !args.isDisabled
+    ) {
       args.isActive = true;
       this.args.onActiveItemChange?.(args.key);
     }
-    this.#items.push(new ListItem(el, args));
+
+    this.#items.push(newItem);
+    this.#syncItemsOrderWithDOM();
 
     if (typeof this.args.onListItemsChange === 'function') {
       this.args.onListItemsChange(this.#items, 'add');
+    }
+
+    if (this.args.autoActivateFirstItem && this.#items.length > 1) {
+      requestAnimationFrame(() => {
+        this.setFirstOptionActive();
+      });
     }
   }
 
@@ -161,6 +175,11 @@ class ListManager {
       this.#clearActive();
       item.isActive = true;
       this.args.onActiveItemChange?.(item.key);
+
+      // Ensure the item is scrolled into view
+      requestAnimationFrame(() => {
+        item.el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      });
     }
   }
 
@@ -246,6 +265,19 @@ class ListManager {
       return -1;
     }
     return this.#items.indexOf(item);
+  }
+
+  // Ensure #items is always in sync with DOM order
+  #syncItemsOrderWithDOM(): void {
+    if (!this.#items.length) return;
+
+    // Sort items based on their position in the DOM
+    this.#items.sort((a, b) => {
+      const position = a.el.compareDocumentPosition(b.el);
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+      return 0;
+    });
   }
 
   #toggleSelectedItem(item: ListItem): string[] {
@@ -339,6 +371,7 @@ class ListManager {
           textValue = el.textContent?.trim() || '';
         }
       }
+
       this.register(el as HTMLLIElement, {
         key: args.key,
         textValue: textValue || '',

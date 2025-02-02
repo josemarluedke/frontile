@@ -3173,8 +3173,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue: '<span class="hljs-literal">false</span>'
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
         identifier: 'disableTransitions',
@@ -3301,7 +3301,23 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'isRequired',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isSearchable',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
@@ -5042,6 +5058,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'destinationElement',
+        type: { type: 'HTMLElement' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'disabled',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -5496,6 +5520,18 @@ const data: ComponentDoc[] = [
       {
         identifier: 'searchField',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'searchFieldPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TSearchFieldPosition',
+          items: ["'trigger'", "'before-options'"]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7681,6 +7717,16 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'preventAutoFocus',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When focusTrap is disabled, by default Oberlay will be auto focused. This option prevents that.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
         identifier: 'preventFocusRestore',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -8354,6 +8400,16 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'A function that will be called when opened',
         tags: {}
+      },
+      {
+        identifier: 'preventAutoFocus',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When focusTrap is disabled, by default Oberlay will be auto focused. This option prevents that.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'preventFocusRestore',
@@ -9089,7 +9145,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: 'Changeset Object',
@@ -10529,7 +10588,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10569,7 +10631,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10725,7 +10790,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10875,7 +10943,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11065,7 +11136,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11226,7 +11300,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11382,7 +11459,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11528,6 +11608,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'destination',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'destinationElement',
+        type: { type: 'HTMLElement' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -11994,6 +12082,18 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'searchFieldPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TSearchFieldPosition',
+          items: ["'trigger'", "'before-options'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'searchMessage',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
@@ -12186,7 +12286,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
