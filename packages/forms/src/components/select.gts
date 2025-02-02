@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -18,7 +19,6 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../utils';
 import { CloseButton } from '@frontile/buttons';
 import { IconChevronUpDown } from './icons';
-import { on } from '@ember/modifier';
 import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
 
 interface SelectArgs<T>
@@ -57,11 +57,35 @@ interface SelectArgs<T>
       | 'transition'
     >,
     FormControlSharedArgs {
+  /**
+   * Determines the selection mode of the select component.
+   * - 'single': Only one item can be selected at a time.
+   * - 'multiple': Allows multiple selections.
+   * @defaultValue 'single'
+   */
   selectionMode?: 'single' | 'multiple';
 
+  /**
+   * The unique identifier for the select component.
+   */
   id?: string;
+
+  /**
+   * Defines the input size of the select.
+   */
   inputSize?: SelectVariants['size'];
+
+  /**
+   * Defines the size of the popover dropdown.
+   * - 'sm': Small
+   * - 'md': Medium
+   * - 'lg': Large
+   */
   popoverSize?: 'sm' | 'md' | 'lg';
+
+  /**
+   * Custom classes to style different slots within the select component.
+   */
   classes?: SlotsToClasses<SelectSlots>;
 
   /**
@@ -70,43 +94,64 @@ interface SelectArgs<T>
    * @defaultValue true
    */
   closeOnItemSelect?: boolean;
+
   /**
+   * Whether scrolling should be blocked when the select dropdown is open.
+   *
    * @defaultValue true
    */
   blockScroll?: boolean;
 
   /**
+   * Whether the focus trap should be disabled when the dropdown is open.
+   *
    * @defaultValue true
    */
   disableFocusTrap?: boolean;
 
+  /**
+   * The placeholder text displayed when no option is selected.
+   */
   placeholder?: string;
 
+  /**
+   * Whether the select should be disabled, preventing user interaction.
+   */
   isDisabled?: boolean;
 
   /**
-   * Allow to filter the items in the select.
+   * Allows filtering of the items in the select dropdown.
+   * If true, a search input is displayed for filtering.
    *
    * @defaultValue false
    */
   isFilterable?: boolean;
 
-  /*
+  /**
    * Function to filter the items in the select.
-   * Default is a case-insensitive search.
+   * The default implementation performs a case-insensitive search.
+   *
+   * @param itemValue - The value of an item in the dropdown.
+   * @param filterValue - The user's input in the filter/search box.
+   * @returns A boolean indicating whether the item should be shown.
    */
   filter?: (itemValue: string, filterValue: string) => boolean;
 
-  /*
+  /**
    * If true, the select will show a loading spinner instead of the dropdown icon.
    */
   isLoading?: boolean;
 
+  /**
+   * The name attribute for the select component, useful for form submissions.
+   */
   name?: string;
 
   /**
-   * Whether to include a clear button.
-   * It ignores the option allowEmpty.
+   * Whether to include a clear button in the select component.
+   * If enabled, this allows users to clear the selection.
+   * This option ignores the `allowEmpty` setting.
+   *
    * @defaultValue false
    */
   isClearable?: boolean;

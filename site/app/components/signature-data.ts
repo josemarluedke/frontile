@@ -3095,7 +3095,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether scrolling should be blocked when the select dropdown is open.',
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue: '<span class="hljs-literal">true</span>'
       },
@@ -3106,7 +3107,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom classes to style different slots within the select component.',
         tags: {}
       },
       {
@@ -3172,7 +3174,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether the focus trap should be disabled when the dropdown is open.',
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue: '<span class="hljs-literal">true</span>'
       },
@@ -3212,6 +3215,28 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'filter',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(itemValue: <span class="hljs-built_in">string</span>, <span class="hljs-attr">filterValue</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">boolean</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Function to filter the items in the select.\nThe default implementation performs a case-insensitive search.',
+        tags: {
+          param: {
+            name: 'param',
+            value:
+              "itemValue   - The value of an item in the dropdown.\nfilterValue   - The user's input in the filter/search box."
+          },
+          returns: {
+            name: 'returns',
+            value: 'A boolean indicating whether the item should be shown.'
+          }
+        }
+      },
+      {
         identifier: 'flipOptions',
         type: {
           type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }'
@@ -3241,7 +3266,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'The unique identifier for the select component.',
         tags: {}
       },
       {
@@ -3253,7 +3278,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Defines the input size of the select.',
         tags: {}
       },
       {
@@ -3280,7 +3305,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button.\nIt ignores the option allowEmpty.',
+          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the `allowEmpty` setting.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>'
       },
@@ -3289,8 +3314,19 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether the select should be disabled, preventing user interaction.',
         tags: {}
+      },
+      {
+        identifier: 'isFilterable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Allows filtering of the items in the select dropdown.\nIf true, a search input is displayed for filtering.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'isInvalid',
@@ -3305,19 +3341,12 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'If true, the select will show a loading spinner instead of the dropdown icon.',
         tags: {}
       },
       {
         identifier: 'isRequired',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {}
-      },
-      {
-        identifier: 'isSearchable',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
@@ -3356,7 +3385,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute for the select component, useful for form submissions.',
         tags: {}
       },
       {
@@ -3403,7 +3433,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The placeholder text displayed when no option is selected.',
         tags: {}
       },
       {
@@ -3443,7 +3474,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large",
         tags: {}
       },
       {
@@ -3476,8 +3508,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {}
+        description:
+          "Determines the selection mode of the select component.\n- 'single': Only one item can be selected at a time.\n- 'multiple': Allows multiple selections.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
+        defaultValue: '<span class="hljs-string">\'single\'</span>'
       },
       {
         identifier: 'shiftOptions',
