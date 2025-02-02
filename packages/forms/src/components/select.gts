@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
-import type { ComponentLike } from '@glint/template';
 import {
   useStyles,
   type SelectSlots,
@@ -81,8 +80,10 @@ interface SelectArgs<T>
    * - 'sm': Small
    * - 'md': Medium
    * - 'lg': Large
+   *   'trigger': Same size as the trigger
+   *   @defaultValue 'trigger'
    */
-  popoverSize?: 'sm' | 'md' | 'lg';
+  popoverSize?: 'sm' | 'md' | 'lg' | 'trigger';
 
   /**
    * Custom classes to style different slots within the select component.
@@ -510,7 +511,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           </div>
 
           <p.Content
-            @size={{@popoverSize}}
+            @size={{if @popoverSize @popoverSize "trigger"}}
             @target={{@target}}
             @renderInPlace={{@renderInPlace}}
             @disableFocusTrap={{this.disableFocusTrap}}

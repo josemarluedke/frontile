@@ -7,7 +7,8 @@ const popover = tv({
       sm: 'w-40',
       md: 'w-64',
       lg: 'w-96',
-      xl: 'w-[34rem]'
+      xl: 'w-[34rem]',
+      trigger: 'w-[var(--trigger-width)]'
     }
   },
   defaultVariants: {

@@ -3479,14 +3479,15 @@ const data: ComponentDoc[] = [
         identifier: 'popoverSize',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          items: ["'sm'", "'lg'", "'md'"]
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'trigger\'</span>',
+          items: ["'sm'", "'lg'", "'md'", "'trigger'"]
         },
         isRequired: false,
         isInternal: false,
         description:
-          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large",
-        tags: {}
+          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large\n  'trigger': Same size as the trigger",
+        tags: { defaultValue: { name: 'defaultValue', value: "'trigger'" } },
+        defaultValue: '<span class="hljs-string">\'trigger\'</span>'
       },
       {
         identifier: 'renderInPlace',
@@ -8492,8 +8493,8 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          items: ["'sm'", "'lg'", "'xl'", "'md'"]
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'trigger\'</span>',
+          items: ["'sm'", "'lg'", "'xl'", "'md'", "'trigger'"]
         },
         isRequired: false,
         isInternal: false,
@@ -8635,6 +8636,14 @@ const data: ComponentDoc[] = [
         description: 'Duration of the animation',
         tags: { defaultValue: { name: 'defaultValue', value: '200' } },
         defaultValue: '<span class="hljs-number">200</span>'
+      },
+      {
+        identifier: 'triggerWidth',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
       }
     ],
     Blocks: [

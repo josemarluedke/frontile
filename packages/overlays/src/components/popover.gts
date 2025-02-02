@@ -73,6 +73,7 @@ interface PopoverSignature {
           | 'internalDidClose'
           | 'blockScroll'
           | 'backdrop'
+          | 'triggerWidth'
         >;
       }
     ];
@@ -85,6 +86,7 @@ class Popover extends Component<PopoverSignature> {
   @tracked _isOpen = false;
   @tracked isClosing = false;
   @tracked preventFocusRestore = false;
+  @tracked triggerWidth?: number;
 
   get isOpen(): boolean {
     if (
@@ -139,6 +141,19 @@ class Popover extends Component<PopoverSignature> {
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
+      this.triggerWidth = Math.round(el.offsetWidth);
+
+      let observer: ResizeObserver;
+      if (eventType !== 'hover') {
+        observer = new ResizeObserver((entries) => {
+          for (let entry of entries) {
+            this.triggerWidth = Math.round(
+              (entry.target as HTMLElement).offsetWidth
+            );
+          }
+        });
+        observer.observe(el);
+      }
 
       const debounceDuration = 100;
 
@@ -153,12 +168,14 @@ class Popover extends Component<PopoverSignature> {
       const onKeydown = (event: KeyboardEvent) => {
         if (this.isOpen && event.key === 'Escape') {
           this.close();
+          event.stopPropagation();
         }
         if (
           !this.isOpen &&
           (event.key === 'ArrowDown' || event.key === 'ArrowUp')
         ) {
           this.open();
+          event.stopPropagation();
         }
 
         if (this.isOpen && event.key === 'Tab') {
@@ -192,6 +209,9 @@ class Popover extends Component<PopoverSignature> {
         } else {
           el.removeEventListener('click', this.toggle);
           el.removeEventListener('keydown', onKeydown);
+        }
+        if (observer) {
+          observer.disconnect();
         }
         this.triggerEl = undefined;
       };
@@ -236,6 +256,7 @@ class Popover extends Component<PopoverSignature> {
             toggle=this.toggle
             internalDidClose=this.didClose
             preventFocusRestore=this.preventFocusRestore
+            triggerWidth=this.triggerWidth
           )
         )
       }}
@@ -289,6 +310,8 @@ interface ContentArgs
    */
   preventFocusRestore?: boolean;
 
+  triggerWidth?: number;
+
   class?: string;
 
   /**
@@ -308,7 +331,7 @@ interface ContentArgs
    *
    * @defaultValue 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'trigger';
 }
 
 interface ContentSignature {
@@ -374,6 +397,12 @@ class Content extends Component<ContentSignature> {
     }
   };
 
+  updateTriggerWidth = modifier((el: HTMLDivElement) => {
+    if (el && this.args.triggerWidth) {
+      el.style.setProperty('--trigger-width', `${this.args.triggerWidth}px`);
+    }
+  });
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -399,6 +428,7 @@ class Content extends Component<ContentSignature> {
       @preventAutoFocus={{@preventAutoFocus}}
       id={{@id}}
       ...attributes
+      {{this.updateTriggerWidth @triggerWidth}}
     >
       {{yield}}
     </Overlay>
