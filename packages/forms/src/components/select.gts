@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
+import type { ComponentLike } from '@glint/template';
 import {
   useStyles,
   type SelectSlots,
@@ -173,14 +174,40 @@ interface SelectArgs<T>
    * @defaultValue 'none'
    */
   endContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * If true, hides the empty content when there are no options available.
+   *
+   * @defaultValue false
+   */
+  hideEmptyContent?: boolean;
 }
 
 interface SelectSignature<T> {
   Args: SelectArgs<T>;
   Element: HTMLDivElement;
   Blocks: ListboxSignature<T>['Blocks'] & {
+    /**
+     * Content to display at the **beginning** of the select component.
+     * This can be an icon, a label, or any custom UI element.
+     *
+     * Example: A search icon or a custom label.
+     */
     startContent: [];
+
+    /**
+     * Content to display at the **end** of the select component.
+     * This can be an icon, a button, or any custom UI element.
+     *
+     * Example: A clear button or a dropdown arrow.
+     */
     endContent: [];
+
+    /**
+     * The content to display when there are no available options.
+     * If `hideEmptyContent` argument is true, this content will not be shown.
+     */
+    emptyContent: [];
   };
 }
 
@@ -322,6 +349,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return this.args.items?.filter((item) =>
       filter(keyAndLabelForItem(item).label, this.filterValue || '')
     );
+  }
+
+  get showEmptyContent() {
+    return this.filteredItems?.length === 0 && !this.args.hideEmptyContent;
   }
 
   <template>
@@ -526,6 +557,17 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield l to="default"}}
               </:default>
             </Listbox>
+            {{#if this.showEmptyContent}}
+              <div
+                class={{this.classes.emptyContent class=@classes.emptyContent}}
+              >
+                {{#if (has-block "emptyContent")}}
+                  {{yield to="emptyContent"}}
+                {{else}}
+                  No results found.
+                {{/if}}
+              </div>
+            {{/if}}
           </p.Content>
         </Popover>
       </FormControl>

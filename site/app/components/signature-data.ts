@@ -3103,7 +3103,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>'
         },
         isRequired: false,
         isInternal: false,
@@ -3260,6 +3260,16 @@ const data: ComponentDoc[] = [
         },
         defaultValue:
           '{ <span class="hljs-attr">clickOutsideDeactivates</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">allowOutsideClick</span>: <span class="hljs-literal">true</span> }'
+      },
+      {
+        identifier: 'hideEmptyContent',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'If true, hides the empty content when there are no options available.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'id',
@@ -3786,7 +3796,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'Content to display at the **beginning** of the select component.\nThis can be an icon, a label, or any custom UI element.\n\nExample: A search icon or a custom label.',
         tags: {}
       },
       {
@@ -3798,7 +3809,21 @@ const data: ComponentDoc[] = [
         },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'Content to display at the **end** of the select component.\nThis can be an icon, a button, or any custom UI element.\n\nExample: A clear button or a dropdown arrow.',
+        tags: {}
+      },
+      {
+        identifier: 'emptyContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The content to display when there are no available options.\nIf `hideEmptyContent` argument is true, this content will not be shown.',
         tags: {}
       }
     ],
