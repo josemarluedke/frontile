@@ -202,7 +202,6 @@ class Overlay extends Component<OverlaySignature> {
 
   @action
   handleKeyDown(event: KeyboardEvent): void {
-    console.log('Overlay keydown');
     if (event.key === 'Escape' && this.args.closeOnEscapeKey !== false) {
       this.handleClose();
       event.preventDefault();
