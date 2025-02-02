@@ -2,6 +2,7 @@
 import { tracked } from '@glimmer/tracking';
 import { debounce } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
+import { later } from '@ember/runloop';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 
@@ -84,9 +85,9 @@ class ListManager {
     }
 
     if (this.args.autoActivateFirstItem && this.#items.length > 1) {
-      requestAnimationFrame(() => {
+      later(() => {
         this.setFirstOptionActive();
-      });
+      }, 1);
     }
   }
 
