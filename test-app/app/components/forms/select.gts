@@ -84,7 +84,7 @@ export default class Example extends Component {
     {{this.selectedKeys}}
     <Divider @class="my-8" />
     <Select
-      @isSearchable={{true}}
+      @isFilterable={{true}}
       @placeholder="Select an animal"
       @allowEmpty={{true}}
       @selectionMode="single"

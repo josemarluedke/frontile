@@ -84,8 +84,22 @@ interface SelectArgs<T>
 
   isDisabled?: boolean;
 
-  isSearchable?: boolean;
+  /**
+   * Allow to filter the items in the select.
+   *
+   * @defaultValue false
+   */
+  isFilterable?: boolean;
 
+  /*
+   * Function to filter the items in the select.
+   * Default is a case-insensitive search.
+   */
+  filter?: (itemValue: string, filterValue: string) => boolean;
+
+  /*
+   * If true, the select will show a loading spinner instead of the dropdown icon.
+   */
   isLoading?: boolean;
 
   name?: string;
@@ -130,7 +144,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked isOpen = false;
   @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
 
-  @tracked searchValue?: string;
+  @tracked filterValue?: string;
 
   containerRef = ref<HTMLDivElement>();
   triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
@@ -142,7 +156,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       this._selectedKeys = keys;
     }
 
-    this.searchValue = undefined;
+    this.filterValue = undefined;
     triggerFormInputEvent(this.containerRef.element);
   };
 
@@ -150,9 +164,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     this.isOpen = isOpen;
   };
 
-  onSearchChange = (event: Event) => {
+  onFilterChange = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    this.searchValue = target.value;
+    this.filterValue = target.value;
   };
 
   get selectedKeys(): string[] {
@@ -203,7 +217,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   didClose = () => {
-    this.searchValue = undefined;
+    this.filterValue = undefined;
     if (typeof this.args.didClose === 'function') {
       this.args.didClose();
     }
@@ -243,22 +257,25 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     );
   }
 
-  get searchFieldText() {
-    if (this.searchValue !== undefined) {
-      return this.searchValue;
+  get filterFieldValue() {
+    if (this.filterValue !== undefined) {
+      return this.filterValue;
     }
     return this.selectedTextValue;
   }
 
   get filteredItems() {
-    if (this.searchValue === undefined) {
+    if (this.filterValue === undefined) {
       return this.args.items;
     }
 
+    let filter =
+      this.args.filter ||
+      ((itemValue: string, filterValue: string) =>
+        itemValue.toLowerCase().includes(filterValue.toLowerCase()));
+
     return this.args.items?.filter((item) =>
-      keyAndLabelForItem(item)
-        .label.toLowerCase()
-        .includes(this.searchValue!.toLowerCase())
+      filter(keyAndLabelForItem(item).label, this.filterValue || '')
     );
   }
 
@@ -338,7 +355,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
-            {{#if @isSearchable}}
+            {{#if @isFilterable}}
               <input
                 type="text"
                 {{p.trigger}}
@@ -353,8 +370,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   hasStartContent=(has-block "startContent")
                   hasEndContent=true
                 }}
-                value={{this.searchFieldText}}
-                {{on "input" this.onSearchChange}}
+                value={{this.filterFieldValue}}
+                {{on "input" this.onFilterChange}}
               />
             {{else}}
               <button
