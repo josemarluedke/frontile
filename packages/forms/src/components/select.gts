@@ -401,8 +401,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
-                  {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
-                  {{yield l to="item"}}
+                  <l.Item @key={{l.key}}>
+                    {{l.label}}
+                  </l.Item>
                 {{else}}
                   <l.Item @key={{l.key}}>
                     {{l.label}}
