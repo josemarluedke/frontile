@@ -357,7 +357,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   get autoActivateMode(): 'first' | 'selected' {
-    console.log(this.filterValue);
     if (this.filterValue === undefined || this.filterValue === '') {
       return 'selected';
     }
