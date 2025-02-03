@@ -344,6 +344,44 @@ export default class CustomContentBlocksSelect extends Component {
 }
 ```
 
+## Using NativeSelect
+
+The `NativeSelect` component is a lightweight version of the select component that renders a native HTML `<select>` element. This is especially useful when you need maximum accessibility or want to rely on the browser’s native behavior.
+It supports most of the same features as the custom `Select` component, such as passing an array of items, managing selection state, and handling selection changes.
+By using `NativeSelect` directly, you can simplify your markup while still benefiting from Frontile’s APIs.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { NativeSelect } from '@frontile/forms';
+
+const options = ['Option 1', 'Option 2', 'Option 3'];
+
+export default class NativeSelectExample extends Component {
+  @tracked selectedKeys: string[] = [];
+
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <NativeSelect
+      @placeholder='Select an option'
+      @items={{options}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+    >
+      <:item as |opt|>
+        <opt.Item @key={{opt.item}}>
+          {{opt.item}}
+        </opt.Item>
+      </:item>
+    </NativeSelect>
+    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+  </template>
+}
+```
+
 ## API
 
 <Signature @package="forms" @component="Select" />
