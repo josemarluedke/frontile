@@ -14,7 +14,9 @@
     "start": "pnpm --filter test-app start",
     "test": "pnpm --filter test-app test",
     "try:one": "pnpm --filter test-app try:one",
-    "clean:declarations": "rm -rf packages/*/declarations"
+    "clean:declarations": "rm -rf packages/*/declarations",
+    "clean:dist": "rm -rf packages/*/dist && rm -rf test-app/dist && rm -rf site/dist",
+    "clean": "concurrently 'npm:clean:*'"
   },
   "resolutions": {
     "@ember/test-waiters": "^4.0.0",
@@ -38,6 +40,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
+    "concurrently": "^9.1.0",
     "prettier-plugin-ember-template-tag": "^2.0.4",
     "typescript": "^5.7.3"
   },

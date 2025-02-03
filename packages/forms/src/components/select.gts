@@ -356,6 +356,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return this.filteredItems?.length === 0 && !this.args.hideEmptyContent;
   }
 
+  get autoActivateMode(): 'first' | 'selected' {
+    console.log(this.filterValue);
+    if (this.filterValue === undefined || this.filterValue === '') {
+      return 'selected';
+    }
+    return 'first';
+  }
+
   <template>
     <div
       {{this.containerRef.setup}}
@@ -411,7 +419,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{/if}}
               </:item>
               <:default as |l|>
-                {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
+                {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
                 {{yield l to="default"}}
               </:default>
             </NativeSelect>
@@ -544,6 +552,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @type="listbox"
               @class={{this.classes.listbox class=@classes.listbox}}
               @elementToAddKeyboardEvents={{this.triggerRef.element}}
+              @autoActivateMode={{this.autoActivateMode}}
             >
               <:item as |l|>
                 {{#if (has-block "item")}}

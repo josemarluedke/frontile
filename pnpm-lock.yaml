@@ -35,6 +35,9 @@ importers:
       '@underline/eslint-config-node':
         specifier: ^0.16.0
         version: 0.16.0(@types/eslint@9.6.1)(eslint@8.57.1)
+      concurrently:
+        specifier: ^9.1.0
+        version: 9.1.2
       ember-source-channel-url:
         specifier: ^3.0.0
         version: 3.0.0(encoding@0.1.13)

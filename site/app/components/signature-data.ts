@@ -9595,12 +9595,16 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-string">\'default\'</span>'
       },
       {
-        identifier: 'autoActivateFirstItem',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        identifier: 'autoActivateMode',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'first\'</span> | <span class="hljs-string">\'selected\'</span>',
+          items: ["'none'", "'first'", "'selected'"]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: 'true' } }
+        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } }
       },
       {
         identifier: 'class',

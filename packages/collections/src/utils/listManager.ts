@@ -5,6 +5,7 @@ import { modifier } from 'ember-modifier';
 import { later } from '@ember/runloop';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
+type AutoActivateMode = 'none' | 'first' | 'selected';
 
 interface ListItemArgs {
   key: string;
@@ -41,7 +42,7 @@ interface ListManagerArgs {
   selectedKeys?: string[];
   disabledKeys?: string[];
   allowEmpty?: boolean;
-  autoActivateFirstItem?: boolean;
+  autoActivateMode?: AutoActivateMode;
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
   onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
@@ -57,7 +58,7 @@ class ListManager {
     selectedKeys: [],
     disabledKeys: [],
     allowEmpty: false,
-    autoActivateFirstItem: false
+    autoActivateMode: 'none'
   };
 
   constructor(args: ListManagerArgs = {}) {
@@ -69,7 +70,7 @@ class ListManager {
     args: Required<ListItemArgs>
   ): void {
     if (
-      this.args.autoActivateFirstItem &&
+      this.args.autoActivateMode == 'first' &&
       this.#items.length === 0 &&
       !args.isDisabled
     ) {
@@ -84,9 +85,13 @@ class ListManager {
       this.args.onListItemsChange(this.#items, 'add');
     }
 
-    if (this.args.autoActivateFirstItem && this.#items.length > 1) {
+    if (this.args.autoActivateMode != 'none' && this.#items.length > 1) {
       later(() => {
-        this.setFirstOptionActive();
+        if (this.args.autoActivateMode == 'first') {
+          this.setFirstOptionActive();
+        } else {
+          this.setSelectedOptionActive();
+        }
       }, 1);
     }
   }
@@ -94,7 +99,7 @@ class ListManager {
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (this.args.autoActivateFirstItem && this.#items.length >= 1) {
+    if (this.args.autoActivateMode == 'first' && this.#items.length >= 1) {
       this.activateItem(this.#items[0]);
     }
 
@@ -115,7 +120,7 @@ class ListManager {
     this.args.selectedKeys = args.selectedKeys || [];
     this.args.disabledKeys = args.disabledKeys || [];
     this.args.allowEmpty = args.allowEmpty || false;
-    this.args.autoActivateFirstItem = args.autoActivateFirstItem || false;
+    this.args.autoActivateMode = args.autoActivateMode || 'none';
 
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
@@ -209,6 +214,23 @@ class ListManager {
         this.activateItem(item);
         break;
       }
+    }
+  }
+
+  setSelectedOptionActive(): void {
+    let activated = false;
+
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled && item.isSelected) {
+        this.activateItem(item);
+        activated = true;
+        break;
+      }
+    }
+
+    if (!activated) {
+      this.setFirstOptionActive();
     }
   }
 
@@ -340,7 +362,7 @@ class ListManager {
         disabledKeys: args.disabledKeys,
         selectedKeys: args.selectedKeys,
         allowEmpty: args.allowEmpty,
-        autoActivateFirstItem: args.autoActivateFirstItem
+        autoActivateMode: args.autoActivateMode
       });
     }
   );
@@ -432,5 +454,5 @@ function keyAndLabelForItem(item: unknown): {
   return { key: '', label: '' };
 }
 
-export type { ListItem, ListItemArgs, SelectionMode };
+export type { ListItem, ListItemArgs, SelectionMode, AutoActivateMode };
 export { ListManager, keyAndLabelForItem };
