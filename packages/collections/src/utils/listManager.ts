@@ -447,6 +447,7 @@ function keyAndLabelForItem(item: unknown): { key: string; label: string } {
 
   // If the item is an object, try to extract key and label using common property names
   if (typeof item === 'object' && item !== null) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const typedItem = item as any;
 
     // Try to use the 'key' property first; if not available, use 'id'
