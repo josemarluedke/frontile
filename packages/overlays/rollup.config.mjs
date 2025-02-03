@@ -1,13 +1,14 @@
-import ts from 'rollup-plugin-ts';
+import { babel } from '@rollup/plugin-babel';
+import copy from 'rollup-plugin-copy';
 import { Addon } from '@embroider/addon-dev/rollup';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
+const extensions = ['.js', '.gjs', '.ts', '.gts'];
+
 const addon = new Addon({
   srcDir: 'src',
-  destDir: 'dist'
+  destDir: 'dist',
 });
-
-const extensions = ['.js', '.gjs', '.ts', '.gts'];
 
 export default {
   // This provides defaults that work well alongside `publicEntrypoints` below.
@@ -17,6 +18,11 @@ export default {
   plugins: [
     // These are the modules that users should be able to import from your
     // addon. Anything not listed here may get optimized away.
+    // By default all your JavaScript modules (**/*.js) will be importable.
+    // But you are encouraged to tweak this to only cover the modules that make
+    // up your addon's public API. Also make sure your package.json#exports
+    // is aligned to the config here.
+    // See https://github.com/embroider-build/embroider/blob/main/docs/v2-faq.md#how-can-i-define-the-public-exports-of-my-addon
     addon.publicEntrypoints([
       'components/**/*.js',
       'helpers/**/*.js',
@@ -31,7 +37,9 @@ export default {
     addon.appReexports([
       'components/**/*.js',
       'helpers/**/*.js',
-      'utils/**/*.js'
+      'modifiers/**/*.js',
+      'services/**/*.js',
+      'utils/**/*.js',
     ]),
 
     // Follow the V2 Addon rules about dependencies. Your code can import from
@@ -39,29 +47,42 @@ export default {
     // package names.
     addon.dependencies(),
 
-    addon.gjs(),
 
     nodeResolve({ extensions }),
 
     // This babel config should *not* apply presets or compile away ES modules.
     // It exists only to provide development niceties for you, like automatic
     // template colocation.
-    // See `babel.config.json` for the actual Babel configuration!
-    ts({
-      transpiler: 'babel',
-      transpileOnly: true,
-      babelConfig: './babel.config.js',
-      browserslist: ['last 2 firefox versions', 'last 2 chrome versions']
+    //
+    // By default, this will load the actual babel config from the file
+    // babel.config.json.
+    babel({
+      extensions,
+      babelHelpers: 'bundled',
     }),
 
     // Ensure that standalone .hbs files are properly integrated as Javascript.
     addon.hbs(),
+
+    // Ensure that .gjs files are properly integrated as Javascript
+    addon.gjs(),
+
+    // Emit .d.ts declaration files
+    addon.declarations('declarations'),
 
     // addons are allowed to contain imports of .css files, which we want rollup
     // to leave alone and keep in the published output.
     addon.keepAssets(['**/*.css']),
 
     // Remove leftover build artifacts when starting a new build.
-    addon.clean()
-  ]
+    addon.clean(),
+
+    // Copy Readme and License into published package
+    copy({
+      targets: [
+        { src: '../README.md', dest: '.' },
+        { src: '../LICENSE.md', dest: '.' },
+      ],
+    }),
+  ],
 };

@@ -15,7 +15,7 @@
     "test": "pnpm --filter test-app test",
     "try:one": "pnpm --filter test-app try:one",
     "clean:declarations": "rm -rf packages/*/declarations",
-    "clean:dist": "rm -rf packages/*/dist && rm -rf test-app/dist && rm -rf site/dist",
+    "clean:dist": "rm -rf packages/*/dist test-app/dist site/dist",
     "clean": "concurrently 'npm:clean:*'"
   },
   "resolutions": {
