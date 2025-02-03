@@ -2,8 +2,10 @@
 import { tracked } from '@glimmer/tracking';
 import { debounce } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
+import { later } from '@ember/runloop';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
+type AutoActivateMode = 'none' | 'first' | 'selected';
 
 interface ListItemArgs {
   key: string;
@@ -40,7 +42,7 @@ interface ListManagerArgs {
   selectedKeys?: string[];
   disabledKeys?: string[];
   allowEmpty?: boolean;
-  autoActivateFirstItem?: boolean;
+  autoActivateMode?: AutoActivateMode;
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
   onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
@@ -56,7 +58,7 @@ class ListManager {
     selectedKeys: [],
     disabledKeys: [],
     allowEmpty: false,
-    autoActivateFirstItem: false
+    autoActivateMode: 'none'
   };
 
   constructor(args: ListManagerArgs = {}) {
@@ -67,21 +69,37 @@ class ListManager {
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
   ): void {
-    if (this.args.autoActivateFirstItem && this.#items.length === 0) {
+    if (
+      this.args.autoActivateMode == 'first' &&
+      this.#items.length === 0 &&
+      !args.isDisabled
+    ) {
       args.isActive = true;
       this.args.onActiveItemChange?.(args.key);
     }
-    this.#items.push(new ListItem(el, args));
+    const newItem = new ListItem(el, args);
+    this.#items.push(newItem);
+    this.#syncItemsOrderWithDOM();
 
     if (typeof this.args.onListItemsChange === 'function') {
       this.args.onListItemsChange(this.#items, 'add');
+    }
+
+    if (this.args.autoActivateMode != 'none' && this.#items.length > 1) {
+      later(() => {
+        if (this.args.autoActivateMode == 'first') {
+          this.setFirstOptionActive();
+        } else {
+          this.setSelectedOptionActive();
+        }
+      }, 1);
     }
   }
 
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (this.args.autoActivateFirstItem && this.#items.length >= 1) {
+    if (this.args.autoActivateMode == 'first' && this.#items.length >= 1) {
       this.activateItem(this.#items[0]);
     }
 
@@ -102,7 +120,7 @@ class ListManager {
     this.args.selectedKeys = args.selectedKeys || [];
     this.args.disabledKeys = args.disabledKeys || [];
     this.args.allowEmpty = args.allowEmpty || false;
-    this.args.autoActivateFirstItem = args.autoActivateFirstItem || false;
+    this.args.autoActivateMode = args.autoActivateMode || 'none';
 
     for (let i = 0; i < this.#items.length; i++) {
       const item = this.#items[i] as ListItem;
@@ -157,17 +175,22 @@ class ListManager {
   }
 
   activateItem(item?: ListItem): void {
-    if (item) {
+    if (item && !item.isActive) {
       this.#clearActive();
       item.isActive = true;
       this.args.onActiveItemChange?.(item.key);
+
+      // Ensure the item is scrolled into view
+      requestAnimationFrame(() => {
+        item.el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      });
     }
   }
 
   setNextOptionActive(): void {
     for (let i = this.#indexofActiveItem + 1; i < this.#items.length; i++) {
       const item = this.#items[i];
-      if (item && !item.isDisabled) {
+      if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
       }
@@ -177,7 +200,7 @@ class ListManager {
   setPreviousOptionActive(): void {
     for (let i = this.#indexofActiveItem - 1; i >= 0; i--) {
       const item = this.#items[i];
-      if (item && !item.isDisabled) {
+      if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
       }
@@ -191,6 +214,23 @@ class ListManager {
         this.activateItem(item);
         break;
       }
+    }
+  }
+
+  setSelectedOptionActive(): void {
+    let activated = false;
+
+    for (let i = 0; i < this.#items.length; i++) {
+      const item = this.#items[i];
+      if (item && !item.isDisabled && item.isSelected) {
+        this.activateItem(item);
+        activated = true;
+        break;
+      }
+    }
+
+    if (!activated) {
+      this.setFirstOptionActive();
     }
   }
 
@@ -246,6 +286,19 @@ class ListManager {
       return -1;
     }
     return this.#items.indexOf(item);
+  }
+
+  // Ensure #items is always in sync with DOM order
+  #syncItemsOrderWithDOM(): void {
+    if (!this.#items.length) return;
+
+    // Sort items based on their position in the DOM
+    this.#items.sort((a, b) => {
+      const position = a.el.compareDocumentPosition(b.el);
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+      return 0;
+    });
   }
 
   #toggleSelectedItem(item: ListItem): string[] {
@@ -309,7 +362,7 @@ class ListManager {
         disabledKeys: args.disabledKeys,
         selectedKeys: args.selectedKeys,
         allowEmpty: args.allowEmpty,
-        autoActivateFirstItem: args.autoActivateFirstItem
+        autoActivateMode: args.autoActivateMode
       });
     }
   );
@@ -339,6 +392,7 @@ class ListManager {
           textValue = el.textContent?.trim() || '';
         }
       }
+
       this.register(el as HTMLLIElement, {
         key: args.key,
         textValue: textValue || '',
@@ -383,22 +437,38 @@ class ListManager {
     }
   );
 }
-function keyAndLabelForItem(item: unknown): {
-  key: string;
-  label: string;
-} {
+
+function keyAndLabelForItem(item: unknown): { key: string; label: string } {
+  // Handle primitive types directly
   if (typeof item === 'string' || typeof item === 'number') {
-    return { key: item.toString(), label: item.toString() };
-  } else if (typeof item === 'object' && item !== null) {
-    const typedItem = item as { key: string; label: string };
-    if ('key' in typedItem && 'label' in typedItem) {
-      return { key: typedItem.key, label: typedItem.label };
-    } else {
-      return { key: item.toString(), label: item.toString() };
-    }
+    const value = item.toString();
+    return { key: value, label: value };
   }
+
+  // If the item is an object, try to extract key and label using common property names
+  if (typeof item === 'object' && item !== null) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const typedItem = item as any;
+
+    // Try to use the 'key' property first; if not available, use 'id'
+    let keyProp = typedItem.key || typedItem.id;
+    if (keyProp === undefined) {
+      keyProp = item.toString();
+    }
+
+    // Determine the label by checking multiple possible properties
+    let labelProp =
+      typedItem.label || typedItem.value || typedItem.name || typedItem.title;
+    if (labelProp === undefined) {
+      labelProp = item.toString();
+    }
+
+    return { key: keyProp.toString(), label: labelProp.toString() };
+  }
+
+  // Fallback if item does not match expected types
   return { key: '', label: '' };
 }
 
-export type { ListItem, ListItemArgs, SelectionMode };
+export type { ListItem, ListItemArgs, SelectionMode, AutoActivateMode };
 export { ListManager, keyAndLabelForItem };

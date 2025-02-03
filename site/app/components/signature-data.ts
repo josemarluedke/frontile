@@ -3095,18 +3095,20 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether scrolling should be blocked when the select dropdown is open.',
         tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
         defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span>>'
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>'
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom classes to style different slots within the select component.',
         tags: {}
       },
       {
@@ -3172,9 +3174,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue: '<span class="hljs-literal">false</span>'
+        description:
+          'Whether the focus trap should be disabled when the dropdown is open.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>'
       },
       {
         identifier: 'disableTransitions',
@@ -3212,6 +3215,28 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'filter',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(itemValue: <span class="hljs-built_in">string</span>, <span class="hljs-attr">filterValue</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">boolean</span>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Function to filter the items in the select.\nThe default implementation performs a case-insensitive search.',
+        tags: {
+          param: {
+            name: 'param',
+            value:
+              "itemValue   - The value of an item in the dropdown.\nfilterValue   - The user's input in the filter/search box."
+          },
+          returns: {
+            name: 'returns',
+            value: 'A boolean indicating whether the item should be shown.'
+          }
+        }
+      },
+      {
         identifier: 'flipOptions',
         type: {
           type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }'
@@ -3237,11 +3262,21 @@ const data: ComponentDoc[] = [
           '{ <span class="hljs-attr">clickOutsideDeactivates</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">allowOutsideClick</span>: <span class="hljs-literal">true</span> }'
       },
       {
+        identifier: 'hideEmptyContent',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'If true, hides the empty content when there are no options available.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
         identifier: 'id',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'The unique identifier for the select component.',
         tags: {}
       },
       {
@@ -3253,7 +3288,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Defines the input size of the select.',
         tags: {}
       },
       {
@@ -3280,7 +3315,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button.\nIt ignores the option allowEmpty.',
+          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the `allowEmpty` setting.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>'
       },
@@ -3289,8 +3324,19 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether the select should be disabled, preventing user interaction.',
         tags: {}
+      },
+      {
+        identifier: 'isFilterable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Allows filtering of the items in the select dropdown.\nIf true, a search input is displayed for filtering.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'isInvalid',
@@ -3298,6 +3344,15 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'If true, the select will show a loading spinner instead of the dropdown icon.',
         tags: {}
       },
       {
@@ -3340,7 +3395,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute for the select component, useful for form submissions.',
         tags: {}
       },
       {
@@ -3387,7 +3443,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The placeholder text displayed when no option is selected.',
         tags: {}
       },
       {
@@ -3422,13 +3479,15 @@ const data: ComponentDoc[] = [
         identifier: 'popoverSize',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
-          items: ["'sm'", "'lg'", "'md'"]
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'trigger\'</span>',
+          items: ["'sm'", "'lg'", "'md'", "'trigger'"]
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {}
+        description:
+          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large\n  'trigger': Same size as the trigger",
+        tags: { defaultValue: { name: 'defaultValue', value: "'trigger'" } },
+        defaultValue: '<span class="hljs-string">\'trigger\'</span>'
       },
       {
         identifier: 'renderInPlace',
@@ -3460,8 +3519,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {}
+        description:
+          "Determines the selection mode of the select component.\n- 'single': Only one item can be selected at a time.\n- 'multiple': Allows multiple selections.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
+        defaultValue: '<span class="hljs-string">\'single\'</span>'
       },
       {
         identifier: 'shiftOptions',
@@ -3736,7 +3797,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'Content to display at the **beginning** of the select component.\nThis can be an icon, a label, or any custom UI element.\n\nExample: A search icon or a custom label.',
         tags: {}
       },
       {
@@ -3748,7 +3810,21 @@ const data: ComponentDoc[] = [
         },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'Content to display at the **end** of the select component.\nThis can be an icon, a button, or any custom UI element.\n\nExample: A clear button or a dropdown arrow.',
+        tags: {}
+      },
+      {
+        identifier: 'emptyContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The content to display when there are no available options.\nIf `hideEmptyContent` argument is true, this content will not be shown.',
         tags: {}
       }
     ],
@@ -5042,6 +5118,14 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'destinationElement',
+        type: { type: 'HTMLElement' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'disabled',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -5496,6 +5580,18 @@ const data: ComponentDoc[] = [
       {
         identifier: 'searchField',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'searchFieldPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TSearchFieldPosition',
+          items: ["'trigger'", "'before-options'"]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -7681,6 +7777,16 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'preventAutoFocus',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When focusTrap is disabled, by default Oberlay will be auto focused. This option prevents that.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
         identifier: 'preventFocusRestore',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -8356,6 +8462,16 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'preventAutoFocus',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When focusTrap is disabled, by default Oberlay will be auto focused. This option prevents that.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
+      },
+      {
         identifier: 'preventFocusRestore',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -8377,8 +8493,8 @@ const data: ComponentDoc[] = [
         identifier: 'size',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
-          items: ["'sm'", "'lg'", "'xl'", "'md'"]
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'trigger\'</span>',
+          items: ["'sm'", "'lg'", "'xl'", "'md'", "'trigger'"]
         },
         isRequired: false,
         isInternal: false,
@@ -8520,6 +8636,14 @@ const data: ComponentDoc[] = [
         description: 'Duration of the animation',
         tags: { defaultValue: { name: 'defaultValue', value: '200' } },
         defaultValue: '<span class="hljs-number">200</span>'
+      },
+      {
+        identifier: 'triggerWidth',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
       }
     ],
     Blocks: [
@@ -9089,7 +9213,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: 'Changeset Object',
@@ -9468,12 +9595,16 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-string">\'default\'</span>'
       },
       {
-        identifier: 'autoActivateFirstItem',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        identifier: 'autoActivateMode',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'first\'</span> | <span class="hljs-string">\'selected\'</span>',
+          items: ["'none'", "'first'", "'selected'"]
+        },
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: 'true' } }
+        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } }
       },
       {
         identifier: 'class',
@@ -10529,7 +10660,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10569,7 +10703,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10725,7 +10862,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -10875,7 +11015,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11065,7 +11208,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11226,7 +11372,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11382,7 +11531,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -11528,6 +11680,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'destination',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'destinationElement',
+        type: { type: 'HTMLElement' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -11994,6 +12154,18 @@ const data: ComponentDoc[] = [
         tags: {}
       },
       {
+        identifier: 'searchFieldPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'TSearchFieldPosition',
+          items: ["'trigger'", "'before-options'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
         identifier: 'searchMessage',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
@@ -12186,7 +12358,10 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'changeset',
-        type: { type: 'BufferedChangeset' },
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'BufferedChangeset'
+        },
         isRequired: true,
         isInternal: false,
         description: '',

@@ -73,6 +73,7 @@ interface PopoverSignature {
           | 'internalDidClose'
           | 'blockScroll'
           | 'backdrop'
+          | 'triggerWidth'
         >;
       }
     ];
@@ -85,6 +86,7 @@ class Popover extends Component<PopoverSignature> {
   @tracked _isOpen = false;
   @tracked isClosing = false;
   @tracked preventFocusRestore = false;
+  @tracked triggerWidth?: number;
 
   get isOpen(): boolean {
     if (
@@ -139,6 +141,19 @@ class Popover extends Component<PopoverSignature> {
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
+      this.triggerWidth = Math.round(el.offsetWidth);
+
+      let observer: ResizeObserver;
+      if (eventType !== 'hover') {
+        observer = new ResizeObserver((entries) => {
+          for (let entry of entries) {
+            this.triggerWidth = Math.round(
+              (entry.target as HTMLElement).offsetWidth
+            );
+          }
+        });
+        observer.observe(el);
+      }
 
       const debounceDuration = 100;
 
@@ -150,11 +165,36 @@ class Popover extends Component<PopoverSignature> {
         debounce(this, this.close, debounceDuration);
       };
 
+      const onKeydown = (event: KeyboardEvent) => {
+        if (this.isOpen && event.key === 'Escape') {
+          this.close();
+          event.stopPropagation();
+        }
+        if (
+          !this.isOpen &&
+          (event.key === 'ArrowDown' || event.key === 'ArrowUp')
+        ) {
+          this.open();
+          event.stopPropagation();
+        }
+
+        if (this.isOpen && event.key === 'Tab') {
+          this.preventFocusRestore = true;
+          this.close();
+        }
+
+        // Open when a letter is pressed
+        if (!this.isOpen && event.code === `Key${event.key.toUpperCase()}`) {
+          this.open();
+        }
+      };
+
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
         el.addEventListener('mouseenter', open);
         el.addEventListener('mouseleave', close);
       } else {
+        el.addEventListener('keydown', onKeydown);
         el.addEventListener('click', this.toggle);
       }
 
@@ -168,6 +208,10 @@ class Popover extends Component<PopoverSignature> {
           el.removeEventListener('mouseleave', close);
         } else {
           el.removeEventListener('click', this.toggle);
+          el.removeEventListener('keydown', onKeydown);
+        }
+        if (observer) {
+          observer.disconnect();
         }
         this.triggerEl = undefined;
       };
@@ -212,6 +256,7 @@ class Popover extends Component<PopoverSignature> {
             toggle=this.toggle
             internalDidClose=this.didClose
             preventFocusRestore=this.preventFocusRestore
+            triggerWidth=this.triggerWidth
           )
         )
       }}
@@ -234,6 +279,7 @@ interface ContentArgs
     | 'closeOnEscapeKey'
     | 'backdropTransition'
     | 'blockScroll'
+    | 'preventAutoFocus'
   > {
   /**
    * @internal
@@ -264,6 +310,8 @@ interface ContentArgs
    */
   preventFocusRestore?: boolean;
 
+  triggerWidth?: number;
+
   class?: string;
 
   /**
@@ -283,7 +331,7 @@ interface ContentArgs
    *
    * @defaultValue 'md'
    */
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'trigger';
 }
 
 interface ContentSignature {
@@ -349,6 +397,12 @@ class Content extends Component<ContentSignature> {
     }
   };
 
+  updateTriggerWidth = modifier((el: HTMLDivElement) => {
+    if (el && this.args.triggerWidth) {
+      el.style.setProperty('--trigger-width', `${this.args.triggerWidth}px`);
+    }
+  });
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -371,8 +425,10 @@ class Content extends Component<ContentSignature> {
       @backdropTransition={{@backdropTransition}}
       @class={{this.classNames}}
       @preventFocusRestore={{@preventFocusRestore}}
+      @preventAutoFocus={{@preventAutoFocus}}
       id={{@id}}
       ...attributes
+      {{this.updateTriggerWidth @triggerWidth}}
     >
       {{yield}}
     </Overlay>

@@ -1,6 +1,5 @@
 /* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { buildWaiter } from '@ember/test-waiters';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
@@ -86,7 +85,7 @@ class Collapsible extends Component<CollapsibleSignature> {
     }
   });
 
-  @action onTransitionEnd(event: TransitionEvent): void {
+  onTransitionEnd = (event: TransitionEvent) => {
     if (
       (event.propertyName === 'height' || event.propertyName == 'opacity') &&
       this.args.isOpen
@@ -114,7 +113,7 @@ class Collapsible extends Component<CollapsibleSignature> {
         waiter.endAsync(this.waiterToken);
       }
     }
-  }
+  };
 
   heightTransition(duration: number): string {
     return `height ${duration}s cubic-bezier(0.4, 0, 0.2, 1) 0ms`;

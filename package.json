@@ -14,7 +14,9 @@
     "start": "pnpm --filter test-app start",
     "test": "pnpm --filter test-app test",
     "try:one": "pnpm --filter test-app try:one",
-    "clean:declarations": "rm -rf packages/*/declarations"
+    "clean:declarations": "rm -rf packages/*/declarations",
+    "clean:dist": "rm -rf packages/*/dist && rm -rf test-app/dist && rm -rf site/dist",
+    "clean": "concurrently 'npm:clean:*'"
   },
   "resolutions": {
     "@ember/test-waiters": "^4.0.0",
@@ -26,20 +28,21 @@
     "@embroider/test-setup": "^4.0.0"
   },
   "devDependencies": {
-    "@glint/core": "1.5.0",
-    "@glint/environment-ember-loose": "1.5.0",
-    "@glint/environment-ember-template-imports": "1.5.0",
+    "@glint/core": "1.5.2",
+    "@glint/environment-ember-loose": "1.5.2",
+    "@glint/environment-ember-template-imports": "1.5.2",
     "@underline/eslint-config-ember-typescript": "^0.16.0",
     "@underline/eslint-config-node": "^0.16.0",
     "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^6.0.0",
+    "ember-template-lint": "^6.1.0",
     "eslint": "^8.57.1",
     "eslint-plugin-ember": "^12.3.3",
     "eslint-plugin-prettier": "^5.2.1",
     "lerna": "^8.1.9",
     "prettier": "^3.4.2",
+    "concurrently": "^9.1.0",
     "prettier-plugin-ember-template-tag": "^2.0.4",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": ">= 10.*"

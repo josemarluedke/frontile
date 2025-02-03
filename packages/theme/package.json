@@ -64,12 +64,12 @@
     "@embroider/addon-shim": "^1.8.6",
     "@glimmer/component": "^2.0.0",
     "@glimmer/tracking": "^1.1.2",
-    "@glint/core": "1.5.0",
-    "@glint/environment-ember-loose": "1.5.0",
-    "@glint/environment-ember-template-imports": "1.5.0",
-    "@glint/template": "1.5.0",
+    "@glint/core": "1.5.2",
+    "@glint/environment-ember-loose": "1.5.2",
+    "@glint/environment-ember-template-imports": "1.5.2",
+    "@glint/template": "1.5.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
-    "@tsconfig/ember": "^3.0.5",
+    "@tsconfig/ember": "^3.0.9",
     "@types/color": "^4.2.0",
     "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
@@ -80,7 +80,7 @@
     "rollup": "^4.29.1",
     "rollup-plugin-ts": "^3.4.5",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": "10.* || >= 12"

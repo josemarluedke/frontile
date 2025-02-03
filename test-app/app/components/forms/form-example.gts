@@ -95,6 +95,7 @@ export default class FormExample extends Component<FormExampleArgs> {
 
       <Select
         @name="all-fav-animals"
+        @inputSize="sm"
         @selectionMode="multiple"
         @items={{animals}}
         @placeholder="Select your favorite animals"

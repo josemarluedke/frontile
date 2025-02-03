@@ -1,47 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  click,
-  render,
-  triggerEvent,
-  triggerKeyEvent
-} from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
-
-function selectNativeOptionByKey(
-  selectSelector: string,
-  key: string
-): Promise<void> {
-  return changeOption('selectNativeOptionByKey', selectSelector, key, false);
-}
-
-function changeOption(
-  functionName: string,
-  selectSelector: string,
-  key: string,
-  toggle: boolean
-): Promise<void> {
-  const select = document.querySelector(selectSelector);
-  if (!select) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no select was found using selector "${selectSelector}"`
-    );
-  }
-  const option = select.querySelector(`[data-key="${key}"]`) as
-    | HTMLOptionElement
-    | undefined;
-  if (!option) {
-    throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`
-    );
-  }
-  if (option.selected && toggle) {
-    option.selected = false;
-  } else {
-    option.selected = true;
-  }
-  return triggerEvent(select, 'change');
-}
+import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
+import { cell } from 'ember-resources';
+import { Select } from '@frontile/forms';
+import { array } from '@ember/helper';
+import { selectOptionByKey } from '@frontile/forms/test-support';
 
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   setupRenderingTest(hooks);
@@ -76,35 +39,26 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.ok(!isSelected, `Expected ${queryString} to not be selected`);
   };
 
-  test('it render static items in NativeSelect and Listbox', async function (assert) {
-    let selectedKeys: string[] = [];
-    this.set('selectedKeys', []);
-    this.set('onSelectionChange', (keys: string[]) => {
-      selectedKeys = keys;
-      this.set('selectedKeys', keys);
-    });
+  test('it renders static items in NativeSelect and Listbox', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
     await render(
-      hbs`
-          <Select
-            @onSelectionChange={{this.onSelectionChange}}
-            @selectedKeys={{this.selectedKeys}}
-            @disabledKeys={{(array "item-3" "item-4")}}
-            @allowEmpty={{true}}
-            as |l|
-          >
-            <l.Item
-              @key="item-1"
-            >
-              Item 1
-            </l.Item>
-            <l.Item @key="item-2">Item 2</l.Item>
-            <l.Item @key="item-3">Item 3</l.Item>
-            <l.Item @key="item-4">Item 4</l.Item>
-            <l.Item @key="item-5">
-              Item 5
-            </l.Item>
-          </Select>`
+      <template>
+        <Select
+          @onSelectionChange={{onSelectionChange}}
+          @selectedKeys={{selectedKeys.current}}
+          @disabledKeys={{array "item-3" "item-4"}}
+          @allowEmpty={{true}}
+          as |l|
+        >
+          <l.Item @key="item-1">Item 1</l.Item>
+          <l.Item @key="item-2">Item 2</l.Item>
+          <l.Item @key="item-3">Item 3</l.Item>
+          <l.Item @key="item-4">Item 4</l.Item>
+          <l.Item @key="item-5">Item 5</l.Item>
+        </Select>
+      </template>
     );
 
     assert.dom('[data-component="native-select"]').exists();
@@ -142,9 +96,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       '[data-component="native-select"] [data-key="item-2"]'
     );
 
-    await selectNativeOptionByKey('[data-component="native-select"]', 'item-2');
+    await selectOptionByKey('[data-component="native-select"]', 'item-2');
 
-    assert.deepEqual(selectedKeys, ['item-2']);
+    assert.deepEqual(selectedKeys.current, ['item-2']);
     isSelected(assert, '[data-key="item-2"]');
 
     // Check Listbox
@@ -186,25 +140,21 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   test('it render dynamic items without yield of item selectionMode = single / multiple, closes on item click', async function (assert) {
-    this.set('selectionMode', 'single');
-    this.set('animals', ['cheetah', 'crocodile', 'elephant']);
-    let selectedKeys: string[] = [];
-
-    this.set('selectedKeys', []);
-    this.set('onSelectionChange', (keys: string[]) => {
-      this.set('selectedKeys', keys);
-      selectedKeys = keys;
-    });
+    const selectionMode = cell<'single' | 'multiple'>('single');
+    const animals = ['cheetah', 'crocodile', 'elephant'];
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
     await render(
-      hbs`
+      <template>
         <Select
           @allowEmpty={{true}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-        />`
+          @selectionMode={{selectionMode.current}}
+          @items={{animals}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
     );
 
     await click('[data-component="select-trigger"]');
@@ -216,74 +166,69 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     // Selection Mode single
     await click('[data-component="listbox"] [data-key="cheetah"]');
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'cheetah');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'cheetah');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
 
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="crocodile"]');
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'crocodile');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'crocodile');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
 
     // Selection Mode multiple
-    this.set('selectionMode', 'multiple');
-    this.set('selectedKeys', []);
-    selectedKeys = [];
+    selectionMode.current = 'multiple';
+    selectedKeys.current = [];
 
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="elephant"]');
     assert.dom('[data-component="listbox"]').exists('should not have closed');
 
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'elephant');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'elephant');
 
     await click('[data-component="listbox"] [data-key="crocodile"]');
-    assert.equal(selectedKeys.length, 2);
+    assert.equal(selectedKeys.current.length, 2);
 
-    assert.ok(selectedKeys.includes('elephant'));
-    assert.ok(selectedKeys.includes('crocodile'));
+    assert.ok(selectedKeys.current.includes('elephant'));
+    assert.ok(selectedKeys.current.includes('crocodile'));
 
     // toggle
     await click('[data-component="listbox"] [data-key="crocodile"]');
 
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'elephant');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'elephant');
 
     await click('[data-component="listbox"] [data-key="elephant"]');
 
-    assert.equal(selectedKeys.length, 0);
+    assert.equal(selectedKeys.current.length, 0);
   });
 
   test('it render dynamic items yielding of item', async function (assert) {
-    this.set('selectionMode', 'single');
-    this.set('allowEmpty', false);
-    this.set('animals', [
+    const animals = [
       { key: 'cheetah-key', value: 'cheetah-value' },
       { key: 'crocodile-key', value: 'crocodile-value' },
       { key: 'elephant-key', value: 'elephant-value' }
-    ]);
-
-    this.set('selectedKeys', []);
-    this.set('onSelectionChange', (keys: string[]) => {
-      this.set('selectedKeys', keys);
-    });
+    ];
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
     await render(
-      hbs`
+      <template>
         <Select
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
+          @allowEmpty={{false}}
+          @selectionMode="single"
+          @items={{animals}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
         >
           <:item as |o|>
             <o.Item @key={{o.item.key}}>
               {{o.item.value}}
             </o.Item>
           </:item>
-        </Select>`
+        </Select>
+      </template>
     );
 
     assert.dom('[data-component="native-select"]').exists();
@@ -318,34 +263,25 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   test('keyboard navigation work (roving focus))', async function (assert) {
-    let selectedKeys: string[] = [];
-    this.set('selectedKeys', []);
-    this.set('onSelectionChange', (keys: string[]) => {
-      selectedKeys = keys;
-      this.set('selectedKeys', keys);
-    });
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
     await render(
-      hbs`
-          <Select
-            @onSelectionChange={{this.onSelectionChange}}
-            @selectedKeys={{this.selectedKeys}}
-            @disabledKeys={{(array "item-3" "item-4")}}
-            @allowEmpty={{true}}
-            as |l|
-          >
-            <l.Item
-              @key="item-1"
-            >
-              Item 1
-            </l.Item>
-            <l.Item @key="item-2">Item 2</l.Item>
-            <l.Item @key="item-3">Item 3</l.Item>
-            <l.Item @key="item-4">Item 4</l.Item>
-            <l.Item @key="item-5">
-              Item 5
-            </l.Item>
-          </Select>`
+      <template>
+        <Select
+          @onSelectionChange={{onSelectionChange}}
+          @selectedKeys={{selectedKeys.current}}
+          @disabledKeys={{array "item-3" "item-4"}}
+          @allowEmpty={{true}}
+          as |l|
+        >
+          <l.Item @key="item-1">Item 1</l.Item>
+          <l.Item @key="item-2">Item 2</l.Item>
+          <l.Item @key="item-3">Item 3</l.Item>
+          <l.Item @key="item-4">Item 4</l.Item>
+          <l.Item @key="item-5">Item 5</l.Item>
+        </Select>
+      </template>
     );
 
     // Check Listbox
@@ -382,18 +318,14 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await triggerKeyEvent('[data-component="listbox"]', 'keypress', 'Enter');
     assert.dom('[data-component="listbox"]').doesNotExist();
 
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'item-2');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'item-2');
   });
 
   test('it renders disabled select', async function (assert) {
-    this.set('animals', ['tiger']);
+    const animals = ['tiger'];
     await render(
-      hbs`
-        <Select
-          @items={{this.animals}}
-          @isDisabled={{true}}
-        />`
+      <template><Select @items={{animals}} @isDisabled={{true}} /></template>
     );
     assert.dom('[data-component="native-select"]').exists();
     assert.dom('[data-component="native-select"]').isDisabled;
@@ -401,31 +333,33 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   test('it renders select with placeholder', async function (assert) {
-    this.set('animals', ['tiger']);
+    const animals = ['tiger'];
     await render(
-      hbs`
+      <template>
         <Select
-          @items={{this.animals}}
+          @items={{animals}}
           @placeholder="Select an animal"
-        />`
+          @isDisabled={{true}}
+        />
+      </template>
     );
     assert.dom('[data-component="select-trigger"]').hasText('Select an animal');
   });
 
   test('it renders named blocks startContent and endContent', async function (assert) {
     const classes = { innerContainer: 'input-container' };
-    this.set('animals', ['tiger']);
-    this.set('classes', classes);
+    const animals = ['tiger'];
     await render(
-      hbs`
+      <template>
         <Select
-          @items={{this.animals}}
+          @items={{animals}}
           @placeholder="Select an animal"
-          @classes={{this.classes}}
+          @classes={{classes}}
         >
           <:startContent>Start</:startContent>
           <:endContent>End</:endContent>
-      </Select>`
+        </Select>
+      </template>
     );
 
     assert.dom('.input-container div:first-child').exists();
@@ -436,33 +370,144 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   test('it clears selectedKeys when isClearable is set and clear button clicked', async function (assert) {
-    let selectedKeys: string[] = [];
-    this.set('selectedKeys', []);
-    this.set('onSelectionChange', (keys: string[]) => {
-      selectedKeys = keys;
-      this.set('selectedKeys', keys);
-    });
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 
     await render(
-      hbs`
-          <Select
-            @onSelectionChange={{this.onSelectionChange}}
-            @selectedKeys={{this.selectedKeys}}
-            @isClearable={{true}}
-            as |l|
-          >
-            <l.Item @key="item-1">Item 1</l.Item>
-            <l.Item @key="item-2">Item 2</l.Item>
-            <l.Item @key="item-3">Item 3</l.Item>
-          </Select>`
+      <template>
+        <Select
+          @onSelectionChange={{onSelectionChange}}
+          @selectedKeys={{selectedKeys.current}}
+          @isClearable={{true}}
+          as |l|
+        >
+          <l.Item @key="item-1">Item 1</l.Item>
+          <l.Item @key="item-2">Item 2</l.Item>
+          <l.Item @key="item-3">Item 3</l.Item>
+        </Select>
+      </template>
     );
 
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="item-1"]');
-    assert.equal(selectedKeys.length, 1);
-    assert.equal(selectedKeys[0], 'item-1');
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'item-1');
 
     await click('[data-test-id="input-clear-button"]');
-    assert.equal(selectedKeys.length, 0);
+    assert.equal(selectedKeys.current.length, 0);
+  });
+
+  test('it filters options when isFilterable is enabled', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    assert.dom('[data-component="listbox"]').exists();
+
+    await fillIn('[data-test-id="trigger"]', 'App');
+    assert.dom('[data-key="Apple"]').exists();
+    assert.dom('[data-key="Banana"]').doesNotExist();
+    assert.dom('[data-key="Cherry"]').doesNotExist();
+
+    await fillIn('[data-test-id="trigger"]', 'a');
+    assert.dom('[data-key="Apple"]').exists();
+    assert.dom('[data-key="Banana"]').exists();
+    assert.dom('[data-key="Cherry"]').doesNotExist();
+  });
+
+  test('it shows empty content when no options match the filter', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').exists();
+    assert.dom('[data-test-id="empty-content"]').hasText('No results found.');
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        >
+          <:emptyContent>No results found from blocks.</:emptyContent>
+        </Select>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').exists();
+    assert
+      .dom('[data-test-id="empty-content"]')
+      .hasText('No results found from blocks.');
+  });
+
+  test('it does not show empty content when hideEmptyContent is true', async function (assert) {
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    await render(
+      <template>
+        <Select
+          @items={{items}}
+          @isFilterable={{true}}
+          @hideEmptyContent={{true}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'XYZ');
+
+    assert.dom('[data-test-id="empty-content"]').doesNotExist();
+  });
+
+  test('it shows loading spinner when isLoading is true', async function (assert) {
+    const items = ['Apple', 'Banana'];
+
+    await render(
+      <template><Select @items={{items}} @isLoading={{true}} /></template>
+    );
+
+    assert.dom('[data-test-id="loading-spinner"]').exists();
+  });
+
+  test('it hides loading spinner when isLoading is false', async function (assert) {
+    const items = ['Apple', 'Banana'];
+
+    await render(
+      <template><Select @items={{items}} @isLoading={{false}} /></template>
+    );
+
+    assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
   });
 });

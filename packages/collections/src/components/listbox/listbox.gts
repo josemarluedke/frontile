@@ -36,9 +36,9 @@ interface ListboxSignature<T> {
     elementToAddKeyboardEvents?: HTMLElement;
 
     /**
-     * @edefaultValue true
+     * @edefaultValue 'frist'
      */
-    autoActivateFirstItem?: boolean;
+    autoActivateMode?: 'none' | 'first' | 'selected';
 
     onAction?: (key: string) => void;
     onSelectionChange?: (key: string[]) => void;
@@ -80,9 +80,9 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
     onSelectionChange: this.args.onSelectionChange,
     onAction: this.args.onAction,
     onActiveItemChange: this.args.onActiveItemChange,
-    autoActivateFirstItem: isUndefined(this.args.autoActivateFirstItem)
-      ? true
-      : this.args.autoActivateFirstItem
+    autoActivateMode: isUndefined(this.args.autoActivateMode)
+      ? 'first'
+      : this.args.autoActivateMode
   });
 
   handleKeyPress = (event: KeyboardEvent) => {
@@ -192,8 +192,8 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
         disabledKeys=@disabledKeys
         selectionMode=@selectionMode
         allowEmpty=@allowEmpty
-        autoActivateFirstItem=(if
-          (isUndefined @autoActivateFirstItem) true @autoActivateFirstItem
+        autoActivateMode=(if
+          (isUndefined @autoActivateMode) "first" @autoActivateMode
         )
       }}
       {{on "keypress" this.onKeyPress}}

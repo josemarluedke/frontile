@@ -20,6 +20,7 @@ export default {
     addon.publicEntrypoints([
       'components/**/*.js',
       'index.js',
+      'test-support.js',
       'template-registry.js'
     ]),
 

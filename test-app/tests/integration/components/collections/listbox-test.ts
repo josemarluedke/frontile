@@ -251,7 +251,7 @@ module(
           @items={{this.animals}}
           @selectedKeys={{this.selectedKeys}}
           @onSelectionChange={{this.onSelectionChange}}
-          @autoActivateFirstItem={{false}}
+          @autoActivateMode="none"
         />`
       );
 
@@ -369,14 +369,14 @@ module(
     });
 
     test('automatically activate first item', async function (assert) {
-      this.set('autoActivateFirstItem', true);
+      this.set('autoActivateMode', 'first');
       this.set('animals', ['cheetah', 'crocodile', 'elephant']);
 
       await render(
         hbs`
         <Listbox
           @items={{this.animals}}
-          @autoActivateFirstItem={{this.autoActivateFirstItem}}
+          @autoActivateMode={{this.autoActivateMode}}
         />`
       );
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
@@ -390,14 +390,14 @@ module(
       this.set('onActiveItemChange', (key?: string) => {
         activeItems.push(key || '');
       });
-      this.set('autoActivateFirstItem', true);
+      this.set('autoActivateMode', 'first');
       this.set('animals', ['cheetah', 'crocodile', 'elephant']);
 
       await render(
         hbs`
         <Listbox
           @items={{this.animals}}
-          @autoActivateFirstItem={{this.autoActivateFirstItem}}
+          @autoActivateMode={{this.autoActivateMode}}
           @isKeyboardEventsEnabled={{true}}
           @onActiveItemChange={{this.onActiveItemChange}}
         />`
@@ -427,7 +427,7 @@ module(
         <input type="text" data-test-input {{this.modifier}} />
         <Listbox
           @items={{this.animals}}
-          @autoActivateFirstItem={{false}}
+          @autoActivateMode="none"
           @isKeyboardEventsEnabled={{true}}
           @elementToAddKeyboardEvents={{this.elementToAddKeyboardEvents}}
         />`

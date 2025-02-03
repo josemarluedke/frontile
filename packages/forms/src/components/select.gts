@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -8,7 +9,7 @@ import {
   type SelectVariants,
   type SlotsToClasses
 } from '@frontile/theme';
-import { VisuallyHidden, ref } from '@frontile/utilities';
+import { Spinner, VisuallyHidden, ref } from '@frontile/utilities';
 import {
   Popover,
   type PopoverSignature,
@@ -18,6 +19,7 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../utils';
 import { CloseButton } from '@frontile/buttons';
 import { IconChevronUpDown } from './icons';
+import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
 
 interface SelectArgs<T>
   extends Pick<
@@ -55,11 +57,37 @@ interface SelectArgs<T>
       | 'transition'
     >,
     FormControlSharedArgs {
+  /**
+   * Determines the selection mode of the select component.
+   * - 'single': Only one item can be selected at a time.
+   * - 'multiple': Allows multiple selections.
+   * @defaultValue 'single'
+   */
   selectionMode?: 'single' | 'multiple';
 
+  /**
+   * The unique identifier for the select component.
+   */
   id?: string;
+
+  /**
+   * Defines the input size of the select.
+   */
   inputSize?: SelectVariants['size'];
-  popoverSize?: 'sm' | 'md' | 'lg';
+
+  /**
+   * Defines the size of the popover dropdown.
+   * - 'sm': Small
+   * - 'md': Medium
+   * - 'lg': Large
+   *   'trigger': Same size as the trigger
+   *   @defaultValue 'trigger'
+   */
+  popoverSize?: 'sm' | 'md' | 'lg' | 'trigger';
+
+  /**
+   * Custom classes to style different slots within the select component.
+   */
   classes?: SlotsToClasses<SelectSlots>;
 
   /**
@@ -68,25 +96,64 @@ interface SelectArgs<T>
    * @defaultValue true
    */
   closeOnItemSelect?: boolean;
+
   /**
+   * Whether scrolling should be blocked when the select dropdown is open.
+   *
    * @defaultValue true
    */
   blockScroll?: boolean;
 
   /**
-   * @defaultValue false
+   * Whether the focus trap should be disabled when the dropdown is open.
+   *
+   * @defaultValue true
    */
   disableFocusTrap?: boolean;
 
+  /**
+   * The placeholder text displayed when no option is selected.
+   */
   placeholder?: string;
 
+  /**
+   * Whether the select should be disabled, preventing user interaction.
+   */
   isDisabled?: boolean;
 
+  /**
+   * Allows filtering of the items in the select dropdown.
+   * If true, a search input is displayed for filtering.
+   *
+   * @defaultValue false
+   */
+  isFilterable?: boolean;
+
+  /**
+   * Function to filter the items in the select.
+   * The default implementation performs a case-insensitive search.
+   *
+   * @param itemValue - The value of an item in the dropdown.
+   * @param filterValue - The user's input in the filter/search box.
+   * @returns A boolean indicating whether the item should be shown.
+   */
+  filter?: (itemValue: string, filterValue: string) => boolean;
+
+  /**
+   * If true, the select will show a loading spinner instead of the dropdown icon.
+   */
+  isLoading?: boolean;
+
+  /**
+   * The name attribute for the select component, useful for form submissions.
+   */
   name?: string;
 
   /**
-   * Whether to include a clear button.
-   * It ignores the option allowEmpty.
+   * Whether to include a clear button in the select component.
+   * If enabled, this allows users to clear the selection.
+   * This option ignores the `allowEmpty` setting.
+   *
    * @defaultValue false
    */
   isClearable?: boolean;
@@ -108,14 +175,40 @@ interface SelectArgs<T>
    * @defaultValue 'none'
    */
   endContentPointerEvents?: 'none' | 'auto';
+
+  /**
+   * If true, hides the empty content when there are no options available.
+   *
+   * @defaultValue false
+   */
+  hideEmptyContent?: boolean;
 }
 
 interface SelectSignature<T> {
   Args: SelectArgs<T>;
   Element: HTMLDivElement;
   Blocks: ListboxSignature<T>['Blocks'] & {
+    /**
+     * Content to display at the **beginning** of the select component.
+     * This can be an icon, a label, or any custom UI element.
+     *
+     * Example: A search icon or a custom label.
+     */
     startContent: [];
+
+    /**
+     * Content to display at the **end** of the select component.
+     * This can be an icon, a button, or any custom UI element.
+     *
+     * Example: A clear button or a dropdown arrow.
+     */
     endContent: [];
+
+    /**
+     * The content to display when there are no available options.
+     * If `hideEmptyContent` argument is true, this content will not be shown.
+     */
+    emptyContent: [];
   };
 }
 
@@ -124,7 +217,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked isOpen = false;
   @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
 
+  @tracked filterValue?: string;
+
   containerRef = ref<HTMLDivElement>();
+  triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
 
   onSelectionChange = (keys: string[]) => {
     if (typeof this.args.onSelectionChange === 'function') {
@@ -133,11 +229,17 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       this._selectedKeys = keys;
     }
 
+    this.filterValue = undefined;
     triggerFormInputEvent(this.containerRef.element);
   };
 
   onOpenChange = (isOpen: boolean) => {
     this.isOpen = isOpen;
+  };
+
+  onFilterChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    this.filterValue = target.value;
   };
 
   get selectedKeys(): string[] {
@@ -159,10 +261,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   get disableFocusTrap() {
-    if (this.args.disableFocusTrap === true) {
-      return true;
+    if (this.args.disableFocusTrap === false) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   onAction = (key: string) => {
@@ -185,6 +287,13 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
     this.nodes = nodes;
+  };
+
+  didClose = () => {
+    this.filterValue = undefined;
+    if (typeof this.args.didClose === 'function') {
+      this.args.didClose();
+    }
   };
 
   get selectedText() {
@@ -221,6 +330,39 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     );
   }
 
+  get filterFieldValue() {
+    if (this.filterValue !== undefined) {
+      return this.filterValue;
+    }
+    return this.selectedTextValue;
+  }
+
+  get filteredItems() {
+    if (this.filterValue === undefined) {
+      return this.args.items;
+    }
+
+    let filter =
+      this.args.filter ||
+      ((itemValue: string, filterValue: string) =>
+        itemValue.toLowerCase().includes(filterValue.toLowerCase()));
+
+    return this.args.items?.filter((item) =>
+      filter(keyAndLabelForItem(item).label, this.filterValue || '')
+    );
+  }
+
+  get showEmptyContent() {
+    return this.filteredItems?.length === 0 && !this.args.hideEmptyContent;
+  }
+
+  get autoActivateMode(): 'first' | 'selected' {
+    if (this.filterValue === undefined || this.filterValue === '') {
+      return 'selected';
+    }
+    return 'first';
+  }
+
   <template>
     <div
       {{this.containerRef.setup}}
@@ -244,14 +386,14 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           @shiftOptions={{@shiftOptions}}
           @offsetOptions={{@offsetOptions}}
           @strategy={{@strategy}}
-          @didClose={{@didClose}}
+          @didClose={{this.didClose}}
           @isOpen={{this.isOpen}}
           @onOpenChange={{this.onOpenChange}}
           as |p|
         >
           <VisuallyHidden>
             <NativeSelect
-              @items={{@items}}
+              @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
               @onSelectionChange={{this.onSelectionChange}}
@@ -266,8 +408,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
-                  {{! @glint-expect-error: the signature of the native select item is not the same as the listtbox item}}
-                  {{yield l to="item"}}
+                  <l.Item @key={{l.key}}>
+                    {{l.label}}
+                  </l.Item>
                 {{else}}
                   <l.Item @key={{l.key}}>
                     {{l.label}}
@@ -275,7 +418,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{/if}}
               </:item>
               <:default as |l|>
-                {{! @glint-expect-error: the signature of the native select is not the same as the listtbox}}
+                {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
                 {{yield l to="default"}}
               </:default>
             </NativeSelect>
@@ -297,31 +440,54 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
-            <button
-              type="button"
-              {{p.trigger}}
-              {{p.anchor}}
-              data-test-id="trigger"
-              data-component="select-trigger"
-              disabled={{@isDisabled}}
-              class={{this.classes.input
-                class=@classes.input
-                hasStartContent=(has-block "startContent")
-                hasEndContent=true
-              }}
-            >
-              {{#if this.selectedText}}
-                <span>
-                  {{this.selectedTextValue}}
-                </span>
-              {{else}}
-                <span
-                  class={{this.classes.placeholder class=@classes.placeholder}}
-                >
-                  {{@placeholder}}
-                </span>
-              {{/if}}
-            </button>
+            {{#if @isFilterable}}
+              <input
+                type="text"
+                {{p.trigger}}
+                {{p.anchor}}
+                {{this.triggerRef.setup}}
+                data-test-id="trigger"
+                data-component="select-trigger"
+                disabled={{@isDisabled}}
+                placeholder={{@placeholder}}
+                class={{this.classes.input
+                  class=@classes.input
+                  hasStartContent=(has-block "startContent")
+                  hasEndContent=true
+                }}
+                value={{this.filterFieldValue}}
+                {{on "input" this.onFilterChange}}
+              />
+            {{else}}
+              <button
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+                {{this.triggerRef.setup}}
+                data-test-id="trigger"
+                data-component="select-trigger"
+                disabled={{@isDisabled}}
+                class={{this.classes.input
+                  class=@classes.input
+                  hasStartContent=(has-block "startContent")
+                  hasEndContent=true
+                }}
+              >
+                {{#if this.selectedText}}
+                  <span>
+                    {{this.selectedTextValue}}
+                  </span>
+                {{else}}
+                  <span
+                    class={{this.classes.placeholder
+                      class=@classes.placeholder
+                    }}
+                  >
+                    {{@placeholder}}
+                  </span>
+                {{/if}}
+              </button>
+            {{/if}}
             <div
               data-test-id="input-end-content"
               class={{this.classes.endContent
@@ -333,7 +499,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             >
               {{yield to="endContent"}}
 
-              {{#if this.isClearable}}
+              {{#if @isLoading}}
+                <Spinner
+                  @size={{if (isSm @inputSize) "xs" "sm"}}
+                  data-test-id="loading-spinner"
+                />
+              {{else if this.isClearable}}
                 <CloseButton
                   @title="Clear"
                   @variant="subtle"
@@ -351,7 +522,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           </div>
 
           <p.Content
-            @size={{@popoverSize}}
+            @size={{if @popoverSize @popoverSize "trigger"}}
             @target={{@target}}
             @renderInPlace={{@renderInPlace}}
             @disableFocusTrap={{this.disableFocusTrap}}
@@ -364,9 +535,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             @closeOnEscapeKey={{@closeOnEscapeKey}}
             @backdropTransition={{@backdropTransition}}
             @transition={{@transition}}
+            @preventAutoFocus={{true}}
           >
             <Listbox
-              @items={{@items}}
+              @items={{this.filteredItems}}
               @allowEmpty={{@allowEmpty}}
               @appearance={{@appearance}}
               @disabledKeys={{@disabledKeys}}
@@ -378,6 +550,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @type="listbox"
               @class={{this.classes.listbox class=@classes.listbox}}
+              @elementToAddKeyboardEvents={{this.triggerRef.element}}
+              @autoActivateMode={{this.autoActivateMode}}
             >
               <:item as |l|>
                 {{#if (has-block "item")}}
@@ -396,12 +570,26 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield l to="default"}}
               </:default>
             </Listbox>
+            {{#if this.showEmptyContent}}
+              <div
+                class={{this.classes.emptyContent class=@classes.emptyContent}}
+                data-test-id="empty-content"
+              >
+                {{#if (has-block "emptyContent")}}
+                  {{yield to="emptyContent"}}
+                {{else}}
+                  No results found.
+                {{/if}}
+              </div>
+            {{/if}}
           </p.Content>
         </Popover>
       </FormControl>
     </div>
   </template>
 }
+
+const isSm = (size: SelectVariants['size']) => size === 'sm';
 
 export { Select, type SelectSignature };
 export default Select;
