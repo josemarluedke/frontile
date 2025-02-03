@@ -73,10 +73,10 @@ export default class MultipleSelectExample extends Component {
       @selectedKeys={{this.selectedKeys}}
       @onSelectionChange={{this.onSelectionChange}}
     >
-      <:item as |item|>
-        <item.Item @key={{item.item.key}}>
-          {{item.item.label}}
-        </item.Item>
+      <:item as |o|>
+        <o.Item>
+          {{o.label}}
+        </o.Item>
       </:item>
     </Select>
     <p>Selected: {{this.selectedKeys}}</p>
@@ -122,6 +122,22 @@ export default class FilterableSelectExample extends Component {
 }
 ```
 
+## Item Object Format
+
+When using the `@items` argument, you can pass items as either primitives (strings or numbers) or objects. The `Select` component automatically extracts a key and label for each item using a flexible approach:
+
+- **Key Extraction:**  
+  The component first checks for a `key` property. If not present, it will look for an `id` property. If neither is available, it falls back to the string representation of the item.
+
+- **Label Extraction:**  
+  For the label, the component checks in order for `label`, `value`, `name`, or `title`. If none of these properties exist, it uses the string representation of the item.
+
+This supports common object shapes such as:
+
+- `{ key: 'apple', label: 'Apple' }`
+- `{ key: 'apple', value: 'Apple' }`
+- `{ id: 'user-1', name: 'John Doe', email: 'john@example.com' }`
+
 ## Custom Option Rendering
 
 Customize the display of each option by yielding the item to a block. This is useful when you need to add extra information (such as a description or icon) alongside the label.
@@ -146,22 +162,20 @@ export default class CustomUserSelect extends Component {
       @selectedKeys={{this.selectedKeys}}
       @onSelectionChange={{this.onSelectionChange}}
     >
-      <:item as |user|>
-        <user.Item @key={{user.item.key}}>
+      <:item as |o|>
+        <o.Item>
           <div class='flex items-center space-x-4'>
             <img
-              src='{{user.item.avatar}}'
-              alt='{{user.item.label}}'
+              src='{{o.item.avatar}}'
+              alt='{{o.item.name}}'
               class='w-10 h-10 rounded-full'
             />
             <div>
-              <div
-                class='font-medium text-default-900'
-              >{{user.item.label}}</div>
-              <div class='text-sm text-default-500'>{{user.item.email}}</div>
+              <div class='font-medium text-default-900'>{{o.item.name}}</div>
+              <div class='text-sm text-default-500'>{{o.item.email}}</div>
             </div>
           </div>
-        </user.Item>
+        </o.Item>
       </:item>
     </Select>
     <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
@@ -170,32 +184,32 @@ export default class CustomUserSelect extends Component {
 
 const users = [
   {
-    key: 'john-doe',
-    label: 'John Doe',
+    id: 'john-doe',
+    name: 'John Doe',
     email: 'john.doe@example.com',
     avatar: 'https://i.pravatar.cc/150?img=1'
   },
   {
-    key: 'jane-smith',
-    label: 'Jane Smith',
+    id: 'jane-smith',
+    name: 'Jane Smith',
     email: 'jane.smith@example.com',
     avatar: 'https://i.pravatar.cc/150?img=2'
   },
   {
-    key: 'alice-johnson',
-    label: 'Alice Johnson',
+    id: 'alice-johnson',
+    name: 'Alice Johnson',
     email: 'alice.johnson@example.com',
     avatar: 'https://i.pravatar.cc/150?img=3'
   },
   {
-    key: 'bob-brown',
-    label: 'Bob Brown',
+    id: 'bob-brown',
+    name: 'Bob Brown',
     email: 'bob.brown@example.com',
     avatar: 'https://i.pravatar.cc/150?img=4'
   },
   {
-    key: 'charlie-davis',
-    label: 'Charlie Davis',
+    id: 'charlie-davis',
+    name: 'Charlie Davis',
     email: 'charlie.davis@example.com',
     avatar: 'https://i.pravatar.cc/150?img=5'
   }
@@ -370,13 +384,7 @@ export default class NativeSelectExample extends Component {
       @items={{options}}
       @selectedKeys={{this.selectedKeys}}
       @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:item as |opt|>
-        <opt.Item @key={{opt.item}}>
-          {{opt.item}}
-        </opt.Item>
-      </:item>
-    </NativeSelect>
+    />
     <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
   </template>
 }

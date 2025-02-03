@@ -437,20 +437,35 @@ class ListManager {
     }
   );
 }
-function keyAndLabelForItem(item: unknown): {
-  key: string;
-  label: string;
-} {
+
+function keyAndLabelForItem(item: unknown): { key: string; label: string } {
+  // Handle primitive types directly
   if (typeof item === 'string' || typeof item === 'number') {
-    return { key: item.toString(), label: item.toString() };
-  } else if (typeof item === 'object' && item !== null) {
-    const typedItem = item as { key: string; label: string };
-    if ('key' in typedItem && 'label' in typedItem) {
-      return { key: typedItem.key, label: typedItem.label };
-    } else {
-      return { key: item.toString(), label: item.toString() };
-    }
+    const value = item.toString();
+    return { key: value, label: value };
   }
+
+  // If the item is an object, try to extract key and label using common property names
+  if (typeof item === 'object' && item !== null) {
+    const typedItem = item as any;
+
+    // Try to use the 'key' property first; if not available, use 'id'
+    let keyProp = typedItem.key || typedItem.id;
+    if (keyProp === undefined) {
+      keyProp = item.toString();
+    }
+
+    // Determine the label by checking multiple possible properties
+    let labelProp =
+      typedItem.label || typedItem.value || typedItem.name || typedItem.title;
+    if (labelProp === undefined) {
+      labelProp = item.toString();
+    }
+
+    return { key: keyProp.toString(), label: labelProp.toString() };
+  }
+
+  // Fallback if item does not match expected types
   return { key: '', label: '' };
 }
 
