@@ -24,7 +24,7 @@ export default {
     // is aligned to the config here.
     // See https://github.com/embroider-build/embroider/blob/main/docs/v2-faq.md#how-can-i-define-the-public-exports-of-my-addon
     addon.publicEntrypoints([
-      'components/**/*.js',
+      'components/*.js',
       'utils/**/*.js',
       'services/**/*.js',
       'index.js',
@@ -35,7 +35,7 @@ export default {
     // "app" tree. Things in here should also be in publicEntrypoints above, but
     // not everything in publicEntrypoints necessarily needs to go here.
     addon.appReexports([
-      'components/**/*.js',
+      'components/**.js',
       'helpers/**/*.js',
       'modifiers/**/*.js',
       'services/**/*.js',

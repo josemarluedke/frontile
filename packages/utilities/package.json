@@ -103,9 +103,7 @@
       "./components/collapsible.js": "./dist/_app_/components/collapsible.js",
       "./components/divider.js": "./dist/_app_/components/divider.js",
       "./components/spinner.js": "./dist/_app_/components/spinner.js",
-      "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js",
-      "./utils/ref.js": "./dist/_app_/utils/ref.js",
-      "./utils/safe-styles.js": "./dist/_app_/utils/safe-styles.js"
+      "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js"
     }
   }
 }
