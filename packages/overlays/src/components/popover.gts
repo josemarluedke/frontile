@@ -141,7 +141,9 @@ class Popover extends Component<PopoverSignature> {
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
-      this.triggerWidth = Math.round(el.offsetWidth);
+      requestAnimationFrame(() => {
+        this.triggerWidth = Math.round(el.offsetWidth);
+      });
 
       let observer: ResizeObserver;
       if (eventType !== 'hover') {
