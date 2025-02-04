@@ -311,7 +311,7 @@ importers:
         specifier: workspace:0.17.0-beta.6
         version: link:../buttons
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../overlays
       '@frontile/theme':
         specifier: workspace:0.17.0-beta.6
@@ -402,10 +402,10 @@ importers:
         specifier: workspace:0.17.0-beta.6
         version: link:../buttons
       '@frontile/collections':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../collections
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../overlays
       '@frontile/theme':
         specifier: workspace:0.17.0-beta.6
@@ -1377,10 +1377,10 @@ importers:
         specifier: workspace:0.17.0-beta.6
         version: link:../packages/changeset-form
       '@frontile/collections':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../packages/collections
       '@frontile/forms':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../packages/forms
       '@frontile/forms-legacy':
         specifier: workspace:0.17.0-beta.6
@@ -1389,7 +1389,7 @@ importers:
         specifier: workspace:0.17.0-beta.6
         version: link:../packages/notifications
       '@frontile/overlays':
-        specifier: workspace:0.17.0-beta.6
+        specifier: workspace:0.17.0-beta.7
         version: link:../packages/overlays
       '@frontile/status':
         specifier: workspace:0.17.0-beta.6
