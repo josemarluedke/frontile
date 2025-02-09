@@ -249,41 +249,11 @@ const nativeSelect = tv({
   }
 });
 
-export const hiddenInputClasses = [
-  // Font styles
-  'font-inherit',
-  'text-[100%]',
-  'leading-[1.15]',
-
-  // Reset margins and padding
-  'm-0',
-  'p-0',
-
-  // Overflow and box-sizing
-  'overflow-visible',
-  'box-border',
-
-  // Positioning & Hit area
-  'absolute',
-  'top-0',
-  'w-full',
-  'h-full',
-
-  // Opacity and z-index
-  'opacity-[0.0001]',
-  'z-[1]',
-
-  // Cursor
-  'cursor-pointer',
-
-  // Disabled state
-  'disabled:cursor-default'
-];
-
 const switchInput = tv({
   slots: {
     base: 'group relative max-w-fit inline-flex items-center justify-start',
-
+    labelContainer: 'flex flex-col ml-2',
+    label: 'font-normal pb-0',
     wrapper: [
       'px-1',
       'relative',
@@ -297,7 +267,23 @@ const switchInput = tv({
       'cursor-pointer touch-none tap-highlight-transparent select-none',
       'transition-background'
     ],
-    hiddenInput: hiddenInputClasses,
+    hiddenInput: [
+      'font-inherit',
+      'text-[100%]',
+      'leading-[1.15]',
+      'm-0',
+      'p-0',
+      'overflow-visible',
+      'box-border',
+      'absolute',
+      'top-0',
+      'w-full',
+      'h-full',
+      'opacity-[0.0001]',
+      'z-[1]',
+      'cursor-pointer',
+      'disabled:cursor-default'
+    ],
     thumb: [
       'z-10',
       'flex',
@@ -325,10 +311,7 @@ const switchInput = tv({
       'transition-transform-opacity',
       'group-data-[selected=true]:translate-x-3',
       'group-data-[selected=true]:opacity-0'
-    ],
-
-    labelContainer: ['flex flex-col ml-2'],
-    label: 'font-normal pb-0'
+    ]
   },
   variants: {
     isDisabled: {
@@ -339,33 +322,21 @@ const switchInput = tv({
     size: {
       sm: {
         wrapper: 'w-6 h-3 px-[2px]',
-        thumb: [
-          'w-2 h-2 text-xs',
-          //selected
-          'group-data-[selected=true]:ms-3'
-        ],
+        thumb: ['w-2 h-2 text-xs', 'group-data-[selected=true]:ms-3'],
         endContent: 'text-xs',
         startContent: 'text-xs',
         label: 'text-small'
       },
       md: {
         wrapper: 'w-11 h-6',
-        thumb: [
-          'w-4 h-4 text-sm',
-          //selected
-          'group-data-[selected=true]:ms-5'
-        ],
+        thumb: ['w-4 h-4 text-sm', 'group-data-[selected=true]:ms-5'],
         endContent: 'text-sm',
         startContent: 'text-sm',
         label: 'text-md'
       },
       lg: {
         wrapper: 'w-12 h-7',
-        thumb: [
-          'w-5 h-5 text-medium',
-          //selected
-          'group-data-[selected=true]:ms-5'
-        ],
+        thumb: ['w-5 h-5 text-medium', 'group-data-[selected=true]:ms-5'],
         endContent: 'text-md',
         startContent: 'text-md',
         label: 'text-lg'

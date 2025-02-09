@@ -97,8 +97,6 @@ export default class FormExample extends Component<FormExampleArgs> {
         @size="sm"
         @name="field-switch"
         @label="My Switch"
-        @description="description"
-        @errors="error message here"
         @isSelected={{this.isChecked}}
         @onChange={{this.onChangeChecked}}
       />
@@ -119,13 +117,13 @@ export default class FormExample extends Component<FormExampleArgs> {
         <:endContent>
           M
         </:endContent>
-        <:thumbIcon as |o|>
+        <:thumbContent as |o|>
           {{#if o.isSelected}}
             S
           {{else}}
             N
           {{/if}}
-        </:thumbIcon>
+        </:thumbContent>
       </Switch>
 
       <Switch

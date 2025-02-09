@@ -33,8 +33,8 @@ interface SwitchSignature {
   Args: Args;
   Blocks: {
     startContent: [];
+    thumbContent: [{ isSelected: boolean }];
     endContent: [];
-    thumbIcon: [{ isSelected: boolean }];
   };
 
   Element: HTMLInputElement;
@@ -88,6 +88,7 @@ class Switch extends Component<SwitchSignature> {
       @isRequired={{@isRequired}}
       @class={{this.classes.base class=@classes.base}}
       @preventErrorFeedback={{true}}
+      data-component="switch"
       data-selected="{{this.isSelected}}"
       data-disabled="{{@isDisabled}}"
       as |c|
@@ -101,7 +102,6 @@ class Switch extends Component<SwitchSignature> {
           class={{this.classes.hiddenInput class=@classes.hiddenInput}}
           type="checkbox"
           disabled={{@isDisabled}}
-          data-component="switch"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
           ...attributes
@@ -115,9 +115,12 @@ class Switch extends Component<SwitchSignature> {
           </div>
         {{/if}}
 
-        <span class={{this.classes.thumb class=@classes.thumb}}>
-          {{#if (has-block "thumbIcon")}}
-            {{yield (hash isSelected=this.isSelected) to="thumbIcon"}}
+        <span
+          class={{this.classes.thumb class=@classes.thumb}}
+          data-test-id="switch-thumb-content"
+        >
+          {{#if (has-block "thumbContent")}}
+            {{yield (hash isSelected=this.isSelected) to="thumbContent"}}
           {{/if}}
 
         </span>
