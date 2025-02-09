@@ -11,7 +11,8 @@ import {
   NativeSelect,
   Select,
   RadioGroup,
-  CheckboxGroup
+  CheckboxGroup,
+  Switch
 } from '@frontile/forms';
 import { Spinner } from '@frontile/utilities';
 
@@ -35,12 +36,17 @@ const animals = [
 const stringify = JSON.stringify;
 
 const MyCustomLabel = <template>
-  This is a custom label. <span class="text-danger">Cool right?</span>
+  This is a custom label. <span class="text-primary">Cool right?</span>
 </template> as never;
 
 interface FormExampleArgs {}
 export default class FormExample extends Component<FormExampleArgs> {
   @tracked data = {};
+  @tracked isChecked = false;
+
+  onChangeChecked = () => {
+    this.isChecked = !this.isChecked;
+  };
 
   onChange = (data: Record<string, string | File>) => {
     this.data = data;
@@ -84,6 +90,53 @@ export default class FormExample extends Component<FormExampleArgs> {
         @description="description"
         @errors="error message here"
         @checked={{true}}
+      />
+
+      <Switch
+        @appearence="primary"
+        @size="sm"
+        @name="field-switch"
+        @label="My Switch"
+        @description="description"
+        @errors="error message here"
+        @isSelected={{this.isChecked}}
+        @onChange={{this.onChangeChecked}}
+      />
+
+      <Switch
+        @appearence="primary"
+        @size="md"
+        @name="field-switch"
+        @label="My Switch"
+        @description="description"
+        @errors="error message here"
+        @isSelected={{this.isChecked}}
+        @onChange={{this.onChangeChecked}}
+      >
+        <:startContent>
+          S
+        </:startContent>
+        <:endContent>
+          M
+        </:endContent>
+        <:thumbIcon as |o|>
+          {{#if o.isSelected}}
+            S
+          {{else}}
+            N
+          {{/if}}
+        </:thumbIcon>
+      </Switch>
+
+      <Switch
+        @appearence="primary"
+        @size="lg"
+        @name="field-switch"
+        @label="My Switch"
+        @description="description"
+        @errors="error message here"
+        @isSelected={{this.isChecked}}
+        @onChange={{this.onChangeChecked}}
       />
 
       <Textarea

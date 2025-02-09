@@ -115,6 +115,7 @@
       "./components/radio-group.js": "./dist/_app_/components/radio-group.js",
       "./components/radio.js": "./dist/_app_/components/radio.js",
       "./components/select.js": "./dist/_app_/components/select.js",
+      "./components/switch.js": "./dist/_app_/components/switch.js",
       "./components/textarea.js": "./dist/_app_/components/textarea.js"
     }
   }
