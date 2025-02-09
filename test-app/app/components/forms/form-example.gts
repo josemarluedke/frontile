@@ -93,7 +93,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Switch
-        @appearence="primary"
+        @intent="primary"
         @size="sm"
         @name="field-switch"
         @label="My Switch"
@@ -102,7 +102,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       />
 
       <Switch
-        @appearence="primary"
+        @intent="primary"
         @size="md"
         @name="field-switch"
         @label="My Switch"
@@ -127,7 +127,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       </Switch>
 
       <Switch
-        @appearence="primary"
+        @intent="primary"
         @size="lg"
         @name="field-switch"
         @label="My Switch"

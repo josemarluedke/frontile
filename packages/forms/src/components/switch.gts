@@ -12,17 +12,49 @@ import type Owner from '@ember/owner';
 import { hash } from '@ember/helper';
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * Controls the current selected state of the Switch.
+   * When provided a boolean value, the component operates in a controlled mode.
+   */
   isSelected?: boolean;
+
+  /**
+   * Sets the initial selected state of the Switch when used in uncontrolled mode.
+   * @defaultValue false
+   */
   defaultSelected?: boolean;
+
+  /**
+   * The name attribute for the input element.
+   * Useful for form submissions.
+   */
   name?: string;
+
+  /**
+   * The size of the Switch.
+   */
   size?: SwitchVariants['size'];
-  appearence?: SwitchVariants['appearence'];
+
+  /**
+   * The visual intent (e.g., color or style) of the Switch.
+   * @defaultValue 'primary'
+   */
+  intent?: SwitchVariants['intent'];
+
+  /**
+   * Custom classes to style different slots of the Switch component.
+   */
   classes?: SlotsToClasses<SwitchSlots>;
 
+  /**
+   * Whether the Switch is disabled.
+   * When true, user interaction is prevented.
+   */
   isDisabled?: boolean;
 
-  /*
-   * Callback when onchange is triggered
+  /**
+   * Callback triggered when the Switch value changes.
+   * Receives the new boolean value and, optionally, the triggering Event.
    */
   onChange?:
     | ((value: boolean, event: Event) => void)
@@ -75,7 +107,7 @@ class Switch extends Component<SwitchSignature> {
     const { switchInput } = useStyles();
     return switchInput({
       size: this.args.size,
-      appearence: this.args.appearence,
+      intent: this.args.intent,
       isDisabled: this.args.isDisabled
     });
   }

@@ -342,7 +342,7 @@ const switchInput = tv({
         label: 'text-lg'
       }
     },
-    appearence: {
+    intent: {
       default: {
         wrapper: [
           'group-data-[selected=true]:bg-default-400',
@@ -377,7 +377,7 @@ const switchInput = tv({
   },
   defaultVariants: {
     size: 'md',
-    appearence: 'default',
+    intent: 'primary',
     isDisabled: false
   }
 });

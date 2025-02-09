@@ -134,7 +134,7 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
       <template>
         <Switch data-test-input @label="Name">
           <:startContent>Start</:startContent>
-          <:thumbContent>T</:thumbContent>
+          <:thumbContent as |o|>T: {{o.isSelected}}</:thumbContent>
           <:endContent>End</:endContent>
         </Switch>
       </template>
@@ -142,7 +142,10 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
 
     assert.dom('[data-test-id="switch-start-content"]').hasText('Start');
     assert.dom('[data-test-id="switch-end-content"]').hasText('End');
-    assert.dom('[data-test-id="switch-thumb-content"]').hasText('T');
+    assert.dom('[data-test-id="switch-thumb-content"]').hasText('T: false');
+
+    await click('[data-test-input]');
+    assert.dom('[data-test-id="switch-thumb-content"]').hasText('T: true');
   });
 
   test('show error messages when errors has items', async function (assert) {

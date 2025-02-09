@@ -3839,6 +3839,216 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'forms',
+    module: 'switch',
+    name: 'Switch',
+    fileName: 'packages/forms/declarations/components/switch.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'label\'</span> | <span class="hljs-string">\'labelContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'hiddenInput\'</span> | <span class="hljs-string">\'thumb\'</span>>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom classes to style different slots of the Switch component.',
+        tags: {}
+      },
+      {
+        identifier: 'defaultSelected',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Sets the initial selected state of the Switch when used in uncontrolled mode.',
+        tags: {}
+      },
+      {
+        identifier: 'description',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'errors',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+          items: ['string', 'string[]']
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'"
+          ]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The visual intent (e.g., color or style) of the Switch.',
+        tags: {}
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the Switch is disabled.\nWhen true, user interaction is prevented.',
+        tags: {}
+      },
+      {
+        identifier: 'isInvalid',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isRequired',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'isSelected',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Controls the current selected state of the Switch.\nWhen provided a boolean value, the component operates in a controlled mode.',
+        tags: {}
+      },
+      {
+        identifier: 'label',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The name attribute for the input element.\nUseful for form submissions.',
+        tags: {}
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(<span class="hljs-function">(<span class="hljs-params">value: <span class="hljs-built_in">boolean</span>, event: Event</span>) =></span> <span class="hljs-built_in">void</span>) | (<span class="hljs-function">(<span class="hljs-params">value: <span class="hljs-built_in">boolean</span></span>) =></span> <span class="hljs-built_in">void</span>)'
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Callback triggered when the Switch value changes.\nReceives the new boolean value and, optionally, the triggering Event.',
+        tags: {}
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'sm'", "'lg'", "'md'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the Switch.',
+        tags: {}
+      }
+    ],
+    Blocks: [
+      {
+        identifier: 'startContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'thumbContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">isSelected</span>: <span class="hljs-built_in">boolean</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'isSelected',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>'
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {}
+                  }
+                ]
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {}
+            }
+          ]
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      },
+      {
+        identifier: 'endContent',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: []
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {}
+      }
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLInputElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'forms',
     module: 'textarea',
     name: 'Textarea',
     fileName: 'packages/forms/declarations/components/textarea.d.ts',
