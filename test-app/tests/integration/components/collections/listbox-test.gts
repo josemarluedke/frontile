@@ -1,10 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
+import { Listbox, type ListboxSignature } from '@frontile/collections';
+import { array } from '@ember/helper';
+import { cell } from 'ember-resources';
+import { settled } from '@ember/test-helpers';
 
 module(
   'Integration | Component | Listbox | @frontile/collections',
@@ -13,15 +16,15 @@ module(
 
     test('it render static items', async function (assert) {
       const clickedOn: string[] = [];
-      this.set('onAction', function (key: string) {
+      const onAction = (key: string) => {
         clickedOn.push(key);
-      });
+      };
 
       await render(
-        hbs`
+        <template>
           <Listbox
             @selectionMode="none"
-            @onAction={{this.onAction}}
+            @onAction={{onAction}}
             @disabledKeys={{(array "item-3" "item-4")}}
             as |l|
           >
@@ -48,7 +51,8 @@ module(
             >
               Item 5
             </l.Item>
-          </Listbox>`
+          </Listbox>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').exists();
@@ -92,26 +96,25 @@ module(
     });
 
     test('it render dynamic items without yield of item selectionMode = single / multiple', async function (assert) {
-      this.set('selectionMode', 'single');
-      this.set('allowEmpty', false);
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
-      let selectedKeys: string[] = [];
+      const selectionMode = cell<'single' | 'multiple' | 'none'>('single');
+      const allowEmpty = cell(false);
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+      const selectedKeys = cell<string[]>([]);
 
-      this.set('selectedKeys', []);
-      this.set('onSelectionChange', (keys: string[]) => {
-        this.set('selectedKeys', keys);
-        selectedKeys = keys;
-      });
+      const onSelectionChange = (keys: string[]) => {
+        selectedKeys.current = keys;
+      };
 
       await render(
-        hbs`
-        <Listbox
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-        />`
+        <template>
+          <Listbox
+            @allowEmpty={{allowEmpty.current}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').exists();
@@ -123,16 +126,16 @@ module(
       // Selection Mode single
       await click('[data-key="cheetah"]');
 
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'cheetah');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'cheetah');
       assert.dom('[data-key="cheetah"]').hasAttribute('data-selected', 'true');
       assert
         .dom('[data-key="cheetah"] [data-test-id="listbox-item-selected-icon"]')
         .exists('should render icon on selected item');
 
       await click('[data-key="crocodile"]');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'crocodile');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'crocodile');
       assert
         .dom('[data-key="crocodile"]')
         .hasAttribute('data-selected', 'true');
@@ -140,83 +143,89 @@ module(
 
       // Toggle when allowEmpty = false
       await click('[data-key="crocodile"]');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'crocodile');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'crocodile');
 
       // Toggle when allowEmpty = true
-      this.set('allowEmpty', true);
+      allowEmpty.current = true;
+      await settled();
       await click('[data-key="crocodile"]');
-      assert.equal(selectedKeys.length, 0);
+      assert.equal(selectedKeys.current.length, 0);
 
       // Selection Mode multiple
-      this.set('selectionMode', 'multiple');
-      this.set('selectedKeys', []);
-      selectedKeys = [];
+      selectionMode.current = 'multiple';
+      selectedKeys.current = [];
+      selectedKeys.current = [];
+      await settled();
 
       await click('[data-key="elephant"]');
 
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'elephant');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'elephant');
       assert.dom('[data-key="elephant"]').hasAttribute('data-selected', 'true');
 
       await click('[data-key="crocodile"]');
-      assert.equal(selectedKeys.length, 2);
-      assert.equal(selectedKeys[1], 'crocodile');
+      assert.equal(selectedKeys.current.length, 2);
+      assert.equal(selectedKeys.current[1], 'crocodile');
       assert.dom('[data-key="elephant"]').hasAttribute('data-selected', 'true');
       assert
         .dom('[data-key="crocodile"]')
         .hasAttribute('data-selected', 'true');
 
       // Toggle when allowEmpty = false
-      this.set('allowEmpty', false);
+      allowEmpty.current = false;
+      await settled();
       await click('[data-key="crocodile"]');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'elephant');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'elephant');
       assert.dom('[data-key="elephant"]').hasAttribute('data-selected', 'true');
       assert
         .dom('[data-key="crocodile"]')
         .hasAttribute('data-selected', 'false');
 
       await click('[data-key="elephant"]');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'elephant');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'elephant');
       assert.dom('[data-key="elephant"]').hasAttribute('data-selected', 'true');
 
       // Toggle when allowEmpty = true
-      this.set('allowEmpty', true);
+      allowEmpty.current = true;
+      await settled();
       await click('[data-key="elephant"]');
-      assert.equal(selectedKeys.length, 0);
+      assert.equal(selectedKeys.current.length, 0);
     });
 
     test('it render dynamic items yielding of item', async function (assert) {
-      this.set('selectionMode', 'single');
-      this.set('allowEmpty', false);
-      this.set('animals', [
+      const animals = [
         { key: 'cheetah-key', value: 'cheetah-value' },
         { key: 'crocodile-key', value: 'crocodile-value' },
         { key: 'elephant-key', value: 'elephant-value' }
-      ]);
+      ];
 
-      this.set('selectedKeys', []);
-      this.set('onSelectionChange', (keys: string[]) => {
-        this.set('selectedKeys', keys);
-      });
+      const selectionMode = cell<'single' | 'multiple' | 'none'>('single');
+      const allowEmpty = cell(false);
+      const selectedKeys = cell<string[]>([]);
+
+      const onSelectionChange = (keys: string[]) => {
+        selectedKeys.current = keys;
+      };
 
       await render(
-        hbs`
-        <Listbox
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-        >
-          <:item as |o|>
-            <o.Item @key={{o.item.key}}>
-              {{o.item.value}}
-            </o.Item>
-          </:item>
-        </Listbox>`
+        <template>
+          <Listbox
+            @allowEmpty={{allowEmpty.current}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onSelectionChange}}
+          >
+            <:item as |o|>
+              <o.Item @key={{o.item.key}}>
+                {{o.item.value}}
+              </o.Item>
+            </:item>
+          </Listbox>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').exists();
@@ -231,28 +240,28 @@ module(
     });
 
     test('keyboard navigation works', async function (assert) {
-      this.set('selectionMode', 'single');
-      this.set('allowEmpty', false);
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
-      let selectedKeys: string[] = [];
+      const animals = ['cheetah', 'crocodile', 'elephant'];
 
-      this.set('selectedKeys', []);
-      this.set('onSelectionChange', (keys: string[]) => {
-        this.set('selectedKeys', keys);
-        selectedKeys = keys;
-      });
+      const selectionMode = cell<'single' | 'multiple' | 'none'>('single');
+      const allowEmpty = cell(false);
+      const selectedKeys = cell<string[]>([]);
+
+      const onSelectionChange = (keys: string[]) => {
+        selectedKeys.current = keys;
+      };
 
       await render(
-        hbs`
-        <Listbox
-          @isKeyboardEventsEnabled={{true}}
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-          @autoActivateMode="none"
-        />`
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @allowEmpty={{allowEmpty.current}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onSelectionChange}}
+            @autoActivateMode="none"
+          />
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').exists();
@@ -287,8 +296,8 @@ module(
 
       // select active item
       await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Enter');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'cheetah');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'cheetah');
 
       // search
       await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'E');
@@ -317,15 +326,15 @@ module(
 
     test('it render item with blocks', async function (assert) {
       const clickedOn: string[] = [];
-      this.set('onAction', function (key: string) {
+      const onAction = (key: string) => {
         clickedOn.push(key);
-      });
+      };
 
       await render(
-        hbs`
+        <template>
           <Listbox
             @selectionMode="none"
-            @onAction={{this.onAction}}
+            @onAction={{onAction}}
             @disabledKeys={{(array "item-3" "item-4")}}
             as |l|
           >
@@ -346,7 +355,8 @@ module(
                 <div data-test-id="end">End content</div>
               </:end>
             </l.Item>
-          </Listbox>`
+          </Listbox>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').exists();
@@ -369,38 +379,36 @@ module(
     });
 
     test('automatically activate first item', async function (assert) {
-      this.set('autoActivateMode', 'first');
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+      const animals = cell<string[]>(['cheetah', 'crocodile', 'elephant']);
 
       await render(
-        hbs`
-        <Listbox
-          @items={{this.animals}}
-          @autoActivateMode={{this.autoActivateMode}}
-        />`
+        <template>
+          <Listbox @items={{animals.current}} @autoActivateMode="first" />
+        </template>
       );
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
-      this.set('animals', ['crocodile', 'elephant']);
+      animals.current = ['crocodile', 'elephant'];
+      await settled();
 
       assert.dom('[data-key="crocodile"]').hasAttribute('data-active', 'true');
     });
 
     test('it calls onActiveItemChange when a new item is activated', async function (assert) {
       const activeItems: string[] = [];
-      this.set('onActiveItemChange', (key?: string) => {
+      const onActiveItemChange = (key?: string) => {
         activeItems.push(key || '');
-      });
-      this.set('autoActivateMode', 'first');
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+      };
+      const animals = ['cheetah', 'crocodile', 'elephant'];
 
       await render(
-        hbs`
-        <Listbox
-          @items={{this.animals}}
-          @autoActivateMode={{this.autoActivateMode}}
-          @isKeyboardEventsEnabled={{true}}
-          @onActiveItemChange={{this.onActiveItemChange}}
-        />`
+        <template>
+          <Listbox
+            @items={{animals}}
+            @autoActivateMode="first"
+            @isKeyboardEventsEnabled={{true}}
+            @onActiveItemChange={{onActiveItemChange}}
+          />
+        </template>
       );
 
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'true');
@@ -411,26 +419,24 @@ module(
     });
 
     test('it adds keyboard events to element passed in args', async function (assert) {
-      this.set('elementToAddKeyboardEvents', undefined);
+      const elementToAddKeyboardEvents = cell<HTMLElement>(undefined);
 
-      this.set(
-        'modifier',
-        modifier((element: HTMLElement) => {
-          this.set('elementToAddKeyboardEvents', element);
-        })
-      );
+      const myModifier = modifier((element: HTMLElement) => {
+        elementToAddKeyboardEvents.current = element;
+      });
 
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
+      const animals = ['cheetah', 'crocodile', 'elephant'];
 
       await render(
-        hbs`
-        <input type="text" data-test-input {{this.modifier}} />
-        <Listbox
-          @items={{this.animals}}
-          @autoActivateMode="none"
-          @isKeyboardEventsEnabled={{true}}
-          @elementToAddKeyboardEvents={{this.elementToAddKeyboardEvents}}
-        />`
+        <template>
+          <input type="text" data-test-input {{myModifier}} />
+          <Listbox
+            @items={{animals}}
+            @autoActivateMode="none"
+            @isKeyboardEventsEnabled={{true}}
+            @elementToAddKeyboardEvents={{elementToAddKeyboardEvents.current}}
+          />
+        </template>
       );
 
       assert.dom('[data-key="cheetah"]').hasAttribute('data-active', 'false');
@@ -502,17 +508,18 @@ module(
           }) as never
         });
 
-        this.set('appearance', '');
-        this.set('intent', '');
-        this.set('selectedKeys', ['item-5']);
-        this.set('disabledKeys', ['item-6']);
+        const appearance =
+          cell<ListboxSignature<unknown>['Args']['appearance']>();
+        const intent = cell<ListboxSignature<unknown>['Args']['intent']>();
+        const selectedKeys = ['item-5'];
+        const disabledKeys = ['item-6'];
         await render(
-          hbs`
+          <template>
             <Listbox
-              @selectedKeys={{this.selectedKeys}}
-              @disabledKeys={{this.disabledKeys}}
-              @appearance={{this.appearance}}
-              @intent={{this.intent}}
+              @selectedKeys={{selectedKeys}}
+              @disabledKeys={{disabledKeys}}
+              @appearance={{appearance.current}}
+              @intent={{intent.current}}
               as |l|
             >
               <l.Item @key="item-1">Item 1</l.Item>
@@ -521,7 +528,8 @@ module(
               <l.Item @key="item-4" @withDivider={{true}}>Item 4</l.Item>
               <l.Item @key="item-5">Item 5</l.Item>
               <l.Item @key="item-6">Item 6</l.Item>
-            </Listbox>`
+            </Listbox>
+          </template>
         );
 
         // no appearance or intent set
@@ -529,8 +537,9 @@ module(
         assert.dom('[data-key="item-1"]').hasClass('intent-default');
 
         // appearance and intent set
-        this.set('appearance', 'faded');
-        this.set('intent', 'warning');
+        appearance.current = 'faded';
+        intent.current = 'warning';
+        await settled();
         assert.dom('[data-key="item-1"]').hasClass('appearance-faded');
         assert.dom('[data-key="item-1"]').hasClass('intent-warning');
 
