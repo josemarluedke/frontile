@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render, triggerKeyEvent } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { Dropdown } from '@frontile/collections';
+import { cell } from 'ember-resources';
+import { settled } from '@ember/test-helpers';
 
 module(
   'Integration | Component | Dropdown | @frontile/collections',
@@ -24,17 +26,17 @@ module(
 
     test('it renders the trigger and menu when opened', async function (assert) {
       const clickedOn: string[] = [];
-      this.set('onAction', function (key: string) {
+      const onAction = (key: string) => {
         clickedOn.push(key);
-      });
+      };
 
       await render(
-        hbs`
+        <template>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
-              @onAction={{this.onAction}}
+              @onAction={{onAction}}
               @intent="primary"
               @disableTransitions={{true}}
               as |Item|
@@ -42,7 +44,8 @@ module(
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').doesNotExist();
@@ -60,18 +63,16 @@ module(
 
     test('it renders accessibility attributes', async function (assert) {
       await render(
-        hbs`
+        <template>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-            <d.Menu
-              @disableTransitions={{true}}
-              as |Item|
-            >
+            <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert
@@ -92,52 +93,52 @@ module(
     });
 
     test('it shows backdrop when @backdrop=none', async function (assert) {
-      this.set('backdrop', 'none');
+      const backdrop = cell<'none' | 'faded'>('none');
 
       await render(
-        hbs`
+        <template>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
             <d.Menu
-              @backdrop={{this.backdrop}}
+              @backdrop={{backdrop.current}}
               @disableTransitions={{true}}
               as |Item|
             >
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       await click('[data-test-id="dropdown-trigger"]');
 
       assert.dom('.overlay__backdrop').doesNotExist();
 
-      this.set('backdrop', 'faded');
+      backdrop.current = 'faded';
+      await settled();
 
       assert.dom('.overlay__backdrop').exists();
     });
 
     test('on item click, closes menu, calls @didClose', async function (assert) {
       let calledClosed = false;
-      this.set('didClose', () => {
+      const didClose = () => {
         calledClosed = true;
-      });
+      };
 
       await render(
-        hbs`
-          <Dropdown @didClose={{this.didClose}} as |d|>
+        <template>
+          <Dropdown @didClose={{didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-            <d.Menu
-              @disableTransitions={{true}}
-              as |Item|
-            >
+            <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').doesNotExist();
@@ -151,18 +152,16 @@ module(
 
     test('on item click, does not close menu when @closeOnItemSelect=false', async function (assert) {
       await render(
-        hbs`
+        <template>
           <Dropdown @closeOnItemSelect={{false}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-            <d.Menu
-              @disableTransitions={{true}}
-              as |Item|
-            >
+            <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').doesNotExist();
@@ -175,24 +174,22 @@ module(
 
     test('clicking outside closes menu', async function (assert) {
       let calledClosed = false;
-      this.set('didClose', () => {
+      const didClose = () => {
         calledClosed = true;
-      });
+      };
 
       await render(
-        hbs`
+        <template>
           <div id="outside" tabindex="0"></div>
-          <Dropdown @didClose={{this.didClose}} as |d|>
+          <Dropdown @didClose={{didClose}} as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-            <d.Menu
-              @disableTransitions={{true}}
-              as |Item|
-            >
+            <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').doesNotExist();
@@ -206,18 +203,16 @@ module(
 
     test('on pressing arrow up/down key, opens the menu', async function (assert) {
       await render(
-        hbs`
+        <template>
           <Dropdown as |d|>
             <d.Trigger @intent="primary" @size="sm">Dropdown</d.Trigger>
 
-            <d.Menu
-              @disableTransitions={{true}}
-              as |Item|
-            >
+            <d.Menu @disableTransitions={{true}} as |Item|>
               <Item @key="profile">My Profile</Item>
               <Item @key="settings">Settings</Item>
             </d.Menu>
-          </Dropdown>`
+          </Dropdown>
+        </template>
       );
 
       assert.dom('[data-test-id="listbox"]').doesNotExist();

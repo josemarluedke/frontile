@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
+import { Collapsible } from '@frontile/utilities';
+import { cell } from 'ember-resources';
 
 module(
   'Integration | Component | @frontile/utilities/Collapsible',
@@ -9,14 +10,13 @@ module(
     setupRenderingTest(hooks);
 
     test('renders content and starts closed', async function (assert) {
-      this.set('isOpen', false);
+      const isOpen = cell(false);
       await render(
-        hbs`<Collapsible
-            @isOpen={{this.isOpen}}
-            data-test-id="collapsible"
-          >
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-id="collapsible">
             Content
-          </Collapsible>`
+          </Collapsible>
+        </template>
       );
 
       assert.dom('[data-test-id=collapsible]').hasText('Content');
@@ -26,14 +26,13 @@ module(
     });
 
     test('renders content and starts open', async function (assert) {
-      this.set('isOpen', true);
+      const isOpen = cell(true);
       await render(
-        hbs`<Collapsible
-            @isOpen={{this.isOpen}}
-            data-test-id="collapsible"
-          >
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-id="collapsible">
             Content
-          </Collapsible>`
+          </Collapsible>
+        </template>
       );
 
       assert.dom('[data-test-id=collapsible]').hasText('Content');
@@ -47,17 +46,16 @@ module(
     });
 
     test('expands content when opened; closes content when closed', async function (assert) {
-      this.set('isOpen', false);
+      const isOpen = cell(false);
       await render(
-        hbs`<Collapsible
-            @isOpen={{this.isOpen}}
-            data-test-id="collapsible"
-          >
+        <template>
+          <Collapsible @isOpen={{isOpen.current}} data-test-id="collapsible">
             Content
-          </Collapsible>`
+          </Collapsible>
+        </template>
       );
 
-      this.set('isOpen', true);
+      isOpen.current = true;
       await settled();
 
       assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '1' });
@@ -69,7 +67,7 @@ module(
         .dom('[data-test-id=collapsible]')
         .doesNotHaveStyle({ height: '0px' });
 
-      this.set('isOpen', false);
+      isOpen.current = false;
       await settled();
 
       assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '0' });
@@ -78,15 +76,17 @@ module(
     });
 
     test('renders initial height when set', async function (assert) {
-      this.set('isOpen', false);
+      const isOpen = cell(false);
       await render(
-        hbs`<Collapsible
-            @isOpen={{this.isOpen}}
+        <template>
+          <Collapsible
+            @isOpen={{isOpen.current}}
             @initialHeight="2px"
             data-test-id="collapsible"
           >
             Content
-          </Collapsible>`
+          </Collapsible>
+        </template>
       );
 
       assert.dom('[data-test-id=collapsible]').hasText('Content');
@@ -94,7 +94,7 @@ module(
       assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '1' });
       assert.dom('[data-test-id=collapsible]').hasStyle({ overflow: 'hidden' });
 
-      this.set('isOpen', true);
+      isOpen.current = true;
       await settled();
 
       assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '1' });
@@ -106,7 +106,7 @@ module(
         .dom('[data-test-id=collapsible]')
         .doesNotHaveStyle({ height: '2px' });
 
-      this.set('isOpen', false);
+      isOpen.current = false;
       await settled();
 
       assert.dom('[data-test-id=collapsible]').hasStyle({ opacity: '1' });

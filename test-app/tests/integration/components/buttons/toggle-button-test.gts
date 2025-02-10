@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { ToggleButton } from '@frontile/buttons';
+import { cell } from 'ember-resources';
+import { settled } from '@ember/test-helpers';
 
 module(
   'Integration | Component | ToggleButton | @frontile/buttons',
@@ -39,7 +41,9 @@ module(
 
     test('it renders', async function (assert) {
       await render(
-        hbs`<ToggleButton data-test-id="button">My ToggleButton</ToggleButton>`
+        <template>
+          <ToggleButton data-test-id="button">My ToggleButton</ToggleButton>
+        </template>
       );
 
       assert.dom('[data-test-id="button"]').hasText('My ToggleButton');
@@ -47,13 +51,19 @@ module(
 
     module('@isSelected', () => {
       test('adds aria-pressed', async function (assert) {
-        this.set('isSelected', false);
+        const isSelected = cell(false);
         await render(
-          hbs`<ToggleButton @isSelected={{this.isSelected}} data-test-id="button">My ToggleButton</ToggleButton>`
+          <template>
+            <ToggleButton
+              @isSelected={{isSelected.current}}
+              data-test-id="button"
+            >My ToggleButton</ToggleButton>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').hasAria('pressed', 'false');
-        this.set('isSelected', true);
+        isSelected.current = true;
+        await settled();
 
         assert.dom('[data-test-id="button"]').hasAria('pressed', 'true');
       });
@@ -61,11 +71,19 @@ module(
 
     module('@onChange', () => {
       test('calls onChange argument', async function (assert) {
-        this.set('onChange', (val: boolean) => {
+        const onChange = (val: boolean) => {
           assert.equal(val, true);
-        });
+        };
         await render(
-          hbs`<ToggleButton @isSelected={{false}} @onChange={{this.onChange}} data-test-id="button">My ToggleButton</ToggleButton>`
+          <template>
+            <ToggleButton
+              @isSelected={{false}}
+              @onChange={{onChange}}
+              data-test-id="button"
+            >
+              My ToggleButton
+            </ToggleButton>
+          </template>
         );
         await click('[data-test-id="button"]');
 
@@ -77,7 +95,11 @@ module(
       module('@intent', () => {
         test('it adds class for the an intent', async function (assert) {
           await render(
-            hbs`<ToggleButton @intent="primary" data-test-id="button">My ToggleButton</ToggleButton>`
+            <template>
+              <ToggleButton @intent="primary" data-test-id="button">
+                My ToggleButton
+              </ToggleButton>
+            </template>
           );
 
           assert.dom('[data-test-id="button"]').hasClass('intent-primary');
@@ -87,7 +109,9 @@ module(
       module('@size', () => {
         test('it adds class size sm"', async function (assert) {
           await render(
-            hbs`<ToggleButton @size="sm" data-test-id="button">My ToggleButton</ToggleButton>`
+            <template>
+              <ToggleButton @size="sm" data-test-id="button">My ToggleButton</ToggleButton>
+            </template>
           );
 
           assert.dom('[data-test-id="button"]').hasClass('toggle-button-sm');
@@ -95,7 +119,9 @@ module(
 
         test('it adds class size lg', async function (assert) {
           await render(
-            hbs`<ToggleButton @size="lg" data-test-id="button">My ToggleButton</ToggleButton>`
+            <template>
+              <ToggleButton @size="lg" data-test-id="button">My ToggleButton</ToggleButton>
+            </template>
           );
 
           assert.dom('[data-test-id="button"]').hasClass('toggle-button-lg');

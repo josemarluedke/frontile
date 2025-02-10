@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import {
-  NotificationsService,
-  NotificationOptions
+  NotificationsContainer,
+  type NotificationsService,
+  type NotificationOptions,
+  type NotificationsContainerSignature
 } from '@frontile/notifications';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { cell } from 'ember-resources';
+import { settled } from '@ember/test-helpers';
 
 registerCustomStyles({
   notificationsContainer: tv({
@@ -38,11 +41,15 @@ module(
       preserve: true
     };
 
-    const template = hbs`
-    <NotificationsContainer
-      @placement={{this.placement}}
-      data-test-notifications
-    />`;
+    const placement =
+      cell<NotificationsContainerSignature['Args']['placement']>();
+
+    const template = <template>
+      <NotificationsContainer
+        @placement={{placement.current}}
+        data-test-notifications
+      />
+    </template>;
 
     test('it does not render if there are no notifications', async function (assert) {
       await render(template);
@@ -70,7 +77,7 @@ module(
         options
       );
 
-      this.set('placement', undefined);
+      placement.current = undefined;
 
       await render(template);
 
@@ -78,32 +85,38 @@ module(
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--bottom-right');
 
-      this.set('placement', 'top-left');
+      placement.current = 'top-left';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--top-left');
 
-      this.set('placement', 'top-center');
+      placement.current = 'top-center';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--top-center');
 
-      this.set('placement', 'top-right');
+      placement.current = 'top-right';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--top-right');
 
-      this.set('placement', 'bottom-left');
+      placement.current = 'bottom-left';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--bottom-left');
 
-      this.set('placement', 'bottom-center');
+      placement.current = 'bottom-center';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--bottom-center');
 
-      this.set('placement', 'bottom-right');
+      placement.current = 'bottom-right';
+      await settled();
       assert
         .dom('[data-test-notifications]')
         .hasClass('notifications-container--bottom-right');

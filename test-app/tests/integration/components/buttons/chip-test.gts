@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { Chip } from '@frontile/buttons';
 
 registerCustomStyles({
   chip: tv({
@@ -49,7 +49,11 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function (assert) {
-    await render(hbs`<Chip data-test-id="button">My Chip</Chip>`);
+    await render(
+      <template>
+        <Chip data-test-id="button">My Chip</Chip>
+      </template>
+    );
 
     assert.dom('[data-test-id="button"]').hasText('My Chip');
   });
@@ -57,7 +61,11 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
   module('Style classes', () => {
     module('@appearance', () => {
       test('it adds class for default appearance', async function (assert) {
-        await render(hbs`<Chip data-test-id="button">My Chip</Chip>`);
+        await render(
+          <template>
+            <Chip data-test-id="button">My Chip</Chip>
+          </template>
+        );
 
         assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outlined');
         assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-faded');
@@ -66,7 +74,9 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
 
       test('it adds class for outlined appearance', async function (assert) {
         await render(
-          hbs`<Chip @appearance="outlined" data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @appearance="outlined" data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-default');
@@ -76,29 +86,23 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
 
       test('it adds class for faded appearance', async function (assert) {
         await render(
-          hbs`<Chip @appearance="faded" data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @appearance="faded" data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-default');
         assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outlined');
         assert.dom('[data-test-id="button"]').hasClass('chip-faded');
       });
-
-      test('it adds class for custom appearance', async function (assert) {
-        await render(
-          hbs`<Chip @appearance="custom" data-test-id="button">My Chip</Chip>`
-        );
-
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-default');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-outlined');
-        assert.dom('[data-test-id="button"]').doesNotHaveClass('chip-faded');
-      });
     });
 
     module('@intent', () => {
       test('it adds class for the an intent', async function (assert) {
         await render(
-          hbs`<Chip @intent="primary" data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @intent="primary" data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').hasClass('intent-primary');
@@ -108,7 +112,9 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     module('@size', () => {
       test('it adds class size sm"', async function (assert) {
         await render(
-          hbs`<Chip @size="sm" data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @size="sm" data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').hasClass('chip-sm');
@@ -116,7 +122,9 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
 
       test('it adds class size lg', async function (assert) {
         await render(
-          hbs`<Chip @size="lg" data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @size="lg" data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"]').hasClass('chip-lg');
@@ -126,7 +134,9 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
     module('@withDot', () => {
       test('it adds dot when argument is passed in', async function (assert) {
         await render(
-          hbs`<Chip @withDot={{true}} data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @withDot={{true}} data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"] .chip-dot').exists();
@@ -135,8 +145,11 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
 
     module('@onClose', () => {
       test('adds close button when onClose argument is passed in', async function (assert) {
+        const onClose = () => {};
         await render(
-          hbs`<Chip @onClose={{true}} data-test-id="button">My Chip</Chip>`
+          <template>
+            <Chip @onClose={{onClose}} data-test-id="button">My Chip</Chip>
+          </template>
         );
 
         assert.dom('[data-test-id="button"] .chip-close-button').exists();

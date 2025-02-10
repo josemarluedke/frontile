@@ -1,11 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import {
   selectOptionByKey,
   toggleOptionByKey
 } from '@frontile/forms/test-support';
+import { cell } from 'ember-resources';
+import { NativeSelect } from '@frontile/forms';
+import { array } from '@ember/helper';
+import { settled } from '@ember/test-helpers';
 
 module(
   'Integration | Component | NativeSelect | @frontile/forms',
@@ -32,21 +35,19 @@ module(
 
     test('it render static items', async function (assert) {
       let selectedKeys: string[] = [];
-      this.set('onSelectionChange', function (keys: string[]) {
+      const onSelectionChange = (keys: string[]) => {
         selectedKeys = keys;
-      });
+      };
 
       await render(
-        hbs`
+        <template>
           <NativeSelect
-            @onSelectionChange={{this.onSelectionChange}}
+            @onSelectionChange={{onSelectionChange}}
             @disabledKeys={{(array "item-3" "item-4")}}
             @allowEmpty={{true}}
             as |l|
           >
-            <l.Item
-              @key="item-1"
-            >
+            <l.Item @key="item-1">
               Item 1
             </l.Item>
             <l.Item @key="item-2">Item 2</l.Item>
@@ -55,7 +56,8 @@ module(
             <l.Item @key="item-5">
               Item 5
             </l.Item>
-          </NativeSelect>`
+          </NativeSelect>
+        </template>
       );
 
       assert.dom('[data-test-id="native-select"]').exists();
@@ -83,26 +85,25 @@ module(
     });
 
     test('it render dynamic items without yield of item selectionMode = single / multiple', async function (assert) {
-      this.set('selectionMode', 'single');
-      this.set('allowEmpty', false);
-      this.set('animals', ['cheetah', 'crocodile', 'elephant']);
-      let selectedKeys: string[] = [];
+      const selectionMode = cell<'single' | 'multiple'>('single');
+      const allowEmpty = cell(false);
+      const animals = ['cheetah', 'crocodile', 'elephant'];
+      const selectedKeys = cell<string[]>([]);
 
-      this.set('selectedKeys', []);
-      this.set('onSelectionChange', (keys: string[]) => {
-        this.set('selectedKeys', keys);
-        selectedKeys = keys;
-      });
+      const onSelectionChange = (keys: string[]) => {
+        selectedKeys.current = keys;
+      };
 
       await render(
-        hbs`
-        <NativeSelect
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-        />`
+        <template>
+          <NativeSelect
+            @allowEmpty={{allowEmpty.current}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
       );
 
       assert.dom('[data-test-id="native-select"]').exists();
@@ -114,73 +115,76 @@ module(
       // Selection Mode single
       await selectOptionByKey('[data-test-id="native-select"]', 'cheetah');
 
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'cheetah');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'cheetah');
 
       await selectOptionByKey('[data-test-id="native-select"]', 'crocodile');
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'crocodile');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'crocodile');
 
-      // Slect empty option when  allowEmpty = true
-      this.set('allowEmpty', true);
+      // Slect empty option when allowEmpty = true
+      allowEmpty.current = true;
+      await settled();
       await selectOptionByKey('[data-test-id="native-select"]', '');
-      assert.equal(selectedKeys.length, 0);
+      assert.equal(selectedKeys.current.length, 0);
 
       // Selection Mode multiple
-      this.set('selectionMode', 'multiple');
-      this.set('selectedKeys', []);
-      selectedKeys = [];
+      selectionMode.current = 'multiple';
+      selectedKeys.current = [];
+      await settled();
 
       await selectOptionByKey('[data-test-id="native-select"]', 'elephant');
 
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'elephant');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'elephant');
 
       await selectOptionByKey('[data-test-id="native-select"]', 'crocodile');
-      assert.equal(selectedKeys.length, 2);
+      assert.equal(selectedKeys.current.length, 2);
 
-      assert.ok(selectedKeys.includes('elephant'));
-      assert.ok(selectedKeys.includes('crocodile'));
+      assert.ok(selectedKeys.current.includes('elephant'));
+      assert.ok(selectedKeys.current.includes('crocodile'));
 
       await toggleOptionByKey('[data-test-id="native-select"]', 'crocodile');
 
-      assert.equal(selectedKeys.length, 1);
-      assert.equal(selectedKeys[0], 'elephant');
+      assert.equal(selectedKeys.current.length, 1);
+      assert.equal(selectedKeys.current[0], 'elephant');
 
       await toggleOptionByKey('[data-test-id="native-select"]', 'elephant');
 
-      assert.equal(selectedKeys.length, 0);
+      assert.equal(selectedKeys.current.length, 0);
     });
 
     test('it render dynamic items yielding of item', async function (assert) {
-      this.set('selectionMode', 'single');
-      this.set('allowEmpty', false);
-      this.set('animals', [
+      const animals = [
         { key: 'cheetah-key', value: 'cheetah-value' },
         { key: 'crocodile-key', value: 'crocodile-value' },
         { key: 'elephant-key', value: 'elephant-value' }
-      ]);
+      ];
 
-      this.set('selectedKeys', []);
-      this.set('onSelectionChange', (keys: string[]) => {
-        this.set('selectedKeys', keys);
-      });
+      const selectionMode = cell<'single' | 'multiple'>('single');
+      const allowEmpty = cell(false);
+      const selectedKeys = cell<string[]>([]);
+
+      const onSelectionChange = (keys: string[]) => {
+        selectedKeys.current = keys;
+      };
 
       await render(
-        hbs`
-        <NativeSelect
-          @allowEmpty={{this.allowEmpty}}
-          @selectionMode={{this.selectionMode}}
-          @items={{this.animals}}
-          @selectedKeys={{this.selectedKeys}}
-          @onSelectionChange={{this.onSelectionChange}}
-        >
-          <:item as |o|>
-            <o.Item @key={{o.item.key}}>
-              {{o.item.value}}
-            </o.Item>
-          </:item>
-        </NativeSelect>`
+        <template>
+          <NativeSelect
+            @allowEmpty={{allowEmpty.current}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onSelectionChange}}
+          >
+            <:item as |o|>
+              <o.Item @key={{o.item.key}}>
+                {{o.item.value}}
+              </o.Item>
+            </:item>
+          </NativeSelect>
+        </template>
       );
 
       assert.dom('[data-test-id="native-select"]').exists();
@@ -196,18 +200,18 @@ module(
 
     test('it renders named blocks startContent and endContent', async function (assert) {
       const classes = { innerContainer: 'input-container' };
-      this.set('animals', ['tiger']);
-      this.set('classes', classes);
+      const animals = ['tiger'];
       await render(
-        hbs`
-        <NativeSelect
-          @items={{this.animals}}
-          @placeholder="Select an animal"
-          @classes={{this.classes}}
-        >
-          <:startContent>Start</:startContent>
-          <:endContent>End</:endContent>
-      </NativeSelect>`
+        <template>
+          <NativeSelect
+            @items={{animals}}
+            @placeholder="Select an animal"
+            @classes={{classes}}
+          >
+            <:startContent>Start</:startContent>
+            <:endContent>End</:endContent>
+          </NativeSelect>
+        </template>
       );
 
       assert.dom('.input-container div:first-child').exists();

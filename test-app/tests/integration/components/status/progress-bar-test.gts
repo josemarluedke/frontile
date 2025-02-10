@@ -1,9 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
+import { ProgressBar } from '@frontile/status';
+import { hash } from '@ember/helper';
 
 registerCustomStyles({
   progressBar: tv({
@@ -47,12 +48,14 @@ registerCustomStyles({
 });
 
 module(
-  'Integration | Component | ProgressBar | @frontile/progress-bar',
+  'Integration | Component | ProgressBar | @frontile/status',
   function (hooks) {
     setupRenderingTest(hooks);
 
     test('it renders', async function (assert) {
-      await render(hbs`<ProgressBar data-test-id="progress-bar" />`);
+      await render(
+        <template><ProgressBar data-test-id="progress-bar" /></template>
+      );
       assert.dom('[data-test-id="progress-bar"]').exists();
       assert.dom('[data-test-id="progress-bar"] [role="progressbar"]').exists();
     });
@@ -61,7 +64,9 @@ module(
       module('intent', () => {
         test('it adds class for the intent', async function (assert) {
           await render(
-            hbs`<ProgressBar @intent="primary" data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar @intent="primary" data-test-id="progress-bar" />
+            </template>
           );
 
           assert
@@ -70,7 +75,9 @@ module(
         });
 
         test('it adds class for the default intent', async function (assert) {
-          await render(hbs`<ProgressBar data-test-id="progress-bar" />`);
+          await render(
+            <template><ProgressBar data-test-id="progress-bar" /></template>
+          );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
@@ -80,7 +87,9 @@ module(
 
       module('sizes', () => {
         test('it adds class for default size"', async function (assert) {
-          await render(hbs`<ProgressBar data-test-id="progress-bar" />`);
+          await render(
+            <template><ProgressBar data-test-id="progress-bar" /></template>
+          );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
@@ -89,7 +98,9 @@ module(
 
         test('it adds class size xs"', async function (assert) {
           await render(
-            hbs`<ProgressBar @size="xs" data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar @size="xs" data-test-id="progress-bar" />
+            </template>
           );
 
           assert
@@ -99,7 +110,9 @@ module(
 
         test('it adds class size lg', async function (assert) {
           await render(
-            hbs`<ProgressBar @size="lg" data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar @size="lg" data-test-id="progress-bar" />
+            </template>
           );
 
           assert
@@ -110,7 +123,9 @@ module(
 
       module('radius', () => {
         test('it adds class default radius size sm"', async function (assert) {
-          await render(hbs`<ProgressBar data-test-id="progress-bar" />`);
+          await render(
+            <template><ProgressBar data-test-id="progress-bar" /></template>
+          );
 
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
@@ -119,7 +134,9 @@ module(
 
         test('it adds class radius size lg"', async function (assert) {
           await render(
-            hbs`<ProgressBar @radius="lg" data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar @radius="lg" data-test-id="progress-bar" />
+            </template>
           );
 
           assert
@@ -129,7 +146,9 @@ module(
 
         test('it adds class radius full', async function (assert) {
           await render(
-            hbs`<ProgressBar @radius="full" data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar @radius="full" data-test-id="progress-bar" />
+            </template>
           );
 
           assert
@@ -141,7 +160,12 @@ module(
       module('is-indeterminate', () => {
         test('it adds class for indeterminate state "', async function (assert) {
           await render(
-            hbs`<ProgressBar @isIndeterminate={{true}} data-test-id="progress-bar" />`
+            <template>
+              <ProgressBar
+                @isIndeterminate={{true}}
+                data-test-id="progress-bar"
+              />
+            </template>
           );
 
           assert
@@ -156,7 +180,9 @@ module(
     module('progress value', () => {
       test('it renders value and arias', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar" @progress={{50}} />`
+          <template>
+            <ProgressBar data-test-id="progress-bar" @progress={{50}} />
+          </template>
         );
 
         const selector = '[data-test-id="progress-bar"] div.pb-progress';
@@ -172,7 +198,14 @@ module(
 
       test('it interpolates values', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar" @progress={{20}} @minValue={{10}} @maxValue={{30}} />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{20}}
+              @minValue={{10}}
+              @maxValue={{30}}
+            />
+          </template>
         );
 
         const selector = '[data-test-id="progress-bar"] div.pb-progress';
@@ -189,7 +222,13 @@ module(
     module('progress label', () => {
       test('it renders label and arias', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar" @progress={{50}} @label="Progress" />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{50}}
+              @label="Progress"
+            />
+          </template>
         );
 
         assert
@@ -206,7 +245,14 @@ module(
 
       test('it renders value label', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar" @progress={{50}} @label="Progress" @valueLabel="value 2/4" />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{50}}
+              @label="Progress"
+              @valueLabel="value 2/4"
+            />
+          </template>
         );
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
@@ -215,10 +261,14 @@ module(
 
       test('it formats value label', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar"
-                @progress={{50}} @label="Progress"
-                @formatOptions={{(hash style='currency' currency='USD')}}
-              />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{50}}
+              @label="Progress"
+              @formatOptions={{(hash style="currency" currency="USD")}}
+            />
+          </template>
         );
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
@@ -227,13 +277,16 @@ module(
 
       test('it formats value label interpolated', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar"
-                @progress={{20}}
-                @label="Progress"
-                @minValue={{10}}
-                @maxValue={{30}}
-                @formatOptions={{(hash style='currency' currency='USD')}}
-              />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{20}}
+              @label="Progress"
+              @minValue={{10}}
+              @maxValue={{30}}
+              @formatOptions={{(hash style="currency" currency="USD")}}
+            />
+          </template>
         );
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
@@ -242,11 +295,14 @@ module(
 
       test('it hides value label if showValueLabel false', async function (assert) {
         await render(
-          hbs`<ProgressBar data-test-id="progress-bar"
-                @progress={{20}}
-                @label="Progress"
-                @showValueLabel={{false}}
-              />`
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{20}}
+              @label="Progress"
+              @showValueLabel={{false}}
+            />
+          </template>
         );
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
