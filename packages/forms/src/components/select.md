@@ -12,7 +12,7 @@ The `Select` component is a powerful and flexible dropdown component. It support
 import { Select } from '@frontile/forms';
 ```
 
-## Basic Single Select
+## Usage
 
 A simple single-select dropdown with static string options:
 
@@ -42,7 +42,7 @@ export default class BasicSingleSelect extends Component {
 }
 ```
 
-## Multiple Select
+### Multiple Select
 
 Configure the `Select` component for multiple selection mode. You can supply the options as objects (each with a `key` and `label`):
 
@@ -84,7 +84,7 @@ export default class MultipleSelectExample extends Component {
 }
 ```
 
-## Filterable Select
+### Filterable Select
 
 Enable filtering so users can quickly search through the options. Filtering only applies when options are provided via the `@items` argument.
 
@@ -122,7 +122,7 @@ export default class FilterableSelectExample extends Component {
 }
 ```
 
-## Item Object Format
+### Item Object Format
 
 When using the `@items` argument, you can pass items as either primitives (strings or numbers) or objects. The `Select` component automatically extracts a key and label for each item using a flexible approach:
 
@@ -138,7 +138,7 @@ This supports common object shapes such as:
 - `{ key: 'apple', value: 'Apple' }`
 - `{ id: 'user-1', name: 'John Doe', email: 'john@example.com' }`
 
-## Custom Option Rendering
+### Custom Option Rendering
 
 Customize the display of each option by yielding the item to a block. This is useful when you need to add extra information (such as a description or icon) alongside the label.
 
@@ -216,7 +216,7 @@ const users = [
 ];
 ```
 
-## Declarative Items with Named Blocks
+### Declarative Items with Named Blocks
 
 You can also define options directly inside the component using block syntax (referred to here as declarative items). In this case, filtering is not available. This example also demonstrates the use of the `@disabledKeys` and `@allowEmpty` options. When `@allowEmpty` is enabled, clicking a selected item will toggle its selection state (i.e. deselect it).
 
@@ -253,7 +253,7 @@ export default class DeclarativeItemsSelect extends Component {
 }
 ```
 
-## Clearable Select
+### Clearable Select
 
 The built-in clear button can be enabled using the `@isClearable` flag. This allows users to reset the selection easily.
 
@@ -284,7 +284,7 @@ export default class ClearableSelectExample extends Component {
 }
 ```
 
-## Loading Select
+### Loading Select
 
 Display a loading spinner in place of the dropdown icon by enabling the `@isLoading` flag. This is useful when data is being fetched asynchronously.
 
@@ -315,7 +315,7 @@ export default class LoadingSelectExample extends Component {
 }
 ```
 
-## Select with Custom Input Content and Empty State
+### Select with Custom Input Content and Empty State
 
 This example demonstrates how to use the `:startContent`, `:endContent`, and `:emptyContent` blocks to customize the select’s trigger appearance and the empty state when no results match the filter. Here, the select is filterable, so the empty content is shown when there are no matching options.
 
@@ -358,7 +358,7 @@ export default class CustomContentBlocksSelect extends Component {
 }
 ```
 
-## Using NativeSelect
+### Using NativeSelect
 
 The `NativeSelect` component is a lightweight version of the select component that renders a native HTML `<select>` element. This is especially useful when you need maximum accessibility or want to rely on the browser’s native behavior.
 It supports most of the same features as the custom `Select` component, such as passing an array of items, managing selection state, and handling selection changes.

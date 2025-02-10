@@ -101,7 +101,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       selectedIcon,
       shortcut
     } = listboxItem({
-      appearence: this.args.appearance || 'default',
+      appearance: this.args.appearance || 'default',
       intent: this.args.intent || 'default',
       isDisabled: this.listItem?.isDisabled,
       isSelected: this.listItem?.isSelected,

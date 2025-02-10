@@ -458,7 +458,7 @@ module(
               shortcut: ['shortcut']
             },
             variants: {
-              appearence: {
+              appearance: {
                 default: {
                   base: 'appearance-default'
                 },
@@ -496,7 +496,7 @@ module(
               }
             },
             defaultVariants: {
-              appearence: 'default',
+              appearance: 'default',
               intent: 'default'
             }
           }) as never

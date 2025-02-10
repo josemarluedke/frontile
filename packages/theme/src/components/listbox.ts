@@ -46,7 +46,7 @@ const listboxItem = tv({
     ]
   },
   variants: {
-    appearence: {
+    appearance: {
       default: {
         base: ''
       },
@@ -85,13 +85,13 @@ const listboxItem = tv({
     }
   },
   defaultVariants: {
-    appearence: 'default',
+    appearance: 'default',
     intent: 'default'
   },
   compoundVariants: [
-    // appearence: default
+    // appearance: default
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'default',
       class: {
         base: [
@@ -101,7 +101,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'primary',
       class: {
         base: [
@@ -111,7 +111,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'success',
       class: {
         base: [
@@ -121,7 +121,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'warning',
       class: {
         base: [
@@ -131,7 +131,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'danger',
       class: {
         base: [
@@ -141,7 +141,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'primary',
       isActive: true,
       class: {
@@ -149,7 +149,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'success',
       isActive: true,
       class: {
@@ -157,7 +157,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'warning',
       isActive: true,
       class: {
@@ -165,7 +165,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'default',
+      appearance: 'default',
       intent: 'danger',
       isActive: true,
       class: {
@@ -173,9 +173,9 @@ const listboxItem = tv({
       }
     },
 
-    // appearence: outlined
+    // appearance: outlined
     {
-      appearence: 'outlined',
+      appearance: 'outlined',
       intent: 'default',
       class: {
         base: [
@@ -185,37 +185,37 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'outlined',
+      appearance: 'outlined',
       intent: 'primary',
       class: {
         base: ['data-is-active:border-primary', 'data-is-active:text-primary']
       }
     },
     {
-      appearence: 'outlined',
+      appearance: 'outlined',
       intent: 'success',
       class: {
         base: ['data-is-active:border-success', 'data-is-active:text-success']
       }
     },
     {
-      appearence: 'outlined',
+      appearance: 'outlined',
       intent: 'warning',
       class: {
         base: ['data-is-active:border-warning', 'data-is-active:text-warning']
       }
     },
     {
-      appearence: 'outlined',
+      appearance: 'outlined',
       intent: 'danger',
       class: {
         base: ['data-is-active:border-danger', 'data-is-active:text-danger']
       }
     },
 
-    // appearence: faded
+    // appearance: faded
     {
-      appearence: 'faded',
+      appearance: 'faded',
       intent: 'default',
       class: {
         base: [
@@ -226,7 +226,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'faded',
+      appearance: 'faded',
       intent: 'primary',
       class: {
         base: [
@@ -237,7 +237,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'faded',
+      appearance: 'faded',
       intent: 'success',
       class: {
         base: [
@@ -248,7 +248,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'faded',
+      appearance: 'faded',
       intent: 'warning',
       class: {
         base: [
@@ -259,7 +259,7 @@ const listboxItem = tv({
       }
     },
     {
-      appearence: 'faded',
+      appearance: 'faded',
       intent: 'danger',
       class: {
         base: [
