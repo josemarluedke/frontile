@@ -1,6 +1,6 @@
 {
   "name": "@frontile/notifications",
-  "version": "0.17.0-beta.8",
+  "version": "0.17.0-beta.9",
   "description": "Component Library for Ember Octane apps: Notifications",
   "keywords": [
     "ember-addon",
@@ -54,8 +54,8 @@
   "dependencies": {
     "@ember/render-modifiers": "^2.1.0",
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/buttons": "workspace:0.17.0-beta.8",
-    "@frontile/theme": "workspace:0.17.0-beta.6",
+    "@frontile/buttons": "workspace:0.17.0-beta.9",
+    "@frontile/theme": "workspace:0.17.0-beta.9",
     "ember-auto-import": "^2.7.2",
     "ember-css-transitions": "^4.4.0"
   },
