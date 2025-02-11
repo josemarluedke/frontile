@@ -1,14 +1,12 @@
-/* eslint-disable ember/no-at-ember-render-modifiers, ember/no-runloop */
+/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
+import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { fn, concat } from '@ember/helper';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
 import { CloseButton } from '@frontile/buttons';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';
@@ -50,13 +48,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
     return htmlSafe(styles.join('; '));
   }
 
-  @action addSpacing(element: HTMLElement): void {
-    if (this.args.placement && this.args.placement.includes('top')) {
-      element.style.marginTop = `${this.args.spacing || 16}px`;
-    }
-  }
-
-  @action transitionIn(element: HTMLElement): void {
+  transitionIn = modifier((element: HTMLElement) => {
     const spacing =
       typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
     const expectedHeight = element.offsetHeight + spacing;
@@ -79,37 +71,36 @@ class NotificationCard extends Component<NotificationCardSignature> {
       },
       this.args.notification.transitionDuration
     );
-  }
+  });
 
-  @action transitionOut(
-    element: HTMLElement,
-    [isExiting, ..._]: boolean[]
-  ): void {
-    if (isExiting) {
-      element.style.height = '0';
+  transitionOut = modifier(
+    (element: HTMLElement, [isExiting, ..._]: boolean[]) => {
+      if (isExiting) {
+        element.style.height = '0';
+      }
     }
-  }
+  );
 
-  @action remove(): void {
+  remove = () => {
     this.notifications.remove(this.args.notification);
-  }
+  };
 
-  @action pause(): void {
+  pause = () => {
     if (this.args.notification.timer) {
       this.args.notification.timer.pause();
     }
-  }
+  };
 
-  @action resume(): void {
+  resume = () => {
     if (this.args.notification.timer) {
       this.args.notification.timer.resume();
     }
-  }
+  };
 
-  @action handleClickCustomAction(customAction: CustomAction): void {
+  handleClickCustomAction = (customAction: CustomAction) => {
     customAction.onClick();
     this.remove();
-  }
+  };
 
   get classes() {
     const { notificationCard } = useStyles();
@@ -133,10 +124,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
     {{! template-lint-disable no-unnecessary-concat }}
     {{! template-lint-disable no-inline-styles }}
     {{! template-lint-disable style-concatenation  }}
-    <div
-      {{didInsert this.transitionIn}}
-      {{didUpdate this.transitionOut @notification.isRemoving}}
-    >
+    <div {{this.transitionIn}} {{this.transitionOut @notification.isRemoving}}>
       {{#unless @notification.isRemoving}}
         <div
           {{on "mouseenter" this.pause}}
