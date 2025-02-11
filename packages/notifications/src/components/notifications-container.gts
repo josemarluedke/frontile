@@ -1,9 +1,6 @@
-/* eslint-disable ember/no-at-ember-render-modifiers */
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
-import { action } from '@ember/object';
-import didUpdate from '@ember/render-modifiers/modifiers/did-update';
-import didInsert from '@ember/render-modifiers/modifiers/did-insert';
+import { modifier } from 'ember-modifier';
 import NotificationCard from './notification-card';
 import type NotificationsService from '../services/notifications';
 import type Notification from '../-private/notification';
@@ -57,19 +54,18 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
     });
   }
 
-  @action addSpacing(element: HTMLElement): void {
+  setupSpacing = modifier((element: HTMLElement) => {
     const spacing =
       typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
     if (this.isTopPlacement) {
       element.style.marginTop = `${spacing}px`;
     }
-  }
+  });
 
   <template>
     {{#if this.sortedNotifications}}
       <div
-        {{didInsert this.addSpacing}}
-        {{didUpdate this.addSpacing @spacing @placement}}
+        {{this.setupSpacing @spacing @placement}}
         class={{this.classes}}
         role="alert"
         aria-live="assertive"
