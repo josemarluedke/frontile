@@ -37,20 +37,36 @@ const chip = tv({
         closeButton: [
           'bg-primary-700',
           'text-background',
-          'hover:bg-primary-700/60'
+          'hover:bg-primary-700/60',
+          'focus-visible:ring-primary-700'
         ]
       },
       success: {
         dot: 'bg-success',
-        closeButton: ['bg-success', 'text-background', 'hover:bg-success/60']
+        closeButton: [
+          'bg-success',
+          'text-background',
+          'hover:bg-success/60',
+          'focus-visible:ring-success'
+        ]
       },
       warning: {
         dot: 'bg-warning',
-        closeButton: ['bg-warning', 'text-background', 'hover:bg-warning/60']
+        closeButton: [
+          'bg-warning',
+          'text-background',
+          'hover:bg-warning/60',
+          'focus-visible:ring-warning'
+        ]
       },
       danger: {
         dot: 'bg-danger',
-        closeButton: ['bg-danger', 'text-background', 'hover:bg-danger/60']
+        closeButton: [
+          'bg-danger',
+          'text-background',
+          'hover:bg-danger/60',
+          'focus-visible:ring-danger'
+        ]
       }
     },
     size: {

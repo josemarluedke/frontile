@@ -1,4 +1,5 @@
 import { tv, type VariantProps } from '../../tw';
+import { focusVisibleRing, focusVisibleWithinRing } from '../shared';
 
 const label = tv({
   slots: {
@@ -135,7 +136,8 @@ const checkboxRadioBase = tv({
       'text-primary',
       'border border-default-400',
       'bg-white dark:bg-default-100',
-      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300'
+      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300',
+      ...focusVisibleRing
     ],
     labelContainer: ['flex flex-col ml-2'],
     label: 'font-normal pb-0'
@@ -265,7 +267,8 @@ const switchInput = tv({
       'bg-default-300',
       'rounded-full',
       'cursor-pointer touch-none tap-highlight-transparent select-none',
-      'transition-background'
+      'transition-background',
+      ...focusVisibleWithinRing
     ],
     hiddenInput: [
       'font-inherit',

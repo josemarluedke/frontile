@@ -52,7 +52,7 @@ const base: SemanticBaseColors = {
       DEFAULT: gray[200]
     },
     focus: {
-      DEFAULT: blue[500]
+      DEFAULT: blue[400]
     },
     overlay: {
       DEFAULT: '#000000'

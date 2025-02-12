@@ -1,4 +1,5 @@
 import { tv } from '../tw';
+import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
   base: [
@@ -10,7 +11,7 @@ const baseButton = tv({
     'rounded',
     'disabled:cursor-not-allowed',
     'disabled:opacity-40',
-    'focus-visible:ring'
+    ...focusVisibleRing
   ],
   variants: {
     appearance: {
@@ -25,10 +26,10 @@ const baseButton = tv({
     },
     intent: {
       default: '',
-      primary: '',
-      success: '',
-      warning: '',
-      danger: ''
+      primary: 'focus-visible:ring-primary-500',
+      success: 'focus-visible:ring-success-500',
+      warning: 'focus-visible:ring-warning',
+      danger: 'focus-visible:ring-danger'
     },
     size: {
       xs: 'text-sm px-2 py-1',

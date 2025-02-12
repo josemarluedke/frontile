@@ -54,7 +54,7 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full shadow',
+    base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full shadow outline-none',
     closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
