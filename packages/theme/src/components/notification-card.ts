@@ -1,15 +1,18 @@
 import { tv } from '../tw';
+import { focusVisibleRing } from './shared';
 
-const btn = 'transition transition-200 focus-visible:ring';
+const btn = ['transition transition-200', ...focusVisibleRing];
 
 const notificationCard = tv({
   slots: {
     base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 text-sm rounded shadow transition-all transition-200 ease-in-out',
     message: 'grow',
     customActions: 'flex flex-nowrap',
-    customActionButton:
-      btn + ' first:ml-4 last:-mr-2 font-semibold py-1 px-2 rounded',
-    closeButton: btn + ' inline-block p-2 ml-2 -mr-2 rounded-full'
+    customActionButton: [
+      ...btn,
+      'first:ml-4 last:-mr-2 font-semibold py-1 px-2 rounded'
+    ],
+    closeButton: [...btn, 'inline-block p-2 ml-2 -mr-2 rounded-full']
   },
 
   variants: {

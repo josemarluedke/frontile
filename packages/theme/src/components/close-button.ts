@@ -1,8 +1,12 @@
 import { tv, type VariantProps } from '../tw';
+import { focusVisibleRing } from './shared';
 
 const closeButton = tv({
   slots: {
-    base: 'rounded-full transition transition-200 focus-visible:ring text-inherit',
+    base: [
+      'rounded-full transition transition-200 text-inherit',
+      ...focusVisibleRing
+    ],
     icon: 'size-[1em]'
   },
 
