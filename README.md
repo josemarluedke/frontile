@@ -23,7 +23,7 @@ Visit [frontile.dev](https://frontile.dev/) to read the docs and see live demos.
 
 ### Usage
 
-```gts
+```gjs
 import Component from '@glimmer/component';
 import { Button } from '@frontile/buttons';
 
@@ -40,7 +40,7 @@ export default class Example extends Component {
 }
 ```
 
-```gts
+```gjs
 import Component from '@glimmer/component';
 import { Select } from '@frontile/forms';
 
@@ -53,7 +53,7 @@ const options = [
 export default class Example extends Component {
   selectedKeys = [];
 
-  onSelectionChange = (keys: string[]) => {
+  onSelectionChange = (keys) => {
     this.selectedKeys = keys;
   };
 
@@ -76,7 +76,7 @@ Frontile is built on Tailwind CSS, a utility-first CSS framework that allows you
 
 By default, Frontile components come with sensible defaults using Tailwind classes, but you can override styles using Tailwind’s utility classes.
 
-```gts
+```gjs
 <Button @class="bg-blue-500 text-white hover:bg-blue-600">
   Custom Styled Button
 </Button>
@@ -113,7 +113,7 @@ registerCustomStyles({
 
 Frontile components internally use Tailwind Variants, but you can override them by passing `@classes`. Class conflicts are handled automatically by Tailwind Variants.
 
-```gts
+```gjs
 import { Avatar } from '@frontile/utilities';
 import { hash } from '@ember/helper';
 
