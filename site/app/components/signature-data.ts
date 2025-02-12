@@ -3861,7 +3861,8 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Sets the initial selected state of the Switch when used in uncontrolled mode.',
-        tags: {}
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>'
       },
       {
         identifier: 'description',
@@ -3899,7 +3900,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: 'The visual intent (e.g., color or style) of the Switch.',
-        tags: {}
+        tags: { defaultValue: { name: 'defaultValue', value: "'primary'" } },
+        defaultValue: '<span class="hljs-string">\'primary\'</span>'
       },
       {
         identifier: 'isDisabled',
@@ -9231,6 +9233,106 @@ const data: ComponentDoc[] = [
       type: { type: 'HTMLDivElement' },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement'
+    },
+    description: '',
+    tags: {}
+  },
+  {
+    package: 'utilities',
+    module: 'avatar',
+    name: 'Avatar',
+    fileName: 'packages/utilities/declarations/components/avatar.d.ts',
+    Args: [
+      {
+        identifier: 'alt',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Alternative text for accessibility.\nIf `@src` is provided, this text will be used as the `alt`\nattribute for the image.\nIf only initials are displayed, this text will be read by screen readers.',
+        tags: {}
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'img\'</span>>'
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom CSS classes for styling different slots within the avatar component.',
+        tags: {}
+      },
+      {
+        identifier: 'firstName',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'First name of the user, used to generate initials.\nIf `@name` is not provided, initials will be generated from\n`@firstName` and `@lastName`.',
+        tags: {}
+      },
+      {
+        identifier: 'lastName',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Last name of the user, used to generate initials.\nIf `@name` is not provided, initials will be generated from\n`@firstName` and `@lastName`.',
+        tags: {}
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Full name of the user, used to generate initials.\nIf `@firstName` and `@lastName` are not provided, initials will be\nderived from this property.',
+        tags: {}
+      },
+      {
+        identifier: 'shape',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'square\'</span> | <span class="hljs-string">\'circle\'</span>',
+          items: ["'square'", "'circle'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Defines the shape of the avatar.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'circle'" } },
+        defaultValue: '<span class="hljs-string">\'circle\'</span>'
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"]
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Controls the size of the avatar.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>'
+      },
+      {
+        identifier: 'src',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'URL of the image to be displayed in the avatar.\nIf provided, the image will be used instead of initials.',
+        tags: {}
+      }
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLSpanElement' },
+      description:
+        'The root element of the avatar component, which is an HTML `<span>` tag.',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLSpanElement'
     },
     description: '',
     tags: {}
