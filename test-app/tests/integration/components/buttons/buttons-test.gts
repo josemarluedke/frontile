@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { registerCustomStyles } from '@frontile/theme';
-import { tv } from 'tailwind-variants';
+import { registerCustomStyles, tv } from '@frontile/theme';
 import { Button } from '@frontile/buttons';
 
 registerCustomStyles({

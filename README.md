@@ -6,59 +6,163 @@
 
 **Under active development.**
 
-Frontile aims to provide the legos (components, helpers, modifiers, and styles)
-necessary for building consistent and powerful Ember.js apps while following best
-practices from the community and providing both low-level and high-level components for your application.
+A modern, accessible, and extensible component library for Ember.js, built with Tailwind Variants for highly customizable styling.
 
-- Built with accessibility in mind into every component;
-- Built as logically separated packages, so you can choose the pieces you're going to use;
-- Written in TypeScript;
-- All components are Glimmer components;
-- Styles are just TailwindCSS plugins, and fully responsive;
+## 🚀 Features
 
+- _Fully Customizable_ – Uses Tailwind Variants for styling.
+- _Accessible Components_ – Follows best practices for a11y.
+- _Composable & Extensible_ – Designed to be customized and extended to fit any design system.
+- _Built for Ember_ – Seamless integration with Ember Octane & Glimmer components.
+- _TypeScript & Glint Support_ – Fully typed templates with Glint for a better developer experience.
+- _Dark & Light Mode Support_ – Theme-aware components that automatically adapt.
 
-## Documentation
+## 📖 Documentation
 
 Visit [frontile.dev](https://frontile.dev/) to read the docs and see live demos.
 
+### Usage
 
-## What is available?
+```gts
+import Component from '@glimmer/component';
+import { Button } from '@frontile/buttons';
 
-There are a few packages available to use already; you can use them in your
-applications today if you are in a supported Ember version. The project is
-still pre-version 1.0.0, so breaking changes can still occur.
+export default class Example extends Component {
+  onClick = () => {
+    alert('Button clicked!');
+  };
 
-- [@frontile/utilities](./packages/core): Core package providing essential a11y components.
-- [@frontile/forms](./packages/forms): Components for working with forms.
-- [@frontile/changeset-form](./packages/forms): Integration between the Forms package and [Changeset](https://github.com/poteto/ember-changeset).
-- [@frontile/notifications](./packages/notifications): Package that provides toast-like notifications.
-- [@frontile/overlays](./packages/overlays): Components to render content over the UI, like Modal Dialogs.
-- [@frontile/buttons](./packages/buttons): Components for working with buttons.
+  <template>
+    <Button @intent='primary' @size='lg' @onClick={{this.onClick}}>
+      Click Me
+    </Button>
+  </template>
+}
+```
 
-## Styles with Tailwind
+```gts
+import Component from '@glimmer/component';
+import { Select } from '@frontile/forms';
 
-All the styles we provide are through [TailwindCSS](https://tailwindcss.com/)
-plugins. It is perfect if your app has Tailwind; however, some apps don't have or
-don't necessarily want to write styles using it. For these, there are two alternatives:
+const options = [
+  { key: 'apple', label: 'Apple' },
+  { key: 'banana', label: 'Banana' },
+  { key: 'cherry', label: 'Cherry' }
+];
 
-- Write all the styles yourself targeting our classes, which follows
-[BEM-like naming](http://getbem.com/naming/) conventions.
-- Only add Tailwind for our styles. This approach is yet to be proven, but in theory,
-you should be able to set up Tailwind and only allow it to include Frontile styles.
+export default class Example extends Component {
+  selectedKeys = [];
 
-By providing Tailwind plugins, you can customize pretty much all styles, even
-removing what is not what you need. All plugins have the option to pass a
-configuration so that you can set up all the colors, spacings, etc, as your
-application needs. It also allows for creating themes or dark modes using CSS Variables.
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
 
-TL; DR; You don't need TailwindCSS if you don't want it, but it's best if you do use it.
+  <template>
+    <Select
+      @items={{options}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+      @isFilterable={{true}}
+    />
+  </template>
+}
+```
 
-## Compatibility
+## 🎨 Styling
 
-* Ember.js v3.16 or above
-* Ember CLI v2.13 or above
-* Node.js v10 or above
+### Tailwind CSS
 
-## License
+Frontile is built on Tailwind CSS, a utility-first CSS framework that allows you to quickly style components without writing custom styles.
+
+By default, Frontile components come with sensible defaults using Tailwind classes, but you can override styles using Tailwind’s utility classes.
+
+```gts
+<Button @class="bg-blue-500 text-white hover:bg-blue-600">
+  Custom Styled Button
+</Button>
+```
+
+### Tailwind Variants
+
+For more structured and reusable styling, Frontile uses [Tailwind Variants](https://www.tailwind-variants.org/).
+This approach makes it easier to manage component styling, support variants, and apply conditional styles.
+
+```ts
+import { registerCustomStyles, tv } from '@frontile/theme';
+
+registerCustomStyles({
+  button: tv({
+    base: 'rounded px-4 py-2 font-semibold transition-all',
+    variants: {
+      intent: {
+        primary: 'bg-blue-500 text-white hover:bg-blue-600',
+        secondary: 'bg-gray-500 text-white hover:bg-gray-600'
+      },
+      size: {
+        sm: 'text-sm py-1 px-2',
+        lg: 'text-lg py-3 px-6'
+      }
+    },
+    defaultVariants: {
+      intent: 'primary',
+      size: 'lg'
+    }
+  })
+});
+```
+
+Frontile components internally use Tailwind Variants, but you can override them by passing `@classes`. Class conflicts are handled automatically by Tailwind Variants.
+
+```gts
+import { Avatar } from '@frontile/utilities';
+import { hash } from '@ember/helper';
+
+<template>
+  <Avatar
+    @name='Jon Snow'
+    @classes={{hash
+      base='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white'
+    }}
+  />
+</template>
+```
+
+## 💡 Contributing
+
+1. Fork the repository.
+2. Create a feature branch (git checkout -b my-feature).
+3. Commit your changes (git commit -m 'feat: Add new feature').
+4. Push to the branch (git push origin my-feature).
+5. Open a Pull Request.
+
+## 🛠️ Development
+
+Clone the repository:
+
+```sh
+git clone https://github.com/josemarluedke/frontile.git
+cd frontile
+pnpm install
+```
+
+Run the test suite:
+
+```sh
+pnpm test
+```
+
+Run the test app:
+
+```sh
+pnpm start
+```
+
+Build all packages:
+
+```sh
+pnpm build
+```
+
+## 📜 License
 
 This project is licensed under the [MIT License](LICENSE.md).
