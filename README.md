@@ -10,7 +10,7 @@ A modern, accessible, and extensible component library for Ember.js, built with 
 
 ## 🚀 Features
 
-- _Fully Customizable_ – Uses Tailwind Variants for styling.
+- _Fully Customizable_ – Uses Tailwind CSS with Tailwind Variants for styling.
 - _Accessible Components_ – Follows best practices for a11y.
 - _Composable & Extensible_ – Designed to be customized and extended to fit any design system.
 - _Built for Ember_ – Seamless integration with Ember Octane & Glimmer components.

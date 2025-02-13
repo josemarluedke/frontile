@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
+import { dataFrom } from 'form-data-utils';
 
-type FormDataEntryValue = NonNullable<ReturnType<FormData['get']>>;
-type FormResultData = Record<string, FormDataEntryValue>;
+type FormResultData = ReturnType<typeof dataFrom>;
 
 interface FormSignature {
   Element: HTMLFormElement;
@@ -25,24 +25,7 @@ class Form extends Component<FormSignature> {
   ) => {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
-      let formData = new FormData(form);
-
-      for (let i = 0; i < form.elements.length; i++) {
-        const element = form.elements[i] as HTMLSelectElement;
-        if (element.type === 'select-multiple') {
-          const selectedValues = [];
-          for (let j = 0; j < element.options.length; j++) {
-            const option = element.options[j];
-            if (option && option.selected) {
-              selectedValues.push(option.value);
-            }
-          }
-          formData.append(element.name, selectedValues.join(','));
-        }
-      }
-
-      let data = Object.fromEntries(formData.entries());
-
+      const data = dataFrom(event);
       this.args.onChange(data, eventType, event);
     }
   };

@@ -71,7 +71,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     assert.equal(inputData.current['bio'], 'My bio');
 
     await click('[name="acceptTerms"]');
-    assert.equal(inputData.current['acceptTerms'], 'on');
+    assert.equal(inputData.current['acceptTerms'], true);
 
     await click('[value="music"]');
     assert.equal(inputData.current['interests'], 'music');
@@ -82,7 +82,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="Chile"]');
     await click('[data-component="listbox"] [data-key="Argentina"]');
-    assert.equal(inputData.current['traveledTo'], 'Argentina,Chile');
+    assert.deepEqual(inputData.current['traveledTo'], ['Argentina', 'Chile']);
   });
 
   test('it updates data on submit event', async function (assert) {
@@ -102,11 +102,11 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     assert.deepEqual(submitData.current, {
       firstName: 'John',
-      acceptTerms: 'on',
+      acceptTerms: true,
       interests: 'music',
       bio: 'My bio',
       country: 'Brazil',
-      traveledTo: 'Argentina,Chile'
+      traveledTo: ['Argentina', 'Chile']
     });
   });
 });

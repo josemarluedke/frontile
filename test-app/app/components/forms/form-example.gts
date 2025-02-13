@@ -95,7 +95,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       <Switch
         @intent="primary"
         @size="sm"
-        @name="field-switch"
+        @name="field-switch-1"
         @label="My Switch"
         @isSelected={{this.isChecked}}
         @onChange={{this.onChangeChecked}}
@@ -104,7 +104,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       <Switch
         @intent="primary"
         @size="md"
-        @name="field-switch"
+        @name="field-switch-2"
         @label="My Switch"
         @description="description"
         @errors="error message here"
@@ -129,7 +129,7 @@ export default class FormExample extends Component<FormExampleArgs> {
       <Switch
         @intent="primary"
         @size="lg"
-        @name="field-switch"
+        @name="field-switch-3"
         @label="My Switch"
         @description="description"
         @errors="error message here"
