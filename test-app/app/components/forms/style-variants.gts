@@ -89,7 +89,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
       <Textarea @label="Bio" @errors="Bio can't be blank" />
 
-      <Textarea @label="Disabled" @containerClass="mt-4" disabled={{true}} />
+      <Textarea @label="Disabled" disabled={{true}} />
     </div>
 
     <div class="pt-4 flex flex-1 flex-col gap-4">
@@ -200,14 +200,14 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
       <Radio @value="false" @label="Unchecked" />
 
-      <Radio @label="Checked" @value={{true}} @checked={{true}} />
+      <Radio @label="Checked" @value={{true}} @checkedValue={{true}} />
 
       <Radio @value="false" @label="Disabled unchecked" disabled={{true}} />
 
       <Radio
         @label="Disabled checked"
         @value="true"
-        @checked={{true}}
+        @checkedValue="true"
         disabled={{true}}
       />
 
@@ -221,7 +221,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
         @label="Checked with description"
         @description="This is a description"
         @value="true"
-        @checked={{true}}
+        @checkedValue="true"
       />
     </div>
 
