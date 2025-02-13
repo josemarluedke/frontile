@@ -60,7 +60,8 @@
     "@frontile/theme": "workspace:0.17.0-beta.10",
     "@frontile/utilities": "workspace:0.17.0-beta.10",
     "@glint/template": "1.5.2",
-    "ember-modifier": "^4.1.0"
+    "ember-modifier": "^4.1.0",
+    "form-data-utils": "^0.6.0"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
