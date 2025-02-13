@@ -83,10 +83,11 @@ export interface DrawerSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick'> &
-          WithBoundArgs<typeof CloseButton, 'class'>;
-        Header: WithBoundArgs<typeof DrawerHeader, 'labelledById'> &
-          WithBoundArgs<typeof DrawerHeader, 'classFromParent'>;
+        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick' | 'class'>;
+        Header: WithBoundArgs<
+          typeof DrawerHeader,
+          'labelledById' | 'classFromParent'
+        >;
         Body: WithBoundArgs<typeof DrawerBody, 'classFromParent'>;
         Footer: WithBoundArgs<typeof DrawerFooter, 'classFromParent'>;
         headerId: string;
