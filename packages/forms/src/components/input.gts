@@ -116,8 +116,8 @@ class Input extends Component<InputSignature> {
       this.uncontrolledValue = '';
     }
 
-    this.inputRef.element?.focus();
-    triggerFormInputEvent(this.inputRef.element);
+    this.inputRef.current?.focus();
+    triggerFormInputEvent(this.inputRef.current);
   }
 
   get isClearable(): boolean {

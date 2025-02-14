@@ -177,7 +177,7 @@ module('Integration | Component | @frontile/overlays/Portal', function (hooks) {
       <template>
         <div data-test-id="wrapper" {{myRef.setup}}></div>
 
-        <Portal data-test-id="portal-1" @target={{myRef.element}}>
+        <Portal data-test-id="portal-1" @target={{myRef.current}}>
           Portal
         </Portal>
       </template>

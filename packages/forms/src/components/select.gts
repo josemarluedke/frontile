@@ -230,7 +230,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }
 
     this.filterValue = undefined;
-    triggerFormInputEvent(this.containerRef.element);
+    triggerFormInputEvent(this.containerRef.current);
   };
 
   onOpenChange = (isOpen: boolean) => {
@@ -550,7 +550,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               @selectionMode={{if @selectionMode @selectionMode "single"}}
               @type="listbox"
               @class={{this.classes.listbox class=@classes.listbox}}
-              @elementToAddKeyboardEvents={{this.triggerRef.element}}
+              @elementToAddKeyboardEvents={{this.triggerRef.current}}
               @autoActivateMode={{this.autoActivateMode}}
             >
               <:item as |l|>
