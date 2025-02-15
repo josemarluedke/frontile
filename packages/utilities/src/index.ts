@@ -6,3 +6,4 @@ export * from './components/collapsible';
 export * from './components/divider';
 export * from './components/spinner';
 export * from './utils/ref';
+export * from './utils/toggle';
