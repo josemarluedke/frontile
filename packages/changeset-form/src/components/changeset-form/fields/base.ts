@@ -52,7 +52,11 @@ export default class ChangesetFormFieldsBase<
       if (Array.isArray(error.validation)) {
         const results = [...errors];
         error.validation.forEach((err) => {
-          results.push(...err);
+          if (typeof err === 'string') {
+            results.push(err);
+          } else if (Array.isArray(err)) {
+            results.push(...err);
+          }
         });
         return results;
       } else {
