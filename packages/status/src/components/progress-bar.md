@@ -17,9 +17,7 @@ import { ProgressBar } from '@frontile/status';
 ```gjs preview
 import { ProgressBar } from '@frontile/status';
 
-<template>
-  <ProgressBar @progress={{50}} @label='Progress' />
-</template>
+<template><ProgressBar @progress={{50}} @label='Progress' /></template>
 ```
 
 ## ProgressBar Intents
@@ -152,6 +150,20 @@ import { hash } from '@ember/helper';
       @formatOptions={{(hash style='currency' currency='USD')}}
     />
   </div>
+</template>
+```
+
+## ProgressBar Hint
+
+```gjs preview
+import { ProgressBar } from '@frontile/status';
+
+<template>
+  <ProgressBar
+    @progress={{50}}
+    @label='Uploading'
+    @hint='Estimated time left'
+  />
 </template>
 ```
 
