@@ -93,7 +93,7 @@ class ProgressBar extends Component<ProgressBarSignature> {
   get classNames() {
     const { progressBar } = useStyles();
 
-    const { base, progress, label } = progressBar({
+    const { base, progress, label, hint } = progressBar({
       intent: this.args.intent || 'default',
       size: this.args.size,
       radius: this.args.radius,
@@ -103,7 +103,8 @@ class ProgressBar extends Component<ProgressBarSignature> {
     return {
       base: base({ class: this.args.class }),
       progress: progress(),
-      label: label()
+      label: label(),
+      hint: hint()
     };
   }
 
@@ -179,6 +180,11 @@ class ProgressBar extends Component<ProgressBarSignature> {
               {{this.formattedValueLabel}}
             </div>
           {{/if}}
+        </div>
+      {{/if}}
+      {{#if @hint}}
+        <div class={{this.classNames.hint}}>
+          {{@hint}}
         </div>
       {{/if}}
       <div class={{this.classNames.base}}>
