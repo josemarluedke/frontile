@@ -1,6 +1,6 @@
 {
   "name": "@frontile/buttons",
-  "version": "0.17.0-beta.12",
+  "version": "0.17.0-beta.13",
   "description": "Component Library for Ember Octane apps: Buttons",
   "keywords": [
     "ember-addon",
@@ -53,8 +53,8 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.17.0-beta.12",
-    "@frontile/utilities": "workspace:0.17.0-beta.12"
+    "@frontile/theme": "workspace:0.17.0-beta.13",
+    "@frontile/utilities": "workspace:0.17.0-beta.13"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
