@@ -16,8 +16,8 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
   const resolved = resolveThemes(c.themes, c.defaultTheme, c.prefix);
 
   return plugin(
-    ({ addComponents, theme, addVariant, addUtilities }) => {
-      addUtilities({
+    ({ addComponents, theme, addVariant, addUtilities, addBase }) => {
+      addBase({
         ...resolved?.utilities
       });
 
