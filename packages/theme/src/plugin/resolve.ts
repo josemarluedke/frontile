@@ -37,7 +37,7 @@ function resolveThemes(
   for (const [themeName, { extend, layout, colors }] of Object.entries(
     themes
   )) {
-    let cssSelector = `.${themeName}`;
+    const cssSelector = `.${themeName}`;
     let baseSelector = '';
 
     const scheme =
