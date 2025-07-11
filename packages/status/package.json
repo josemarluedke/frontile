@@ -1,6 +1,6 @@
 {
   "name": "@frontile/status",
-  "version": "0.17.0-beta.14",
+  "version": "0.17.0-beta.15",
   "description": "Component Library for Ember Octane apps: Status",
   "keywords": [
     "ember-addon",
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.17.0-beta.14"
+    "@frontile/theme": "workspace:0.17.0-beta.15"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",

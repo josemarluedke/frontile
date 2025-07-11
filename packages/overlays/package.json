@@ -1,6 +1,6 @@
 {
   "name": "@frontile/overlays",
-  "version": "0.17.0-beta.14",
+  "version": "0.17.0-beta.15",
   "description": "Component Library for Ember Octane apps: overlays",
   "keywords": [
     "ember-addon",
@@ -54,8 +54,8 @@
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
     "@embroider/macros": "^1.16.10",
-    "@frontile/buttons": "workspace:0.17.0-beta.14",
-    "@frontile/theme": "workspace:0.17.0-beta.14",
+    "@frontile/buttons": "workspace:0.17.0-beta.15",
+    "@frontile/theme": "workspace:0.17.0-beta.15",
     "@glint/template": "1.5.2",
     "ember-click-outside": "^6.1.0",
     "ember-css-transitions": "^4.4.0",
