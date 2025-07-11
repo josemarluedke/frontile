@@ -18,16 +18,8 @@ const parsedColorsCache: Record<string, number[]> = {};
 interface ResolvedConfig {
   variants: { name: string; definition: string[] }[];
   utilities: CSSRuleObject | CSSRuleObject[];
-  colors: Record<
-    string,
-    ({
-      opacityValue,
-      opacityVariable
-    }: {
-      opacityValue: string;
-      opacityVariable: string;
-    }) => string
-  >;
+  base: CSSRuleObject | CSSRuleObject[];
+  colors: Record<string, string>;
 }
 
 function resolveThemes(
@@ -38,19 +30,22 @@ function resolveThemes(
   const resolved: ResolvedConfig = {
     variants: [],
     utilities: {},
+    base: {},
     colors: {}
   };
 
   for (const [themeName, { extend, layout, colors }] of Object.entries(
     themes
   )) {
-    let cssSelector = `.${themeName}`;
+    const cssSelector = `.${themeName}`;
+    let baseSelector = '';
+
     const scheme =
       themeName === 'light' || themeName === 'dark' ? themeName : extend;
 
     // if the theme is the default theme, add the selector to the root element
     if (themeName === defaultTheme) {
-      cssSelector = `:root,${cssSelector}`;
+      baseSelector = `:root, ${cssSelector}`;
     }
 
     let themeRules: CSSRuleObject = scheme
@@ -85,32 +80,12 @@ function resolveThemes(
 
         const [h, s, l, defaultAlphaValue] = parsedColor;
         const colorVariable = `--${prefix}-${colorName}`;
-        const customOpacityVariable = `--${prefix}-${colorName}-opacity`;
 
         themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
 
-        if (typeof defaultAlphaValue === 'number') {
-          themeRules = {
-            ...themeRules,
-            [customOpacityVariable]: defaultAlphaValue.toFixed(2)
-          };
-        }
-
         // set the dynamic color in tailwind config theme.colors
-        resolved.colors[colorName] = ({
-          opacityVariable,
-          opacityValue
-        }): string => {
-          // if the opacity is set  with a slash (e.g. bg-primary/90), use the provided value
-          if (!isNaN(+opacityValue)) {
-            return `hsl(var(${colorVariable}) / ${opacityValue})`;
-          }
-          if (opacityVariable) {
-            return `hsl(var(${colorVariable}) / var(${customOpacityVariable}, var(${opacityVariable})))`;
-          }
-
-          return `hsl(var(${colorVariable}) / var(${customOpacityVariable}, 1))`;
-        };
+        resolved.colors[colorName] =
+          `hsl(var(${colorVariable}) / ${defaultAlphaValue ?? '<alpha-value>'})`;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log('error', error);
@@ -148,10 +123,17 @@ function resolveThemes(
       }
     }
 
-    resolved.utilities = {
-      ...resolved.utilities,
-      [cssSelector]: themeRules
-    };
+    if (baseSelector) {
+      resolved.base = {
+        ...resolved.base,
+        [baseSelector]: themeRules
+      };
+    } else {
+      resolved.utilities = {
+        ...resolved.utilities,
+        [cssSelector]: themeRules
+      };
+    }
   }
 
   return resolved;

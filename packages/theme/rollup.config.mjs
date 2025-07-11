@@ -29,6 +29,7 @@ export default {
       'index.js',
       'colors.js',
       'plugin.js',
+      'plugin/default.js',
       'template-registry.js'
     ]),
     // These are the modules that should get reexported into the traditional

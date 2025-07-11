@@ -22,6 +22,8 @@ ember install @frontile/theme
 
 ### Configure Tailwind CSS
 
+#### Tailwind CSS v3
+
 Modify your `tailwind.config.js` to include Frontile's theme plugin and safelist:
 
 ```javascript
@@ -45,6 +47,36 @@ module.exports = {
 ```
 
 This configuration ensures that Tailwind processes Frontile's styles and includes necessary classes in the final build.
+
+#### Tailwind CSS v4
+
+##### Using Default Theme
+
+For the default theme, add this to your `app/styles/app.css`:
+
+```css
+@import "tailwindcss" source("../../");
+@plugin "@frontile/theme/plugin/default";
+@source '../../node_modules/@frontile';
+```
+
+##### Customizing Frontile Theme
+
+To customize the frontile theme, create a file in the root of your project named `frontile.js` with the following content:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({ /* your config */ });
+```
+
+Then update your `app/styles/app.css` to use the custom configuration:
+
+```css
+@import "tailwindcss" source("../../");
+@plugin "./../../frontile.js";
+@source '../../node_modules/@frontile';
+```
 
 ## What Is Available
 
