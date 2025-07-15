@@ -1,7 +1,7 @@
 import { tv } from '../tw';
 
 const listbox = tv({
-  base: 'w-full flex flex-col gap-0.5 outline-none p-1'
+  base: 'w-full flex flex-col gap-0.5 outline-hidden p-1'
 });
 
 const listboxItem = tv({
@@ -18,9 +18,9 @@ const listboxItem = tv({
       'w-full',
       'h-full',
       'box-border',
-      'rounded',
+      'rounded-sm',
       'subpixel-antialiased',
-      'outline-none',
+      'outline-hidden',
       'cursor-pointer',
       'tap-highlight-transparent'
     ],
@@ -32,11 +32,11 @@ const listboxItem = tv({
       'text-foreground-500',
       'group-hover:text-current'
     ],
-    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'flex-shrink-0'],
+    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0'],
     shortcut: [
       'px-1',
       'py-0.5',
-      'rounded',
+      'rounded-sm',
       'font-sans',
       'text-foreground-500',
       'text-xs',

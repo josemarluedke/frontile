@@ -52,7 +52,7 @@ const progressBar = tv({
     },
     radius: {
       none: 'rounded-none',
-      sm: 'rounded',
+      sm: 'rounded-sm',
       lg: 'rounded-lg',
       full: 'rounded-full'
     }

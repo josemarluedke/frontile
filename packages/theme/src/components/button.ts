@@ -8,7 +8,7 @@ const baseButton = tv({
     'font-semibold',
     'border',
     'border-transparent',
-    'rounded',
+    'rounded-sm',
     'disabled:cursor-not-allowed',
     'disabled:opacity-40',
     ...focusVisibleRing
@@ -21,7 +21,7 @@ const baseButton = tv({
       true: [
         'rounded-none first:rounded-l last:rounded-r',
         '[&:not(:first-child):not(:last-child)]:rounded-none',
-        '[&:not(:last-of-type)]:-me-[1px]'
+        'not-last-of-type:-me-px'
       ]
     },
     intent: {
