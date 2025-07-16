@@ -1,17 +1,17 @@
 export const focusVisibleRing = [
-  'outline-none',
+  'outline-hidden',
   'focus-visible:z-10',
-  'focus-visible:ring',
+  'focus-visible:ring-3',
   'focus-visible:ring-focus',
   'focus-visible:ring-offset-2',
   'focus-visible:ring-offset-background'
 ];
 
 export const focusVisibleWithinRing = [
-  'outline-none',
-  'has-[:focus-visible]:z-10',
-  'has-[:focus-visible]:ring',
+  'outline-hidden',
+  'has-focus-visible:z-10',
+  'has-focus-visible:ring-3',
   'has-[:focus-visible]:ring-focus',
-  'has-[:focus-visible]:ring-offset-2',
+  'has-focus-visible:ring-offset-2',
   'has-[:focus-visible]:ring-offset-background'
 ];
