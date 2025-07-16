@@ -13,7 +13,7 @@ import FormRadioGroup from '@frontile/forms-legacy/components/form-radio-group';
 interface FormExampleArgs {}
 
 export default class FormExample extends Component<FormExampleArgs> {
-  @tracked size = '';
+  @tracked size = 'md';
   @tracked isInline = false;
 
   @tracked firstName!: string;
@@ -117,8 +117,8 @@ export default class FormExample extends Component<FormExampleArgs> {
         as |Radio|
       >
         <Radio @value="sm" @label="sm" />
+        <Radio @value="md" @label="md" />
         <Radio @value="lg" @label="lg" />
-        <Radio @value @label="default" />
       </FormRadioGroup>
 
       <FormCheckboxGroup @isInline={{true}} @label="Settings" as |Checkbox|>

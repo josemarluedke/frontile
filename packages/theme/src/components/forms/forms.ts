@@ -75,6 +75,7 @@ const input = tv({
       'rounded-sm',
       'leading-tight',
       'focus:ring-3',
+      'focus:ring-focus',
       'focus:outline-hidden',
       'focus:border-primary-400',
       'selection:bg-content3',

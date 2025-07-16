@@ -3,5 +3,7 @@
  */
 
 @import "tailwindcss" source('./');
-@plugin "@frontile/theme/plugin/default";
+/* @plugin "@frontile/theme/plugin/default"; */
+@plugin "../../../frontile.js";
 @source '../../@frontile';
+@custom-variant dark (&:is(.dark *));
