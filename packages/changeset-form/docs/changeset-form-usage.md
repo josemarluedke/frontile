@@ -110,36 +110,15 @@ export default class Demo extends Component {
 </ChangesetForm>
 ```
 
-## API
-
-### Args
-
-<Signature @package="changeset-form" @component="ChangesetForm" class="mb-8" />
-
-### Blocks
-
-| Name      | Type                                                                                               |
-| --------- | -------------------------------------------------------------------------------------------------- |
-| `default` | `[formComponents: FormComponents, changeset: BufferedChangeset, state: { hasSubmitted: boolean }]` |
-
-Here's the list of yielded form components from `FormComponents`:
-
-| Key           | Component             |
-| ------------- | --------------------- |
-| Text          | `<FormText>`          |
-| Textarea      | `<FormTextArea>`      |
-| Select        | `<FormSelect>`        |
-| Checkbox      | `<FormCheckbox>`      |
-| CheckboxGroup | `<FormCheckboxGroup>` |
-| Radio         | `<FormRadio>`         |
-| RadioGroup    | `<FormRadioGroup>`    |
-
-# Complete Form
+## Complete Form
 
 This shows how to have a complete form using `ChangesetForm`.
 
 ```gts preview
 import Component from '@glimmer/component';
+import { ChangesetForm } from '@frontile/changeset-form';
+import Button from '@frontile/buttons/components/button';
+import { changeset } from 'ember-changeset';
 import validateFormat from 'ember-changeset-validations/validators/format';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 
@@ -254,3 +233,27 @@ export default class Demo extends Component {
   </template>
 }
 ```
+
+## API
+
+### Args
+
+<Signature @package="changeset-form" @component="ChangesetForm" class="mb-8" />
+
+### Blocks
+
+| Name      | Type                                                                                               |
+| --------- | -------------------------------------------------------------------------------------------------- |
+| `default` | `[formComponents: FormComponents, changeset: BufferedChangeset, state: { hasSubmitted: boolean }]` |
+
+Here's the list of yielded form components from `FormComponents`:
+
+| Key           | Component             |
+| ------------- | --------------------- |
+| Text          | `<FormText>`          |
+| Textarea      | `<FormTextArea>`      |
+| Select        | `<FormSelect>`        |
+| Checkbox      | `<FormCheckbox>`      |
+| CheckboxGroup | `<FormCheckboxGroup>` |
+| Radio         | `<FormRadio>`         |
+| RadioGroup    | `<FormRadioGroup>`    |

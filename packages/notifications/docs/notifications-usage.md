@@ -5,16 +5,19 @@ url: /
 
 # Notifications Usage
 
-# Demo
-
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import type {
-  NotificationOptions,
-  NotificationsService
+import { on } from '@ember/modifier';
+import { fn, hash } from '@ember/helper';
+import { Button } from '@frontile/buttons';
+import { RadioGroup, Checkbox, Input, Select } from '@frontile/forms';
+import {
+  NotificationsContainer,
+  type NotificationOptions,
+  type NotificationsService
 } from '@frontile/notifications';
 
 interface DemoArgs {}
@@ -32,18 +35,21 @@ export default class Demo extends Component<DemoArgs> {
 
   @tracked customActions: NotificationOptions['customActions'] = [
     {
+      key: 'ok',
       label: 'Ok',
       onClick: (): void => {
         // empty
       }
     },
     {
+      key: 'undo',
       label: 'Undo',
       onClick: (): void => {
         // empty
       }
     },
     {
+      key: 'cancel',
       label: 'Cancel',
       onClick: (): void => {
         // empty
@@ -66,6 +72,17 @@ export default class Demo extends Component<DemoArgs> {
     this.options = options;
   }
 
+  get selectedCustomActionKeys(): string[] {
+    return this.options.customActions?.map(action => action.key!) || [];
+  }
+
+  @action onCustomActionsChange(selectedKeys: string[]): void {
+    const selectedActions = this.customActions.filter(action => 
+      selectedKeys.includes(action.key!)
+    );
+    this.setValue('customActions', selectedActions);
+  }
+
   @action addNotification(): void {
     this.notifications.add(
       'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
@@ -74,81 +91,75 @@ export default class Demo extends Component<DemoArgs> {
   }
 
   <template>
-    <div class="flex items-baseline">
-      <FormRadioGroup
-        @containerClass="mr-6"
-        @label="Placement"
+    <div class='flex items-baseline'>
+      <RadioGroup
+        @classes={{hash base='mr-6'}}
+        @label='Placement'
         @value={{this.placement}}
         @onChange={{this.setPlacement}}
         as |Radio|
       >
-        <Radio @value="top-left" @label="top-left" />
-        <Radio @value="top-center" @label="top-center" />
-        <Radio @value="top-right" @label="top-right" />
-        <Radio @value="bottom-left" @label="bottom-left" />
-        <Radio @value="bottom-center" @label="bottom-center" />
-        <Radio @value="bottom-right" @label="bottom-right" />
-      </FormRadioGroup>
+        <Radio @value='top-left' @label='top-left' />
+        <Radio @value='top-center' @label='top-center' />
+        <Radio @value='top-right' @label='top-right' />
+        <Radio @value='bottom-left' @label='bottom-left' />
+        <Radio @value='bottom-center' @label='bottom-center' />
+        <Radio @value='bottom-right' @label='bottom-right' />
+      </RadioGroup>
 
-      <FormRadioGroup
-        @label="Appearance"
+      <RadioGroup
+        @label='Appearance'
         @value={{this.options.appearance}}
-        @onChange={{fn this.setValue "appearance"}}
+        @onChange={{fn this.setValue 'appearance'}}
         as |Radio|
       >
-        <Radio @value="info" @label="info" />
-        <Radio @value="success" @label="success" />
-        <Radio @value="warning" @label="warning" />
-        <Radio @value="error" @label="error" />
-      </FormRadioGroup>
+        <Radio @value='info' @label='info' />
+        <Radio @value='success' @label='success' />
+        <Radio @value='warning' @label='warning' />
+        <Radio @value='error' @label='error' />
+      </RadioGroup>
     </div>
 
-    <FormCheckbox
-      @containerClass="mt-6"
-      @label="Preserve"
-      @hint="Preserved notifications will not automatically close"
+    <Checkbox
+      @classes={{hash base='mt-6'}}
+      @label='Preserve'
+      @description='Preserved notifications will not automatically close'
       @checked={{this.options.preserve}}
-      @onChange={{fn this.setValue "preserve"}}
+      @onChange={{fn this.setValue 'preserve'}}
     />
 
-    <FormCheckbox
-      @containerClass="mt-6"
-      @label="Allow Closing"
-      @hint="Allow users to close the notification"
+    <Checkbox
+      @classes={{hash base='mt-6'}}
+      @label='Allow Closing'
+      @description='Allow users to close the notification'
       @checked={{this.options.allowClosing}}
-      @onChange={{fn this.setValue "allowClosing"}}
+      @onChange={{fn this.setValue 'allowClosing'}}
     />
 
-    <div class="flex items-baseline mt-6 ">
-      <FormInput
-        @containerClass="w-24 mr-6"
-        @label="Duration"
-        @hint="Duration is in ms"
+    <div class='flex items-baseline mt-6'>
+      <Input
+        @classes={{hash base='w-24 mr-6'}}
+        @label='Duration'
+        @description='Duration is in ms'
         @value={{this.options.duration}}
-        @onInput={{fn this.setValue "duration"}}
+        @onInput={{fn this.setValue 'duration'}}
       />
 
-      <FormSelect
-        @containerClass="w-64"
-        @hint="Allow users to take an action on a notification"
-        @label="Custom Actions"
-        @options={{this.customActions}}
-        @isMultiple={{true}}
-        @selected={{this.options.customActions}}
-        @onChange={{fn this.setValue "customActions"}}
-        as |action|
-      >
-        {{action.label}}
-      </FormSelect>
+      <Select
+        @classes={{hash base='w-64'}}
+        @description='Allow users to take an action on a notification'
+        @label='Custom Actions'
+        @items={{this.customActions}}
+        @selectionMode='multiple'
+        @selectedKeys={{this.selectedCustomActionKeys}}
+        @onSelectionChange={{this.onCustomActionsChange}}
+      />
+
     </div>
 
-    <button
-      type="button"
-      {{on "click" this.addNotification}}
-      class="px-4 py-2 mt-6 text-white bg-teal-700 rounded hover:bg-teal-800"
-    >
+    <Button type='button' {{on 'click' this.addNotification}} class='mt-6'>
       Add Notification
-    </button>
+    </Button>
 
     <NotificationsContainer @placement={{this.placement}} />
   </template>

@@ -89,7 +89,7 @@ export interface ChangesetFormSignature {
   Element: HTMLFormElement;
 }
 
-export default class ChangesetForm extends Component<ChangesetFormSignature> {
+class ChangesetForm extends Component<ChangesetFormSignature> {
   @tracked hasSubmitted = false;
 
   constructor(owner: Owner, args: ChangesetFormArgs) {
@@ -201,3 +201,5 @@ export default class ChangesetForm extends Component<ChangesetFormSignature> {
     </form>
   </template>
 }
+export { ChangesetForm };
+export default ChangesetForm;
