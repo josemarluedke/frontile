@@ -18,6 +18,8 @@ import { RadioGroup } from '@frontile/forms';
 `<Radio>` component already has the group `name` and change handler
 bound for you.
 
+### Controlled Group
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -39,6 +41,37 @@ export default class RadioGroupExample extends Component {
       <Radio @value='iot' @label='IoT' />
     </RadioGroup>
     <p class='mt-4'>Selected: {{this.value}}</p>
+  </template>
+}
+```
+
+### Horizontal Layout
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { RadioGroup } from '@frontile/forms';
+
+const options = ['Small', 'Medium', 'Large'];
+
+export default class HorizontalRadioGroup extends Component {
+  @tracked size = 'Medium';
+
+  onChange = (v: string) => (this.size = v);
+
+  <template>
+    <RadioGroup
+      @label='T-Shirt Size'
+      @orientation='horizontal'
+      @value={{this.size}}
+      @onChange={{this.onChange}}
+      as |Radio|
+    >
+      {{#each options as |o|}}
+        <Radio @value={{o}} @label={{o}} />
+      {{/each}}
+    </RadioGroup>
+    <p class='mt-4'>Size: {{this.size}}</p>
   </template>
 }
 ```
