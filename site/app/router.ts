@@ -1,4 +1,4 @@
-import EmberRouter from '@ember/routing/router';
+import EmberRouter from '@embroider/router';
 import config from 'site/config/environment';
 import { addDocfyRoutes } from '@docfy/ember';
 

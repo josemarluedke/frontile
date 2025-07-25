@@ -1,3 +1,7 @@
+---
+imports:
+  - import Signature from 'site/components/signature';
+---
 # CloseButton
 
 This component provides the commonly used Close Button with an icon.

@@ -1,8 +1,9 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import DocfyOutput from '@docfy/ember/components/docfy-output';
-import docfyEq from '@docfy/ember/helpers/docfy-eq';
+import { DocfyOutput } from '@docfy/ember';
+
+const docfyEq = (a: string, b?: string): boolean => a === b;
 
 // http://goo.gl/5HLl8
 const easeInOutQuad = (t: number, b: number, c: number, d: number): number => {

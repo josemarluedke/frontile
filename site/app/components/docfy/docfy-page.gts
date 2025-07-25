@@ -4,9 +4,7 @@ import pageTitle from 'ember-page-title/helpers/page-title';
 import SidebarNav from './docfy-sidebar-nav';
 import PageHeadings from './docfy-page-headings';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
-import DocfyOutput from '@docfy/ember/components/docfy-output';
-import DocfyPreviousAndNextPage from '@docfy/ember/components/docfy-previous-and-next-page';
-import DocfyLink from '@docfy/ember/components/docfy-link';
+import { DocfyLink, DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
 
 interface Signature {
   Args: {

@@ -1,5 +1,4 @@
 import { LinkTo } from '@ember/routing';
-import RouteTemplate from 'ember-route-template';
 import Logo from '../components/logo';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
@@ -7,7 +6,7 @@ import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import { VisuallyHidden } from '@frontile/utilities';
 import { PortalTarget } from '@frontile/overlays';
 
-const application = <template>
+<template>
   {{pageTitle "Frontile"}}
   <DocfyHeader
     @githubUrl="https://github.com/josemarluedke/frontile"
@@ -48,6 +47,4 @@ const application = <template>
     </a>
   </div>
   <PortalTarget class="relative z-20" />
-</template>;
-
-export default RouteTemplate(application);
+</template>

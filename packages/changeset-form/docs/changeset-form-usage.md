@@ -2,6 +2,8 @@
 title: Usage
 url: /usage
 label: Deprecated
+imports:
+  - import Signature from 'site/components/signature';
 ---
 
 # Using ChangesetForm

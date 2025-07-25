@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { DocfyService } from '@docfy/ember';
 import RouterService from '@ember/routing/router-service';
 import type { PageMetadata } from '@docfy/core/lib/types';
@@ -35,7 +35,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
   fuse = new Fuse(this.docfy.flat, {
     keys: ['title', 'parentLabel'],
-    threshold: 0.4
+    threshold: 0.4,
   });
 
   selectNext(): void {
@@ -90,12 +90,12 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
     };
   });
 
-  @action search(event: KeyboardEvent): void {
+  @action search(event: Event): void {
     const pattern = (event.target as HTMLInputElement).value;
 
     this.results = this.fuse.search(pattern).map((item) => {
       return {
-        item: item.item
+        item: item.item,
       };
     });
     this.selected = undefined;

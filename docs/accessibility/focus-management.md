@@ -20,10 +20,10 @@ arrow key is used to focus an element. If the mouse is used to focus, the class
 will not be added (with the exception of input and textarea elements).
 
 ```hbs preview-template
-<FormInput placeholder="Test me for focus" />
+<FormInput placeholder='Test me for focus' />
 <a
-  class="inline-block px-4 py-2 mt-4 text-white bg-teal-600 border rounded hover:bg-teal-700"
-  href="javascript:void(0)"
+  class='inline-block px-4 py-2 mt-4 text-white bg-teal-600 border rounded hover:bg-teal-700'
+  href='javascript:void(0)'
 >
   Test me for focus
 </a>

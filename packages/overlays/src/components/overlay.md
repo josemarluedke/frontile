@@ -1,3 +1,7 @@
+---
+imports:
+  - import Signature from 'site/components/signature';
+---
 # Overlay
 
 The Overlay component is the base for building interactions like Modal and Drawer.

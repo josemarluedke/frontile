@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { modifier } from 'ember-modifier';
 import NotificationCard from './notification-card';
 import type NotificationsService from '../services/notifications';

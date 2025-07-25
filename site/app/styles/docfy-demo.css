@@ -8,74 +8,102 @@
 
 .docfy-demo__description {
   @apply pb-5;
-
-  &__header {
-    @apply flex justify-between items-center mb-4;
-
-    &__title {
-      @apply text-xl font-semibold;
-    }
-
-    &__edit-url {
-      @apply text-xs;
-
-      &:hover {
-        @apply text-primary-600;
-      }
-    }
-  }
 }
 
-.docfy-demo__snippets {
-  &__tabs {
-    @apply px-2 border-t border-l border-r;
+.docfy-demo__description__header {
+  @apply flex justify-between items-center mb-4;
+}
 
-    &__button {
-      @apply p-2 mr-2 border-b-4 border-transparent;
+.docfy-demo__description__header__title {
+  @apply text-xl font-semibold;
+}
 
-      &--active,
-      &:hover {
-        @apply border-primary-700;
-      }
-    }
-  }
+.docfy-demo__description__header__edit-url {
+  @apply text-xs;
+}
+
+.docfy-demo__description__header__edit-url:hover {
+  @apply text-primary-600;
+}
+
+.docfy-demo__snippets__tabs {
+  @apply px-2 border-t border-l border-r;
+}
+
+.docfy-demo__snippets__tabs__button {
+  @apply p-2 mr-2 border-b-4 border-transparent;
+}
+
+.docfy-demo__snippets__tabs__button--active,
+.docfy-demo__snippets__tabs__button:hover {
+  @apply border-primary-700;
 }
 
 .docfy-demo__snippet {
   @apply border rounded-b;
+}
 
-  pre {
-    color: var(--tw-prose-pre-code);
-    background-color: var(--tw-prose-pre-bg);
-    @apply m-0;
-    @apply p-4;
-    @apply flex;
-    @apply text-sm leading-normal;
-    @apply font-mono;
-    @apply rounded-b;
-    @apply overflow-auto;
-    scrollbar-width: none;
+.docfy-demo__snippet pre {
+  color: var(--tw-prose-pre-code);
+  background-color: var(--tw-prose-pre-bg);
+  @apply m-0;
+  @apply p-4;
+  @apply flex;
+  @apply text-sm leading-normal;
+  @apply font-mono;
+  @apply rounded-b;
+  @apply overflow-auto;
+  scrollbar-width: none;
+}
+
+/* Dark mode styles */
+.dark .docfy-demo__example {
+  @apply bg-content1;
+  /* Temporary until Frontile supports dark mode */
+}
+
+.dark .docfy-demo__example,
+.dark .docfy-demo__description,
+.dark .docfy-demo__snippets__tabs,
+.dark .docfy-demo__snippet {
+  @apply border-default-100;
+}
+
+.dark .docfy-demo__snippet pre {
+  @apply border-default-100;
+}
+
+.dark .docfy-demo__description__header__title {
+  @apply text-primary-500;
+}
+
+.prose h2 > a,
+.prose h3 > a,
+.prose h4 > a,
+.docfy-demo__description__header__title > a {
+  @apply ml-6 lg:ml-0;
+}
+
+.prose h2 > a::before,
+.prose h3 > a::before,
+.prose h4 > a::before,
+.docfy-demo__description__header__title > a::before {
+  content: '#';
+  @apply text-primary-500 -ml-6 pr-2 absolute opacity-100;
+}
+
+@screen lg {
+  .prose h2 > a::before,
+  .prose h3 > a::before,
+  .prose h4 > a::before,
+  .docfy-demo__description__header__title > a::before {
+    @apply opacity-0 pr-1;
   }
 }
 
-.dark {
-  .docfy-demo__example {
-    @apply bg-content1;
-    /* Temorary until Frontile supports dark mode */
-  }
-
-  .docfy-demo__example,
-  .docfy-demo__description,
-  .docfy-demo__snippets__tabs,
-  .docfy-demo__snippet {
-    @apply border-default-100;
-  }
-
-  .docfy-demo__snippet pre {
-    @apply border-default-100;
-  }
-
-  .docfy-demo__description__header__title {
-    @apply text-primary-500;
-  }
+.prose h2:hover > a::before,
+.prose h3:hover > a::before,
+.prose h4:hover > a::before,
+.docfy-demo__description__header__title:hover > a::before {
+  @apply opacity-100;
 }

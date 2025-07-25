@@ -13,6 +13,7 @@
 /site/dist/
 /site/node_modules/
 /site/lib/**/node_modules/
+/site/app/templates/docs/
 
 # misc
 /.env*
