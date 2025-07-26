@@ -1,5 +1,6 @@
 @import "tailwindcss" source("../");
 @plugin "@frontile/theme/plugin/default";
+@plugin "@tailwindcss/typography";
 @source '../../node_modules/@frontile/theme';
 
 @font-face Inter {
@@ -19,6 +20,16 @@
 
 @theme {
   --font-family-sans: Inter, system-ui, sans-serif;
+  --color-brand: #4B65F7;
+  --z-index-1: 1;
+  --max-height-screen-16: calc(100vh - 4rem);
+}
+
+@layer components {
+  .prose code::before,
+  .prose code::after {
+    content: none;
+  }
 }
 
 @custom-variant dark (&:is(.dark *));
