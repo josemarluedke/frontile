@@ -10,8 +10,8 @@ const processor = unified().use(rehypeStringify);
 const components = docgen.parse([
   {
     root: path.resolve(path.join(__dirname, '../../')),
-    pattern: 'packages/*/declarations/components/**/*.ts'
-  }
+    pattern: 'packages/*/declarations/components/**/*.ts',
+  },
 ]);
 
 function highlight(property) {

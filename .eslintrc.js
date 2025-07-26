@@ -7,8 +7,15 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     'ember/no-empty-glimmer-component-classes': 'off',
-    'ember/no-runloop': 'off'
+    'ember/no-runloop': 'off',
+    'node/no-missing-require': 'off',
+    'node/no-missing-import': 'off',
+    'node/no-unpublished-import': 'off',
+    'node/no-unsupported-features/es-syntax': 'off'
   },
   overrides: [
     {

@@ -24,7 +24,7 @@ export default class IndexRoute extends Route {
       collections,
       status,
       overlays,
-      forms
+      forms,
     };
   }
 }

@@ -2,7 +2,10 @@
 /packages/*/blueprints/*/files/
 /packages/*/vendor/
 /site/vendor/
+/site/app/templates/docs/
 /test-app/vendor/
+site/ember-cli-build.js
+.prettierrc.js
 
 # compiled output
 /packages/*/dist/
