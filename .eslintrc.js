@@ -61,7 +61,9 @@ module.exports = {
         'test-app/tests/dummy/config/**/*.js',
         'test-app/tailwind.config.js',
         'test-app/.docfy-config.js',
-        'test-app/lib/docfy-theme/*.js'
+        'test-app/lib/docfy-theme/*.js',
+        'test-app/frontile.js',
+        'test-app/postcss.config.js'
       ],
       extends: ['@underline/eslint-config-node'],
       rules: {}
