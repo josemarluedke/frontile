@@ -8,7 +8,7 @@ const notificationsContainer = tv({
     'px-4',
     'fixed',
     'max-w-lg',
-    'z-[1000]'
+    'z-1000'
   ],
   variants: {
     placement: {

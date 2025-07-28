@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from '../tw';
 
-const obscurer = `before:bg-gradient-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
+const obscurer = `before:bg-linear-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 
 const overlay = tv({
   base: 'will-change-transform overflow-auto',
@@ -20,7 +20,7 @@ const backdrop = tv({
     type: {
       none: '',
       transparent: '',
-      blur: 'bg-overlay/[.45] backdrop-blur',
+      blur: 'bg-overlay/[.45] backdrop-blur-sm',
       faded: 'bg-overlay/[.45]'
     },
     inPlace: {
@@ -31,7 +31,7 @@ const backdrop = tv({
 
 const modal = tv({
   slots: {
-    base: 'flex flex-col shrink-0 relative text-content1-foreground bg-content1 rounded my-24 w-full outline-none overflow-hidden',
+    base: 'flex flex-col shrink-0 relative text-content1-foreground bg-content1 rounded-sm my-24 w-full outline-hidden overflow-hidden',
     closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
@@ -54,7 +54,7 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full shadow outline-none',
+    base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full shadow-sm outline-hidden',
     closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',

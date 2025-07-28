@@ -19,17 +19,6 @@ module.exports = function (defaults) {
         ['@frontile/forms', '@frontile/changeset-form']
       ]
     },
-    postcssOptions: {
-      compile: {
-        enabled: true,
-        includePaths: ['app', 'node_modules/@frontile/theme/dist'],
-        cacheInclude: [/.*\.(css|hbs|js|gts)$/, /tailwind\.config\.js$/],
-        plugins: [
-          require('tailwindcss')('./tailwind.config.js'),
-          require('autoprefixer')
-        ]
-      }
-    }
   });
 
   /*
@@ -40,5 +29,32 @@ module.exports = function (defaults) {
 */
 
   const { maybeEmbroider } = require('@embroider/test-setup');
-  return maybeEmbroider(app);
+  return maybeEmbroider(app, {
+    packagerOptions: {
+      webpackConfig: {
+        module: {
+          rules: [
+            {
+              test: /\.css$/i,
+              use: [
+                {
+                  loader: 'postcss-loader',
+                  options: {
+                    postcssOptions: {
+                      config: 'postcss.config.js'
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    // staticAddonTestSupportTrees: true,
+    // staticAddonTrees: true,
+    // // staticInvokables: true,
+    // staticEmberSource: true
+    // splitAtRoutes: ['route.name'], // can also be a RegExp
+  });
 };

@@ -1,0 +1,9 @@
+/* Due to Embroider + Webpack, this file's location is seen from webpack as:
+ * node_modules/.embroider/rewritten-app/
+ */
+
+@import "tailwindcss" source('./');
+/* @plugin "@frontile/theme/plugin/default"; */
+@plugin "../../../frontile.js";
+@source '../../@frontile';
+@custom-variant dark (&:is(.dark *));

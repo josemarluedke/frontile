@@ -55,9 +55,10 @@ This configuration ensures that Tailwind processes Frontile's styles and include
 For the default theme, add this to your `app/styles/app.css`:
 
 ```css
-@import "tailwindcss" source("../../");
+@import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @source '../../node_modules/@frontile';
+@custom-variant dark (&:is(.dark *));
 ```
 
 ##### Customizing Frontile Theme
@@ -67,13 +68,15 @@ To customize the frontile theme, create a file in the root of your project named
 ```js
 const { frontile } = require('@frontile/theme/plugin');
 
-module.exports = frontile({ /* your config */ });
+module.exports = frontile({
+  /* your config */
+});
 ```
 
 Then update your `app/styles/app.css` to use the custom configuration:
 
 ```css
-@import "tailwindcss" source("../../");
+@import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
 @source '../../node_modules/@frontile';
 ```

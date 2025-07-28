@@ -72,10 +72,11 @@ const input = tv({
       'text-base text-left text-foreground',
       'border',
       'border-default-400',
-      'rounded',
+      'rounded-sm',
       'leading-tight',
-      'focus:ring',
-      'focus:outline-none',
+      'focus:ring-3',
+      'focus:ring-focus',
+      'focus:outline-hidden',
       'focus:border-primary-400',
       'selection:bg-content3',
       'disabled:border-default-200 disabled:text-default-500',
@@ -174,7 +175,7 @@ const checkboxRadioGroupBase = tv({
 const checkbox = tv({
   extend: checkboxRadioBase,
   slots: {
-    input: ['checked-bg-checkbox', 'rounded-sm']
+    input: ['checked-bg-checkbox', 'rounded-xs']
   },
   variants: {
     size: {
@@ -221,7 +222,7 @@ const select = tv({
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
-    input: '[&:is(button)]:cursor-default',
+    input: '[button]:cursor-default',
     emptyContent: 'p-2'
   },
   variants: {
@@ -262,7 +263,7 @@ const switchInput = tv({
       'inline-flex',
       'items-center',
       'justify-start',
-      'flex-shrink-0',
+      'shrink-0',
       'overflow-hidden',
       'bg-default-300',
       'rounded-full',
@@ -283,7 +284,7 @@ const switchInput = tv({
       'w-full',
       'h-full',
       'opacity-[0.0001]',
-      'z-[1]',
+      'z-1',
       'cursor-pointer',
       'disabled:cursor-default'
     ],
