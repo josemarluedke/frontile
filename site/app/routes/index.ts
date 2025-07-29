@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import RouterService from '@ember/routing/router-service';
 import * as buttons from '@frontile/buttons';
 import * as utilities from '@frontile/utilities';
@@ -24,7 +24,7 @@ export default class IndexRoute extends Route {
       collections,
       status,
       overlays,
-      forms
+      forms,
     };
   }
 }

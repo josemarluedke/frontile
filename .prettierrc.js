@@ -1,3 +1,4 @@
+/* eslint-disable node/no-missing-require */
 const defaults = require('@underline/eslint-config/.prettierrc.js');
 module.exports = {
   ...defaults,

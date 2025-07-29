@@ -1,6 +1,10 @@
 import { getOwner } from '@ember/owner';
 
 export function getDOM(context: object): Document | null {
+  if (typeof document !== 'undefined') {
+    return document;
+  }
+
   const container = getOwner(context);
   if (!container) {
     return null;

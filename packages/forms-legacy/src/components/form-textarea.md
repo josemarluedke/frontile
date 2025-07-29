@@ -1,3 +1,7 @@
+---
+imports:
+  - import Signature from 'site/components/signature';
+---
 # FormTextarea
 
 ## API

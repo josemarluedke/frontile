@@ -1,7 +1,7 @@
 import Modifier, {
   type ArgsFor,
   type PositionalArgs,
-  type NamedArgs
+  type NamedArgs,
 } from 'ember-modifier';
 import { action } from '@ember/object';
 import { registerDestructor } from '@ember/destroyable';
@@ -99,7 +99,7 @@ export default class IntersectHeadingsModifier extends Modifier<Signature> {
     if ('IntersectionObserver' in window) {
       this.observer = new IntersectionObserver(this.handleObserver, {
         rootMargin: '-96px', // Distance from top to heading id
-        threshold: 1.0
+        threshold: 1.0,
       });
 
       this.headings.forEach((id) => {

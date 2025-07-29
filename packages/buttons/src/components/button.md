@@ -1,3 +1,7 @@
+---
+imports:
+  - import Signature from 'site/components/signature';
+---
 # Button
 
 The Button component can be used to trigger an action, such as submitting a form, opening a modal, and more.

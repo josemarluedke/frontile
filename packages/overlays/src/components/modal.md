@@ -1,5 +1,7 @@
 ---
 url: modal
+imports:
+  - import Signature from 'site/components/signature';
 ---
 
 # Modal

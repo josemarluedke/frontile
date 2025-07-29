@@ -1,32 +1,39 @@
-@import './inter-font.css';
-@import './highlight.css';
-@import './docfy-demo.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" source("../");
+@plugin "@frontile/theme/plugin/default";
+@plugin "@tailwindcss/typography";
+@source '../../node_modules/@frontile/theme';
 
-.prose h2,
-.prose h3,
-.prose h4,
-.docfy-demo__description__header__title {
-  & > a {
-    @apply ml-6 lg:ml-0;
-    @apply lg:ml-0;
+@font-face Inter {
+  src: url(/assets/fonts/inter-var-latin-ext.woff2) format('woff2');
+  unicode-range:
+    U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
 
-    &::before {
-      content: '#';
-      @apply text-primary-500 -ml-6 pr-2 absolute opacity-100;
-    }
+@font-face Inter {
+  src: url(/assets/fonts/inter-var-latin.woff2) format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
+}
 
-    @screen lg {
-      &::before {
-        @apply opacity-0 pr-1;
-      }
-    }
-  }
-  &:hover {
-    & > a::before {
-      @apply opacity-100;
-    }
+@theme {
+  --font-family-sans: Inter, system-ui, sans-serif;
+  --color-brand: #4B65F7;
+  --z-index-1: 1;
+  --max-height-screen-16: calc(100vh - 4rem);
+}
+
+@layer components {
+  .prose code::before,
+  .prose code::after {
+    content: none;
   }
 }
+
+@custom-variant dark (&:is(.dark *));
+@custom-variant focus-visible (&[data-focus-visible-added]);
+
+@import './highlight.css';
+@import './docfy-demo.css';

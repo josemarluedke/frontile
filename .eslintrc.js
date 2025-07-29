@@ -7,8 +7,15 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     'ember/no-empty-glimmer-component-classes': 'off',
-    'ember/no-runloop': 'off'
+    'ember/no-runloop': 'off',
+    'node/no-missing-require': 'off',
+    'node/no-missing-import': 'off',
+    'node/no-unpublished-import': 'off',
+    'node/no-unsupported-features/es-syntax': 'off'
   },
   overrides: [
     {
@@ -54,7 +61,9 @@ module.exports = {
         'test-app/tests/dummy/config/**/*.js',
         'test-app/tailwind.config.js',
         'test-app/.docfy-config.js',
-        'test-app/lib/docfy-theme/*.js'
+        'test-app/lib/docfy-theme/*.js',
+        'test-app/frontile.js',
+        'test-app/postcss.config.js'
       ],
       extends: ['@underline/eslint-config-node'],
       rules: {}

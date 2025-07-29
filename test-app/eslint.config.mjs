@@ -87,6 +87,8 @@ export default [
       '.stylelintrc.js',
       '.template-lintrc.js',
       'ember-cli-build.js',
+      'frontile.js',
+      'postcss.config.js'
     ],
     plugins: {
       n,

@@ -2,7 +2,7 @@
 import Component from '@glimmer/component';
 import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';

@@ -1,3 +1,7 @@
+---
+imports:
+  - import Signature from 'site/components/signature';
+---
 # FormSelect
 
 We use [Ember Power Select](https://github.com/cibernox/ember-power-select/)

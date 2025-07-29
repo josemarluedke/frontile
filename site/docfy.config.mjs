@@ -1,13 +1,17 @@
-const path = require('path');
-const autolinkHeadings = require('remark-autolink-headings');
-const highlight = require('rehype-highlight');
-const codeImport = require('remark-code-import');
-const withProse = require('@docfy/plugin-with-prose');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import autolinkHeadings from 'remark-autolink-headings';
+import highlight from 'rehype-highlight';
+import codeImport from 'remark-code-import';
+import withProse from '@docfy/plugin-with-prose';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * @type {import('@docfy/core/lib/types').DocfyConfig}
  */
-module.exports = {
+export default {
   repository: {
     url: 'https://github.com/josemarluedke/frontile',
     editBranch: 'main'
@@ -29,10 +33,9 @@ module.exports = {
       pattern: '**/*.md',
       urlPrefix: 'docs'
     },
-
     ...[
       'buttons',
-      'changeset-form',
+      // 'changeset-form',
       'utilities',
       'status',
       'collections',

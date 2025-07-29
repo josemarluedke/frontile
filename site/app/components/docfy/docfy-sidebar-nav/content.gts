@@ -12,8 +12,12 @@ interface Signature {
   Element: HTMLDivElement;
 }
 
-class Label extends Component<{ Args: { label: string } }> {
+class Label extends Component<{ Args: { label: unknown } }> {
   get intent() {
+    if (typeof this.args.label !== 'string') {
+      return 'default';
+    }
+
     if (this.args.label.toLowerCase() == 'new') {
       return 'primary';
     } else if (this.args.label.toLowerCase() == 'updated') {
@@ -25,6 +29,10 @@ class Label extends Component<{ Args: { label: string } }> {
     }
   }
 
+  get label() {
+    return typeof this.args.label === 'string' ? this.args.label : '';
+  }
+
   <template>
     <Chip
       @size="sm"
@@ -32,7 +40,7 @@ class Label extends Component<{ Args: { label: string } }> {
       @intent={{this.intent}}
       @class="ml-1"
     >
-      {{@label}}
+      {{this.label}}
     </Chip>
   </template>
 }

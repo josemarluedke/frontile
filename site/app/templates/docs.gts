@@ -1,4 +1,3 @@
-import RouteTemplate from 'ember-route-template';
 import DocfyPage from '../components/docfy/docfy-page';
 
 const docs = <template>
@@ -7,4 +6,4 @@ const docs = <template>
   </DocfyPage>
 </template>;
 
-export default RouteTemplate(docs);
+export default docs;

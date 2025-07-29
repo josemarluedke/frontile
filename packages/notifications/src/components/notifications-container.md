@@ -1,5 +1,7 @@
 ---
 category: components
+imports:
+  - import Signature from 'site/components/signature';
 ---
 
 # NotificationsContainer
