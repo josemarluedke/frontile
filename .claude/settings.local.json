@@ -4,7 +4,11 @@
       "Bash(pnpm lint:js:*)",
       "Bash(pnpm list:*)",
       "Bash(find:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run:*)"
     ],
     "deny": []
   }
