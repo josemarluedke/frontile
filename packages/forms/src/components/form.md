@@ -321,7 +321,7 @@ export default class ComprehensiveForm extends Component {
 
 ### Form Validation Integration
 
-The Form component works seamlessly with validation logic by providing access to the current form state.
+The Form component works seamlessly with validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -334,6 +334,7 @@ import {
   type FormResultData
 } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
 
 export default class ValidatedForm extends Component {
   @tracked formData: FormResultData = {};
@@ -348,24 +349,76 @@ export default class ValidatedForm extends Component {
     { label: 'Enterprise', key: 'enterprise' }
   ];
 
+  // Valibot schema for form validation
+  FormSchema = v.object({
+    name: v.pipe(
+      v.string(),
+      v.nonEmpty('Name is required'),
+      v.minLength(2, 'Name must be at least 2 characters')
+    ),
+    email: v.pipe(
+      v.string(),
+      v.nonEmpty('Email is required'),
+      v.email('Please enter a valid email address')
+    ),
+    password: v.pipe(
+      v.string(),
+      v.nonEmpty('Password is required'),
+      v.minLength(6, 'Password must be at least 6 characters'),
+      v.regex(/[A-Z]/, 'Password must contain at least one uppercase letter'),
+      v.regex(/[a-z]/, 'Password must contain at least one lowercase letter'),
+      v.regex(/\d/, 'Password must contain at least one number')
+    ),
+    accountType: v.pipe(
+      v.array(v.string()),
+      v.minLength(1, 'Please select an account type')
+    ),
+    terms: v.pipe(
+      v.boolean(),
+      v.literal(true, 'You must accept the terms and conditions')
+    )
+  });
+
   handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
     this.formData = data;
 
     if (eventType === 'submit') {
       this.handleSubmit(data);
     } else {
-      // Clear errors on input for fields that now have values
-      const newErrors = { ...this.errors };
-      Object.keys(data).forEach((key) => {
-        if (data[key] && newErrors[key]) {
-          delete newErrors[key];
-        }
-      });
-      // Also clear errors when select changes
-      if (this.selectedAccountType.length > 0 && newErrors.accountType) {
-        delete newErrors.accountType;
+      // Real-time validation on input changes
+      this.validateField(data);
+    }
+  };
+
+  validateField = (data: FormResultData) => {
+    // Prepare data for validation
+    const validationData = {
+      ...data,
+      accountType: this.selectedAccountType
+    };
+
+    // Try to parse the entire form, but only clear errors for valid fields
+    try {
+      v.parse(this.FormSchema, validationData);
+      // If validation passes completely, clear all errors
+      this.errors = {};
+    } catch (error) {
+      if (error instanceof v.ValiError) {
+        // Keep existing errors, but clear errors for fields that are now valid
+        const newErrors = { ...this.errors };
+        const invalidFields = new Set(
+          error.issues.map((issue) => issue.path?.[0]?.key).filter(Boolean)
+        );
+
+        // Clear errors for fields that are no longer invalid
+        Object.keys(newErrors).forEach((field) => {
+          if (!invalidFields.has(field)) {
+            delete newErrors[field];
+          }
+        });
+
+        this.errors = newErrors;
       }
-      this.errors = newErrors;
     }
   };
 
@@ -374,50 +427,39 @@ export default class ValidatedForm extends Component {
     this.errors = {};
     this.submitMessage = '';
 
-    // Validate form data
-    const validationErrors: Record<string, string[]> = {};
+    // Prepare data for validation
+    const validationData = {
+      ...data,
+      accountType: this.selectedAccountType
+    };
 
-    if (!data.name || typeof data.name !== 'string' || !data.name.trim()) {
-      validationErrors.name = ['Name is required'];
-    }
-
-    if (
-      !data.email ||
-      typeof data.email !== 'string' ||
-      !data.email.includes('@')
-    ) {
-      validationErrors.email = ['Valid email is required'];
-    }
-
-    if (
-      !data.password ||
-      typeof data.password !== 'string' ||
-      data.password.length < 6
-    ) {
-      validationErrors.password = ['Password must be at least 6 characters'];
-    }
-
-    if (this.selectedAccountType.length === 0) {
-      validationErrors.accountType = ['Please select an account type'];
-    }
-
-    if (!data.terms) {
-      validationErrors.terms = ['You must accept the terms and conditions'];
-    }
-
-    if (Object.keys(validationErrors).length > 0) {
-      this.errors = validationErrors;
-      this.isSubmitting = false;
-      return;
-    }
-
-    // Simulate API call
+    // Validate using Valibot
     try {
+      const validatedData = v.parse(this.FormSchema, validationData);
+
+      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       this.submitMessage = 'Account created successfully!';
-      console.log('Form submitted successfully:', data);
+      console.log('Form submitted successfully:', validatedData);
     } catch (error) {
-      this.submitMessage = 'An error occurred. Please try again.';
+      if (error instanceof v.ValiError) {
+        // Convert Valibot errors to our error format
+        const validationErrors: Record<string, string[]> = {};
+
+        for (const issue of error.issues) {
+          const path = issue.path?.[0]?.key as string;
+          if (path) {
+            if (!validationErrors[path]) {
+              validationErrors[path] = [];
+            }
+            validationErrors[path].push(issue.message);
+          }
+        }
+
+        this.errors = validationErrors;
+      } else {
+        this.submitMessage = 'An error occurred. Please try again.';
+      }
     } finally {
       this.isSubmitting = false;
     }
@@ -770,7 +812,22 @@ export default class CustomHandlingForm extends Component {
 
 ### Form Validation
 
+For scalable form validation, we recommend using validation libraries like [Valibot](https://valibot.dev/):
+
 ```typescript
+// Define a Valibot schema for type-safe validation
+FormSchema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.minLength(6, 'Password must be at least 6 characters')
+  )
+});
+
 // Validate on both input and submit events
 handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
   if (eventType === 'input') {
@@ -779,6 +836,19 @@ handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
   } else {
     // Comprehensive validation on submit
     this.validateAndSubmit(data);
+  }
+};
+
+validateAndSubmit = async (data: FormResultData) => {
+  try {
+    const validatedData = v.parse(this.FormSchema, data);
+    // Proceed with form submission
+  } catch (error) {
+    if (error instanceof v.ValiError) {
+      // Convert Valibot errors to component error format
+      const validationErrors = this.formatValiError(error);
+      this.errors = validationErrors;
+    }
   }
 };
 ```
