@@ -4,7 +4,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { concat } from '@ember/helper';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import DocfyLink from '@docfy/ember/components/docfy-link';
 import { Chip } from '@frontile/buttons';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';

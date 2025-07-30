@@ -8,7 +8,7 @@ url: /
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { fn, hash } from '@ember/helper';
@@ -73,11 +73,11 @@ export default class Demo extends Component<DemoArgs> {
   }
 
   get selectedCustomActionKeys(): string[] {
-    return this.options.customActions?.map(action => action.key!) || [];
+    return this.options.customActions?.map((action) => action.key!) || [];
   }
 
   @action onCustomActionsChange(selectedKeys: string[]): void {
-    const selectedActions = this.customActions.filter(action => 
+    const selectedActions = this.customActions.filter((action) =>
       selectedKeys.includes(action.key!)
     );
     this.setValue('customActions', selectedActions);
