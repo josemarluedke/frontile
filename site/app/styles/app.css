@@ -2,6 +2,7 @@
 @plugin "@frontile/theme/plugin/default";
 @plugin "@tailwindcss/typography";
 @source '../../node_modules/@frontile/theme';
+@source '../templates/docs/';
 
 @font-face Inter {
   src: url(/assets/fonts/inter-var-latin-ext.woff2) format('woff2');

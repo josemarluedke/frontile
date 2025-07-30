@@ -38,7 +38,7 @@
     "@babel/plugin-transform-typescript": "^7.28.0",
     "@babel/runtime": "^7.28.2",
     "@docfy/core": "^0.10.4",
-    "@docfy/ember": "^0.10.4",
+    "@docfy/ember": "^0.10.6",
     "@docfy/ember-vite": "^0.10.5",
     "@docfy/plugin-with-prose": "^0.10.4",
     "@ember/app-tsconfig": "^1.0.3",

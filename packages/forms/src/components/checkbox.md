@@ -98,30 +98,28 @@ export default class IndependentCheckboxes extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='space-y-3'>
-        <Checkbox
-          @name='email-notifications'
-          @label='Email notifications'
-          @checked={{this.notifications.email}}
-          @onChange={{this.updateEmailNotifications}}
-        />
+      <Checkbox
+        @name='email-notifications'
+        @label='Email notifications'
+        @checked={{this.notifications.email}}
+        @onChange={{this.updateEmailNotifications}}
+      />
 
-        <Checkbox
-          @name='sms-notifications'
-          @label='SMS notifications'
-          @checked={{this.notifications.sms}}
-          @onChange={{this.updateSmsNotifications}}
-        />
+      <Checkbox
+        @name='sms-notifications'
+        @label='SMS notifications'
+        @checked={{this.notifications.sms}}
+        @onChange={{this.updateSmsNotifications}}
+      />
 
-        <Checkbox
-          @name='push-notifications'
-          @label='Push notifications'
-          @checked={{this.notifications.push}}
-          @onChange={{this.updatePushNotifications}}
-        />
-      </div>
+      <Checkbox
+        @name='push-notifications'
+        @label='Push notifications'
+        @checked={{this.notifications.push}}
+        @onChange={{this.updatePushNotifications}}
+      />
 
-      <div class='p-4 bg-gray-50 rounded'>
+      <div class='p-4 bg-default-50 rounded'>
         <h4 class='font-medium mb-2'>Enabled Notifications:</h4>
         <p class='text-sm'>
           {{if

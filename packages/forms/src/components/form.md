@@ -47,7 +47,7 @@ export default class BasicForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='flex flex-col gap-4 w-80'>
       <Form @onChange={{this.handleFormChange}}>
         <div class='flex flex-col gap-4'>
           <Input @name='firstName' @label='First Name' />
@@ -162,7 +162,7 @@ export default class RealtimeForm extends Component {
       </Form>
 
       <div class='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div class='p-4 bg-blue-50 rounded'>
+        <div class='p-4 bg-warning-50 rounded'>
           <h4 class='font-medium mb-2'>Input Events (Real-time):</h4>
           <pre class='text-sm overflow-auto'>{{JSON.stringify
               this.inputData
@@ -480,7 +480,7 @@ export default class ValidatedForm extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='flex flex-col gap-4 w-80'>
       <Form @onChange={{this.handleFormChange}}>
         <div class='flex flex-col gap-4'>
 
@@ -544,28 +544,6 @@ export default class ValidatedForm extends Component {
           {{this.submitMessage}}
         </div>
       {{/if}}
-
-      <div class='p-4 bg-default-50 rounded'>
-        <h4 class='font-medium mb-2'>Current Form State:</h4>
-        <div class='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
-          <div>
-            <strong>Form Data:</strong>
-            <pre class='mt-1 overflow-auto'>{{JSON.stringify
-                this.formData
-                null
-                2
-              }}</pre>
-          </div>
-          <div>
-            <strong>Validation Errors:</strong>
-            <pre class='mt-1 overflow-auto'>{{JSON.stringify
-                this.errors
-                null
-                2
-              }}</pre>
-          </div>
-        </div>
-      </div>
     </div>
   </template>
 }
@@ -586,7 +564,6 @@ export default class CustomHandlingForm extends Component {
   @tracked validationErrors: Record<string, string[]> = {};
   @tracked isSubmitting = false;
   @tracked submitCount = 0;
-  @tracked lastSubmitTime: Date | null = null;
 
   handleFormChange = (
     data: FormResultData,
@@ -650,7 +627,6 @@ export default class CustomHandlingForm extends Component {
   handleFormSubmission = async (data: FormResultData, event: SubmitEvent) => {
     this.isSubmitting = true;
     this.submitCount += 1;
-    this.lastSubmitTime = new Date();
 
     // Comprehensive validation on submit
     const errors: Record<string, string[]> = {};
@@ -685,12 +661,6 @@ export default class CustomHandlingForm extends Component {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log('Form submitted successfully:', {
-        data,
-        submitTime: this.lastSubmitTime,
-        submitCount: this.submitCount
-      });
-
       // Reset form on successful submission
       this.formData = {};
       this.validationErrors = {};
@@ -709,12 +679,6 @@ export default class CustomHandlingForm extends Component {
 
   get isSubmitDisabled() {
     return this.isSubmitting || this.hasValidationErrors;
-  }
-
-  get validationErrorCount() {
-    return this.validationErrors
-      ? Object.keys(this.validationErrors).length
-      : 0;
   }
 
   <template>
@@ -750,7 +714,7 @@ export default class CustomHandlingForm extends Component {
             @errors={{this.validationErrors.agreeToTerms}}
           />
 
-          <Button type='submit' @isDisabled={{this.isSubmitDisabled}}>
+          <Button type='submit' disabled={{this.isSubmitDisabled}}>
             {{#if this.isSubmitting}}
               Submitting...
               {{this.submitCount}}
@@ -760,28 +724,6 @@ export default class CustomHandlingForm extends Component {
           </Button>
         </div>
       </Form>
-
-      <!-- Status Display -->
-      <div class='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
-        <div class='p-3 bg-blue-50 rounded'>
-          <h4 class='font-medium mb-1'>Submit Count</h4>
-          <p>{{this.submitCount}}</p>
-        </div>
-
-        <div class='p-3 bg-success-50 rounded'>
-          <h4 class='font-medium mb-1'>Last Submit</h4>
-          <p>{{if
-              this.lastSubmitTime
-              this.lastSubmitTime.toLocaleTimeString
-              'Never'
-            }}</p>
-        </div>
-
-        <div class='p-3 bg-danger-50 rounded'>
-          <h4 class='font-medium mb-1'>Validation Errors</h4>
-          <p>{{this.validationErrorCount}}</p>
-        </div>
-      </div>
     </div>
   </template>
 }
