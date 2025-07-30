@@ -192,6 +192,43 @@ export default class CheckboxSizes extends Component {
 }
 ```
 
+### Disabled State
+
+Checkboxes can be disabled to prevent user interaction while maintaining their visual presence and current state.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Checkbox } from '@frontile/forms';
+
+export default class DisabledCheckbox extends Component {
+  <template>
+    <div class='flex flex-col gap-4'>
+      <Checkbox
+        @name='disabled-checked'
+        @label='Disabled Checked Checkbox'
+        @checked={{true}}
+        disabled={{true}}
+      />
+
+      <Checkbox
+        @name='disabled-unchecked'
+        @label='Disabled Unchecked Checkbox'
+        @checked={{false}}
+        disabled={{true}}
+      />
+
+      <Checkbox
+        @name='disabled-with-description'
+        @label='Disabled Checkbox with Description'
+        @description='This checkbox is disabled and cannot be modified'
+        @checked={{true}}
+        disabled={{true}}
+      />
+    </div>
+  </template>
+}
+```
+
 ### Checkbox with Description
 
 Add helpful description text that appears below the checkbox label.

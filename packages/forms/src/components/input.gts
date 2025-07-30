@@ -66,7 +66,7 @@ function or(arg1: unknown, arg2: unknown): boolean {
 }
 
 class Input extends Component<InputSignature> {
-  @tracked uncontrolledValue: string = '';
+  @tracked uncontrolledValue: string = this.args.value || '';
 
   inputRef = ref<HTMLInputElement>();
 

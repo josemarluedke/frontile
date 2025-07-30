@@ -23,9 +23,7 @@ The most basic usage of the Textarea component with only a label.
 ```gts preview
 import { Textarea } from '@frontile/forms';
 
-<template>
-  <Textarea @label='Message' />
-</template>
+<template><Textarea @label='Message' /></template>
 ```
 
 ### Controlled Textarea
@@ -53,7 +51,8 @@ export default class ControlledTextarea extends Component {
         placeholder='Enter your message here...'
       />
       <div class='p-3 border border-default-300 rounded'>
-        <p class='text-sm text-default-600'>Character count: {{this.message.length}}</p>
+        <p class='text-sm text-default-600'>Character count:
+          {{this.message.length}}</p>
         <p class='text-sm'>Current message: {{this.message}}</p>
       </div>
     </div>
@@ -115,6 +114,36 @@ export default class TextareaSizes extends Component {
 }
 ```
 
+### Disabled State
+
+Textarea fields can be disabled to prevent user interaction while maintaining their visual presence and current value.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Textarea } from '@frontile/forms';
+
+export default class DisabledTextarea extends Component {
+  <template>
+    <div class='flex flex-col gap-4'>
+      <Textarea
+        @label='Disabled Basic Textarea'
+        @value='This text cannot be edited or modified. The textarea is in a disabled state.'
+        disabled={{true}}
+        rows='3'
+      />
+
+      <Textarea
+        @label='Disabled Textarea with Description'
+        @description='This textarea is disabled and shows how the component appears when not interactive'
+        @value='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        disabled={{true}}
+        rows='4'
+      />
+    </div>
+  </template>
+}
+```
+
 ### Rows and Resize Behavior
 
 Control the initial height and resize behavior using standard HTML attributes.
@@ -151,7 +180,7 @@ export default class TextareaRowsExample extends Component {
         style='resize: none;'
         placeholder='This textarea cannot be resized'
       />
-      
+
       <Textarea
         @label='Vertical Resize Only'
         @value={{this.verticalMessage}}
@@ -160,7 +189,7 @@ export default class TextareaRowsExample extends Component {
         style='resize: vertical;'
         placeholder='This textarea can only be resized vertically'
       />
-      
+
       <Textarea
         @label='Tall Textarea'
         @value={{this.tallMessage}}
@@ -205,15 +234,17 @@ export default class TextareaEvents extends Component {
         @onChange={{this.handleChange}}
         placeholder='Type something and then click outside to see the difference between onInput and onChange'
       />
-      
+
       <div class='p-4 bg-gray-50 rounded'>
         <div class='grid grid-cols-2 gap-4 text-sm'>
           <div>
-            <strong>onInput events:</strong> {{this.inputEvents}}
+            <strong>onInput events:</strong>
+            {{this.inputEvents}}
             <p class='text-gray-600'>Fires on every keystroke</p>
           </div>
           <div>
-            <strong>onChange events:</strong> {{this.changeEvents}}
+            <strong>onChange events:</strong>
+            {{this.changeEvents}}
             <p class='text-gray-600'>Fires when focus is lost</p>
           </div>
         </div>
@@ -391,7 +422,7 @@ export default class CompleteFormWithTextarea extends Component {
   <template>
     <form {{on 'submit' this.handleSubmit}}>
       <div class='flex flex-col gap-4'>
-        
+
         <Input
           @label='Email Address'
           @type='email'

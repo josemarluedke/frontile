@@ -244,6 +244,43 @@ export default class RadioSizes extends Component {
 }
 ```
 
+### Disabled State
+
+Radio buttons can be disabled to prevent user interaction while maintaining their visual presence and current state.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Radio } from '@frontile/forms';
+
+export default class DisabledRadio extends Component {
+  <template>
+    <div class='flex flex-col gap-4'>
+      <Radio
+        @name='disabled-plan'
+        @label='Basic Plan - $9/month'
+        @value='basic'
+        @checkedValue='basic'
+        disabled={{true}}
+      />
+
+      <Radio
+        @name='disabled-plan'
+        @label='Pro Plan - $19/month'
+        @value='pro'
+        disabled={{true}}
+      />
+
+      <Radio
+        @name='disabled-plan'
+        @label='Enterprise Plan - $49/month'
+        @value='enterprise'
+        disabled={{true}}
+      />
+    </div>
+  </template>
+}
+```
+
 ### Radio with Description
 
 Add helpful description text that appears below the radio label.

@@ -8,7 +8,8 @@
       "Bash(npm run lint:*)",
       "Bash(npx eslint:*)",
       "Bash(npm run build:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
