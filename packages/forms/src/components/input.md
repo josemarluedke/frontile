@@ -94,6 +94,35 @@ export default class InputSizes extends Component {
 }
 ```
 
+### Disabled State
+
+Input fields can be disabled to prevent user interaction while maintaining their visual presence and current value.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Input } from '@frontile/forms';
+
+export default class DisabledInput extends Component {
+  <template>
+    <div class='flex flex-col gap-4'>
+      <Input
+        @label='Disabled Text Input'
+        @value='This text cannot be edited'
+        disabled={{true}}
+      />
+
+      <Input
+        @label='Disabled Input with Description'
+        @description='This input is disabled and cannot be modified'
+        @value='Sample value'
+        disabled={{true}}
+      />
+
+    </div>
+  </template>
+}
+```
+
 ### Start and End Content
 
 You can add custom content at the beginning or end of the input using named blocks.
