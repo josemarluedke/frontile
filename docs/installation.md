@@ -12,22 +12,60 @@ want in your project. Here you can find information on how to install all the pa
 ```sh
 # Independently of which other packages you will use,
 # you will need to have those two packages installed:
-ember install @frontile/utilities
-ember install @frontile/theme
+pnpm install @frontile/utilities
+pnpm install @frontile/theme
 
 # Optional packages:
-ember install @frontile/buttons
-ember install @frontile/collections
-ember install @frontile/status
-ember install @frontile/forms
-ember install @frontile/changeset-form
-ember install @frontile/notifications
-ember install @frontile/overlays
+pnpm install @frontile/buttons
+pnpm install @frontile/collections
+pnpm install @frontile/status
+pnpm install @frontile/forms
+pnpm install @frontile/notifications
+pnpm install @frontile/overlays
 ```
+
+> **Note:** The following packages are deprecated and will be removed before v1 release:
+> - `@frontile/changeset-form` - Use `@frontile/forms` instead for form handling
+> - `@frontile/forms-legacy` - Migrate to the new `@frontile/forms` package
 
 ## Setup Theme
 
-Add `frontile` plugin to your tailwind `tailwind.config.js`, add options to `content` and `safelist`.
+### Tailwind CSS v4 (Recommended)
+
+#### Using Default Theme
+
+For the default theme, add this to your `app/styles/app.css`:
+
+```css
+@import 'tailwindcss' source('../../');
+@plugin "@frontile/theme/plugin/default";
+@source '../../node_modules/@frontile';
+@custom-variant dark (&:is(.dark *));
+```
+
+#### Customizing Frontile Theme
+
+To customize the frontile theme, create a file in the root of your project named `frontile.js` with the following content:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({
+  /* your config */
+});
+```
+
+Then update your `app/styles/app.css` to use the custom configuration:
+
+```css
+@import 'tailwindcss' source('../../');
+@plugin "./../../frontile.js";
+@source '../../node_modules/@frontile';
+```
+
+### Tailwind CSS v3 (Legacy)
+
+For projects still using Tailwind CSS v3, add `frontile` plugin to your `tailwind.config.js`, add options to `content` and `safelist`.
 
 ```js
 // tailwind.config.js
