@@ -14,7 +14,7 @@ function drawerSizes(
     if (key !== 'full') {
       rules = {
         ...rules,
-        [`@media(max - height: calc(${size} + ${margin}))`]: {
+        [`@media(max-height: calc(${size} + ${margin}))`]: {
           maxHeight: `calc(100vh - ${margin})`
         }
       };
@@ -28,7 +28,7 @@ function drawerSizes(
     if (key !== 'full') {
       rules = {
         ...rules,
-        [`@media(max - width: calc(${size} + ${margin}))`]: {
+        [`@media(max-width: calc(${size} + ${margin}))`]: {
           maxWidth: `calc(100vw - ${margin})`
         }
       };
@@ -58,7 +58,7 @@ function modalSizes(
     } else {
       rules = {
         maxWidth: size,
-        [`@media(max - width: ${size})`]: {
+        [`@media(max-width: ${size})`]: {
           maxWidth: `calc(100vw - ${margin})`
         }
       };
