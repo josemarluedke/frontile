@@ -121,6 +121,16 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
       .hasClass(/pointer-events-auto/);
   });
 
+  test('it renders the @value in the HTML', async function (assert) {
+    await render(
+      <template>
+        <Input @label="Name" @value="Hello World" data-test-input />
+      </template>
+    );
+
+    assert.dom('[data-test-input]').hasValue('Hello World');
+  });
+
   test('should mutate the value using onInput action', async function (assert) {
     const myInputValue = cell('Josemar');
     const updateValue = (value: string) => (myInputValue.current = value);
@@ -233,5 +243,143 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     await click('[data-test-id="input-clear-button"]');
     assert.equal(value.current, '');
+  });
+
+  test('uncontrolled input behavior', async function (assert) {
+    // No onChange or onInput callbacks provided = uncontrolled
+    await render(
+      <template>
+        <Input @label="Name" @value="Initial Value" data-test-input />
+      </template>
+    );
+
+    // Initial value should be rendered
+    assert.dom('[data-test-input]').hasValue('Initial Value');
+
+    // User can type and change the value
+    await fillIn('[data-test-input]', 'User Typed Value');
+    assert.dom('[data-test-input]').hasValue('User Typed Value');
+
+    // The input manages its own state internally
+  });
+
+  test('controlled input behavior with onChange', async function (assert) {
+    const value = cell('Controlled Value');
+    const onChange = (newValue: string) => {
+      value.current = newValue;
+    };
+
+    await render(
+      <template>
+        <Input
+          @label="Name"
+          @value={{value.current}}
+          @onChange={{onChange}}
+          data-test-input
+        />
+      </template>
+    );
+
+    // Initial controlled value should be rendered
+    assert.dom('[data-test-input]').hasValue('Controlled Value');
+
+    // When user types, onChange callback should be called and state updated
+    await fillIn('[data-test-input]', 'New Controlled Value');
+    assert.equal(
+      value.current,
+      'New Controlled Value',
+      'onChange callback should update the state'
+    );
+    assert.dom('[data-test-input]').hasValue('New Controlled Value');
+  });
+
+  test('controlled input behavior with onInput', async function (assert) {
+    const value = cell('Input Controlled');
+    const onInput = (newValue: string) => {
+      value.current = newValue;
+    };
+
+    await render(
+      <template>
+        <Input
+          @label="Name"
+          @value={{value.current}}
+          @onInput={{onInput}}
+          data-test-input
+        />
+      </template>
+    );
+
+    // Initial controlled value should be rendered
+    assert.dom('[data-test-input]').hasValue('Input Controlled');
+
+    // When user types, onInput callback should be called and state updated
+    await fillIn('[data-test-input]', 'New Input Value');
+    assert.equal(
+      value.current,
+      'New Input Value',
+      'onInput callback should update the state'
+    );
+    assert.dom('[data-test-input]').hasValue('New Input Value');
+  });
+
+  test('controlled input behavior with both onChange and onInput', async function (assert) {
+    const value = cell('Both Callbacks');
+    const inputCalls: string[] = [];
+    const changeCalls: string[] = [];
+
+    const onInput = (newValue: string) => {
+      value.current = newValue;
+      inputCalls.push(newValue);
+    };
+
+    const onChange = (newValue: string) => {
+      changeCalls.push(newValue);
+    };
+
+    await render(
+      <template>
+        <Input
+          @label="Name"
+          @value={{value.current}}
+          @onInput={{onInput}}
+          @onChange={{onChange}}
+          data-test-input
+        />
+      </template>
+    );
+
+    // Initial controlled value should be rendered
+    assert.dom('[data-test-input]').hasValue('Both Callbacks');
+
+    // When user types, both callbacks should be called
+    await fillIn('[data-test-input]', 'Updated Value');
+
+    assert.equal(
+      value.current,
+      'Updated Value',
+      'onInput callback should update the state'
+    );
+    assert.ok(inputCalls.includes('Updated Value'), 'onInput should be called');
+    assert.ok(
+      changeCalls.includes('Updated Value'),
+      'onChange should be called'
+    );
+    assert.dom('[data-test-input]').hasValue('Updated Value');
+  });
+
+  test('uncontrolled input with initial value', async function (assert) {
+    // Uncontrolled input can have an initial value but no callbacks
+    await render(
+      <template>
+        <Input @label="Name" @value="Initial" data-test-input />
+      </template>
+    );
+
+    assert.dom('[data-test-input]').hasValue('Initial');
+
+    // User can change the value and it persists
+    await fillIn('[data-test-input]', 'Changed by user');
+    assert.dom('[data-test-input]').hasValue('Changed by user');
   });
 });
