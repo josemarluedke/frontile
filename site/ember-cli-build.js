@@ -20,9 +20,9 @@ const postcssPlugins = [
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
-    prember: {
-      urls: ['/']
-    },
+    // prember: {
+    //   urls: ['/']
+    // },
     fastboot: {
       hostWhitelist: [/^localhost:\d+$/]
     },
@@ -37,8 +37,8 @@ module.exports = function (defaults) {
 
   if (process.env.EMBROIDER === 'true') {
     const { Webpack } = require('@embroider/webpack');
-    const compiledApp = require('@embroider/compat').compatBuild(app, Webpack);
-    return require('prember').prerender(app, compiledApp);
+    return require('@embroider/compat').compatBuild(app, Webpack);
+    // return require('prember').prerender(app, compiledApp);
   }
 
   return app.toTree();
