@@ -3,6 +3,7 @@ import Logo from '../components/logo';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
+import VersionDropdown from '../components/version-dropdown';
 import { VisuallyHidden } from '@frontile/utilities';
 import { PortalTarget } from '@frontile/overlays';
 
@@ -28,6 +29,8 @@ import { PortalTarget } from '@frontile/overlays';
       >
         Docs
       </LinkTo>
+
+      <VersionDropdown class="hidden sm:block" />
     </:right>
   </DocfyHeader>
 
