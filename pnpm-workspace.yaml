@@ -3,4 +3,8 @@ packages:
   - site
   - site/lib/docfy-theme
   - test-app
-
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - core-js
+  - esbuild
+  - nx
