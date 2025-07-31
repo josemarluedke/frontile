@@ -608,23 +608,23 @@ importers:
         specifier: ^3.2.3
         version: 3.2.3(@embroider/core@3.5.7(@glint/template@1.2.1))(webpack@5.101.0)
       '@frontile/buttons':
-        specifier: ^0.15.0
-        version: 0.15.0(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/runtime@7.28.2)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
       '@frontile/changeset-form':
-        specifier: ^0.15.0
-        version: 0.15.0(@babel/core@7.28.0)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
       '@frontile/core':
-        specifier: ^0.15.0
-        version: 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
       '@frontile/forms':
-        specifier: ^0.15.0
-        version: 0.15.0(@babel/core@7.28.0)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
       '@frontile/notifications':
-        specifier: ^0.15.0
-        version: 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
       '@frontile/overlays':
-        specifier: ^0.15.0
-        version: 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+        specifier: ^0.16.2
+        version: 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
       '@glimmer/component':
         specifier: ^1.1.2
         version: 1.1.2(@babel/core@7.28.0)
@@ -1800,23 +1800,11 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@frontile/buttons@0.15.0':
-    resolution: {integrity: sha512-HrP6wTPSBl96Ojw92yt0BsurB7fVIUkUzh18lICF+gxnn3SFS5KZt4Y01S1od+1ds0bnJQNehnhiGPfCCrw+vQ==}
-    engines: {node: 10.* || >= 12}
-    peerDependencies:
-      ember-source: ^4.0.0 || ^5.0.0
-
   '@frontile/buttons@0.16.2':
     resolution: {integrity: sha512-t9A3SUPBuEOUdkOLWqBPHBMTL7I86V4yyZ19RxGXybzmuRdSVEmTbV1KHPJCpcdzc3kF6AijpALfeWSr1gBEwQ==}
     engines: {node: 10.* || >= 12}
     peerDependencies:
       '@babel/runtime': '>= 7'
-      ember-source: ^4.0.0 || ^5.0.0
-
-  '@frontile/changeset-form@0.15.0':
-    resolution: {integrity: sha512-rlqeRIgV+ht6JlhVEqjE1SUfQJ1BiW7o06l8Riu20UHCcImDinEo6dWbTZ1j1Mmf537BLcrjwjz8adOWRqTilg==}
-    engines: {node: '>= 10.*'}
-    peerDependencies:
       ember-source: ^4.0.0 || ^5.0.0
 
   '@frontile/changeset-form@0.16.2':
@@ -1826,23 +1814,11 @@ packages:
       '@babel/runtime': '>= 7'
       ember-source: ^4.0.0 || ^5.0.0
 
-  '@frontile/core@0.15.0':
-    resolution: {integrity: sha512-0vZT1Uk2geo750AZC5DIPWlORLDyroutCcr0f0wjCcCJZNUqEQsKEjK9pYxzF71OO7g+TXDsmN2SPuEQKC9Yqw==}
-    engines: {node: '>= 10.*'}
-    peerDependencies:
-      ember-source: ^4.0.0 || ^5.0.0
-
   '@frontile/core@0.16.2':
     resolution: {integrity: sha512-y3B9y59iqFGYWEo1q6jkQMLL7RhjnBc0svGkFhy+zcNkHzZwgFr7Xrmx/0S6A2dNK54mmXqV9q/Tqk88FTzNLA==}
     engines: {node: '>= 10.*'}
     peerDependencies:
       '@babel/runtime': '>= 7'
-      ember-source: ^4.0.0 || ^5.0.0
-
-  '@frontile/forms@0.15.0':
-    resolution: {integrity: sha512-IJ6TN+8UQwBFA2LTQzmi/d9FLOaUWj2IVYF9V0Iiqs5Sv8pdMuK0duSxx9CFMPPQTfoF3OPeshWC+e9fjQFx2g==}
-    engines: {node: '>= 10.*'}
-    peerDependencies:
       ember-source: ^4.0.0 || ^5.0.0
 
   '@frontile/forms@0.16.2':
@@ -1852,23 +1828,11 @@ packages:
       '@babel/runtime': '>= 7'
       ember-source: ^4.0.0 || ^5.0.0
 
-  '@frontile/notifications@0.15.0':
-    resolution: {integrity: sha512-xZS8lNXfNJa5T11BVlzeQVxz+Xxc5QDbqyko5BUTu1Iv0O94KyWlUFGUPmF6MV4jeM0EdoyQde+Du9KZb5E2rQ==}
-    engines: {node: 10.* || >= 12}
-    peerDependencies:
-      ember-source: ^4.0.0 || ^5.0.0
-
   '@frontile/notifications@0.16.2':
     resolution: {integrity: sha512-Sicy6zgzdZs+LfppMkHZBazLKY09nJTlPl2Syl7G694ajnDssNfMxNXE7f/yB+KkO0nbiuAu0d3M9VgNos77GQ==}
     engines: {node: 10.* || >= 12}
     peerDependencies:
       '@babel/runtime': '>= 7'
-      ember-source: ^4.0.0 || ^5.0.0
-
-  '@frontile/overlays@0.15.0':
-    resolution: {integrity: sha512-ZVmpKgg+Ev0c5JIl3Ggv4KcdPjYJYgLMVAtf5TCLaVdx6g2bY4i+0l2r3Sl2rgJ6ZZkCRsi7hqw8p6YTFsj0yA==}
-    engines: {node: 10.* || >= 12}
-    peerDependencies:
       ember-source: ^4.0.0 || ^5.0.0
 
   '@frontile/overlays@0.16.2':
@@ -1877,10 +1841,6 @@ packages:
     peerDependencies:
       '@babel/runtime': '>= 7'
       ember-source: ^4.0.0 || ^5.0.0
-
-  '@frontile/tailwindcss-plugin-helpers@0.15.0':
-    resolution: {integrity: sha512-C75a3eazcTcwv5XiTIvVW6B1YwxfB0RAv8lz1KPo0aBq2c9k+FTOsuGhghqSxUvfw09oMwX7lgbSuOJsBeK11A==}
-    engines: {node: '>= 10.*'}
 
   '@frontile/tailwindcss-plugin-helpers@0.16.2':
     resolution: {integrity: sha512-CsnJtQlTly44OtrD5f3EOs3HiS6On3tK+ISpn08UbF8kgH45Wy3nfhh30Urwh+yv4+64ISzIt4K+xxcd8leNxA==}
@@ -4982,10 +4942,6 @@ packages:
 
   ember-template-tag@2.3.16:
     resolution: {integrity: sha512-G6bIBcT4VnLlBUogkXxEXIzVvdYXhmLe+Io2yJzRYYZeHrdxKa6u2ZHXF4qII298grgqnqGo6tNqqgtD4AAS5g==}
-
-  ember-test-selectors@6.0.0:
-    resolution: {integrity: sha512-PgYcI9PeNvtKaF0QncxfbS68olMYM1idwuI8v/WxsjOGqUx5bmsu6V17vy/d9hX4mwmjgsBhEghrVasGSuaIgw==}
-    engines: {node: 12.* || 14.* || >= 16.*}
 
   ember-text-measurer@0.6.0:
     resolution: {integrity: sha512-/aZs2x2i6kT4a5tAW+zenH2wg8AbRK9jKxLkbVsKl/1ublNl27idVRdov1gJ+zgWu3DNK7whcfVycXtlaybYQw==}
@@ -11818,16 +11774,6 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@frontile/buttons@0.15.0(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))':
-    dependencies:
-      '@frontile/tailwindcss-plugin-helpers': 0.15.0
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
-      ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
-    transitivePeerDependencies:
-      - supports-color
-
   '@frontile/buttons@0.16.2(@babel/runtime@7.28.2)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))':
     dependencies:
       '@babel/runtime': 7.28.2
@@ -11837,24 +11783,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@frontile/changeset-form@0.15.0(@babel/core@7.28.0)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
+  '@frontile/buttons@0.16.2(@babel/runtime@7.28.2)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))':
     dependencies:
-      '@frontile/forms': 0.15.0(@babel/core@7.28.0)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
-      ember-changeset: 4.2.0(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
-      ember-changeset-validations: 4.2.0(@ember/string@3.1.1)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
+      '@babel/runtime': 7.28.2
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/tailwindcss-plugin-helpers': 0.16.2
       ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
     transitivePeerDependencies:
-      - '@babel/core'
-      - '@ember/string'
-      - '@glint/environment-ember-loose'
-      - '@glint/template'
-      - ember-data
       - supports-color
-      - tailwindcss
-      - webpack
 
   '@frontile/changeset-form@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
     dependencies:
@@ -11874,20 +11810,23 @@ snapshots:
       - tailwindcss
       - webpack
 
-  '@frontile/core@0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))':
+  '@frontile/changeset-form@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
     dependencies:
-      '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@ember/test-waiters': 3.1.0
-      '@frontile/tailwindcss-plugin-helpers': 0.15.0
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
+      '@babel/runtime': 7.28.2
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/forms': 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)
+      '@glint/template': 1.2.1
+      ember-changeset: 4.2.0(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      ember-changeset-validations: 4.2.0(@ember/string@3.1.1)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
       ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
-      focus-visible: 5.2.1
     transitivePeerDependencies:
       - '@babel/core'
-      - '@glint/template'
+      - '@ember/string'
+      - '@glint/environment-ember-loose'
+      - ember-data
       - supports-color
+      - tailwindcss
+      - webpack
 
   '@frontile/core@0.16.2(@babel/core@7.23.6)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.23.6))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
     dependencies:
@@ -11921,23 +11860,20 @@ snapshots:
       - supports-color
       - webpack
 
-  '@frontile/forms@0.15.0(@babel/core@7.28.0)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
+  '@frontile/core@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
     dependencies:
-      '@frontile/core': 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@frontile/tailwindcss-plugin-helpers': 0.15.0
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
-      ember-power-select: 7.2.0(@babel/core@7.28.0)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      '@babel/runtime': 7.28.2
+      '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
+      '@ember/test-waiters': 3.1.0
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/tailwindcss-plugin-helpers': 0.16.2
+      ember-auto-import: 2.10.0(@glint/template@1.2.1)(webpack@5.101.0)
       ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
-      ember-test-selectors: 6.0.0
-      tailwindcss-ember-power-select: 0.4.3(tailwindcss@3.4.17)
+      focus-visible: 5.2.1
     transitivePeerDependencies:
       - '@babel/core'
-      - '@glint/environment-ember-loose'
       - '@glint/template'
       - supports-color
-      - tailwindcss
       - webpack
 
   '@frontile/forms@0.16.2(@babel/core@7.23.6)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.23.6))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.23.6)))(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.23.6))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
@@ -11978,22 +11914,23 @@ snapshots:
       - tailwindcss
       - webpack
 
-  '@frontile/notifications@0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
+  '@frontile/forms@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(tailwindcss@3.4.17)(webpack@5.101.0)':
     dependencies:
-      '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@frontile/core': 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@frontile/tailwindcss-plugin-helpers': 0.15.0
-      ember-auto-import: 2.10.0(@glint/template@1.2.1)(webpack@5.101.0)
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
-      ember-css-transitions: 4.5.0(@babel/core@7.28.0)
-      ember-get-config: 2.1.1(@glint/template@1.2.1)
+      '@babel/runtime': 7.28.2
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/core': 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      '@frontile/tailwindcss-plugin-helpers': 0.16.2
+      '@glint/template': 1.2.1
+      ember-basic-dropdown: 7.3.0(@babel/core@7.28.0)(@ember/string@3.1.1)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      ember-power-select: 7.2.0(@babel/core@7.28.0)(@glint/environment-ember-loose@1.2.1(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(ember-cli-htmlbars@6.3.0)(ember-modifier@4.2.2(@babel/core@7.28.0)))(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
       ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
+      tailwindcss-ember-power-select: 0.4.3(tailwindcss@3.4.17)
     transitivePeerDependencies:
       - '@babel/core'
-      - '@glint/template'
+      - '@ember/string'
+      - '@glint/environment-ember-loose'
       - supports-color
+      - tailwindcss
       - webpack
 
   '@frontile/notifications@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.12.0(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
@@ -12013,18 +11950,16 @@ snapshots:
       - supports-color
       - webpack
 
-  '@frontile/overlays@0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
+  '@frontile/notifications@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
     dependencies:
+      '@babel/runtime': 7.28.2
       '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@frontile/core': 0.15.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      '@frontile/tailwindcss-plugin-helpers': 0.15.0
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/core': 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      '@frontile/tailwindcss-plugin-helpers': 0.16.2
       ember-auto-import: 2.10.0(@glint/template@1.2.1)(webpack@5.101.0)
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.3.0
-      ember-cli-typescript: 5.3.0
       ember-css-transitions: 4.5.0(@babel/core@7.28.0)
-      ember-focus-trap: 1.1.1(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
-      ember-maybe-in-element: 2.1.0
+      ember-get-config: 2.1.1(@glint/template@1.2.1)
       ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
     transitivePeerDependencies:
       - '@babel/core'
@@ -12048,11 +11983,21 @@ snapshots:
       - supports-color
       - webpack
 
-  '@frontile/tailwindcss-plugin-helpers@0.15.0':
+  '@frontile/overlays@0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)':
     dependencies:
-      lodash: 4.17.21
-      mini-svg-data-uri: 1.4.4
-      traverse: 0.6.11
+      '@babel/runtime': 7.28.2
+      '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
+      '@embroider/addon-shim': 1.10.0
+      '@frontile/core': 0.16.2(@babel/core@7.28.0)(@babel/runtime@7.28.2)(@glint/template@1.2.1)(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))(webpack@5.101.0)
+      '@frontile/tailwindcss-plugin-helpers': 0.16.2
+      '@glint/template': 1.2.1
+      ember-css-transitions: 4.5.0(@babel/core@7.28.0)
+      ember-focus-trap: 1.1.1(ember-source@5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0))
+      ember-source: 5.5.0(@babel/core@7.28.0)(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.2.1)(rsvp@4.8.5)(webpack@5.101.0)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+      - webpack
 
   '@frontile/tailwindcss-plugin-helpers@0.16.2':
     dependencies:
@@ -17194,14 +17139,6 @@ snapshots:
       '@babel/traverse': 7.23.9
       '@babel/types': 7.23.0
       '@glimmer/syntax': 0.88.1
-    transitivePeerDependencies:
-      - supports-color
-
-  ember-test-selectors@6.0.0:
-    dependencies:
-      calculate-cache-key-for-tree: 2.0.0
-      ember-cli-babel: 7.26.11
-      ember-cli-version-checker: 5.1.2
     transitivePeerDependencies:
       - supports-color
 
