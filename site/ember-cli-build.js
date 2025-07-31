@@ -35,11 +35,10 @@ module.exports = function (defaults) {
     }
   });
 
-  if (process.env.EMBROIDER === 'true') {
-    const { Webpack } = require('@embroider/webpack');
-    return require('@embroider/compat').compatBuild(app, Webpack);
-    // return require('prember').prerender(app, compiledApp);
+  if (process.env.EMBER_CLASSIC === 'true') {
+    return app.toTree();
   }
 
-  return app.toTree();
+  const { Webpack } = require('@embroider/webpack');
+  return require('@embroider/compat').compatBuild(app, Webpack);
 };
