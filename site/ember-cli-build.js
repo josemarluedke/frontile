@@ -1,6 +1,6 @@
 'use strict';
 // Enable FastBoot Rehydration
-process.env.EXPERIMENTAL_RENDER_MODE_SERIALIZE = true;
+// process.env.EXPERIMENTAL_RENDER_MODE_SERIALIZE = true;
 process.env.EMBROIDER_REBUILD_ADDONS = '@docfy/ember';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
