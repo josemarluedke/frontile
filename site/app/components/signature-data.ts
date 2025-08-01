@@ -590,7 +590,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'flipOptions',
         type: {
-          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span> | <span class="hljs-string">\'alignment\'</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | ... <span class="hljs-number">1</span> more ... | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
         },
         isRequired: false,
         isInternal: false,
@@ -1940,7 +1940,7 @@ const data: ComponentDoc[] = [
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(data: FormResultData, <span class="hljs-attr">eventType</span>: <span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'input\'</span>, <span class="hljs-attr">event</span>: Event | SubmitEvent) => <span class="hljs-built_in">void</span>',
+          raw: '(data: Data, <span class="hljs-attr">eventType</span>: <span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'input\'</span>, <span class="hljs-attr">event</span>: Event | SubmitEvent) => <span class="hljs-built_in">void</span>',
         },
         isRequired: true,
         isInternal: false,
@@ -3239,7 +3239,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'flipOptions',
         type: {
-          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span> | <span class="hljs-string">\'alignment\'</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | ... <span class="hljs-number">1</span> more ... | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
         },
         isRequired: false,
         isInternal: false,
@@ -7899,9 +7899,9 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to close when the overlay element is clicked, used for modal and drawer components.',
-        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
-        defaultValue: '<span class="hljs-literal">false</span>',
+          'Whether to close when the overlay element is clicked, used for modal and drawer components.\nThis is set to true by default to allow "outside click" functionality to work properly.\nMost overlay content is wrapped with an inner element, preventing accidental closure.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
       },
       {
         identifier: 'customContentModifier',
@@ -8196,7 +8196,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'flipOptions',
         type: {
-          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'start\'</span> | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
+          type: '{ mainAxis?: <span class="hljs-built_in">boolean</span>; crossAxis?: <span class="hljs-built_in">boolean</span> | <span class="hljs-string">\'alignment\'</span>; fallbackPlacements?: Placement[]; fallbackStrategy?: <span class="hljs-string">\'bestFit\'</span> | <span class="hljs-string">\'initialPlacement\'</span>; fallbackAxisSideDirection?: <span class="hljs-string">\'none\'</span> | ... <span class="hljs-number">1</span> more ... | <span class="hljs-string">\'end\'</span>; ... <span class="hljs-number">5</span> more ...; boundary?: Boundary; }',
         },
         isRequired: false,
         isInternal: false,
