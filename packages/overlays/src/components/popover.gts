@@ -428,6 +428,7 @@ class Content extends Component<ContentSignature> {
       @class={{this.classNames}}
       @preventFocusRestore={{@preventFocusRestore}}
       @preventAutoFocus={{@preventAutoFocus}}
+      @closeOnOverlayElementClick={{false}}
       id={{@id}}
       ...attributes
       {{this.updateTriggerWidth @triggerWidth}}
