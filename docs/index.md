@@ -49,12 +49,12 @@ import Component from '@glimmer/component';
 import { Button } from '@frontile/buttons';
 
 export default class Example extends Component {
-  onClick = () => {
+  onPress = () => {
     alert('Welcome to Frontile!');
   };
 
   <template>
-    <Button @intent='primary' @size='lg' @onClick={{this.onClick}}>
+    <Button @intent='primary' @size='lg' @onPress={{this.onPress}}>
       Get Started
     </Button>
   </template>

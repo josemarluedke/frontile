@@ -38,7 +38,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class BasicOverlay extends Component {
   @tracked isOpen = false;
@@ -49,7 +48,7 @@ export default class BasicOverlay extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Overlay
       </Button>
 
@@ -59,7 +58,7 @@ export default class BasicOverlay extends Component {
           <p class='mb-4'>This is the content inside the overlay. You can put
             any content here.</p>
           <div class='flex gap-2'>
-            <Button @intent='primary' {{on 'click' this.toggle}}>
+            <Button @intent='primary' @onPress={{this.toggle}}>
               Close
             </Button>
             <Button>
@@ -83,7 +82,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class BackdropTypes extends Component {
   @tracked fadedOpen = false;
@@ -105,13 +103,13 @@ export default class BackdropTypes extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleFaded}}>
+        <Button @onPress={{this.toggleFaded}}>
           Faded Backdrop
         </Button>
-        <Button {{on 'click' this.toggleBlurred}}>
+        <Button @onPress={{this.toggleBlurred}}>
           Blurred Backdrop
         </Button>
-        <Button {{on 'click' this.toggleNone}}>
+        <Button @onPress={{this.toggleNone}}>
           No Backdrop
         </Button>
       </div>
@@ -124,7 +122,7 @@ export default class BackdropTypes extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>Faded Backdrop</h3>
           <p class='mb-4'>Standard semi-transparent backdrop</p>
-          <Button {{on 'click' this.toggleFaded}}>Close</Button>
+          <Button @onPress={{this.toggleFaded}}>Close</Button>
         </div>
       </Overlay>
 
@@ -136,7 +134,7 @@ export default class BackdropTypes extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>Blurred Backdrop</h3>
           <p class='mb-4'>Backdrop with blur effect</p>
-          <Button {{on 'click' this.toggleBlurred}}>Close</Button>
+          <Button @onPress={{this.toggleBlurred}}>Close</Button>
         </div>
       </Overlay>
 
@@ -148,7 +146,7 @@ export default class BackdropTypes extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg border'>
           <h3 class='font-semibold mb-2'>No Backdrop</h3>
           <p class='mb-4'>Overlay without backdrop</p>
-          <Button {{on 'click' this.toggleNone}}>Close</Button>
+          <Button @onPress={{this.toggleNone}}>Close</Button>
         </div>
       </Overlay>
     </div>
@@ -166,7 +164,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class RenderInPlace extends Component {
   @tracked portalOpen = false;
@@ -183,10 +180,10 @@ export default class RenderInPlace extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.togglePortal}}>
+        <Button @onPress={{this.togglePortal}}>
           Portal Overlay (Default)
         </Button>
-        <Button {{on 'click' this.toggleInPlace}}>
+        <Button @onPress={{this.toggleInPlace}}>
           In-Place Overlay
         </Button>
       </div>
@@ -208,7 +205,7 @@ export default class RenderInPlace extends Component {
             <h3 class='font-semibold mb-2'>In-Place Overlay</h3>
             <p class='text-sm mb-4'>This overlay is rendered within its parent
               container.</p>
-            <Button @size='sm' {{on 'click' this.toggleInPlace}}>Close</Button>
+            <Button @size='sm' @onPress={{this.toggleInPlace}}>Close</Button>
           </div>
         </Overlay>
       </div>
@@ -218,7 +215,7 @@ export default class RenderInPlace extends Component {
           <h3 class='font-semibold mb-2'>Portal Overlay</h3>
           <p class='mb-4'>This overlay is rendered in a portal (outside the
             normal DOM tree).</p>
-          <Button {{on 'click' this.togglePortal}}>Close</Button>
+          <Button @onPress={{this.togglePortal}}>Close</Button>
         </div>
       </Overlay>
     </div>
@@ -236,7 +233,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class CustomCloseBehavior extends Component {
   @tracked normalOpen = false;
@@ -269,16 +265,16 @@ export default class CustomCloseBehavior extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-2 gap-2'>
-        <Button {{on 'click' this.toggleNormal}}>
+        <Button @onPress={{this.toggleNormal}}>
           Normal Overlay
         </Button>
-        <Button {{on 'click' this.toggleNoEscape}}>
+        <Button @onPress={{this.toggleNoEscape}}>
           No Escape Key
         </Button>
-        <Button {{on 'click' this.toggleNoOutsideClick}}>
+        <Button @onPress={{this.toggleNoOutsideClick}}>
           No Outside Click
         </Button>
-        <Button {{on 'click' this.toggleConfirmClose}}>
+        <Button @onPress={{this.toggleConfirmClose}}>
           Confirm Close
         </Button>
       </div>
@@ -288,7 +284,7 @@ export default class CustomCloseBehavior extends Component {
           <h3 class='font-semibold mb-2'>Normal Overlay</h3>
           <p class='mb-4'>Can be closed with Escape key, outside click, or
             button.</p>
-          <Button {{on 'click' this.toggleNormal}}>Close</Button>
+          <Button @onPress={{this.toggleNormal}}>Close</Button>
         </div>
       </Overlay>
 
@@ -300,7 +296,7 @@ export default class CustomCloseBehavior extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>No Escape Key</h3>
           <p class='mb-4'>Cannot be closed with Escape key. Try pressing Escape!</p>
-          <Button {{on 'click' this.toggleNoEscape}}>Close</Button>
+          <Button @onPress={{this.toggleNoEscape}}>Close</Button>
         </div>
       </Overlay>
 
@@ -313,7 +309,7 @@ export default class CustomCloseBehavior extends Component {
           <h3 class='font-semibold mb-2'>No Outside Click</h3>
           <p class='mb-4'>Cannot be closed by clicking outside. Try clicking the
             backdrop!</p>
-          <Button {{on 'click' this.toggleNoOutsideClick}}>Close</Button>
+          <Button @onPress={{this.toggleNoOutsideClick}}>Close</Button>
         </div>
       </Overlay>
 
@@ -324,7 +320,7 @@ export default class CustomCloseBehavior extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>Confirm Close</h3>
           <p class='mb-4'>Shows confirmation dialog before closing.</p>
-          <Button {{on 'click' this.handleConfirmClose}}>Close</Button>
+          <Button @onPress={{this.handleConfirmClose}}>Close</Button>
         </div>
       </Overlay>
     </div>
@@ -343,7 +339,6 @@ import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
 import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
 
 export default class FocusManagement extends Component {
   @tracked focusTrapOpen = false;
@@ -360,10 +355,10 @@ export default class FocusManagement extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleFocusTrap}} data-test-trigger>
+        <Button @onPress={{this.toggleFocusTrap}} data-test-trigger>
           Focus Trap Enabled
         </Button>
-        <Button {{on 'click' this.toggleNoFocusTrap}}>
+        <Button @onPress={{this.toggleNoFocusTrap}}>
           Focus Trap Disabled
         </Button>
       </div>
@@ -383,7 +378,7 @@ export default class FocusManagement extends Component {
             <Input @label='First Input' />
             <Input @label='Second Input' />
             <div class='flex gap-2'>
-              <Button @intent='primary' {{on 'click' this.toggleFocusTrap}}>
+              <Button @intent='primary' @onPress={{this.toggleFocusTrap}}>
                 Close
               </Button>
               <Button>
@@ -406,7 +401,7 @@ export default class FocusManagement extends Component {
 
           <div class='space-y-3'>
             <Input @label='Input Field' />
-            <Button {{on 'click' this.toggleNoFocusTrap}}>
+            <Button @onPress={{this.toggleNoFocusTrap}}>
               Close
             </Button>
           </div>
@@ -427,7 +422,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class AnimationsAndTransitions extends Component {
   @tracked fastOpen = false;
@@ -449,13 +443,13 @@ export default class AnimationsAndTransitions extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleFast}}>
+        <Button @onPress={{this.toggleFast}}>
           Fast Animation (100ms)
         </Button>
-        <Button {{on 'click' this.toggleSlow}}>
+        <Button @onPress={{this.toggleSlow}}>
           Slow Animation (800ms)
         </Button>
-        <Button {{on 'click' this.toggleNoAnimation}}>
+        <Button @onPress={{this.toggleNoAnimation}}>
           No Animation
         </Button>
       </div>
@@ -468,7 +462,7 @@ export default class AnimationsAndTransitions extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>Fast Animation</h3>
           <p class='mb-4'>This overlay opens and closes quickly (100ms).</p>
-          <Button {{on 'click' this.toggleFast}}>Close</Button>
+          <Button @onPress={{this.toggleFast}}>Close</Button>
         </div>
       </Overlay>
 
@@ -480,7 +474,7 @@ export default class AnimationsAndTransitions extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>Slow Animation</h3>
           <p class='mb-4'>This overlay has a longer transition duration (800ms).</p>
-          <Button {{on 'click' this.toggleSlow}}>Close</Button>
+          <Button @onPress={{this.toggleSlow}}>Close</Button>
         </div>
       </Overlay>
 
@@ -492,7 +486,7 @@ export default class AnimationsAndTransitions extends Component {
         <div class='bg-content1 p-6 rounded-lg shadow-lg'>
           <h3 class='font-semibold mb-2'>No Animation</h3>
           <p class='mb-4'>This overlay appears instantly without transitions.</p>
-          <Button {{on 'click' this.toggleNoAnimation}}>Close</Button>
+          <Button @onPress={{this.toggleNoAnimation}}>Close</Button>
         </div>
       </Overlay>
     </div>
@@ -513,7 +507,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Overlay } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class OverlayElementClick extends Component {
   @tracked defaultOpen = false;
@@ -530,10 +523,10 @@ export default class OverlayElementClick extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleDefault}}>
+        <Button @onPress={{this.toggleDefault}}>
           Default Behavior
         </Button>
-        <Button {{on 'click' this.toggleDisabled}}>
+        <Button @onPress={{this.toggleDisabled}}>
           Overlay Element Click Disabled
         </Button>
       </div>
@@ -555,7 +548,7 @@ export default class OverlayElementClick extends Component {
           </p>
           <p class='mb-4'>Clicking anywhere on the overlay element will close
             it, but clicking this inner content card won't.</p>
-          <Button {{on 'click' this.toggleDefault}}>Close</Button>
+          <Button @onPress={{this.toggleDefault}}>Close</Button>
         </div>
       </Overlay>
 
@@ -572,7 +565,7 @@ export default class OverlayElementClick extends Component {
           <p class='mb-4'>Only clicking the backdrop (outside area) will not
             close this overlay because the overlay content element is on top of
             backdrop.</p>
-          <Button {{on 'click' this.toggleDisabled}}>Close</Button>
+          <Button @onPress={{this.toggleDisabled}}>Close</Button>
         </div>
       </Overlay>
     </div>

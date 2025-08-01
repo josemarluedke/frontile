@@ -10,7 +10,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { action } from '@ember/object';
-import { on } from '@ember/modifier';
 import { fn, hash } from '@ember/helper';
 import { Button } from '@frontile/buttons';
 import { RadioGroup, Checkbox, Input, Select } from '@frontile/forms';
@@ -157,7 +156,7 @@ export default class Demo extends Component<DemoArgs> {
 
     </div>
 
-    <Button type='button' {{on 'click' this.addNotification}} class='mt-6'>
+    <Button type='button' @onPress={{this.addNotification}} class='mt-6'>
       Add Notification
     </Button>
 

@@ -235,7 +235,6 @@ popover is open or closed.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 import { Popover } from '@frontile/overlays';
 import { Divider } from '@frontile/utilities';
 import { Button } from '@frontile/buttons';
@@ -256,7 +255,7 @@ export default class Example extends Component {
   };
 
   <template>
-    <Button {{on 'click' this.open}}>Open</Button>
+    <Button @onPress={{this.open}}>Open</Button>
     <Divider class='my-4' />
 
     <Popover
@@ -272,7 +271,7 @@ export default class Example extends Component {
         This is some example content for the popover. Check the nested popover
         by clicking the button below.
 
-        <Button {{on 'click' this.close}}>Close Popover</Button>
+        <Button @onPress={{this.close}}>Close Popover</Button>
       </pop.Content>
     </Popover>
   </template>

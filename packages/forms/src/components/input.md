@@ -258,7 +258,6 @@ The Input component integrates with form validation by displaying error messages
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedInput extends Component {
@@ -295,7 +294,7 @@ export default class ValidatedInput extends Component {
         @isRequired={{true}}
       />
 
-      <Button {{on 'click' this.validateEmail}}>
+      <Button @onPress={{this.validateEmail}}>
         Validate
       </Button>
     </div>

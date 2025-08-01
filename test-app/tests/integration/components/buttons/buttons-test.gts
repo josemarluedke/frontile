@@ -1,8 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, triggerEvent } from '@ember/test-helpers';
 import { registerCustomStyles, tv } from '@frontile/theme';
 import { Button } from '@frontile/buttons';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 
 registerCustomStyles({
   button: tv({
@@ -170,6 +172,91 @@ module(
       assert
         .dom('[data-test-id="my-div"]')
         .hasText('btn intent-default btn-md');
+    });
+
+    module('Press functionality', () => {
+      test('it handles onPress callback', async function (assert) {
+        let pressEventCount = 0;
+
+        class TestComponent extends Component {
+          handlePress = () => {
+            pressEventCount++;
+          };
+
+          <template>
+            <Button @onPress={{this.handlePress}} data-test-id="button">
+              Press me
+            </Button>
+          </template>
+        }
+
+        await render(<template><TestComponent /></template>);
+
+        await triggerEvent('[data-test-id="button"]', 'pointerdown');
+        await triggerEvent('[data-test-id="button"]', 'pointerup');
+
+        assert.strictEqual(
+          pressEventCount,
+          1,
+          'onPress callback was called once'
+        );
+      });
+
+      test('it sets data-pressed attribute when pressed', async function (assert) {
+        await render(
+          <template>
+            <Button data-test-id="button">Press me</Button>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="button"]')
+          .doesNotHaveAttribute('data-pressed');
+
+        await triggerEvent('[data-test-id="button"]', 'pointerdown');
+        assert
+          .dom('[data-test-id="button"]')
+          .hasAttribute('data-pressed', 'true');
+
+        await triggerEvent('[data-test-id="button"]', 'pointerup');
+        assert
+          .dom('[data-test-id="button"]')
+          .doesNotHaveAttribute('data-pressed');
+      });
+
+      test('it works with renderless mode', async function (assert) {
+        let pressEventCount = 0;
+
+        class TestComponent extends Component {
+          handlePress = () => {
+            pressEventCount++;
+          };
+
+          <template>
+            <Button
+              @isRenderless={{true}}
+              @onPress={{this.handlePress}}
+              as |btn|
+            >
+              <div data-test-id="custom-button" class={{btn.classNames}}>
+                Custom Button
+              </div>
+            </Button>
+          </template>
+        }
+
+        await render(<template><TestComponent /></template>);
+
+        // Renderless mode should not handle press events on its own
+        await triggerEvent('[data-test-id="custom-button"]', 'pointerdown');
+        await triggerEvent('[data-test-id="custom-button"]', 'pointerup');
+
+        assert.strictEqual(
+          pressEventCount,
+          0,
+          'onPress should not be called in renderless mode'
+        );
+      });
     });
   }
 );

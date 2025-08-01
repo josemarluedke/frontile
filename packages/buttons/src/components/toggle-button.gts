@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
+import { press } from '@frontile/utilities';
 import type { ButtonArgs } from './button';
 
 interface ToggleButtonArgs
@@ -53,7 +53,7 @@ class ToggleButton extends Component<ToggleButtonSignature> {
   <template>
     <button
       type="button"
-      {{on "click" this.onChange}}
+      {{press this.onChange}}
       class={{this.classNames}}
       aria-pressed="{{this.isSelected}}"
       ...attributes

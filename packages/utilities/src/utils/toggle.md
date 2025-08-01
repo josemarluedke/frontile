@@ -80,7 +80,7 @@ export default class MyTestComponent extends Component {
       Toggle
     </Button>
 
-    <Button data-test-id='button-direct' {{on 'click' this.show}}>
+    <Button data-test-id='button-direct' @onPress={{this.show}}>
       Show (explicit value)
     </Button>
 
@@ -107,11 +107,10 @@ You can also use toggleState directly within your templates:
 ```gts preview
 import { toggleState } from '@frontile/utilities';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 <template>
   {{#let (toggleState) as |state|}}
-    <Button data-test-id='button-toggle' {{on 'click' state.toggle}}>
+    <Button data-test-id='button-toggle' @onPress={{state.toggle}}>
       Toggle
     </Button>
 
@@ -132,7 +131,6 @@ Below is an example that demonstrates how to use `toggleState` with an `onChange
 import Component from '@glimmer/component';
 import { toggleState } from '@frontile/utilities';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class CallbackToggleExample extends Component {
   // Create a toggle state with an initial value of false and an onChange callback.
@@ -151,7 +149,7 @@ export default class CallbackToggleExample extends Component {
       </div>
     {{/if}}
 
-    <Button data-test-id='button-toggle' {{on 'click' this.toggle.toggle}}>
+    <Button data-test-id='button-toggle' @onPress={{this.toggle.toggle}}>
       Toggle State
     </Button>
   </template>

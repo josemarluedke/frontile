@@ -322,7 +322,6 @@ The CheckboxGroup component integrates with form validation by displaying error 
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { CheckboxGroup } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedCheckboxGroup extends Component {
@@ -379,7 +378,7 @@ export default class ValidatedCheckboxGroup extends Component {
       </CheckboxGroup>
 
       <div>
-        <Button {{on 'click' this.validatePreferences}}>
+        <Button @onPress={{this.validatePreferences}}>
           Save Preferences
         </Button>
       </div>

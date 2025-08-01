@@ -278,7 +278,6 @@ The Checkbox component integrates with form validation by displaying error messa
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Checkbox } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedCheckbox extends Component {
@@ -350,7 +349,7 @@ export default class ValidatedCheckbox extends Component {
       />
 
       <div>
-        <Button {{on 'click' this.validateForm}}>
+        <Button @onPress={{this.validateForm}}>
           Continue
         </Button>
       </div>

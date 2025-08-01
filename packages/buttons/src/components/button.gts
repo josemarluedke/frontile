@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import { tracked } from '@glimmer/tracking';
 import { useStyles } from '@frontile/theme';
+import { press, type PressEvent } from '@frontile/utilities';
 
 export interface ButtonArgs {
   /**
@@ -42,6 +44,11 @@ export interface ButtonArgs {
    * when using the ButtonGroup component.
    */
   isInGroup?: boolean;
+
+  /**
+   * Callback for when the button is pressed.
+   */
+  onPress?: (event: PressEvent) => void;
 }
 
 interface ButtonSignature {
@@ -53,6 +60,8 @@ interface ButtonSignature {
 }
 
 class Button extends Component<ButtonSignature> {
+  @tracked isPressed = false;
+
   get type(): string {
     if (this.args.type) {
       return this.args.type;
@@ -72,11 +81,27 @@ class Button extends Component<ButtonSignature> {
     });
   }
 
+  handlePressChange = (isPressed: boolean): void => {
+    this.isPressed = isPressed;
+  };
+
+  onPress = (event: PressEvent) => {
+    if (typeof this.args.onPress === 'function') {
+      this.args.onPress(event);
+    }
+  };
+
   <template>
     {{#if @isRenderless}}
       {{yield (hash classNames=this.classNames)}}
     {{else}}
-      <button type={{this.type}} class={{this.classNames}} ...attributes>
+      <button
+        type={{this.type}}
+        class={{this.classNames}}
+        data-pressed={{if this.isPressed "true"}}
+        {{press this.onPress onPressChange=this.handlePressChange}}
+        ...attributes
+      >
         {{yield (hash classNames=this.classNames)}}
       </button>
     {{/if}}

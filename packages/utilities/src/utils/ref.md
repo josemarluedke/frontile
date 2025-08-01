@@ -31,7 +31,6 @@ import { ref } from '@frontile/utilities';
 ```gts preview
 import Component from '@glimmer/component';
 import { ref, toggleState } from '@frontile/utilities';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class MyTestComponent extends Component {
@@ -41,7 +40,7 @@ export default class MyTestComponent extends Component {
   myRef = ref<HTMLDivElement>();
 
   <template>
-    <Button {{on 'click' this.toggle.toggle}}>
+    <Button @onPress={{this.toggle.toggle}}>
       Toggle
     </Button>
 
@@ -102,12 +101,11 @@ You can also use `ref` directly within your templates:
 ```gts preview
 import { ref, toggleState } from '@frontile/utilities';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 <template>
   {{#let (ref) as |myRef|}}
     {{#let (toggleState true) as |toggle|}}
-      <Button {{on 'click' toggle.toggle}}>
+      <Button @onPress={{toggle.toggle}}>
         Toggle Visibility
       </Button>
 

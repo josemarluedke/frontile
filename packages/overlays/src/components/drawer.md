@@ -35,7 +35,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Drawer } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class BasicDrawer extends Component {
   @tracked isOpen = false;
@@ -46,7 +45,7 @@ export default class BasicDrawer extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Drawer
       </Button>
 
@@ -61,7 +60,7 @@ export default class BasicDrawer extends Component {
             close button in the top right corner.</p>
         </d.Body>
         <d.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.toggle}}>
+          <Button @onPress={{this.toggle}}>
             Cancel
           </Button>
           <Button @intent='primary'>
@@ -85,7 +84,6 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class DrawerPlacements extends Component {
   @tracked isOpen = false;
@@ -137,7 +135,7 @@ export default class DrawerPlacements extends Component {
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.placements as |placement|}}
-          <Button {{on 'click' (fn this.openDrawer placement.key)}}>
+          <Button @onPress={{fn this.openDrawer placement.key}}>
             {{placement.label}}
           </Button>
         {{/each}}
@@ -232,7 +230,7 @@ export default class DrawerSizes extends Component {
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
-          <Button {{on 'click' (fn this.openDrawer option.key)}}>
+          <Button @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -265,7 +263,6 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Drawer } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class DrawerBackdrops extends Component {
   @tracked isOpen = false;
@@ -311,7 +308,7 @@ export default class DrawerBackdrops extends Component {
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
-          <Button {{on 'click' (fn this.openDrawer option.key)}}>
+          <Button @onPress={{fn this.openDrawer option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -332,7 +329,7 @@ export default class DrawerBackdrops extends Component {
             behind this drawer changes based on the selected type.</p>
         </d.Body>
         <d.Footer>
-          <Button {{on 'click' this.closeDrawer}}>Close</Button>
+          <Button @onPress={{this.closeDrawer}}>Close</Button>
         </d.Footer>
       </Drawer>
     </div>
@@ -350,7 +347,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Drawer } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class DrawerCloseButton extends Component {
   @tracked normalOpen = false;
@@ -372,13 +368,13 @@ export default class DrawerCloseButton extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleNormal}}>
+        <Button @onPress={{this.toggleNormal}}>
           Normal Close Button
         </Button>
-        <Button {{on 'click' this.toggleNoCloseButton}}>
+        <Button @onPress={{this.toggleNoCloseButton}}>
           No Close Button
         </Button>
-        <Button {{on 'click' this.toggleCustomClose}}>
+        <Button @onPress={{this.toggleCustomClose}}>
           Custom Close Button
         </Button>
       </div>
@@ -402,7 +398,7 @@ export default class DrawerCloseButton extends Component {
             the backdrop or pressing Escape.</p>
         </d.Body>
         <d.Footer>
-          <Button {{on 'click' this.toggleNoCloseButton}}>
+          <Button @onPress={{this.toggleNoCloseButton}}>
             Close from Footer
           </Button>
         </d.Footer>
@@ -476,7 +472,7 @@ export default class DrawerForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Contact Form
       </Button>
 
@@ -514,10 +510,10 @@ export default class DrawerForm extends Component {
           </form>
         </d.Body>
         <d.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.toggle}}>
+          <Button @onPress={{this.toggle}}>
             Cancel
           </Button>
-          <Button @intent='primary' {{on 'click' this.handleSubmit}}>
+          <Button @intent='primary' @onPress={{this.handleSubmit}}>
             Send Message
           </Button>
         </d.Footer>
@@ -538,7 +534,6 @@ import { action } from '@ember/object';
 import { Drawer } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
 import { ProgressBar } from '@frontile/status';
-import { on } from '@ember/modifier';
 
 export default class NonDismissibleDrawer extends Component {
   @tracked isOpen = false;
@@ -574,7 +569,7 @@ export default class NonDismissibleDrawer extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Processing Drawer
       </Button>
 
@@ -607,14 +602,14 @@ export default class NonDismissibleDrawer extends Component {
             <Button disabled={{true}}>
               Processing...
             </Button>
-            <Button @intent='danger' {{on 'click' this.forceClose}}>
+            <Button @intent='danger' @onPress={{this.forceClose}}>
               Force Close
             </Button>
           {{else}}
-            <Button {{on 'click' this.toggle}}>
+            <Button @onPress={{this.toggle}}>
               Cancel
             </Button>
-            <Button @intent='primary' {{on 'click' this.startProcess}}>
+            <Button @intent='primary' @onPress={{this.startProcess}}>
               Start Processing
             </Button>
           {{/if}}
@@ -653,7 +648,7 @@ export default class NavigationDrawer extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Navigation
       </Button>
 
@@ -714,7 +709,7 @@ export default class NavigationDrawer extends Component {
 
 The Drawer component yields several components for easy composition:
 
-- **`CloseButton`**: A close button with proper styling and onClick handler
+- **`CloseButton`**: A close button with proper styling and onPress handler
 - **`Header`**: A header section with proper ID for accessibility
 - **`Body`**: The main content area
 - **`Footer`**: A footer section for actions or additional content

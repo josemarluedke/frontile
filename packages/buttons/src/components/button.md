@@ -142,6 +142,48 @@ Note that here we used the HTML attribute `class`, instead of the argument `@cla
 Using the class attribute will just append the class names passed in, while the
 argument `@class` will override and merge TailwindCSS class names.
 
+## Press Interactions
+
+The Button component supports press interactions through the `@onPress` callback, which provides cross-platform support for mouse, touch, and keyboard events.
+
+```gjs preview
+import { Button } from '@frontile/buttons';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+
+export default class ButtonPressExample extends Component {
+  @tracked pressCount = 0;
+
+  handlePress = () => {
+    this.pressCount++;
+  };
+
+  <template>
+    <div class="flex items-center space-x-4">
+      <Button @onPress={{this.handlePress}}>
+        Press me! ({{this.pressCount}})
+      </Button>
+      <p>Button has been pressed {{this.pressCount}} times</p>
+    </div>
+  </template>
+}
+```
+
+### Press State
+
+Buttons automatically track their pressed state and add a `data-pressed` attribute when being pressed, which can be used for styling:
+
+```css
+button[data-pressed="true"] {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+```
+
+### Keyboard Accessibility
+
+The press interaction automatically handles keyboard accessibility, responding to both Enter and Space key presses, making your buttons fully accessible to keyboard and screen reader users.
+
 ## API
 
 <Signature @package="buttons" @component="Button" />

@@ -116,7 +116,7 @@ export default class IndependentRadios extends Component {
         />
       </div>
 
-      <div class='p-4 bg-gray-50 rounded'>
+      <div class='p-4 border-default-300 rounded'>
         <h4 class='font-medium mb-2'>Notification Settings:</h4>
         <ul class='text-sm space-y-1'>
           <li>Email: {{if this.emailNotifications 'Enabled' 'Disabled'}}</li>
@@ -327,7 +327,6 @@ The Radio component integrates with form validation by displaying error messages
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Radio } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedRadio extends Component {
@@ -365,7 +364,7 @@ export default class ValidatedRadio extends Component {
       />
 
       <div>
-        <Button {{on 'click' this.validateTerms}}>
+        <Button @onPress={{this.validateTerms}}>
           Continue
         </Button>
       </div>
