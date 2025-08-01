@@ -3,13 +3,14 @@ import Timer from './timer';
 import { getConfigOption } from './get-config';
 import type { NotificationOptions, CustomAction, DefaultConfig } from './types';
 
-export default class Notification {
+export default class Notification<TMetadata = Record<string, unknown>> {
   readonly message: string;
   readonly transitionDuration: number;
   readonly appearance: NonNullable<NotificationOptions['appearance']>;
   readonly customActions?: CustomAction[];
   readonly allowClosing: boolean;
   readonly duration: number;
+  readonly metadata?: TMetadata;
 
   @tracked timer?: Timer;
   @tracked isRemoving = false;
@@ -17,7 +18,7 @@ export default class Notification {
   constructor(
     config: DefaultConfig,
     message: string,
-    options: NotificationOptions = {}
+    options: NotificationOptions<TMetadata> = {}
   ) {
     this.message = message;
     this.appearance =
@@ -29,6 +30,7 @@ export default class Notification {
       typeof options.transitionDuration !== 'undefined'
         ? options.transitionDuration
         : getConfigOption(config, 'transitionDuration', 200);
+    this.metadata = options.metadata;
 
     if (options.allowClosing === false) {
       this.allowClosing = false;

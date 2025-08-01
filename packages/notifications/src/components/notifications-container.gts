@@ -1,11 +1,13 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { modifier } from 'ember-modifier';
+import { registerDestructor } from '@ember/destroyable';
 import NotificationCard from './notification-card';
 import type NotificationsService from '../services/notifications';
 import type Notification from '../-private/notification';
 import { type containerPlacement } from '../-private/types';
 import { useStyles } from '@frontile/theme';
+import type Owner from '@ember/owner';
 
 interface NotificationsContainerSignature {
   Args: {
@@ -26,12 +28,29 @@ interface NotificationsContainerSignature {
      * Custom class name, it will override the default ones using Tailwind Merge library.
      */
     class?: string;
+
+    /**
+     * Callback called when a notification is dismissed
+     */
+    onDismiss?: (notification: Notification<any>) => void;
   };
   Element: HTMLDivElement;
 }
 
 class NotificationsContainer extends Component<NotificationsContainerSignature> {
   @service notifications!: NotificationsService;
+
+  constructor(owner: Owner, args: NotificationsContainerSignature['Args']) {
+    super(owner, args);
+
+    // Set the onDismiss callback on the service
+    this.notifications.setOnRemoveCallback(this.args.onDismiss);
+
+    // Clean up when component is destroyed
+    registerDestructor(this, () => {
+      this.notifications.setOnRemoveCallback(undefined);
+    });
+  }
 
   get isTopPlacement(): boolean {
     return !!(this.args.placement && this.args.placement.includes('top'));

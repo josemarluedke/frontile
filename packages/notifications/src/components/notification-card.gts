@@ -17,7 +17,7 @@ import type { CustomAction, containerPlacement } from '../-private/types';
 
 interface NotificationCardSignature {
   Args: {
-    notification: Notification;
+    notification: Notification<any>;
     placement: containerPlacement;
 
     /**
@@ -99,7 +99,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
   handleClickCustomAction = (customAction: CustomAction) => {
     customAction.onClick();
-    this.remove();
+    this.notifications.remove(this.args.notification);
   };
 
   get classes() {
@@ -157,7 +157,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
           {{#if @notification.allowClosing}}
             <CloseButton
-              @onClick={{this.remove}}
+              @onPress={{this.remove}}
               @size="sm"
               @class={{this.classes.closeButton}}
             />

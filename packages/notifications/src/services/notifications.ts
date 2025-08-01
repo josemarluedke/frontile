@@ -4,22 +4,36 @@ import NotificationsManager from '../-private/manager';
 import type { NotificationOptions } from '../-private/types';
 
 export default class NotificationsService extends Service {
-  manager = new NotificationsManager(this);
+  onRemoveCallback?: (notification: Notification<any>) => void;
+  manager = new NotificationsManager(this, (notification) => {
+    if (this.onRemoveCallback) {
+      this.onRemoveCallback(notification);
+    }
+  });
 
-  get notifications(): Notification[] {
+  get notifications(): Notification<any>[] {
     return this.manager.notifications;
   }
 
-  add = (message: string, options?: NotificationOptions): Notification => {
-    return this.manager.add(message, options);
+  add = <TMetadata = Record<string, unknown>>(
+    message: string,
+    options?: NotificationOptions<TMetadata>
+  ): Notification<TMetadata> => {
+    return this.manager.add<TMetadata>(message, options);
   };
 
-  remove = (notification?: Notification): void => {
+  remove = (notification?: Notification<any>): void => {
     this.manager.remove(notification);
   };
 
   removeAll = (): void => {
     this.manager.removeAll();
+  };
+
+  setOnRemoveCallback = (
+    callback?: (notification: Notification<any>) => void
+  ): void => {
+    this.onRemoveCallback = callback;
   };
 
   willDestroy(): void {
