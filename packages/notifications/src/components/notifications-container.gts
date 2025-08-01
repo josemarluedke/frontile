@@ -32,7 +32,7 @@ interface NotificationsContainerSignature {
     /**
      * Callback called when a notification is dismissed
      */
-    onDismiss?: (notification: Notification<any>) => void;
+    onDismiss?: (notification: Notification<Record<string, unknown>>) => void;
   };
   Element: HTMLDivElement;
 }

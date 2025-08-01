@@ -17,7 +17,7 @@ import type { CustomAction, containerPlacement } from '../-private/types';
 
 interface NotificationCardSignature {
   Args: {
-    notification: Notification<any>;
+    notification: Notification<Record<string, unknown>>;
     placement: containerPlacement;
 
     /**

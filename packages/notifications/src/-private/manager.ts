@@ -12,14 +12,14 @@ import type { DefaultConfig } from './types';
 import type { NotificationOptions } from './types';
 
 export default class NotificationsManager {
-  @tracked notifications: Notification<any>[] = [];
+  @tracked notifications: Notification<Record<string, unknown>>[] = [];
 
   config: DefaultConfig = {};
-  onRemove?: (notification: Notification<any>) => void;
+  onRemove?: (notification: Notification<Record<string, unknown>>) => void;
 
   constructor(
     context: object,
-    onRemove?: (notification: Notification<any>) => void
+    onRemove?: (notification: Notification<Record<string, unknown>>) => void
   ) {
     if (isDestroyed(context)) {
       return;
@@ -36,7 +36,7 @@ export default class NotificationsManager {
     this.onRemove = onRemove;
   }
 
-  add<TMetadata = Record<string, unknown>>(
+  add<TMetadata extends Record<string, unknown> = Record<string, unknown>>(
     message: string,
     options: NotificationOptions<TMetadata> = {}
   ): Notification<TMetadata> {
@@ -64,7 +64,7 @@ export default class NotificationsManager {
     return notification;
   }
 
-  remove(notification?: Notification<any>): void {
+  remove(notification?: Notification<Record<string, unknown>>): void {
     if (!notification) {
       return;
     }
@@ -94,7 +94,7 @@ export default class NotificationsManager {
   }
 
   private setupAutoRemoval(
-    notification: Notification<any>,
+    notification: Notification<Record<string, unknown>>,
     duration: number
   ): void {
     notification.timer = new Timer(duration, () => {

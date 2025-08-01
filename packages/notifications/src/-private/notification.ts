@@ -3,7 +3,9 @@ import Timer from './timer';
 import { getConfigOption } from './get-config';
 import type { NotificationOptions, CustomAction, DefaultConfig } from './types';
 
-export default class Notification<TMetadata = Record<string, unknown>> {
+export default class Notification<
+  TMetadata extends Record<string, unknown> = Record<string, unknown>
+> {
   readonly message: string;
   readonly transitionDuration: number;
   readonly appearance: NonNullable<NotificationOptions['appearance']>;
