@@ -4,7 +4,8 @@ const progressBar = tv({
   slots: {
     base: ['overflow-hidden w-full bg-content3 dark:bg-content2'],
     label: ['flex justify-between pb-1 gap-2 leading-tight'],
-    progress: ['']
+    progress: [''],
+    description: ['text-default-400 text-xs pb-1']
   },
   variants: {
     isIndeterminate: {
@@ -33,12 +34,14 @@ const progressBar = tv({
       xs: {
         base: 'h-1',
         progress: 'h-1',
-        label: 'text-xs'
+        label: 'text-xs',
+        description: 'text-xs'
       },
       sm: {
         base: 'h-2',
         progress: 'h-2',
-        label: 'text-sm'
+        label: 'text-sm',
+        description: 'text-sm'
       },
       md: {
         base: 'h-4',
@@ -47,7 +50,8 @@ const progressBar = tv({
       lg: {
         base: 'h-8',
         progress: 'h-8',
-        label: 'text-lg'
+        label: 'text-lg',
+        description: 'text-lg'
       }
     },
     radius: {

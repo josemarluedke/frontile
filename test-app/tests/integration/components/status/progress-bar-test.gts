@@ -11,7 +11,8 @@ registerCustomStyles({
     slots: {
       base: ['pb-base'],
       label: ['pb-label'],
-      progress: ['pb-progress']
+      progress: ['pb-progress'],
+      description: ['pb-description']
     },
     variants: {
       isIndeterminate: {
@@ -307,6 +308,51 @@ module(
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
           .doesNotExist();
+      });
+    });
+
+    module('description', () => {
+      test('it renders description text', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @description="Progress description"
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-description')
+          .containsText('Progress description');
+      });
+
+      test('it does not render description element when not provided', async function (assert) {
+        await render(
+          <template><ProgressBar data-test-id="progress-bar" /></template>
+        );
+
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-description')
+          .doesNotExist();
+      });
+
+      test('it renders both label and description when both provided', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @label="Loading files"
+              @description="Please wait while we process your request"
+              @progress={{75}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="progress-bar"] div.pb-label').exists();
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-description')
+          .containsText('Please wait while we process your request');
       });
     });
   }
