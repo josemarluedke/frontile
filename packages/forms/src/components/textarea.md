@@ -262,7 +262,6 @@ The Textarea component integrates with form validation by displaying error messa
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Textarea } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedTextarea extends Component {
@@ -304,7 +303,7 @@ export default class ValidatedTextarea extends Component {
 
       <div class='flex justify-between items-center text-sm text-gray-600'>
         <span>{{this.feedback.length}}/500 characters</span>
-        <Button {{on 'click' this.validateFeedback}}>
+        <Button @onPress={{this.validateFeedback}}>
           Validate
         </Button>
       </div>

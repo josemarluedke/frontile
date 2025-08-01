@@ -35,7 +35,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class BasicModal extends Component {
   @tracked isOpen = false;
@@ -46,7 +45,7 @@ export default class BasicModal extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Modal
       </Button>
 
@@ -62,7 +61,7 @@ export default class BasicModal extends Component {
             be clicked to close it.</p>
         </m.Body>
         <m.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.toggle}}>
+          <Button @onPress={{this.toggle}}>
             Cancel
           </Button>
           <Button @intent='primary'>
@@ -86,7 +85,6 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class ModalSizes extends Component {
   @tracked isOpen = false;
@@ -153,7 +151,7 @@ export default class ModalSizes extends Component {
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
-          <Button {{on 'click' (fn this.openModal option.key)}}>
+          <Button @onPress={{fn this.openModal option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -170,7 +168,7 @@ export default class ModalSizes extends Component {
           <p>{{this.currentSizeOption.description}}</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.closeModal}}>Close</Button>
+          <Button @onPress={{this.closeModal}}>Close</Button>
         </m.Footer>
       </Modal>
     </div>
@@ -188,7 +186,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class ModalPositioning extends Component {
   @tracked standardOpen = false;
@@ -205,10 +202,10 @@ export default class ModalPositioning extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleStandard}}>
+        <Button @onPress={{this.toggleStandard}}>
           Standard Position
         </Button>
-        <Button {{on 'click' this.toggleCentered}}>
+        <Button @onPress={{this.toggleCentered}}>
           Centered Position
         </Button>
       </div>
@@ -224,7 +221,7 @@ export default class ModalPositioning extends Component {
             appears towards the top of the screen.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.toggleStandard}}>Close</Button>
+          <Button @onPress={{this.toggleStandard}}>Close</Button>
         </m.Footer>
       </Modal>
 
@@ -239,7 +236,7 @@ export default class ModalPositioning extends Component {
           <p>This modal is vertically centered on the screen using @isCentered={{true}}.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.toggleCentered}}>Close</Button>
+          <Button @onPress={{this.toggleCentered}}>Close</Button>
         </m.Footer>
       </Modal>
     </div>
@@ -258,7 +255,6 @@ import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class ModalBackdrops extends Component {
   @tracked isOpen = false;
@@ -304,7 +300,7 @@ export default class ModalBackdrops extends Component {
     <div class='flex flex-col gap-4'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
-          <Button {{on 'click' (fn this.openModal option.key)}}>
+          <Button @onPress={{fn this.openModal option.key}}>
             {{option.label}}
           </Button>
         {{/each}}
@@ -324,7 +320,7 @@ export default class ModalBackdrops extends Component {
             behind this modal changes based on the selected type.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.closeModal}}>Close</Button>
+          <Button @onPress={{this.closeModal}}>Close</Button>
         </m.Footer>
       </Modal>
     </div>
@@ -342,7 +338,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class ConfirmationDialog extends Component {
   @tracked isOpen = false;
@@ -376,7 +371,7 @@ export default class ConfirmationDialog extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button @intent='danger' {{on 'click' this.openDialog}}>
+      <Button @intent='danger' @onPress={{this.openDialog}}>
         Delete Item
       </Button>
 
@@ -413,12 +408,12 @@ export default class ConfirmationDialog extends Component {
           </div>
         </m.Body>
         <m.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.cancel}} disabled={{this.isDeleting}}>
+          <Button @onPress={{this.cancel}} disabled={{this.isDeleting}}>
             Cancel
           </Button>
           <Button
             @intent='danger'
-            {{on 'click' this.confirm}}
+            @onPress={{this.confirm}}
             disabled={{this.isDeleting}}
           >
             {{#if this.isDeleting}}
@@ -527,7 +522,7 @@ export default class FormModal extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggle}}>
+      <Button @onPress={{this.toggle}}>
         Open Contact Form
       </Button>
 
@@ -580,12 +575,12 @@ export default class FormModal extends Component {
           </form>
         </m.Body>
         <m.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.toggle}} disabled={{this.isSubmitting}}>
+          <Button @onPress={{this.toggle}} disabled={{this.isSubmitting}}>
             Cancel
           </Button>
           <Button
             @intent='primary'
-            {{on 'click' this.handleSubmit}}
+            @onPress={{this.handleSubmit}}
             disabled={{this.isSubmitDisabled}}
           >
             {{#if this.isSubmitting}}
@@ -611,7 +606,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class ModalCloseButton extends Component {
   @tracked normalOpen = false;
@@ -633,13 +627,13 @@ export default class ModalCloseButton extends Component {
   <template>
     <div class='flex flex-col gap-4'>
       <div class='flex gap-2'>
-        <Button {{on 'click' this.toggleNormal}}>
+        <Button @onPress={{this.toggleNormal}}>
           Normal Close Button
         </Button>
-        <Button {{on 'click' this.toggleNoCloseButton}}>
+        <Button @onPress={{this.toggleNoCloseButton}}>
           No Close Button
         </Button>
-        <Button {{on 'click' this.toggleCustomClose}}>
+        <Button @onPress={{this.toggleCustomClose}}>
           Custom Close Button
         </Button>
       </div>
@@ -650,7 +644,7 @@ export default class ModalCloseButton extends Component {
           <p>This modal has the default close button in the top right corner.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.toggleNormal}}>Done</Button>
+          <Button @onPress={{this.toggleNormal}}>Done</Button>
         </m.Footer>
       </Modal>
 
@@ -666,7 +660,7 @@ export default class ModalCloseButton extends Component {
             the backdrop or pressing Escape.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.toggleNoCloseButton}}>
+          <Button @onPress={{this.toggleNoCloseButton}}>
             Close from Footer
           </Button>
         </m.Footer>
@@ -689,7 +683,7 @@ export default class ModalCloseButton extends Component {
             the yielded CloseButton component.</p>
         </m.Body>
         <m.Footer>
-          <Button {{on 'click' this.toggleCustomClose}}>Done</Button>
+          <Button @onPress={{this.toggleCustomClose}}>Done</Button>
         </m.Footer>
       </Modal>
     </div>
@@ -707,7 +701,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { Modal } from '@frontile/overlays';
 import { Button } from '@frontile/buttons';
-import { on } from '@ember/modifier';
 
 export default class NestedModals extends Component {
   @tracked firstModalOpen = false;
@@ -734,7 +727,7 @@ export default class NestedModals extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Button {{on 'click' this.toggleFirst}}>
+      <Button @onPress={{this.toggleFirst}}>
         Open First Modal
       </Button>
 
@@ -780,20 +773,20 @@ export default class NestedModals extends Component {
                     own focus trap and can be closed independently.</p>
                 </m.Body>
                 <m.Footer @class='flex gap-2'>
-                  <Button {{on 'click' this.toggleThird}}>
+                  <Button @onPress={{this.toggleThird}}>
                     Close This
                   </Button>
-                  <Button @intent='danger' {{on 'click' this.closeAll}}>
+                  <Button @intent='danger' @onPress={{this.closeAll}}>
                     Close All
                   </Button>
                 </m.Footer>
               </Modal>
             </m.Body>
             <m.Footer @class='flex gap-2'>
-              <Button {{on 'click' this.toggleSecond}}>
+              <Button @onPress={{this.toggleSecond}}>
                 Close
               </Button>
-              <Button @intent='primary' {{on 'click' this.toggleThird}}>
+              <Button @intent='primary' @onPress={{this.toggleThird}}>
                 Open Third Modal
               </Button>
             </m.Footer>
@@ -801,10 +794,10 @@ export default class NestedModals extends Component {
 
         </m.Body>
         <m.Footer @class='flex gap-2'>
-          <Button {{on 'click' this.toggleFirst}}>
+          <Button @onPress={{this.toggleFirst}}>
             Close
           </Button>
-          <Button @intent='primary' {{on 'click' this.toggleSecond}}>
+          <Button @intent='primary' @onPress={{this.toggleSecond}}>
             Open Second Modal
           </Button>
         </m.Footer>
@@ -821,7 +814,7 @@ export default class NestedModals extends Component {
 
 The Modal component yields several components for easy composition:
 
-- **`CloseButton`**: A close button with proper styling and onClick handler
+- **`CloseButton`**: A close button with proper styling and onPress handler
 - **`Header`**: A header section with proper ID for accessibility
 - **`Body`**: The main content area
 - **`Footer`**: A footer section for actions or additional content

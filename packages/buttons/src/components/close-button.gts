@@ -1,8 +1,11 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { VisuallyHidden } from '@frontile/utilities';
+import { deprecate } from '@ember/debug';
+import { VisuallyHidden, press, type PressEvent } from '@frontile/utilities';
 import { useStyles, type CloseButtonVariants } from '@frontile/theme';
+import type Owner from '@ember/owner';
 
 interface CloseButtonSignature {
   Args: {
@@ -26,7 +29,14 @@ interface CloseButtonSignature {
     variant?: CloseButtonVariants['variant'];
 
     /**
-     * The function to call when button is clicked
+     * The function to call when button is pressed
+     */
+    onPress?: (event: PressEvent) => void;
+
+    /**
+     * Deprecated: The function to call when button is clicked
+     *
+     * @deprecated Use onPress instead for better cross-platform support
      */
     onClick?: (event: Event) => void;
 
@@ -42,6 +52,25 @@ interface CloseButtonSignature {
 }
 
 class CloseButton extends Component<CloseButtonSignature> {
+  @tracked isPressed = false;
+
+  constructor(owner: Owner, args: CloseButtonSignature['Args']) {
+    super(owner, args);
+
+    if (args.onClick) {
+      deprecate(
+        'CloseButton: onClick is deprecated. Use onPress instead for better cross-platform support including touch, keyboard, and screen reader interactions.',
+        false,
+        {
+          id: 'frontile.close-button.onClick',
+          until: '0.18.0',
+          for: '@frontile/buttons',
+          since: { available: '0.17.0', enabled: '0.17.0' }
+        }
+      );
+    }
+  }
+
   get classes() {
     const { closeButton } = useStyles();
 
@@ -56,6 +85,16 @@ class CloseButton extends Component<CloseButtonSignature> {
     };
   }
 
+  handlePressChange = (isPressed: boolean): void => {
+    this.isPressed = isPressed;
+  };
+
+  @action handlePress(event: PressEvent): void {
+    if (typeof this.args.onPress === 'function') {
+      this.args.onPress(event);
+    }
+  }
+
   @action handleClick(event: Event): void {
     if (typeof this.args.onClick === 'function') {
       this.args.onClick(event);
@@ -66,7 +105,9 @@ class CloseButton extends Component<CloseButtonSignature> {
     <button
       type="button"
       class={{this.classes.base}}
+      data-pressed={{if this.isPressed "true"}}
       ...attributes
+      {{press this.handlePress onPressChange=this.handlePressChange}}
       {{on "click" this.handleClick}}
     >
 

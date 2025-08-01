@@ -82,7 +82,7 @@ export interface ModalSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick' | 'class'>;
+        CloseButton: WithBoundArgs<typeof CloseButton, 'onPress' | 'class'>;
         Header: WithBoundArgs<
           typeof ModalHeader,
           'labelledById' | 'classFromParent'
@@ -162,7 +162,7 @@ export default class Modal extends Component<ModalSignature> {
       >
         {{#if this.showCloseButton}}
           <CloseButton
-            @onClick={{@onClose}}
+            @onPress={{@onClose}}
             @size={{@closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}
           />
@@ -172,7 +172,7 @@ export default class Modal extends Component<ModalSignature> {
           (hash
             CloseButton=(component
               CloseButton
-              onClick=@onClose
+              onPress=@onClose
               class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component

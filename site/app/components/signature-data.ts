@@ -176,6 +176,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'onPress',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: PressEvent) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback for when the button is pressed.',
+        tags: {},
+      },
+      {
         identifier: 'size',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -389,7 +400,23 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'The function to call when button is clicked',
+        description: 'Deprecated: The function to call when button is clicked',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value: 'Use onPress instead for better cross-platform support',
+          },
+        },
+      },
+      {
+        identifier: 'onPress',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(event: PressEvent) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The function to call when button is pressed',
         tags: {},
       },
       {

@@ -83,7 +83,7 @@ export interface DrawerSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onClick' | 'class'>;
+        CloseButton: WithBoundArgs<typeof CloseButton, 'onPress' | 'class'>;
         Header: WithBoundArgs<
           typeof DrawerHeader,
           'labelledById' | 'classFromParent'
@@ -162,7 +162,7 @@ export default class Drawer extends Component<DrawerSignature> {
       >
         {{#if this.showCloseButton}}
           <CloseButton
-            @onClick={{@onClose}}
+            @onPress={{@onClose}}
             @size={{@closeButtonSize}}
             @class={{this.classes.closeButton class=@classes.closeButton}}
           />
@@ -172,7 +172,7 @@ export default class Drawer extends Component<DrawerSignature> {
           (hash
             CloseButton=(component
               CloseButton
-              onClick=@onClose
+              onPress=@onClose
               class=(this.classes.closeButton class=@classes.closeButton)
             )
             Header=(component

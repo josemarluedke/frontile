@@ -245,7 +245,6 @@ The RadioGroup component integrates with form validation by displaying error mes
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { RadioGroup } from '@frontile/forms';
-import { on } from '@ember/modifier';
 import { Button } from '@frontile/buttons';
 
 export default class ValidatedRadioGroup extends Component {
@@ -285,7 +284,7 @@ export default class ValidatedRadioGroup extends Component {
       </RadioGroup>
 
       <div>
-        <Button {{on 'click' this.validateSelection}}>
+        <Button @onPress={{this.validateSelection}}>
           Validate Selection
         </Button>
       </div>
@@ -458,7 +457,7 @@ export default class CompleteFormWithRadio extends Component {
         </RadioGroup>
 
         <div>
-          <Button @class='mt-4'>
+          <Button @type='submit' @class='mt-4'>
             Submit Request
           </Button>
         </div>
