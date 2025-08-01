@@ -500,6 +500,90 @@ export default class AnimationsAndTransitions extends Component {
 }
 ```
 
+### Outside Click vs Overlay Element Click
+
+The Overlay component has two different click-to-close mechanisms that work together:
+
+- **`@closeOnOutsideClick`** (default: `true`): Closes when clicking the backdrop/outside area
+- **`@closeOnOverlayElementClick`** (default: `true`): Closes when clicking the overlay element itself
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Overlay } from '@frontile/overlays';
+import { Button } from '@frontile/buttons';
+import { on } from '@ember/modifier';
+
+export default class OverlayElementClick extends Component {
+  @tracked defaultOpen = false;
+  @tracked disabledOpen = false;
+
+  @action toggleDefault() {
+    this.defaultOpen = !this.defaultOpen;
+  }
+
+  @action toggleDisabled() {
+    this.disabledOpen = !this.disabledOpen;
+  }
+
+  <template>
+    <div class='flex flex-col gap-4'>
+      <div class='flex gap-2'>
+        <Button {{on 'click' this.toggleDefault}}>
+          Default Behavior
+        </Button>
+        <Button {{on 'click' this.toggleDisabled}}>
+          Overlay Element Click Disabled
+        </Button>
+      </div>
+
+      <div class='text-sm space-y-2'>
+        <p><strong>Default Behavior:</strong>
+          Try clicking on the overlay element (the outer container) vs the inner
+          content card.</p>
+        <p><strong>Disabled:</strong>
+          Only the backdrop (outside area) will close the overlay.</p>
+      </div>
+
+      <Overlay @isOpen={{this.defaultOpen}} @onClose={{this.toggleDefault}}>
+        <div class='bg-content1 p-6 rounded-lg shadow-lg max-w-md'>
+          <h3 class='font-semibold mb-2'>Default Behavior</h3>
+          <p class='mb-4 text-sm'>
+            <code>@closeOnOverlayElementClick={{true}}</code>
+            (default)
+          </p>
+          <p class='mb-4'>Clicking anywhere on the overlay element will close
+            it, but clicking this inner content card won't.</p>
+          <Button {{on 'click' this.toggleDefault}}>Close</Button>
+        </div>
+      </Overlay>
+
+      <Overlay
+        @isOpen={{this.disabledOpen}}
+        @onClose={{this.toggleDisabled}}
+        @closeOnOverlayElementClick={{false}}
+      >
+        <div class='bg-content1 p-6 rounded-lg shadow-lg max-w-md'>
+          <h3 class='font-semibold mb-2'>Overlay Element Click Disabled</h3>
+          <p class='mb-4 text-sm'>
+            <code>@closeOnOverlayElementClick={{false}}</code>
+          </p>
+          <p class='mb-4'>Only clicking the backdrop (outside area) will not
+            close this overlay because the overlay content element is on top of
+            backdrop.</p>
+          <Button {{on 'click' this.toggleDisabled}}>Close</Button>
+        </div>
+      </Overlay>
+    </div>
+  </template>
+}
+```
+
+> **Why is `@closeOnOverlayElementClick` `true` by default?**
+>
+> This option is set to `true` by default to make "outside click" functionality work intuitively. Most overlay content is wrapped with an inner element (like a card or dialog), which prevents accidental closure when clicking on the actual content. The overlay element itself acts as part of the "outside" area, allowing users to click anywhere around the content to dismiss the overlay.
+
 ## Important Notes
 
 ### Focus Requirements

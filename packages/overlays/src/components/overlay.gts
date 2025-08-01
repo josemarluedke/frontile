@@ -109,8 +109,10 @@ interface Args
 
   /**
    * Whether to close when the overlay element is clicked, used for modal and drawer components.
+   * This is set to true by default to allow "outside click" functionality to work properly.
+   * Most overlay content is wrapped with an inner element, preventing accidental closure.
    *
-   * @defaultValue false
+   * @defaultValue true
    */
   closeOnOverlayElementClick?: boolean;
 
@@ -170,7 +172,7 @@ class Overlay extends Component<OverlaySignature> {
   @action handleContentClick(event: MouseEvent): void {
     if (
       this.args.closeOnOutsideClick !== false &&
-      this.args.closeOnOverlayElementClick === true &&
+      this.args.closeOnOverlayElementClick !== false &&
       event.target === this.contentElement &&
       this.mouseDownContentElement == this.contentElement &&
       !hasNestedPortals(this.contentElement) &&
@@ -195,7 +197,7 @@ class Overlay extends Component<OverlaySignature> {
 
   @action
   handleContentMouseDown(event: MouseEvent): void {
-    if (this.args.closeOnOverlayElementClick === true) {
+    if (this.args.closeOnOverlayElementClick !== false) {
       this.mouseDownContentElement = event.target;
     }
   }
