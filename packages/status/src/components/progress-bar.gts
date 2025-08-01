@@ -72,9 +72,9 @@ interface ProgressBarSignature {
     formatOptions?: Intl.NumberFormatOptions;
 
     /**
-     * The content to display as the hint.
+     * The content to display as the description.
      */
-    hint?: string;
+    description?: string;
 
     /**
      * Custom class name, it will override the default ones using Tailwind Merge library.
@@ -93,7 +93,7 @@ class ProgressBar extends Component<ProgressBarSignature> {
   get classNames() {
     const { progressBar } = useStyles();
 
-    const { base, progress, label } = progressBar({
+    const { base, progress, label, description } = progressBar({
       intent: this.args.intent || 'default',
       size: this.args.size,
       radius: this.args.radius,
@@ -103,7 +103,8 @@ class ProgressBar extends Component<ProgressBarSignature> {
     return {
       base: base({ class: this.args.class }),
       progress: progress(),
-      label: label()
+      label: label(),
+      description: description()
     };
   }
 
@@ -179,6 +180,11 @@ class ProgressBar extends Component<ProgressBarSignature> {
               {{this.formattedValueLabel}}
             </div>
           {{/if}}
+        </div>
+      {{/if}}
+      {{#if @description}}
+        <div class={{this.classNames.description}}>
+          {{@description}}
         </div>
       {{/if}}
       <div class={{this.classNames.base}}>
