@@ -9,7 +9,18 @@
       "Bash(npx eslint:*)",
       "Bash(npm run build:*)",
       "Bash(npm run:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm --filter test-app test)",
+      "Bash(pnpm --filter test-app test --filter*)",
+      "Bash(pnpm --filter utilities build)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(pnpm --filter test-app test --filter \"PressEvent has correct structure\")",
+      "Bash(pnpm --filter test-app test --filter \"PressEvent continuePropagation\")",
+      "Bash(pnpm --filter test-app test --filter \"provides correct pointer type for keyboard\")",
+      "Bash(pnpm --filter test-app test --filter \"Modifier | press\" --reporter=verbose)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }
