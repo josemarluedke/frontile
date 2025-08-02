@@ -12,11 +12,15 @@ import type { DefaultConfig } from './types';
 import type { NotificationOptions } from './types';
 
 export default class NotificationsManager {
-  @tracked notifications: Notification[] = [];
+  @tracked notifications: Notification<Record<string, unknown>>[] = [];
 
   config: DefaultConfig = {};
+  onRemove?: (notification: Notification<Record<string, unknown>>) => void;
 
-  constructor(context: object) {
+  constructor(
+    context: object,
+    onRemove?: (notification: Notification<Record<string, unknown>>) => void
+  ) {
     if (isDestroyed(context)) {
       return;
     }
@@ -28,10 +32,19 @@ export default class NotificationsManager {
       this.config =
         (configFactory.class as never)['@frontile/notifications'] || {};
     }
+
+    this.onRemove = onRemove;
   }
 
-  add(message: string, options: NotificationOptions = {}): Notification {
-    const notification = new Notification(this.config, message, options);
+  add<TMetadata extends Record<string, unknown> = Record<string, unknown>>(
+    message: string,
+    options: NotificationOptions<TMetadata> = {}
+  ): Notification<TMetadata> {
+    const notification = new Notification<TMetadata>(
+      this.config,
+      message,
+      options
+    );
     this.notifications = [...this.notifications, notification];
 
     let preserve =
@@ -51,7 +64,7 @@ export default class NotificationsManager {
     return notification;
   }
 
-  remove(notification?: Notification): void {
+  remove(notification?: Notification<Record<string, unknown>>): void {
     if (!notification) {
       return;
     }
@@ -64,6 +77,11 @@ export default class NotificationsManager {
         this.notifications = this.notifications.filter((n) => {
           return n !== notification;
         });
+
+        // Call the onRemove callback after the notification is actually removed
+        if (this.onRemove) {
+          this.onRemove(notification);
+        }
       },
       notification.transitionDuration
     );
@@ -75,7 +93,10 @@ export default class NotificationsManager {
     });
   }
 
-  private setupAutoRemoval(notification: Notification, duration: number): void {
+  private setupAutoRemoval(
+    notification: Notification<Record<string, unknown>>,
+    duration: number
+  ): void {
     notification.timer = new Timer(duration, () => {
       this.remove(notification);
     });

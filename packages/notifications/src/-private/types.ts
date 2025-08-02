@@ -18,7 +18,9 @@ export interface CustomAction {
   onClick: () => void;
 }
 
-export interface NotificationOptions {
+export interface NotificationOptions<
+  TMetadata extends Record<string, unknown> = Record<string, unknown>
+> {
   /**
    * If set to false, the close button will not be displayed.
    *
@@ -60,6 +62,13 @@ export interface NotificationOptions {
    * @defaultValue undefined
    */
   customActions?: CustomAction[];
+
+  /**
+   * Additional metadata to attach to the notification
+   *
+   * @defaultValue undefined
+   */
+  metadata?: TMetadata;
 }
 
 export interface DefaultConfig extends NotificationOptions {

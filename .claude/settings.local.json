@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(pnpm lint:js:*)",
@@ -20,7 +21,10 @@
       "Bash(pnpm --filter test-app test --filter \"PressEvent continuePropagation\")",
       "Bash(pnpm --filter test-app test --filter \"provides correct pointer type for keyboard\")",
       "Bash(pnpm --filter test-app test --filter \"Modifier | press\" --reporter=verbose)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(pnpm --filter test-app test -- --filter=\"NotificationCard\")",
+      "Bash(pnpm --filter @frontile/notifications build)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }

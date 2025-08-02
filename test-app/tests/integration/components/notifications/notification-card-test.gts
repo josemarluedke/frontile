@@ -224,5 +224,40 @@ module(
       await triggerEvent('[data-test-notification]', 'mouseenter');
       await triggerEvent('[data-test-notification]', 'mouseleave');
     });
+
+    test('notification can store metadata', async function (assert) {
+      const metadata = {
+        userId: 123,
+        action: 'delete',
+        resourceId: 'abc-123',
+        timestamp: 1234567890
+      };
+
+      notification.current = new Notification({}, 'My message', {
+        metadata
+      });
+
+      assert.ok(notification.current.metadata, 'metadata should exist');
+      assert.equal(
+        notification.current.metadata?.userId,
+        123,
+        'userId should match'
+      );
+      assert.equal(
+        notification.current.metadata?.action,
+        'delete',
+        'action should match'
+      );
+      assert.equal(
+        notification.current.metadata?.resourceId,
+        'abc-123',
+        'resourceId should match'
+      );
+      assert.equal(
+        notification.current.metadata?.timestamp,
+        1234567890,
+        'timestamp should match'
+      );
+    });
   }
 );
