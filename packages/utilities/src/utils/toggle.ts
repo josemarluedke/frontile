@@ -1,4 +1,5 @@
 import { tracked } from '@glimmer/tracking';
+import type { PressEvent } from '../modifiers/press';
 
 class ToggleState {
   @tracked current = false;
@@ -11,7 +12,7 @@ class ToggleState {
     }
   }
 
-  toggle = (input?: boolean | Event): void => {
+  toggle = (input?: boolean | Event | PressEvent): void => {
     if (typeof input === 'boolean') {
       this.#set(input);
       return;
