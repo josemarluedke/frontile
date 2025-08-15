@@ -40,9 +40,9 @@ const animalsAsOject = [
 ];
 
 export default class Example extends Component {
-  @tracked selectedKeys: string[] = [];
-  @tracked selectedKeys2: string[] = ['elephant'];
-  @tracked selectedKeys3: string[] = [];
+  @tracked selectedKeys: string[] = []; // Multiple selection
+  @tracked selectedKey2: string | null = 'elephant'; // Single selection
+  @tracked selectedKey3: string | null = null; // Single selection
 
   @action
   onAction(key: string) {
@@ -56,13 +56,13 @@ export default class Example extends Component {
   }
 
   @action
-  onSelectionChange2(keys: string[]) {
-    this.selectedKeys2 = keys;
+  onSelectionChange2(key: string | null) {
+    this.selectedKey2 = key;
   }
 
   @action
-  onSelectionChange3(keys: string[]) {
-    this.selectedKeys3 = keys;
+  onSelectionChange3(key: string | null) {
+    this.selectedKey3 = key;
   }
 
   <template>
@@ -90,18 +90,18 @@ export default class Example extends Component {
       @selectionMode="single"
       @items={{animalsAsOject}}
       @intent="primary"
-      @selectedKeys={{this.selectedKeys2}}
+      @selectedKey={{this.selectedKey2}}
       @onAction={{this.onAction}}
       @onSelectionChange={{this.onSelectionChange2}}
     />
     Values:
-    {{this.selectedKeys2}}
+    {{this.selectedKey2}}
     <Divider @class="my-8" />
     <Select
       @disableTransitions={{true}}
       @onAction={{this.onAction}}
       @disabledKeys={{(array "notifications")}}
-      @selectedKeys={{this.selectedKeys3}}
+      @selectedKey={{this.selectedKey3}}
       @onSelectionChange={{this.onSelectionChange3}}
       @isDisabled={{true}}
       as |l|
@@ -132,6 +132,6 @@ export default class Example extends Component {
       </l.Item>
     </Select>
     Values:
-    {{this.selectedKeys3}}
+    {{this.selectedKey3}}
   </template>
 }

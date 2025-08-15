@@ -6,6 +6,9 @@ import { Select } from '@frontile/forms';
 import { array } from '@ember/helper';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 
+// Simple equality helper
+const eq = (a: unknown, b: unknown) => a === b;
+
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -40,14 +43,15 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   };
 
   test('it renders static items in NativeSelect and Listbox', async function (assert) {
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
         <Select
           @onSelectionChange={{onSelectionChange}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @disabledKeys={{array "item-3" "item-4"}}
           @allowEmpty={{true}}
           as |l|
@@ -98,7 +102,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await selectOptionByKey('[data-component="native-select"]', 'item-2');
 
-    assert.deepEqual(selectedKeys.current, ['item-2']);
+    assert.equal(selectedKey.current, 'item-2');
     isSelected(assert, '[data-key="item-2"]');
 
     // Check Listbox
@@ -142,18 +146,32 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   test('it render dynamic items without yield of item selectionMode = single / multiple, closes on item click', async function (assert) {
     const selectionMode = cell<'single' | 'multiple'>('single');
     const animals = ['cheetah', 'crocodile', 'elephant'];
+    const selectedKey = cell<string | null>(null);
     const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const onSingleSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+    const onMultipleSelectionChange = (keys: string[]) =>
+      (selectedKeys.current = keys);
 
     await render(
       <template>
-        <Select
-          @allowEmpty={{true}}
-          @selectionMode={{selectionMode.current}}
-          @items={{animals}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-        />
+        {{#if (eq selectionMode.current "single")}}
+          <Select
+            @allowEmpty={{true}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSingleSelectionChange}}
+          />
+        {{else}}
+          <Select
+            @allowEmpty={{true}}
+            @selectionMode={{selectionMode.current}}
+            @items={{animals}}
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onMultipleSelectionChange}}
+          />
+        {{/if}}
       </template>
     );
 
@@ -166,14 +184,12 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     // Selection Mode single
     await click('[data-component="listbox"] [data-key="cheetah"]');
-    assert.equal(selectedKeys.current.length, 1);
-    assert.equal(selectedKeys.current[0], 'cheetah');
+    assert.equal(selectedKey.current, 'cheetah');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
 
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="crocodile"]');
-    assert.equal(selectedKeys.current.length, 1);
-    assert.equal(selectedKeys.current[0], 'crocodile');
+    assert.equal(selectedKey.current, 'crocodile');
     assert.dom('[data-component="listbox"]').doesNotExist('should have closed');
 
     // Selection Mode multiple
@@ -210,8 +226,9 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       { key: 'crocodile-key', value: 'crocodile-value' },
       { key: 'elephant-key', value: 'elephant-value' }
     ];
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
@@ -219,7 +236,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
           @allowEmpty={{false}}
           @selectionMode="single"
           @items={{animals}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @onSelectionChange={{onSelectionChange}}
         >
           <:item as |o|>
@@ -263,14 +280,15 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   test('keyboard navigation work (roving focus))', async function (assert) {
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
         <Select
           @onSelectionChange={{onSelectionChange}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @disabledKeys={{array "item-3" "item-4"}}
           @allowEmpty={{true}}
           as |l|
@@ -318,8 +336,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     await triggerKeyEvent('[data-component="listbox"]', 'keypress', 'Enter');
     assert.dom('[data-component="listbox"]').doesNotExist();
 
-    assert.equal(selectedKeys.current.length, 1);
-    assert.equal(selectedKeys.current[0], 'item-2');
+    assert.equal(selectedKey.current, 'item-2');
   });
 
   test('it renders disabled select', async function (assert) {
@@ -369,15 +386,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('.input-container div:last-child').hasTextContaining('End');
   });
 
-  test('it clears selectedKeys when isClearable is set and clear button clicked', async function (assert) {
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+  test('it clears selectedKey when isClearable is set and clear button clicked', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
         <Select
           @onSelectionChange={{onSelectionChange}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @isClearable={{true}}
           as |l|
         >
@@ -390,24 +408,24 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await click('[data-component="select-trigger"]');
     await click('[data-component="listbox"] [data-key="item-1"]');
-    assert.equal(selectedKeys.current.length, 1);
-    assert.equal(selectedKeys.current[0], 'item-1');
+    assert.equal(selectedKey.current, 'item-1');
 
     await click('[data-test-id="input-clear-button"]');
-    assert.equal(selectedKeys.current.length, 0);
+    assert.equal(selectedKey.current, null);
   });
 
   test('it filters options when isFilterable is enabled', async function (assert) {
     const items = ['Apple', 'Banana', 'Cherry'];
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
         <Select
           @items={{items}}
           @isFilterable={{true}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @onSelectionChange={{onSelectionChange}}
         />
       </template>
@@ -430,15 +448,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   test('it shows empty content when no options match the filter', async function (assert) {
     const items = ['Apple', 'Banana', 'Cherry'];
 
-    const selectedKeys = cell<string[]>([]);
-    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
 
     await render(
       <template>
         <Select
           @items={{items}}
           @isFilterable={{true}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @onSelectionChange={{onSelectionChange}}
         />
       </template>
@@ -455,7 +474,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         <Select
           @items={{items}}
           @isFilterable={{true}}
-          @selectedKeys={{selectedKeys.current}}
+          @selectedKey={{selectedKey.current}}
           @onSelectionChange={{onSelectionChange}}
         >
           <:emptyContent>No results found from blocks.</:emptyContent>
