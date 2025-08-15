@@ -199,7 +199,7 @@ class Input extends Component<InputSignature> {
                 @variant="subtle"
                 @size="xs"
                 data-test-id="input-clear-button"
-                @onClick={{this.clearValue}}
+                @onPress={{this.clearValue}}
               />
             {{/if}}
           </div>

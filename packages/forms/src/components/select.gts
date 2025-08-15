@@ -280,9 +280,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }
   };
 
-  clearSelectedKeys = (event: Event) => {
+  clearSelectedKeys = () => {
     this.onSelectionChange([]);
-    event.stopPropagation();
   };
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
@@ -511,7 +510,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   @size="xs"
                   @class={{this.classes.clearButton class=@classes.clearButton}}
                   data-test-id="input-clear-button"
-                  @onClick={{this.clearSelectedKeys}}
+                  @onPress={{this.clearSelectedKeys}}
                 />
               {{else}}
                 <IconChevronUpDown
