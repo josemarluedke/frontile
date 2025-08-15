@@ -54,6 +54,7 @@ export default {
   ],
   labels: {
     accessibility: 'Accessibility',
+    migration: 'Migration',
     customization: 'Customization',
     components: 'Components',
     docs: 'Documentation',
