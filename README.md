@@ -51,16 +51,16 @@ const options = [
 ];
 
 export default class Example extends Component {
-  selectedKeys = [];
+  selectedKey = null;
 
-  onSelectionChange = (keys) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key) => {
+    this.selectedKey = key;
   };
 
   <template>
     <Select
       @items={{options}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
       @isFilterable={{true}}
     />

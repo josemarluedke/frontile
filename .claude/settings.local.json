@@ -17,14 +17,14 @@
       "Bash(pnpm --filter utilities build)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(pnpm --filter test-app test --filter \"PressEvent has correct structure\")",
-      "Bash(pnpm --filter test-app test --filter \"PressEvent continuePropagation\")",
-      "Bash(pnpm --filter test-app test --filter \"provides correct pointer type for keyboard\")",
-      "Bash(pnpm --filter test-app test --filter \"Modifier | press\" --reporter=verbose)",
       "Bash(npm test:*)",
-      "Bash(pnpm --filter test-app test -- --filter=\"NotificationCard\")",
       "Bash(pnpm --filter @frontile/notifications build)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)",
+      "Bash(pnpm --filter @frontile/forms build)",
+      "Bash(pnpm --filter @frontile/forms run lint:js)",
+      "Bash(pnpm --filter @frontile/forms run lint:js --fix)",
+      "Bash(pntml --filter @frontile/forms run lint:js)"
     ],
     "deny": []
   }

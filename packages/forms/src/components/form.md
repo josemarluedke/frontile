@@ -28,7 +28,7 @@ import { Button } from '@frontile/buttons';
 
 export default class BasicForm extends Component {
   @tracked formData: FormResultData = {};
-  @tracked selectedCountry: string[] = [];
+  @tracked selectedCountry: string | null = null;
 
   countries = [
     { label: 'United States', key: 'us' },
@@ -42,8 +42,8 @@ export default class BasicForm extends Component {
     console.log(`Form ${eventType}:`, data);
   };
 
-  handleCountryChange = (selectedKeys: string[]) => {
-    this.selectedCountry = selectedKeys;
+  handleCountryChange = (selectedKey: string | null) => {
+    this.selectedCountry = selectedKey;
   };
 
   <template>
@@ -59,7 +59,7 @@ export default class BasicForm extends Component {
             @label='Country'
             @items={{this.countries}}
             @placeholder='Select your country'
-            @selectedKeys={{this.selectedCountry}}
+            @selectedKey={{this.selectedCountry}}
             @onSelectionChange={{this.handleCountryChange}}
           />
 
@@ -97,7 +97,7 @@ import { Button } from '@frontile/buttons';
 export default class RealtimeForm extends Component {
   @tracked inputData: FormResultData = {};
   @tracked submitData: FormResultData = {};
-  @tracked selectedRole: string[] = [];
+  @tracked selectedRole: string | null = null;
 
   roles = [
     { label: 'User', key: 'user' },
@@ -118,8 +118,8 @@ export default class RealtimeForm extends Component {
     }
   };
 
-  handleRoleChange = (selectedKeys: string[]) => {
-    this.selectedRole = selectedKeys;
+  handleRoleChange = (selectedKey: string | null) => {
+    this.selectedRole = selectedKey;
   };
 
   <template>
@@ -144,7 +144,7 @@ export default class RealtimeForm extends Component {
             @label='User Role'
             @items={{this.roles}}
             @placeholder='Select your role'
-            @selectedKeys={{this.selectedRole}}
+            @selectedKey={{this.selectedRole}}
             @onSelectionChange={{this.handleRoleChange}}
           />
 
@@ -208,7 +208,7 @@ import { Button } from '@frontile/buttons';
 export default class ComprehensiveForm extends Component {
   @tracked formData: FormResultData = {};
   @tracked lastEventType = '';
-  @tracked selectedSkillLevel: string[] = [];
+  @tracked selectedSkillLevel: string | null = null;
 
   countries = [
     'United States',
@@ -230,8 +230,8 @@ export default class ComprehensiveForm extends Component {
     this.lastEventType = eventType;
   };
 
-  handleSkillLevelChange = (selectedKeys: string[]) => {
-    this.selectedSkillLevel = selectedKeys;
+  handleSkillLevelChange = (selectedKey: string | null) => {
+    this.selectedSkillLevel = selectedKey;
   };
 
   <template>
@@ -265,7 +265,7 @@ export default class ComprehensiveForm extends Component {
             @label='Skill Level'
             @items={{this.skillLevels}}
             @placeholder='Select your skill level'
-            @selectedKeys={{this.selectedSkillLevel}}
+            @selectedKey={{this.selectedSkillLevel}}
             @onSelectionChange={{this.handleSkillLevelChange}}
           />
 
@@ -341,7 +341,7 @@ export default class ValidatedForm extends Component {
   @tracked errors: Record<string, string[]> = {};
   @tracked isSubmitting = false;
   @tracked submitMessage = '';
-  @tracked selectedAccountType: string[] = [];
+  @tracked selectedAccountType: string | null = null;
 
   accountTypes = [
     { label: 'Personal', key: 'personal' },
@@ -370,8 +370,8 @@ export default class ValidatedForm extends Component {
       v.regex(/\d/, 'Password must contain at least one number')
     ),
     accountType: v.pipe(
-      v.array(v.string()),
-      v.minLength(1, 'Please select an account type')
+      v.string(),
+      v.nonEmpty('Please select an account type')
     ),
     terms: v.pipe(
       v.boolean(),
@@ -469,10 +469,10 @@ export default class ValidatedForm extends Component {
     return this.submitMessage.includes('success');
   }
 
-  handleAccountTypeChange = (selectedKeys: string[]) => {
-    this.selectedAccountType = selectedKeys;
+  handleAccountTypeChange = (selectedKey: string | null) => {
+    this.selectedAccountType = selectedKey;
     // Clear errors when selection is made
-    if (selectedKeys.length > 0 && this.errors.accountType) {
+    if (selectedKey && this.errors.accountType) {
       const newErrors = { ...this.errors };
       delete newErrors.accountType;
       this.errors = newErrors;
@@ -513,7 +513,7 @@ export default class ValidatedForm extends Component {
             @label='Account Type'
             @items={{this.accountTypes}}
             @placeholder='Select account type'
-            @selectedKeys={{this.selectedAccountType}}
+            @selectedKey={{this.selectedAccountType}}
             @onSelectionChange={{this.handleAccountTypeChange}}
             @errors={{this.errors.accountType}}
             @isRequired={{true}}

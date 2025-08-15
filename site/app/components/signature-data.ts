@@ -2426,7 +2426,7 @@ const data: ComponentDoc[] = [
         identifier: 'onSelectionChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>',
+          raw: '(<span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =></span> <span class="hljs-built_in">void</span>) | (<span class="hljs-function">(<span class="hljs-params">keys: <span class="hljs-built_in">string</span>[]</span>) =></span> <span class="hljs-built_in">void</span>)',
         },
         isRequired: false,
         isInternal: false,
@@ -2440,6 +2440,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Placeholder text used when `allowEmpty` is set to `true`.',
+        tags: {},
+      },
+      {
+        identifier: 'selectedKey',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
         tags: {},
       },
       {
@@ -3458,11 +3466,12 @@ const data: ComponentDoc[] = [
         identifier: 'onSelectionChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(key: <span class="hljs-built_in">string</span>[]) => <span class="hljs-built_in">void</span>',
+          raw: '(<span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =></span> <span class="hljs-built_in">void</span>) | (<span class="hljs-function">(<span class="hljs-params">keys: <span class="hljs-built_in">string</span>[]</span>) =></span> <span class="hljs-built_in">void</span>)',
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback fired when the selection changes in single mode.\nCallback fired when the selection changes in multiple mode.',
         tags: {},
       },
       {
@@ -3527,6 +3536,19 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
+        identifier: 'selectedKey',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The currently selected key for single selection mode.',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value: 'Use selectedKeys for multiple selection mode',
+          },
+        },
+      },
+      {
         identifier: 'selectedKeys',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -3534,8 +3556,13 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The currently selected keys for multiple selection mode.',
+        tags: {
+          deprecated: {
+            name: 'deprecated',
+            value: 'Use selectedKey for single selection mode',
+          },
+        },
       },
       {
         identifier: 'selectionMode',
@@ -3547,7 +3574,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Determines the selection mode of the select component.\n- 'single': Only one item can be selected at a time.\n- 'multiple': Allows multiple selections.",
+          "Determines the selection mode of the select component.\n- 'single': Only one item can be selected at a time.\nDetermines the selection mode of the select component.\n- 'multiple': Allows multiple selections.",
         tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
         defaultValue: '<span class="hljs-string">\'single\'</span>',
       },
@@ -6472,7 +6499,9 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'notification',
-        type: { type: 'Notification' },
+        type: {
+          type: 'Notification&#x3C;Record&#x3C;<span class="hljs-built_in">string</span>, unknown>>',
+        },
         isRequired: true,
         isInternal: false,
         description: '',
@@ -6531,6 +6560,17 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Custom class name, it will override the default ones using Tailwind Merge library.',
+        tags: {},
+      },
+      {
+        identifier: 'onDismiss',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(notification: Notification&#x3C;Record&#x3C;<span class="hljs-built_in">string</span>, unknown>>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback called when a notification is dismissed',
         tags: {},
       },
       {
@@ -9024,6 +9064,14 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'description',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The content to display as the description.',
+        tags: {},
+      },
+      {
         identifier: 'formatOptions',
         type: {
           type: '<span class="hljs-built_in">Object</span>',
@@ -9126,14 +9174,6 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'The display format of the value.\nValues are formatted as a percentage by default.',
-        tags: {},
-      },
-      {
-        identifier: 'hint',
-        type: { type: '<span class="hljs-built_in">string</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: 'The content to display as the hint.',
         tags: {},
       },
       {

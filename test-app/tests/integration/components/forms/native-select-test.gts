@@ -10,6 +10,8 @@ import { NativeSelect } from '@frontile/forms';
 import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 
+const eq = (a: unknown, b: unknown) => a === b;
+
 module(
   'Integration | Component | NativeSelect | @frontile/forms',
   function (hooks) {
@@ -34,15 +36,16 @@ module(
     };
 
     test('it render static items', async function (assert) {
-      let selectedKeys: string[] = [];
-      const onSelectionChange = (keys: string[]) => {
-        selectedKeys = keys;
+      const selectedKey = cell<string | null>(null);
+      const onSelectionChange = (key: string | null) => {
+        selectedKey.current = key;
       };
 
       await render(
         <template>
           <NativeSelect
             @onSelectionChange={{onSelectionChange}}
+            @selectedKey={{selectedKey.current}}
             @disabledKeys={{(array "item-3" "item-4")}}
             @allowEmpty={{true}}
             as |l|
@@ -80,7 +83,7 @@ module(
 
       await selectOptionByKey('[data-test-id="native-select"]', 'item-2');
 
-      assert.deepEqual(selectedKeys, ['item-2']);
+      assert.equal(selectedKey.current, 'item-2');
       isSelected(assert, '[data-key="item-2"]');
     });
 
@@ -88,21 +91,34 @@ module(
       const selectionMode = cell<'single' | 'multiple'>('single');
       const allowEmpty = cell(false);
       const animals = ['cheetah', 'crocodile', 'elephant'];
+      const selectedKey = cell<string | null>(null);
       const selectedKeys = cell<string[]>([]);
-
-      const onSelectionChange = (keys: string[]) => {
+      const onSingleSelectionChange = (key: string | null) => {
+        selectedKey.current = key;
+      };
+      const onMultipleSelectionChange = (keys: string[]) => {
         selectedKeys.current = keys;
       };
 
       await render(
         <template>
-          <NativeSelect
-            @allowEmpty={{allowEmpty.current}}
-            @selectionMode={{selectionMode.current}}
-            @items={{animals}}
-            @selectedKeys={{selectedKeys.current}}
-            @onSelectionChange={{onSelectionChange}}
-          />
+          {{#if (eq selectionMode.current "single")}}
+            <NativeSelect
+              @allowEmpty={{allowEmpty.current}}
+              @selectionMode="single"
+              @items={{animals}}
+              @selectedKey={{selectedKey.current}}
+              @onSelectionChange={{onSingleSelectionChange}}
+            />
+          {{else}}
+            <NativeSelect
+              @allowEmpty={{allowEmpty.current}}
+              @selectionMode="multiple"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onMultipleSelectionChange}}
+            />
+          {{/if}}
         </template>
       );
 
@@ -115,22 +131,21 @@ module(
       // Selection Mode single
       await selectOptionByKey('[data-test-id="native-select"]', 'cheetah');
 
-      assert.equal(selectedKeys.current.length, 1);
-      assert.equal(selectedKeys.current[0], 'cheetah');
+      assert.equal(selectedKey.current, 'cheetah');
 
       await selectOptionByKey('[data-test-id="native-select"]', 'crocodile');
-      assert.equal(selectedKeys.current.length, 1);
-      assert.equal(selectedKeys.current[0], 'crocodile');
+      assert.equal(selectedKey.current, 'crocodile');
 
       // Slect empty option when allowEmpty = true
       allowEmpty.current = true;
       await settled();
       await selectOptionByKey('[data-test-id="native-select"]', '');
-      assert.equal(selectedKeys.current.length, 0);
+      assert.equal(selectedKey.current, null);
 
       // Selection Mode multiple
       selectionMode.current = 'multiple';
       selectedKeys.current = [];
+      selectedKey.current = null;
       await settled();
 
       await selectOptionByKey('[data-test-id="native-select"]', 'elephant');
@@ -163,10 +178,10 @@ module(
 
       const selectionMode = cell<'single' | 'multiple'>('single');
       const allowEmpty = cell(false);
-      const selectedKeys = cell<string[]>([]);
+      const selectedKey = cell<string | null>(null);
 
-      const onSelectionChange = (keys: string[]) => {
-        selectedKeys.current = keys;
+      const onSelectionChange = (key: string | null) => {
+        selectedKey.current = key;
       };
 
       await render(
@@ -175,7 +190,7 @@ module(
             @allowEmpty={{allowEmpty.current}}
             @selectionMode={{selectionMode.current}}
             @items={{animals}}
-            @selectedKeys={{selectedKeys.current}}
+            @selectedKey={{selectedKey.current}}
             @onSelectionChange={{onSelectionChange}}
           >
             <:item as |o|>

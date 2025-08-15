@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
+import type Owner from '@ember/owner';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '@frontile/collections';
 import {
@@ -20,8 +21,11 @@ import { triggerFormInputEvent } from '../utils';
 import { CloseButton } from '@frontile/buttons';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
+// Import helper function directly instead of using ember-truth-helpers
+const eq = (a: unknown, b: unknown) => a === b;
 
-interface SelectArgs<T>
+// Base interface for shared properties
+interface BaseSelectArgs<T>
   extends Pick<
       PopoverSignature['Args'],
       | 'placement'
@@ -36,10 +40,8 @@ interface SelectArgs<T>
       ListboxSignature<T>['Args'],
       | 'appearance'
       | 'intent'
-      | 'selectedKeys'
       | 'disabledKeys'
       | 'allowEmpty'
-      | 'onSelectionChange'
       | 'items'
       | 'onAction'
     >,
@@ -56,15 +58,59 @@ interface SelectArgs<T>
       | 'backdropTransition'
       | 'transition'
     >,
-    FormControlSharedArgs {
+    FormControlSharedArgs {}
+
+// Single selection mode interface
+interface SingleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * Determines the selection mode of the select component.
    * - 'single': Only one item can be selected at a time.
-   * - 'multiple': Allows multiple selections.
    * @defaultValue 'single'
    */
-  selectionMode?: 'single' | 'multiple';
+  selectionMode?: 'single' | undefined;
 
+  /**
+   * The currently selected key for single selection mode.
+   */
+  selectedKey?: string | null;
+
+  /**
+   * @deprecated Use selectedKey for single selection mode
+   */
+  selectedKeys?: never;
+
+  /**
+   * Callback fired when the selection changes in single mode.
+   */
+  onSelectionChange?: (key: string | null) => void;
+}
+
+// Multiple selection mode interface
+interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
+  /**
+   * Determines the selection mode of the select component.
+   * - 'multiple': Allows multiple selections.
+   */
+  selectionMode: 'multiple';
+
+  /**
+   * @deprecated Use selectedKeys for multiple selection mode
+   */
+  selectedKey?: never;
+
+  /**
+   * The currently selected keys for multiple selection mode.
+   */
+  selectedKeys?: string[];
+
+  /**
+   * Callback fired when the selection changes in multiple mode.
+   */
+  onSelectionChange?: (keys: string[]) => void;
+}
+
+// Union type for the component
+type SelectArgs<T> = (SingleSelectArgs<T> | MultipleSelectArgs<T>) & {
   /**
    * The unique identifier for the select component.
    */
@@ -182,7 +228,7 @@ interface SelectArgs<T>
    * @defaultValue false
    */
   hideEmptyContent?: boolean;
-}
+};
 
 interface SelectSignature<T> {
   Args: SelectArgs<T>;
@@ -215,7 +261,47 @@ interface SelectSignature<T> {
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
-  @tracked _selectedKeys: string[] = this.args.selectedKeys || [];
+  @tracked _selectedKey: string | null = null;
+  @tracked _selectedKeys: string[] = [];
+
+  constructor(owner: Owner, args: SelectArgs<T>) {
+    super(owner, args);
+
+    // Initialize based on mode
+    if (this.args.selectionMode === 'multiple') {
+      this._selectedKeys = this.args.selectedKeys || [];
+    } else {
+      this._selectedKey =
+        (this.args as SingleSelectArgs<T>).selectedKey || null;
+    }
+
+    // Runtime warnings for incorrect API usage
+    this.validateArgs();
+  }
+
+  validateArgs() {
+    if (this.args.selectionMode === 'multiple') {
+      if (
+        typeof (this.args as unknown as Record<string, unknown>)[
+          'selectedKey'
+        ] !== 'undefined'
+      ) {
+        console.warn(
+          'WARNING: selectedKey is not supported in multiple selection mode. Use selectedKeys instead.'
+        );
+      }
+    } else {
+      if (
+        typeof (this.args as unknown as Record<string, unknown>)[
+          'selectedKeys'
+        ] !== 'undefined'
+      ) {
+        console.warn(
+          'WARNING: selectedKeys is deprecated for single selection mode. Use selectedKey instead.'
+        );
+      }
+    }
+  }
 
   @tracked filterValue?: string;
 
@@ -223,10 +309,32 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
 
   onSelectionChange = (keys: string[]) => {
-    if (typeof this.args.onSelectionChange === 'function') {
-      this.args.onSelectionChange(keys);
+    if (this.args.selectionMode === 'multiple') {
+      if (typeof this.args.onSelectionChange === 'function') {
+        (this.args.onSelectionChange as (keys: string[]) => void)(keys);
+      } else {
+        this._selectedKeys = keys;
+      }
     } else {
-      this._selectedKeys = keys;
+      const singleKey: string | null = keys.length > 0 ? keys[0] || null : null;
+      if (typeof this.args.onSelectionChange === 'function') {
+        (this.args.onSelectionChange as (key: string | null) => void)(
+          singleKey
+        );
+      } else {
+        this._selectedKey = singleKey;
+      }
+    }
+
+    this.filterValue = undefined;
+    triggerFormInputEvent(this.containerRef.current);
+  };
+
+  onSingleSelectionChange = (key: string | null) => {
+    if (typeof this.args.onSelectionChange === 'function') {
+      (this.args.onSelectionChange as (key: string | null) => void)(key);
+    } else {
+      this._selectedKey = key;
     }
 
     this.filterValue = undefined;
@@ -243,14 +351,35 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   get selectedKeys(): string[] {
-    if (
-      typeof this.args.selectedKeys !== 'undefined' &&
-      typeof this.args.onSelectionChange === 'function'
-    ) {
-      return this.args.selectedKeys;
+    if (this.args.selectionMode === 'multiple') {
+      if (
+        typeof this.args.selectedKeys !== 'undefined' &&
+        typeof this.args.onSelectionChange === 'function'
+      ) {
+        return this.args.selectedKeys;
+      }
+      return this._selectedKeys;
+    } else {
+      // Single mode: convert selectedKey to array for internal use
+      const key = this.getSelectedKey;
+      return key ? [key] : [];
+    }
+  }
+
+  get getSelectedKey(): string | null {
+    if (this.args.selectionMode === 'multiple') {
+      return null;
     }
 
-    return this._selectedKeys;
+    const singleArgs = this.args as SingleSelectArgs<T>;
+    if (
+      typeof singleArgs.selectedKey !== 'undefined' &&
+      typeof this.args.onSelectionChange === 'function'
+    ) {
+      return singleArgs.selectedKey;
+    }
+
+    return this._selectedKey;
   }
 
   get blockScroll() {
@@ -391,36 +520,69 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           as |p|
         >
           <VisuallyHidden>
-            <NativeSelect
-              @items={{this.filteredItems}}
-              @allowEmpty={{@allowEmpty}}
-              @disabledKeys={{@disabledKeys}}
-              @onSelectionChange={{this.onSelectionChange}}
-              @selectedKeys={{this.selectedKeys}}
-              @selectionMode={{if @selectionMode @selectionMode "single"}}
-              @onItemsChange={{this.onItemsChange}}
-              @placeholder={{@placeholder}}
-              @id={{c.id}}
-              @name={{@name}}
-              tabindex="-1"
-              disabled={{@isDisabled}}
-            >
-              <:item as |l|>
-                {{#if (has-block "item")}}
-                  <l.Item @key={{l.key}}>
-                    {{l.label}}
-                  </l.Item>
-                {{else}}
-                  <l.Item @key={{l.key}}>
-                    {{l.label}}
-                  </l.Item>
-                {{/if}}
-              </:item>
-              <:default as |l|>
-                {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
-                {{yield l to="default"}}
-              </:default>
-            </NativeSelect>
+            {{#if (eq @selectionMode "multiple")}}
+              <NativeSelect
+                @items={{this.filteredItems}}
+                @allowEmpty={{@allowEmpty}}
+                @disabledKeys={{@disabledKeys}}
+                @onSelectionChange={{this.onSelectionChange}}
+                @selectedKeys={{this.selectedKeys}}
+                @selectionMode="multiple"
+                @onItemsChange={{this.onItemsChange}}
+                @placeholder={{@placeholder}}
+                @id={{c.id}}
+                @name={{@name}}
+                tabindex="-1"
+                disabled={{@isDisabled}}
+              >
+                <:item as |l|>
+                  {{#if (has-block "item")}}
+                    <l.Item @key={{l.key}}>
+                      {{l.label}}
+                    </l.Item>
+                  {{else}}
+                    <l.Item @key={{l.key}}>
+                      {{l.label}}
+                    </l.Item>
+                  {{/if}}
+                </:item>
+                <:default as |l|>
+                  {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
+                  {{yield l to="default"}}
+                </:default>
+              </NativeSelect>
+            {{else}}
+              <NativeSelect
+                @items={{this.filteredItems}}
+                @allowEmpty={{@allowEmpty}}
+                @disabledKeys={{@disabledKeys}}
+                @onSelectionChange={{this.onSingleSelectionChange}}
+                @selectedKey={{this.getSelectedKey}}
+                @selectionMode="single"
+                @onItemsChange={{this.onItemsChange}}
+                @placeholder={{@placeholder}}
+                @id={{c.id}}
+                @name={{@name}}
+                tabindex="-1"
+                disabled={{@isDisabled}}
+              >
+                <:item as |l|>
+                  {{#if (has-block "item")}}
+                    <l.Item @key={{l.key}}>
+                      {{l.label}}
+                    </l.Item>
+                  {{else}}
+                    <l.Item @key={{l.key}}>
+                      {{l.label}}
+                    </l.Item>
+                  {{/if}}
+                </:item>
+                <:default as |l|>
+                  {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
+                  {{yield l to="default"}}
+                </:default>
+              </NativeSelect>
+            {{/if}}
           </VisuallyHidden>
 
           <div
