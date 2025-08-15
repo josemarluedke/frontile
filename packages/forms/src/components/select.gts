@@ -483,7 +483,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                       class=@classes.placeholder
                     }}
                   >
-                    {{@placeholder}}
+                    {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
                   </span>
                 {{/if}}
               </button>
