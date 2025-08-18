@@ -169,6 +169,16 @@ const press = modifier<PressSignature>(
         return true;
       }
 
+      // In mobile Safari, both pointer and mouse events can fire for the same touch.
+      // If we have pointer event support, ignore mouse events entirely on touch devices
+      if (
+        eventPointerType === 'mouse' &&
+        'PointerEvent' in window &&
+        'ontouchstart' in window
+      ) {
+        return true;
+      }
+
       return false;
     };
 
