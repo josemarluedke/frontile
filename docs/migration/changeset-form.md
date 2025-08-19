@@ -259,6 +259,24 @@ npm install @frontile/forms
         </:item>
       </Select>
 
+      {{! For single selection, use selectedKey instead }}
+      {{!--
+      <Select
+        @label='Country'
+        @items={{this.countries}}
+        @selectedKey={{this.getSelectedCountry changeset}}
+        @onSelectionChange={{fn this.updateSingleCountrySelection changeset}}
+        @errors={{this.getFieldErrors changeset 'country'}}
+        @isInvalid={{this.hasFieldError changeset 'country'}}
+        @isFilterable={{true}}
+        @isClearable={{true}}
+      >
+        <:item as |item|>
+          <item.Item @key={{item.key}}>{{item.label}}</item.Item>
+        </:item>
+      </Select>
+      --}}
+
       <Button @type='submit' disabled={{changeset.isInvalid}}>
         Save
       </Button>
@@ -340,6 +358,16 @@ export default class ModernChangesetFormComponent extends Component {
   }
 
   @action
+  updateSingleCountrySelection(changeset, selectedKey) {
+    // For single selection, find the single country object
+    const countryObject = selectedKey
+      ? this.countries.find((country) => country.key === selectedKey)
+      : null;
+    changeset.set('country', countryObject);
+    changeset.validate('country');
+  }
+
+  @action
   async handleSubmit(changeset, event) {
     event.preventDefault();
     await changeset.validate();
@@ -378,6 +406,11 @@ export default class ModernChangesetFormComponent extends Component {
   getSelectedCountries(changeset) {
     const countries = changeset.get('country') || [];
     return countries.map((country) => country.key || country);
+  }
+
+  getSelectedCountry(changeset) {
+    const country = changeset.get('country');
+    return country?.key || country || null;
   }
 
   // Additional helper methods for advanced example
@@ -558,8 +591,8 @@ const FormSchema = v.object({
       @name='country'
       @label='Country'
       @items={{this.countries}}
-      @selectedKeys={{this.selectedCountries}}
-      @onSelectionChange={{this.setSelectedCountries}}
+      @selectedKey={{this.selectedCountry}}
+      @onSelectionChange={{this.setSelectedCountry}}
       @errors={{this.errors.country}}
       @isFilterable={{true}}
       @placeholder='Select your country'
@@ -589,7 +622,7 @@ export default class MyFormComponent extends Component {
   @tracked formData = {};
   @tracked errors = {};
   @tracked isSubmitting = false;
-  @tracked selectedCountries = [];
+  @tracked selectedCountry = null;
 
   countries = [
     { key: 'us', label: 'United States' },
@@ -609,8 +642,8 @@ export default class MyFormComponent extends Component {
       v.minLength(10, 'Comments must be at least 10 characters')
     ),
     country: v.pipe(
-      v.array(v.string()),
-      v.minLength(1, 'Please select a country')
+      v.string(),
+      v.nonEmpty('Please select a country')
     )
   });
 
@@ -628,7 +661,7 @@ export default class MyFormComponent extends Component {
   validateForm = (data) => {
     const validationData = {
       ...data,
-      country: this.selectedCountries
+      country: this.selectedCountry
     };
 
     // Try to parse the entire form, but only clear errors for valid fields
@@ -662,7 +695,7 @@ export default class MyFormComponent extends Component {
 
     const validationData = {
       ...data,
-      country: this.selectedCountries
+      country: this.selectedCountry
     };
 
     try {
@@ -702,10 +735,10 @@ export default class MyFormComponent extends Component {
     return errors;
   }
 
-  setSelectedCountries = (keys) => {
-    this.selectedCountries = keys;
+  setSelectedCountry = (key) => {
+    this.selectedCountry = key;
     // Clear country errors when selection is made
-    if (keys.length > 0 && this.errors.country) {
+    if (key && this.errors.country) {
       const newErrors = { ...this.errors };
       delete newErrors.country;
       this.errors = newErrors;

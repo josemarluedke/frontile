@@ -375,10 +375,11 @@ This is the most significant change. The new Select component is completely rebu
 #### After (forms)
 
 ```hbs
+{{! Single selection mode (default) }}
 <Select
   @label='Select Country'
   @items={{this.countries}}
-  @selectedKeys={{this.selectedCountryKeys}}
+  @selectedKey={{this.selectedCountryKey}}
   @onSelectionChange={{this.setCountry}}
   @isFilterable={{true}}
   @errors={{this.validationErrors.country}}
@@ -393,8 +394,8 @@ This is the most significant change. The new Select component is completely rebu
 #### Key Changes
 
 - ✅ `@options` → `@items`
-- ✅ `@selected` → `@selectedKeys` (array of strings)
-- ✅ `@onChange` → `@onSelectionChange`
+- ✅ `@selected` → `@selectedKey` (string | null for single selection)
+- ✅ `@onChange` → `@onSelectionChange` (callback receives string | null for single selection)
 - ✅ `@searchEnabled` → `@isFilterable`
 - ✅ Removed `@searchField` (filtering works on label automatically)
 - ✅ Use `<:item>` slot instead of block param
@@ -414,15 +415,15 @@ setCountry = (country) => {
   this.selectedCountry = country;
 };
 
-// After: Key-based selection
-@tracked selectedCountryKeys = [];
+// After: Key-based selection (single mode)
+@tracked selectedCountryKey = null;
 @tracked countries = [
   { key: 'us', label: 'United States', code: 'US' },
   { key: 'ca', label: 'Canada', code: 'CA' }
 ];
 
-setCountry = (keys) => {
-  this.selectedCountryKeys = keys;
+setCountry = (key) => {
+  this.selectedCountryKey = key;
 };
 
 ```
@@ -439,12 +440,22 @@ setCountry = (keys) => {
 />
 ```
 
+```js
+// Multiple selection data handling
+@tracked selectedCountryKeys = [];
+
+setCountries = (keys) => {
+  this.selectedCountryKeys = keys; // receives array of strings
+};
+```
+
 #### Advanced Select Features
 
 ```hbs
+{{! Single selection with advanced features }}
 <Select
   @items={{this.countries}}
-  @selectedKeys={{this.selectedKeys}}
+  @selectedKey={{this.selectedKey}}
   @onSelectionChange={{this.onChange}}
   @isFilterable={{true}}
   @isClearable={{true}}
@@ -469,6 +480,13 @@ setCountry = (keys) => {
     </div>
   </:emptyContent>
 </Select>
+```
+
+```js
+// Handler for single selection
+onChange = (key) => {
+  this.selectedKey = key; // receives string | null
+};
 ```
 
 ## New Components
