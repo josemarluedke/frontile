@@ -26,20 +26,20 @@ import { Select } from '@frontile/forms';
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
 export default class BasicSingleSelect extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
     <Select
       @placeholder='Select an option'
       @items={{options}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
     />
-    <p>Selected: {{this.selectedKeys}}</p>
+    <p>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```
@@ -105,10 +105,10 @@ const countries = [
 ];
 
 export default class FilterableSelectExample extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
@@ -116,10 +116,10 @@ export default class FilterableSelectExample extends Component {
       @isFilterable={{true}}
       @placeholder='Select a country'
       @items={{countries}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
     />
-    <p>Selected: {{this.selectedKeys}}</p>
+    <p>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```
@@ -150,10 +150,10 @@ import { tracked } from '@glimmer/tracking';
 import { Select } from '@frontile/forms';
 
 export default class CustomUserSelect extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
@@ -161,7 +161,7 @@ export default class CustomUserSelect extends Component {
       @isFilterable={{true}}
       @placeholder='Select a user'
       @items={{users}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
     >
       <:item as |o|>
@@ -180,7 +180,7 @@ export default class CustomUserSelect extends Component {
         </o.Item>
       </:item>
     </Select>
-    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+    <p class='mt-4'>Selected: {{this.selectedKey}}</p>
   </template>
 }
 
@@ -267,21 +267,21 @@ import { Select } from '@frontile/forms';
 const colors = ['Red', 'Green', 'Blue'];
 
 export default class ClearableSelectExample extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
     <Select
       @placeholder='Select a color'
       @items={{colors}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
       @isClearable={{true}}
     />
-    <p>Selected: {{this.selectedKeys}}</p>
+    <p>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```
@@ -298,21 +298,21 @@ import { Select } from '@frontile/forms';
 const sizes = ['Small', 'Medium', 'Large'];
 
 export default class LoadingSelectExample extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
     <Select
       @placeholder='Select a size'
       @items={{sizes}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
       @isLoading={{true}}
     />
-    <p>Selected: {{this.selectedKeys}}</p>
+    <p>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```
@@ -329,10 +329,10 @@ import { Select } from '@frontile/forms';
 const fruits = ['Apple', 'Banana', 'Cherry', 'Date'];
 
 export default class CustomContentBlocksSelect extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
@@ -340,7 +340,7 @@ export default class CustomContentBlocksSelect extends Component {
       @isFilterable={{true}}
       @placeholder='Search fruits...'
       @items={{fruits}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
     >
       <:startContent>
@@ -355,7 +355,7 @@ export default class CustomContentBlocksSelect extends Component {
         </div>
       </:emptyContent>
     </Select>
-    <p>Selected: {{this.selectedKeys}}</p>
+    <p>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```
@@ -374,20 +374,20 @@ import { NativeSelect } from '@frontile/forms';
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
 export default class NativeSelectExample extends Component {
-  @tracked selectedKeys: string[] = [];
+  @tracked selectedKey: string | null = null;
 
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
   };
 
   <template>
     <NativeSelect
       @placeholder='Select an option'
       @items={{options}}
-      @selectedKeys={{this.selectedKeys}}
+      @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
     />
-    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+    <p class='mt-4'>Selected: {{this.selectedKey}}</p>
   </template>
 }
 ```

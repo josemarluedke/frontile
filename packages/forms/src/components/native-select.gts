@@ -4,6 +4,7 @@ import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { assert } from '@ember/debug';
+import type Owner from '@ember/owner';
 import {
   useStyles,
   type NativeSelectSlots,
@@ -21,9 +22,8 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
-interface Args<T> extends FormControlSharedArgs {
-  selectionMode?: 'single' | 'multiple';
-  selectedKeys?: string[];
+// Base interface for shared properties
+interface BaseArgs<T> extends FormControlSharedArgs {
   disabledKeys?: string[];
   allowEmpty?: boolean;
   items?: T[];
@@ -38,7 +38,6 @@ interface Args<T> extends FormControlSharedArgs {
   placeholder?: string;
 
   onAction?: (key: string) => void;
-  onSelectionChange?: (key: string[]) => void;
 
   /**
    * @internal
@@ -64,6 +63,25 @@ interface Args<T> extends FormControlSharedArgs {
   endContentPointerEvents?: 'none' | 'auto';
 }
 
+// Single selection mode interface
+interface SingleNativeSelectArgs<T> extends BaseArgs<T> {
+  selectionMode?: 'single' | undefined;
+  selectedKey?: string | null;
+  selectedKeys?: never;
+  onSelectionChange?: (key: string | null) => void;
+}
+
+// Multiple selection mode interface
+interface MultipleNativeSelectArgs<T> extends BaseArgs<T> {
+  selectionMode: 'multiple';
+  selectedKey?: never;
+  selectedKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+}
+
+// Union type for the component
+type Args<T> = SingleNativeSelectArgs<T> | MultipleNativeSelectArgs<T>;
+
 interface NativeSelectSignature<T> {
   Args: Args<T>;
   Element: HTMLSelectElement;
@@ -76,15 +94,70 @@ interface NativeSelectSignature<T> {
 }
 
 class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
+  constructor(owner: Owner, args: Args<T>) {
+    super(owner, args);
+    // Runtime warnings for incorrect API usage
+    this.validateArgs();
+  }
+
+  validateArgs() {
+    if (this.args.selectionMode === 'multiple') {
+      if (
+        typeof (this.args as unknown as Record<string, unknown>)[
+          'selectedKey'
+        ] !== 'undefined'
+      ) {
+        console.warn(
+          'WARNING: selectedKey is not supported in multiple selection mode. Use selectedKeys instead.'
+        );
+      }
+    } else {
+      if (
+        typeof (this.args as unknown as Record<string, unknown>)[
+          'selectedKeys'
+        ] !== 'undefined'
+      ) {
+        console.warn(
+          'WARNING: selectedKeys is deprecated for single selection mode. Use selectedKey instead.'
+        );
+      }
+    }
+  }
+
+  get normalizedSelectedKeys(): string[] {
+    if (this.args.selectionMode === 'multiple') {
+      return this.args.selectedKeys || [];
+    } else {
+      // Single mode: convert selectedKey to array for ListManager
+      const singleArgs = this.args as SingleNativeSelectArgs<T>;
+      return singleArgs.selectedKey ? [singleArgs.selectedKey] : [];
+    }
+  }
+
   listManager = new ListManager({
     selectionMode: this.args.selectionMode,
-    selectedKeys: this.args.selectedKeys,
+    selectedKeys: this.normalizedSelectedKeys,
     disabledKeys: this.args.disabledKeys,
     allowEmpty: this.args.allowEmpty,
-    onSelectionChange: this.args.onSelectionChange,
+    onSelectionChange: (keys: string[]) => this.handleSelectionChange(keys),
     onAction: this.args.onAction,
     onListItemsChange: this.args.onItemsChange
   });
+
+  handleSelectionChange(keys: string[]) {
+    if (this.args.selectionMode === 'multiple') {
+      if (typeof this.args.onSelectionChange === 'function') {
+        (this.args.onSelectionChange as (keys: string[]) => void)(keys);
+      }
+    } else {
+      const singleKey: string | null = keys.length > 0 ? keys[0] || null : null;
+      if (typeof this.args.onSelectionChange === 'function') {
+        (this.args.onSelectionChange as (key: string | null) => void)(
+          singleKey
+        );
+      }
+    }
+  }
 
   get classes() {
     const { nativeSelect } = useStyles();
@@ -120,9 +193,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
       }
     }
 
-    if (typeof this.args.onSelectionChange === 'function') {
-      this.args.onSelectionChange(newSelectedKeys);
-    }
+    this.handleSelectionChange(newSelectedKeys);
   }
 
   <template>
@@ -153,7 +224,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
         {{/if}}
         <select
           {{this.listManager.setup
-            selectedKeys=@selectedKeys
+            selectedKeys=this.normalizedSelectedKeys
             disabledKeys=@disabledKeys
             selectionMode=@selectionMode
             allowEmpty=@allowEmpty
