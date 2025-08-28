@@ -24,6 +24,7 @@ export class PressEvent {
   /** The y position of the event relative to the target element. */
   y: number;
   private shouldContinuePropagation = false;
+  private originalEvent: Event;
 
   constructor(
     type: PressType,
@@ -34,6 +35,7 @@ export class PressEvent {
     this.type = type;
     this.pointerType = pointerType;
     this.target = target;
+    this.originalEvent = originalEvent;
     this.shiftKey = this.getModifierState(originalEvent, 'shiftKey');
     this.ctrlKey = this.getModifierState(originalEvent, 'ctrlKey');
     this.metaKey = this.getModifierState(originalEvent, 'metaKey');
@@ -47,6 +49,11 @@ export class PressEvent {
   /** By default, press events stop propagation to parent elements. */
   continuePropagation(): void {
     this.shouldContinuePropagation = true;
+  }
+
+  /** Prevents the default browser behavior for this event. */
+  preventDefault(): void {
+    this.originalEvent.preventDefault();
   }
 
   get shouldPropagate(): boolean {
@@ -93,6 +100,51 @@ function getPointerType(event: Event): PointerType {
     return 'mouse';
   }
   return 'virtual';
+}
+
+function isHTMLAnchorLink(element: Element): boolean {
+  return element instanceof HTMLAnchorElement && element.hasAttribute('href');
+}
+
+function shouldPreventDefaultUp(target: Element): boolean {
+  if (target instanceof HTMLInputElement) {
+    return false;
+  }
+
+  if (target instanceof HTMLButtonElement) {
+    return target.type !== 'submit' && target.type !== 'reset';
+  }
+
+  if (isHTMLAnchorLink(target)) {
+    return false;
+  }
+
+  return true;
+}
+
+function isValidInputKey(target: HTMLInputElement, key: string): boolean {
+  const nonTextInputTypes = new Set([
+    'checkbox',
+    'radio',
+    'range',
+    'color',
+    'file',
+    'image',
+    'button',
+    'submit',
+    'reset'
+  ]);
+
+  return target.type === 'checkbox' || target.type === 'radio'
+    ? key === ' '
+    : nonTextInputTypes.has(target.type);
+}
+
+function shouldPreventDefaultKeyboard(target: Element, key: string): boolean {
+  if (target instanceof HTMLInputElement) {
+    return !isValidInputKey(target, key);
+  }
+  return shouldPreventDefaultUp(target);
 }
 
 export interface PressOptions {
@@ -291,14 +343,18 @@ const press = modifier<PressSignature>(
 
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault(); // Prevent default behavior for buttons
+        if (shouldPreventDefaultKeyboard(element, event.key)) {
+          event.preventDefault();
+        }
         start(event);
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent): void => {
       if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault(); // Prevent default behavior for buttons
+        if (shouldPreventDefaultKeyboard(element, event.key)) {
+          event.preventDefault();
+        }
         end(event);
       }
     };
