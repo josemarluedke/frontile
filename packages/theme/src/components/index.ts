@@ -8,6 +8,7 @@ export * from './dropdown';
 export * from './popover';
 export * from './divider';
 export * from './spinner';
+export * from './table';
 
 export * from './notifications-container';
 export * from './notification-card';

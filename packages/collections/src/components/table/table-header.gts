@@ -5,13 +5,17 @@ import { TableColumn } from './table-column';
 import type { TableHeaderSignature } from './types';
 
 class TableHeader extends Component<TableHeaderSignature> {
+  get styles() {
+    const { table } = useStyles();
+    return table();
+  }
+
   get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table-header'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+    return this.args.theadStyles?.({ class: this.args.class }) || this.styles.thead({ class: this.args.class });
+  }
+
+  get rowClassNames() {
+    return this.args.trStyles?.() || this.styles.tr();
   }
 
   <template>
@@ -21,7 +25,7 @@ class TableHeader extends Component<TableHeaderSignature> {
       data-component="table-header"
       ...attributes
     >
-      <tr>
+      <tr class={{this.rowClassNames}}>
         {{#if (has-block "default")}}
           {{yield (hash Column=TableColumn) to="default"}}
         {{else}}

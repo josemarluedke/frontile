@@ -4,12 +4,8 @@ import type { TableCellSignature } from './types';
 
 class TableCell extends Component<TableCellSignature> {
   get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table-cell'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+    const { table } = useStyles();
+    return this.args.tdStyles?.({ class: this.args.class }) || table().td({ class: this.args.class });
   }
 
   <template>
