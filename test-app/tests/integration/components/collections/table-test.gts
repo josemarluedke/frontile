@@ -589,7 +589,7 @@ module(
       assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
     });
 
-    test('it supports frozen header', async function (assert) {
+    test('it supports sticky header', async function (assert) {
       const columns: ColumnDefinition[] = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' }
@@ -604,7 +604,7 @@ module(
           <Table
             @columns={{columns}}
             @items={{items}}
-            @isFrozenHeader={{true}}
+            @isStickyHeader={{true}}
           />
         </template>
       );
@@ -614,15 +614,15 @@ module(
       assert.dom('[data-test-id="table-header"]').hasClass('z-2');
     });
 
-    test('it supports frozen columns from ColumnDefinition', async function (assert) {
+    test('it supports sticky columns from ColumnDefinition', async function (assert) {
       const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID', isFrozen: true, frozenPosition: 'left' },
+        { key: 'id', label: 'ID', isSticky: true, stickyPosition: 'left' },
         { key: 'name', label: 'Name' },
         {
           key: 'actions',
           label: 'Actions',
-          isFrozen: true,
-          frozenPosition: 'right'
+          isSticky: true,
+          stickyPosition: 'right'
         }
       ];
 
@@ -634,7 +634,7 @@ module(
         <template><Table @columns={{columns}} @items={{items}} /></template>
       );
 
-      // Check frozen ID column (left)
+      // Check sticky ID column (left)
       assert
         .dom('[data-test-id="table-column"][data-key="id"]')
         .hasClass('sticky');
@@ -645,7 +645,7 @@ module(
         .dom('[data-test-id="table-column"][data-key="id"]')
         .hasClass('z-3');
 
-      // Check frozen actions column (right)
+      // Check sticky actions column (right)
       assert
         .dom('[data-test-id="table-column"][data-key="actions"]')
         .hasClass('sticky');
@@ -656,13 +656,13 @@ module(
         .dom('[data-test-id="table-column"][data-key="actions"]')
         .hasClass('z-3');
 
-      // Check non-frozen column
+      // Check non-sticky column
       assert
         .dom('[data-test-id="table-column"][data-key="name"]')
         .doesNotHaveClass('sticky');
     });
 
-    test('it supports frozen columns in block form', async function (assert) {
+    test('it supports sticky columns in block form', async function (assert) {
       const items: TestItem[] = [
         { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
       ];
@@ -671,24 +671,24 @@ module(
         <template>
           <Table as |t|>
             <t.Header>
-              <t.Column @isFrozen={{true}} @frozenPosition="left">ID</t.Column>
+              <t.Column @isSticky={{true}} @stickyPosition="left">ID</t.Column>
               <t.Column>Name</t.Column>
               <t.Column
-                @isFrozen={{true}}
-                @frozenPosition="right"
+                @isSticky={{true}}
+                @stickyPosition="right"
               >Actions</t.Column>
             </t.Header>
             <t.Body>
               {{#each items as |item|}}
                 <t.Row @item={{item}}>
                   <t.Cell
-                    @isFrozen={{true}}
-                    @frozenPosition="left"
+                    @isSticky={{true}}
+                    @stickyPosition="left"
                   >{{item.id}}</t.Cell>
                   <t.Cell>{{item.name}}</t.Cell>
                   <t.Cell
-                    @isFrozen={{true}}
-                    @frozenPosition="right"
+                    @isSticky={{true}}
+                    @stickyPosition="right"
                   >Edit</t.Cell>
                 </t.Row>
               {{/each}}
@@ -697,7 +697,7 @@ module(
         </template>
       );
 
-      // Check that frozen column classes are applied
+      // Check that sticky column classes are applied
       const headers = document.querySelectorAll(
         '[data-test-id="table-column"]'
       );
@@ -713,7 +713,7 @@ module(
       assert.dom(cells[2]).hasClass('right-0');
     });
 
-    test('it supports frozen rows by keys', async function (assert) {
+    test('it supports sticky rows by keys', async function (assert) {
       const columns: ColumnDefinition[] = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' }
@@ -735,33 +735,33 @@ module(
           <Table
             @columns={{columns}}
             @items={{items}}
-            @frozenKeys={{(array "1" "3")}}
+            @stickyKeys={{(array "1" "3")}}
           />
         </template>
       );
 
-      // Check that specified rows are frozen
+      // Check that specified rows are sticky
       assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
       assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('z-1');
       assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('sticky');
       assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('z-1');
 
-      // Check that non-frozen row is not sticky
+      // Check that non-sticky row is not sticky
       assert
         .dom('[data-test-id="table-row"][data-key="2"]')
         .doesNotHaveClass('sticky');
     });
 
-    test('it combines scrolling with frozen elements', async function (assert) {
+    test('it combines scrolling with sticky elements', async function (assert) {
       const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID', isFrozen: true },
+        { key: 'id', label: 'ID', isSticky: true },
         { key: 'name', label: 'Name' },
         { key: 'email', label: 'Email' },
         {
           key: 'actions',
           label: 'Actions',
-          isFrozen: true,
-          frozenPosition: 'right'
+          isSticky: true,
+          stickyPosition: 'right'
         }
       ];
 
@@ -776,8 +776,8 @@ module(
             @columns={{columns}}
             @items={{items}}
             @isScrollable={{true}}
-            @isFrozenHeader={{true}}
-            @frozenKeys={{(array "1")}}
+            @isStickyHeader={{true}}
+            @stickyKeys={{(array "1")}}
           />
         </template>
       );
@@ -785,11 +785,11 @@ module(
       // Check scrollable wrapper
       assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
 
-      // Check frozen header
+      // Check sticky header
       assert.dom('[data-test-id="table-header"]').hasClass('sticky');
       assert.dom('[data-test-id="table-header"]').hasClass('top-0');
 
-      // Check frozen columns
+      // Check sticky columns
       assert
         .dom('[data-test-id="table-column"][data-key="id"]')
         .hasClass('left-0');
@@ -797,7 +797,7 @@ module(
         .dom('[data-test-id="table-column"][data-key="actions"]')
         .hasClass('right-0');
 
-      // Check frozen row
+      // Check sticky row
       assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
     });
 
@@ -867,7 +867,7 @@ module(
         .containsText('$1000');
     });
 
-    test('it supports frozen footer', async function (assert) {
+    test('it supports sticky footer', async function (assert) {
       const columns: ColumnDefinition[] = [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' }
@@ -889,12 +889,12 @@ module(
             @columns={{columns}}
             @footerColumns={{footerColumns}}
             @items={{items}}
-            @isFrozenFooter={{true}}
+            @isStickyFooter={{true}}
           />
         </template>
       );
 
-      // Check that footer has frozen styling
+      // Check that footer has sticky styling
       assert.dom('[data-test-id="table-footer"]').hasClass('sticky');
       assert.dom('[data-test-id="table-footer"]').hasClass('bottom-0');
       assert.dom('[data-test-id="table-footer"]').hasClass('z-2');

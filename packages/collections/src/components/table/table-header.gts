@@ -10,8 +10,8 @@ interface TableHeaderSignature<T = unknown> {
     columns?: ColumnDefinition<T>[];
     /** Additional CSS class to apply to the header section */
     class?: string;
-    /** Whether the header should be frozen (sticky) during vertical scrolling */
-    isFrozen?: boolean;
+    /** Whether the header should be sticky during vertical scrolling */
+    isSticky?: boolean;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -40,8 +40,8 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
 
   get classNames() {
     const options = {
-      isFrozen: this.args.isFrozen,
-      frozenPosition: this.args.isFrozen ? ('top' as const) : undefined,
+      isSticky: this.args.isSticky,
+      stickyPosition: this.args.isSticky ? ('top' as const) : undefined,
       class: twMerge(this.args.class, this.args.classes?.thead)
     };
 
@@ -51,7 +51,7 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
   get rowClassNames() {
     const options = {
       class: twMerge('', this.args.classes?.tr || ''),
-      isFrozen: false
+      isSticky: false
     };
     return this.styles.tr(options);
   }

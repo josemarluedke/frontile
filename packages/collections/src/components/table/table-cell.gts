@@ -11,12 +11,12 @@ interface TableCellSignature<T = unknown> {
     column?: ColumnDefinition<T>;
     /** Additional CSS class to apply to the cell */
     class?: string;
-    /** Whether this cell should be frozen (sticky) during horizontal scrolling */
-    isFrozen?: boolean;
-    /** Position where the frozen cell should stick. @default 'left' */
-    frozenPosition?: 'left' | 'right';
-    /** Whether this cell is part of a frozen row (used for intersection styling) */
-    isInFrozenRow?: boolean;
+    /** Whether this cell should be sticky during horizontal scrolling */
+    isSticky?: boolean;
+    /** Position where the sticky cell should stick. @default 'left' */
+    stickyPosition?: 'left' | 'right';
+    /** Whether this cell is part of a sticky row (used for intersection styling) */
+    isInStickyRow?: boolean;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -35,13 +35,13 @@ interface TableCellSignature<T = unknown> {
 }
 
 class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
-  get isFrozen(): boolean {
-    return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
+  get isSticky(): boolean {
+    return this.args.isSticky ?? this.args.column?.isSticky ?? false;
   }
 
-  get frozenPosition(): 'left' | 'right' {
+  get stickyPosition(): 'left' | 'right' {
     return (
-      this.args.frozenPosition ?? this.args.column?.frozenPosition ?? 'left'
+      this.args.stickyPosition ?? this.args.column?.stickyPosition ?? 'left'
     );
   }
 
@@ -51,11 +51,11 @@ class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
 
   get classNames() {
     const options = {
-      isFrozen: this.isFrozen,
-      frozenPosition: this.isFrozen
-        ? (this.frozenPosition as 'left' | 'right')
+      isSticky: this.isSticky,
+      stickyPosition: this.isSticky
+        ? (this.stickyPosition as 'left' | 'right')
         : undefined,
-      isInFrozenRow: this.args.isInFrozenRow || false,
+      isInStickyRow: this.args.isInStickyRow || false,
       class: twMerge(this.args.class || '', this.args.classes?.td || '')
     };
 

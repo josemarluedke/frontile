@@ -13,10 +13,10 @@ export interface ColumnDefinition<T = unknown> {
   label: string;
   /** Optional function to transform or compute column values from the data item */
   accessorFn?: (item: T) => ContentValue;
-  /** Whether this column should be frozen (sticky) during horizontal scrolling */
-  isFrozen?: boolean;
-  /** Position where the frozen column should stick. @default 'left' */
-  frozenPosition?: 'left' | 'right';
+  /** Whether this column should be sticky during horizontal scrolling */
+  isSticky?: boolean;
+  /** Position where the sticky column should stick. @default 'left' */
+  stickyPosition?: 'left' | 'right';
 }
 
 export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };
