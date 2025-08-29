@@ -14,6 +14,7 @@ const table = tv({
     table: ['w-full', 'table-auto', 'border-collapse'],
     thead: ['border-b', 'border-default-200'],
     tbody: ['[&_tr:last-child]:border-0'],
+    tfoot: ['border-t', 'border-default-200'],
     tr: [
       'border-b',
       'border-default-100',
@@ -94,6 +95,14 @@ const table = tv({
       frozenPosition: 'top',
       class: {
         thead: ['sticky', 'top-0', 'z-2', 'bg-background']
+      }
+    },
+    // Frozen footer
+    {
+      isFrozen: true,
+      frozenPosition: 'bottom',
+      class: {
+        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-background']
       }
     },
     // Frozen columns - medium priority, header cells get higher z-index

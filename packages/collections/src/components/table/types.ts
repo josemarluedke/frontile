@@ -2,7 +2,8 @@ import type { ContentValue } from '@glint/template';
 import type {
   TableVariants,
   TableSlots,
-  SlotsToClasses
+  SlotsToClasses,
+  ClassValue
 } from '@frontile/theme';
 
 export interface ColumnDefinition<T = unknown> {
@@ -18,4 +19,4 @@ export interface ColumnDefinition<T = unknown> {
   frozenPosition?: 'left' | 'right';
 }
 
-export type { TableVariants, TableSlots, SlotsToClasses };
+export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };

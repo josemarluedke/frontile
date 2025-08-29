@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { useStyles } from '@frontile/theme';
+import { useStyles, twMerge } from '@frontile/theme';
 import { getSafeValue } from './utils';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
-import type { ColumnDefinition } from './types';
+import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
 
 interface TableBodySignature<T> {
   Args: {
@@ -15,20 +15,15 @@ interface TableBodySignature<T> {
     /** Additional CSS class to apply to the body section */
     class?: string;
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Style functions object from Table component
      * @ignore
      */
-    tbodyStyles?: (options?: { class?: string }) => string;
+    styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Classes object from Table component
      * @ignore
      */
-    trStyles?: (options?: { class?: string }) => string;
-    /**
-     * @internal Style function passed from parent Table component
-     * @ignore
-     */
-    tdStyles?: (options?: { class?: string }) => string;
+    classes?: SlotsToClasses<TableSlots>;
   };
   Element: HTMLTableSectionElement;
   Blocks: {
@@ -49,12 +44,13 @@ interface TableBodySignature<T> {
 }
 
 class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
+  get styles() {
+    return this.args.styleFns || useStyles().table();
+  }
+
   get classNames() {
-    const { table } = useStyles();
-    return (
-      this.args.tbodyStyles?.({ class: this.args.class }) ||
-      table().tbody({ class: this.args.class })
-    );
+    const mergedClass = twMerge(this.args.class, this.args.classes?.tbody);
+    return this.styles.tbody({ class: mergedClass });
   }
 
   getValue = (item: T, column: ColumnDefinition<T>) =>
@@ -77,15 +73,16 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
             <TableRow
               @item={{item}}
               @columns={{@columns}}
-              @trStyles={{@trStyles}}
-              @tdStyles={{@tdStyles}}
+              @styleFns={{@styleFns}}
+              @classes={{@classes}}
             >
               {{#each @columns as |column|}}
                 {{#let (this.getValue item column) as |value|}}
                   <TableCell
                     @item={{item}}
                     @column={{column}}
-                    @tdStyles={{@tdStyles}}
+                    @styleFns={{@styleFns}}
+                    @classes={{@classes}}
                   >
                     {{value}}
                   </TableCell>

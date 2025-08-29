@@ -13,10 +13,10 @@ interface TableColumnSignature<T = unknown> {
     /** Position where the frozen column should stick. @default 'left' */
     frozenPosition?: 'left' | 'right';
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Style functions object from Table component
      * @ignore
      */
-    thStyles?: (options?: { class?: string }) => string;
+    styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
   };
   Element: HTMLTableCellElement;
   Blocks: {
@@ -35,8 +35,11 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
     );
   }
 
+  get styles() {
+    return this.args.styleFns || useStyles().table();
+  }
+
   get classNames() {
-    const { table } = useStyles();
     const options = {
       isFrozen: this.isFrozen,
       frozenPosition: this.isFrozen
@@ -45,7 +48,7 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
       class: this.args.class
     };
 
-    return this.args.thStyles?.(options) || table().th(options);
+    return this.styles.th(options);
   }
 
   <template>
