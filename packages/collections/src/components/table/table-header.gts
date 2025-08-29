@@ -61,8 +61,8 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
       ...attributes
     >
       <tr class={{this.rowClassNames}}>
-        {{#if (has-block "default")}}
-          {{yield (hash Column=TableColumn) to="default"}}
+        {{#if (has-block)}}
+          {{yield (hash Column=TableColumn)}}
         {{else}}
           {{#each @columns as |column|}}
             <TableColumn @column={{column}}>

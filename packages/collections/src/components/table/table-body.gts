@@ -67,8 +67,8 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
       data-component="table-body"
       ...attributes
     >
-      {{#if (has-block "default")}}
-        {{yield (hash Row=TableRow Cell=TableCell) to="default"}}
+      {{#if (has-block)}}
+        {{yield (hash Row=TableRow Cell=TableCell)}}
       {{else}}
         {{#each @items as |item|}}
           {{#if (has-block "row")}}

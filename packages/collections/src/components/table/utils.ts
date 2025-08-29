@@ -4,7 +4,10 @@ import type { ColumnDefinition } from './types';
 /**
  * Safely extracts a value from an object using either a custom accessorFn or direct property access
  */
-export function getSafeValue<T>(obj: T, column: ColumnDefinition<T>): ContentValue {
+export function getSafeValue<T>(
+  obj: T,
+  column: ColumnDefinition<T>
+): ContentValue {
   // Use custom accessor function if provided
   if (column.accessorFn) {
     return column.accessorFn(obj);
@@ -23,7 +26,7 @@ export function getSafeValueByKey(obj: unknown, key: string): ContentValue {
   }
 
   const value = (obj as Record<string, unknown>)[key];
-  
+
   // Return the value if it's already a safe template type
   if (
     typeof value === 'string' ||
@@ -34,7 +37,7 @@ export function getSafeValueByKey(obj: unknown, key: string): ContentValue {
   ) {
     return value;
   }
-  
+
   // For other types, convert to string representation
   if (typeof value === 'object' && value !== null) {
     // Handle arrays
@@ -44,7 +47,7 @@ export function getSafeValueByKey(obj: unknown, key: string): ContentValue {
     // Handle objects with toString method
     return value.toString();
   }
-  
+
   // Fallback - convert to string
   return String(value);
 }

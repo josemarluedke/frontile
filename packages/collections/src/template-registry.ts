@@ -1,4 +1,13 @@
-import type { Listbox, Dropdown, Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from './index';
+import type {
+  Listbox,
+  Dropdown,
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell
+} from './index';
 
 export default interface Registry {
   Listbox: typeof Listbox;
