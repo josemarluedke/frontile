@@ -13,6 +13,7 @@
   "scripts": {
     "build": "ember build --environment=production",
     "start": "ember serve",
+    "lint:types": "glint",
     "test": "ember test",
     "try:one": "ember try:one"
   },
