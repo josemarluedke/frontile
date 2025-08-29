@@ -3,12 +3,12 @@ import { useStyles } from '@frontile/theme';
 import type { ContentValue } from '@glint/template';
 import type { ColumnDefinition } from './types';
 
-interface TableCellSignature {
+interface TableCellSignature<T = unknown> {
   Args: {
     /** The data item for this row (used for context) */
-    item?: unknown;
+    item?: T;
     /** Column definition associated with this cell */
-    column?: ColumnDefinition<any>;
+    column?: ColumnDefinition<T>;
     /** Additional CSS class to apply to the cell */
     class?: string;
     /** Whether this cell should be frozen (sticky) during horizontal scrolling */
@@ -29,7 +29,7 @@ interface TableCellSignature {
   };
 }
 
-class TableCell extends Component<TableCellSignature> {
+class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
   get isFrozen(): boolean {
     return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
   }
@@ -59,7 +59,7 @@ class TableCell extends Component<TableCellSignature> {
       class={{this.classNames}}
       data-test-id="table-cell"
       data-component="table-cell"
-      data-column={{@column.key}}
+      data-column={{if @column @column.key}}
       ...attributes
     >
       {{yield}}

@@ -43,9 +43,9 @@ interface TableSignature<T> {
   Blocks: {
     default: [
       {
-        Column: WithBoundArgs<typeof TableColumn, 'thStyles'>;
+        Column: WithBoundArgs<typeof TableColumn<T>, 'thStyles'>;
         Header: WithBoundArgs<
-          typeof TableHeader,
+          typeof TableHeader<T>,
           'columns' | 'theadStyles' | 'trStyles'
         >;
         Body: WithBoundArgs<
@@ -54,14 +54,13 @@ interface TableSignature<T> {
           | 'items'
           | 'tbodyStyles'
           | 'trStyles'
-          | 'thStyles'
           | 'tdStyles'
         >;
         Row: WithBoundArgs<
           typeof TableRow<T>,
           'columns' | 'trStyles' | 'tdStyles' | 'frozenKeys' | 'isFrozenHeader'
         >;
-        Cell: WithBoundArgs<typeof TableCell, 'tdStyles'>;
+        Cell: WithBoundArgs<typeof TableCell<T>, 'tdStyles'>;
       }
     ];
   };
@@ -71,6 +70,9 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   // Needed to make glint happy with generic components
   TableBody = TableBody<T>;
   TableRow = TableRow<T>;
+  TableCell = TableCell<T>;
+  TableColumn = TableColumn<T>;
+  TableHeader = TableHeader<T>;
 
   get styles() {
     const { table } = useStyles();
@@ -145,9 +147,9 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         {{#if (has-block "default")}}
           {{yield
             (hash
-              Column=(component TableColumn thStyles=this.styles.th)
+              Column=(component this.TableColumn thStyles=this.styles.th)
               Header=(component
-                TableHeader
+                this.TableHeader
                 columns=this.columns
                 theadStyles=this.styles.thead
                 trStyles=this.styles.tr
@@ -158,7 +160,6 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 items=this.items
                 tbodyStyles=this.styles.tbody
                 trStyles=this.styles.tr
-                thStyles=this.styles.th
                 tdStyles=this.styles.td
               )
               Row=(component
@@ -169,35 +170,34 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 trStyles=this.styles.tr
                 tdStyles=this.styles.td
               )
-              Cell=(component TableCell tdStyles=this.styles.td)
+              Cell=(component this.TableCell tdStyles=this.styles.td)
             )
             to="default"
           }}
         {{else}}
-          <TableHeader
+          <this.TableHeader
             @columns={{this.columns}}
             @isFrozen={{@isFrozenHeader}}
             @theadStyles={{this.styles.thead}}
             @trStyles={{this.styles.tr}}
           >
             {{#each this.columns as |column|}}
-              <TableColumn @column={{column}} @thStyles={{this.styles.th}}>
+              <this.TableColumn @column={{column}} @thStyles={{this.styles.th}}>
                 {{column.label}}
-              </TableColumn>
+              </this.TableColumn>
             {{/each}}
-          </TableHeader>
+          </this.TableHeader>
 
-          <TableBody
+          <this.TableBody
             @columns={{this.columns}}
             @items={{this.items}}
             @tbodyStyles={{this.styles.tbody}}
             @trStyles={{this.styles.tr}}
-            @thStyles={{this.styles.th}}
             @tdStyles={{this.styles.td}}
           >
 
             {{#each this.items as |item|}}
-              <TableRow
+              <this.TableRow
                 @item={{item}}
                 @columns={{this.columns}}
                 @frozenKeys={{@frozenKeys}}
@@ -207,34 +207,34 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               >
                 {{#each this.columns as |column|}}
                   {{#let (this.getValue item column) as |value|}}
-                    <TableCell
+                    <this.TableCell
                       @item={{item}}
                       @column={{column}}
                       @tdStyles={{this.styles.td}}
                     >
                       {{value}}
-                    </TableCell>
+                    </this.TableCell>
                   {{/let}}
                 {{/each}}
-              </TableRow>
+              </this.TableRow>
             {{else}}
               {{#if @emptyContent}}
-                <TableRow
+                <this.TableRow
                   @trStyles={{this.styles.tr}}
                   data-test-id="table-empty-row"
                 >
-                  <TableCell
+                  <this.TableCell
                     colspan={{this.columns.length}}
                     @tdStyles={{this.styles.td}}
                     @class={{(this.styles.emptyCell)}}
                     data-test-id="table-empty-cell"
                   >
                     {{@emptyContent}}
-                  </TableCell>
-                </TableRow>
+                  </this.TableCell>
+                </this.TableRow>
               {{/if}}
             {{/each}}
-          </TableBody>
+          </this.TableBody>
         {{/if}}
       </table>
     </div>

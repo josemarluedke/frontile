@@ -4,10 +4,10 @@ import { useStyles } from '@frontile/theme';
 import { TableColumn } from './table-column';
 import type { ColumnDefinition } from './types';
 
-interface TableHeaderSignature {
+interface TableHeaderSignature<T = unknown> {
   Args: {
     /** Array of column definitions for automatic header generation */
-    columns?: ColumnDefinition<any>[];
+    columns?: ColumnDefinition<T>[];
     /** Additional CSS class to apply to the header section */
     class?: string;
     /** Whether the header should be frozen (sticky) during vertical scrolling */
@@ -33,7 +33,7 @@ interface TableHeaderSignature {
   };
 }
 
-class TableHeader extends Component<TableHeaderSignature> {
+class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
   get styles() {
     const { table } = useStyles();
     return table();

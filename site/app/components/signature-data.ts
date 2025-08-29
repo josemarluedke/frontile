@@ -10747,23 +10747,6 @@ const data: ComponentDoc[] = [
         },
       },
       {
-        identifier: 'thStyles',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: {
-          internal: {
-            name: 'internal',
-            value: 'Style function passed from parent Table component',
-          },
-          ignore: { name: 'ignore', value: '' },
-        },
-      },
-      {
         identifier: 'trStyles',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -10931,7 +10914,7 @@ const data: ComponentDoc[] = [
               identifier: 'accessorFn',
               type: {
                 type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                raw: '(item: <span class="hljs-built_in">any</span>) => ContentValue',
+                raw: '(item: T) => ContentValue',
               },
               isRequired: false,
               isInternal: false,
@@ -10999,7 +10982,7 @@ const data: ComponentDoc[] = [
       },
       {
         identifier: 'item',
-        type: { type: 'unknown' },
+        type: { type: 'T' },
         isRequired: false,
         isInternal: false,
         description: 'The data item for this row (used for context)',
@@ -11087,7 +11070,7 @@ const data: ComponentDoc[] = [
               identifier: 'accessorFn',
               type: {
                 type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                raw: '(item: <span class="hljs-built_in">any</span>) => ContentValue',
+                raw: '(item: T) => ContentValue',
               },
               isRequired: false,
               isInternal: false,
@@ -11204,7 +11187,7 @@ const data: ComponentDoc[] = [
         identifier: 'columns',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: 'ColumnDefinition&#x3C;<span class="hljs-built_in">any</span>>[]',
+          raw: 'ColumnDefinition&#x3C;T>[]',
         },
         isRequired: false,
         isInternal: false,

@@ -28,11 +28,6 @@ interface TableBodySignature<T> {
      * @internal Style function passed from parent Table component
      * @ignore
      */
-    thStyles?: (options?: { class?: string }) => string;
-    /**
-     * @internal Style function passed from parent Table component
-     * @ignore
-     */
     tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableSectionElement;
