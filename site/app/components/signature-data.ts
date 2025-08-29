@@ -10234,6 +10234,22 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
         identifier: 'columns',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -10253,10 +10269,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'tbodyStyles',
+        identifier: 'styleFns',
         type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10264,41 +10279,7 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value: 'Style function passed from parent Table component',
-          },
-          ignore: { name: 'ignore', value: '' },
-        },
-      },
-      {
-        identifier: 'tdStyles',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: {
-          internal: {
-            name: 'internal',
-            value: 'Style function passed from parent Table component',
-          },
-          ignore: { name: 'ignore', value: '' },
-        },
-      },
-      {
-        identifier: 'trStyles',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: {
-          internal: {
-            name: 'internal',
-            value: 'Style function passed from parent Table component',
+            value: 'Style functions object from Table component',
           },
           ignore: { name: 'ignore', value: '' },
         },
@@ -10429,6 +10410,22 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
         identifier: 'column',
         type: {
           type: '<span class="hljs-built_in">Object</span>',
@@ -10529,10 +10526,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'tdStyles',
+        identifier: 'styleFns',
         type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10540,7 +10536,7 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value: 'Style function passed from parent Table component',
+            value: 'Style functions object from Table component',
           },
           ignore: { name: 'ignore', value: '' },
         },
@@ -10668,10 +10664,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'thStyles',
+        identifier: 'styleFns',
         type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10679,7 +10674,7 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value: 'Style function passed from parent Table component',
+            value: 'Style functions object from Table component',
           },
           ignore: { name: 'ignore', value: '' },
         },
@@ -10710,6 +10705,119 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'table-footer',
+    name: 'TableFooter',
+    fileName:
+      'packages/collections/declarations/components/table/table-footer.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the footer element',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic footer generation',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this footer should be frozen (sticky) during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Column',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableSectionElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'table-header',
     name: 'TableHeader',
     fileName:
@@ -10722,6 +10830,22 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description: 'Additional CSS class to apply to the header section',
         tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
       },
       {
         identifier: 'columns',
@@ -10745,10 +10869,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'theadStyles',
+        identifier: 'styleFns',
         type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10756,24 +10879,7 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value: 'Style function passed from parent Table component',
-          },
-          ignore: { name: 'ignore', value: '' },
-        },
-      },
-      {
-        identifier: 'trStyles',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: {
-          internal: {
-            name: 'internal',
-            value: 'Style function passed from parent Table component',
+            value: 'Style functions object from Table component',
           },
           ignore: { name: 'ignore', value: '' },
         },
@@ -10841,6 +10947,22 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
         identifier: 'columns',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -10891,10 +11013,9 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'tdStyles',
+        identifier: 'styleFns',
         type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10902,24 +11023,7 @@ const data: ComponentDoc[] = [
         tags: {
           internal: {
             name: 'internal',
-            value: 'Style function passed from parent Table component',
-          },
-          ignore: { name: 'ignore', value: '' },
-        },
-      },
-      {
-        identifier: 'trStyles',
-        type: {
-          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
-        },
-        isRequired: false,
-        isInternal: true,
-        description: '',
-        tags: {
-          internal: {
-            name: 'internal',
-            value: 'Style function passed from parent Table component',
+            value: 'Style functions object from Table component',
           },
           ignore: { name: 'ignore', value: '' },
         },
@@ -10980,7 +11084,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -11022,6 +11126,18 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'footerColumns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic footer generation',
+        tags: {},
+      },
+      {
         identifier: 'frozenKeys',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
@@ -11031,6 +11147,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Array of item keys that should be frozen (sticky) during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozenFooter',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Make the table footer sticky during vertical scrolling',
         tags: {},
       },
       {
@@ -11098,7 +11222,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -11123,6 +11247,14 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Footer',
                     type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,

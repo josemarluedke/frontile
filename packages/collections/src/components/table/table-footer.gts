@@ -3,14 +3,15 @@ import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { TableColumn } from './table-column';
 import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
+import type { WithBoundArgs } from '@glint/template';
 
-interface TableHeaderSignature<T = unknown> {
+interface TableFooterSignature<T = unknown> {
   Args: {
-    /** Array of column definitions for automatic header generation */
+    /** Array of column definitions for automatic footer generation */
     columns?: ColumnDefinition<T>[];
-    /** Additional CSS class to apply to the header section */
+    /** Additional CSS class to apply to the footer element */
     class?: string;
-    /** Whether the header should be frozen (sticky) during vertical scrolling */
+    /** Whether this footer should be frozen (sticky) during vertical scrolling */
     isFrozen?: boolean;
     /**
      * @internal Style functions object from Table component
@@ -27,25 +28,25 @@ interface TableHeaderSignature<T = unknown> {
   Blocks: {
     default: [
       {
-        Column: typeof TableColumn;
+        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
       }
     ];
   };
 }
 
-class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
+class TableFooter<T = unknown> extends Component<TableFooterSignature<T>> {
   get styles() {
     return this.args.styleFns || useStyles().table();
   }
 
   get classNames() {
     const options = {
-      isFrozen: this.args.isFrozen,
-      frozenPosition: this.args.isFrozen ? ('top' as const) : undefined,
-      class: twMerge(this.args.class, this.args.classes?.thead)
+      isFrozen: this.args.isFrozen ?? false,
+      frozenPosition: this.args.isFrozen ? ('bottom' as const) : undefined,
+      class: twMerge(this.args.class, this.args.classes?.tfoot)
     };
 
-    return this.styles.thead(options);
+    return this.styles.tfoot(options);
   }
 
   get rowClassNames() {
@@ -57,10 +58,10 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
   }
 
   <template>
-    <thead
+    <tfoot
       class={{this.classNames}}
-      data-test-id="table-header"
-      data-component="table-header"
+      data-test-id="table-footer"
+      data-component="table-footer"
       ...attributes
     >
       <tr class={{this.rowClassNames}}>
@@ -74,9 +75,9 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
           {{/each}}
         {{/if}}
       </tr>
-    </thead>
+    </tfoot>
   </template>
 }
 
-export { TableHeader, type TableHeaderSignature };
-export default TableHeader;
+export { TableFooter, type TableFooterSignature };
+export default TableFooter;
