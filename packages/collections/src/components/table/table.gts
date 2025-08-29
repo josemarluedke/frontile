@@ -13,6 +13,7 @@ import type {
   TableSlots,
   SlotsToClasses
 } from './types';
+import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<T> {
   Args: {
@@ -22,22 +23,41 @@ interface TableSignature<T> {
     size?: TableVariants['size'];
     layout?: TableVariants['layout'];
     striped?: TableVariants['striped'];
+    emptyContent?: ContentValue;
   };
   Element: HTMLTableElement;
   Blocks: {
     default: [
       {
-        Column: typeof TableColumn;
-        Header: typeof TableHeader;
-        Body: typeof TableBody;
-        Row: typeof TableRow;
-        Cell: typeof TableCell;
+        Column: WithBoundArgs<typeof TableColumn, 'thStyles'>;
+        Header: WithBoundArgs<
+          typeof TableHeader,
+          'columns' | 'theadStyles' | 'trStyles'
+        >;
+        Body: WithBoundArgs<
+          typeof TableBody<T>,
+          | 'columns'
+          | 'items'
+          | 'tbodyStyles'
+          | 'trStyles'
+          | 'thStyles'
+          | 'tdStyles'
+        >;
+        Row: WithBoundArgs<
+          typeof TableRow<T>,
+          'columns' | 'trStyles' | 'tdStyles'
+        >;
+        Cell: WithBoundArgs<typeof TableCell, 'tdStyles'>;
       }
     ];
   };
 }
 
 class Table<T = unknown> extends Component<TableSignature<T>> {
+  // Needed to make glint happy with generic components
+  TableBody = TableBody<T>;
+  TableRow = TableRow<T>;
+
   get styles() {
     const { table } = useStyles();
     return table({
@@ -78,11 +98,29 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         {{#if (has-block "default")}}
           {{yield
             (hash
-              Column=TableColumn
-              Header=TableHeader
-              Body=TableBody
-              Row=TableRow
-              Cell=TableCell
+              Column=(component TableColumn thStyles=this.styles.th)
+              Header=(component
+                TableHeader
+                columns=this.columns
+                theadStyles=this.styles.thead
+                trStyles=this.styles.tr
+              )
+              Body=(component
+                this.TableBody
+                columns=this.columns
+                items=this.items
+                tbodyStyles=this.styles.tbody
+                trStyles=this.styles.tr
+                thStyles=this.styles.th
+                tdStyles=this.styles.td
+              )
+              Row=(component
+                this.TableRow
+                columns=this.columns
+                trStyles=this.styles.tr
+                tdStyles=this.styles.td
+              )
+              Cell=(component TableCell tdStyles=this.styles.td)
             )
             to="default"
           }}
@@ -107,6 +145,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             @thStyles={{this.styles.th}}
             @tdStyles={{this.styles.td}}
           >
+
             {{#each this.items as |item|}}
               <TableRow
                 @item={{item}}
@@ -127,6 +166,22 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                   {{/let}}
                 {{/each}}
               </TableRow>
+            {{else}}
+              {{#if @emptyContent}}
+                <TableRow
+                  @trStyles={{this.styles.tr}}
+                  data-test-id="table-empty-row"
+                >
+                  <TableCell
+                    colspan={{this.columns.length}}
+                    @tdStyles={{this.styles.td}}
+                    @class={{(this.styles.emptyCell)}}
+                    data-test-id="table-empty-cell"
+                  >
+                    {{@emptyContent}}
+                  </TableCell>
+                </TableRow>
+              {{/if}}
             {{/each}}
           </TableBody>
         {{/if}}

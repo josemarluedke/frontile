@@ -164,8 +164,11 @@ export default class DemoComponent extends Component {
 
   <template>
     <div class='not-prose'>
-      <Table @columns={{this.columns}} @items={{this.emptyItems}} />
-      <p class='text-sm text-gray-500 mt-2'>No data to display</p>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.emptyItems}}
+        @emptyContent='No data to display'
+      />
     </div>
   </template>
 }
@@ -238,11 +241,7 @@ export default class DemoComponent extends Component {
 
       <div>
         <h4 class='font-medium mb-2'>Small/Compact size</h4>
-        <Table
-          @columns={{this.columns}}
-          @items={{this.items}}
-          @size='sm'
-        />
+        <Table @columns={{this.columns}} @items={{this.items}} @size='sm' />
       </div>
     </div>
   </template>
