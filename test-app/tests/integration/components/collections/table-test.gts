@@ -142,6 +142,174 @@ module(
 
       // No rows should exist
       assert.dom('[data-test-id="table-row"]').doesNotExist();
+
+      // No empty content should be shown when not provided
+      assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      assert.dom('[data-test-id="table-empty-cell"]').doesNotExist();
+    });
+
+    test('it displays empty content with string', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{(array)}}
+            @emptyContent="No data available"
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="table"]').exists();
+      assert.dom('[data-test-id="table-header"]').exists();
+      assert.dom('[data-test-id="table-body"]').exists();
+
+      // Headers should exist
+      assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
+
+      // Empty row should exist
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-test-id="table-empty-cell"]').exists();
+
+      // Empty cell should span all columns
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .hasAttribute('colspan', '3');
+
+      // Empty content should be displayed
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .containsText('No data available');
+
+      // No regular rows should exist
+      assert
+        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .doesNotExist();
+    });
+
+    test('it displays empty content with component', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const EmptyComponent = <template>
+        <div class="custom-empty-component">
+          <strong>No results found</strong>
+          <p>Try adjusting your search criteria.</p>
+        </div>
+      </template>;
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{(array)}}
+            @emptyContent={{component EmptyComponent}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-test-id="table-empty-cell"]').exists();
+
+      // Empty cell should span both columns
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .hasAttribute('colspan', '2');
+
+      // Component content should be rendered
+      assert
+        .dom('[data-test-id="table-empty-cell"] .custom-empty-component')
+        .exists();
+      assert
+        .dom('[data-test-id="table-empty-cell"] strong')
+        .containsText('No results found');
+      assert
+        .dom('[data-test-id="table-empty-cell"] p')
+        .containsText('Try adjusting your search criteria.');
+    });
+
+    test('it hides empty content when items exist', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @emptyContent="No data available"
+          />
+        </template>
+      );
+
+      // Regular content should be displayed
+      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+
+      // Empty content should not be displayed
+      assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      assert.dom('[data-test-id="table-empty-cell"]').doesNotExist();
+    });
+
+    test('it updates empty content visibility reactively', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const items = cell<TestItem[]>([]);
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items.current}}
+            @emptyContent="No data available"
+          />
+        </template>
+      );
+
+      // Initially empty - should show empty content
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .containsText('No data available');
+      assert
+        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .doesNotExist();
+
+      // Add data - should hide empty content and show data
+      items.current = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await settled();
+      assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+
+      // Remove data - should show empty content again
+      items.current = [];
+
+      await settled();
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .containsText('No data available');
+      assert
+        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .doesNotExist();
     });
 
     test('it renders with manual header composition', async function (assert) {

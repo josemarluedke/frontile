@@ -34,6 +34,11 @@ const table = tv({
       'align-middle',
       'text-foreground',
       '[&:has([role=checkbox])]:pr-0'
+    ],
+    emptyCell: [
+      'text-center',
+      'py-8',
+      'text-foreground-500'
     ]
   },
   variants: {
