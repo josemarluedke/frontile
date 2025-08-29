@@ -529,4 +529,112 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
   });
+
+  test('TypeScript discriminated union works correctly for explicit single mode', async function (assert) {
+    // Test for issue #387 - TypeScript should properly infer SingleSelectArgs
+    // when selectionMode is explicitly set to "single"
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) => {
+      selectedKey.current = key;
+    };
+    const items = ['item1', 'item2', 'item3'];
+
+    // This should compile without TypeScript errors
+    await render(
+      <template>
+        <Select
+          @selectionMode="single"
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @items={{items}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').exists();
+    assert.dom('[data-component="native-select"]').exists();
+
+    // Test that single selection works as expected
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="item2"]');
+
+    assert.equal(selectedKey.current, 'item2');
+    assert
+      .dom('[data-component="listbox"]')
+      .doesNotExist('should close after selection in single mode');
+  });
+
+  test('TypeScript discriminated union works correctly for multiple mode', async function (assert) {
+    // Test for issue #387 - TypeScript should properly infer MultipleSelectArgs
+    // when selectionMode is explicitly set to "multiple"
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => {
+      selectedKeys.current = keys;
+    };
+    const items = ['item1', 'item2', 'item3'];
+
+    // This should compile without TypeScript errors
+    await render(
+      <template>
+        <Select
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @items={{items}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').exists();
+    assert.dom('[data-component="native-select"]').exists();
+
+    // Test that multiple selection works as expected
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="item1"]');
+
+    assert.equal(selectedKeys.current.length, 1);
+    assert.equal(selectedKeys.current[0], 'item1');
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('should remain open after selection in multiple mode');
+
+    await click('[data-component="listbox"] [data-key="item2"]');
+
+    assert.equal(selectedKeys.current.length, 2);
+    assert.ok(selectedKeys.current.includes('item1'));
+    assert.ok(selectedKeys.current.includes('item2'));
+  });
+
+  test('TypeScript discriminated union works correctly for default mode (no selectionMode specified)', async function (assert) {
+    // Test for issue #387 - TypeScript should properly infer SingleSelectArgs
+    // when selectionMode is omitted (defaults to single)
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) => {
+      selectedKey.current = key;
+    };
+    const items = ['item1', 'item2', 'item3'];
+
+    // This should compile without TypeScript errors and behave as single mode
+    await render(
+      <template>
+        <Select
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @items={{items}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').exists();
+    assert.dom('[data-component="native-select"]').exists();
+
+    // Test that single selection works as expected (default behavior)
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="item3"]');
+
+    assert.equal(selectedKey.current, 'item3');
+    assert
+      .dom('[data-component="listbox"]')
+      .doesNotExist('should close after selection in default single mode');
+  });
 });
