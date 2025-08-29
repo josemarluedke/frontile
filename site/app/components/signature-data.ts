@@ -10220,6 +10220,1089 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'table-body',
+    name: 'TableBody',
+    fileName:
+      'packages/collections/declarations/components/table/table-body.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the body section',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Array of column definitions for automatic row generation',
+        tags: {},
+      },
+      {
+        identifier: 'items',
+        type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Array of data items to display as rows',
+        tags: {},
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Row</span>: <span class="hljs-keyword">typeof</span> TableRow; Cell: <span class="hljs-keyword">typeof</span> TableCell; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Row',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableRow',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Cell',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableCell',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'row',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">item</span>: T; Row: <span class="hljs-keyword">typeof</span> TableRow; Cell: <span class="hljs-keyword">typeof</span> TableCell; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: 'T' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Row',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableRow',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Cell',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableCell',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableSectionElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table-cell',
+    name: 'TableCell',
+    fileName:
+      'packages/collections/declarations/components/table/table-cell.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the cell',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'column',
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'key',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'The property key to extract data from items, or a unique identifier for the column',
+              tags: {},
+            },
+            {
+              identifier: 'label',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: 'Display label for the column header',
+              tags: {},
+            },
+            {
+              identifier: 'accessorFn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '(item: T) => ContentValue',
+              },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Optional function to transform or compute column values from the data item',
+              tags: {},
+            },
+            {
+              identifier: 'isSticky',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Whether this column should be sticky during horizontal scrolling',
+              tags: {},
+            },
+            {
+              identifier: 'stickyPosition',
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+                items: ["'right'", "'left'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'Position where the sticky column should stick.',
+              tags: { default: { name: 'default', value: "'left'" } },
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Column definition associated with this cell',
+        tags: {},
+      },
+      {
+        identifier: 'isInStickyRow',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this cell is part of a sticky row (used for intersection styling)',
+        tags: {},
+      },
+      {
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this cell should be sticky during horizontal scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'item',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The data item for this row (used for context)',
+        tags: {},
+      },
+      {
+        identifier: 'stickyPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Position where the sticky cell should stick.',
+        tags: { default: { name: 'default', value: "'left'" } },
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableCellElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableCellElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table-column',
+    name: 'TableColumn',
+    fileName:
+      'packages/collections/declarations/components/table/table-column.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the header cell',
+        tags: {},
+      },
+      {
+        identifier: 'column',
+        type: {
+          type: '<span class="hljs-built_in">Object</span>',
+          items: [
+            {
+              identifier: 'key',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'The property key to extract data from items, or a unique identifier for the column',
+              tags: {},
+            },
+            {
+              identifier: 'label',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: 'Display label for the column header',
+              tags: {},
+            },
+            {
+              identifier: 'accessorFn',
+              type: {
+                type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                raw: '(item: T) => ContentValue',
+              },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Optional function to transform or compute column values from the data item',
+              tags: {},
+            },
+            {
+              identifier: 'isSticky',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Whether this column should be sticky during horizontal scrolling',
+              tags: {},
+            },
+            {
+              identifier: 'stickyPosition',
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+                items: ["'right'", "'left'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'Position where the sticky column should stick.',
+              tags: { default: { name: 'default', value: "'left'" } },
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Column definition for automatic header generation',
+        tags: {},
+      },
+      {
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this column should be sticky during horizontal scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'stickyPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Position where the sticky column should stick.',
+        tags: { default: { name: 'default', value: "'left'" } },
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableCellElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableCellElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table-footer',
+    name: 'TableFooter',
+    fileName:
+      'packages/collections/declarations/components/table/table-footer.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the footer element',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic footer generation',
+        tags: {},
+      },
+      {
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this footer should be sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Column',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableSectionElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table-header',
+    name: 'TableHeader',
+    fileName:
+      'packages/collections/declarations/components/table/table-header.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the header section',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic header generation',
+        tags: {},
+      },
+      {
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the header should be sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-keyword">typeof</span> TableColumn; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Column',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableColumn',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableSectionElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table-row',
+    name: 'TableRow',
+    fileName:
+      'packages/collections/declarations/components/table/table-row.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Additional CSS class to apply to the row',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Classes object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic cell generation',
+        tags: {},
+      },
+      {
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this row should be sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isStickyHeader',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the table has a sticky header (affects positioning of sticky rows)',
+        tags: {},
+      },
+      {
+        identifier: 'item',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The data item for this row',
+        tags: {},
+      },
+      {
+        identifier: 'stickyKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be sticky (used to determine if this row is sticky)',
+        tags: {},
+      },
+      {
+        identifier: 'styleFns',
+        type: {
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style functions object from Table component',
+          },
+          ignore: { name: 'ignore', value: '' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Cell</span>: <span class="hljs-keyword">typeof</span> TableCell; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Cell',
+                    type: {
+                      type: '<span class="hljs-keyword">typeof</span> TableCell',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableRowElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'table',
+    name: 'Table',
+    fileName: 'packages/collections/declarations/components/table/table.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom CSS classes for different table elements (wrapper, table, th, td, etc.)',
+        tags: {},
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic table generation',
+        tags: {},
+      },
+      {
+        identifier: 'emptyContent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'ContentValue',
+          items: [
+            'string',
+            'number',
+            'false',
+            'true',
+            'void',
+            'Node',
+            'SafeString',
+            'ArglessCurlyComponent',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Content to display when no data items are provided',
+        tags: {},
+      },
+      {
+        identifier: 'footerColumns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'ColumnDefinition&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of column definitions for automatic footer generation',
+        tags: {},
+      },
+      {
+        identifier: 'isScrollable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable scrolling for the table container',
+        tags: {},
+      },
+      {
+        identifier: 'isStickyFooter',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Make the table footer sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isStickyHeader',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Make the table header sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isStriped',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable striped rows (alternating background colors)',
+        tags: {},
+      },
+      {
+        identifier: 'items',
+        type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Array of data items to display in the table',
+        tags: {},
+      },
+      {
+        identifier: 'layout',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'fixed'", "'auto'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Table layout algorithm - 'auto' sizes columns by content, 'fixed' uses first row for sizing.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'sm'", "'lg'", "'md'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Size variant for table cells and headers.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'stickyKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be sticky during vertical scrolling',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Footer: <span class="hljs-built_in">never</span>; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Column',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Header',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Body',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Footer',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Row',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Cell',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLTableElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'checkbox',
     name: 'FormFieldCheckbox',
     fileName:
