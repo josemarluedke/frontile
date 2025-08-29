@@ -8,12 +8,8 @@ import type { TableRowSignature, ColumnDefinition } from './types';
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
   get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table-row'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+    const { table } = useStyles();
+    return this.args.trStyles?.({ class: this.args.class }) || table().tr({ class: this.args.class });
   }
 
   get rowKey(): string {
@@ -44,6 +40,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
                 @item={{@item}}
                 @column={{column}}
                 @value={{value}}
+                @tdStyles={{@tdStyles}}
               >
                 {{value}}
               </TableCell>
