@@ -17,7 +17,6 @@ const table = tv({
       'border-b',
       'border-default-100',
       'transition-colors',
-      'hover:bg-default-50/50',
       'data-[state=selected]:bg-default-100'
     ],
     th: [
@@ -35,11 +34,7 @@ const table = tv({
       'text-foreground',
       '[&:has([role=checkbox])]:pr-0'
     ],
-    emptyCell: [
-      'text-center',
-      'py-8',
-      'text-foreground-500'
-    ]
+    emptyCell: ['text-center', 'py-8', 'text-foreground-500']
   },
   variants: {
     size: {
@@ -69,8 +64,101 @@ const table = tv({
         tbody:
           '[&_tr:nth-child(odd)]:bg-default-100/50 dark:[&_tr:nth-child(odd)]:bg-default-200/10'
       }
+    },
+    isFrozen: {
+      true: {}
+    },
+    frozenPosition: {
+      left: {},
+      right: {},
+      top: {},
+      bottom: {}
+    },
+    isScrollable: {
+      true: {
+        wrapper: ['overflow-auto']
+      }
+    },
+    hasFrozenHeader: {
+      true: {}
+    },
+    isInFrozenRow: {
+      true: {}
     }
   },
+  compoundVariants: [
+    // Frozen header - highest priority for intersections with columns
+    {
+      isFrozen: true,
+      frozenPosition: 'top',
+      class: {
+        thead: ['sticky', 'top-0', 'z-20', 'bg-background']
+      }
+    },
+    // Frozen columns - medium priority, header cells get higher z-index
+    {
+      isFrozen: true,
+      frozenPosition: 'left',
+      class: {
+        th: ['sticky', 'left-0', 'z-30', 'bg-background'], // Higher for header intersection
+        td: ['sticky', 'left-0', 'z-10', 'bg-background']
+      }
+    },
+    {
+      isFrozen: true,
+      frozenPosition: 'right',
+      class: {
+        th: ['sticky', 'right-0', 'z-30', 'bg-background'], // Higher for header intersection
+        td: ['sticky', 'right-0', 'z-10', 'bg-background']
+      }
+    },
+    // Frozen rows - base layer
+    {
+      isFrozen: true,
+      frozenPosition: 'top',
+      class: {
+        tr: ['sticky', 'top-0', 'z-10', 'bg-background']
+      }
+    },
+    {
+      isFrozen: true,
+      frozenPosition: 'bottom',
+      class: {
+        tr: ['sticky', 'bottom-0', 'z-10', 'bg-background']
+      }
+    },
+    // Frozen rows with frozen header - position after header
+    {
+      isFrozen: true,
+      frozenPosition: 'top',
+      hasFrozenHeader: true,
+      class: {
+        tr: [
+          'sticky',
+          'z-20',
+          'bg-background',
+          '[&.sticky]:[top:var(--table-header-height,48px)]'
+        ]
+      }
+    },
+    // Intersection cells: frozen column + frozen row - highest z-index
+    {
+      isFrozen: true,
+      frozenPosition: 'left',
+      isInFrozenRow: true,
+      class: {
+        td: ['sticky', 'left-0', 'z-20', 'bg-background']
+      }
+    },
+    {
+      isFrozen: true,
+      frozenPosition: 'right',
+      isInFrozenRow: true,
+      class: {
+        td: ['sticky', 'right-0', 'z-20', 'bg-background']
+      }
+    }
+  ],
   defaultVariants: {
     size: 'md',
     layout: 'auto'
@@ -81,4 +169,3 @@ export type TableVariants = VariantProps<typeof table>;
 export type TableSlots = keyof ReturnType<typeof table>;
 
 export { table };
-

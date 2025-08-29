@@ -16,7 +16,8 @@
     "try:one": "pnpm --filter test-app try:one",
     "clean:declarations": "rm -rf packages/*/declarations",
     "clean:dist": "rm -rf packages/*/dist test-app/dist site/dist",
-    "clean": "concurrently 'npm:clean:*'"
+    "clean": "concurrently 'npm:clean:*'",
+    "generate-signature-data": "pnpm --filter site generate-signature-data"
   },
   "resolutions": {
     "@ember/test-waiters": "^4.0.0",

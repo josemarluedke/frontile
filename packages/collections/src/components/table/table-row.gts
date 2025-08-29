@@ -8,12 +8,27 @@ import type { ColumnDefinition } from './types';
 
 interface TableRowSignature<T> {
   Args: {
+    /** The data item for this row */
     item?: T;
+    /** Array of column definitions for automatic cell generation */
     columns?: ColumnDefinition<T>[];
+    /** Additional CSS class to apply to the row */
     class?: string;
-    /** @internal Style function passed from parent Table component */
+    /** Whether this row should be frozen (sticky) during vertical scrolling */
+    isFrozen?: boolean;
+    /** Array of item keys that should be frozen (used to determine if this row is frozen) */
+    frozenKeys?: string[];
+    /** Whether the table has a frozen header (affects positioning of frozen rows) */
+    isFrozenHeader?: boolean;
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     trStyles?: (options?: { class?: string }) => string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableRowElement;
@@ -27,12 +42,27 @@ interface TableRowSignature<T> {
 }
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
+  get isFrozen(): boolean {
+    if (this.args.isFrozen) return true;
+
+    if (this.args.frozenKeys && this.args.item) {
+      const { key } = keyAndLabelForItem(this.args.item);
+      return this.args.frozenKeys.includes(key);
+    }
+
+    return false;
+  }
+
   get classNames() {
     const { table } = useStyles();
-    return (
-      this.args.trStyles?.({ class: this.args.class }) ||
-      table().tr({ class: this.args.class })
-    );
+    const options = {
+      isFrozen: this.isFrozen,
+      frozenPosition: this.isFrozen ? ('top' as const) : undefined,
+      hasFrozenHeader: this.args.isFrozenHeader || false,
+      class: this.args.class
+    };
+
+    return this.args.trStyles?.(options) || table().tr(options);
   }
 
   get rowKey(): string {
@@ -63,7 +93,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
               <TableCell
                 @item={{@item}}
                 @column={{column}}
-                @value={{value}}
+                @isInFrozenRow={{this.isFrozen}}
                 @tdStyles={{@tdStyles}}
               >
                 {{value}}
@@ -78,4 +108,3 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
 
 export { TableRow, type TableRowSignature };
 export default TableRow;
-

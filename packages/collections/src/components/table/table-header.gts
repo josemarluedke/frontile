@@ -6,11 +6,21 @@ import type { ColumnDefinition } from './types';
 
 interface TableHeaderSignature {
   Args: {
+    /** Array of column definitions for automatic header generation */
     columns?: ColumnDefinition<any>[];
+    /** Additional CSS class to apply to the header section */
     class?: string;
-    /** @internal Style function passed from parent Table component */
+    /** Whether the header should be frozen (sticky) during vertical scrolling */
+    isFrozen?: boolean;
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     theadStyles?: (options?: { class?: string }) => string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     trStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableSectionElement;
@@ -30,10 +40,13 @@ class TableHeader extends Component<TableHeaderSignature> {
   }
 
   get classNames() {
-    return (
-      this.args.theadStyles?.({ class: this.args.class }) ||
-      this.styles.thead({ class: this.args.class })
-    );
+    const options = {
+      isFrozen: this.args.isFrozen,
+      frozenPosition: this.args.isFrozen ? ('top' as const) : undefined,
+      class: this.args.class
+    };
+
+    return this.args.theadStyles?.(options) || this.styles.thead(options);
   }
 
   get rowClassNames() {
