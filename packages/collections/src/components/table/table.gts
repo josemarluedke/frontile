@@ -50,11 +50,7 @@ interface TableSignature<T> {
         >;
         Body: WithBoundArgs<
           typeof TableBody<T>,
-          | 'columns'
-          | 'items'
-          | 'tbodyStyles'
-          | 'trStyles'
-          | 'tdStyles'
+          'columns' | 'items' | 'tbodyStyles' | 'trStyles' | 'tdStyles'
         >;
         Row: WithBoundArgs<
           typeof TableRow<T>,
@@ -144,7 +140,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         data-component="table"
         ...attributes
       >
-        {{#if (has-block "default")}}
+        {{#if (has-block)}}
           {{yield
             (hash
               Column=(component this.TableColumn thStyles=this.styles.th)
@@ -172,7 +168,6 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               )
               Cell=(component this.TableCell tdStyles=this.styles.td)
             )
-            to="default"
           }}
         {{else}}
           <this.TableHeader

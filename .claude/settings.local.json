@@ -24,7 +24,12 @@
       "Bash(pnpm --filter @frontile/forms build)",
       "Bash(pnpm --filter @frontile/forms run lint:js)",
       "Bash(pnpm --filter @frontile/forms run lint:js --fix)",
-      "Bash(pntml --filter @frontile/forms run lint:js)"
+      "Bash(pnpm ember test:*)",
+      "Bash(pnpm --filter test-app ember test:*",
+      "Bash(pnpm --filter @frontile/collections build)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm ember test:*)",
+      "Bash(pnpm --filter @frontile/theme build)"
     ],
     "deny": []
   }
