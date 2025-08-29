@@ -6,12 +6,12 @@ imports:
 
 # Table
 
-The Table component provides a powerful and flexible way to display structured data with advanced features like frozen headers, columns, and rows, scrollable containers, and type-safe column definitions. It supports both automatic rendering from data arrays and manual composition for complete customization.
+The Table component provides a powerful and flexible way to display structured data with advanced features like sticky headers, columns, and rows, scrollable containers, and type-safe column definitions. It supports both automatic rendering from data arrays and manual composition for complete customization.
 
 **Key Features:**
 
 - **Automatic rendering** with type-safe column definitions
-- **Frozen elements** - sticky headers, footers, columns, and specific rows
+- **Sticky elements** - sticky headers, footers, columns, and specific rows
 - **Scrollable containers** for large datasets
 - **Flexible styling** with size variants and striped rows
 - **Manual composition** for complete control over structure
@@ -543,13 +543,13 @@ export default class DemoComponent extends Component {
 
 ## Advanced Features
 
-### Frozen Columns and Rows
+### Sticky Columns and Rows
 
-Freeze columns or rows to keep them visible during scrolling, perfect for large datasets where certain information should remain in view.
+Make columns or rows sticky to keep them visible during scrolling, perfect for large datasets where certain information should remain in view.
 
-### Frozen Columns
+### Sticky Columns
 
-Freeze columns to keep them visible during horizontal scrolling:
+Make columns sticky to keep them visible during horizontal scrolling:
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -592,7 +592,7 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen Employee ID (left) and Actions (right)
+      <h4 class='font-medium mb-2'>Sticky Employee ID (left) and Actions (right)
         columns</h4>
       <Table
         @isScrollable={{true}}
@@ -600,7 +600,7 @@ export default class DemoComponent extends Component {
         as |t|
       >
         <t.Header>
-          <t.Column @isFrozen={{true}} @frozenPosition='left'>Employee ID</t.Column>
+          <t.Column @isSticky={{true}} @stickyPosition='left'>Employee ID</t.Column>
           <t.Column>Full Name</t.Column>
           <t.Column>Email Address</t.Column>
           <t.Column>Phone Number</t.Column>
@@ -609,16 +609,16 @@ export default class DemoComponent extends Component {
           <t.Column>Office Location</t.Column>
           <t.Column>Manager</t.Column>
           <t.Column
-            @isFrozen={{true}}
-            @frozenPosition='right'
+            @isSticky={{true}}
+            @stickyPosition='right'
           >Actions</t.Column>
         </t.Header>
         <t.Body>
           {{#each this.items as |item|}}
             <t.Row @item={{item}}>
               <t.Cell
-                @isFrozen={{true}}
-                @frozenPosition='left'
+                @isSticky={{true}}
+                @stickyPosition='left'
               >{{item.id}}</t.Cell>
               <t.Cell>{{item.name}}</t.Cell>
               <t.Cell>{{item.email}}</t.Cell>
@@ -627,7 +627,7 @@ export default class DemoComponent extends Component {
               <t.Cell>{{item.role}}</t.Cell>
               <t.Cell>{{item.location}}</t.Cell>
               <t.Cell>{{item.manager}}</t.Cell>
-              <t.Cell @isFrozen={{true}} @frozenPosition='right'>
+              <t.Cell @isSticky={{true}} @stickyPosition='right'>
                 <button
                   type='button'
                   class='text-primary hover:underline mr-2'
@@ -646,7 +646,7 @@ export default class DemoComponent extends Component {
 }
 ```
 
-### Frozen Header
+### Sticky Header
 
 Keep the table header visible when scrolling through long data:
 
@@ -723,12 +723,12 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen header - scroll to see header stay in
+      <h4 class='font-medium mb-2'>Sticky header - scroll to see header stay in
         place</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
-        @isFrozenHeader={{true}}
+        @isStickyHeader={{true}}
         @isScrollable={{true}}
         @classes={{hash wrapper='h-48'}}
       />
@@ -737,7 +737,7 @@ export default class DemoComponent extends Component {
 }
 ```
 
-### Frozen Rows
+### Sticky Rows
 
 Freeze specific rows by their keys to keep important data visible:
 
@@ -797,12 +797,12 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen rows - Admin and Guest users stay
+      <h4 class='font-medium mb-2'>Sticky rows - Admin and Guest users stay
         visible</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
-        @frozenKeys={{array 'admin' 'guest'}}
+        @stickyKeys={{array 'admin' 'guest'}}
         @isScrollable={{true}}
         @classes={{hash wrapper='h-48'}}
       />
@@ -811,9 +811,108 @@ export default class DemoComponent extends Component {
 }
 ```
 
-### Combined Frozen Elements
+### Sticky Footer
 
-Combine multiple frozen features for complex layouts:
+Make the footer sticky during vertical scrolling by setting `@isStickyFooter` to true. This keeps summary information visible when scrolling through long tables:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<Transaction>[] = [
+    { key: 'date', label: 'Date' },
+    { key: 'description', label: 'Description' },
+    {
+      key: 'amount',
+      label: 'Amount',
+      accessorFn: (item) =>
+        item.amount < 0 ? `-$${Math.abs(item.amount)}` : `$${item.amount}`
+    }
+  ];
+
+  footerColumns: ColumnDefinition[] = [
+    { key: 'summary', label: 'Account Total' },
+    { key: 'empty', label: '' },
+    { key: 'total', label: '$1,234.56' }
+  ];
+
+  items: Transaction[] = [
+    {
+      id: '1',
+      date: '2024-01-15',
+      description: 'Salary Deposit',
+      amount: 3500.0
+    },
+    {
+      id: '2',
+      date: '2024-01-16',
+      description: 'Grocery Store',
+      amount: -125.43
+    },
+    { id: '3', date: '2024-01-17', description: 'Gas Station', amount: -45.2 },
+    {
+      id: '4',
+      date: '2024-01-18',
+      description: 'Online Purchase',
+      amount: -89.99
+    },
+    { id: '5', date: '2024-01-19', description: 'Restaurant', amount: -67.5 },
+    {
+      id: '6',
+      date: '2024-01-20',
+      description: 'ATM Withdrawal',
+      amount: -100.0
+    },
+    {
+      id: '7',
+      date: '2024-01-21',
+      description: 'Utility Bill',
+      amount: -150.75
+    },
+    { id: '8', date: '2024-01-22', description: 'Coffee Shop', amount: -8.25 },
+    {
+      id: '9',
+      date: '2024-01-23',
+      description: 'Freelance Payment',
+      amount: 450.0
+    },
+    {
+      id: '10',
+      date: '2024-01-24',
+      description: 'Subscription',
+      amount: -29.99
+    }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Sticky footer - scroll to see footer stay at
+        bottom</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @footerColumns={{this.footerColumns}}
+        @isStickyFooter={{true}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='h-64' tfoot='font-semibold'}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Combined Sticky Elements
+
+Combine multiple sticky features for complex layouts:
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -841,8 +940,8 @@ export default class DemoComponent extends Component {
     {
       key: 'id',
       label: 'Employee ID',
-      isFrozen: true,
-      frozenPosition: 'left'
+      isSticky: true,
+      stickyPosition: 'left'
     },
     { key: 'name', label: 'Full Name' },
     { key: 'email', label: 'Email Address' },
@@ -863,8 +962,8 @@ export default class DemoComponent extends Component {
     {
       key: 'actions',
       label: 'Actions',
-      isFrozen: true,
-      frozenPosition: 'right',
+      isSticky: true,
+      stickyPosition: 'right',
       accessorFn: () => 'Edit'
     }
   ];
@@ -979,114 +1078,15 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Combined: Frozen header, columns (ID &
+      <h4 class='font-medium mb-2'>Combined: Sticky header, columns (ID &
         Actions), and rows (CEO & Intern)</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
-        @isFrozenHeader={{true}}
-        @frozenKeys={{array 'CEO001' 'INT001'}}
+        @isStickyHeader={{true}}
+        @stickyKeys={{array 'CEO001' 'INT001'}}
         @scrollable={{true}}
         @classes={{hash wrapper='h-64 max-w-4xl'}}
-      />
-    </div>
-  </template>
-}
-```
-
-### Frozen Footer
-
-Make the footer sticky during vertical scrolling by setting `@isFrozenFooter` to true. This keeps summary information visible when scrolling through long tables:
-
-```gts preview
-import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
-import { hash } from '@ember/helper';
-
-interface Transaction {
-  id: string;
-  date: string;
-  description: string;
-  amount: number;
-}
-
-export default class DemoComponent extends Component {
-  columns: ColumnDefinition<Transaction>[] = [
-    { key: 'date', label: 'Date' },
-    { key: 'description', label: 'Description' },
-    {
-      key: 'amount',
-      label: 'Amount',
-      accessorFn: (item) =>
-        item.amount < 0 ? `-$${Math.abs(item.amount)}` : `$${item.amount}`
-    }
-  ];
-
-  footerColumns: ColumnDefinition[] = [
-    { key: 'summary', label: 'Account Total' },
-    { key: 'empty', label: '' },
-    { key: 'total', label: '$1,234.56' }
-  ];
-
-  items: Transaction[] = [
-    {
-      id: '1',
-      date: '2024-01-15',
-      description: 'Salary Deposit',
-      amount: 3500.0
-    },
-    {
-      id: '2',
-      date: '2024-01-16',
-      description: 'Grocery Store',
-      amount: -125.43
-    },
-    { id: '3', date: '2024-01-17', description: 'Gas Station', amount: -45.2 },
-    {
-      id: '4',
-      date: '2024-01-18',
-      description: 'Online Purchase',
-      amount: -89.99
-    },
-    { id: '5', date: '2024-01-19', description: 'Restaurant', amount: -67.5 },
-    {
-      id: '6',
-      date: '2024-01-20',
-      description: 'ATM Withdrawal',
-      amount: -100.0
-    },
-    {
-      id: '7',
-      date: '2024-01-21',
-      description: 'Utility Bill',
-      amount: -150.75
-    },
-    { id: '8', date: '2024-01-22', description: 'Coffee Shop', amount: -8.25 },
-    {
-      id: '9',
-      date: '2024-01-23',
-      description: 'Freelance Payment',
-      amount: 450.0
-    },
-    {
-      id: '10',
-      date: '2024-01-24',
-      description: 'Subscription',
-      amount: -29.99
-    }
-  ];
-
-  <template>
-    <div>
-      <h4 class='font-medium mb-2'>Sticky footer - scroll to see footer stay at
-        bottom</h4>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @footerColumns={{this.footerColumns}}
-        @isFrozenFooter={{true}}
-        @isScrollable={{true}}
-        @classes={{hash wrapper='h-64' tfoot='bg-primary-100 font-semibold'}}
       />
     </div>
   </template>
@@ -1130,7 +1130,7 @@ For optimal performance with large datasets:
 
 - Use `@layout="fixed"` for faster rendering
 - Enable scrolling with container-based sizing
-- Consider frozen headers to maintain context while scrolling
+- Consider sticky headers to maintain context while scrolling
 
 ```gts
 <Table
@@ -1138,7 +1138,7 @@ For optimal performance with large datasets:
   @items={{this.largeDataset}}
   @layout="fixed"
   @isScrollable={{true}}
-  @isFrozenHeader={{true}}
+  @isStickyHeader={{true}}
   @classes={{hash wrapper="h-96 max-w-4xl"}}
 />
 ```
@@ -1163,10 +1163,10 @@ interface ColumnDefinition<T = unknown> {
   label: string;
   /** Optional function to transform/compute column values */
   accessorFn?: (item: T) => ContentValue;
-  /** Whether this column should be frozen/sticky */
-  isFrozen?: boolean;
-  /** Position where frozen column should stick */
-  frozenPosition?: 'left' | 'right';
+  /** Whether this column should be sticky */
+  isSticky?: boolean;
+  /** Position where sticky column should stick */
+  stickyPosition?: 'left' | 'right';
 }
 ```
 

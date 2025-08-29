@@ -14,12 +14,12 @@ interface TableRowSignature<T> {
     columns?: ColumnDefinition<T>[];
     /** Additional CSS class to apply to the row */
     class?: string;
-    /** Whether this row should be frozen (sticky) during vertical scrolling */
-    isFrozen?: boolean;
-    /** Array of item keys that should be frozen (used to determine if this row is frozen) */
-    frozenKeys?: string[];
-    /** Whether the table has a frozen header (affects positioning of frozen rows) */
-    isFrozenHeader?: boolean;
+    /** Whether this row should be sticky during vertical scrolling */
+    isSticky?: boolean;
+    /** Array of item keys that should be sticky (used to determine if this row is sticky) */
+    stickyKeys?: string[];
+    /** Whether the table has a sticky header (affects positioning of sticky rows) */
+    isStickyHeader?: boolean;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -42,12 +42,12 @@ interface TableRowSignature<T> {
 }
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
-  get isFrozen(): boolean {
-    if (this.args.isFrozen) return true;
+  get isSticky(): boolean {
+    if (this.args.isSticky) return true;
 
-    if (this.args.frozenKeys && this.args.item) {
+    if (this.args.stickyKeys && this.args.item) {
       const { key } = keyAndLabelForItem(this.args.item);
-      return this.args.frozenKeys.includes(key);
+      return this.args.stickyKeys.includes(key);
     }
 
     return false;
@@ -59,9 +59,9 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
 
   get classNames() {
     const options = {
-      isFrozen: this.isFrozen,
-      frozenPosition: this.isFrozen ? ('top' as const) : undefined,
-      hasFrozenHeader: this.args.isFrozenHeader || false,
+      isSticky: this.isSticky,
+      stickyPosition: this.isSticky ? ('top' as const) : undefined,
+      hasStickyHeader: this.args.isStickyHeader || false,
       class: twMerge(this.args.class || '', this.args.classes?.tr || '')
     };
 
@@ -96,7 +96,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
               <TableCell
                 @item={{@item}}
                 @column={{column}}
-                @isInFrozenRow={{this.isFrozen}}
+                @isInStickyRow={{this.isSticky}}
                 @styleFns={{@styleFns}}
                 @classes={{@classes}}
               >

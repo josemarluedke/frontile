@@ -11,8 +11,8 @@ interface TableFooterSignature<T = unknown> {
     columns?: ColumnDefinition<T>[];
     /** Additional CSS class to apply to the footer element */
     class?: string;
-    /** Whether this footer should be frozen (sticky) during vertical scrolling */
-    isFrozen?: boolean;
+    /** Whether this footer should be sticky during vertical scrolling */
+    isSticky?: boolean;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -41,8 +41,8 @@ class TableFooter<T = unknown> extends Component<TableFooterSignature<T>> {
 
   get classNames() {
     const options = {
-      isFrozen: this.args.isFrozen ?? false,
-      frozenPosition: this.args.isFrozen ? ('bottom' as const) : undefined,
+      isSticky: this.args.isSticky ?? false,
+      stickyPosition: this.args.isSticky ? ('bottom' as const) : undefined,
       class: twMerge(this.args.class, this.args.classes?.tfoot)
     };
 
@@ -52,7 +52,7 @@ class TableFooter<T = unknown> extends Component<TableFooterSignature<T>> {
   get rowClassNames() {
     const options = {
       class: twMerge('', this.args.classes?.tr || ''),
-      isFrozen: false
+      isSticky: false
     };
     return this.styles.tr(options);
   }
