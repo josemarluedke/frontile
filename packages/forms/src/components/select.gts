@@ -60,15 +60,8 @@ interface BaseSelectArgs<T>
     >,
     FormControlSharedArgs {}
 
-// Single selection mode interface
-interface SingleSelectArgs<T> extends BaseSelectArgs<T> {
-  /**
-   * Determines the selection mode of the select component.
-   * - 'single': Only one item can be selected at a time.
-   * @defaultValue 'single'
-   */
-  selectionMode?: 'single' | undefined;
-
+// Base interface for single selection mode (backward compatible)
+interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * The currently selected key for single selection mode.
    */
@@ -83,6 +76,25 @@ interface SingleSelectArgs<T> extends BaseSelectArgs<T> {
    * Callback fired when the selection changes in single mode.
    */
   onSelectionChange?: (key: string | null) => void;
+}
+
+// Single selection mode interface (when selectionMode is explicitly 'single')
+interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
+  /**
+   * Determines the selection mode of the select component.
+   * - 'single': Only one item can be selected at a time.
+   */
+  selectionMode: 'single';
+}
+
+// Single selection mode interface (when selectionMode is omitted - default behavior)
+interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
+  /**
+   * Determines the selection mode of the select component.
+   * - 'single': Only one item can be selected at a time.
+   * @defaultValue 'single'
+   */
+  selectionMode?: undefined;
 }
 
 // Multiple selection mode interface
@@ -109,8 +121,12 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   onSelectionChange?: (keys: string[]) => void;
 }
 
-// Union type for the component
-type SelectArgs<T> = (SingleSelectArgs<T> | MultipleSelectArgs<T>) & {
+// Proper discriminated union type that handles all cases
+type SelectArgs<T> = (
+  | ExplicitSingleSelectArgs<T>
+  | DefaultSingleSelectArgs<T>
+  | MultipleSelectArgs<T>
+) & {
   /**
    * The unique identifier for the select component.
    */
@@ -272,7 +288,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       this._selectedKeys = this.args.selectedKeys || [];
     } else {
       this._selectedKey =
-        (this.args as SingleSelectArgs<T>).selectedKey || null;
+        (this.args as ExplicitSingleSelectArgs<T> | DefaultSingleSelectArgs<T>)
+          .selectedKey || null;
     }
 
     // Runtime warnings for incorrect API usage
@@ -371,7 +388,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       return null;
     }
 
-    const singleArgs = this.args as SingleSelectArgs<T>;
+    const singleArgs = this.args as
+      | ExplicitSingleSelectArgs<T>
+      | DefaultSingleSelectArgs<T>;
     if (
       typeof singleArgs.selectedKey !== 'undefined' &&
       typeof this.args.onSelectionChange === 'function'
