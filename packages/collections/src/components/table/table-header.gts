@@ -2,7 +2,26 @@ import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { TableColumn } from './table-column';
-import type { TableHeaderSignature } from './types';
+import type { ColumnDefinition } from './types';
+
+interface TableHeaderSignature {
+  Args: {
+    columns?: ColumnDefinition<any>[];
+    class?: string;
+    /** @internal Style function passed from parent Table component */
+    theadStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
+  };
+  Element: HTMLTableSectionElement;
+  Blocks: {
+    default: [
+      {
+        Column: typeof TableColumn;
+      }
+    ];
+  };
+}
 
 class TableHeader extends Component<TableHeaderSignature> {
   get styles() {
@@ -11,7 +30,10 @@ class TableHeader extends Component<TableHeaderSignature> {
   }
 
   get classNames() {
-    return this.args.theadStyles?.({ class: this.args.class }) || this.styles.thead({ class: this.args.class });
+    return (
+      this.args.theadStyles?.({ class: this.args.class }) ||
+      this.styles.thead({ class: this.args.class })
+    );
   }
 
   get rowClassNames() {

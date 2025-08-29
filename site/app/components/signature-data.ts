@@ -10719,9 +10719,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'tdStyles',
@@ -10730,9 +10735,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'thStyles',
@@ -10741,9 +10751,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'trStyles',
@@ -10752,9 +10767,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
     ],
     Blocks: [
@@ -10935,9 +10955,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'value',
@@ -11045,9 +11070,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
     ],
     Blocks: [
@@ -11106,9 +11136,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'trStyles',
@@ -11117,9 +11152,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
     ],
     Blocks: [
@@ -11209,9 +11249,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
       {
         identifier: 'trStyles',
@@ -11220,9 +11265,14 @@ const data: ComponentDoc[] = [
           raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'Style function passed from parent Table component',
+          },
+        },
       },
     ],
     Blocks: [

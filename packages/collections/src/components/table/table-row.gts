@@ -4,12 +4,35 @@ import { useStyles } from '@frontile/theme';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
-import type { TableRowSignature, ColumnDefinition } from './types';
+import type { ColumnDefinition } from './types';
+
+interface TableRowSignature<T> {
+  Args: {
+    item?: T;
+    columns?: ColumnDefinition<T>[];
+    class?: string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
+  };
+  Element: HTMLTableRowElement;
+  Blocks: {
+    default: [
+      {
+        Cell: typeof TableCell;
+      }
+    ];
+  };
+}
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
   get classNames() {
     const { table } = useStyles();
-    return this.args.trStyles?.({ class: this.args.class }) || table().tr({ class: this.args.class });
+    return (
+      this.args.trStyles?.({ class: this.args.class }) ||
+      table().tr({ class: this.args.class })
+    );
   }
 
   get rowKey(): string {
@@ -20,7 +43,8 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return '';
   }
 
-  getValue = (item: T, column: ColumnDefinition<T>) => getSafeValue(item, column);
+  getValue = (item: T, column: ColumnDefinition<T>) =>
+    getSafeValue(item, column);
 
   <template>
     <tr
@@ -54,3 +78,4 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
 
 export { TableRow, type TableRowSignature };
 export default TableRow;
+
