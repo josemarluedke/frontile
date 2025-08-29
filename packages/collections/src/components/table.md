@@ -6,7 +6,16 @@ imports:
 
 # Table
 
-Tables display data in rows and columns, providing an organized way to present structured information. The Table component supports both automatic rendering from data arrays and manual composition for fine-grained control.
+The Table component provides a powerful and flexible way to display structured data with advanced features like frozen headers, columns, and rows, scrollable containers, and type-safe column definitions. It supports both automatic rendering from data arrays and manual composition for complete customization.
+
+**Key Features:**
+
+- **Automatic rendering** with type-safe column definitions
+- **Frozen elements** - sticky headers, columns, and specific rows
+- **Scrollable containers** for large datasets
+- **Flexible styling** with size variants and striped rows
+- **Manual composition** for complete control over structure
+- **Empty state handling** with custom content
 
 ## Import
 
@@ -17,11 +26,9 @@ import {
 } from '@frontile/collections';
 ```
 
-## Usage
+## Basic Usage
 
 The Table component can automatically render data using column definitions and items, making it simple to display structured data.
-
-### Automatic Rendering
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -55,49 +62,9 @@ export default class DemoComponent extends Component {
 }
 ```
 
-### Manual Composition
+## Column Definitions
 
-For more control over rendering, you can manually compose the table structure:
-
-```gts preview
-import Component from '@glimmer/component';
-import { Table } from '@frontile/collections';
-
-export default class DemoComponent extends Component {
-  items = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
-  ];
-
-  <template>
-    <div>
-      <Table as |t|>
-        <t.Header>
-          <t.Column>Name</t.Column>
-          <t.Column>Email</t.Column>
-          <t.Column>Actions</t.Column>
-        </t.Header>
-        <t.Body>
-          {{#each this.items as |item|}}
-            <t.Row @item={{item}}>
-              <t.Cell>{{item.name}}</t.Cell>
-              <t.Cell>{{item.email}}</t.Cell>
-              <t.Cell>
-                <button
-                  type='button'
-                  class='text-primary hover:underline'
-                >Edit</button>
-              </t.Cell>
-            </t.Row>
-          {{/each}}
-        </t.Body>
-      </Table>
-    </div>
-  </template>
-}
-```
-
-## Custom Accessor Functions
+### Custom Accessor Functions
 
 Use `accessorFn` to transform data or compute values dynamically for each column:
 
@@ -145,36 +112,7 @@ export default class DemoComponent extends Component {
 }
 ```
 
-## Empty State
-
-The table gracefully handles empty data by displaying headers without rows:
-
-```gts preview
-import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
-
-export default class DemoComponent extends Component {
-  columns: ColumnDefinition[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' }
-  ];
-
-  emptyItems = [];
-
-  <template>
-    <div>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.emptyItems}}
-        @emptyContent='No data to display'
-      />
-    </div>
-  </template>
-}
-```
-
-## Type Safety
+### Type Safety
 
 The Table component provides full TypeScript support with generic types:
 
@@ -199,11 +137,77 @@ const columns: ColumnDefinition<Product>[] = [
 ];
 ```
 
-## Styling
+## Styling & Layout
 
-The Table component supports various styling options through the `classes` argument and built-in variants for different table appearances.
+### Table Layout
+
+Control how the table calculates column widths using the `@layout` argument:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'department', label: 'Department' }
+  ];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      department: 'Engineering'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      department: 'Design'
+    }
+  ];
+
+  <template>
+    <div class='space-y-4'>
+      <div>
+        <h4 class='font-medium mb-2'>Auto layout (default) - sizes by content</h4>
+        <Table @columns={{this.columns}} @items={{this.items}} @layout='auto' />
+      </div>
+
+      <div>
+        <h4 class='font-medium mb-2'>Fixed layout - uses first row for sizing</h4>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @layout='fixed'
+        />
+      </div>
+    </div>
+  </template>
+}
+```
+
+- **Auto layout** (`@layout="auto"`) - Columns size based on content (default)
+- **Fixed layout** (`@layout="fixed"`) - Faster rendering, uses first row for column widths
 
 ### Styling Variants
+
+The Table component supports several styling variants:
+
+- `@size` - Controls spacing: `sm`, `md` (default), `lg`
+- `@isStriped` - Enables alternating row background colors
+- `@layout` - Column sizing: `auto` (default), `fixed`
+- `@classes` - Custom CSS classes for specific elements
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -240,8 +244,13 @@ export default class DemoComponent extends Component {
       </div>
 
       <div>
-        <h4 class='font-medium mb-2'>Small/Compact size</h4>
+        <h4 class='font-medium mb-2'>Small size - compact spacing</h4>
         <Table @columns={{this.columns}} @items={{this.items}} @size='sm' />
+      </div>
+
+      <div>
+        <h4 class='font-medium mb-2'>Large size - spacious layout</h4>
+        <Table @columns={{this.columns}} @items={{this.items}} @size='lg' />
       </div>
     </div>
   </template>
@@ -292,6 +301,48 @@ export default class DemoComponent extends Component {
 }
 ```
 
+## Manual Composition
+
+For complete control over table structure and cell content, use the block form to manually compose headers, rows, and cells:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table } from '@frontile/collections';
+
+export default class DemoComponent extends Component {
+  items = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+  ];
+
+  <template>
+    <div>
+      <Table as |t|>
+        <t.Header>
+          <t.Column>Name</t.Column>
+          <t.Column>Email</t.Column>
+          <t.Column>Actions</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row @item={{item}}>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell>{{item.email}}</t.Cell>
+              <t.Cell>
+                <button
+                  type='button'
+                  class='text-primary hover:underline'
+                >Edit</button>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </Table>
+    </div>
+  </template>
+}
+```
+
 ## Scrollable Tables
 
 For large datasets, enable scrolling with container-based sizing:
@@ -319,11 +370,41 @@ export default class DemoComponent extends Component {
   ];
 
   items: User[] = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering', role: 'Senior Developer' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Design', role: 'UI/UX Designer' },
-    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', department: 'Product', role: 'Product Manager' },
-    { id: '4', name: 'Alice Brown', email: 'alice@example.com', department: 'Engineering', role: 'Tech Lead' },
-    { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Marketing', role: 'Marketing Manager' }
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      role: 'Senior Developer'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      department: 'Design',
+      role: 'UI/UX Designer'
+    },
+    {
+      id: '3',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      department: 'Product',
+      role: 'Product Manager'
+    },
+    {
+      id: '4',
+      name: 'Alice Brown',
+      email: 'alice@example.com',
+      department: 'Engineering',
+      role: 'Tech Lead'
+    },
+    {
+      id: '5',
+      name: 'Charlie Wilson',
+      email: 'charlie@example.com',
+      department: 'Marketing',
+      role: 'Marketing Manager'
+    }
   ];
 
   <template>
@@ -334,7 +415,7 @@ export default class DemoComponent extends Component {
           @columns={{this.columns}}
           @items={{this.items}}
           @isScrollable={{true}}
-          @classes={{hash wrapper="h-48"}}
+          @classes={{hash wrapper='h-48'}}
         />
       </div>
 
@@ -344,7 +425,7 @@ export default class DemoComponent extends Component {
           @columns={{this.columns}}
           @items={{this.items}}
           @isScrollable={{true}}
-          @classes={{hash wrapper="max-w-sm"}}
+          @classes={{hash wrapper='max-w-sm'}}
         />
       </div>
     </div>
@@ -352,7 +433,9 @@ export default class DemoComponent extends Component {
 }
 ```
 
-## Frozen Columns and Rows
+## Advanced Features
+
+### Frozen Columns and Rows
 
 Freeze columns or rows to keep them visible during scrolling, perfect for large datasets where certain information should remain in view.
 
@@ -367,32 +450,32 @@ import { hash } from '@ember/helper';
 
 export default class DemoComponent extends Component {
   items = [
-    { 
-      id: '001', 
-      name: 'John Doe', 
-      email: 'john.doe@company.com', 
+    {
+      id: '001',
+      name: 'John Doe',
+      email: 'john.doe@company.com',
       phone: '+1-555-0123',
-      department: 'Engineering', 
+      department: 'Engineering',
       role: 'Senior Developer',
       location: 'San Francisco, CA',
       manager: 'Alice Brown'
     },
-    { 
-      id: '002', 
-      name: 'Jane Smith', 
-      email: 'jane.smith@company.com', 
+    {
+      id: '002',
+      name: 'Jane Smith',
+      email: 'jane.smith@company.com',
       phone: '+1-555-0124',
-      department: 'Design', 
+      department: 'Design',
       role: 'UI/UX Designer',
       location: 'New York, NY',
       manager: 'Bob Wilson'
     },
-    { 
-      id: '003', 
-      name: 'Bob Johnson', 
-      email: 'bob.johnson@company.com', 
+    {
+      id: '003',
+      name: 'Bob Johnson',
+      email: 'bob.johnson@company.com',
       phone: '+1-555-0125',
-      department: 'Product', 
+      department: 'Product',
       role: 'Product Manager',
       location: 'Austin, TX',
       manager: 'Carol Davis'
@@ -401,10 +484,15 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen Employee ID (left) and Actions (right) columns</h4>
-      <Table @isScrollable={{true}} @classes={{hash wrapper="max-w-2xl"}} as |t|>
+      <h4 class='font-medium mb-2'>Frozen Employee ID (left) and Actions (right)
+        columns</h4>
+      <Table
+        @isScrollable={{true}}
+        @classes={{hash wrapper='max-w-2xl'}}
+        as |t|
+      >
         <t.Header>
-          <t.Column @isFrozen={{true}} @frozenPosition="left">Employee ID</t.Column>
+          <t.Column @isFrozen={{true}} @frozenPosition='left'>Employee ID</t.Column>
           <t.Column>Full Name</t.Column>
           <t.Column>Email Address</t.Column>
           <t.Column>Phone Number</t.Column>
@@ -412,12 +500,18 @@ export default class DemoComponent extends Component {
           <t.Column>Job Title</t.Column>
           <t.Column>Office Location</t.Column>
           <t.Column>Manager</t.Column>
-          <t.Column @isFrozen={{true}} @frozenPosition="right">Actions</t.Column>
+          <t.Column
+            @isFrozen={{true}}
+            @frozenPosition='right'
+          >Actions</t.Column>
         </t.Header>
         <t.Body>
           {{#each this.items as |item|}}
             <t.Row @item={{item}}>
-              <t.Cell @isFrozen={{true}} @frozenPosition="left">{{item.id}}</t.Cell>
+              <t.Cell
+                @isFrozen={{true}}
+                @frozenPosition='left'
+              >{{item.id}}</t.Cell>
               <t.Cell>{{item.name}}</t.Cell>
               <t.Cell>{{item.email}}</t.Cell>
               <t.Cell>{{item.phone}}</t.Cell>
@@ -425,9 +519,15 @@ export default class DemoComponent extends Component {
               <t.Cell>{{item.role}}</t.Cell>
               <t.Cell>{{item.location}}</t.Cell>
               <t.Cell>{{item.manager}}</t.Cell>
-              <t.Cell @isFrozen={{true}} @frozenPosition="right">
-                <button type="button" class="text-primary hover:underline mr-2">Edit</button>
-                <button type="button" class="text-danger hover:underline">Delete</button>
+              <t.Cell @isFrozen={{true}} @frozenPosition='right'>
+                <button
+                  type='button'
+                  class='text-primary hover:underline mr-2'
+                >Edit</button>
+                <button
+                  type='button'
+                  class='text-danger hover:underline'
+                >Delete</button>
               </t.Cell>
             </t.Row>
           {{/each}}
@@ -463,25 +563,66 @@ export default class DemoComponent extends Component {
   ];
 
   items: User[] = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Design' },
-    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', department: 'Product' },
-    { id: '4', name: 'Alice Brown', email: 'alice@example.com', department: 'Engineering' },
-    { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Marketing' },
-    { id: '6', name: 'Diana Lee', email: 'diana@example.com', department: 'Sales' },
-    { id: '7', name: 'Frank Miller', email: 'frank@example.com', department: 'Support' },
-    { id: '8', name: 'Grace Chen', email: 'grace@example.com', department: 'Engineering' }
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      department: 'Engineering'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      department: 'Design'
+    },
+    {
+      id: '3',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      department: 'Product'
+    },
+    {
+      id: '4',
+      name: 'Alice Brown',
+      email: 'alice@example.com',
+      department: 'Engineering'
+    },
+    {
+      id: '5',
+      name: 'Charlie Wilson',
+      email: 'charlie@example.com',
+      department: 'Marketing'
+    },
+    {
+      id: '6',
+      name: 'Diana Lee',
+      email: 'diana@example.com',
+      department: 'Sales'
+    },
+    {
+      id: '7',
+      name: 'Frank Miller',
+      email: 'frank@example.com',
+      department: 'Support'
+    },
+    {
+      id: '8',
+      name: 'Grace Chen',
+      email: 'grace@example.com',
+      department: 'Engineering'
+    }
   ];
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen header - scroll to see header stay in place</h4>
+      <h4 class='font-medium mb-2'>Frozen header - scroll to see header stay in
+        place</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
         @isFrozenHeader={{true}}
         @isScrollable={{true}}
-        @classes={{hash wrapper="h-48"}}
+        @classes={{hash wrapper='h-48'}}
       />
     </div>
   </template>
@@ -513,23 +654,49 @@ export default class DemoComponent extends Component {
   ];
 
   items: User[] = [
-    { id: 'admin', name: 'Admin User', email: 'admin@example.com', role: 'Administrator' },
+    {
+      id: 'admin',
+      name: 'Admin User',
+      email: 'admin@example.com',
+      role: 'Administrator'
+    },
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Developer' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Designer' },
-    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Product Manager' },
-    { id: '4', name: 'Alice Brown', email: 'alice@example.com', role: 'Tech Lead' },
-    { id: 'guest', name: 'Guest User', email: 'guest@example.com', role: 'Read-only' }
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'Designer'
+    },
+    {
+      id: '3',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      role: 'Product Manager'
+    },
+    {
+      id: '4',
+      name: 'Alice Brown',
+      email: 'alice@example.com',
+      role: 'Tech Lead'
+    },
+    {
+      id: 'guest',
+      name: 'Guest User',
+      email: 'guest@example.com',
+      role: 'Read-only'
+    }
   ];
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Frozen rows - Admin and Guest users stay visible</h4>
+      <h4 class='font-medium mb-2'>Frozen rows - Admin and Guest users stay
+        visible</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
-        @frozenKeys={{array "admin" "guest"}}
+        @frozenKeys={{array 'admin' 'guest'}}
         @isScrollable={{true}}
-        @classes={{hash wrapper="h-48"}}
+        @classes={{hash wrapper='h-48'}}
       />
     </div>
   </template>
@@ -563,11 +730,11 @@ interface Employee {
 
 export default class DemoComponent extends Component {
   columns: ColumnDefinition<Employee>[] = [
-    { 
-      key: 'id', 
-      label: 'Employee ID', 
-      isFrozen: true, 
-      frozenPosition: 'left' 
+    {
+      key: 'id',
+      label: 'Employee ID',
+      isFrozen: true,
+      frozenPosition: 'left'
     },
     { key: 'name', label: 'Full Name' },
     { key: 'email', label: 'Email Address' },
@@ -578,30 +745,30 @@ export default class DemoComponent extends Component {
     { key: 'manager', label: 'Direct Manager' },
     { key: 'startDate', label: 'Start Date' },
     { key: 'experience', label: 'Years Experience' },
-    { 
-      key: 'salary', 
+    {
+      key: 'salary',
       label: 'Annual Salary',
       accessorFn: (item) => `$${item.salary.toLocaleString()}`
     },
     { key: 'benefits', label: 'Benefits Package' },
     { key: 'status', label: 'Employment Status' },
-    { 
-      key: 'actions', 
-      label: 'Actions', 
-      isFrozen: true, 
+    {
+      key: 'actions',
+      label: 'Actions',
+      isFrozen: true,
       frozenPosition: 'right',
       accessorFn: () => 'Edit'
     }
   ];
 
   items: Employee[] = [
-    { 
-      id: 'CEO001', 
-      name: 'Sarah Johnson', 
-      email: 'sarah.johnson@company.com', 
+    {
+      id: 'CEO001',
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@company.com',
       phone: '+1-555-0001',
-      department: 'Executive', 
-      role: 'Chief Executive Officer', 
+      department: 'Executive',
+      role: 'Chief Executive Officer',
       location: 'New York, NY',
       manager: 'Board of Directors',
       startDate: '2018-01-15',
@@ -610,12 +777,12 @@ export default class DemoComponent extends Component {
       benefits: 'Executive Package',
       status: 'Full-time'
     },
-    { 
-      id: 'ENG001', 
-      name: 'John Doe', 
-      email: 'john.doe@company.com', 
+    {
+      id: 'ENG001',
+      name: 'John Doe',
+      email: 'john.doe@company.com',
       phone: '+1-555-0101',
-      department: 'Engineering', 
+      department: 'Engineering',
       role: 'Senior Developer',
       location: 'San Francisco, CA',
       manager: 'Jane Smith',
@@ -625,12 +792,12 @@ export default class DemoComponent extends Component {
       benefits: 'Standard Plus',
       status: 'Full-time'
     },
-    { 
-      id: 'ENG002', 
-      name: 'Jane Smith', 
-      email: 'jane.smith@company.com', 
+    {
+      id: 'ENG002',
+      name: 'Jane Smith',
+      email: 'jane.smith@company.com',
       phone: '+1-555-0102',
-      department: 'Engineering', 
+      department: 'Engineering',
       role: 'Tech Lead',
       location: 'San Francisco, CA',
       manager: 'Sarah Johnson',
@@ -640,12 +807,12 @@ export default class DemoComponent extends Component {
       benefits: 'Standard Plus',
       status: 'Full-time'
     },
-    { 
-      id: 'DES001', 
-      name: 'Bob Johnson', 
-      email: 'bob.johnson@company.com', 
+    {
+      id: 'DES001',
+      name: 'Bob Johnson',
+      email: 'bob.johnson@company.com',
       phone: '+1-555-0201',
-      department: 'Design', 
+      department: 'Design',
       role: 'UI/UX Designer',
       location: 'Austin, TX',
       manager: 'Alice Brown',
@@ -655,12 +822,12 @@ export default class DemoComponent extends Component {
       benefits: 'Standard',
       status: 'Full-time'
     },
-    { 
-      id: 'PRD001', 
-      name: 'Alice Brown', 
-      email: 'alice.brown@company.com', 
+    {
+      id: 'PRD001',
+      name: 'Alice Brown',
+      email: 'alice.brown@company.com',
       phone: '+1-555-0301',
-      department: 'Product', 
+      department: 'Product',
       role: 'Product Manager',
       location: 'Seattle, WA',
       manager: 'Sarah Johnson',
@@ -670,12 +837,12 @@ export default class DemoComponent extends Component {
       benefits: 'Standard Plus',
       status: 'Full-time'
     },
-    { 
-      id: 'MKT001', 
-      name: 'Charlie Wilson', 
-      email: 'charlie.wilson@company.com', 
+    {
+      id: 'MKT001',
+      name: 'Charlie Wilson',
+      email: 'charlie.wilson@company.com',
       phone: '+1-555-0401',
-      department: 'Marketing', 
+      department: 'Marketing',
       role: 'Marketing Manager',
       location: 'Chicago, IL',
       manager: 'Sarah Johnson',
@@ -685,12 +852,12 @@ export default class DemoComponent extends Component {
       benefits: 'Standard',
       status: 'Full-time'
     },
-    { 
-      id: 'INT001', 
-      name: 'Diana Lee', 
-      email: 'diana.lee@company.com', 
+    {
+      id: 'INT001',
+      name: 'Diana Lee',
+      email: 'diana.lee@company.com',
       phone: '+1-555-0501',
-      department: 'Engineering', 
+      department: 'Engineering',
       role: 'Intern',
       location: 'San Francisco, CA',
       manager: 'John Doe',
@@ -704,18 +871,69 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Combined: Frozen header, columns (ID & Actions), and rows (CEO & Intern)</h4>
+      <h4 class='font-medium mb-2'>Combined: Frozen header, columns (ID &
+        Actions), and rows (CEO & Intern)</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
         @isFrozenHeader={{true}}
-        @frozenKeys={{array "CEO001" "INT001"}}
+        @frozenKeys={{array 'CEO001' 'INT001'}}
         @scrollable={{true}}
-        @classes={{hash wrapper="h-64 max-w-4xl"}}
+        @classes={{hash wrapper='h-64 max-w-4xl'}}
       />
     </div>
   </template>
 }
+```
+
+## Empty State Handling
+
+The table gracefully handles empty data by displaying headers without rows:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' }
+  ];
+
+  emptyItems = [];
+
+  <template>
+    <div>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.emptyItems}}
+        @emptyContent='No data to display'
+      />
+    </div>
+  </template>
+}
+```
+
+## Performance & Best Practices
+
+### Large Datasets
+
+For optimal performance with large datasets:
+
+- Use `@layout="fixed"` for faster rendering
+- Enable scrolling with container-based sizing
+- Consider frozen headers to maintain context while scrolling
+
+```gts
+<Table
+  @columns={{this.columns}}
+  @items={{this.largeDataset}}
+  @layout="fixed"
+  @isScrollable={{true}}
+  @isFrozenHeader={{true}}
+  @classes={{hash wrapper="h-96 max-w-4xl"}}
+/>
 ```
 
 ## API
