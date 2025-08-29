@@ -1,11 +1,30 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
-import type { TableCellSignature } from './types';
+import type { ContentValue } from '@glint/template';
+import type { ColumnDefinition } from './types';
+
+interface TableCellSignature {
+  Args: {
+    item?: unknown;
+    column?: ColumnDefinition<any>;
+    value?: ContentValue;
+    class?: string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
+  };
+  Element: HTMLTableCellElement;
+  Blocks: {
+    default: [];
+  };
+}
 
 class TableCell extends Component<TableCellSignature> {
   get classNames() {
     const { table } = useStyles();
-    return this.args.tdStyles?.({ class: this.args.class }) || table().td({ class: this.args.class });
+    return (
+      this.args.tdStyles?.({ class: this.args.class }) ||
+      table().td({ class: this.args.class })
+    );
   }
 
   <template>
@@ -23,3 +42,4 @@ class TableCell extends Component<TableCellSignature> {
 
 export { TableCell, type TableCellSignature };
 export default TableCell;
+
