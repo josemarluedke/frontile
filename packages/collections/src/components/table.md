@@ -11,17 +11,19 @@ The Table component provides a powerful and flexible way to display structured d
 **Key Features:**
 
 - **Automatic rendering** with type-safe column definitions
-- **Frozen elements** - sticky headers, columns, and specific rows
+- **Frozen elements** - sticky headers, footers, columns, and specific rows
 - **Scrollable containers** for large datasets
 - **Flexible styling** with size variants and striped rows
 - **Manual composition** for complete control over structure
 - **Empty state handling** with custom content
+- **Table footers** for summaries, totals, and additional information
 
 ## Import
 
 ```js
 import {
   Table,
+  TableFooter,
   type ColumnDefinition
 } from '@frontile/collections';
 ```
@@ -337,6 +339,112 @@ export default class DemoComponent extends Component {
             </t.Row>
           {{/each}}
         </t.Body>
+      </Table>
+    </div>
+  </template>
+}
+```
+
+## Table Footers
+
+Table footers provide a way to display summary information, totals, or additional context at the bottom of your table. Footers support both automatic generation from column definitions and manual composition for complete control.
+
+### Automatic Footer with Column Definitions
+
+Use `@footerColumns` to automatically generate a footer with predefined columns:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<Product>[] = [
+    { key: 'name', label: 'Product' },
+    { key: 'price', label: 'Price', accessorFn: (item) => `$${item.price}` },
+    { key: 'category', label: 'Category' }
+  ];
+
+  footerColumns: ColumnDefinition[] = [
+    { key: 'total_label', label: 'Total Items' },
+    { key: 'total_price', label: '$127.97' },
+    { key: 'categories', label: '3 Categories' }
+  ];
+
+  items: Product[] = [
+    { id: '1', name: 'Laptop', price: 99.99, category: 'Electronics' },
+    { id: '2', name: 'Coffee Mug', price: 12.99, category: 'Kitchen' },
+    { id: '3', name: 'Notebook', price: 4.99, category: 'Office' },
+    { id: '4', name: 'Wireless Mouse', price: 9.99, category: 'Electronics' }
+  ];
+
+  <template>
+    <div>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @footerColumns={{this.footerColumns}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Manual Footer Composition
+
+For complete control over footer content, use the block form with the Footer component:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table } from '@frontile/collections';
+
+export default class DemoComponent extends Component {
+  items = [
+    { id: '1', product: 'Laptop', price: 999.99, qty: 1 },
+    { id: '2', product: 'Mouse', price: 29.99, qty: 2 },
+    { id: '3', product: 'Keyboard', price: 79.99, qty: 1 }
+  ];
+
+  get totalAmount() {
+    return this.items.reduce((sum, item) => sum + item.price * item.qty, 0);
+  }
+
+  get totalItems() {
+    return this.items.reduce((sum, item) => sum + item.qty, 0);
+  }
+
+  calculateTotal = (price, qty) => (price * qty).toFixed(2);
+
+  <template>
+    <div>
+      <Table as |t|>
+        <t.Header>
+          <t.Column>Product</t.Column>
+          <t.Column>Price</t.Column>
+          <t.Column>Quantity</t.Column>
+          <t.Column>Total</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row @item={{item}}>
+              <t.Cell>{{item.product}}</t.Cell>
+              <t.Cell>${{item.price}}</t.Cell>
+              <t.Cell>{{item.qty}}</t.Cell>
+              <t.Cell>${{this.calculateTotal item.price item.qty}}</t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+        <t.Footer>
+          <t.Column colspan='2'>Order Summary</t.Column>
+          <t.Column>{{this.totalItems}} items</t.Column>
+          <t.Column>${{this.totalAmount}}</t.Column>
+        </t.Footer>
       </Table>
     </div>
   </template>
@@ -886,6 +994,105 @@ export default class DemoComponent extends Component {
 }
 ```
 
+### Frozen Footer
+
+Make the footer sticky during vertical scrolling by setting `@isFrozenFooter` to true. This keeps summary information visible when scrolling through long tables:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<Transaction>[] = [
+    { key: 'date', label: 'Date' },
+    { key: 'description', label: 'Description' },
+    {
+      key: 'amount',
+      label: 'Amount',
+      accessorFn: (item) =>
+        item.amount < 0 ? `-$${Math.abs(item.amount)}` : `$${item.amount}`
+    }
+  ];
+
+  footerColumns: ColumnDefinition[] = [
+    { key: 'summary', label: 'Account Total' },
+    { key: 'empty', label: '' },
+    { key: 'total', label: '$1,234.56' }
+  ];
+
+  items: Transaction[] = [
+    {
+      id: '1',
+      date: '2024-01-15',
+      description: 'Salary Deposit',
+      amount: 3500.0
+    },
+    {
+      id: '2',
+      date: '2024-01-16',
+      description: 'Grocery Store',
+      amount: -125.43
+    },
+    { id: '3', date: '2024-01-17', description: 'Gas Station', amount: -45.2 },
+    {
+      id: '4',
+      date: '2024-01-18',
+      description: 'Online Purchase',
+      amount: -89.99
+    },
+    { id: '5', date: '2024-01-19', description: 'Restaurant', amount: -67.5 },
+    {
+      id: '6',
+      date: '2024-01-20',
+      description: 'ATM Withdrawal',
+      amount: -100.0
+    },
+    {
+      id: '7',
+      date: '2024-01-21',
+      description: 'Utility Bill',
+      amount: -150.75
+    },
+    { id: '8', date: '2024-01-22', description: 'Coffee Shop', amount: -8.25 },
+    {
+      id: '9',
+      date: '2024-01-23',
+      description: 'Freelance Payment',
+      amount: 450.0
+    },
+    {
+      id: '10',
+      date: '2024-01-24',
+      description: 'Subscription',
+      amount: -29.99
+    }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Sticky footer - scroll to see footer stay at
+        bottom</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @footerColumns={{this.footerColumns}}
+        @isFrozenFooter={{true}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='h-64' tfoot='bg-primary-100 font-semibold'}}
+      />
+    </div>
+  </template>
+}
+```
+
 ## Empty State Handling
 
 The table gracefully handles empty data by displaying headers without rows:
@@ -941,6 +1148,7 @@ For optimal performance with large datasets:
 <Signature @component="Table" />
 <Signature @component="TableHeader" />
 <Signature @component="TableBody" />
+<Signature @component="TableFooter" />
 <Signature @component="TableColumn" />
 <Signature @component="TableRow" />
 <Signature @component="TableCell" />

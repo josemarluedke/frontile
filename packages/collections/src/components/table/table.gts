@@ -5,6 +5,7 @@ import { modifier } from 'ember-modifier';
 import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
+import { TableFooter } from './table-footer';
 import { TableColumn } from './table-column';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
@@ -12,7 +13,8 @@ import type {
   ColumnDefinition,
   TableVariants,
   TableSlots,
-  SlotsToClasses
+  SlotsToClasses,
+  ClassValue
 } from './types';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
@@ -38,25 +40,27 @@ interface TableSignature<T> {
     frozenKeys?: string[];
     /** Make the table header sticky during vertical scrolling */
     isFrozenHeader?: boolean;
+    /** Array of column definitions for automatic footer generation */
+    footerColumns?: ColumnDefinition<T>[];
+    /** Make the table footer sticky during vertical scrolling */
+    isFrozenFooter?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
     default: [
       {
-        Column: WithBoundArgs<typeof TableColumn<T>, 'thStyles'>;
-        Header: WithBoundArgs<
-          typeof TableHeader<T>,
-          'columns' | 'theadStyles' | 'trStyles'
-        >;
+        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
+        Header: WithBoundArgs<typeof TableHeader<T>, 'columns' | 'styleFns'>;
         Body: WithBoundArgs<
           typeof TableBody<T>,
-          'columns' | 'items' | 'tbodyStyles' | 'trStyles' | 'tdStyles'
+          'columns' | 'items' | 'styleFns'
         >;
+        Footer: WithBoundArgs<typeof TableFooter<T>, 'columns' | 'styleFns'>;
         Row: WithBoundArgs<
           typeof TableRow<T>,
-          'columns' | 'trStyles' | 'tdStyles' | 'frozenKeys' | 'isFrozenHeader'
+          'columns' | 'styleFns' | 'frozenKeys' | 'isFrozenHeader'
         >;
-        Cell: WithBoundArgs<typeof TableCell<T>, 'tdStyles'>;
+        Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
       }
     ];
   };
@@ -65,6 +69,7 @@ interface TableSignature<T> {
 class Table<T = unknown> extends Component<TableSignature<T>> {
   // Needed to make glint happy with generic components
   TableBody = TableBody<T>;
+  TableFooter = TableFooter<T>;
   TableRow = TableRow<T>;
   TableCell = TableCell<T>;
   TableColumn = TableColumn<T>;
@@ -121,6 +126,10 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return this.args.columns || [];
   }
 
+  get footerColumns(): ColumnDefinition<T>[] {
+    return this.args.footerColumns || [];
+  }
+
   get items(): T[] {
     return this.args.items || [];
   }
@@ -143,41 +152,48 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         {{#if (has-block)}}
           {{yield
             (hash
-              Column=(component this.TableColumn thStyles=this.styles.th)
+              Column=(component this.TableColumn styleFns=this.styles)
               Header=(component
                 this.TableHeader
                 columns=this.columns
-                theadStyles=this.styles.thead
-                trStyles=this.styles.tr
+                styleFns=this.styles
+                classes=this.args.classes
               )
               Body=(component
                 this.TableBody
                 columns=this.columns
                 items=this.items
-                tbodyStyles=this.styles.tbody
-                trStyles=this.styles.tr
-                tdStyles=this.styles.td
+                styleFns=this.styles
+                classes=this.args.classes
+              )
+              Footer=(component
+                this.TableFooter
+                columns=this.footerColumns
+                styleFns=this.styles
+                classes=this.args.classes
               )
               Row=(component
                 this.TableRow
                 columns=this.columns
                 frozenKeys=@frozenKeys
                 isFrozenHeader=@isFrozenHeader
-                trStyles=this.styles.tr
-                tdStyles=this.styles.td
+                styleFns=this.styles
+                classes=this.args.classes
               )
-              Cell=(component this.TableCell tdStyles=this.styles.td)
+              Cell=(component
+                this.TableCell styleFns=this.styles classes=this.args.classes
+              )
             )
           }}
         {{else}}
           <this.TableHeader
             @columns={{this.columns}}
             @isFrozen={{@isFrozenHeader}}
-            @theadStyles={{this.styles.thead}}
-            @trStyles={{this.styles.tr}}
+            @styleFns={{this.styles}}
+            @classes={{this.args.classes}}
           >
             {{#each this.columns as |column|}}
-              <this.TableColumn @column={{column}} @thStyles={{this.styles.th}}>
+              <this.TableColumn @column={{column}} @styleFns={{this.styles}}>
                 {{column.label}}
               </this.TableColumn>
             {{/each}}
@@ -186,9 +202,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
           <this.TableBody
             @columns={{this.columns}}
             @items={{this.items}}
-            @tbodyStyles={{this.styles.tbody}}
-            @trStyles={{this.styles.tr}}
-            @tdStyles={{this.styles.td}}
+            @styleFns={{this.styles}}
+            @classes={{this.args.classes}}
           >
 
             {{#each this.items as |item|}}
@@ -197,15 +212,16 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 @columns={{this.columns}}
                 @frozenKeys={{@frozenKeys}}
                 @isFrozenHeader={{@isFrozenHeader}}
-                @trStyles={{this.styles.tr}}
-                @tdStyles={{this.styles.td}}
+                @styleFns={{this.styles}}
+                @classes={{this.args.classes}}
               >
                 {{#each this.columns as |column|}}
                   {{#let (this.getValue item column) as |value|}}
                     <this.TableCell
                       @item={{item}}
                       @column={{column}}
-                      @tdStyles={{this.styles.td}}
+                      @styleFns={{this.styles}}
+                      @classes={{this.args.classes}}
                     >
                       {{value}}
                     </this.TableCell>
@@ -215,12 +231,14 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             {{else}}
               {{#if @emptyContent}}
                 <this.TableRow
-                  @trStyles={{this.styles.tr}}
+                  @styleFns={{this.styles}}
+                  @classes={{this.args.classes}}
                   data-test-id="table-empty-row"
                 >
                   <this.TableCell
                     colspan={{this.columns.length}}
-                    @tdStyles={{this.styles.td}}
+                    @styleFns={{this.styles}}
+                    @classes={{this.args.classes}}
                     @class={{(this.styles.emptyCell)}}
                     data-test-id="table-empty-cell"
                   >
@@ -230,6 +248,21 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               {{/if}}
             {{/each}}
           </this.TableBody>
+
+          {{#if this.footerColumns.length}}
+            <this.TableFooter
+              @columns={{this.footerColumns}}
+              @isFrozen={{@isFrozenFooter}}
+              @styleFns={{this.styles}}
+              @classes={{this.args.classes}}
+            >
+              {{#each this.footerColumns as |column|}}
+                <this.TableColumn @column={{column}} @styleFns={{this.styles}}>
+                  {{column.label}}
+                </this.TableColumn>
+              {{/each}}
+            </this.TableFooter>
+          {{/if}}
         {{/if}}
       </table>
     </div>

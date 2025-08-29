@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
-import { useStyles } from '@frontile/theme';
+import { useStyles, twMerge } from '@frontile/theme';
 import type { ContentValue } from '@glint/template';
-import type { ColumnDefinition } from './types';
+import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
 
 interface TableCellSignature<T = unknown> {
   Args: {
@@ -18,10 +18,15 @@ interface TableCellSignature<T = unknown> {
     /** Whether this cell is part of a frozen row (used for intersection styling) */
     isInFrozenRow?: boolean;
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Style functions object from Table component
      * @ignore
      */
-    tdStyles?: (options?: { class?: string }) => string;
+    styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
+    /**
+     * @internal Classes object from Table component
+     * @ignore
+     */
+    classes?: SlotsToClasses<TableSlots>;
   };
   Element: HTMLTableCellElement;
   Blocks: {
@@ -40,18 +45,21 @@ class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
     );
   }
 
+  get styles() {
+    return this.args.styleFns || useStyles().table();
+  }
+
   get classNames() {
-    const { table } = useStyles();
     const options = {
       isFrozen: this.isFrozen,
       frozenPosition: this.isFrozen
         ? (this.frozenPosition as 'left' | 'right')
         : undefined,
       isInFrozenRow: this.args.isInFrozenRow || false,
-      class: this.args.class
+      class: twMerge(this.args.class || '', this.args.classes?.td || '')
     };
 
-    return this.args.tdStyles?.(options) || table().td(options);
+    return this.styles.td(options);
   }
 
   <template>

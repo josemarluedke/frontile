@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { useStyles } from '@frontile/theme';
+import { useStyles, twMerge } from '@frontile/theme';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
-import type { ColumnDefinition } from './types';
+import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
 
 interface TableRowSignature<T> {
   Args: {
@@ -21,15 +21,15 @@ interface TableRowSignature<T> {
     /** Whether the table has a frozen header (affects positioning of frozen rows) */
     isFrozenHeader?: boolean;
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Style functions object from Table component
      * @ignore
      */
-    trStyles?: (options?: { class?: string }) => string;
+    styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
     /**
-     * @internal Style function passed from parent Table component
+     * @internal Classes object from Table component
      * @ignore
      */
-    tdStyles?: (options?: { class?: string }) => string;
+    classes?: SlotsToClasses<TableSlots>;
   };
   Element: HTMLTableRowElement;
   Blocks: {
@@ -53,16 +53,19 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return false;
   }
 
+  get styles() {
+    return this.args.styleFns || useStyles().table();
+  }
+
   get classNames() {
-    const { table } = useStyles();
     const options = {
       isFrozen: this.isFrozen,
       frozenPosition: this.isFrozen ? ('top' as const) : undefined,
       hasFrozenHeader: this.args.isFrozenHeader || false,
-      class: this.args.class
+      class: twMerge(this.args.class || '', this.args.classes?.tr || '')
     };
 
-    return this.args.trStyles?.(options) || table().tr(options);
+    return this.styles.tr(options);
   }
 
   get rowKey(): string {
@@ -94,7 +97,8 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
                 @item={{@item}}
                 @column={{column}}
                 @isInFrozenRow={{this.isFrozen}}
-                @tdStyles={{@tdStyles}}
+                @styleFns={{@styleFns}}
+                @classes={{@classes}}
               >
                 {{value}}
               </TableCell>
