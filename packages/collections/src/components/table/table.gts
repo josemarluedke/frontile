@@ -1,14 +1,41 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
-import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
 import { TableColumn } from './table-column';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
-import type { TableSignature, ColumnDefinition } from './types';
+import type {
+  ColumnDefinition,
+  TableVariants,
+  TableSlots,
+  SlotsToClasses
+} from './types';
+
+interface TableSignature<T> {
+  Args: {
+    columns?: ColumnDefinition<T>[];
+    items?: T[];
+    classes?: SlotsToClasses<TableSlots>;
+    size?: TableVariants['size'];
+    layout?: TableVariants['layout'];
+    striped?: TableVariants['striped'];
+  };
+  Element: HTMLTableElement;
+  Blocks: {
+    default: [
+      {
+        Column: typeof TableColumn;
+        Header: typeof TableHeader;
+        Body: typeof TableBody;
+        Row: typeof TableRow;
+        Cell: typeof TableCell;
+      }
+    ];
+  };
+}
 
 class Table<T = unknown> extends Component<TableSignature<T>> {
   get styles() {

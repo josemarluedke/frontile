@@ -4,15 +4,51 @@ import { useStyles } from '@frontile/theme';
 import { getSafeValue } from './utils';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
-import type { TableBodySignature, ColumnDefinition } from './types';
+import type { ColumnDefinition } from './types';
+
+interface TableBodySignature<T> {
+  Args: {
+    columns?: ColumnDefinition<T>[];
+    items?: T[];
+    class?: string;
+    /** @internal Style function passed from parent Table component */
+    tbodyStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    thStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
+  };
+  Element: HTMLTableSectionElement;
+  Blocks: {
+    default: [
+      {
+        Row: typeof TableRow;
+        Cell: typeof TableCell;
+      }
+    ];
+    row: [
+      {
+        item: T;
+        Row: typeof TableRow;
+        Cell: typeof TableCell;
+      }
+    ];
+  };
+}
 
 class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
   get classNames() {
     const { table } = useStyles();
-    return this.args.tbodyStyles?.({ class: this.args.class }) || table().tbody({ class: this.args.class });
+    return (
+      this.args.tbodyStyles?.({ class: this.args.class }) ||
+      table().tbody({ class: this.args.class })
+    );
   }
 
-  getValue = (item: T, column: ColumnDefinition<T>) => getSafeValue(item, column);
+  getValue = (item: T, column: ColumnDefinition<T>) =>
+    getSafeValue(item, column);
 
   <template>
     <tbody
@@ -28,7 +64,12 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
           {{#if (has-block "row")}}
             {{yield (hash item=item Row=TableRow Cell=TableCell) to="row"}}
           {{else}}
-            <TableRow @item={{item}} @columns={{@columns}} @trStyles={{@trStyles}} @tdStyles={{@tdStyles}}>
+            <TableRow
+              @item={{item}}
+              @columns={{@columns}}
+              @trStyles={{@trStyles}}
+              @tdStyles={{@tdStyles}}
+            >
               {{#each @columns as |column|}}
                 {{#let (this.getValue item column) as |value|}}
                   <TableCell
