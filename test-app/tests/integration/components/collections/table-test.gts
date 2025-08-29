@@ -610,7 +610,7 @@ module(
             @columns={{columns}}
             @items={{items}}
             @size="sm"
-            @striped={{true}}
+            @isStriped={{true}}
             @layout="fixed"
           />
         </template>
@@ -648,6 +648,261 @@ module(
       assert.dom('[data-test-id="table"].table-level-class').exists();
       assert.dom('th.header-column-class').exists();
       assert.dom('td.body-cell-class').exists();
+    });
+
+    test('it supports scrollable tables', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <Table @columns={{columns}} @items={{items}} @isScrollable={{true}} />
+        </template>
+      );
+
+      const wrapper = document.querySelector(
+        '[data-component="table-wrapper"]'
+      );
+      assert.dom(wrapper).hasClass('overflow-auto');
+    });
+
+    test('it supports scrollable mode', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table @columns={{columns}} @items={{items}} @isScrollable={{true}} />
+        </template>
+      );
+
+      assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
+    });
+
+    test('it supports frozen header', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @isFrozenHeader={{true}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="table-header"]').hasClass('sticky');
+      assert.dom('[data-test-id="table-header"]').hasClass('top-0');
+      assert.dom('[data-test-id="table-header"]').hasClass('z-20');
+    });
+
+    test('it supports frozen columns from ColumnDefinition', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID', isFrozen: true, frozenPosition: 'left' },
+        { key: 'name', label: 'Name' },
+        {
+          key: 'actions',
+          label: 'Actions',
+          isFrozen: true,
+          frozenPosition: 'right'
+        }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template><Table @columns={{columns}} @items={{items}} /></template>
+      );
+
+      // Check frozen ID column (left)
+      assert
+        .dom('[data-test-id="table-column"][data-key="id"]')
+        .hasClass('sticky');
+      assert
+        .dom('[data-test-id="table-column"][data-key="id"]')
+        .hasClass('left-0');
+      assert
+        .dom('[data-test-id="table-column"][data-key="id"]')
+        .hasClass('z-30');
+
+      // Check frozen actions column (right)
+      assert
+        .dom('[data-test-id="table-column"][data-key="actions"]')
+        .hasClass('sticky');
+      assert
+        .dom('[data-test-id="table-column"][data-key="actions"]')
+        .hasClass('right-0');
+      assert
+        .dom('[data-test-id="table-column"][data-key="actions"]')
+        .hasClass('z-30');
+
+      // Check non-frozen column
+      assert
+        .dom('[data-test-id="table-column"][data-key="name"]')
+        .doesNotHaveClass('sticky');
+    });
+
+    test('it supports frozen columns in block form', async function (assert) {
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table as |t|>
+            <t.Header>
+              <t.Column @isFrozen={{true}} @frozenPosition="left">ID</t.Column>
+              <t.Column>Name</t.Column>
+              <t.Column
+                @isFrozen={{true}}
+                @frozenPosition="right"
+              >Actions</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each items as |item|}}
+                <t.Row @item={{item}}>
+                  <t.Cell
+                    @isFrozen={{true}}
+                    @frozenPosition="left"
+                  >{{item.id}}</t.Cell>
+                  <t.Cell>{{item.name}}</t.Cell>
+                  <t.Cell
+                    @isFrozen={{true}}
+                    @frozenPosition="right"
+                  >Edit</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </Table>
+        </template>
+      );
+
+      // Check that frozen column classes are applied
+      const headers = document.querySelectorAll(
+        '[data-test-id="table-column"]'
+      );
+      assert.dom(headers[0]).hasClass('sticky');
+      assert.dom(headers[0]).hasClass('left-0');
+      assert.dom(headers[2]).hasClass('sticky');
+      assert.dom(headers[2]).hasClass('right-0');
+
+      const cells = document.querySelectorAll('[data-test-id="table-cell"]');
+      assert.dom(cells[0]).hasClass('sticky');
+      assert.dom(cells[0]).hasClass('left-0');
+      assert.dom(cells[2]).hasClass('sticky');
+      assert.dom(cells[2]).hasClass('right-0');
+    });
+
+    test('it supports frozen rows by keys', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        {
+          id: '2',
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'user'
+        },
+        { id: '3', name: 'Bob Wilson', email: 'bob@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @frozenKeys={{(array "1" "3")}}
+          />
+        </template>
+      );
+
+      // Check that specified rows are frozen
+      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
+      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('z-10');
+      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('sticky');
+      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('z-10');
+
+      // Check that non-frozen row is not sticky
+      assert
+        .dom('[data-test-id="table-row"][data-key="2"]')
+        .doesNotHaveClass('sticky');
+    });
+
+    test('it combines scrolling with frozen elements', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'id', label: 'ID', isFrozen: true },
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' },
+        {
+          key: 'actions',
+          label: 'Actions',
+          isFrozen: true,
+          frozenPosition: 'right'
+        }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @isScrollable={{true}}
+            @isFrozenHeader={{true}}
+            @frozenKeys={{(array "1")}}
+          />
+        </template>
+      );
+
+      // Check scrollable wrapper
+      assert.dom('[data-component="table-wrapper"]').hasClass('overflow-auto');
+
+      // Check frozen header
+      assert.dom('[data-test-id="table-header"]').hasClass('sticky');
+      assert.dom('[data-test-id="table-header"]').hasClass('top-0');
+
+      // Check frozen columns
+      assert
+        .dom('[data-test-id="table-column"][data-key="id"]')
+        .hasClass('left-0');
+      assert
+        .dom('[data-test-id="table-column"][data-key="actions"]')
+        .hasClass('right-0');
+
+      // Check frozen row
+      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
     });
   }
 );

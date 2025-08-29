@@ -8,16 +8,31 @@ import type { ColumnDefinition } from './types';
 
 interface TableBodySignature<T> {
   Args: {
+    /** Array of column definitions for automatic row generation */
     columns?: ColumnDefinition<T>[];
+    /** Array of data items to display as rows */
     items?: T[];
+    /** Additional CSS class to apply to the body section */
     class?: string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     tbodyStyles?: (options?: { class?: string }) => string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     trStyles?: (options?: { class?: string }) => string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     thStyles?: (options?: { class?: string }) => string;
-    /** @internal Style function passed from parent Table component */
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableSectionElement;
@@ -75,7 +90,6 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
                   <TableCell
                     @item={{item}}
                     @column={{column}}
-                    @value={{value}}
                     @tdStyles={{@tdStyles}}
                   >
                     {{value}}

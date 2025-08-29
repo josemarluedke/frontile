@@ -5,11 +5,22 @@ import type { ColumnDefinition } from './types';
 
 interface TableCellSignature {
   Args: {
+    /** The data item for this row (used for context) */
     item?: unknown;
+    /** Column definition associated with this cell */
     column?: ColumnDefinition<any>;
-    value?: ContentValue;
+    /** Additional CSS class to apply to the cell */
     class?: string;
-    /** @internal Style function passed from parent Table component */
+    /** Whether this cell should be frozen (sticky) during horizontal scrolling */
+    isFrozen?: boolean;
+    /** Position where the frozen cell should stick. @default 'left' */
+    frozenPosition?: 'left' | 'right';
+    /** Whether this cell is part of a frozen row (used for intersection styling) */
+    isInFrozenRow?: boolean;
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableCellElement;
@@ -19,12 +30,28 @@ interface TableCellSignature {
 }
 
 class TableCell extends Component<TableCellSignature> {
+  get isFrozen(): boolean {
+    return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
+  }
+
+  get frozenPosition(): 'left' | 'right' {
+    return (
+      this.args.frozenPosition ?? this.args.column?.frozenPosition ?? 'left'
+    );
+  }
+
   get classNames() {
     const { table } = useStyles();
-    return (
-      this.args.tdStyles?.({ class: this.args.class }) ||
-      table().td({ class: this.args.class })
-    );
+    const options = {
+      isFrozen: this.isFrozen,
+      frozenPosition: this.isFrozen
+        ? (this.frozenPosition as 'left' | 'right')
+        : undefined,
+      isInFrozenRow: this.args.isInFrozenRow || false,
+      class: this.args.class
+    };
+
+    return this.args.tdStyles?.(options) || table().td(options);
   }
 
   <template>
@@ -42,4 +69,3 @@ class TableCell extends Component<TableCellSignature> {
 
 export { TableCell, type TableCellSignature };
 export default TableCell;
-

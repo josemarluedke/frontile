@@ -10230,7 +10230,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Additional CSS class to apply to the body section',
         tags: {},
       },
       {
@@ -10241,7 +10241,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Array of column definitions for automatic row generation',
         tags: {},
       },
       {
@@ -10249,7 +10249,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Array of data items to display as rows',
         tags: {},
       },
       {
@@ -10266,6 +10266,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
       {
@@ -10282,6 +10283,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
       {
@@ -10298,6 +10300,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
       {
@@ -10314,6 +10317,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
     ],
@@ -10438,7 +10442,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Additional CSS class to apply to the cell',
         tags: {},
       },
       {
@@ -10451,7 +10455,8 @@ const data: ComponentDoc[] = [
               type: { type: '<span class="hljs-built_in">string</span>' },
               isRequired: true,
               isInternal: false,
-              description: '',
+              description:
+                'The property key to extract data from items, or a unique identifier for the column',
               tags: {},
             },
             {
@@ -10459,7 +10464,7 @@ const data: ComponentDoc[] = [
               type: { type: '<span class="hljs-built_in">string</span>' },
               isRequired: true,
               isInternal: false,
-              description: '',
+              description: 'Display label for the column header',
               tags: {},
             },
             {
@@ -10470,14 +10475,66 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: '',
+              description:
+                'Optional function to transform or compute column values from the data item',
               tags: {},
+            },
+            {
+              identifier: 'isFrozen',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Whether this column should be frozen (sticky) during horizontal scrolling',
+              tags: {},
+            },
+            {
+              identifier: 'frozenPosition',
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+                items: ["'right'", "'left'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'Position where the frozen column should stick.',
+              tags: { default: { name: 'default', value: "'left'" } },
             },
           ],
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Column definition associated with this cell',
+        tags: {},
+      },
+      {
+        identifier: 'frozenPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Position where the frozen cell should stick.',
+        tags: { default: { name: 'default', value: "'left'" } },
+      },
+      {
+        identifier: 'isFrozen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this cell should be frozen (sticky) during horizontal scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isInFrozenRow',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this cell is part of a frozen row (used for intersection styling)',
         tags: {},
       },
       {
@@ -10485,7 +10542,7 @@ const data: ComponentDoc[] = [
         type: { type: 'unknown' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'The data item for this row (used for context)',
         tags: {},
       },
       {
@@ -10502,28 +10559,8 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
-      },
-      {
-        identifier: 'value',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: 'ContentValue',
-          items: [
-            'string',
-            'number',
-            'false',
-            'true',
-            'void',
-            'Node',
-            'SafeString',
-            'ArglessCurlyComponent',
-          ],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
       },
     ],
     Blocks: [
@@ -10561,7 +10598,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Additional CSS class to apply to the header cell',
         tags: {},
       },
       {
@@ -10574,7 +10611,8 @@ const data: ComponentDoc[] = [
               type: { type: '<span class="hljs-built_in">string</span>' },
               isRequired: true,
               isInternal: false,
-              description: '',
+              description:
+                'The property key to extract data from items, or a unique identifier for the column',
               tags: {},
             },
             {
@@ -10582,7 +10620,7 @@ const data: ComponentDoc[] = [
               type: { type: '<span class="hljs-built_in">string</span>' },
               isRequired: true,
               isInternal: false,
-              description: '',
+              description: 'Display label for the column header',
               tags: {},
             },
             {
@@ -10593,14 +10631,57 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: '',
+              description:
+                'Optional function to transform or compute column values from the data item',
               tags: {},
+            },
+            {
+              identifier: 'isFrozen',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Whether this column should be frozen (sticky) during horizontal scrolling',
+              tags: {},
+            },
+            {
+              identifier: 'frozenPosition',
+              type: {
+                type: '<span class="hljs-built_in">enum</span>',
+                raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+                items: ["'right'", "'left'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'Position where the frozen column should stick.',
+              tags: { default: { name: 'default', value: "'left'" } },
             },
           ],
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Column definition for automatic header generation',
+        tags: {},
+      },
+      {
+        identifier: 'frozenPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Position where the frozen column should stick.',
+        tags: { default: { name: 'default', value: "'left'" } },
+      },
+      {
+        identifier: 'isFrozen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this column should be frozen (sticky) during horizontal scrolling',
         tags: {},
       },
       {
@@ -10617,6 +10698,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
     ],
@@ -10655,7 +10737,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Additional CSS class to apply to the header section',
         tags: {},
       },
       {
@@ -10666,7 +10748,17 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Array of column definitions for automatic header generation',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the header should be frozen (sticky) during vertical scrolling',
         tags: {},
       },
       {
@@ -10683,6 +10775,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
       {
@@ -10699,6 +10792,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
     ],
@@ -10760,7 +10854,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Additional CSS class to apply to the row',
         tags: {},
       },
       {
@@ -10771,7 +10865,38 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Array of column definitions for automatic cell generation',
+        tags: {},
+      },
+      {
+        identifier: 'frozenKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be frozen (used to determine if this row is frozen)',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this row should be frozen (sticky) during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozenHeader',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the table has a frozen header (affects positioning of frozen rows)',
         tags: {},
       },
       {
@@ -10779,7 +10904,7 @@ const data: ComponentDoc[] = [
         type: { type: 'T' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'The data item for this row',
         tags: {},
       },
       {
@@ -10796,6 +10921,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
       {
@@ -10812,6 +10938,7 @@ const data: ComponentDoc[] = [
             name: 'internal',
             value: 'Style function passed from parent Table component',
           },
+          ignore: { name: 'ignore', value: '' },
         },
       },
     ],
@@ -10870,11 +10997,12 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom CSS classes for different table elements (wrapper, table, th, td, etc.)',
         tags: {},
       },
       {
@@ -10885,7 +11013,65 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Array of column definitions for automatic table generation',
+        tags: {},
+      },
+      {
+        identifier: 'emptyContent',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'ContentValue',
+          items: [
+            'string',
+            'number',
+            'false',
+            'true',
+            'void',
+            'Node',
+            'SafeString',
+            'ArglessCurlyComponent',
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Content to display when no data items are provided',
+        tags: {},
+      },
+      {
+        identifier: 'frozenKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be frozen (sticky) during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isFrozenHeader',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Make the table header sticky during vertical scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'isScrollable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable scrolling for the table container',
+        tags: {},
+      },
+      {
+        identifier: 'isStriped',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable striped rows (alternating background colors)',
         tags: {},
       },
       {
@@ -10893,7 +11079,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Array of data items to display in the table',
         tags: {},
       },
       {
@@ -10905,8 +11091,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          "Table layout algorithm - 'auto' sizes columns by content, 'fixed' uses first row for sizing.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
+        defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
       {
         identifier: 'size',
@@ -10917,16 +11105,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
-        identifier: 'striped',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: '',
-        tags: {},
+        description: 'Size variant for table cells and headers.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [
@@ -10934,7 +11115,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-keyword">typeof</span> TableColumn; Header: <span class="hljs-keyword">typeof</span> TableHeader; Body: <span class="hljs-keyword">typeof</span> TableBody; Row: <span class="hljs-keyword">typeof</span> TableRow; Cell: <span class="hljs-keyword">typeof</span> TableCell; }]',
+          raw: '[{ <span class="hljs-attr">Column</span>: <span class="hljs-built_in">never</span>; Header: <span class="hljs-built_in">never</span>; Body: <span class="hljs-built_in">never</span>; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -10943,9 +11124,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Column',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> TableColumn',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10953,9 +11132,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Header',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> TableHeader',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10963,9 +11140,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> TableBody',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10973,9 +11148,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Row',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> TableRow',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10983,9 +11156,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> TableCell',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
