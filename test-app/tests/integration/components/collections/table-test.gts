@@ -715,7 +715,7 @@ module(
 
       assert.dom('[data-test-id="table-header"]').hasClass('sticky');
       assert.dom('[data-test-id="table-header"]').hasClass('top-0');
-      assert.dom('[data-test-id="table-header"]').hasClass('z-20');
+      assert.dom('[data-test-id="table-header"]').hasClass('z-2');
     });
 
     test('it supports frozen columns from ColumnDefinition', async function (assert) {
@@ -747,7 +747,7 @@ module(
         .hasClass('left-0');
       assert
         .dom('[data-test-id="table-column"][data-key="id"]')
-        .hasClass('z-30');
+        .hasClass('z-3');
 
       // Check frozen actions column (right)
       assert
@@ -758,7 +758,7 @@ module(
         .hasClass('right-0');
       assert
         .dom('[data-test-id="table-column"][data-key="actions"]')
-        .hasClass('z-30');
+        .hasClass('z-3');
 
       // Check non-frozen column
       assert
@@ -846,9 +846,9 @@ module(
 
       // Check that specified rows are frozen
       assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('z-10');
+      assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('z-1');
       assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('sticky');
-      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('z-10');
+      assert.dom('[data-test-id="table-row"][data-key="3"]').hasClass('z-1');
 
       // Check that non-frozen row is not sticky
       assert

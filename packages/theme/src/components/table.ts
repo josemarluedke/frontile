@@ -5,6 +5,7 @@ const table = tv({
     base: ['w-full', 'caption-bottom', 'text-sm'],
     wrapper: [
       'relative',
+      'isolate',
       'overflow-auto',
       'border',
       'border-default-200',
@@ -92,7 +93,7 @@ const table = tv({
       isFrozen: true,
       frozenPosition: 'top',
       class: {
-        thead: ['sticky', 'top-0', 'z-20', 'bg-background']
+        thead: ['sticky', 'top-0', 'z-2', 'bg-background']
       }
     },
     // Frozen columns - medium priority, header cells get higher z-index
@@ -100,16 +101,16 @@ const table = tv({
       isFrozen: true,
       frozenPosition: 'left',
       class: {
-        th: ['sticky', 'left-0', 'z-30', 'bg-background'], // Higher for header intersection
-        td: ['sticky', 'left-0', 'z-10', 'bg-background']
+        th: ['sticky', 'left-0', 'z-3', 'bg-background'], // Higher for header intersection
+        td: ['sticky', 'left-0', 'z-1', 'bg-background']
       }
     },
     {
       isFrozen: true,
       frozenPosition: 'right',
       class: {
-        th: ['sticky', 'right-0', 'z-30', 'bg-background'], // Higher for header intersection
-        td: ['sticky', 'right-0', 'z-10', 'bg-background']
+        th: ['sticky', 'right-0', 'z-3', 'bg-background'], // Higher for header intersection
+        td: ['sticky', 'right-0', 'z-1', 'bg-background']
       }
     },
     // Frozen rows - base layer
@@ -117,14 +118,14 @@ const table = tv({
       isFrozen: true,
       frozenPosition: 'top',
       class: {
-        tr: ['sticky', 'top-0', 'z-10', 'bg-background']
+        tr: ['sticky', 'top-0', 'z-1', 'bg-background']
       }
     },
     {
       isFrozen: true,
       frozenPosition: 'bottom',
       class: {
-        tr: ['sticky', 'bottom-0', 'z-10', 'bg-background']
+        tr: ['sticky', 'bottom-0', 'z-1', 'bg-background']
       }
     },
     // Frozen rows with frozen header - position after header
@@ -135,7 +136,7 @@ const table = tv({
       class: {
         tr: [
           'sticky',
-          'z-20',
+          'z-2',
           'bg-background',
           '[&.sticky]:[top:var(--table-header-height,48px)]'
         ]
@@ -147,7 +148,7 @@ const table = tv({
       frozenPosition: 'left',
       isInFrozenRow: true,
       class: {
-        td: ['sticky', 'left-0', 'z-20', 'bg-background']
+        td: ['sticky', 'left-0', 'z-2', 'bg-background']
       }
     },
     {
@@ -155,7 +156,7 @@ const table = tv({
       frozenPosition: 'right',
       isInFrozenRow: true,
       class: {
-        td: ['sticky', 'right-0', 'z-20', 'bg-background']
+        td: ['sticky', 'right-0', 'z-2', 'bg-background']
       }
     }
   ],
