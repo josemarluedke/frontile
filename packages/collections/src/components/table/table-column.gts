@@ -4,9 +4,18 @@ import type { ColumnDefinition } from './types';
 
 interface TableColumnSignature {
   Args: {
+    /** Column definition for automatic header generation */
     column?: ColumnDefinition<any>;
+    /** Additional CSS class to apply to the header cell */
     class?: string;
-    /** @internal Style function passed from parent Table component */
+    /** Whether this column should be frozen (sticky) during horizontal scrolling */
+    isFrozen?: boolean;
+    /** Position where the frozen column should stick. @default 'left' */
+    frozenPosition?: 'left' | 'right';
+    /**
+     * @internal Style function passed from parent Table component
+     * @ignore
+     */
     thStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableCellElement;
@@ -16,12 +25,27 @@ interface TableColumnSignature {
 }
 
 class TableColumn extends Component<TableColumnSignature> {
+  get isFrozen(): boolean {
+    return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
+  }
+
+  get frozenPosition(): 'left' | 'right' {
+    return (
+      this.args.frozenPosition ?? this.args.column?.frozenPosition ?? 'left'
+    );
+  }
+
   get classNames() {
     const { table } = useStyles();
-    return (
-      this.args.thStyles?.({ class: this.args.class }) ||
-      table().th({ class: this.args.class })
-    );
+    const options = {
+      isFrozen: this.isFrozen,
+      frozenPosition: this.isFrozen
+        ? (this.frozenPosition as 'left' | 'right')
+        : undefined,
+      class: this.args.class
+    };
+
+    return this.args.thStyles?.(options) || table().th(options);
   }
 
   <template>
@@ -39,4 +63,3 @@ class TableColumn extends Component<TableColumnSignature> {
 
 export { TableColumn, type TableColumnSignature };
 export default TableColumn;
-

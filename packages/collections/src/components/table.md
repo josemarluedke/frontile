@@ -48,7 +48,7 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='not-prose'>
+    <div>
       <Table @columns={{this.columns}} @items={{this.items}} />
     </div>
   </template>
@@ -70,7 +70,7 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='not-prose'>
+    <div>
       <Table as |t|>
         <t.Header>
           <t.Column>Name</t.Column>
@@ -138,7 +138,7 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='not-prose'>
+    <div>
       <Table @columns={{this.columns}} @items={{this.items}} />
     </div>
   </template>
@@ -163,7 +163,7 @@ export default class DemoComponent extends Component {
   emptyItems = [];
 
   <template>
-    <div class='not-prose'>
+    <div>
       <Table
         @columns={{this.columns}}
         @items={{this.emptyItems}}
@@ -229,13 +229,13 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='not-prose space-y-4'>
+    <div class='space-y-4'>
       <div>
         <h4 class='font-medium mb-2'>Striped rows</h4>
         <Table
           @columns={{this.columns}}
           @items={{this.items}}
-          @striped={{true}}
+          @isStriped={{true}}
         />
       </div>
 
@@ -276,7 +276,7 @@ export default class DemoComponent extends Component {
   ];
 
   <template>
-    <div class='not-prose'>
+    <div>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
@@ -286,6 +286,432 @@ export default class DemoComponent extends Component {
           th='bg-primary-100 first:rounded-tl-lg last:rounded-tr-lg'
           td='border-t border-default-100'
         }}
+      />
+    </div>
+  </template>
+}
+```
+
+## Scrollable Tables
+
+For large datasets, enable scrolling with container-based sizing:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'department', label: 'Department' },
+    { key: 'role', label: 'Role' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering', role: 'Senior Developer' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Design', role: 'UI/UX Designer' },
+    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', department: 'Product', role: 'Product Manager' },
+    { id: '4', name: 'Alice Brown', email: 'alice@example.com', department: 'Engineering', role: 'Tech Lead' },
+    { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Marketing', role: 'Marketing Manager' }
+  ];
+
+  <template>
+    <div class='space-y-4'>
+      <div>
+        <h4 class='font-medium mb-2'>Vertically scrollable table</h4>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @isScrollable={{true}}
+          @classes={{hash wrapper="h-48"}}
+        />
+      </div>
+
+      <div>
+        <h4 class='font-medium mb-2'>Horizontally scrollable table</h4>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @isScrollable={{true}}
+          @classes={{hash wrapper="max-w-sm"}}
+        />
+      </div>
+    </div>
+  </template>
+}
+```
+
+## Frozen Columns and Rows
+
+Freeze columns or rows to keep them visible during scrolling, perfect for large datasets where certain information should remain in view.
+
+### Frozen Columns
+
+Freeze columns to keep them visible during horizontal scrolling:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+export default class DemoComponent extends Component {
+  items = [
+    { 
+      id: '001', 
+      name: 'John Doe', 
+      email: 'john.doe@company.com', 
+      phone: '+1-555-0123',
+      department: 'Engineering', 
+      role: 'Senior Developer',
+      location: 'San Francisco, CA',
+      manager: 'Alice Brown'
+    },
+    { 
+      id: '002', 
+      name: 'Jane Smith', 
+      email: 'jane.smith@company.com', 
+      phone: '+1-555-0124',
+      department: 'Design', 
+      role: 'UI/UX Designer',
+      location: 'New York, NY',
+      manager: 'Bob Wilson'
+    },
+    { 
+      id: '003', 
+      name: 'Bob Johnson', 
+      email: 'bob.johnson@company.com', 
+      phone: '+1-555-0125',
+      department: 'Product', 
+      role: 'Product Manager',
+      location: 'Austin, TX',
+      manager: 'Carol Davis'
+    }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Frozen Employee ID (left) and Actions (right) columns</h4>
+      <Table @isScrollable={{true}} @classes={{hash wrapper="max-w-2xl"}} as |t|>
+        <t.Header>
+          <t.Column @isFrozen={{true}} @frozenPosition="left">Employee ID</t.Column>
+          <t.Column>Full Name</t.Column>
+          <t.Column>Email Address</t.Column>
+          <t.Column>Phone Number</t.Column>
+          <t.Column>Department</t.Column>
+          <t.Column>Job Title</t.Column>
+          <t.Column>Office Location</t.Column>
+          <t.Column>Manager</t.Column>
+          <t.Column @isFrozen={{true}} @frozenPosition="right">Actions</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row @item={{item}}>
+              <t.Cell @isFrozen={{true}} @frozenPosition="left">{{item.id}}</t.Cell>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell>{{item.email}}</t.Cell>
+              <t.Cell>{{item.phone}}</t.Cell>
+              <t.Cell>{{item.department}}</t.Cell>
+              <t.Cell>{{item.role}}</t.Cell>
+              <t.Cell>{{item.location}}</t.Cell>
+              <t.Cell>{{item.manager}}</t.Cell>
+              <t.Cell @isFrozen={{true}} @frozenPosition="right">
+                <button type="button" class="text-primary hover:underline mr-2">Edit</button>
+                <button type="button" class="text-danger hover:underline">Delete</button>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </Table>
+    </div>
+  </template>
+}
+```
+
+### Frozen Header
+
+Keep the table header visible when scrolling through long data:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'department', label: 'Department' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Design' },
+    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', department: 'Product' },
+    { id: '4', name: 'Alice Brown', email: 'alice@example.com', department: 'Engineering' },
+    { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Marketing' },
+    { id: '6', name: 'Diana Lee', email: 'diana@example.com', department: 'Sales' },
+    { id: '7', name: 'Frank Miller', email: 'frank@example.com', department: 'Support' },
+    { id: '8', name: 'Grace Chen', email: 'grace@example.com', department: 'Engineering' }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Frozen header - scroll to see header stay in place</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @isFrozenHeader={{true}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper="h-48"}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Frozen Rows
+
+Freeze specific rows by their keys to keep important data visible:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { array, hash } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'role', label: 'Role' }
+  ];
+
+  items: User[] = [
+    { id: 'admin', name: 'Admin User', email: 'admin@example.com', role: 'Administrator' },
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Developer' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Designer' },
+    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Product Manager' },
+    { id: '4', name: 'Alice Brown', email: 'alice@example.com', role: 'Tech Lead' },
+    { id: 'guest', name: 'Guest User', email: 'guest@example.com', role: 'Read-only' }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Frozen rows - Admin and Guest users stay visible</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @frozenKeys={{array "admin" "guest"}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper="h-48"}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Combined Frozen Elements
+
+Combine multiple frozen features for complex layouts:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { array, hash } from '@ember/helper';
+
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  role: string;
+  location: string;
+  manager: string;
+  startDate: string;
+  experience: number;
+  salary: number;
+  benefits: string;
+  status: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<Employee>[] = [
+    { 
+      key: 'id', 
+      label: 'Employee ID', 
+      isFrozen: true, 
+      frozenPosition: 'left' 
+    },
+    { key: 'name', label: 'Full Name' },
+    { key: 'email', label: 'Email Address' },
+    { key: 'phone', label: 'Phone Number' },
+    { key: 'department', label: 'Department' },
+    { key: 'role', label: 'Job Title' },
+    { key: 'location', label: 'Office Location' },
+    { key: 'manager', label: 'Direct Manager' },
+    { key: 'startDate', label: 'Start Date' },
+    { key: 'experience', label: 'Years Experience' },
+    { 
+      key: 'salary', 
+      label: 'Annual Salary',
+      accessorFn: (item) => `$${item.salary.toLocaleString()}`
+    },
+    { key: 'benefits', label: 'Benefits Package' },
+    { key: 'status', label: 'Employment Status' },
+    { 
+      key: 'actions', 
+      label: 'Actions', 
+      isFrozen: true, 
+      frozenPosition: 'right',
+      accessorFn: () => 'Edit'
+    }
+  ];
+
+  items: Employee[] = [
+    { 
+      id: 'CEO001', 
+      name: 'Sarah Johnson', 
+      email: 'sarah.johnson@company.com', 
+      phone: '+1-555-0001',
+      department: 'Executive', 
+      role: 'Chief Executive Officer', 
+      location: 'New York, NY',
+      manager: 'Board of Directors',
+      startDate: '2018-01-15',
+      experience: 15,
+      salary: 250000,
+      benefits: 'Executive Package',
+      status: 'Full-time'
+    },
+    { 
+      id: 'ENG001', 
+      name: 'John Doe', 
+      email: 'john.doe@company.com', 
+      phone: '+1-555-0101',
+      department: 'Engineering', 
+      role: 'Senior Developer',
+      location: 'San Francisco, CA',
+      manager: 'Jane Smith',
+      startDate: '2020-03-15',
+      experience: 8,
+      salary: 95000,
+      benefits: 'Standard Plus',
+      status: 'Full-time'
+    },
+    { 
+      id: 'ENG002', 
+      name: 'Jane Smith', 
+      email: 'jane.smith@company.com', 
+      phone: '+1-555-0102',
+      department: 'Engineering', 
+      role: 'Tech Lead',
+      location: 'San Francisco, CA',
+      manager: 'Sarah Johnson',
+      startDate: '2019-07-20',
+      experience: 10,
+      salary: 120000,
+      benefits: 'Standard Plus',
+      status: 'Full-time'
+    },
+    { 
+      id: 'DES001', 
+      name: 'Bob Johnson', 
+      email: 'bob.johnson@company.com', 
+      phone: '+1-555-0201',
+      department: 'Design', 
+      role: 'UI/UX Designer',
+      location: 'Austin, TX',
+      manager: 'Alice Brown',
+      startDate: '2021-11-08',
+      experience: 5,
+      salary: 85000,
+      benefits: 'Standard',
+      status: 'Full-time'
+    },
+    { 
+      id: 'PRD001', 
+      name: 'Alice Brown', 
+      email: 'alice.brown@company.com', 
+      phone: '+1-555-0301',
+      department: 'Product', 
+      role: 'Product Manager',
+      location: 'Seattle, WA',
+      manager: 'Sarah Johnson',
+      startDate: '2020-09-12',
+      experience: 7,
+      salary: 100000,
+      benefits: 'Standard Plus',
+      status: 'Full-time'
+    },
+    { 
+      id: 'MKT001', 
+      name: 'Charlie Wilson', 
+      email: 'charlie.wilson@company.com', 
+      phone: '+1-555-0401',
+      department: 'Marketing', 
+      role: 'Marketing Manager',
+      location: 'Chicago, IL',
+      manager: 'Sarah Johnson',
+      startDate: '2021-02-28',
+      experience: 6,
+      salary: 90000,
+      benefits: 'Standard',
+      status: 'Full-time'
+    },
+    { 
+      id: 'INT001', 
+      name: 'Diana Lee', 
+      email: 'diana.lee@company.com', 
+      phone: '+1-555-0501',
+      department: 'Engineering', 
+      role: 'Intern',
+      location: 'San Francisco, CA',
+      manager: 'John Doe',
+      startDate: '2024-06-01',
+      experience: 0,
+      salary: 50000,
+      benefits: 'Intern Package',
+      status: 'Intern'
+    }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Combined: Frozen header, columns (ID & Actions), and rows (CEO & Intern)</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @isFrozenHeader={{true}}
+        @frozenKeys={{array "CEO001" "INT001"}}
+        @scrollable={{true}}
+        @classes={{hash wrapper="h-64 max-w-4xl"}}
       />
     </div>
   </template>
@@ -311,6 +737,10 @@ interface ColumnDefinition<T = unknown> {
   label: string;
   /** Optional function to transform/compute column values */
   accessorFn?: (item: T) => ContentValue;
+  /** Whether this column should be frozen/sticky */
+  isFrozen?: boolean;
+  /** Position where frozen column should stick */
+  frozenPosition?: 'left' | 'right';
 }
 ```
 

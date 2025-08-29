@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
+import { modifier } from 'ember-modifier';
 import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
@@ -17,13 +18,26 @@ import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<T> {
   Args: {
+    /** Array of column definitions for automatic table generation */
     columns?: ColumnDefinition<T>[];
+    /** Array of data items to display in the table */
     items?: T[];
+    /** Custom CSS classes for different table elements (wrapper, table, th, td, etc.) */
     classes?: SlotsToClasses<TableSlots>;
+    /** Size variant for table cells and headers. @defaultValue 'md' */
     size?: TableVariants['size'];
+    /** Table layout algorithm - 'auto' sizes columns by content, 'fixed' uses first row for sizing. @defaultValue 'auto' */
     layout?: TableVariants['layout'];
-    striped?: TableVariants['striped'];
+    /** Enable striped rows (alternating background colors) */
+    isStriped?: TableVariants['striped'];
+    /** Content to display when no data items are provided */
     emptyContent?: ContentValue;
+    /** Enable scrolling for the table container */
+    isScrollable?: boolean;
+    /** Array of item keys that should be frozen (sticky) during vertical scrolling */
+    frozenKeys?: string[];
+    /** Make the table header sticky during vertical scrolling */
+    isFrozenHeader?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -45,7 +59,7 @@ interface TableSignature<T> {
         >;
         Row: WithBoundArgs<
           typeof TableRow<T>,
-          'columns' | 'trStyles' | 'tdStyles'
+          'columns' | 'trStyles' | 'tdStyles' | 'frozenKeys' | 'isFrozenHeader'
         >;
         Cell: WithBoundArgs<typeof TableCell, 'tdStyles'>;
       }
@@ -63,14 +77,43 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return table({
       size: this.args.size,
       layout: this.args.layout,
-      striped: this.args.striped,
+      striped: this.args.isStriped,
+      isScrollable: this.args.isScrollable || false,
+      hasFrozenHeader: this.args.isFrozenHeader || false,
       class: this.args.classes?.base
     });
   }
 
   get wrapperClassNames() {
-    return this.styles.wrapper({ class: this.args.classes?.wrapper });
+    return this.styles.wrapper({
+      class: this.args.classes?.wrapper
+    });
   }
+
+  calculateHeaderHeight = modifier((el: HTMLDivElement) => {
+    if (this.args.isFrozenHeader) {
+      const updateHeight = () => {
+        const thead = el.querySelector('thead');
+        if (thead) {
+          const headerHeight = Math.round(thead.offsetHeight);
+          el.style.setProperty('--table-header-height', `${headerHeight}px`);
+        }
+      };
+
+      requestAnimationFrame(updateHeight);
+
+      // Update on resize
+      let observer: ResizeObserver;
+      observer = new ResizeObserver(updateHeight);
+      observer.observe(el);
+
+      return () => {
+        if (observer) {
+          observer.disconnect();
+        }
+      };
+    }
+  });
 
   get tableClassNames() {
     return this.styles.table({ class: this.args.classes?.table });
@@ -88,7 +131,11 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     getSafeValue(item, column);
 
   <template>
-    <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+    <div
+      class={{this.wrapperClassNames}}
+      {{this.calculateHeaderHeight}}
+      data-component="table-wrapper"
+    >
       <table
         class={{this.tableClassNames}}
         data-test-id="table"
@@ -117,6 +164,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               Row=(component
                 this.TableRow
                 columns=this.columns
+                frozenKeys=@frozenKeys
+                isFrozenHeader=@isFrozenHeader
                 trStyles=this.styles.tr
                 tdStyles=this.styles.td
               )
@@ -127,6 +176,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         {{else}}
           <TableHeader
             @columns={{this.columns}}
+            @isFrozen={{@isFrozenHeader}}
             @theadStyles={{this.styles.thead}}
             @trStyles={{this.styles.tr}}
           >
@@ -150,6 +200,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               <TableRow
                 @item={{item}}
                 @columns={{this.columns}}
+                @frozenKeys={{@frozenKeys}}
+                @isFrozenHeader={{@isFrozenHeader}}
                 @trStyles={{this.styles.tr}}
                 @tdStyles={{this.styles.td}}
               >
@@ -158,7 +210,6 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                     <TableCell
                       @item={{item}}
                       @column={{column}}
-                      @value={{value}}
                       @tdStyles={{this.styles.td}}
                     >
                       {{value}}
