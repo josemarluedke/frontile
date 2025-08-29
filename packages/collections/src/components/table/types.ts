@@ -19,4 +19,3 @@ export interface ColumnDefinition<T = unknown> {
 }
 
 export type { TableVariants, TableSlots, SlotsToClasses };
-

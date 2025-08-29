@@ -84,8 +84,8 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
       data-key={{this.rowKey}}
       ...attributes
     >
-      {{#if (has-block "default")}}
-        {{yield (hash Cell=TableCell) to="default"}}
+      {{#if (has-block)}}
+        {{yield (hash Cell=TableCell)}}
       {{else}}
         {{#each @columns as |column|}}
           {{#if @item}}
