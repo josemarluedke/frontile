@@ -2,10 +2,10 @@ import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import type { ColumnDefinition } from './types';
 
-interface TableColumnSignature {
+interface TableColumnSignature<T = unknown> {
   Args: {
     /** Column definition for automatic header generation */
-    column?: ColumnDefinition<any>;
+    column?: ColumnDefinition<T>;
     /** Additional CSS class to apply to the header cell */
     class?: string;
     /** Whether this column should be frozen (sticky) during horizontal scrolling */
@@ -24,7 +24,7 @@ interface TableColumnSignature {
   };
 }
 
-class TableColumn extends Component<TableColumnSignature> {
+class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
   get isFrozen(): boolean {
     return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
   }
