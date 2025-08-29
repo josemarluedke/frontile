@@ -36,14 +36,14 @@ interface TableSignature<T> {
     emptyContent?: ContentValue;
     /** Enable scrolling for the table container */
     isScrollable?: boolean;
-    /** Array of item keys that should be frozen (sticky) during vertical scrolling */
-    frozenKeys?: string[];
+    /** Array of item keys that should be sticky during vertical scrolling */
+    stickyKeys?: string[];
     /** Make the table header sticky during vertical scrolling */
-    isFrozenHeader?: boolean;
+    isStickyHeader?: boolean;
     /** Array of column definitions for automatic footer generation */
     footerColumns?: ColumnDefinition<T>[];
     /** Make the table footer sticky during vertical scrolling */
-    isFrozenFooter?: boolean;
+    isStickyFooter?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -58,7 +58,7 @@ interface TableSignature<T> {
         Footer: WithBoundArgs<typeof TableFooter<T>, 'columns' | 'styleFns'>;
         Row: WithBoundArgs<
           typeof TableRow<T>,
-          'columns' | 'styleFns' | 'frozenKeys' | 'isFrozenHeader'
+          'columns' | 'styleFns' | 'stickyKeys' | 'isStickyHeader'
         >;
         Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
       }
@@ -82,7 +82,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
       layout: this.args.layout,
       striped: this.args.isStriped,
       isScrollable: this.args.isScrollable || false,
-      hasFrozenHeader: this.args.isFrozenHeader || false,
+      hasStickyHeader: this.args.isStickyHeader || false,
       class: this.args.classes?.base
     });
   }
@@ -94,7 +94,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   }
 
   calculateHeaderHeight = modifier((el: HTMLDivElement) => {
-    if (this.args.isFrozenHeader) {
+    if (this.args.isStickyHeader) {
       const updateHeight = () => {
         const thead = el.querySelector('thead');
         if (thead) {
@@ -175,8 +175,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               Row=(component
                 this.TableRow
                 columns=this.columns
-                frozenKeys=@frozenKeys
-                isFrozenHeader=@isFrozenHeader
+                stickyKeys=@stickyKeys
+                isStickyHeader=@isStickyHeader
                 styleFns=this.styles
                 classes=this.args.classes
               )
@@ -188,7 +188,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         {{else}}
           <this.TableHeader
             @columns={{this.columns}}
-            @isFrozen={{@isFrozenHeader}}
+            @isSticky={{@isStickyHeader}}
             @styleFns={{this.styles}}
             @classes={{this.args.classes}}
           >
@@ -210,8 +210,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               <this.TableRow
                 @item={{item}}
                 @columns={{this.columns}}
-                @frozenKeys={{@frozenKeys}}
-                @isFrozenHeader={{@isFrozenHeader}}
+                @stickyKeys={{@stickyKeys}}
+                @isStickyHeader={{@isStickyHeader}}
                 @styleFns={{this.styles}}
                 @classes={{this.args.classes}}
               >
@@ -252,7 +252,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
           {{#if this.footerColumns.length}}
             <this.TableFooter
               @columns={{this.footerColumns}}
-              @isFrozen={{@isFrozenFooter}}
+              @isSticky={{@isStickyFooter}}
               @styleFns={{this.styles}}
               @classes={{this.args.classes}}
             >

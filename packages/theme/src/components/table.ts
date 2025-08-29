@@ -67,10 +67,10 @@ const table = tv({
           '[&_tr:nth-child(odd)]:bg-default-100/50 dark:[&_tr:nth-child(odd)]:bg-default-200/10'
       }
     },
-    isFrozen: {
+    isSticky: {
       true: {}
     },
-    frozenPosition: {
+    stickyPosition: {
       left: {},
       right: {},
       top: {},
@@ -81,67 +81,67 @@ const table = tv({
         wrapper: ['overflow-auto']
       }
     },
-    hasFrozenHeader: {
+    hasStickyHeader: {
       true: {}
     },
-    isInFrozenRow: {
+    isInStickyRow: {
       true: {}
     }
   },
   compoundVariants: [
-    // Frozen header - highest priority for intersections with columns
+    // Sticky header - highest priority for intersections with columns
     {
-      isFrozen: true,
-      frozenPosition: 'top',
+      isSticky: true,
+      stickyPosition: 'top',
       class: {
         thead: ['sticky', 'top-0', 'z-2', 'bg-background']
       }
     },
-    // Frozen footer
+    // Sticky footer
     {
-      isFrozen: true,
-      frozenPosition: 'bottom',
+      isSticky: true,
+      stickyPosition: 'bottom',
       class: {
         tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-background']
       }
     },
-    // Frozen columns - medium priority, header cells get higher z-index
+    // Sticky columns - medium priority, header cells get higher z-index
     {
-      isFrozen: true,
-      frozenPosition: 'left',
+      isSticky: true,
+      stickyPosition: 'left',
       class: {
         th: ['sticky', 'left-0', 'z-3', 'bg-background'], // Higher for header intersection
         td: ['sticky', 'left-0', 'z-1', 'bg-background']
       }
     },
     {
-      isFrozen: true,
-      frozenPosition: 'right',
+      isSticky: true,
+      stickyPosition: 'right',
       class: {
         th: ['sticky', 'right-0', 'z-3', 'bg-background'], // Higher for header intersection
         td: ['sticky', 'right-0', 'z-1', 'bg-background']
       }
     },
-    // Frozen rows - base layer
+    // Sticky rows - base layer
     {
-      isFrozen: true,
-      frozenPosition: 'top',
+      isSticky: true,
+      stickyPosition: 'top',
       class: {
         tr: ['sticky', 'top-0', 'z-1', 'bg-background']
       }
     },
     {
-      isFrozen: true,
-      frozenPosition: 'bottom',
+      isSticky: true,
+      stickyPosition: 'bottom',
       class: {
         tr: ['sticky', 'bottom-0', 'z-1', 'bg-background']
       }
     },
-    // Frozen rows with frozen header - position after header
+    // Sticky rows with sticky header - position after header
     {
-      isFrozen: true,
-      frozenPosition: 'top',
-      hasFrozenHeader: true,
+      isSticky: true,
+      stickyPosition: 'top',
+      hasStickyHeader: true,
       class: {
         tr: [
           'sticky',
@@ -151,19 +151,19 @@ const table = tv({
         ]
       }
     },
-    // Intersection cells: frozen column + frozen row - highest z-index
+    // Intersection cells: sticky column + sticky row - highest z-index
     {
-      isFrozen: true,
-      frozenPosition: 'left',
-      isInFrozenRow: true,
+      isSticky: true,
+      stickyPosition: 'left',
+      isInStickyRow: true,
       class: {
         td: ['sticky', 'left-0', 'z-2', 'bg-background']
       }
     },
     {
-      isFrozen: true,
-      frozenPosition: 'right',
-      isInFrozenRow: true,
+      isSticky: true,
+      stickyPosition: 'right',
+      isInStickyRow: true,
       class: {
         td: ['sticky', 'right-0', 'z-2', 'bg-background']
       }

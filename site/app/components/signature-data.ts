@@ -10271,7 +10271,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10460,16 +10460,16 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'isFrozen',
+              identifier: 'isSticky',
               type: { type: '<span class="hljs-built_in">boolean</span>' },
               isRequired: false,
               isInternal: false,
               description:
-                'Whether this column should be frozen (sticky) during horizontal scrolling',
+                'Whether this column should be sticky during horizontal scrolling',
               tags: {},
             },
             {
-              identifier: 'frozenPosition',
+              identifier: 'stickyPosition',
               type: {
                 type: '<span class="hljs-built_in">enum</span>',
                 raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
@@ -10477,7 +10477,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'Position where the frozen column should stick.',
+              description: 'Position where the sticky column should stick.',
               tags: { default: { name: 'default', value: "'left'" } },
             },
           ],
@@ -10488,33 +10488,21 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'frozenPosition',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
-          items: ["'right'", "'left'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description: 'Position where the frozen cell should stick.',
-        tags: { default: { name: 'default', value: "'left'" } },
-      },
-      {
-        identifier: 'isFrozen',
+        identifier: 'isInStickyRow',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether this cell should be frozen (sticky) during horizontal scrolling',
+          'Whether this cell is part of a sticky row (used for intersection styling)',
         tags: {},
       },
       {
-        identifier: 'isInFrozenRow',
+        identifier: 'isSticky',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether this cell is part of a frozen row (used for intersection styling)',
+          'Whether this cell should be sticky during horizontal scrolling',
         tags: {},
       },
       {
@@ -10526,9 +10514,21 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'stickyPosition',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
+          items: ["'right'", "'left'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Position where the sticky cell should stick.',
+        tags: { default: { name: 'default', value: "'left'" } },
+      },
+      {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10615,16 +10615,16 @@ const data: ComponentDoc[] = [
               tags: {},
             },
             {
-              identifier: 'isFrozen',
+              identifier: 'isSticky',
               type: { type: '<span class="hljs-built_in">boolean</span>' },
               isRequired: false,
               isInternal: false,
               description:
-                'Whether this column should be frozen (sticky) during horizontal scrolling',
+                'Whether this column should be sticky during horizontal scrolling',
               tags: {},
             },
             {
-              identifier: 'frozenPosition',
+              identifier: 'stickyPosition',
               type: {
                 type: '<span class="hljs-built_in">enum</span>',
                 raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
@@ -10632,7 +10632,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'Position where the frozen column should stick.',
+              description: 'Position where the sticky column should stick.',
               tags: { default: { name: 'default', value: "'left'" } },
             },
           ],
@@ -10643,7 +10643,16 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'frozenPosition',
+        identifier: 'isSticky',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether this column should be sticky during horizontal scrolling',
+        tags: {},
+      },
+      {
+        identifier: 'stickyPosition',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
           raw: '<span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'left\'</span>',
@@ -10651,22 +10660,13 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Position where the frozen column should stick.',
+        description: 'Position where the sticky column should stick.',
         tags: { default: { name: 'default', value: "'left'" } },
-      },
-      {
-        identifier: 'isFrozen',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Whether this column should be frozen (sticky) during horizontal scrolling',
-        tags: {},
       },
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10747,18 +10747,18 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'isFrozen',
+        identifier: 'isSticky',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether this footer should be frozen (sticky) during vertical scrolling',
+          'Whether this footer should be sticky during vertical scrolling',
         tags: {},
       },
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10860,18 +10860,18 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'isFrozen',
+        identifier: 'isSticky',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the header should be frozen (sticky) during vertical scrolling',
+          'Whether the header should be sticky during vertical scrolling',
         tags: {},
       },
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -10975,33 +10975,21 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'frozenKeys',
-        type: {
-          type: '<span class="hljs-built_in">Array</span>',
-          raw: '<span class="hljs-built_in">string</span>[]',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Array of item keys that should be frozen (used to determine if this row is frozen)',
-        tags: {},
-      },
-      {
-        identifier: 'isFrozen',
+        identifier: 'isSticky',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether this row should be frozen (sticky) during vertical scrolling',
+          'Whether this row should be sticky during vertical scrolling',
         tags: {},
       },
       {
-        identifier: 'isFrozenHeader',
+        identifier: 'isStickyHeader',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the table has a frozen header (affects positioning of frozen rows)',
+          'Whether the table has a sticky header (affects positioning of sticky rows)',
         tags: {},
       },
       {
@@ -11013,9 +11001,21 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'stickyKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be sticky (used to determine if this row is sticky)',
+        tags: {},
+      },
+      {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isFrozen?: <span class="hljs-built_in">boolean</span>; frozenPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasFrozenHeader?: <span class="hljs-built_in">boolean</span>; isInFrozenRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
         },
         isRequired: false,
         isInternal: true,
@@ -11138,19 +11138,15 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'frozenKeys',
-        type: {
-          type: '<span class="hljs-built_in">Array</span>',
-          raw: '<span class="hljs-built_in">string</span>[]',
-        },
+        identifier: 'isScrollable',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description:
-          'Array of item keys that should be frozen (sticky) during vertical scrolling',
+        description: 'Enable scrolling for the table container',
         tags: {},
       },
       {
-        identifier: 'isFrozenFooter',
+        identifier: 'isStickyFooter',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
@@ -11158,19 +11154,11 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'isFrozenHeader',
+        identifier: 'isStickyHeader',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: 'Make the table header sticky during vertical scrolling',
-        tags: {},
-      },
-      {
-        identifier: 'isScrollable',
-        type: { type: '<span class="hljs-built_in">boolean</span>' },
-        isRequired: false,
-        isInternal: false,
-        description: 'Enable scrolling for the table container',
         tags: {},
       },
       {
@@ -11215,6 +11203,18 @@ const data: ComponentDoc[] = [
         description: 'Size variant for table cells and headers.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'stickyKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Array of item keys that should be sticky during vertical scrolling',
+        tags: {},
       },
     ],
     Blocks: [

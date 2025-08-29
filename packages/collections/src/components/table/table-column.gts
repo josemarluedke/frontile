@@ -8,10 +8,10 @@ interface TableColumnSignature<T = unknown> {
     column?: ColumnDefinition<T>;
     /** Additional CSS class to apply to the header cell */
     class?: string;
-    /** Whether this column should be frozen (sticky) during horizontal scrolling */
-    isFrozen?: boolean;
-    /** Position where the frozen column should stick. @default 'left' */
-    frozenPosition?: 'left' | 'right';
+    /** Whether this column should be sticky during horizontal scrolling */
+    isSticky?: boolean;
+    /** Position where the sticky column should stick. @default 'left' */
+    stickyPosition?: 'left' | 'right';
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -25,13 +25,13 @@ interface TableColumnSignature<T = unknown> {
 }
 
 class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
-  get isFrozen(): boolean {
-    return this.args.isFrozen ?? this.args.column?.isFrozen ?? false;
+  get isSticky(): boolean {
+    return this.args.isSticky ?? this.args.column?.isSticky ?? false;
   }
 
-  get frozenPosition(): 'left' | 'right' {
+  get stickyPosition(): 'left' | 'right' {
     return (
-      this.args.frozenPosition ?? this.args.column?.frozenPosition ?? 'left'
+      this.args.stickyPosition ?? this.args.column?.stickyPosition ?? 'left'
     );
   }
 
@@ -41,9 +41,9 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
 
   get classNames() {
     const options = {
-      isFrozen: this.isFrozen,
-      frozenPosition: this.isFrozen
-        ? (this.frozenPosition as 'left' | 'right')
+      isSticky: this.isSticky,
+      stickyPosition: this.isSticky
+        ? (this.stickyPosition as 'left' | 'right')
         : undefined,
       class: this.args.class
     };
