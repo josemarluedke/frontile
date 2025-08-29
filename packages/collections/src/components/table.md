@@ -196,6 +196,103 @@ const columns: ColumnDefinition<Product>[] = [
 ];
 ```
 
+## Styling
+
+The Table component supports various styling options through the `classes` argument and built-in variants for different table appearances.
+
+### Styling Variants
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+    { id: '3', name: 'Bob Johnson', email: 'bob@example.com' }
+  ];
+
+  <template>
+    <div class='not-prose space-y-4'>
+      <div>
+        <h4 class='font-medium mb-2'>Striped rows</h4>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @striped={{true}}
+        />
+      </div>
+
+      <div>
+        <h4 class='font-medium mb-2'>Small/Compact size</h4>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @size='sm'
+        />
+      </div>
+    </div>
+  </template>
+}
+```
+
+### Custom Classes
+
+Use the `classes` argument to customize specific table elements:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com' }
+  ];
+
+  <template>
+    <div class='not-prose'>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @classes={{hash
+          wrapper='shadow-lg rounded-xl'
+          table='border-separate border-spacing-0'
+          th='bg-primary-100 first:rounded-tl-lg last:rounded-tr-lg'
+          td='border-t border-default-100'
+        }}
+      />
+    </div>
+  </template>
+}
+```
+
 ## API
 
 <Signature @component="Table" />
@@ -219,4 +316,3 @@ interface ColumnDefinition<T = unknown> {
 ```
 
 **ContentValue** is a standard Glint type for values that are safe to render in templates, which includes: `string | number | boolean | null | undefined | SafeString`.
-

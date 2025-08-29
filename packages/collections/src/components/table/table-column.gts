@@ -4,12 +4,8 @@ import type { TableColumnSignature } from './types';
 
 class TableColumn extends Component<TableColumnSignature> {
   get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table-column'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+    const { table } = useStyles();
+    return this.args.thStyles?.({ class: this.args.class }) || table().th({ class: this.args.class });
   }
 
   <template>

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import { Table, type ColumnDefinition } from '@frontile/collections';
-import { array } from '@ember/helper';
+import { array, hash } from '@ember/helper';
 import { cell } from 'ember-resources';
 
 interface TestItem {
@@ -244,7 +244,7 @@ module(
           <Table
             @columns={{columns}}
             @items={{items}}
-            class="custom-table-class"
+            @classes={{(hash table="custom-table-class")}}
           />
         </template>
       );
@@ -391,6 +391,95 @@ module(
       assert
         .dom('[data-test-id="table-row"][data-key="2"] [data-column="missing"]')
         .hasText('');
+    });
+
+    test('it applies class arguments to individual components in block form', async function (assert) {
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table as |t|>
+            <t.Header class="custom-header-class">
+              <t.Column class="custom-column-class">Name</t.Column>
+              <t.Column class="custom-column-class">Email</t.Column>
+            </t.Header>
+            <t.Body class="custom-body-class">
+              {{#each items as |item|}}
+                <t.Row @item={{item}} class="custom-row-class">
+                  <t.Cell class="custom-cell-class">{{item.name}}</t.Cell>
+                  <t.Cell class="custom-cell-class">{{item.email}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </Table>
+        </template>
+      );
+
+      // Check that custom classes are applied
+      assert.dom('thead.custom-header-class').exists();
+      assert.dom('th.custom-column-class').exists({ count: 2 });
+      assert.dom('tbody.custom-body-class').exists();
+      assert.dom('tr.custom-row-class').exists();
+      assert.dom('td.custom-cell-class').exists({ count: 2 });
+    });
+
+    test('it supports styling variants', async function (assert) {
+      const columns: ColumnDefinition[] = [
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' }
+      ];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @size="sm"
+            @striped={{true}}
+            @layout="fixed"
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="table"]').exists();
+      // The specific classes will depend on the theme implementation
+      // but we can verify the table renders with the variant props
+      assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
+    });
+
+    test('it supports mixed class arguments with component composition', async function (assert) {
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table @classes={{hash table="table-level-class"}} as |t|>
+            <t.Header>
+              <t.Column class="header-column-class">Name</t.Column>
+            </t.Header>
+            <t.Body>
+              {{#each items as |item|}}
+                <t.Row @item={{item}}>
+                  <t.Cell class="body-cell-class">{{item.name}}</t.Cell>
+                </t.Row>
+              {{/each}}
+            </t.Body>
+          </Table>
+        </template>
+      );
+
+      // Check that both table-level and component-level classes are applied
+      assert.dom('[data-test-id="table"].table-level-class').exists();
+      assert.dom('th.header-column-class').exists();
+      assert.dom('td.body-cell-class').exists();
     });
   }
 );

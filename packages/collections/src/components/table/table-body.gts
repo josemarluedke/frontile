@@ -8,12 +8,8 @@ import type { TableBodySignature, ColumnDefinition } from './types';
 
 class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
   get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table-body'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+    const { table } = useStyles();
+    return this.args.tbodyStyles?.({ class: this.args.class }) || table().tbody({ class: this.args.class });
   }
 
   getValue = (item: T, column: ColumnDefinition<T>) => getSafeValue(item, column);
@@ -32,13 +28,14 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
           {{#if (has-block "row")}}
             {{yield (hash item=item Row=TableRow Cell=TableCell) to="row"}}
           {{else}}
-            <TableRow @item={{item}} @columns={{@columns}}>
+            <TableRow @item={{item}} @columns={{@columns}} @trStyles={{@trStyles}} @tdStyles={{@tdStyles}}>
               {{#each @columns as |column|}}
                 {{#let (this.getValue item column) as |value|}}
                   <TableCell
                     @item={{item}}
                     @column={{column}}
                     @value={{value}}
+                    @tdStyles={{@tdStyles}}
                   >
                     {{value}}
                   </TableCell>

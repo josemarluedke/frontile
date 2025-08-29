@@ -10712,6 +10712,50 @@ const data: ComponentDoc[] = [
         description: '',
         tags: {},
       },
+      {
+        identifier: 'tbodyStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'tdStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'thStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'trStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
     ],
     Blocks: [
       {
@@ -10862,7 +10906,7 @@ const data: ComponentDoc[] = [
               identifier: 'accessorFn',
               type: {
                 type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                raw: '(item: <span class="hljs-built_in">any</span>) => SafeTemplateValue',
+                raw: '(item: <span class="hljs-built_in">any</span>) => ContentValue',
               },
               isRequired: false,
               isInternal: false,
@@ -10885,11 +10929,31 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'tdStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'value',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
-          raw: 'SafeTemplateValue',
-          items: ['string', 'number', 'false', 'true'],
+          raw: 'ContentValue',
+          items: [
+            'string',
+            'number',
+            'false',
+            'true',
+            'void',
+            'Node',
+            'SafeString',
+            'ArglessCurlyComponent',
+          ],
         },
         isRequired: false,
         isInternal: false,
@@ -10960,7 +11024,7 @@ const data: ComponentDoc[] = [
               identifier: 'accessorFn',
               type: {
                 type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                raw: '(item: <span class="hljs-built_in">any</span>) => SafeTemplateValue',
+                raw: '(item: <span class="hljs-built_in">any</span>) => ContentValue',
               },
               isRequired: false,
               isInternal: false,
@@ -10968,6 +11032,17 @@ const data: ComponentDoc[] = [
               tags: {},
             },
           ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'thStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
         isInternal: false,
@@ -11018,6 +11093,28 @@ const data: ComponentDoc[] = [
         type: {
           type: '<span class="hljs-built_in">Array</span>',
           raw: 'ColumnDefinition&#x3C;<span class="hljs-built_in">any</span>>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'theadStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'trStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
         },
         isRequired: false,
         isInternal: false,
@@ -11105,6 +11202,28 @@ const data: ComponentDoc[] = [
         description: '',
         tags: {},
       },
+      {
+        identifier: 'tdStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'trStyles',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(options?: { <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; }) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
     ],
     Blocks: [
       {
@@ -11159,8 +11278,10 @@ const data: ComponentDoc[] = [
     fileName: 'packages/collections/declarations/components/table/table.d.ts',
     Args: [
       {
-        identifier: 'class',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span>>',
+        },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -11180,6 +11301,38 @@ const data: ComponentDoc[] = [
       {
         identifier: 'items',
         type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'layout',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>',
+          items: ["'fixed'", "'auto'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'sm'", "'lg'", "'md'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'striped',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',

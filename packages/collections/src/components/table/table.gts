@@ -11,13 +11,22 @@ import { TableCell } from './table-cell';
 import type { TableSignature, ColumnDefinition } from './types';
 
 class Table<T = unknown> extends Component<TableSignature<T>> {
-  get classNames() {
-    // TODO: Add table styles to theme
-    const classes = ['table'];
-    if (this.args.class) {
-      classes.push(this.args.class);
-    }
-    return classes.join(' ');
+  get styles() {
+    const { table } = useStyles();
+    return table({
+      size: this.args.size,
+      layout: this.args.layout,
+      striped: this.args.striped,
+      class: this.args.classes?.base
+    });
+  }
+
+  get wrapperClassNames() {
+    return this.styles.wrapper({ class: this.args.classes?.wrapper });
+  }
+
+  get tableClassNames() {
+    return this.styles.table({ class: this.args.classes?.table });
   }
 
   get columns(): ColumnDefinition<T>[] {
@@ -28,54 +37,74 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return this.args.items || [];
   }
 
-  getValue = (item: T, column: ColumnDefinition<T>) => getSafeValue(item, column);
+  getValue = (item: T, column: ColumnDefinition<T>) =>
+    getSafeValue(item, column);
 
   <template>
-    <table
-      class={{this.classNames}}
-      data-test-id="table"
-      data-component="table"
-      ...attributes
-    >
-      {{#if (has-block "default")}}
-        {{yield
-          (hash
-            Column=TableColumn
-            Header=TableHeader
-            Body=TableBody
-            Row=TableRow
-            Cell=TableCell
-          )
-          to="default"
-        }}
-      {{else}}
-        <TableHeader @columns={{this.columns}}>
-          {{#each this.columns as |column|}}
-            <TableColumn @column={{column}}>
-              {{column.label}}
-            </TableColumn>
-          {{/each}}
-        </TableHeader>
+    <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+      <table
+        class={{this.tableClassNames}}
+        data-test-id="table"
+        data-component="table"
+        ...attributes
+      >
+        {{#if (has-block "default")}}
+          {{yield
+            (hash
+              Column=TableColumn
+              Header=TableHeader
+              Body=TableBody
+              Row=TableRow
+              Cell=TableCell
+            )
+            to="default"
+          }}
+        {{else}}
+          <TableHeader
+            @columns={{this.columns}}
+            @theadStyles={{this.styles.thead}}
+            @trStyles={{this.styles.tr}}
+          >
+            {{#each this.columns as |column|}}
+              <TableColumn @column={{column}} @thStyles={{this.styles.th}}>
+                {{column.label}}
+              </TableColumn>
+            {{/each}}
+          </TableHeader>
 
-        <TableBody @columns={{this.columns}} @items={{this.items}}>
-          {{#each this.items as |item|}}
-            <TableRow @item={{item}} @columns={{this.columns}}>
-              {{#each this.columns as |column|}}
-                {{#let (this.getValue item column) as |value|}}
-                  <TableCell
-                    @item={{item}}
-                    @column={{column}}
-                    @value={{value}}
-                  >
-                    {{value}}
-                  </TableCell>
-                {{/let}}
-              {{/each}}
-            </TableRow>
-          {{/each}}
-        </TableBody>
-      {{/if}}
-    </table>
+          <TableBody
+            @columns={{this.columns}}
+            @items={{this.items}}
+            @tbodyStyles={{this.styles.tbody}}
+            @trStyles={{this.styles.tr}}
+            @thStyles={{this.styles.th}}
+            @tdStyles={{this.styles.td}}
+          >
+            {{#each this.items as |item|}}
+              <TableRow
+                @item={{item}}
+                @columns={{this.columns}}
+                @trStyles={{this.styles.tr}}
+                @tdStyles={{this.styles.td}}
+              >
+                {{#each this.columns as |column|}}
+                  {{#let (this.getValue item column) as |value|}}
+                    <TableCell
+                      @item={{item}}
+                      @column={{column}}
+                      @value={{value}}
+                      @tdStyles={{this.styles.td}}
+                    >
+                      {{value}}
+                    </TableCell>
+                  {{/let}}
+                {{/each}}
+              </TableRow>
+            {{/each}}
+          </TableBody>
+        {{/if}}
+      </table>
+    </div>
   </template>
 }
 

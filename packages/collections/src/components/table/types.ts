@@ -1,4 +1,9 @@
 import type { ContentValue } from '@glint/template';
+import type {
+  TableVariants,
+  TableSlots,
+  SlotsToClasses
+} from '@frontile/theme';
 
 export interface ColumnDefinition<T = unknown> {
   key: string;
@@ -10,7 +15,10 @@ export interface TableSignature<T> {
   Args: {
     columns?: ColumnDefinition<T>[];
     items?: T[];
-    class?: string;
+    classes?: SlotsToClasses<TableSlots>;
+    size?: TableVariants['size'];
+    layout?: TableVariants['layout'];
+    striped?: TableVariants['striped'];
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -30,6 +38,10 @@ export interface TableHeaderSignature {
   Args: {
     columns?: ColumnDefinition<any>[];
     class?: string;
+    /** @internal Style function passed from parent Table component */
+    theadStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableSectionElement;
   Blocks: {
@@ -46,6 +58,14 @@ export interface TableBodySignature<T> {
     columns?: ColumnDefinition<T>[];
     items?: T[];
     class?: string;
+    /** @internal Style function passed from parent Table component */
+    tbodyStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    thStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableSectionElement;
   Blocks: {
@@ -69,6 +89,8 @@ export interface TableColumnSignature {
   Args: {
     column?: ColumnDefinition<any>;
     class?: string;
+    /** @internal Style function passed from parent Table component */
+    thStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableCellElement;
   Blocks: {
@@ -81,6 +103,10 @@ export interface TableRowSignature<T> {
     item?: T;
     columns?: ColumnDefinition<T>[];
     class?: string;
+    /** @internal Style function passed from parent Table component */
+    trStyles?: (options?: { class?: string }) => string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableRowElement;
   Blocks: {
@@ -98,6 +124,8 @@ export interface TableCellSignature {
     column?: ColumnDefinition<any>;
     value?: ContentValue;
     class?: string;
+    /** @internal Style function passed from parent Table component */
+    tdStyles?: (options?: { class?: string }) => string;
   };
   Element: HTMLTableCellElement;
   Blocks: {
