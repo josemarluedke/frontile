@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
+import { hash, get } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { getSafeValue } from './utils';
@@ -49,17 +49,11 @@ interface TableSignature<T> {
   Blocks: {
     default: [
       {
+        Header: WithBoundArgs<typeof TableHeader<T>, 'styleFns' | 'classes' | 'columns'>;
+        Body: WithBoundArgs<typeof TableBody<T>, 'styleFns' | 'classes' | 'items' | 'columns'>;
+        Footer: WithBoundArgs<typeof TableFooter<T>, 'styleFns' | 'classes' | 'columns'>;
         Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
-        Header: WithBoundArgs<typeof TableHeader<T>, 'columns' | 'styleFns'>;
-        Body: WithBoundArgs<
-          typeof TableBody<T>,
-          'columns' | 'items' | 'styleFns'
-        >;
-        Footer: WithBoundArgs<typeof TableFooter<T>, 'columns' | 'styleFns'>;
-        Row: WithBoundArgs<
-          typeof TableRow<T>,
-          'columns' | 'styleFns' | 'stickyKeys' | 'isStickyHeader'
-        >;
+        Row: WithBoundArgs<typeof TableRow<T>, 'styleFns'>;
         Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
       }
     ];
@@ -143,49 +137,56 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
       {{this.calculateHeaderHeight}}
       data-component="table-wrapper"
     >
-      <table
-        class={{this.tableClassNames}}
-        data-test-id="table"
-        data-component="table"
-        ...attributes
-      >
-        {{#if (has-block)}}
+      {{#if (has-block)}}
+        {{! Block usage }}
+        <table
+          class={{this.tableClassNames}}
+          data-test-id="table"
+          data-component="table"
+          ...attributes
+        >
           {{yield
             (hash
-              Column=(component this.TableColumn styleFns=this.styles)
-              Header=(component
-                this.TableHeader
-                columns=this.columns
-                styleFns=this.styles
+              Header=(component 
+                this.TableHeader 
+                styleFns=this.styles 
                 classes=this.args.classes
-              )
-              Body=(component
-                this.TableBody
                 columns=this.columns
+              )
+              Body=(component 
+                this.TableBody 
+                styleFns=this.styles 
+                classes=this.args.classes
                 items=this.items
-                styleFns=this.styles
-                classes=this.args.classes
+                columns=this.columns
               )
-              Footer=(component
-                this.TableFooter
+              Footer=(component 
+                this.TableFooter 
+                styleFns=this.styles 
+                classes=this.args.classes
                 columns=this.footerColumns
-                styleFns=this.styles
-                classes=this.args.classes
               )
-              Row=(component
-                this.TableRow
+              Column=(component this.TableColumn styleFns=this.styles classes=this.args.classes)
+              Row=(component 
+                this.TableRow 
+                styleFns=this.styles 
+                classes=this.args.classes
                 columns=this.columns
                 stickyKeys=@stickyKeys
                 isStickyHeader=@isStickyHeader
-                styleFns=this.styles
-                classes=this.args.classes
               )
-              Cell=(component
-                this.TableCell styleFns=this.styles classes=this.args.classes
-              )
+              Cell=(component this.TableCell styleFns=this.styles classes=this.args.classes)
             )
           }}
-        {{else}}
+        </table>
+      {{else}}
+        {{! Automatic rendering }}
+        <table
+          class={{this.tableClassNames}}
+          data-test-id="table"
+          data-component="table"
+          ...attributes
+        >
           <this.TableHeader
             @columns={{this.columns}}
             @isSticky={{@isStickyHeader}}
@@ -205,7 +206,6 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             @styleFns={{this.styles}}
             @classes={{this.args.classes}}
           >
-
             {{#each this.items as |item|}}
               <this.TableRow
                 @item={{item}}
@@ -216,16 +216,14 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 @classes={{this.args.classes}}
               >
                 {{#each this.columns as |column|}}
-                  {{#let (this.getValue item column) as |value|}}
-                    <this.TableCell
-                      @item={{item}}
-                      @column={{column}}
-                      @styleFns={{this.styles}}
-                      @classes={{this.args.classes}}
-                    >
-                      {{value}}
-                    </this.TableCell>
-                  {{/let}}
+                  <this.TableCell
+                    @item={{item}}
+                    @column={{column}}
+                    @styleFns={{this.styles}}
+                    @classes={{this.args.classes}}
+                  >
+                    {{this.getValue item column}}
+                  </this.TableCell>
                 {{/each}}
               </this.TableRow>
             {{else}}
@@ -263,8 +261,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               {{/each}}
             </this.TableFooter>
           {{/if}}
-        {{/if}}
-      </table>
+        </table>
+      {{/if}}
     </div>
   </template>
 }
