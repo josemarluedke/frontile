@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { array, hash, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 
@@ -22,10 +22,10 @@ module(
     setupRenderingTest(hooks);
 
     test('it renders basic table structure', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' },
-        { key: 'email', label: 'Email' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' },
+        { key: 'email', name: 'Email' }
       ];
 
       const items: TestItem[] = [
@@ -98,7 +98,7 @@ module(
             </t.Header>
             <t.Body>
               {{#each items as |item|}}
-                <t.Row @item={{item}}>
+                <t.Row>
                   <t.Cell>{{item.id}}</t.Cell>
                   <t.Cell>{{item.name}}</t.Cell>
                   <t.Cell>{{item.email}}</t.Cell>
@@ -117,7 +117,6 @@ module(
       assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
 
       // Check row content
-      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
       assert.dom('[data-test-id="table-cell"]').exists({ count: 3 });
 
       // Check cell content
@@ -128,9 +127,9 @@ module(
     });
 
     test('it handles empty data', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       await render(
@@ -153,10 +152,10 @@ module(
     });
 
     test('it displays empty content with string', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' },
-        { key: 'email', label: 'Email' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' },
+        { key: 'email', name: 'Email' }
       ];
 
       await render(
@@ -197,9 +196,9 @@ module(
     });
 
     test('it displays empty content with component', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const EmptyComponent = <template>
@@ -240,9 +239,9 @@ module(
     });
 
     test('it hides empty content when items exist', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const items: TestItem[] = [
@@ -268,9 +267,9 @@ module(
     });
 
     test('it updates empty content visibility reactively', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const items = cell<TestItem[]>([]);
@@ -330,7 +329,7 @@ module(
             </t.Header>
             <t.Body>
               {{#each items as |item|}}
-                <t.Row @item={{item}}>
+                <t.Row>
                   <t.Cell>{{item.id}}</t.Cell>
                   <t.Cell>{{item.name}}</t.Cell>
                 </t.Row>
@@ -359,7 +358,7 @@ module(
             </t.Header>
             <t.Body>
               {{#each items as |item|}}
-                <t.Row @item={{item}}>
+                <t.Row>
                   <t.Cell @class="custom-cell">Custom: {{item.id}}</t.Cell>
                   <t.Cell @class="custom-cell">Custom: {{item.name}}</t.Cell>
                 </t.Row>
@@ -375,10 +374,10 @@ module(
     });
 
     test('it handles items with different data types', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'active', label: 'Active' },
-        { key: 'count', label: 'Count' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'active', name: 'Active' },
+        { key: 'count', name: 'Count' }
       ];
 
       const items = [
@@ -405,7 +404,7 @@ module(
     });
 
     test('it works with reactive data changes', async function (assert) {
-      const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+      const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
 
       const items = cell<TestItem[]>([
         { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
@@ -443,18 +442,18 @@ module(
         .containsText('Jane');
     });
 
-    test('it supports custom accessorFn for column values', async function (assert) {
-      const columns: ColumnDefinition<TestItem>[] = [
-        { key: 'id', label: 'ID' },
+    test('it supports custom value function for column values', async function (assert) {
+      const columns: ColumnConfig<TestItem>[] = [
+        { key: 'id', name: 'ID' },
         {
           key: 'name',
-          label: 'Display Name',
-          accessorFn: (item) => `${item.name} (${item.role})`
+          name: 'Display Name',
+          value: (ctx) => `${ctx.row.data.name} (${ctx.row.data.role})`
         },
         {
           key: 'email',
-          label: 'Contact',
-          accessorFn: (item) => item.email.toUpperCase()
+          name: 'Contact',
+          value: (ctx) => ctx.row.data.email.toUpperCase()
         }
       ];
 
@@ -467,7 +466,7 @@ module(
         <template><Table @columns={{columns}} @items={{items}} /></template>
       );
 
-      // Check that custom accessorFn is used for name column
+      // Check that custom value function is used for name column
       assert
         .dom('[data-test-id="table-row"][data-key="1"] [data-column="name"]')
         .containsText('John Doe (admin)');
@@ -475,7 +474,7 @@ module(
         .dom('[data-test-id="table-row"][data-key="2"] [data-column="name"]')
         .containsText('Jane Smith (user)');
 
-      // Check that custom accessorFn is used for email column
+      // Check that custom value function is used for email column
       assert
         .dom('[data-test-id="table-row"][data-key="1"] [data-column="email"]')
         .containsText('JOHN@EXAMPLE.COM');
@@ -492,22 +491,22 @@ module(
         .containsText('2');
     });
 
-    test('it supports accessorFn returning different data types', async function (assert) {
-      const columns: ColumnDefinition<TestItem>[] = [
+    test('it supports value function returning different data types', async function (assert) {
+      const columns: ColumnConfig<TestItem>[] = [
         {
           key: 'id',
-          label: 'ID Number',
-          accessorFn: (item) => parseInt(item.id, 10) * 100
+          name: 'ID Number',
+          value: (ctx) => parseInt(ctx.row.data.id, 10) * 100
         },
         {
           key: 'active',
-          label: 'Status',
-          accessorFn: (item) => item.role === 'admin'
+          name: 'Status',
+          value: (ctx) => ctx.row.data.role === 'admin'
         },
         {
           key: 'missing',
-          label: 'Missing Value',
-          accessorFn: () => null
+          name: 'Missing Value',
+          value: () => null
         }
       ];
 
@@ -546,9 +545,9 @@ module(
     });
 
     test('it supports scrollable mode', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const items: TestItem[] = [
@@ -565,9 +564,9 @@ module(
     });
 
     test('it supports sticky header', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const items: TestItem[] = [
@@ -589,13 +588,13 @@ module(
       assert.dom('[data-test-id="table-header"]').hasClass('z-2');
     });
 
-    test('it supports sticky columns from ColumnDefinition', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID', isSticky: true, stickyPosition: 'left' },
-        { key: 'name', label: 'Name' },
+    test('it supports sticky columns from ColumnConfig', async function (assert) {
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID', isSticky: true, stickyPosition: 'left' },
+        { key: 'name', name: 'Name' },
         {
           key: 'actions',
-          label: 'Actions',
+          name: 'Actions',
           isSticky: true,
           stickyPosition: 'right'
         }
@@ -655,7 +654,7 @@ module(
             </t.Header>
             <t.Body>
               {{#each items as |item|}}
-                <t.Row @item={{item}}>
+                <t.Row>
                   <t.Cell
                     @isSticky={{true}}
                     @stickyPosition="left"
@@ -689,9 +688,9 @@ module(
     });
 
     test('it supports sticky rows by keys', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
       const items: TestItem[] = [
@@ -728,13 +727,13 @@ module(
     });
 
     test('it combines scrolling with sticky elements', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID', isSticky: true },
-        { key: 'name', label: 'Name' },
-        { key: 'email', label: 'Email' },
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID', isSticky: true },
+        { key: 'name', name: 'Name' },
+        { key: 'email', name: 'Email' },
         {
           key: 'actions',
-          label: 'Actions',
+          name: 'Actions',
           isSticky: true,
           stickyPosition: 'right'
         }
@@ -777,16 +776,16 @@ module(
     });
 
     test('it renders footer with footerColumns', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' },
-        { key: 'amount', label: 'Amount' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' },
+        { key: 'amount', name: 'Amount' }
       ];
 
-      const footerColumns: ColumnDefinition[] = [
-        { key: 'total', label: 'Total' },
-        { key: 'items', label: 'Items' },
-        { key: 'sum', label: '$1000' }
+      const footerColumns: ColumnConfig[] = [
+        { key: 'total', name: 'Total' },
+        { key: 'items', name: 'Items' },
+        { key: 'sum', name: '$1000' }
       ];
 
       const items: TestItem[] = [
@@ -843,14 +842,14 @@ module(
     });
 
     test('it supports sticky footer', async function (assert) {
-      const columns: ColumnDefinition[] = [
-        { key: 'id', label: 'ID' },
-        { key: 'name', label: 'Name' }
+      const columns: ColumnConfig[] = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
       ];
 
-      const footerColumns: ColumnDefinition[] = [
-        { key: 'total', label: 'Total' },
-        { key: 'count', label: '2 items' }
+      const footerColumns: ColumnConfig[] = [
+        { key: 'total', name: 'Total' },
+        { key: 'count', name: '2 items' }
       ];
 
       const items: TestItem[] = [
@@ -878,7 +877,7 @@ module(
     // Styling and Class Tests
     module('Styling and Class Functionality', function () {
       test('it applies basic custom classes', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -897,12 +896,12 @@ module(
       });
 
       test('it applies classes to all table elements', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
-        const footerColumns: ColumnDefinition[] = [
-          { key: 'total', label: 'Total: 1' }
+        const footerColumns: ColumnConfig[] = [
+          { key: 'total', name: 'Total: 1' }
         ];
 
         await render(
@@ -969,7 +968,7 @@ module(
               </t.Header>
               <t.Body @class="custom-body-class">
                 {{#each items as |item|}}
-                  <t.Row @item={{item}} @class="custom-row-class">
+                  <t.Row @class="custom-row-class">
                     <t.Cell @class="custom-cell-class">{{item.name}}</t.Cell>
                     <t.Cell @class="custom-cell-class">{{item.email}}</t.Cell>
                   </t.Row>
@@ -1005,7 +1004,7 @@ module(
               </t.Header>
               <t.Body>
                 {{#each items as |item|}}
-                  <t.Row @item={{item}}>
+                  <t.Row>
                     <t.Cell @class="body-cell-class">{{item.name}}</t.Cell>
                   </t.Row>
                 {{/each}}
@@ -1035,9 +1034,9 @@ module(
             role: 'user'
           }
         ];
-        const footerColumns: ColumnDefinition[] = [
-          { key: 'total', label: 'Total' },
-          { key: 'count', label: '2 items' }
+        const footerColumns: ColumnConfig[] = [
+          { key: 'total', name: 'Total' },
+          { key: 'count', name: '2 items' }
         ];
 
         await render(
@@ -1060,7 +1059,7 @@ module(
               </t.Header>
               <t.Body @class="component-level-body">
                 {{#each items as |item|}}
-                  <t.Row @item={{item}} @class="component-level-row">
+                  <t.Row @class="component-level-row">
                     <t.Cell
                       @class="component-level-cell-1"
                     >{{item.name}}</t.Cell>
@@ -1074,7 +1073,7 @@ module(
                 {{#each footerColumns as |column|}}
                   <t.Column
                     @class="component-level-footer-column"
-                  >{{column.label}}</t.Column>
+                  >{{column.name}}</t.Column>
                 {{/each}}
               </t.Footer>
             </Table>
@@ -1150,7 +1149,7 @@ module(
       });
 
       test('it handles string classes correctly', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1190,7 +1189,7 @@ module(
       });
 
       test('it handles array classes correctly', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1250,7 +1249,7 @@ module(
               </t.Header>
               <t.Body @class="component-level-tbody">
                 {{#each items as |item|}}
-                  <t.Row @item={{item}} @class="component-level-tr">
+                  <t.Row @class="component-level-tr">
                     <t.Cell @class="component-level-td">{{item.name}}</t.Cell>
                   </t.Row>
                 {{/each}}
@@ -1268,7 +1267,7 @@ module(
       });
 
       test('it works without @classes argument', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1281,7 +1280,7 @@ module(
               </t.Header>
               <t.Body @class="body-only-class">
                 {{#each items as |item|}}
-                  <t.Row @item={{item}} @class="row-only-class">
+                  <t.Row @class="row-only-class">
                     <t.Cell @class="cell-only-class">{{item.name}}</t.Cell>
                   </t.Row>
                 {{/each}}
@@ -1298,7 +1297,7 @@ module(
       });
 
       test('it handles empty/null classes gracefully', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1330,12 +1329,12 @@ module(
       });
 
       test('it applies classes to all table elements with footer', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
-        const footerColumns: ColumnDefinition[] = [
-          { key: 'total', label: 'Total: 1' }
+        const footerColumns: ColumnConfig[] = [
+          { key: 'total', name: 'Total: 1' }
         ];
 
         await render(
@@ -1352,14 +1351,14 @@ module(
               </t.Header>
               <t.Body>
                 {{#each items as |item|}}
-                  <t.Row @item={{item}}>
+                  <t.Row>
                     <t.Cell>{{item.name}}</t.Cell>
                   </t.Row>
                 {{/each}}
               </t.Body>
               <t.Footer @class="component-footer-class">
                 {{#each footerColumns as |column|}}
-                  <t.Column>{{column.label}}</t.Column>
+                  <t.Column>{{column.name}}</t.Column>
                 {{/each}}
               </t.Footer>
             </Table>
@@ -1376,7 +1375,7 @@ module(
       });
 
       test('it preserves theme-provided styling while merging custom classes', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1407,7 +1406,7 @@ module(
       });
 
       test('it supports complex class combinations with falsy values', async function (assert) {
-        const columns: ColumnDefinition[] = [{ key: 'name', label: 'Name' }];
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
         ];
@@ -1433,9 +1432,9 @@ module(
       });
 
       test('it merges classes in manual composition with footerColumns', async function (assert) {
-        const footerColumns: ColumnDefinition[] = [
-          { key: 'total', label: 'Total' },
-          { key: 'count', label: '1 item' }
+        const footerColumns: ColumnConfig[] = [
+          { key: 'total', name: 'Total' },
+          { key: 'count', name: '1 item' }
         ];
         const items: TestItem[] = [
           { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
@@ -1460,10 +1459,10 @@ module(
     module('Hybrid Approach - Three Usage Patterns', function () {
       test('Pattern 1: Simple/Dynamic usage with @columns and @items', async function (assert) {
         // This is the simplest pattern - just pass columns and items
-        const columns: ColumnDefinition<TestItem>[] = [
-          { key: 'id', label: 'ID' },
-          { key: 'name', label: 'Name' },
-          { key: 'email', label: 'Email' }
+        const columns: ColumnConfig<TestItem>[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
         ];
 
         const items: TestItem[] = [
@@ -1550,9 +1549,9 @@ module(
 
       test('Pattern 3a: Custom Headers, Automatic Body', async function (assert) {
         // Test hybrid pattern with custom headers but automatic body
-        const columns: ColumnDefinition<TestItem>[] = [
-          { key: 'id', label: 'ID' },
-          { key: 'name', label: 'Name' }
+        const columns: ColumnConfig<TestItem>[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
         ];
 
         const items: TestItem[] = [
@@ -1577,7 +1576,7 @@ module(
                 {{#each h.columns as |column|}}
                   <h.Column @column={{column}}>
                     🔸
-                    {{column.label}}
+                    {{column.name}}
                   </h.Column>
                 {{/each}}
               </t.Header>
@@ -1607,9 +1606,9 @@ module(
 
       test('Pattern 3b: Automatic Headers, Custom Body', async function (assert) {
         // Test hybrid pattern with automatic headers but custom body
-        const columns: ColumnDefinition<TestItem>[] = [
-          { key: 'name', label: 'Name' },
-          { key: 'role', label: 'Role' }
+        const columns: ColumnConfig<TestItem>[] = [
+          { key: 'name', name: 'Name' },
+          { key: 'role', name: 'Role' }
         ];
 
         const items: TestItem[] = [
@@ -1632,15 +1631,15 @@ module(
             <Table @columns={{columns}} @items={{items}} as |t|>
               <t.Header />
               <t.Body as |b|>
-                {{#each b.items as |item|}}
-                  <t.Row @item={{item}} as |row|>
-                    {{#each row.columns as |column|}}
-                      <t.Cell @item={{item}} @column={{column}}>
+                {{#each b.rows as |row|}}
+                  <t.Row @row={{row}} as |r|>
+                    {{#each r.columns as |column|}}
+                      <t.Cell @row={{row}} @column={{column}}>
                         {{#if (eq column.key "name")}}
                           👤
-                          {{get item column.key}}
+                          {{column.getValueForRow row}}
                         {{else}}
-                          {{get item column.key}}
+                          {{column.getValueForRow row}}
                           (custom)
                         {{/if}}
                       </t.Cell>
@@ -1685,8 +1684,8 @@ module(
       });
 
       test('Pattern compatibility: All patterns work with styling', async function (assert) {
-        const columns: ColumnDefinition<TestItem>[] = [
-          { key: 'name', label: 'Name' }
+        const columns: ColumnConfig<TestItem>[] = [
+          { key: 'name', name: 'Name' }
         ];
 
         const items: TestItem[] = [

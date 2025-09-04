@@ -1,14 +1,15 @@
 import Component from '@glimmer/component';
 import { useStyles, twMerge } from '@frontile/theme';
 import type { ContentValue } from '@glint/template';
-import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
+import type { SlotsToClasses, TableSlots } from './types';
+import type { Row, Column } from '@universal-ember/table';
 
 interface TableCellSignature<T = unknown> {
   Args: {
-    /** The data item for this row (used for context) */
-    item?: T;
-    /** Column definition associated with this cell */
-    column?: ColumnDefinition<T>;
+    /** The data row for this row (used for context) */
+    row?: Row<T>;
+    /** Universal-ember column definition associated with this cell */
+    column?: Column<T>;
     /** Additional CSS class to apply to the cell */
     class?: string;
     /** Whether this cell should be sticky during horizontal scrolling */
@@ -36,13 +37,11 @@ interface TableCellSignature<T = unknown> {
 
 class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
   get isSticky(): boolean {
-    return this.args.isSticky ?? this.args.column?.isSticky ?? false;
+    return this.args.isSticky ?? false;
   }
 
   get stickyPosition(): 'left' | 'right' {
-    return (
-      this.args.stickyPosition ?? this.args.column?.stickyPosition ?? 'left'
-    );
+    return this.args.stickyPosition ?? 'left';
   }
 
   get styles() {
