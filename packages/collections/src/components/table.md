@@ -6,12 +6,13 @@ imports:
 
 # Table
 
-The Table component provides a powerful and flexible way to display structured data with advanced features like sticky headers, columns, and rows, scrollable containers, and type-safe column definitions. It supports both automatic rendering from data arrays and manual composition for complete customization.
+The Table component provides a powerful and flexible way to display structured data with advanced features like sticky headers, columns, and rows, scrollable containers, and type-safe column definitions. It supports three distinct usage patterns to accommodate different needs from simple data display to fully customized implementations.
 
 **Key Features:**
 
+- **Three usage patterns** - simple, manual, and hybrid approaches
 - **Automatic rendering** with type-safe column definitions
-- **Sticky elements** - sticky headers, footers, columns, and specific rows
+- **Sticky elements** - headers, footers, columns, and specific rows
 - **Scrollable containers** for large datasets
 - **Flexible styling** with size variants and striped rows
 - **Manual composition** for complete control over structure
@@ -28,9 +29,13 @@ import {
 } from '@frontile/collections';
 ```
 
-## Basic Usage
+## Usage Patterns
 
-The Table component can automatically render data using column definitions and items, making it simple to display structured data.
+The Table component supports three distinct usage patterns, each optimized for different use cases:
+
+### Pattern 1: Simple/Dynamic Usage
+
+The simplest approach - just pass `@columns` and `@items` for automatic rendering:
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -59,6 +64,141 @@ export default class DemoComponent extends Component {
   <template>
     <div>
       <Table @columns={{this.columns}} @items={{this.items}} />
+    </div>
+  </template>
+}
+```
+
+### Pattern 2: Manual Composition
+
+Full manual control without `@columns` or `@items` - perfect for custom layouts and complex cell content:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table } from '@frontile/collections';
+
+export default class DemoComponent extends Component {
+  items = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+  ];
+
+  <template>
+    <div>
+      <Table as |t|>
+        <t.Header>
+          <t.Column>Name</t.Column>
+          <t.Column>Email</t.Column>
+          <t.Column>Actions</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row @item={{item}}>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell>{{item.email}}</t.Cell>
+              <t.Cell>
+                <button
+                  type='button'
+                  class='text-primary hover:underline'
+                >Edit</button>
+              </t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </Table>
+    </div>
+  </template>
+}
+```
+
+### Pattern 3: Hybrid Approach
+
+Combines automatic rendering with manual customization - pass `@columns` and `@items` while customizing specific parts:
+
+#### Pattern 3a: Custom Headers, Automatic Body
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+  ];
+
+  <template>
+    <div>
+      <Table @columns={{this.columns}} @items={{this.items}} as |t|>
+        <t.Header as |h|>
+          {{#each h.columns as |column|}}
+            <h.Column @column={{column}}>
+              🔸
+              {{column.label}}
+            </h.Column>
+          {{/each}}
+        </t.Header>
+        <t.Body />
+      </Table>
+    </div>
+  </template>
+}
+```
+
+#### Pattern 3b: Automatic Headers, Custom Body
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnDefinition } from '@frontile/collections';
+import { get } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnDefinition<User>[] = [
+    { key: 'name', label: 'Name' },
+    { key: 'role', label: 'Role' }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+  ];
+
+  <template>
+    <div>
+      <Table @columns={{this.columns}} @items={{this.items}} as |t|>
+        <t.Header />
+        <t.Body as |b|>
+          {{#each b.items as |item|}}
+            <t.Row @item={{item}} as |row|>
+              {{#each row.columns as |column|}}
+                <t.Cell @item={{item}} @column={{column}}>
+                  {{get item column.key}}
+                </t.Cell>
+              {{/each}}
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </Table>
     </div>
   </template>
 }
@@ -298,48 +438,6 @@ export default class DemoComponent extends Component {
           td='border-t border-default-100'
         }}
       />
-    </div>
-  </template>
-}
-```
-
-## Manual Composition
-
-For complete control over table structure and cell content, use the block form to manually compose headers, rows, and cells:
-
-```gts preview
-import Component from '@glimmer/component';
-import { Table } from '@frontile/collections';
-
-export default class DemoComponent extends Component {
-  items = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
-  ];
-
-  <template>
-    <div>
-      <Table as |t|>
-        <t.Header>
-          <t.Column>Name</t.Column>
-          <t.Column>Email</t.Column>
-          <t.Column>Actions</t.Column>
-        </t.Header>
-        <t.Body>
-          {{#each this.items as |item|}}
-            <t.Row @item={{item}}>
-              <t.Cell>{{item.name}}</t.Cell>
-              <t.Cell>{{item.email}}</t.Cell>
-              <t.Cell>
-                <button
-                  type='button'
-                  class='text-primary hover:underline'
-                >Edit</button>
-              </t.Cell>
-            </t.Row>
-          {{/each}}
-        </t.Body>
-      </Table>
     </div>
   </template>
 }
@@ -910,189 +1008,6 @@ export default class DemoComponent extends Component {
 }
 ```
 
-### Combined Sticky Elements
-
-Combine multiple sticky features for complex layouts:
-
-```gts preview
-import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
-import { array, hash } from '@ember/helper';
-
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  department: string;
-  role: string;
-  location: string;
-  manager: string;
-  startDate: string;
-  experience: number;
-  salary: number;
-  benefits: string;
-  status: string;
-}
-
-export default class DemoComponent extends Component {
-  columns: ColumnDefinition<Employee>[] = [
-    {
-      key: 'id',
-      label: 'Employee ID',
-      isSticky: true,
-      stickyPosition: 'left'
-    },
-    { key: 'name', label: 'Full Name' },
-    { key: 'email', label: 'Email Address' },
-    { key: 'phone', label: 'Phone Number' },
-    { key: 'department', label: 'Department' },
-    { key: 'role', label: 'Job Title' },
-    { key: 'location', label: 'Office Location' },
-    { key: 'manager', label: 'Direct Manager' },
-    { key: 'startDate', label: 'Start Date' },
-    { key: 'experience', label: 'Years Experience' },
-    {
-      key: 'salary',
-      label: 'Annual Salary',
-      accessorFn: (item) => `$${item.salary.toLocaleString()}`
-    },
-    { key: 'benefits', label: 'Benefits Package' },
-    { key: 'status', label: 'Employment Status' },
-    {
-      key: 'actions',
-      label: 'Actions',
-      isSticky: true,
-      stickyPosition: 'right',
-      accessorFn: () => 'Edit'
-    }
-  ];
-
-  items: Employee[] = [
-    {
-      id: 'CEO001',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@company.com',
-      phone: '+1-555-0001',
-      department: 'Executive',
-      role: 'Chief Executive Officer',
-      location: 'New York, NY',
-      manager: 'Board of Directors',
-      startDate: '2018-01-15',
-      experience: 15,
-      salary: 250000,
-      benefits: 'Executive Package',
-      status: 'Full-time'
-    },
-    {
-      id: 'ENG001',
-      name: 'John Doe',
-      email: 'john.doe@company.com',
-      phone: '+1-555-0101',
-      department: 'Engineering',
-      role: 'Senior Developer',
-      location: 'San Francisco, CA',
-      manager: 'Jane Smith',
-      startDate: '2020-03-15',
-      experience: 8,
-      salary: 95000,
-      benefits: 'Standard Plus',
-      status: 'Full-time'
-    },
-    {
-      id: 'ENG002',
-      name: 'Jane Smith',
-      email: 'jane.smith@company.com',
-      phone: '+1-555-0102',
-      department: 'Engineering',
-      role: 'Tech Lead',
-      location: 'San Francisco, CA',
-      manager: 'Sarah Johnson',
-      startDate: '2019-07-20',
-      experience: 10,
-      salary: 120000,
-      benefits: 'Standard Plus',
-      status: 'Full-time'
-    },
-    {
-      id: 'DES001',
-      name: 'Bob Johnson',
-      email: 'bob.johnson@company.com',
-      phone: '+1-555-0201',
-      department: 'Design',
-      role: 'UI/UX Designer',
-      location: 'Austin, TX',
-      manager: 'Alice Brown',
-      startDate: '2021-11-08',
-      experience: 5,
-      salary: 85000,
-      benefits: 'Standard',
-      status: 'Full-time'
-    },
-    {
-      id: 'PRD001',
-      name: 'Alice Brown',
-      email: 'alice.brown@company.com',
-      phone: '+1-555-0301',
-      department: 'Product',
-      role: 'Product Manager',
-      location: 'Seattle, WA',
-      manager: 'Sarah Johnson',
-      startDate: '2020-09-12',
-      experience: 7,
-      salary: 100000,
-      benefits: 'Standard Plus',
-      status: 'Full-time'
-    },
-    {
-      id: 'MKT001',
-      name: 'Charlie Wilson',
-      email: 'charlie.wilson@company.com',
-      phone: '+1-555-0401',
-      department: 'Marketing',
-      role: 'Marketing Manager',
-      location: 'Chicago, IL',
-      manager: 'Sarah Johnson',
-      startDate: '2021-02-28',
-      experience: 6,
-      salary: 90000,
-      benefits: 'Standard',
-      status: 'Full-time'
-    },
-    {
-      id: 'INT001',
-      name: 'Diana Lee',
-      email: 'diana.lee@company.com',
-      phone: '+1-555-0501',
-      department: 'Engineering',
-      role: 'Intern',
-      location: 'San Francisco, CA',
-      manager: 'John Doe',
-      startDate: '2024-06-01',
-      experience: 0,
-      salary: 50000,
-      benefits: 'Intern Package',
-      status: 'Intern'
-    }
-  ];
-
-  <template>
-    <div>
-      <h4 class='font-medium mb-2'>Combined: Sticky header, columns (ID &
-        Actions), and rows (CEO & Intern)</h4>
-      <Table
-        @columns={{this.columns}}
-        @items={{this.items}}
-        @isStickyHeader={{true}}
-        @stickyKeys={{array 'CEO001' 'INT001'}}
-        @scrollable={{true}}
-        @classes={{hash wrapper='h-64 max-w-4xl'}}
-      />
-    </div>
-  </template>
-}
-```
-
 ## Empty State Handling
 
 The table gracefully handles empty data by displaying headers without rows:
@@ -1123,6 +1038,14 @@ export default class DemoComponent extends Component {
 ```
 
 ## Performance & Best Practices
+
+### Pattern Selection
+
+Choose the right pattern for your use case:
+
+- **Pattern 1 (Simple)**: Best for basic data display with minimal customization needs
+- **Pattern 2 (Manual)**: Best for heavily customized layouts, complex cell content, or when you don't need advanced table features
+- **Pattern 3 (Hybrid)**: Best when you need some customization while maintaining access to data structures
 
 ### Large Datasets
 
@@ -1171,3 +1094,4 @@ interface ColumnDefinition<T = unknown> {
 ```
 
 **ContentValue** is a standard Glint type for values that are safe to render in templates, which includes: `string | number | boolean | null | undefined | SafeString`.
+

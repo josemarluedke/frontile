@@ -31,6 +31,8 @@ interface TableBodySignature<T> {
       {
         Row: typeof TableRow;
         Cell: typeof TableCell;
+        items: T[];
+        columns: ColumnDefinition<T>[];
       }
     ];
     row: [
@@ -53,6 +55,14 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
     return this.styles.tbody({ class: mergedClass });
   }
 
+  get items(): T[] {
+    return this.args.items || [];
+  }
+
+  get columns(): ColumnDefinition<T>[] {
+    return this.args.columns || [];
+  }
+
   getValue = (item: T, column: ColumnDefinition<T>) =>
     getSafeValue(item, column);
 
@@ -64,7 +74,7 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
       ...attributes
     >
       {{#if (has-block)}}
-        {{yield (hash Row=TableRow Cell=TableCell)}}
+        {{yield (hash Row=TableRow Cell=TableCell items=this.items columns=this.columns)}}
       {{else}}
         {{#each @items as |item|}}
           {{#if (has-block "row")}}

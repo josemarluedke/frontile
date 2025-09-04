@@ -28,6 +28,7 @@ interface TableHeaderSignature<T = unknown> {
     default: [
       {
         Column: typeof TableColumn;
+        columns: ColumnDefinition<T>[];
       }
     ];
   };
@@ -56,6 +57,10 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
     return this.styles.tr(options);
   }
 
+  get columns(): ColumnDefinition<T>[] {
+    return this.args.columns || [];
+  }
+
   <template>
     <thead
       class={{this.classNames}}
@@ -65,7 +70,7 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
     >
       <tr class={{this.rowClassNames}}>
         {{#if (has-block)}}
-          {{yield (hash Column=TableColumn)}}
+          {{yield (hash Column=TableColumn columns=this.columns)}}
         {{else}}
           {{#each @columns as |column|}}
             <TableColumn @column={{column}}>

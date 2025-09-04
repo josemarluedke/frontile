@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
+import { modifier } from 'ember-modifier';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
@@ -36,12 +37,15 @@ interface TableRowSignature<T> {
     default: [
       {
         Cell: typeof TableCell;
+        columns: ColumnDefinition<T>[];
       }
     ];
   };
 }
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
+  // No longer needed - using render functions instead of registration
+
   get isSticky(): boolean {
     if (this.args.isSticky) return true;
 
@@ -76,6 +80,10 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return '';
   }
 
+  get columns(): ColumnDefinition<T>[] {
+    return this.args.columns || [];
+  }
+
   getValue = (item: T, column: ColumnDefinition<T>) =>
     getSafeValue(item, column);
 
@@ -88,7 +96,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
       ...attributes
     >
       {{#if (has-block)}}
-        {{yield (hash Cell=TableCell)}}
+        {{yield (hash Cell=TableCell columns=this.columns)}}
       {{else}}
         {{#each @columns as |column|}}
           {{#if @item}}
