@@ -1,5 +1,5 @@
 ---
-label: New
+name: New
 imports:
   - import Signature from 'site/components/signature';
 ---
@@ -25,7 +25,7 @@ The Table component provides a powerful and flexible way to display structured d
 import {
   Table,
   TableFooter,
-  type ColumnDefinition
+  type ColumnConfig
 } from '@frontile/collections';
 ```
 
@@ -39,7 +39,7 @@ The simplest approach - just pass `@columns` and `@items` for automatic renderin
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface User {
   id: string;
@@ -49,11 +49,11 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'role', label: 'Role' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
   ];
 
   items: User[] = [
@@ -119,7 +119,7 @@ Combines automatic rendering with manual customization - pass `@columns` and `@i
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface User {
   id: string;
@@ -129,10 +129,10 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' }
   ];
 
   items: User[] = [
@@ -147,7 +147,7 @@ export default class DemoComponent extends Component {
           {{#each h.columns as |column|}}
             <h.Column @column={{column}}>
               🔸
-              {{column.label}}
+              {{column.name}}
             </h.Column>
           {{/each}}
         </t.Header>
@@ -162,7 +162,7 @@ export default class DemoComponent extends Component {
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { get } from '@ember/helper';
 
 interface User {
@@ -173,9 +173,9 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'name', label: 'Name' },
-    { key: 'role', label: 'Role' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'name', name: 'Name' },
+    { key: 'role', name: 'Role' }
   ];
 
   items: User[] = [
@@ -188,11 +188,11 @@ export default class DemoComponent extends Component {
       <Table @columns={{this.columns}} @items={{this.items}} as |t|>
         <t.Header />
         <t.Body as |b|>
-          {{#each b.items as |item|}}
-            <t.Row @item={{item}} as |row|>
-              {{#each row.columns as |column|}}
-                <t.Cell @item={{item}} @column={{column}}>
-                  {{get item column.key}}
+          {{#each b.rows as |row|}}
+            <t.Row @row={{row}} as |r|>
+              {{#each r.columns as |column|}}
+                <t.Cell @row={{row}} @column={{column}}>
+                  {{column.getValueForRow row}}
                 </t.Cell>
               {{/each}}
             </t.Row>
@@ -204,15 +204,15 @@ export default class DemoComponent extends Component {
 }
 ```
 
-## Column Definitions
+## Column Configurations
 
-### Custom Accessor Functions
+### Custom Value Functions
 
-Use `accessorFn` to transform data or compute values dynamically for each column:
+Use `value` functions to transform data or compute values dynamically for each column:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface User {
   id: string;
@@ -222,22 +222,22 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
     {
       key: 'name',
-      label: 'Display Name',
-      accessorFn: (user) => `${user.name} (${user.role})`
+      name: 'Display Name',
+      value: (ctx) => `${ctx.row.data.name} (${ctx.row.data.role})`
     },
     {
       key: 'email',
-      label: 'Contact',
-      accessorFn: (user) => user.email.toUpperCase()
+      name: 'Contact',
+      value: (ctx) => ctx.row.data.email.toUpperCase()
     },
     {
       key: 'status',
-      label: 'Admin Status',
-      accessorFn: (user) => (user.role === 'admin' ? 'Yes' : 'No')
+      name: 'Admin Status',
+      value: (ctx) => (ctx.row.data.role === 'admin' ? 'Yes' : 'No')
     }
   ];
 
@@ -267,14 +267,14 @@ interface Product {
   category: string;
 }
 
-// Use typed column definitions
-const columns: ColumnDefinition<Product>[] = [
-  { key: 'name', label: 'Product Name' },
+// Use typed column configurations
+const columns: ColumnConfig<Product>[] = [
+  { key: 'name', name: 'Product Name' },
   {
     key: 'price',
-    label: 'Price',
-    // accessorFn receives typed Product parameter
-    accessorFn: (product) => `$${product.price.toFixed(2)}`
+    name: 'Price',
+    // value receives typed CellContext<Product> parameter  
+    value: (ctx) => `$${ctx.row.data.price.toFixed(2)}`
   }
 ];
 ```
@@ -287,7 +287,7 @@ Control how the table calculates column widths using the `@layout` argument:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface User {
   id: string;
@@ -297,11 +297,11 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'department', label: 'Department' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'department', name: 'Department' }
   ];
 
   items: User[] = [
@@ -353,7 +353,7 @@ The Table component supports several styling variants:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface User {
   id: string;
@@ -362,10 +362,10 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' }
   ];
 
   items: User[] = [
@@ -405,7 +405,7 @@ Use the `classes` argument to customize specific table elements:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { hash } from '@ember/helper';
 
 interface User {
@@ -415,10 +415,10 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' }
   ];
 
   items: User[] = [
@@ -453,7 +453,7 @@ Use `@footerColumns` to automatically generate a footer with predefined columns:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 interface Product {
   id: string;
@@ -463,16 +463,16 @@ interface Product {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<Product>[] = [
-    { key: 'name', label: 'Product' },
-    { key: 'price', label: 'Price', accessorFn: (item) => `$${item.price}` },
-    { key: 'category', label: 'Category' }
+  columns: ColumnConfig<Product>[] = [
+    { key: 'name', name: 'Product' },
+    { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}` },
+    { key: 'category', name: 'Category' }
   ];
 
-  footerColumns: ColumnDefinition[] = [
-    { key: 'total_label', label: 'Total Items' },
-    { key: 'total_price', label: '$127.97' },
-    { key: 'categories', label: '3 Categories' }
+  footerColumns: ColumnConfig[] = [
+    { key: 'total_label', name: 'Total Items' },
+    { key: 'total_price', name: '$127.97' },
+    { key: 'categories', name: '3 Categories' }
   ];
 
   items: Product[] = [
@@ -555,7 +555,7 @@ For large datasets, enable scrolling with container-based sizing:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { hash } from '@ember/helper';
 
 interface User {
@@ -567,12 +567,12 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'department', label: 'Department' },
-    { key: 'role', label: 'Role' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'department', name: 'Department' },
+    { key: 'role', name: 'Role' }
   ];
 
   items: User[] = [
@@ -750,7 +750,7 @@ Keep the table header visible when scrolling through long data:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { hash } from '@ember/helper';
 
 interface User {
@@ -761,11 +761,11 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'department', label: 'Department' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'department', name: 'Department' }
   ];
 
   items: User[] = [
@@ -841,7 +841,7 @@ Freeze specific rows by their keys to keep important data visible:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { array, hash } from '@ember/helper';
 
 interface User {
@@ -852,11 +852,11 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<User>[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'role', label: 'Role' }
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
   ];
 
   items: User[] = [
@@ -915,7 +915,7 @@ Make the footer sticky during vertical scrolling by setting `@isStickyFooter` to
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { hash } from '@ember/helper';
 
 interface Transaction {
@@ -926,21 +926,21 @@ interface Transaction {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition<Transaction>[] = [
-    { key: 'date', label: 'Date' },
-    { key: 'description', label: 'Description' },
+  columns: ColumnConfig<Transaction>[] = [
+    { key: 'date', name: 'Date' },
+    { key: 'description', name: 'Description' },
     {
       key: 'amount',
-      label: 'Amount',
-      accessorFn: (item) =>
+      name: 'Amount',
+      value: (item) =>
         item.amount < 0 ? `-$${Math.abs(item.amount)}` : `$${item.amount}`
     }
   ];
 
-  footerColumns: ColumnDefinition[] = [
-    { key: 'summary', label: 'Account Total' },
-    { key: 'empty', label: '' },
-    { key: 'total', label: '$1,234.56' }
+  footerColumns: ColumnConfig[] = [
+    { key: 'summary', name: 'Account Total' },
+    { key: 'empty', name: '' },
+    { key: 'total', name: '$1,234.56' }
   ];
 
   items: Transaction[] = [
@@ -1014,13 +1014,13 @@ The table gracefully handles empty data by displaying headers without rows:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnDefinition } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 
 export default class DemoComponent extends Component {
-  columns: ColumnDefinition[] = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' }
+  columns: ColumnConfig[] = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' }
   ];
 
   emptyItems = [];
@@ -1076,22 +1076,19 @@ For optimal performance with large datasets:
 <Signature @component="TableRow" />
 <Signature @component="TableCell" />
 
-### ColumnDefinition
+### ColumnConfig
 
 ```ts
-interface ColumnDefinition<T = unknown> {
+interface ColumnConfig<T = unknown> {
   /** The key to extract data from items */
   key: string;
-  /** Display label for the column header */
-  label: string;
+  /** Display name for the column header */
+  name: string;
   /** Optional function to transform/compute column values */
-  accessorFn?: (item: T) => ContentValue;
-  /** Whether this column should be sticky */
-  isSticky?: boolean;
-  /** Position where sticky column should stick */
-  stickyPosition?: 'left' | 'right';
+  value?: (ctx: CellContext<T>) => ContentValue;
 }
 ```
 
-**ContentValue** is a standard Glint type for values that are safe to render in templates, which includes: `string | number | boolean | null | undefined | SafeString`.
+**Note**: `ColumnConfig` is imported from `@universal-ember/table` and provides the foundation for advanced table features like sorting and filtering. The `value` function receives a `CellContext<T>` parameter with structure `{ row: { data: T } }`.
 
+**ContentValue** is a standard Glint type for values that are safe to render in templates, which includes: `string | number | boolean | null | undefined | SafeString`.

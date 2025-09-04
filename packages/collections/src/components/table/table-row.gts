@@ -5,14 +5,16 @@ import { modifier } from 'ember-modifier';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
-import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
+import type { SlotsToClasses, TableSlots } from './types';
+import type { Row, Column } from '@universal-ember/table';
+import type { ContentValue } from '@glint/template';
 
 interface TableRowSignature<T> {
   Args: {
-    /** The data item for this row */
-    item?: T;
-    /** Array of column definitions for automatic cell generation */
-    columns?: ColumnDefinition<T>[];
+    /** The data row for this row */
+    row?: Row<T>;
+    /** Array of universal-ember columns for automatic cell generation */
+    columns?: Column<T>[];
     /** Additional CSS class to apply to the row */
     class?: string;
     /** Whether this row should be sticky during vertical scrolling */
@@ -37,7 +39,7 @@ interface TableRowSignature<T> {
     default: [
       {
         Cell: typeof TableCell;
-        columns: ColumnDefinition<T>[];
+        columns: Column<T>[];
       }
     ];
   };
@@ -49,9 +51,20 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
   get isSticky(): boolean {
     if (this.args.isSticky) return true;
 
-    if (this.args.stickyKeys && this.args.item) {
-      const { key } = keyAndLabelForItem(this.args.item);
-      return this.args.stickyKeys.includes(key);
+    if (this.args.stickyKeys && this.args.row) {
+      // Universal-ember Row objects have structure: { data, table, index }
+      // Extract the actual data from the row wrapper
+      const row = this.args.row as any;
+      const actualData = row.data || row.original || row;
+      
+      try {
+        const { key } = keyAndLabelForItem(actualData);
+        return this.args.stickyKeys.includes(key);
+      } catch (error) {
+        // Fallback: use the row index if key extraction fails
+        const fallbackKey = row.index?.toString() || '';
+        return this.args.stickyKeys.includes(fallbackKey);
+      }
     }
 
     return false;
@@ -73,19 +86,31 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
   }
 
   get rowKey(): string {
-    if (this.args.item) {
-      const { key } = keyAndLabelForItem(this.args.item);
-      return key;
+    if (this.args.row) {
+      // Universal-ember Row objects have structure: { data, table, index }
+      // Extract the actual data from the row wrapper
+      const row = this.args.row as any;
+      const actualData = row.data || row.original || row;
+
+      try {
+        const { key } = keyAndLabelForItem(actualData);
+        return key;
+      } catch (error) {
+        // Fallback: use the row index if key extraction fails
+        return row.index?.toString() || '';
+      }
     }
     return '';
   }
 
-  get columns(): ColumnDefinition<T>[] {
+  get columns(): Column<T>[] {
     return this.args.columns || [];
   }
 
-  getValue = (item: T, column: ColumnDefinition<T>) =>
-    getSafeValue(item, column);
+  getValue = (row: Row<T>, column: Column<T>): ContentValue =>
+    column.getValueForRow
+      ? column.getValueForRow(row)
+      : getSafeValue(row.data, { key: column.key, label: column.name || '' });
 
   <template>
     <tr
@@ -99,10 +124,10 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
         {{yield (hash Cell=TableCell columns=this.columns)}}
       {{else}}
         {{#each @columns as |column|}}
-          {{#if @item}}
-            {{#let (this.getValue @item column) as |value|}}
+          {{#if @row}}
+            {{#let (this.getValue @row column) as |value|}}
               <TableCell
-                @item={{@item}}
+                @row={{@row}}
                 @column={{column}}
                 @isInStickyRow={{this.isSticky}}
                 @styleFns={{@styleFns}}

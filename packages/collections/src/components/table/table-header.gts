@@ -2,12 +2,13 @@ import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { TableColumn } from './table-column';
-import type { ColumnDefinition, SlotsToClasses, TableSlots } from './types';
+import type { SlotsToClasses, TableSlots } from './types';
+import type { Column } from '@universal-ember/table';
 
 interface TableHeaderSignature<T = unknown> {
   Args: {
-    /** Array of column definitions for automatic header generation */
-    columns?: ColumnDefinition<T>[];
+    /** Array of universal-ember columns for automatic header generation */
+    columns?: Column<T>[];
     /** Additional CSS class to apply to the header section */
     class?: string;
     /** Whether the header should be sticky during vertical scrolling */
@@ -28,7 +29,7 @@ interface TableHeaderSignature<T = unknown> {
     default: [
       {
         Column: typeof TableColumn;
-        columns: ColumnDefinition<T>[];
+        columns: Column<T>[];
       }
     ];
   };
@@ -57,7 +58,7 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
     return this.styles.tr(options);
   }
 
-  get columns(): ColumnDefinition<T>[] {
+  get columns(): Column<T>[] {
     return this.args.columns || [];
   }
 
@@ -74,7 +75,7 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
         {{else}}
           {{#each @columns as |column|}}
             <TableColumn @column={{column}}>
-              {{column.label}}
+              {{column.name}}
             </TableColumn>
           {{/each}}
         {{/if}}

@@ -1,12 +1,12 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import type { ColumnDefinition } from './types';
+import type { Column, ColumnConfig } from '@universal-ember/table';
 
 interface TableColumnSignature<T = unknown> {
   Args: {
-    /** Column definition for automatic header generation */
-    column?: ColumnDefinition<T>;
+    /** Universal-ember column definition or Frontile column definition */
+    column?: Column<T>;
     /** Additional CSS class to apply to the header cell */
     class?: string;
     /** Whether this column should be sticky during horizontal scrolling */
@@ -33,13 +33,11 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
   // No longer needed - using render functions instead of registration
 
   get isSticky(): boolean {
-    return this.args.isSticky ?? this.args.column?.isSticky ?? false;
+    return this.args.isSticky ?? false;
   }
 
   get stickyPosition(): 'left' | 'right' {
-    return (
-      this.args.stickyPosition ?? this.args.column?.stickyPosition ?? 'left'
-    );
+    return this.args.stickyPosition ?? 'left';
   }
 
   get styles() {
@@ -63,7 +61,7 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
       class={{this.classNames}}
       data-test-id="table-column"
       data-component="table-column"
-      data-key={{if @column.key @column.key @key}}
+      data-key={{if @column @column.key @key}}
       ...attributes
     >
       {{yield}}

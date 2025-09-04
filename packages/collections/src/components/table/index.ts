@@ -5,5 +5,5 @@ export { TableFooter, type TableFooterSignature } from './table-footer';
 export { TableColumn, type TableColumnSignature } from './table-column';
 export { TableRow, type TableRowSignature } from './table-row';
 export { TableCell, type TableCellSignature } from './table-cell';
-export type { ColumnDefinition } from './types';
+export type { ColumnConfig } from './types';
 export { default } from './table';

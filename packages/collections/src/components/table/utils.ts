@@ -1,16 +1,35 @@
 import type { ContentValue } from '@glint/template';
-import type { ColumnDefinition } from './types';
+import type { ColumnConfig } from './types';
 
 /**
- * Safely extracts a value from an object using either a custom accessorFn or direct property access
+ * Safely extracts a value from an object using either a custom value function or direct property access
  */
 export function getSafeValue<T>(
   obj: T,
-  column: ColumnDefinition<T>
+  column: ColumnConfig<T> | { key: string; label?: string }
 ): ContentValue {
-  // Use custom accessor function if provided
-  if (column.accessorFn) {
-    return column.accessorFn(obj);
+  // Use custom value function if provided (ColumnConfig)
+  if ('value' in column && typeof column.value === 'function') {
+    try {
+      // Try with legacy format (direct item parameter) for backward compatibility
+      const result = column.value(obj as any);
+      if (result !== undefined && result !== null) {
+        return result;
+      }
+    } catch (error) {
+      // Legacy format didn't work
+    }
+    
+    try {
+      // Then try with the universal-ember CellContext format
+      const cellContext = { row: { data: obj }, column } as any;
+      const result = column.value(cellContext);
+      if (result !== undefined && result !== null) {
+        return result;
+      }
+    } catch (error) {
+      // CellContext format didn't work either
+    }
   }
 
   // Fallback to direct property access

@@ -2,6 +2,10 @@ import Component from '@glimmer/component';
 import { hash, get } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import {
+  headlessTable as createHeadlessTable,
+  type ColumnConfig
+} from '@universal-ember/table';
 import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
@@ -10,18 +14,16 @@ import { TableColumn } from './table-column';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type {
-  ColumnDefinition,
   TableVariants,
   TableSlots,
-  SlotsToClasses,
-  ClassValue
+  SlotsToClasses
 } from './types';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<T> {
   Args: {
-    /** Array of column definitions for automatic table generation */
-    columns?: ColumnDefinition<T>[];
+    /** Array of column configurations for automatic table generation */
+    columns?: ColumnConfig<T>[];
     /** Array of data items to display in the table */
     items?: T[];
     /** Custom CSS classes for different table elements (wrapper, table, th, td, etc.) */
@@ -40,8 +42,8 @@ interface TableSignature<T> {
     stickyKeys?: string[];
     /** Make the table header sticky during vertical scrolling */
     isStickyHeader?: boolean;
-    /** Array of column definitions for automatic footer generation */
-    footerColumns?: ColumnDefinition<T>[];
+    /** Array of column configurations for automatic footer generation */
+    footerColumns?: ColumnConfig<T>[];
     /** Make the table footer sticky during vertical scrolling */
     isStickyFooter?: boolean;
   };
@@ -49,9 +51,18 @@ interface TableSignature<T> {
   Blocks: {
     default: [
       {
-        Header: WithBoundArgs<typeof TableHeader<T>, 'styleFns' | 'classes' | 'columns'>;
-        Body: WithBoundArgs<typeof TableBody<T>, 'styleFns' | 'classes' | 'items' | 'columns'>;
-        Footer: WithBoundArgs<typeof TableFooter<T>, 'styleFns' | 'classes' | 'columns'>;
+        Header: WithBoundArgs<
+          typeof TableHeader<T>,
+          'styleFns' | 'classes' | 'columns'
+        >;
+        Body: WithBoundArgs<
+          typeof TableBody<T>,
+          'styleFns' | 'classes' | 'rows' | 'columns'
+        >;
+        Footer: WithBoundArgs<
+          typeof TableFooter<T>,
+          'styleFns' | 'classes' | 'columns'
+        >;
         Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
         Row: WithBoundArgs<typeof TableRow<T>, 'styleFns'>;
         Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
@@ -68,6 +79,11 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   TableCell = TableCell<T>;
   TableColumn = TableColumn<T>;
   TableHeader = TableHeader<T>;
+
+  tableInstance = createHeadlessTable<T>(this, {
+    data: () => this.args.items || [],
+    columns: () => this.args.columns || []
+  });
 
   get styles() {
     const { table } = useStyles();
@@ -116,25 +132,37 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return this.styles.table({ class: this.args.classes?.table });
   }
 
-  get columns(): ColumnDefinition<T>[] {
+  get columns(): ColumnConfig<T>[] {
     return this.args.columns || [];
   }
 
-  get footerColumns(): ColumnDefinition<T>[] {
+  get footerColumns(): ColumnConfig<T>[] {
     return this.args.footerColumns || [];
   }
 
   get items(): T[] {
-    return this.args.items || [];
+    // Universal-ember rows are the original data
+    return this.tableInstance.rows.values() as T[];
   }
 
-  getValue = (item: T, column: ColumnDefinition<T>) =>
-    getSafeValue(item, column);
+  // Keep access to the raw universal-ember data for modifiers and rendering
+  get headlessColumns() {
+    return this.tableInstance.columns.values();
+  }
+
+  get headlessRows() {
+    return this.tableInstance.rows.values();
+  }
+
+  getValue = (item: any, column: any) =>
+    column.getValueForRow ? column.getValueForRow(item) : item;
+
 
   <template>
     <div
       class={{this.wrapperClassNames}}
       {{this.calculateHeaderHeight}}
+      {{this.tableInstance.modifiers.container}}
       data-component="table-wrapper"
     >
       {{#if (has-block)}}
@@ -147,35 +175,39 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         >
           {{yield
             (hash
-              Header=(component 
-                this.TableHeader 
-                styleFns=this.styles 
+              Header=(component
+                this.TableHeader
+                styleFns=this.styles
                 classes=this.args.classes
-                columns=this.columns
+                columns=this.headlessColumns
               )
-              Body=(component 
-                this.TableBody 
-                styleFns=this.styles 
+              Body=(component
+                this.TableBody
+                styleFns=this.styles
                 classes=this.args.classes
-                items=this.items
-                columns=this.columns
+                rows=this.headlessRows
+                columns=this.headlessColumns
               )
-              Footer=(component 
-                this.TableFooter 
-                styleFns=this.styles 
+              Footer=(component
+                this.TableFooter
+                styleFns=this.styles
                 classes=this.args.classes
                 columns=this.footerColumns
               )
-              Column=(component this.TableColumn styleFns=this.styles classes=this.args.classes)
-              Row=(component 
-                this.TableRow 
-                styleFns=this.styles 
+              Column=(component
+                this.TableColumn styleFns=this.styles classes=this.args.classes
+              )
+              Row=(component
+                this.TableRow
+                styleFns=this.styles
                 classes=this.args.classes
-                columns=this.columns
+                columns=this.headlessColumns
                 stickyKeys=@stickyKeys
                 isStickyHeader=@isStickyHeader
               )
-              Cell=(component this.TableCell styleFns=this.styles classes=this.args.classes)
+              Cell=(component
+                this.TableCell styleFns=this.styles classes=this.args.classes
+              )
             )
           }}
         </table>
@@ -188,41 +220,41 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
           ...attributes
         >
           <this.TableHeader
-            @columns={{this.columns}}
+            @columns={{this.headlessColumns}}
             @isSticky={{@isStickyHeader}}
             @styleFns={{this.styles}}
             @classes={{this.args.classes}}
           >
-            {{#each this.columns as |column|}}
+            {{#each this.headlessColumns as |column|}}
               <this.TableColumn @column={{column}} @styleFns={{this.styles}}>
-                {{column.label}}
+                {{column.name}}
               </this.TableColumn>
             {{/each}}
           </this.TableHeader>
 
           <this.TableBody
-            @columns={{this.columns}}
-            @items={{this.items}}
+            @columns={{this.headlessColumns}}
+            @rows={{this.headlessRows}}
             @styleFns={{this.styles}}
             @classes={{this.args.classes}}
           >
-            {{#each this.items as |item|}}
+            {{#each this.headlessRows as |row|}}
               <this.TableRow
-                @item={{item}}
-                @columns={{this.columns}}
+                @row={{row}}
+                @columns={{this.headlessColumns}}
                 @stickyKeys={{@stickyKeys}}
                 @isStickyHeader={{@isStickyHeader}}
                 @styleFns={{this.styles}}
                 @classes={{this.args.classes}}
               >
-                {{#each this.columns as |column|}}
+                {{#each this.headlessColumns as |column|}}
                   <this.TableCell
-                    @item={{item}}
+                    @row={{row}}
                     @column={{column}}
                     @styleFns={{this.styles}}
                     @classes={{this.args.classes}}
                   >
-                    {{this.getValue item column}}
+                    {{column.getValueForRow row}}
                   </this.TableCell>
                 {{/each}}
               </this.TableRow>
@@ -255,8 +287,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               @classes={{this.args.classes}}
             >
               {{#each this.footerColumns as |column|}}
-                <this.TableColumn @column={{column}} @styleFns={{this.styles}}>
-                  {{column.label}}
+                <this.TableColumn @key={{column.key}} @styleFns={{this.styles}}>
+                  {{column.name}}
                 </this.TableColumn>
               {{/each}}
             </this.TableFooter>
