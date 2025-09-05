@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import type { Column, ColumnConfig } from '@universal-ember/table';
+import type { Column, ColumnConfig } from './types';
 
 interface TableColumnSignature<T = unknown> {
   Args: {

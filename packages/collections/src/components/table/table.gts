@@ -2,10 +2,7 @@ import Component from '@glimmer/component';
 import { hash, get } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import {
-  headlessTable as createHeadlessTable,
-  type ColumnConfig
-} from '@universal-ember/table';
+import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
@@ -14,6 +11,7 @@ import { TableColumn } from './table-column';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type {
+  ColumnConfig,
   TableVariants,
   TableSlots,
   SlotsToClasses

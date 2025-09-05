@@ -5,8 +5,7 @@ import { modifier } from 'ember-modifier';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
-import type { SlotsToClasses, TableSlots } from './types';
-import type { Row, Column } from '@universal-ember/table';
+import type { SlotsToClasses, TableSlots, Row, Column } from './types';
 import type { ContentValue } from '@glint/template';
 
 interface TableRowSignature<T> {

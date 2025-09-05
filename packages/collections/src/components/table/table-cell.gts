@@ -1,8 +1,7 @@
 import Component from '@glimmer/component';
 import { useStyles, twMerge } from '@frontile/theme';
 import type { ContentValue } from '@glint/template';
-import type { SlotsToClasses, TableSlots } from './types';
-import type { Row, Column } from '@universal-ember/table';
+import type { SlotsToClasses, TableSlots, Row, Column } from './types';
 
 interface TableCellSignature<T = unknown> {
   Args: {
