@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
-import { getSafeValue } from './utils';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type { SlotsToClasses, TableSlots, Row, Column } from './types';
@@ -64,11 +63,6 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
     return this.args.columns || [];
   }
 
-  getValue = (row: Row<T>, column: Column<T>): ContentValue =>
-    column.getValueForRow
-      ? column.getValueForRow(row)
-      : getSafeValue(row.data, { key: column.key, label: column.name || '' });
-
   <template>
     <tbody
       class={{this.classNames}}
@@ -78,9 +72,7 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
     >
       {{#if (has-block)}}
         {{yield
-          (hash
-            Row=TableRow Cell=TableCell rows=this.rows columns=this.columns
-          )
+          (hash Row=TableRow Cell=TableCell rows=this.rows columns=this.columns)
         }}
       {{else}}
         {{#each @rows as |row|}}
@@ -94,7 +86,7 @@ class TableBody<T = unknown> extends Component<TableBodySignature<T>> {
               @classes={{@classes}}
             >
               {{#each @columns as |column|}}
-                {{#let (this.getValue row column) as |value|}}
+                {{#let (column.getValueForRow row) as |value|}}
                   <TableCell
                     @row={{row}}
                     @column={{column}}
