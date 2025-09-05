@@ -3,7 +3,6 @@ import { hash, get } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
-import { getSafeValue } from './utils';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
 import { TableFooter } from './table-footer';
@@ -12,6 +11,8 @@ import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type {
   ColumnConfig,
+  Column,
+  Row,
   TableVariants,
   TableSlots,
   SlotsToClasses
@@ -151,10 +152,6 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   get headlessRows() {
     return this.tableInstance.rows.values();
   }
-
-  getValue = (item: any, column: any) =>
-    column.getValueForRow ? column.getValueForRow(item) : item;
-
 
   <template>
     <div

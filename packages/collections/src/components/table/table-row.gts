@@ -3,7 +3,6 @@ import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { keyAndLabelForItem } from '../../utils/listManager';
-import { getSafeValue } from './utils';
 import { TableCell } from './table-cell';
 import type { SlotsToClasses, TableSlots, Row, Column } from './types';
 import type { ContentValue } from '@glint/template';
@@ -53,9 +52,9 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     if (this.args.stickyKeys && this.args.row) {
       // Universal-ember Row objects have structure: { data, table, index }
       // Extract the actual data from the row wrapper
-      const row = this.args.row as any;
-      const actualData = row.data || row.original || row;
-      
+      const row = this.args.row as Row<T>;
+      const actualData = row.data || row;
+
       try {
         const { key } = keyAndLabelForItem(actualData);
         return this.args.stickyKeys.includes(key);
@@ -88,8 +87,8 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     if (this.args.row) {
       // Universal-ember Row objects have structure: { data, table, index }
       // Extract the actual data from the row wrapper
-      const row = this.args.row as any;
-      const actualData = row.data || row.original || row;
+      const row = this.args.row as Row<T>;
+      const actualData = row.data || row;
 
       try {
         const { key } = keyAndLabelForItem(actualData);
@@ -106,11 +105,6 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return this.args.columns || [];
   }
 
-  getValue = (row: Row<T>, column: Column<T>): ContentValue =>
-    column.getValueForRow
-      ? column.getValueForRow(row)
-      : getSafeValue(row.data, { key: column.key, label: column.name || '' });
-
   <template>
     <tr
       class={{this.classNames}}
@@ -124,7 +118,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
       {{else}}
         {{#each @columns as |column|}}
           {{#if @row}}
-            {{#let (this.getValue @row column) as |value|}}
+            {{#let (column.getValueForRow @row) as |value|}}
               <TableCell
                 @row={{@row}}
                 @column={{column}}
