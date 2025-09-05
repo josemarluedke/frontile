@@ -2,8 +2,7 @@ import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { TableColumn } from './table-column';
-import type { SlotsToClasses, TableSlots } from './types';
-import type { Column } from '@universal-ember/table';
+import type { SlotsToClasses, TableSlots, Column } from './types';
 
 interface TableHeaderSignature<T = unknown> {
   Args: {

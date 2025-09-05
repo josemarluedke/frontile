@@ -4,8 +4,7 @@ import { useStyles, twMerge } from '@frontile/theme';
 import { getSafeValue } from './utils';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
-import type { SlotsToClasses, TableSlots } from './types';
-import type { Row, Column } from '@universal-ember/table';
+import type { SlotsToClasses, TableSlots, Row, Column } from './types';
 import type { ContentValue } from '@glint/template';
 
 interface TableBodySignature<T> {

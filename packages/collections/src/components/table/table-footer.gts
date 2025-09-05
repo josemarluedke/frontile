@@ -2,9 +2,8 @@ import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { TableColumn } from './table-column';
-import type { SlotsToClasses, TableSlots } from './types';
+import type { SlotsToClasses, TableSlots, ColumnConfig } from './types';
 import type { WithBoundArgs } from '@glint/template';
-import type { ColumnConfig } from '@universal-ember/table';
 
 interface TableFooterSignature<T = unknown> {
   Args: {
