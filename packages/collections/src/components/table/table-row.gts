@@ -22,6 +22,11 @@ interface TableRowSignature<T> {
     /** Whether the table has a sticky header (affects positioning of sticky rows) */
     isStickyHeader?: boolean;
     /**
+     * @internal Universal-ember table instance for accessing modifiers and behaviors
+     * @ignore
+     */
+    tableInstance?: any;
+    /**
      * @internal Style functions object from Table component
      * @ignore
      */
@@ -105,12 +110,19 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return this.args.columns || [];
   }
 
+  applyRowModifier = modifier((element: HTMLTableRowElement) => {
+    if (this.args.tableInstance && this.args.row) {
+      return this.args.tableInstance.modifiers.row(element, [this.args.row]);
+    }
+  });
+
   <template>
     <tr
       class={{this.classNames}}
       data-test-id="table-row"
       data-component="table-row"
       data-key={{this.rowKey}}
+      {{this.applyRowModifier @row}}
       ...attributes
     >
       {{#if (has-block)}}
