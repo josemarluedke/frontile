@@ -637,4 +637,74 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="listbox"]')
       .doesNotExist('should close after selection in default single mode');
   });
+
+  test('selectOptionByKey works correctly when key is already selected', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) => {
+      selectedKey.current = key;
+    };
+
+    await render(
+      <template>
+        <Select
+          @onSelectionChange={{onSelectionChange}}
+          @selectedKey={{selectedKey.current}}
+          @allowEmpty={{true}}
+          as |l|
+        >
+          <l.Item @key="item-1">Item 1</l.Item>
+          <l.Item @key="item-2">Item 2</l.Item>
+          <l.Item @key="item-3">Item 3</l.Item>
+        </Select>
+      </template>
+    );
+
+    // First select an option
+    await selectOptionByKey('[data-component="native-select"]', 'item-2');
+    assert.equal(selectedKey.current, 'item-2');
+    isSelected(assert, '[data-key="item-2"]');
+
+    // Call selectOptionByKey on the already selected option - should not change anything
+    await selectOptionByKey('[data-component="native-select"]', 'item-2');
+
+    // Verify the selection remains the same
+    assert.equal(selectedKey.current, 'item-2');
+    isSelected(assert, '[data-key="item-2"]');
+
+    // Verify other options are still not selected
+    isNotSelected(assert, '[data-key="item-1"]');
+    isNotSelected(assert, '[data-key="item-3"]');
+  });
+
+  test('selectOptionByKey works correctly when key is already selected (by default)', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) => {
+      selectedKey.current = key;
+    };
+
+    await render(
+      <template>
+        <Select
+          @onSelectionChange={{onSelectionChange}}
+          @selectedKey={{selectedKey.current}}
+          @allowEmpty={{true}}
+          as |l|
+        >
+          <l.Item @key="item-1">Item 1</l.Item>
+        </Select>
+      </template>
+    );
+
+    // First select an option
+    await selectOptionByKey('[data-component="native-select"]', 'item-1');
+    assert.equal(selectedKey.current, 'item-1');
+    isSelected(assert, '[data-key="item-1"]');
+
+    // Call selectOptionByKey on the already selected option - should not change anything
+    await selectOptionByKey('[data-component="native-select"]', 'item-1');
+
+    // Verify the selection remains the same
+    assert.equal(selectedKey.current, 'item-1');
+    isSelected(assert, '[data-key="item-1"]');
+  });
 });

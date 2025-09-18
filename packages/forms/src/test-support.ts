@@ -35,7 +35,7 @@ function changeOption(
 
   if (!select) {
     throw new Error(
-      `You called "${functionName}('${selectSelector}', '${key}')" but no select was found inside of of container using selector "${selectSelector}"`
+      `You called "${functionName}('${selectSelector}', '${key}')" but no select was found inside container using selector "${selectSelector}"`
     );
   }
 
@@ -47,10 +47,12 @@ function changeOption(
       `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`
     );
   }
-  if (option.selected && toggle) {
+
+  if (toggle && option.selected) {
     option.selected = false;
   } else {
     option.selected = true;
   }
+
   return triggerEvent(select, 'change');
 }
