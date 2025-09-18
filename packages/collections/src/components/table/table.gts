@@ -62,7 +62,7 @@ interface TableSignature<T> {
           typeof TableFooter<T>,
           'styleFns' | 'classes' | 'columns'
         >;
-        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
+        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns' | 'tableInstance'>;
         Row: WithBoundArgs<typeof TableRow<T>, 'styleFns'>;
         Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
       }
@@ -190,7 +190,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 columns=this.footerColumns
               )
               Column=(component
-                this.TableColumn styleFns=this.styles classes=this.args.classes
+                this.TableColumn styleFns=this.styles classes=this.args.classes tableInstance=this.tableInstance
               )
               Row=(component
                 this.TableRow
@@ -199,6 +199,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 columns=this.headlessColumns
                 stickyKeys=@stickyKeys
                 isStickyHeader=@isStickyHeader
+                tableInstance=this.tableInstance
               )
               Cell=(component
                 this.TableCell styleFns=this.styles classes=this.args.classes
@@ -221,7 +222,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             @classes={{this.args.classes}}
           >
             {{#each this.headlessColumns as |column|}}
-              <this.TableColumn @column={{column}} @styleFns={{this.styles}}>
+              <this.TableColumn @column={{column}} @styleFns={{this.styles}} @tableInstance={{this.tableInstance}}>
                 {{column.name}}
               </this.TableColumn>
             {{/each}}
@@ -241,6 +242,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 @isStickyHeader={{@isStickyHeader}}
                 @styleFns={{this.styles}}
                 @classes={{this.args.classes}}
+                @tableInstance={{this.tableInstance}}
               >
                 {{#each this.headlessColumns as |column|}}
                   <this.TableCell
@@ -258,6 +260,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 <this.TableRow
                   @styleFns={{this.styles}}
                   @classes={{this.args.classes}}
+                  @tableInstance={{this.tableInstance}}
                   data-test-id="table-empty-row"
                 >
                   <this.TableCell
@@ -282,7 +285,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               @classes={{this.args.classes}}
             >
               {{#each this.footerColumns as |column|}}
-                <this.TableColumn @key={{column.key}} @styleFns={{this.styles}}>
+                <this.TableColumn @key={{column.key}} @styleFns={{this.styles}} @tableInstance={{this.tableInstance}}>
                   {{column.name}}
                 </this.TableColumn>
               {{/each}}

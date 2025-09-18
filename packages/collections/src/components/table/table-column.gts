@@ -18,6 +18,11 @@ interface TableColumnSignature<T = unknown> {
     /** Column label for registration when used in block form */
     label?: string;
     /**
+     * @internal Universal-ember table instance for accessing modifiers and behaviors
+     * @ignore
+     */
+    tableInstance?: any;
+    /**
      * @internal Style functions object from Table component
      * @ignore
      */
@@ -56,12 +61,21 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
     return this.styles.th(options);
   }
 
+  applyColumnModifier = modifier((element: HTMLTableCellElement) => {
+    if (this.args.tableInstance && this.args.column) {
+      return this.args.tableInstance.modifiers.columnHeader(element, [
+        this.args.column
+      ]);
+    }
+  });
+
   <template>
     <th
       class={{this.classNames}}
       data-test-id="table-column"
       data-component="table-column"
       data-key={{if @column @column.key @key}}
+      {{this.applyColumnModifier @column}}
       ...attributes
     >
       {{yield}}
