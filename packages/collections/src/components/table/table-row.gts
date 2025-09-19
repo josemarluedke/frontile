@@ -3,11 +3,9 @@ import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { TableCell } from './table-cell';
-import type { SlotsToClasses, TableSlots, Row, Column, Table } from './types';
-import type Owner from '@ember/owner';
-import { assert } from '@ember/debug';
 import { modifier } from 'ember-modifier';
 import type { FunctionBasedModifier } from 'ember-modifier';
+import type { SlotsToClasses, TableSlots, Row, Column, Table } from './types';
 
 interface TableRowSignature<T> {
   Args: {
@@ -55,19 +53,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     if (this.args.isSticky) return true;
 
     if (this.args.stickyKeys && this.args.row) {
-      // Universal-ember Row objects have structure: { data, table, index }
-      // Extract the actual data from the row wrapper
-      const row = this.args.row as Row<T>;
-      const actualData = row.data || row;
-
-      try {
-        const { key } = keyAndLabelForItem(actualData);
-        return this.args.stickyKeys.includes(key);
-      } catch (error) {
-        // Fallback: use the row index if key extraction fails
-        const fallbackKey = row.index?.toString() || '';
-        return this.args.stickyKeys.includes(fallbackKey);
-      }
+      return this.args.stickyKeys.includes(this.rowKey);
     }
 
     return false;

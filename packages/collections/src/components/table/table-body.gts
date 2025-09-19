@@ -4,11 +4,10 @@ import { useStyles, twMerge } from '@frontile/theme';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type { SlotsToClasses, TableSlots, Row, Column } from './types';
-import type { ContentValue } from '@glint/template';
 
 interface TableBodySignature<T> {
   Args: {
-    /** Array of universal-ember columns for automatic row generation */
+    /** Array of columns for automatic row generation */
     columns?: Column<T>[];
     /** Array of data rows to display as rows */
     rows?: Row<T>[];

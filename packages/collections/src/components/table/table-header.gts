@@ -6,7 +6,7 @@ import type { SlotsToClasses, TableSlots, Column } from './types';
 
 interface TableHeaderSignature<T = unknown> {
   Args: {
-    /** Array of universal-ember columns for automatic header generation */
+    /** Array of columns for automatic header generation */
     columns?: Column<T>[];
     /** Additional CSS class to apply to the header section */
     class?: string;

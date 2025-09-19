@@ -6,7 +6,7 @@ interface TableCellSignature<T = unknown> {
   Args: {
     /** The data row for this row (used for context) */
     row?: Row<T>;
-    /** Universal-ember column definition associated with this cell */
+    /** Column definition associated with this cell */
     column?: Column<T>;
     /** Additional CSS class to apply to the cell */
     class?: string;

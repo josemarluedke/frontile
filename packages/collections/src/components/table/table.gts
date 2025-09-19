@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { hash, get } from '@ember/helper';
+import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { TableHeader } from './table-header';
@@ -13,10 +13,12 @@ import { columns } from '@universal-ember/table/plugins';
 
 import type {
   ColumnConfig,
+  FrontilePluginOption,
   TableVariants,
   TableSlots,
   SlotsToClasses
 } from './types';
+import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<T> {
@@ -82,9 +84,34 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   TableColumn = TableColumn<T>;
   TableHeader = TableHeader<T>;
 
+  // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
+  processColumns(columns: ColumnConfig<T>[]): UniversalColumnConfig<T>[] {
+    return columns.map((column) => {
+      const { isSticky, stickyPosition, ...universalColumn } = column;
+
+      // If we have Frontile-specific sticky options, embed them in pluginOptions
+      if (isSticky !== undefined || stickyPosition !== undefined) {
+        const frontileOption: FrontilePluginOption = [
+          'frontile',
+          () => ({ isSticky, stickyPosition })
+        ];
+
+        return {
+          ...universalColumn,
+          pluginOptions: [
+            ...(universalColumn.pluginOptions || []),
+            frontileOption
+          ] as UniversalColumnConfig<T>['pluginOptions']
+        } as UniversalColumnConfig<T>;
+      }
+
+      return universalColumn as UniversalColumnConfig<T>;
+    });
+  }
+
   tableInstance = createHeadlessTable<T>(this, {
     data: () => this.args.items || [],
-    columns: () => this.args.columns || [],
+    columns: () => this.processColumns(this.args.columns || []),
     plugins: [
       // ColumnResizing,
       // ColumnVisibility
@@ -147,11 +174,9 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   }
 
   get items(): T[] {
-    // Universal-ember rows are the original data
     return this.tableInstance.rows.values() as T[];
   }
 
-  // Keep access to the raw universal-ember data for modifiers and rendering
   get headlessColumns() {
     return columns.for(this.tableInstance);
   }
