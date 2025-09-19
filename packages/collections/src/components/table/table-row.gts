@@ -1,11 +1,13 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
-import { modifier } from 'ember-modifier';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import { TableCell } from './table-cell';
-import type { SlotsToClasses, TableSlots, Row, Column } from './types';
-import type { ContentValue } from '@glint/template';
+import type { SlotsToClasses, TableSlots, Row, Column, Table } from './types';
+import type Owner from '@ember/owner';
+import { assert } from '@ember/debug';
+import { modifier } from 'ember-modifier';
+import type { FunctionBasedModifier } from 'ember-modifier';
 
 interface TableRowSignature<T> {
   Args: {
@@ -25,7 +27,7 @@ interface TableRowSignature<T> {
      * @internal Universal-ember table instance for accessing modifiers and behaviors
      * @ignore
      */
-    tableInstance?: any;
+    tableInstance?: Table<T>;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -49,8 +51,6 @@ interface TableRowSignature<T> {
 }
 
 class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
-  // No longer needed - using render functions instead of registration
-
   get isSticky(): boolean {
     if (this.args.isSticky) return true;
 
@@ -110,11 +110,28 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
     return this.args.columns || [];
   }
 
-  applyRowModifier = modifier((element: HTMLTableRowElement) => {
+  getRowModifier = (): FunctionBasedModifier<{
+    Args: {
+      Positional: [Row<T> | undefined];
+      Named: {};
+    };
+    Element: HTMLElement;
+  }> => {
     if (this.args.tableInstance && this.args.row) {
-      return this.args.tableInstance.modifiers.row(element, [this.args.row]);
+      return this.args.tableInstance.modifiers.row as FunctionBasedModifier<{
+        Args: {
+          Positional: [Row<T> | undefined];
+          Named: {};
+        };
+        Element: HTMLElement;
+      }>;
+    } else {
+      // noop modifier
+      return modifier(
+        (_element: HTMLElement, _positional: [Row<T> | undefined]) => {}
+      );
     }
-  });
+  };
 
   <template>
     <tr
@@ -122,7 +139,7 @@ class TableRow<T = unknown> extends Component<TableRowSignature<T>> {
       data-test-id="table-row"
       data-component="table-row"
       data-key={{this.rowKey}}
-      {{this.applyRowModifier @row}}
+      {{(this.getRowModifier) @row}}
       ...attributes
     >
       {{#if (has-block)}}

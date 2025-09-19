@@ -11,13 +11,13 @@ import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
 import type {
   ColumnConfig,
-  Column,
-  Row,
   TableVariants,
   TableSlots,
   SlotsToClasses
 } from './types';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
+
+import { columns } from '@universal-ember/table/plugins';
 
 interface TableSignature<T> {
   Args: {
@@ -62,7 +62,10 @@ interface TableSignature<T> {
           typeof TableFooter<T>,
           'styleFns' | 'classes' | 'columns'
         >;
-        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns' | 'tableInstance'>;
+        Column: WithBoundArgs<
+          typeof TableColumn<T>,
+          'styleFns' | 'tableInstance'
+        >;
         Row: WithBoundArgs<typeof TableRow<T>, 'styleFns'>;
         Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
       }
@@ -81,7 +84,10 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
 
   tableInstance = createHeadlessTable<T>(this, {
     data: () => this.args.items || [],
-    columns: () => this.args.columns || []
+    columns: () => this.args.columns || [],
+    plugins: [
+      // ColumnResizing,
+    ]
   });
 
   get styles() {
@@ -146,7 +152,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
 
   // Keep access to the raw universal-ember data for modifiers and rendering
   get headlessColumns() {
-    return this.tableInstance.columns.values();
+    return columns.for(this.tableInstance);
   }
 
   get headlessRows() {
@@ -190,7 +196,10 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                 columns=this.footerColumns
               )
               Column=(component
-                this.TableColumn styleFns=this.styles classes=this.args.classes tableInstance=this.tableInstance
+                this.TableColumn
+                styleFns=this.styles
+                classes=this.args.classes
+                tableInstance=this.tableInstance
               )
               Row=(component
                 this.TableRow
@@ -222,7 +231,11 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             @classes={{this.args.classes}}
           >
             {{#each this.headlessColumns as |column|}}
-              <this.TableColumn @column={{column}} @styleFns={{this.styles}} @tableInstance={{this.tableInstance}}>
+              <this.TableColumn
+                @column={{column}}
+                @styleFns={{this.styles}}
+                @tableInstance={{this.tableInstance}}
+              >
                 {{column.name}}
               </this.TableColumn>
             {{/each}}
@@ -285,7 +298,11 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
               @classes={{this.args.classes}}
             >
               {{#each this.footerColumns as |column|}}
-                <this.TableColumn @key={{column.key}} @styleFns={{this.styles}} @tableInstance={{this.tableInstance}}>
+                <this.TableColumn
+                  @key={{column.key}}
+                  @styleFns={{this.styles}}
+                  @tableInstance={{this.tableInstance}}
+                >
                   {{column.name}}
                 </this.TableColumn>
               {{/each}}
