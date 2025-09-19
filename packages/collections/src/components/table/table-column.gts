@@ -1,12 +1,13 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import { extractFrontileOptions } from './utils';
 import type { Column, Table } from './types';
 import type { FunctionBasedModifier } from 'ember-modifier';
 
 interface TableColumnSignature<T = unknown> {
   Args: {
-    /** Universal-ember column definition or Frontile column definition */
+    /** Column definition */
     column?: Column<T>;
     /** Additional CSS class to apply to the header cell */
     class?: string;
@@ -37,11 +38,15 @@ interface TableColumnSignature<T = unknown> {
 
 class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
   get isSticky(): boolean {
-    return this.args.isSticky ?? false;
+    const frontileOptions = extractFrontileOptions(this.args.column);
+    return frontileOptions?.isSticky ?? this.args.isSticky ?? false;
   }
 
   get stickyPosition(): 'left' | 'right' {
-    return this.args.stickyPosition ?? 'left';
+    const frontileOptions = extractFrontileOptions(this.args.column);
+    return (
+      frontileOptions?.stickyPosition ?? this.args.stickyPosition ?? 'left'
+    );
   }
 
   get styles() {
