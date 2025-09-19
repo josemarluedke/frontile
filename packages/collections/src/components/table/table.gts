@@ -2,13 +2,15 @@ import Component from '@glimmer/component';
 import { hash, get } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { TableHeader } from './table-header';
 import { TableBody } from './table-body';
 import { TableFooter } from './table-footer';
 import { TableColumn } from './table-column';
 import { TableRow } from './table-row';
 import { TableCell } from './table-cell';
+import { headlessTable as createHeadlessTable } from '@universal-ember/table';
+import { columns } from '@universal-ember/table/plugins';
+
 import type {
   ColumnConfig,
   TableVariants,
@@ -16,8 +18,6 @@ import type {
   SlotsToClasses
 } from './types';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
-
-import { columns } from '@universal-ember/table/plugins';
 
 interface TableSignature<T> {
   Args: {
@@ -87,6 +87,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     columns: () => this.args.columns || [],
     plugins: [
       // ColumnResizing,
+      // ColumnVisibility
     ]
   });
 
