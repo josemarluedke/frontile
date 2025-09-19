@@ -39,7 +39,12 @@ function changeOption(
     );
   }
 
-  const option = select.querySelector(`[data-key="${key}"]`) as
+  const escapedKey =
+    typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
+      ? CSS.escape(key)
+      : key;
+
+  const option = select.querySelector(`[data-key="${escapedKey}"]`) as
     | HTMLOptionElement
     | undefined;
   if (!option) {

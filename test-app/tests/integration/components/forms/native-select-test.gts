@@ -169,6 +169,37 @@ module(
       assert.equal(selectedKeys.current.length, 0);
     });
 
+    test('selectOptionByKey handles selecting the same option twice', async function (
+      assert
+    ) {
+      const animals = ['cheetah "fast"', 'crocodile'];
+      const selectedKey = cell<string | null>('cheetah "fast"');
+      const calls: (string | null)[] = [];
+
+      const onSelectionChange = (key: string | null) => {
+        calls.push(key);
+        selectedKey.current = key;
+      };
+
+      await render(
+        <template>
+          <NativeSelect
+            @items={{animals}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
+      );
+
+      await selectOptionByKey('[data-test-id="native-select"]', 'cheetah "fast"');
+
+      assert.deepEqual(
+        calls,
+        ['cheetah "fast"'],
+        'should trigger selection even when the option is already selected'
+      );
+    });
+
     test('it render dynamic items yielding of item', async function (assert) {
       const animals = [
         { key: 'cheetah-key', value: 'cheetah-value' },
