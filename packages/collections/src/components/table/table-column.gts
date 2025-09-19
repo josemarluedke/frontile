@@ -1,7 +1,8 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import type { Column, ColumnConfig } from './types';
+import type { Column, Table } from './types';
+import type { FunctionBasedModifier } from 'ember-modifier';
 
 interface TableColumnSignature<T = unknown> {
   Args: {
@@ -21,7 +22,7 @@ interface TableColumnSignature<T = unknown> {
      * @internal Universal-ember table instance for accessing modifiers and behaviors
      * @ignore
      */
-    tableInstance?: any;
+    tableInstance?: Table<T>;
     /**
      * @internal Style functions object from Table component
      * @ignore
@@ -35,8 +36,6 @@ interface TableColumnSignature<T = unknown> {
 }
 
 class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
-  // No longer needed - using render functions instead of registration
-
   get isSticky(): boolean {
     return this.args.isSticky ?? false;
   }
@@ -61,13 +60,29 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
     return this.styles.th(options);
   }
 
-  applyColumnModifier = modifier((element: HTMLTableCellElement) => {
+  getColumnModifier = (): FunctionBasedModifier<{
+    Args: {
+      Positional: [Column<T> | undefined];
+      Named: {};
+    };
+    Element: HTMLElement;
+  }> => {
     if (this.args.tableInstance && this.args.column) {
-      return this.args.tableInstance.modifiers.columnHeader(element, [
-        this.args.column
-      ]);
+      return this.args.tableInstance.modifiers
+        .columnHeader as FunctionBasedModifier<{
+        Args: {
+          Positional: [Column<T> | undefined];
+          Named: {};
+        };
+        Element: HTMLElement;
+      }>;
+    } else {
+      // noop modifier
+      return modifier(
+        (_element: HTMLElement, _positional: [Column<T> | undefined]) => {}
+      );
     }
-  });
+  };
 
   <template>
     <th
@@ -75,7 +90,7 @@ class TableColumn<T = unknown> extends Component<TableColumnSignature<T>> {
       data-test-id="table-column"
       data-component="table-column"
       data-key={{if @column @column.key @key}}
-      {{this.applyColumnModifier @column}}
+      {{(this.getColumnModifier) @column}}
       ...attributes
     >
       {{yield}}
