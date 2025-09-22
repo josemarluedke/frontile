@@ -273,7 +273,7 @@ const columns: ColumnConfig<Product>[] = [
   {
     key: 'price',
     name: 'Price',
-    // value receives typed CellContext<Product> parameter  
+    // value receives typed CellContext<Product> parameter
     value: (ctx) => `$${ctx.row.data.price.toFixed(2)}`
   }
 ];
@@ -647,15 +647,46 @@ Make columns or rows sticky to keep them visible during scrolling, perfect for l
 
 ### Sticky Columns
 
-Make columns sticky to keep them visible during horizontal scrolling:
+Make columns sticky to keep them visible during horizontal scrolling. You can define sticky behavior either in the column configuration or directly on components.
+
+#### Method 1: Column Configuration (Recommended)
+
+Define sticky columns directly in your column configuration:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table } from '@frontile/collections';
+import { Table, type ColumnConfig } from '@frontile/collections';
 import { hash } from '@ember/helper';
 
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  role: string;
+  location: string;
+  manager: string;
+}
+
 export default class DemoComponent extends Component {
-  items = [
+  columns: ColumnConfig<Employee>[] = [
+    {
+      key: 'id',
+      name: 'Employee ID',
+      isSticky: true,
+      stickyPosition: 'left'
+    },
+    { key: 'name', name: 'Full Name' },
+    { key: 'email', name: 'Email Address' },
+    { key: 'phone', name: 'Phone Number' },
+    { key: 'department', name: 'Department' },
+    { key: 'role', name: 'Job Title' },
+    { key: 'location', name: 'Office Location' },
+    { key: 'manager', name: 'Manager' }
+  ];
+
+  items: Employee[] = [
     {
       id: '001',
       name: 'John Doe',
@@ -685,6 +716,54 @@ export default class DemoComponent extends Component {
       role: 'Product Manager',
       location: 'Austin, TX',
       manager: 'Carol Davis'
+    }
+  ];
+
+  <template>
+    <div>
+      <h4 class='font-medium mb-2'>Sticky Employee ID column defined in
+        configuration</h4>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @isScrollable={{true}}
+        @classes={{hash wrapper='max-w-2xl'}}
+      />
+    </div>
+  </template>
+}
+```
+
+#### Method 2: Component-Level Configuration
+
+For manual composition, apply sticky properties directly to components:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table } from '@frontile/collections';
+import { hash } from '@ember/helper';
+
+export default class DemoComponent extends Component {
+  items = [
+    {
+      id: '001',
+      name: 'John Doe',
+      email: 'john.doe@company.com',
+      phone: '+1-555-0123',
+      department: 'Engineering',
+      role: 'Senior Developer',
+      location: 'San Francisco, CA',
+      manager: 'Alice Brown'
+    },
+    {
+      id: '002',
+      name: 'Jane Smith',
+      email: 'jane.smith@company.com',
+      phone: '+1-555-0124',
+      department: 'Design',
+      role: 'UI/UX Designer',
+      location: 'New York, NY',
+      manager: 'Bob Wilson'
     }
   ];
 
@@ -1086,9 +1165,20 @@ interface ColumnConfig<T = unknown> {
   name: string;
   /** Optional function to transform/compute column values */
   value?: (ctx: CellContext<T>) => ContentValue;
+  /** Whether this column should be sticky during horizontal scrolling */
+  isSticky?: boolean;
+  /** Position where the sticky column should stick. @default 'left' */
+  stickyPosition?: 'left' | 'right';
 }
 ```
 
-**Note**: `ColumnConfig` is imported from `@universal-ember/table` and provides the foundation for advanced table features like sorting and filtering. The `value` function receives a `CellContext<T>` parameter with structure `{ row: { data: T } }`.
+**Note**: `ColumnConfig` extends `@universal-ember/table`'s ColumnConfig and provides the foundation for advanced table features like sorting and filtering. The `value` function receives a `CellContext<T>` parameter with structure `{ row: { data: T } }`.
 
 **ContentValue** is a standard Glint type for values that are safe to render in templates, which includes: `string | number | boolean | null | undefined | SafeString`.
+
+#### Sticky Column Properties
+
+- **`isSticky`**: When `true`, the column will remain visible during horizontal scrolling
+- **`stickyPosition`**: Determines which side the column sticks to (`'left'` or `'right'`). Defaults to `'left'`
+
+These properties take precedence over component-level sticky settings when both are provided.
