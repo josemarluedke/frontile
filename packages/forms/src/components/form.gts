@@ -8,10 +8,7 @@ type FormResultData = ReturnType<typeof dataFrom>;
 interface FormSignature {
   Element: HTMLFormElement;
   Args: {
-    onChange?: (
-      data: FormResultData,
-      event: Event
-    ) => void;
+    onChange?: (data: FormResultData, event: Event) => void;
 
     onSubmit: (
       data: FormResultData,
@@ -41,7 +38,7 @@ class Form extends Component<FormSignature> {
       const data = dataFrom(event);
       await this.args.onSubmit(data, event);
     }
-  };
+  }
 
   <template>
     <form

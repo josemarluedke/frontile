@@ -38,11 +38,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
   hooks.beforeEach(async function () {
     await render(
       <template>
-        <Form
-          data-test-form
-          @onChange={{onChange}}
-          @onSubmit={{onSubmit}}
-        >
+        <Form data-test-form @onChange={{onChange}} @onSubmit={{onSubmit}}>
           <Input @name="firstName" />
           <Checkbox @name="acceptTerms" />
           <RadioGroup @name="interests" as |Radio|>
