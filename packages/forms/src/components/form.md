@@ -6,7 +6,7 @@ imports:
 
 # Form
 
-A powerful form wrapper component that automatically handles form data extraction and provides real-time updates on both input and submit events. It uses `form-data-utils` under the hood to serialize form data efficiently and supports all native HTML form elements as well as Frontile form components.
+A powerful form wrapper component that automatically handles form data extraction and provides real-time updates via dedicated `@onChange` and `@onSubmit` callbacks. It uses `form-data-utils` under the hood to serialize form data efficiently and supports all native HTML form elements as well as Frontile form components.
 
 ## Import
 
@@ -28,6 +28,7 @@ import { Button } from '@frontile/buttons';
 
 export default class BasicForm extends Component {
   @tracked formData: FormResultData = {};
+  @tracked submittedData: FormResultData = {};
   @tracked selectedCountry: string | null = null;
 
   countries = [
@@ -37,9 +38,14 @@ export default class BasicForm extends Component {
     { label: 'Australia', key: 'au' }
   ];
 
-  handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
+  handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
-    console.log(`Form ${eventType}:`, data);
+    console.log('Form input:', { data, event });
+  };
+
+  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
+    this.submittedData = data;
+    console.log('Form submit:', { data, event });
   };
 
   handleCountryChange = (selectedKey: string | null) => {
@@ -48,7 +54,10 @@ export default class BasicForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4 w-80'>
-      <Form @onChange={{this.handleFormChange}}>
+      <Form
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+      >
         <div class='flex flex-col gap-4'>
           <Input @name='firstName' @label='First Name' />
           <Input @name='lastName' @label='Last Name' />
@@ -69,9 +78,16 @@ export default class BasicForm extends Component {
         </div>
       </Form>
 
-      <div class='p-4 bg-default-50 rounded'>
-        <h4 class='font-medium mb-2'>Current Form Data:</h4>
-        <pre class='text-sm'>{{JSON.stringify this.formData null 2}}</pre>
+      <div class='grid gap-4'>
+        <div class='p-4 bg-default-50 rounded'>
+          <h4 class='font-medium mb-2'>Current Form Data:</h4>
+          <pre class='text-sm'>{{JSON.stringify this.formData null 2}}</pre>
+        </div>
+
+        <div class='p-4 bg-success-50 rounded'>
+          <h4 class='font-medium mb-2'>Last Submitted Data:</h4>
+          <pre class='text-sm'>{{JSON.stringify this.submittedData null 2}}</pre>
+        </div>
       </div>
     </div>
   </template>
@@ -106,16 +122,14 @@ export default class RealtimeForm extends Component {
     { label: 'Guest', key: 'guest' }
   ];
 
-  handleFormChange = (
-    data: FormResultData,
-    eventType: 'input' | 'submit',
-    event: Event | SubmitEvent
-  ) => {
-    if (eventType === 'input') {
-      this.inputData = data;
-    } else {
-      this.submitData = data;
-    }
+  handleFormChange = (data: FormResultData, event: Event) => {
+    this.inputData = data;
+    console.log('Input event:', { data, event });
+  };
+
+  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
+    this.submitData = data;
+    console.log('Submit event:', { data, event });
   };
 
   handleRoleChange = (selectedKey: string | null) => {
@@ -124,7 +138,10 @@ export default class RealtimeForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @onChange={{this.handleFormChange}}>
+      <Form
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+      >
         <div class='flex flex-col gap-4'>
           <Input
             @name='username'
@@ -225,9 +242,16 @@ export default class ComprehensiveForm extends Component {
     { label: 'Expert (10+ years)', key: 'expert' }
   ];
 
-  handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
+  handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
-    this.lastEventType = eventType;
+    this.lastEventType = 'input';
+    console.log('Form input:', { data, event });
+  };
+
+  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
+    this.formData = data;
+    this.lastEventType = 'submit';
+    console.log('Form submit:', { data, event });
   };
 
   handleSkillLevelChange = (selectedKey: string | null) => {
@@ -236,7 +260,10 @@ export default class ComprehensiveForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @onChange={{this.handleFormChange}}>
+      <Form
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+      >
         <div class='flex flex-col gap-4'>
 
           <div class='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -379,15 +406,11 @@ export default class ValidatedForm extends Component {
     )
   });
 
-  handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
+  handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
-
-    if (eventType === 'submit') {
-      this.handleSubmit(data);
-    } else {
-      // Real-time validation on input changes
-      this.validateField(data);
-    }
+    // Real-time validation on input changes
+    this.validateField(data);
+    console.log('Form input:', { data, event });
   };
 
   validateField = (data: FormResultData) => {
@@ -422,10 +445,12 @@ export default class ValidatedForm extends Component {
     }
   };
 
-  handleSubmit = async (data: FormResultData) => {
+  handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
+    this.formData = data;
     this.isSubmitting = true;
     this.errors = {};
     this.submitMessage = '';
+    console.log('Form submit:', { data, event });
 
     // Prepare data for validation
     const validationData = {
@@ -481,7 +506,10 @@ export default class ValidatedForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4 w-80'>
-      <Form @onChange={{this.handleFormChange}}>
+      <Form
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+      >
         <div class='flex flex-col gap-4'>
 
           <Input
@@ -565,25 +593,28 @@ export default class CustomHandlingForm extends Component {
   @tracked isSubmitting = false;
   @tracked submitCount = 0;
 
-  handleFormChange = (
-    data: FormResultData,
-    eventType: 'input' | 'submit',
-    event: Event | SubmitEvent
-  ) => {
+  handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
 
-    console.log('Form event:', {
-      eventType,
+    console.log('Form input event:', {
       data,
       timestamp: new Date(),
       target: event.target
     });
 
-    if (eventType === 'input') {
-      this.handleRealTimeValidation(data);
-    } else if (eventType === 'submit') {
-      this.handleFormSubmission(data, event as SubmitEvent);
-    }
+    this.handleRealTimeValidation(data);
+  };
+
+  handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
+    this.formData = data;
+
+    console.log('Form submit event:', {
+      data,
+      timestamp: new Date(),
+      target: event.target
+    });
+
+    await this.handleFormSubmission(data, event);
   };
 
   handleRealTimeValidation = (data: FormResultData) => {
@@ -683,7 +714,10 @@ export default class CustomHandlingForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @onChange={{this.handleFormChange}}>
+      <Form
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+      >
         <div class='flex flex-col gap-4'>
 
           <Input
@@ -739,9 +773,9 @@ export default class CustomHandlingForm extends Component {
 
 ### Event Handling
 
-- **Input Events**: Fired on every form input change for real-time updates
-- **Submit Events**: Fired when the form is submitted, with `preventDefault()` called automatically
-- Access to the original DOM event for advanced use cases
+- **`@onChange`**: Fired on every form input change for real-time updates and receives `(data, event)`
+- **`@onSubmit`**: Fired when the form is submitted with `preventDefault()` applied and receives `(data, submitEvent)`
+- Access to the original DOM event for advanced use cases in both handlers
 
 ### Data Types Support
 
@@ -771,14 +805,14 @@ FormSchema = v.object({
 });
 
 // Validate on both input and submit events
-handleFormChange = (data: FormResultData, eventType: 'input' | 'submit') => {
-  if (eventType === 'input') {
-    // Real-time validation for better UX
-    this.validateField(data);
-  } else {
-    // Comprehensive validation on submit
-    this.validateAndSubmit(data);
-  }
+handleFormChange = (data: FormResultData) => {
+  // Real-time validation for better UX
+  this.validateField(data);
+};
+
+handleFormSubmit = async (data: FormResultData) => {
+  // Comprehensive validation on submit
+  await this.validateAndSubmit(data);
 };
 
 validateAndSubmit = async (data: FormResultData) => {

@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { dataFrom } from 'form-data-utils';
 
@@ -7,11 +8,15 @@ type FormResultData = ReturnType<typeof dataFrom>;
 interface FormSignature {
   Element: HTMLFormElement;
   Args: {
-    onChange: (
+    onChange?: (
       data: FormResultData,
-      eventType: 'input' | 'submit',
-      event: Event | SubmitEvent
+      event: Event
     ) => void;
+
+    onSubmit: (
+      data: FormResultData,
+      event: SubmitEvent
+    ) => void | Promise<void>;
   };
   Blocks: {
     default: [];
@@ -19,20 +24,23 @@ interface FormSignature {
 }
 
 class Form extends Component<FormSignature> {
-  handleInput = (
-    event: Event | SubmitEvent,
-    eventType: 'input' | 'submit' = 'input'
-  ) => {
+  @action
+  handleInput(event: Event) {
     const form = event.currentTarget;
-    if (form instanceof HTMLFormElement) {
+    if (form instanceof HTMLFormElement && this.args.onChange) {
       const data = dataFrom(event);
-      this.args.onChange(data, eventType, event);
+      this.args.onChange(data, event);
     }
-  };
+  }
 
-  handleSubmit = (event: SubmitEvent) => {
+  @action
+  async handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    this.handleInput(event, 'submit');
+    const form = event.currentTarget;
+    if (form instanceof HTMLFormElement && this.args.onSubmit) {
+      const data = dataFrom(event);
+      await this.args.onSubmit(data, event);
+    }
   };
 
   <template>
