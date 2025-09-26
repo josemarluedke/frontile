@@ -366,7 +366,6 @@ import * as v from 'valibot';
 export default class ValidatedForm extends Component {
   @tracked formData: FormResultData = {};
   @tracked errors: Record<string, string[]> = {};
-  @tracked isSubmitting = false;
   @tracked submitMessage = '';
   @tracked selectedAccountType: string | null = null;
 
@@ -447,7 +446,6 @@ export default class ValidatedForm extends Component {
 
   handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
     this.formData = data;
-    this.isSubmitting = true;
     this.errors = {};
     this.submitMessage = '';
     console.log('Form submit:', { data, event });
@@ -485,8 +483,6 @@ export default class ValidatedForm extends Component {
       } else {
         this.submitMessage = 'An error occurred. Please try again.';
       }
-    } finally {
-      this.isSubmitting = false;
     }
   };
 
@@ -509,6 +505,7 @@ export default class ValidatedForm extends Component {
       <Form
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
+        as |form|
       >
         <div class='flex flex-col gap-4'>
 
@@ -554,8 +551,8 @@ export default class ValidatedForm extends Component {
             @isRequired={{true}}
           />
 
-          <Button type='submit' @isDisabled={{this.isSubmitting}} @class='mt-4'>
-            {{if this.isSubmitting 'Creating Account...' 'Create Account'}}
+          <Button type='submit' disabled={{form.isLoading}} @class='mt-4'>
+            {{if form.isLoading 'Creating Account...' 'Create Account'}}
           </Button>
         </div>
       </Form>
@@ -590,7 +587,6 @@ import { Button } from '@frontile/buttons';
 export default class CustomHandlingForm extends Component {
   @tracked formData: FormResultData = {};
   @tracked validationErrors: Record<string, string[]> = {};
-  @tracked isSubmitting = false;
   @tracked submitCount = 0;
 
   handleFormChange = (data: FormResultData, event: Event) => {
@@ -656,7 +652,6 @@ export default class CustomHandlingForm extends Component {
   };
 
   handleFormSubmission = async (data: FormResultData, event: SubmitEvent) => {
-    this.isSubmitting = true;
     this.submitCount += 1;
 
     // Comprehensive validation on submit
@@ -684,7 +679,6 @@ export default class CustomHandlingForm extends Component {
 
     if (Object.keys(errors).length > 0) {
       this.validationErrors = errors;
-      this.isSubmitting = false;
       return;
     }
 
@@ -697,10 +691,12 @@ export default class CustomHandlingForm extends Component {
       this.validationErrors = {};
     } catch (error) {
       console.error('Submission failed:', error);
-    } finally {
-      this.isSubmitting = false;
     }
   };
+
+  or(a: unknown, b:unknown) {
+    return a || b;
+  }
 
   get hasValidationErrors() {
     return (
@@ -708,15 +704,12 @@ export default class CustomHandlingForm extends Component {
     );
   }
 
-  get isSubmitDisabled() {
-    return this.isSubmitting || this.hasValidationErrors;
-  }
-
   <template>
     <div class='flex flex-col gap-4'>
       <Form
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
+        as |form|
       >
         <div class='flex flex-col gap-4'>
 
@@ -748,8 +741,8 @@ export default class CustomHandlingForm extends Component {
             @errors={{this.validationErrors.agreeToTerms}}
           />
 
-          <Button type='submit' disabled={{this.isSubmitDisabled}}>
-            {{#if this.isSubmitting}}
+          <Button type='submit' disabled={{this.or form.isLoading this.hasValidationErrors}}>
+            {{#if form.isLoading}}
               Submitting...
               {{this.submitCount}}
             {{else}}

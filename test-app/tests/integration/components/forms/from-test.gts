@@ -4,6 +4,7 @@ import {
   render,
   click,
   fillIn,
+  settled,
   triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
@@ -104,6 +105,43 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       country: 'Brazil',
       traveledTo: ['Argentina', 'Chile']
     });
+  });
+
+  test('it yields isLoading state during form submission', async function (assert) {
+    assert.expect(4);
+
+    let resolveSubmit!: () => void;
+    const onSubmitWithDelay = () =>
+      new Promise<void>((resolve) => {
+        resolveSubmit = resolve;
+      });
+
+    await render(
+      <template>
+        <Form data-test-form @onSubmit={{onSubmitWithDelay}} as |form|>
+          <button type="submit" disabled={{form.isLoading}} data-test-submit>
+            {{if form.isLoading "Submitting..." "Submit"}}
+          </button>
+        </Form>
+      </template>
+    );
+
+    assert.dom('[data-test-submit]').isNotDisabled();
+
+    const submission = click('[data-test-submit]');
+
+    // Wait for tracked state to flush to the DOM.
+    await settled();
+
+    assert.dom('[data-test-submit]').isDisabled();
+    assert.dom('[data-test-submit]').hasText('Submitting...');
+
+    resolveSubmit();
+
+    await submission;
+    await settled();
+
+    assert.dom('[data-test-submit]').isNotDisabled();
   });
 });
 
