@@ -20,14 +20,14 @@ interface FormSignature {
     /**
      * Optional callback invoked on input changes within the form.
      */
-    onChange?: (data: FormResultData, event: Event) => void;
+    onChange?: (data: FormResultData, event: Event) => Promise<void> | void;
     /**
      * Callback invoked on form submission.
      */
     onSubmit: (
       data: FormResultData,
       event: SubmitEvent
-    ) => void | Promise<void>;
+    ) => Promise<void> | void;
   };
   Blocks: {
     default: [FormContext];
