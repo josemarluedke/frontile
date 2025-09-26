@@ -570,7 +570,10 @@ const FormSchema = v.object({
 ### Step 3: Modern Form Implementation
 
 ```hbs
-<Form @onChange={{this.handleFormChange}}>
+<Form
+  @onChange={{this.handleFormChange}}
+  @onSubmit={{this.handleFormSubmit}}
+>
   <div class='flex flex-col gap-4'>
     <Input
       @name='firstName'
@@ -647,18 +650,13 @@ export default class MyFormComponent extends Component {
     )
   });
 
-  handleFormChange = (data, eventType) => {
+  handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
-
-    if (eventType === 'submit') {
-      this.handleSubmit(data);
-    } else {
-      // Real-time validation
-      this.validateForm(data);
-    }
+    // Real-time validation
+    this.validateForm(data);
   };
 
-  validateForm = (data) => {
+  validateForm = (data: FormResultData) => {
     const validationData = {
       ...data,
       country: this.selectedCountry
@@ -689,7 +687,7 @@ export default class MyFormComponent extends Component {
     }
   };
 
-  handleSubmit = async (data) => {
+  handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
     this.isSubmitting = true;
     this.errors = {};
 
@@ -719,7 +717,7 @@ export default class MyFormComponent extends Component {
     }
   };
 
-  formatValiError(valiError) {
+  formatValiError(valiError: v.ValiError) {
     const errors = {};
 
     for (const issue of valiError.issues) {
@@ -735,7 +733,7 @@ export default class MyFormComponent extends Component {
     return errors;
   }
 
-  setSelectedCountry = (key) => {
+  setSelectedCountry = (key: string | null) => {
     this.selectedCountry = key;
     // Clear country errors when selection is made
     if (key && this.errors.country) {

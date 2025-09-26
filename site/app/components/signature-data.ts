@@ -1964,12 +1964,23 @@ const data: ComponentDoc[] = [
     fileName: 'packages/forms/declarations/components/form.d.ts',
     Args: [
       {
+        identifier: 'onSubmit',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(data: Data, <span class="hljs-attr">event</span>: SubmitEvent) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(data: Data, <span class="hljs-attr">eventType</span>: <span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'input\'</span>, <span class="hljs-attr">event</span>: Event | SubmitEvent) => <span class="hljs-built_in">void</span>',
+          raw: '(data: Data, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>',
         },
-        isRequired: true,
+        isRequired: false,
         isInternal: false,
         description: '',
         tags: {},

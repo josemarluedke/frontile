@@ -496,7 +496,10 @@ onChange = (key) => {
 The new Form component provides automatic form data extraction and handling.
 
 ```hbs
-<Form @onChange={{this.handleFormChange}} @onSubmit={{this.handleSubmit}}>
+<Form
+  @onChange={{this.handleFormChange}}
+  @onSubmit={{this.handleFormSubmit}}
+>
   <Input @name='firstName' @label='First Name' />
   <Input @name='lastName' @label='Last Name' />
   <Textarea @name='bio' @label='Bio' />
@@ -506,17 +509,13 @@ The new Form component provides automatic form data extraction and handling.
 ```
 
 ```js
-handleFormChange = (data, eventType) => {
+handleFormChange = (data) => {
   // data contains all form field values automatically
-  console.log(data); // { firstName: "John", lastName: "Doe", bio: "..." }
-
-  if (eventType === 'input') {
-    // Handle real-time changes
-    this.formData = data;
-  }
+  this.formData = data;
+  console.log('Realtime data:', data);
 };
 
-handleSubmit = (data) => {
+handleFormSubmit = (data) => {
   // Handle form submission
   console.log('Submitting:', data);
 };

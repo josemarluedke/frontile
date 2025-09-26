@@ -25,16 +25,12 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
   const inputData = cell<FormResultData>();
   const submitData = cell<FormResultData>();
-  const onChange = (
-    data: FormResultData,
-    eventType: 'input' | 'submit',
-    _event: Event | SubmitEvent
-  ) => {
-    if (eventType === 'input') {
-      inputData.current = data;
-    } else {
-      submitData.current = data;
-    }
+  const onChange = (data: FormResultData, _event: Event) => {
+    inputData.current = data;
+  };
+
+  const onSubmit = async (data: FormResultData, _event: SubmitEvent) => {
+    submitData.current = data;
   };
 
   const countries = ['Argentina', 'Brazil', 'Chile', 'United States'];
@@ -42,7 +38,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
   hooks.beforeEach(async function () {
     await render(
       <template>
-        <Form data-test-form @onChange={{onChange}}>
+        <Form data-test-form @onChange={{onChange}} @onSubmit={{onSubmit}}>
           <Input @name="firstName" />
           <Checkbox @name="acceptTerms" />
           <RadioGroup @name="interests" as |Radio|>
