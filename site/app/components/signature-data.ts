@@ -1971,7 +1971,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description: 'Callback invoked on form submission.',
         tags: {},
       },
       {
@@ -1982,7 +1982,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Optional callback invoked on input changes within the form.',
         tags: {},
       },
     ],
@@ -1991,8 +1992,32 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[]',
-          items: [],
+          raw: '[FormContext]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'isLoading',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'Whether the form is currently submitting.',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'The context yielded to the default block of the `Form` component.',
+              tags: {},
+            },
+          ],
         },
         isRequired: true,
         isInternal: false,
@@ -2009,8 +2034,17 @@ const data: ComponentDoc[] = [
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/Array',
     },
-    description: '',
-    tags: {},
+    description:
+      'A form component that handles form submissions and input changes.',
+    tags: {
+      example: { name: 'example', value: '```hbs\n<Form' },
+      onSubmit: { name: 'onSubmit', value: '={{this.onSubmit}}' },
+      onChange: {
+        name: 'onChange',
+        value:
+          '={{this.onChange}}\nas |form|\n>\n<input name="firstName" />\n<input name="lastName" />\n<button type="submit" disabled={{form.isLoading}}>\n{{#if form.isLoading}}Submitting...{{else}}Submit{{/if}}\n</button>\n</Form>\n```',
+      },
+    },
   },
   {
     package: 'forms',
