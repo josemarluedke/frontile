@@ -1,13 +1,9 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import { TableHeader } from './table-header';
-import { TableBody } from './table-body';
-import { TableFooter } from './table-footer';
-import { TableColumn } from './table-column';
-import { TableRow } from './table-row';
-import { TableCell } from './table-cell';
+import { SimpleTable } from '../simple-table';
+import { extractFrontileOptions } from './utils';
+import { keyAndLabelForItem } from '../../utils/listManager';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
 
@@ -18,15 +14,19 @@ import type {
   TableSlots,
   SlotsToClasses
 } from './types';
-import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
+import type {
+  Column,
+  Row,
+  ColumnConfig as UniversalColumnConfig
+} from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<T> {
   Args: {
     /** Array of column configurations for automatic table generation */
-    columns?: ColumnConfig<T>[];
+    columns: ColumnConfig<T>[];
     /** Array of data items to display in the table */
-    items?: T[];
+    items: T[];
     /** Custom CSS classes for different table elements (wrapper, table, th, td, etc.) */
     classes?: SlotsToClasses<TableSlots>;
     /** Size variant for table cells and headers. @defaultValue 'md' */
@@ -50,42 +50,14 @@ interface TableSignature<T> {
   };
   Element: HTMLTableElement;
   Blocks: {
-    default: [
-      {
-        Header: WithBoundArgs<
-          typeof TableHeader<T>,
-          'styleFns' | 'classes' | 'columns'
-        >;
-        Body: WithBoundArgs<
-          typeof TableBody<T>,
-          'styleFns' | 'classes' | 'rows' | 'columns'
-        >;
-        Footer: WithBoundArgs<
-          typeof TableFooter<T>,
-          'styleFns' | 'classes' | 'columns'
-        >;
-        Column: WithBoundArgs<
-          typeof TableColumn<T>,
-          'styleFns' | 'tableInstance'
-        >;
-        Row: WithBoundArgs<typeof TableRow<T>, 'styleFns'>;
-        Cell: WithBoundArgs<typeof TableCell<T>, 'styleFns'>;
-      }
-    ];
+    default: never;
   };
 }
 
 class Table<T = unknown> extends Component<TableSignature<T>> {
-  // Needed to make glint happy with generic components
-  TableBody = TableBody<T>;
-  TableFooter = TableFooter<T>;
-  TableRow = TableRow<T>;
-  TableCell = TableCell<T>;
-  TableColumn = TableColumn<T>;
-  TableHeader = TableHeader<T>;
-
   // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
   processColumns(columns: ColumnConfig<T>[]): UniversalColumnConfig<T>[] {
+    if (!columns) return [];
     return columns.map((column) => {
       const { isSticky, stickyPosition, ...universalColumn } = column;
 
@@ -110,8 +82,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
   }
 
   tableInstance = createHeadlessTable<T>(this, {
-    data: () => this.args.items || [],
-    columns: () => this.processColumns(this.args.columns || []),
+    data: () => this.args.items,
+    columns: () => this.processColumns(this.args.columns),
     plugins: [
       // ColumnResizing,
       // ColumnVisibility
@@ -185,6 +157,39 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return this.tableInstance.rows.values();
   }
 
+  // Helper to check if a column is sticky
+  columnIsSticky = (column: Column<T>): boolean => {
+    const frontileOptions = extractFrontileOptions(column);
+    return frontileOptions?.isSticky ?? false;
+  };
+
+  // Helper to get column sticky position
+  columnStickyPosition = (column: Column<T>): 'left' | 'right' | undefined => {
+    const frontileOptions = extractFrontileOptions(column);
+    return frontileOptions?.stickyPosition;
+  };
+
+  // Helper to check if a row is sticky
+  rowIsSticky = (row: Row<T>): boolean => {
+    if (!this.args.stickyKeys) return false;
+    const rowKey = this.getRowKey(row);
+    return this.args.stickyKeys.includes(rowKey);
+  };
+
+  // Helper to get row key (from existing TableRow logic)
+  getRowKey = (row: any): string => {
+    if (row) {
+      const actualData = row.data || row;
+      try {
+        const { key } = keyAndLabelForItem(actualData);
+        return key;
+      } catch (error) {
+        return row.index?.toString() || '';
+      }
+    }
+    return '';
+  };
+
   <template>
     <div
       class={{this.wrapperClassNames}}
@@ -192,150 +197,71 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
       {{this.tableInstance.modifiers.container}}
       data-component="table-wrapper"
     >
-      {{#if (has-block)}}
-        {{! Block usage }}
-        <table
-          class={{this.tableClassNames}}
-          data-test-id="table"
-          data-component="table"
-          ...attributes
-        >
-          {{yield
-            (hash
-              Header=(component
-                this.TableHeader
-                styleFns=this.styles
-                classes=this.args.classes
-                columns=this.headlessColumns
-              )
-              Body=(component
-                this.TableBody
-                styleFns=this.styles
-                classes=this.args.classes
-                rows=this.headlessRows
-                columns=this.headlessColumns
-              )
-              Footer=(component
-                this.TableFooter
-                styleFns=this.styles
-                classes=this.args.classes
-                columns=this.footerColumns
-              )
-              Column=(component
-                this.TableColumn
-                styleFns=this.styles
-                classes=this.args.classes
-                tableInstance=this.tableInstance
-              )
-              Row=(component
-                this.TableRow
-                styleFns=this.styles
-                classes=this.args.classes
-                columns=this.headlessColumns
-                stickyKeys=@stickyKeys
-                isStickyHeader=@isStickyHeader
-                tableInstance=this.tableInstance
-              )
-              Cell=(component
-                this.TableCell styleFns=this.styles classes=this.args.classes
-              )
-            )
-          }}
-        </table>
-      {{else}}
-        {{! Automatic rendering }}
-        <table
-          class={{this.tableClassNames}}
-          data-test-id="table"
-          data-component="table"
-          ...attributes
-        >
-          <this.TableHeader
-            @columns={{this.headlessColumns}}
-            @isSticky={{@isStickyHeader}}
-            @styleFns={{this.styles}}
-            @classes={{this.args.classes}}
-          >
-            {{#each this.headlessColumns as |column|}}
-              <this.TableColumn
-                @column={{column}}
-                @styleFns={{this.styles}}
-                @tableInstance={{this.tableInstance}}
-              >
-                {{column.name}}
-              </this.TableColumn>
-            {{/each}}
-          </this.TableHeader>
-
-          <this.TableBody
-            @columns={{this.headlessColumns}}
-            @rows={{this.headlessRows}}
-            @styleFns={{this.styles}}
-            @classes={{this.args.classes}}
-          >
-            {{#each this.headlessRows as |row|}}
-              <this.TableRow
-                @row={{row}}
-                @columns={{this.headlessColumns}}
-                @stickyKeys={{@stickyKeys}}
-                @isStickyHeader={{@isStickyHeader}}
-                @styleFns={{this.styles}}
-                @classes={{this.args.classes}}
-                @tableInstance={{this.tableInstance}}
-              >
-                {{#each this.headlessColumns as |column|}}
-                  <this.TableCell
-                    @row={{row}}
-                    @column={{column}}
-                    @styleFns={{this.styles}}
-                    @classes={{this.args.classes}}
-                  >
-                    {{column.getValueForRow row}}
-                  </this.TableCell>
-                {{/each}}
-              </this.TableRow>
-            {{else}}
-              {{#if @emptyContent}}
-                <this.TableRow
-                  @styleFns={{this.styles}}
-                  @classes={{this.args.classes}}
-                  @tableInstance={{this.tableInstance}}
-                  data-test-id="table-empty-row"
-                >
-                  <this.TableCell
-                    colspan={{this.columns.length}}
-                    @styleFns={{this.styles}}
-                    @classes={{this.args.classes}}
-                    @class={{(this.styles.emptyCell)}}
-                    data-test-id="table-empty-cell"
-                  >
-                    {{@emptyContent}}
-                  </this.TableCell>
-                </this.TableRow>
-              {{/if}}
-            {{/each}}
-          </this.TableBody>
-
-          {{#if this.footerColumns.length}}
-            <this.TableFooter
-              @columns={{this.footerColumns}}
-              @isSticky={{@isStickyFooter}}
-              @styleFns={{this.styles}}
-              @classes={{this.args.classes}}
+      <SimpleTable
+        @classes={{this.args.classes}}
+        @size={{@size}}
+        @layout={{@layout}}
+        @isStriped={{@isStriped}}
+        @isScrollable={{@isScrollable}}
+        as |t|
+      >
+        <t.Header @isSticky={{@isStickyHeader}}>
+          {{#each this.headlessColumns as |column|}}
+            <t.Column
+              {{this.tableInstance.modifiers.columnHeader column}}
+              @isSticky={{this.columnIsSticky column}}
+              @stickyPosition={{this.columnStickyPosition column}}
+              data-key={{column.key}}
             >
-              {{#each this.footerColumns as |column|}}
-                <this.TableColumn
-                  @key={{column.key}}
-                  @styleFns={{this.styles}}
-                  @tableInstance={{this.tableInstance}}
+              {{column.name}}
+            </t.Column>
+          {{/each}}
+        </t.Header>
+
+        <t.Body>
+          {{#each this.headlessRows as |row|}}
+            <t.Row
+              {{this.tableInstance.modifiers.row row}}
+              @isSticky={{this.rowIsSticky row}}
+              @hasStickyHeader={{@isStickyHeader}}
+              data-key={{this.getRowKey row}}
+            >
+              {{#each this.headlessColumns as |column|}}
+                <t.Cell
+                  @isSticky={{this.columnIsSticky column}}
+                  @stickyPosition={{this.columnStickyPosition column}}
+                  @isInStickyRow={{this.rowIsSticky row}}
+                  data-column={{column.key}}
                 >
-                  {{column.name}}
-                </this.TableColumn>
+                  {{column.getValueForRow row}}
+                </t.Cell>
               {{/each}}
-            </this.TableFooter>
-          {{/if}}
-        </table>
-      {{/if}}
+            </t.Row>
+          {{else}}
+            {{#if @emptyContent}}
+              <t.Row data-test-id="table-empty-row">
+                <t.Cell
+                  colspan={{this.columns.length}}
+                  @class={{(this.styles.emptyCell)}}
+                  data-test-id="table-empty-cell"
+                >
+                  {{@emptyContent}}
+                </t.Cell>
+              </t.Row>
+            {{/if}}
+          {{/each}}
+        </t.Body>
+
+        {{#if this.footerColumns.length}}
+          <t.Footer @isSticky={{@isStickyFooter}}>
+            {{#each this.footerColumns as |column|}}
+              <t.Column data-key={{column.key}}>
+                {{column.name}}
+              </t.Column>
+            {{/each}}
+          </t.Footer>
+        {{/if}}
+      </SimpleTable>
     </div>
   </template>
 }

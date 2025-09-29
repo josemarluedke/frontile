@@ -1,24 +1,22 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
-import { TableColumn } from './table-column';
-import type { SlotsToClasses, TableSlots, Column } from './types';
+import { SimpleTableColumn } from './column';
+import type { SlotsToClasses, TableSlots } from '../table/types';
 
-interface TableHeaderSignature<T = unknown> {
+interface SimpleTableHeaderSignature {
   Args: {
-    /** Array of columns for automatic header generation */
-    columns?: Column<T>[];
     /** Additional CSS class to apply to the header section */
     class?: string;
     /** Whether the header should be sticky during vertical scrolling */
     isSticky?: boolean;
     /**
-     * @internal Style functions object from Table component
+     * @internal Style functions object from SimpleTable component
      * @ignore
      */
     styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
     /**
-     * @internal Classes object from Table component
+     * @internal Classes object from SimpleTable component
      * @ignore
      */
     classes?: SlotsToClasses<TableSlots>;
@@ -27,21 +25,20 @@ interface TableHeaderSignature<T = unknown> {
   Blocks: {
     default: [
       {
-        Column: typeof TableColumn;
-        columns: Column<T>[];
+        Column: typeof SimpleTableColumn;
       }
     ];
   };
 }
 
-class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
+class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
   get styles() {
     return this.args.styleFns || useStyles().table();
   }
 
   get classNames() {
     const options = {
-      isSticky: this.args.isSticky,
+      isSticky: this.args.isSticky || false,
       stickyPosition: this.args.isSticky ? ('top' as const) : undefined,
       class: twMerge(this.args.class, this.args.classes?.thead)
     };
@@ -57,10 +54,6 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
     return this.styles.tr(options);
   }
 
-  get columns(): Column<T>[] {
-    return this.args.columns || [];
-  }
-
   <template>
     <thead
       class={{this.classNames}}
@@ -69,19 +62,11 @@ class TableHeader<T = unknown> extends Component<TableHeaderSignature<T>> {
       ...attributes
     >
       <tr class={{this.rowClassNames}}>
-        {{#if (has-block)}}
-          {{yield (hash Column=TableColumn columns=this.columns)}}
-        {{else}}
-          {{#each @columns as |column|}}
-            <TableColumn @column={{column}}>
-              {{column.name}}
-            </TableColumn>
-          {{/each}}
-        {{/if}}
+        {{yield (hash Column=SimpleTableColumn)}}
       </tr>
     </thead>
   </template>
 }
 
-export { TableHeader, type TableHeaderSignature };
-export default TableHeader;
+export { SimpleTableHeader, type SimpleTableHeaderSignature };
+export default SimpleTableHeader;

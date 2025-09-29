@@ -83,49 +83,6 @@ module(
         .containsText('jane@example.com');
     });
 
-    test('it renders static table with manual components', async function (assert) {
-      const items: TestItem[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
-      ];
-
-      await render(
-        <template>
-          <Table as |t|>
-            <t.Header>
-              <t.Column>ID</t.Column>
-              <t.Column>Name</t.Column>
-              <t.Column>Email</t.Column>
-            </t.Header>
-            <t.Body>
-              {{#each items as |item|}}
-                <t.Row>
-                  <t.Cell>{{item.id}}</t.Cell>
-                  <t.Cell>{{item.name}}</t.Cell>
-                  <t.Cell>{{item.email}}</t.Cell>
-                </t.Row>
-              {{/each}}
-            </t.Body>
-          </Table>
-        </template>
-      );
-
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('[data-test-id="table-header"]').exists();
-      assert.dom('[data-test-id="table-body"]').exists();
-
-      // Check static columns
-      assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
-
-      // Check row content
-      assert.dom('[data-test-id="table-cell"]').exists({ count: 3 });
-
-      // Check cell content
-      const cells = document.querySelectorAll('[data-test-id="table-cell"]');
-      assert.dom(cells[0]).containsText('1');
-      assert.dom(cells[1]).containsText('John Doe');
-      assert.dom(cells[2]).containsText('john@example.com');
-    });
-
     test('it handles empty data', async function (assert) {
       const columns: ColumnConfig[] = [
         { key: 'id', name: 'ID' },
@@ -315,63 +272,6 @@ module(
         .doesNotExist();
     });
 
-    test('it renders with manual header composition', async function (assert) {
-      const items: TestItem[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
-      ];
-
-      await render(
-        <template>
-          <Table as |t|>
-            <t.Header>
-              <t.Column @class="custom-header">ID (Custom)</t.Column>
-              <t.Column @class="custom-header">Name (Custom)</t.Column>
-            </t.Header>
-            <t.Body>
-              {{#each items as |item|}}
-                <t.Row>
-                  <t.Cell>{{item.id}}</t.Cell>
-                  <t.Cell>{{item.name}}</t.Cell>
-                </t.Row>
-              {{/each}}
-            </t.Body>
-          </Table>
-        </template>
-      );
-
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('th.custom-header').exists({ count: 2 });
-      assert.dom('th.custom-header').containsText('ID (Custom)');
-    });
-
-    test('it supports manual cell composition', async function (assert) {
-      const items: TestItem[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
-      ];
-
-      await render(
-        <template>
-          <Table as |t|>
-            <t.Header>
-              <t.Column>ID</t.Column>
-              <t.Column>Name</t.Column>
-            </t.Header>
-            <t.Body>
-              {{#each items as |item|}}
-                <t.Row>
-                  <t.Cell @class="custom-cell">Custom: {{item.id}}</t.Cell>
-                  <t.Cell @class="custom-cell">Custom: {{item.name}}</t.Cell>
-                </t.Row>
-              {{/each}}
-            </t.Body>
-          </Table>
-        </template>
-      );
-
-      assert.dom('[data-test-id="table"]').exists();
-      assert.dom('td.custom-cell').exists({ count: 2 });
-      assert.dom('td.custom-cell').containsText('Custom: 1');
-    });
 
     test('it handles items with different data types', async function (assert) {
       const columns: ColumnConfig[] = [
@@ -636,56 +536,7 @@ module(
         .doesNotHaveClass('sticky');
     });
 
-    test('it supports sticky columns in block form', async function (assert) {
-      const items: TestItem[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
-      ];
-
-      await render(
-        <template>
-          <Table as |t|>
-            <t.Header>
-              <t.Column @isSticky={{true}} @stickyPosition="left">ID</t.Column>
-              <t.Column>Name</t.Column>
-              <t.Column
-                @isSticky={{true}}
-                @stickyPosition="right"
-              >Actions</t.Column>
-            </t.Header>
-            <t.Body>
-              {{#each items as |item|}}
-                <t.Row>
-                  <t.Cell
-                    @isSticky={{true}}
-                    @stickyPosition="left"
-                  >{{item.id}}</t.Cell>
-                  <t.Cell>{{item.name}}</t.Cell>
-                  <t.Cell
-                    @isSticky={{true}}
-                    @stickyPosition="right"
-                  >Edit</t.Cell>
-                </t.Row>
-              {{/each}}
-            </t.Body>
-          </Table>
-        </template>
-      );
-
-      // Check that sticky column classes are applied
-      const headers = document.querySelectorAll(
-        '[data-test-id="table-column"]'
-      );
-      assert.dom(headers[0]).hasClass('sticky');
-      assert.dom(headers[0]).hasClass('left-0');
-      assert.dom(headers[2]).hasClass('sticky');
-      assert.dom(headers[2]).hasClass('right-0');
-
-      const cells = document.querySelectorAll('[data-test-id="table-cell"]');
-      assert.dom(cells[0]).hasClass('sticky');
-      assert.dom(cells[0]).hasClass('left-0');
-      assert.dom(cells[2]).hasClass('sticky');
-      assert.dom(cells[2]).hasClass('right-0');
-    });
+    // Sticky column block form test moved to SimpleTable since Table no longer supports block usage
 
     test('it supports sticky rows by keys', async function (assert) {
       const columns: ColumnConfig[] = [
@@ -949,204 +800,11 @@ module(
         assert.dom('[data-test-id="table-body"] td.custom-td-class').exists();
       });
 
-      test('it applies class arguments to individual components in block form', async function (assert) {
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          }
-        ];
+      // Block form class tests moved to SimpleTable since Table no longer supports block usage
 
-        await render(
-          <template>
-            <Table as |t|>
-              <t.Header @class="custom-header-class">
-                <t.Column @class="custom-column-class">Name</t.Column>
-                <t.Column @class="custom-column-class">Email</t.Column>
-              </t.Header>
-              <t.Body @class="custom-body-class">
-                {{#each items as |item|}}
-                  <t.Row @class="custom-row-class">
-                    <t.Cell @class="custom-cell-class">{{item.name}}</t.Cell>
-                    <t.Cell @class="custom-cell-class">{{item.email}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-            </Table>
-          </template>
-        );
+      // Mixed class test moved to SimpleTable since Table no longer supports block usage
 
-        // Check that custom classes are applied
-        assert.dom('thead.custom-header-class').exists();
-        assert.dom('th.custom-column-class').exists({ count: 2 });
-        assert.dom('tbody.custom-body-class').exists();
-        assert.dom('tr.custom-row-class').exists();
-        assert.dom('td.custom-cell-class').exists({ count: 2 });
-      });
-
-      test('it supports mixed class arguments with component composition', async function (assert) {
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          }
-        ];
-
-        await render(
-          <template>
-            <Table @classes={{hash table="table-level-class"}} as |t|>
-              <t.Header>
-                <t.Column @class="header-column-class">Name</t.Column>
-              </t.Header>
-              <t.Body>
-                {{#each items as |item|}}
-                  <t.Row>
-                    <t.Cell @class="body-cell-class">{{item.name}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-            </Table>
-          </template>
-        );
-
-        // Check that both table-level and component-level classes are applied
-        assert.dom('[data-test-id="table"].table-level-class').exists();
-        assert.dom('th.header-column-class').exists();
-        assert.dom('td.body-cell-class').exists();
-      });
-
-      test('it merges @classes with @class arguments in manual composition', async function (assert) {
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            role: 'user'
-          }
-        ];
-        const footerColumns: ColumnConfig[] = [
-          { key: 'total', name: 'Total' },
-          { key: 'count', name: '2 items' }
-        ];
-
-        await render(
-          <template>
-            <Table
-              @classes={{hash
-                wrapper="table-level-wrapper"
-                table="table-level-table"
-                thead="table-level-thead"
-                tbody="table-level-tbody"
-                tfoot="table-level-tfoot"
-                tr="table-level-tr"
-                td="table-level-td"
-              }}
-              as |t|
-            >
-              <t.Header @class="component-level-header">
-                <t.Column @class="component-level-column-1">Name</t.Column>
-                <t.Column @class="component-level-column-2">Email</t.Column>
-              </t.Header>
-              <t.Body @class="component-level-body">
-                {{#each items as |item|}}
-                  <t.Row @class="component-level-row">
-                    <t.Cell
-                      @class="component-level-cell-1"
-                    >{{item.name}}</t.Cell>
-                    <t.Cell
-                      @class="component-level-cell-2"
-                    >{{item.email}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-              <t.Footer @class="component-level-footer">
-                {{#each footerColumns as |column|}}
-                  <t.Column
-                    @class="component-level-footer-column"
-                  >{{column.name}}</t.Column>
-                {{/each}}
-              </t.Footer>
-            </Table>
-          </template>
-        );
-
-        // Check that wrapper gets table-level class
-        assert
-          .dom('[data-component="table-wrapper"].table-level-wrapper')
-          .exists();
-
-        // Check that table gets table-level class
-        assert.dom('[data-test-id="table"].table-level-table').exists();
-
-        // Check that header gets both table-level and component-level classes merged
-        assert
-          .dom(
-            '[data-test-id="table-header"].table-level-thead.component-level-header'
-          )
-          .exists();
-
-        // Check that body gets both table-level and component-level classes merged
-        assert
-          .dom(
-            '[data-test-id="table-body"].table-level-tbody.component-level-body'
-          )
-          .exists();
-
-        // Check that footer gets both table-level and component-level classes merged
-        assert
-          .dom(
-            '[data-test-id="table-footer"].table-level-tfoot.component-level-footer'
-          )
-          .exists();
-
-        // Check that header columns get component-level classes
-        assert
-          .dom('[data-test-id="table-header"] th.component-level-column-1')
-          .exists();
-        assert
-          .dom('[data-test-id="table-header"] th.component-level-column-2')
-          .exists();
-
-        // Check that footer columns get component-level classes
-        assert
-          .dom('[data-test-id="table-footer"] th.component-level-footer-column')
-          .exists({ count: 2 });
-
-        // Check that rows get both table-level and component-level classes merged
-        assert
-          .dom(
-            '[data-test-id="table-body"] tr.table-level-tr.component-level-row'
-          )
-          .exists({ count: 2 });
-
-        // Check that cells get both table-level and component-level classes merged
-        assert
-          .dom(
-            '[data-test-id="table-body"] td.table-level-td.component-level-cell-1'
-          )
-          .exists({ count: 2 });
-        assert
-          .dom(
-            '[data-test-id="table-body"] td.table-level-td.component-level-cell-2'
-          )
-          .exists({ count: 2 });
-
-        // Check that header row gets table-level tr class
-        assert.dom('[data-test-id="table-header"] tr.table-level-tr').exists();
-
-        // Check that footer row gets table-level tr class
-        assert.dom('[data-test-id="table-footer"] tr.table-level-tr').exists();
-      });
+      // Manual composition class merging test moved to SimpleTable since Table no longer supports block usage
 
       test('it handles string classes correctly', async function (assert) {
         const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
@@ -1228,44 +886,9 @@ module(
           .exists();
       });
 
-      test('it merges classes with component-level classes in block form', async function (assert) {
-        const items: TestItem[] = [
-          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
-        ];
+      // Block form class merging test moved to SimpleTable since Table no longer supports block usage
 
-        await render(
-          <template>
-            <Table
-              @classes={{hash
-                thead="table-level-thead"
-                tbody="table-level-tbody"
-                tr="table-level-tr"
-                td="table-level-td"
-              }}
-              as |t|
-            >
-              <t.Header @class="component-level-thead">
-                <t.Column @class="component-level-th">Name</t.Column>
-              </t.Header>
-              <t.Body @class="component-level-tbody">
-                {{#each items as |item|}}
-                  <t.Row @class="component-level-tr">
-                    <t.Cell @class="component-level-td">{{item.name}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-            </Table>
-          </template>
-        );
-
-        // Check that both table-level and component-level classes are merged
-        assert.dom('thead.table-level-thead.component-level-thead').exists();
-        assert.dom('tbody.table-level-tbody.component-level-tbody').exists();
-        assert.dom('tr.table-level-tr.component-level-tr').exists();
-        assert.dom('td.table-level-td.component-level-td').exists();
-        assert.dom('th.component-level-th').exists();
-      });
-
+      // Test for @classes without block form - Table only supports automatic rendering now
       test('it works without @classes argument', async function (assert) {
         const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
@@ -1274,26 +897,14 @@ module(
 
         await render(
           <template>
-            <Table @columns={{columns}} @items={{items}} as |t|>
-              <t.Header @class="header-only-class">
-                <t.Column>Name</t.Column>
-              </t.Header>
-              <t.Body @class="body-only-class">
-                {{#each items as |item|}}
-                  <t.Row @class="row-only-class">
-                    <t.Cell @class="cell-only-class">{{item.name}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-            </Table>
+            <Table @columns={{columns}} @items={{items}} />
           </template>
         );
 
-        // Check that component-only classes still work
-        assert.dom('thead.header-only-class').exists();
-        assert.dom('tbody.body-only-class').exists();
-        assert.dom('tr.row-only-class').exists();
-        assert.dom('td.cell-only-class').exists();
+        // Table should render without errors
+        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-test-id="table-header"]').exists();
+        assert.dom('[data-test-id="table-body"]').exists();
       });
 
       test('it handles empty/null classes gracefully', async function (assert) {
@@ -1328,6 +939,7 @@ module(
         assert.dom('[data-test-id="table-column"]').exists();
       });
 
+      // Footer classes test - automatic rendering only
       test('it applies classes to all table elements with footer', async function (assert) {
         const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const items: TestItem[] = [
@@ -1344,29 +956,12 @@ module(
               @items={{items}}
               @footerColumns={{footerColumns}}
               @classes={{hash tfoot="footer-class" tr="shared-tr-class"}}
-              as |t|
-            >
-              <t.Header>
-                <t.Column>Name</t.Column>
-              </t.Header>
-              <t.Body>
-                {{#each items as |item|}}
-                  <t.Row>
-                    <t.Cell>{{item.name}}</t.Cell>
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-              <t.Footer @class="component-footer-class">
-                {{#each footerColumns as |column|}}
-                  <t.Column>{{column.name}}</t.Column>
-                {{/each}}
-              </t.Footer>
-            </Table>
+            />
           </template>
         );
 
-        // Check footer gets both internal and component classes
-        assert.dom('tfoot.footer-class.component-footer-class').exists();
+        // Check footer gets class
+        assert.dom('[data-test-id="table-footer"].footer-class').exists();
 
         // Check tr class is applied to all row types
         assert.dom('[data-test-id="table-header"] tr.shared-tr-class').exists();
@@ -1431,7 +1026,9 @@ module(
         assert.dom('[data-test-id="table-header"].only-valid-class').exists();
       });
 
-      test('it merges classes in manual composition with footerColumns', async function (assert) {
+      // Footer with automatic rendering test
+      test('it merges classes in automatic rendering with footerColumns', async function (assert) {
+        const columns: ColumnConfig[] = [{ key: 'name', name: 'Name' }];
         const footerColumns: ColumnConfig[] = [
           { key: 'total', name: 'Total' },
           { key: 'count', name: '1 item' }
@@ -1443,6 +1040,7 @@ module(
         await render(
           <template>
             <Table
+              @columns={{columns}}
               @footerColumns={{footerColumns}}
               @items={{items}}
               @classes={{hash tfoot="table-level-footer" tr="table-level-tr"}}
@@ -1456,280 +1054,7 @@ module(
       });
     });
 
-    module('Hybrid Approach - Three Usage Patterns', function () {
-      test('Pattern 1: Simple/Dynamic usage with @columns and @items', async function (assert) {
-        // This is the simplest pattern - just pass columns and items
-        const columns: ColumnConfig<TestItem>[] = [
-          { key: 'id', name: 'ID' },
-          { key: 'name', name: 'Name' },
-          { key: 'email', name: 'Email' }
-        ];
-
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            role: 'user'
-          }
-        ];
-
-        await render(
-          <template><Table @columns={{columns}} @items={{items}} /></template>
-        );
-
-        // Should render automatically without needing block content
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
-        assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
-        assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
-
-        // Should display correct data
-        assert
-          .dom('[data-test-id="table-column"][data-key="id"]')
-          .containsText('ID');
-        assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
-        assert.dom('[data-test-id="table-row"][data-key="2"]').exists();
-      });
-
-      test('Pattern 2: Manual Composition - no @columns/@items, full control', async function (assert) {
-        // This pattern gives complete manual control over rendering
-        await render(
-          <template>
-            <Table as |t|>
-              <t.Header>
-                <t.Column>Custom ID</t.Column>
-                <t.Column>Custom Name</t.Column>
-              </t.Header>
-              <t.Body>
-                <t.Row>
-                  <t.Cell>manual-1</t.Cell>
-                  <t.Cell>Manual Item 1</t.Cell>
-                </t.Row>
-                <t.Row>
-                  <t.Cell>manual-2</t.Cell>
-                  <t.Cell>Manual Item 2</t.Cell>
-                </t.Row>
-              </t.Body>
-            </Table>
-          </template>
-        );
-
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
-        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
-        assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
-
-        // Should show manual content
-        assert
-          .dom('[data-test-id="table-column"]:first-child')
-          .containsText('Custom ID');
-        assert
-          .dom('[data-test-id="table-column"]:last-child')
-          .containsText('Custom Name');
-        assert
-          .dom(
-            '[data-test-id="table-row"]:first-child [data-test-id="table-cell"]:first-child'
-          )
-          .containsText('manual-1');
-        assert
-          .dom(
-            '[data-test-id="table-row"]:last-child [data-test-id="table-cell"]:last-child'
-          )
-          .containsText('Manual Item 2');
-      });
-
-      test('Pattern 3a: Custom Headers, Automatic Body', async function (assert) {
-        // Test hybrid pattern with custom headers but automatic body
-        const columns: ColumnConfig<TestItem>[] = [
-          { key: 'id', name: 'ID' },
-          { key: 'name', name: 'Name' }
-        ];
-
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            role: 'user'
-          }
-        ];
-
-        await render(
-          <template>
-            <Table @columns={{columns}} @items={{items}} as |t|>
-              <t.Header as |h|>
-                {{#each h.columns as |column|}}
-                  <h.Column @column={{column}}>
-                    🔸
-                    {{column.name}}
-                  </h.Column>
-                {{/each}}
-              </t.Header>
-              <t.Body />
-            </Table>
-          </template>
-        );
-
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
-        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
-        assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
-
-        // Headers should be customized
-        assert
-          .dom('[data-test-id="table-column"][data-key="id"]')
-          .containsText('🔸 ID');
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .containsText('🔸 Name');
-
-        // Body should be automatic from @items
-        assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
-        assert.dom('[data-test-id="table-row"][data-key="2"]').exists();
-      });
-
-      test('Pattern 3b: Automatic Headers, Custom Body', async function (assert) {
-        // Test hybrid pattern with automatic headers but custom body
-        const columns: ColumnConfig<TestItem>[] = [
-          { key: 'name', name: 'Name' },
-          { key: 'role', name: 'Role' }
-        ];
-
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            email: 'jane@example.com',
-            role: 'user'
-          }
-        ];
-
-        await render(
-          <template>
-            <Table @columns={{columns}} @items={{items}} as |t|>
-              <t.Header />
-              <t.Body as |b|>
-                {{#each b.rows as |row|}}
-                  <t.Row @row={{row}} as |r|>
-                    {{#each r.columns as |column|}}
-                      <t.Cell @row={{row}} @column={{column}}>
-                        {{#if (eq column.key "name")}}
-                          👤
-                          {{column.getValueForRow row}}
-                        {{else}}
-                          {{column.getValueForRow row}}
-                          (custom)
-                        {{/if}}
-                      </t.Cell>
-                    {{/each}}
-                  </t.Row>
-                {{/each}}
-              </t.Body>
-            </Table>
-          </template>
-        );
-
-        assert.dom('[data-test-id="table"]').exists();
-        assert.dom('[data-test-id="table-header"]').exists();
-        assert.dom('[data-test-id="table-body"]').exists();
-        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
-        assert.dom('[data-test-id="table-row"]').exists({ count: 2 });
-
-        // Headers should be automatic from @columns
-        assert
-          .dom('[data-test-id="table-column"][data-key="name"]')
-          .containsText('Name');
-        assert
-          .dom('[data-test-id="table-column"][data-key="role"]')
-          .containsText('Role');
-
-        // Body content should be custom
-        assert
-          .dom(
-            '[data-test-id="table-row"][data-key="1"] [data-test-id="table-cell"]:first-child'
-          )
-          .containsText('👤 John Doe');
-        assert
-          .dom(
-            '[data-test-id="table-row"][data-key="1"] [data-test-id="table-cell"]:last-child'
-          )
-          .containsText('admin (custom)');
-        assert
-          .dom(
-            '[data-test-id="table-row"][data-key="2"] [data-test-id="table-cell"]:last-child'
-          )
-          .containsText('user (custom)');
-      });
-
-      test('Pattern compatibility: All patterns work with styling', async function (assert) {
-        const columns: ColumnConfig<TestItem>[] = [
-          { key: 'name', name: 'Name' }
-        ];
-
-        const items: TestItem[] = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            role: 'admin'
-          }
-        ];
-
-        const classes = {
-          wrapper: 'custom-wrapper',
-          table: 'custom-table',
-          th: 'custom-header',
-          td: 'custom-cell'
-        };
-
-        // Test all three patterns support @classes
-
-        // Pattern 1
-        await render(
-          <template>
-            <Table @columns={{columns}} @items={{items}} @classes={{classes}} />
-          </template>
-        );
-        assert.dom('.custom-wrapper').exists('Pattern 1 supports @classes');
-        assert.dom('.custom-table').exists('Pattern 1 applies table classes');
-
-        // Pattern 2
-        await render(
-          <template>
-            <Table @classes={{classes}} as |t|>
-              <t.Header><t.Column>Manual</t.Column></t.Header>
-              <t.Body><t.Row><t.Cell>Content</t.Cell></t.Row></t.Body>
-            </Table>
-          </template>
-        );
-        assert.dom('.custom-wrapper').exists('Pattern 2 supports @classes');
-        assert.dom('.custom-table').exists('Pattern 2 applies table classes');
-
-        // Skip Pattern 3 automatic body for now - known issue
-        assert.ok(true, 'Pattern 3 styling compatibility verified separately');
-      });
-    });
+    // Block-form and hybrid patterns removed - Table now only supports automatic rendering
+    // For manual composition, use SimpleTable component instead
   }
 );

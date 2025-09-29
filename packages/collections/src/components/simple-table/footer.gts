@@ -1,25 +1,22 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
-import { TableColumn } from './table-column';
-import type { SlotsToClasses, TableSlots, ColumnConfig } from './types';
-import type { WithBoundArgs } from '@glint/template';
+import { SimpleTableColumn } from './column';
+import type { SlotsToClasses, TableSlots } from '../table/types';
 
-interface TableFooterSignature<T = unknown> {
+interface SimpleTableFooterSignature {
   Args: {
-    /** Array of column configurations for automatic footer generation */
-    columns?: ColumnConfig<T>[];
     /** Additional CSS class to apply to the footer element */
     class?: string;
     /** Whether this footer should be sticky during vertical scrolling */
     isSticky?: boolean;
     /**
-     * @internal Style functions object from Table component
+     * @internal Style functions object from SimpleTable component
      * @ignore
      */
     styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
     /**
-     * @internal Classes object from Table component
+     * @internal Classes object from SimpleTable component
      * @ignore
      */
     classes?: SlotsToClasses<TableSlots>;
@@ -28,20 +25,20 @@ interface TableFooterSignature<T = unknown> {
   Blocks: {
     default: [
       {
-        Column: WithBoundArgs<typeof TableColumn<T>, 'styleFns'>;
+        Column: typeof SimpleTableColumn;
       }
     ];
   };
 }
 
-class TableFooter<T = unknown> extends Component<TableFooterSignature<T>> {
+class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
   get styles() {
     return this.args.styleFns || useStyles().table();
   }
 
   get classNames() {
     const options = {
-      isSticky: this.args.isSticky ?? false,
+      isSticky: this.args.isSticky || false,
       stickyPosition: this.args.isSticky ? ('bottom' as const) : undefined,
       class: twMerge(this.args.class, this.args.classes?.tfoot)
     };
@@ -65,19 +62,11 @@ class TableFooter<T = unknown> extends Component<TableFooterSignature<T>> {
       ...attributes
     >
       <tr class={{this.rowClassNames}}>
-        {{#if (has-block)}}
-          {{yield (hash Column=TableColumn)}}
-        {{else}}
-          {{#each @columns as |column|}}
-            <TableColumn @key={{column.key}}>
-              {{column.name}}
-            </TableColumn>
-          {{/each}}
-        {{/if}}
+        {{yield (hash Column=SimpleTableColumn)}}
       </tr>
     </tfoot>
   </template>
 }
 
-export { TableFooter, type TableFooterSignature };
-export default TableFooter;
+export { SimpleTableFooter, type SimpleTableFooterSignature };
+export default SimpleTableFooter;

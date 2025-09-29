@@ -1,13 +1,9 @@
 import Component from '@glimmer/component';
 import { useStyles, twMerge } from '@frontile/theme';
-import type { SlotsToClasses, TableSlots, Row, Column } from './types';
+import type { SlotsToClasses, TableSlots } from '../table/types';
 
-interface TableCellSignature<T = unknown> {
+interface SimpleTableCellSignature {
   Args: {
-    /** The data row for this row (used for context) */
-    row?: Row<T>;
-    /** Column definition associated with this cell */
-    column?: Column<T>;
     /** Additional CSS class to apply to the cell */
     class?: string;
     /** Whether this cell should be sticky during horizontal scrolling */
@@ -17,12 +13,12 @@ interface TableCellSignature<T = unknown> {
     /** Whether this cell is part of a sticky row (used for intersection styling) */
     isInStickyRow?: boolean;
     /**
-     * @internal Style functions object from Table component
+     * @internal Style functions object from SimpleTable component
      * @ignore
      */
     styleFns?: ReturnType<ReturnType<typeof useStyles>['table']>;
     /**
-     * @internal Classes object from Table component
+     * @internal Classes object from SimpleTable component
      * @ignore
      */
     classes?: SlotsToClasses<TableSlots>;
@@ -33,24 +29,16 @@ interface TableCellSignature<T = unknown> {
   };
 }
 
-class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
-  get isSticky(): boolean {
-    return this.args.isSticky ?? false;
-  }
-
-  get stickyPosition(): 'left' | 'right' {
-    return this.args.stickyPosition ?? 'left';
-  }
-
+class SimpleTableCell extends Component<SimpleTableCellSignature> {
   get styles() {
     return this.args.styleFns || useStyles().table();
   }
 
   get classNames() {
     const options = {
-      isSticky: this.isSticky,
-      stickyPosition: this.isSticky
-        ? (this.stickyPosition as 'left' | 'right')
+      isSticky: this.args.isSticky || false,
+      stickyPosition: this.args.isSticky
+        ? (this.args.stickyPosition as 'left' | 'right') || 'left'
         : undefined,
       isInStickyRow: this.args.isInStickyRow || false,
       class: twMerge(this.args.class || '', this.args.classes?.td || '')
@@ -64,7 +52,6 @@ class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
       class={{this.classNames}}
       data-test-id="table-cell"
       data-component="table-cell"
-      data-column={{if @column @column.key}}
       ...attributes
     >
       {{yield}}
@@ -72,5 +59,5 @@ class TableCell<T = unknown> extends Component<TableCellSignature<T>> {
   </template>
 }
 
-export { TableCell, type TableCellSignature };
-export default TableCell;
+export { SimpleTableCell, type SimpleTableCellSignature };
+export default SimpleTableCell;
