@@ -81,7 +81,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
           class={{this.tableClassNames}}
           data-test-id="table"
           data-component="table"
-          data-loading={{this.args.isLoading}}
+          data-loading={{if this.args.isLoading "true" "false"}}
           ...attributes
         >
           {{yield
@@ -111,7 +111,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
         class={{this.tableClassNames}}
         data-test-id="table"
         data-component="table"
-        data-loading={{this.args.isLoading}}
+        data-loading={{if this.args.isLoading "true" "false"}}
         ...attributes
       >
         {{yield
