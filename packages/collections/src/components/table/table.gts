@@ -56,6 +56,8 @@ interface TableSignature<
     isStickyFooter?: boolean;
     /** Enable loading state styling and behavior */
     isLoading?: boolean;
+    /** Color variant for loading animation. @defaultValue 'default' */
+    loadingColor?: TableVariants['loadingColor'];
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -164,6 +166,7 @@ class Table<
       isScrollable: this.args.isScrollable || false,
       hasStickyHeader: this.args.isStickyHeader || false,
       isLoading: this.args.isLoading || false,
+      loadingColor: this.args.loadingColor,
       class: this.args.classes?.base
     });
   }
@@ -295,6 +298,7 @@ class Table<
         @isScrollable={{@isScrollable}}
         @hasWrapper={{false}}
         @isLoading={{@isLoading}}
+        @loadingColor={{@loadingColor}}
         as |t|
       >
         <t.Header @isSticky={{@isStickyHeader}}>

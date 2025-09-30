@@ -54,6 +54,12 @@ class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
     return this.styles.tr(options);
   }
 
+  get separatorClassNames() {
+    return this.styles.separator({
+      class: this.args.classes?.separator
+    });
+  }
+
   <template>
     <tfoot
       class={{this.classNames}}
@@ -61,6 +67,7 @@ class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
       data-component="table-footer"
       ...attributes
     >
+      <tr class={{this.separatorClassNames}} />
       <tr class={{this.rowClassNames}}>
         {{yield (hash Column=SimpleTableColumn)}}
       </tr>
@@ -70,3 +77,4 @@ class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
 
 export { SimpleTableFooter, type SimpleTableFooterSignature };
 export default SimpleTableFooter;
+

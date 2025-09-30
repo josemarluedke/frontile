@@ -94,7 +94,8 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
             invalid: 'invalid="true"'
           },
           animation: {
-            loading: 'loading 1.5s linear infinite'
+            loading: 'loading 1.5s linear infinite',
+            swing: 'swing 2s ease-in-out infinite'
           },
           keyframes: {
             loading: {
@@ -103,6 +104,15 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
               },
               to: {
                 transform: 'translateX(200%) scaleX(3)'
+              }
+            },
+            swing: {
+              '0%, 100%': {
+                width: '50%',
+                transform: 'translateX(-25%)'
+              },
+              '50%': {
+                transform: 'translateX(125%)'
               }
             }
           }

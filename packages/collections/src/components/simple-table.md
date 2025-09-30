@@ -571,6 +571,107 @@ export default class DemoComponent extends Component {
 }
 ```
 
+## Loading State
+
+The SimpleTable component supports loading states with different color variants to indicate when data is being fetched or processed. Loading states provide visual feedback to users during async operations.
+
+```gts preview
+import Component from '@glimmer/component';
+import { SimpleTable } from '@frontile/collections';
+import { Select } from '@frontile/forms';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { on } from '@ember/modifier';
+import { Button } from '@frontile/buttons';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+}
+
+export default class DemoComponent extends Component {
+  @tracked isLoading = true;
+  @tracked loadingColor = 'primary';
+
+  items: Product[] = [
+    { id: '1', name: 'Wireless Headphones', price: 199.99, category: 'Electronics' },
+    { id: '2', name: 'Coffee Mug', price: 12.99, category: 'Kitchen' },
+    { id: '3', name: 'Notebook Set', price: 24.99, category: 'Office' }
+  ];
+
+  colorOptions = [
+    { key: 'default', name: 'Default' },
+    { key: 'primary', name: 'Primary' },
+    { key: 'success', name: 'Success' },
+    { key: 'warning', name: 'Warning' },
+    { key: 'danger', name: 'Danger' }
+  ];
+
+  @action
+  toggleLoading() {
+    this.isLoading = !this.isLoading;
+  }
+
+  @action
+  updateLoadingColor(color) {
+    this.loadingColor = color;
+  }
+
+  <template>
+    <div class='space-y-4'>
+      <div class='flex items-end space-x-4 justify-center'>
+        <Button
+          @onPress={{this.toggleLoading}}
+          @size='sm'
+          @appearance='outlined'
+          @intent={{if this.isLoading 'danger' 'primary'}}
+        >
+          {{if this.isLoading 'Stop Loading' 'Start Loading'}}
+        </Button>
+
+        <Select
+          @inputSize='sm'
+          @label='Color'
+          @items={{this.colorOptions}}
+          @selectedKey={{this.loadingColor}}
+          @onSelectionChange={{this.updateLoadingColor}}
+          class='w-32'
+        />
+      </div>
+
+      <SimpleTable @isLoading={{this.isLoading}} @loadingColor={{this.loadingColor}} as |t|>
+        <t.Header>
+          <t.Column>ID</t.Column>
+          <t.Column>Product</t.Column>
+          <t.Column>Price</t.Column>
+          <t.Column>Category</t.Column>
+        </t.Header>
+        <t.Body>
+          {{#each this.items as |item|}}
+            <t.Row>
+              <t.Cell>{{item.id}}</t.Cell>
+              <t.Cell>{{item.name}}</t.Cell>
+              <t.Cell>${{item.price}}</t.Cell>
+              <t.Cell>{{item.category}}</t.Cell>
+            </t.Row>
+          {{/each}}
+        </t.Body>
+      </SimpleTable>
+    </div>
+  </template>
+}
+```
+
+The loading feature supports five color variants:
+
+- **`default`** - Standard gray loading animation
+- **`primary`** - Uses the primary theme color
+- **`success`** - Green loading animation for success states
+- **`warning`** - Orange/yellow loading animation for warnings
+- **`danger`** - Red loading animation for error states
+
 ## API
 
 <Signature @component="SimpleTable" />

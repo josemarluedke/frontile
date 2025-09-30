@@ -27,6 +27,8 @@ interface SimpleTableSignature {
     hasWrapper?: boolean;
     /** Enable loading state styling and behavior */
     isLoading?: boolean;
+    /** Color variant for loading animation. @defaultValue 'default' */
+    loadingColor?: TableVariants['loadingColor'];
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -57,6 +59,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
       isScrollable: this.args.isScrollable || false,
       hasStickyHeader: false, // Will be determined by header component
       isLoading: this.args.isLoading || false,
+      loadingColor: this.args.loadingColor,
       class: this.args.classes?.base
     });
   }

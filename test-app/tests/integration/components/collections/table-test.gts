@@ -2002,5 +2002,103 @@ module(
           .doesNotExist();
       });
     });
+
+    // Loading Tests
+    module('Loading Functionality', function () {
+      test('it supports loading state', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{true}} />
+          </template>
+        );
+
+        // Table should render with loading state
+        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+        assert.dom('[data-test-id="table-cell"]').exists();
+      });
+
+      test('it supports loading state with color variants', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        const colors = [
+          'default',
+          'primary',
+          'success',
+          'warning',
+          'danger'
+        ] as const;
+
+        for (const color of colors) {
+          await render(
+            <template>
+              <Table
+                @columns={{columns}}
+                @items={{items}}
+                @isLoading={{true}}
+                @loadingColor={{color}}
+              />
+            </template>
+          );
+
+          // Table should render with loading state and color variant
+          assert.dom('[data-test-id="table"]').exists();
+          assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+          assert.dom('[data-test-id="table-cell"]').exists();
+        }
+      });
+
+      test('it disables loading state when isLoading is false', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{false}}
+              @loadingColor="primary"
+            />
+          </template>
+        );
+
+        // Table should not have loading state
+        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-test-id="table"][data-loading="false"]').exists();
+        assert.dom('[data-test-id="table-cell"]').exists();
+      });
+    });
   }
 );

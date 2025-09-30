@@ -3,23 +3,24 @@ import { tv, type VariantProps } from '../tw';
 const table = tv({
   slots: {
     base: ['w-full', 'caption-bottom', 'text-sm'],
-    wrapper: [
-      'relative',
-      'isolate',
-      'overflow-auto',
-      'border',
-      'border-default-200',
-      'rounded-lg'
+    wrapper: ['relative', 'isolate', 'overflow-auto'],
+    table: ['w-full', 'table-auto'],
+    thead: ['relative'],
+    tbody: [
+      'divide-y',
+      'divide-default-100',
+      '[&>tr]:data-[selectable=true]:hover:bg-default-50',
+      '[&>tr]:data-[selectable=true]:focus-visible:outline-primary'
     ],
-    table: ['w-full', 'table-auto', 'border-collapse'],
-    thead: ['border-b', 'border-default-200'],
-    tbody: ['[&_tr:last-child]:border-0'],
-    tfoot: ['border-t', 'border-default-200'],
-    tr: [
-      'border-b',
-      'border-default-100',
-      'transition-colors',
-      'data-[state=selected]:bg-default-100'
+    tfoot: ['relative'],
+    tr: ['data-[selected=true]:bg-default-50'],
+    separator: [
+      'absolute',
+      'z-2',
+      'left-0',
+      'w-full',
+      'h-px',
+      'bg-default-200'
     ],
     th: [
       'h-12',
@@ -54,7 +55,24 @@ const table = tv({
       }
     },
     isLoading: {
-      true: {}
+      true: {
+        thead: [
+          'after:absolute',
+          'after:top-full',
+          'after:left-0',
+          'after:w-1/2',
+          'after:animate-swing',
+          'after:h-px',
+          'after:z-10'
+        ]
+      }
+    },
+    loadingColor: {
+      default: {},
+      primary: {},
+      success: {},
+      warning: {},
+      danger: {}
     },
     layout: {
       auto: {
@@ -170,11 +188,48 @@ const table = tv({
       class: {
         td: ['sticky', 'right-0', 'z-2', 'bg-background']
       }
+    },
+    // Loading states with color variants
+    {
+      isLoading: true,
+      loadingColor: 'default',
+      class: {
+        thead: `after:bg-default`
+      }
+    },
+    {
+      isLoading: true,
+      loadingColor: 'primary',
+      class: {
+        thead: `after:bg-primary`
+      }
+    },
+    {
+      isLoading: true,
+      loadingColor: 'success',
+      class: {
+        thead: `after:bg-success`
+      }
+    },
+    {
+      isLoading: true,
+      loadingColor: 'warning',
+      class: {
+        thead: `after:bg-warning`
+      }
+    },
+    {
+      isLoading: true,
+      loadingColor: 'danger',
+      class: {
+        thead: `after:bg-danger`
+      }
     }
   ],
   defaultVariants: {
     size: 'md',
-    layout: 'auto'
+    layout: 'auto',
+    loadingColor: 'default'
   }
 });
 

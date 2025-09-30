@@ -229,5 +229,54 @@ module(
       assert.dom('[data-test-id="table"]').exists();
       assert.dom('[data-test-id="table-cell"]').exists();
     });
+
+    test('it supports loading state', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @isLoading={{true}} as |t|>
+            <t.Header>
+              <t.Column>Name</t.Column>
+            </t.Header>
+            <t.Body>
+              <t.Row>
+                <t.Cell>Content</t.Cell>
+              </t.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // The table should render successfully with loading state
+      assert.dom('[data-test-id="table"]').exists();
+      assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+      assert.dom('[data-test-id="table-cell"]').exists();
+    });
+
+    test('it supports loading state with color variants', async function (assert) {
+      const colors = ['default', 'primary', 'success', 'warning', 'danger'];
+
+      for (const color of colors) {
+        // Re-render with each color variant
+        await render(
+          <template>
+            <SimpleTable @isLoading={{true}} @loadingColor={{color}} as |t|>
+              <t.Header>
+                <t.Column>Name</t.Column>
+              </t.Header>
+              <t.Body>
+                <t.Row>
+                  <t.Cell>Content for {{color}}</t.Cell>
+                </t.Row>
+              </t.Body>
+            </SimpleTable>
+          </template>
+        );
+
+        // The table should render successfully with loading color variant
+        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+        assert.dom('[data-test-id="table-cell"]').containsText(`Content for ${color}`);
+      }
+    });
   }
 );

@@ -54,6 +54,12 @@ class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
     return this.styles.tr(options);
   }
 
+  get separatorClassNames() {
+    return this.styles.separator({
+      class: this.args.classes?.separator
+    });
+  }
+
   <template>
     <thead
       class={{this.classNames}}
@@ -64,9 +70,11 @@ class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
       <tr class={{this.rowClassNames}}>
         {{yield (hash Column=SimpleTableColumn)}}
       </tr>
+      <tr class={{this.separatorClassNames}} />
     </thead>
   </template>
 }
 
 export { SimpleTableHeader, type SimpleTableHeaderSignature };
 export default SimpleTableHeader;
+
