@@ -23,6 +23,8 @@ interface SimpleTableSignature {
     isStriped?: TableVariants['striped'];
     /** Enable scrolling for the table container */
     isScrollable?: boolean;
+    /** Whether to render the wrapper div. @defaultValue true */
+    hasWrapper?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -40,6 +42,10 @@ interface SimpleTableSignature {
 }
 
 class SimpleTable extends Component<SimpleTableSignature> {
+  get hasWrapper() {
+    return this.args.hasWrapper ?? true;
+  }
+
   get styles() {
     const { table } = useStyles();
     return table({
@@ -63,7 +69,37 @@ class SimpleTable extends Component<SimpleTableSignature> {
   }
 
   <template>
-    <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+    {{#if this.hasWrapper}}
+      <div class={{this.wrapperClassNames}} data-component="table-wrapper">
+        <table
+          class={{this.tableClassNames}}
+          data-test-id="table"
+          data-component="table"
+          ...attributes
+        >
+          {{yield
+            (hash
+              Header=(component
+                SimpleTableHeader styleFns=this.styles classes=this.args.classes
+              )
+              Body=(component
+                SimpleTableBody styleFns=this.styles classes=this.args.classes
+              )
+              Footer=(component
+                SimpleTableFooter styleFns=this.styles classes=this.args.classes
+              )
+              Column=(component SimpleTableColumn styleFns=this.styles)
+              Row=(component
+                SimpleTableRow styleFns=this.styles classes=this.args.classes
+              )
+              Cell=(component
+                SimpleTableCell styleFns=this.styles classes=this.args.classes
+              )
+            )
+          }}
+        </table>
+      </div>
+    {{else}}
       <table
         class={{this.tableClassNames}}
         data-test-id="table"
@@ -91,7 +127,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
           )
         }}
       </table>
-    </div>
+    {{/if}}
   </template>
 }
 

@@ -667,6 +667,151 @@ export default class DemoComponent extends Component {
 }
 ```
 
+## Toolbar & Column Visibility
+
+The Table component supports a toolbar area that can render additional controls and features before the table content. The most common use case is providing column visibility controls to let users show/hide columns interactively.
+
+### Basic Toolbar Usage
+
+Use the `toolbar` named block to add controls above your table:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnConfig<User>[] = [
+    { key: 'id', name: 'ID', isVisible: true },
+    { key: 'name', name: 'Name', isVisible: true },
+    { key: 'email', name: 'Email', isVisible: false },
+    { key: 'role', name: 'Role', isVisible: true }
+  ];
+
+  items: User[] = [
+    { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor' }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:toolbar as |t|>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">User Management</h3>
+          <t.ColumnVisibility />
+        </div>
+      </:toolbar>
+    </Table>
+  </template>
+}
+```
+
+### Column Visibility
+
+The ColumnVisibility component allows users to interactively show and hide columns. It integrates with the universal-ember ColumnVisibility plugin to provide persistent state management.
+
+#### Setting Initial Visibility
+
+Control which columns are visible by default using the `isVisible` property in your column configuration:
+
+```ts
+columns: ColumnConfig<User>[] = [
+  { key: 'id', name: 'ID', isVisible: true },
+  { key: 'name', name: 'Name', isVisible: true },
+  { key: 'email', name: 'Email', isVisible: false }, // Hidden by default
+  { key: 'role', name: 'Role', isVisible: true }
+];
+```
+
+#### Custom Icon
+
+You can provide a custom icon for the ColumnVisibility trigger button using the `icon` named block:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+}
+
+export default class DemoComponent extends Component {
+  columns: ColumnConfig<Product>[] = [
+    { key: 'name', name: 'Product Name', isVisible: true },
+    { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}`, isVisible: true },
+    { key: 'category', name: 'Category', isVisible: false }
+  ];
+
+  items: Product[] = [
+    { id: '1', name: 'Laptop', price: 99.99, category: 'Electronics' },
+    { id: '2', name: 'Coffee Mug', price: 12.99, category: 'Kitchen' },
+    { id: '3', name: 'Notebook', price: 4.99, category: 'Office' }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:toolbar as |t|>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold">Products</h3>
+          <t.ColumnVisibility>
+            <:icon>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 12h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 18h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0" />
+              </svg>
+            </:icon>
+            <:default>
+              Manage Columns
+            </:default>
+          </t.ColumnVisibility>
+        </div>
+      </:toolbar>
+    </Table>
+  </template>
+}
+```
+
+### Features
+
+The ColumnVisibility component provides:
+
+- **Multi-select interface** - Users can select multiple columns to show/hide
+- **Show All / Hide All actions** - Quick bulk operations
+- **Persistent state** - Column visibility state is managed by the universal-ember plugin
+- **Automatic integration** - No additional event handling required
+- **Dropdown interface** - Built using Frontile's Dropdown and Listbox components
+
+### Advanced Toolbar Usage
+
+You can add multiple controls to the toolbar area:
+
+```gts
+<Table @columns={{this.columns}} @items={{this.items}}>
+  <:toolbar as |t|>
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-4">
+        <h3 class="text-lg font-semibold">Data Table</h3>
+        <span class="text-sm text-gray-500">{{this.items.length}} items</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button type="button" class="btn btn-sm">Export</button>
+        <button type="button" class="btn btn-sm">Filter</button>
+        <t.ColumnVisibility />
+      </div>
+    </div>
+  </:toolbar>
+</Table>
+```
+
 ## Performance & Best Practices
 
 ### Large Datasets
@@ -715,6 +860,8 @@ interface ColumnConfig<T = unknown> {
   isSticky?: boolean;
   /** Position where the sticky column should stick. @default 'left' */
   stickyPosition?: 'left' | 'right';
+  /** Whether this column should be visible by default */
+  isVisible?: boolean;
 }
 ```
 
@@ -728,3 +875,9 @@ interface ColumnConfig<T = unknown> {
 - **`stickyPosition`**: Determines which side the column sticks to (`'left'` or `'right'`). Defaults to `'left'`
 
 These properties take precedence over component-level sticky settings when both are provided.
+
+#### Column Visibility Properties
+
+- **`isVisible`**: Controls whether the column is visible by default when using the ColumnVisibility feature. When `undefined`, columns are visible by default
+
+This property integrates with the universal-ember ColumnVisibility plugin to provide persistent column state management.

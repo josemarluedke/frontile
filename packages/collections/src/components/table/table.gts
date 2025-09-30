@@ -1,11 +1,14 @@
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { SimpleTable } from '../simple-table';
 import { extractFrontileOptions } from './utils';
 import { keyAndLabelForItem } from '../../utils/listManager';
+import ColumnVisibilityComponent from './column-visibility';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
+import { ColumnVisibility } from '@universal-ember/table/plugins/column-visibility';
 
 import type {
   ColumnConfig,
@@ -51,33 +54,48 @@ interface TableSignature<T> {
   Element: HTMLTableElement;
   Blocks: {
     default: never;
+    toolbar: [
+      {
+        ColumnVisibility: WithBoundArgs<
+          typeof ColumnVisibilityComponent<T>,
+          'tableInstance'
+        >;
+      }
+    ];
   };
 }
 
 class Table<T = unknown> extends Component<TableSignature<T>> {
+  ColumnVisibility = ColumnVisibilityComponent<T>;
+
   // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
   processColumns(columns: ColumnConfig<T>[]): UniversalColumnConfig<T>[] {
     if (!columns) return [];
     return columns.map((column) => {
-      const { isSticky, stickyPosition, ...universalColumn } = column;
+      const { isSticky, stickyPosition, isVisible, ...universalColumn } =
+        column;
 
-      // If we have Frontile-specific sticky options, embed them in pluginOptions
+      const pluginOptions: any[] = [...(universalColumn.pluginOptions || [])];
+
+      // Add Frontile sticky options if present
       if (isSticky !== undefined || stickyPosition !== undefined) {
         const frontileOption: FrontilePluginOption = [
           'frontile',
           () => ({ isSticky, stickyPosition })
         ];
-
-        return {
-          ...universalColumn,
-          pluginOptions: [
-            ...(universalColumn.pluginOptions || []),
-            frontileOption
-          ] as UniversalColumnConfig<T>['pluginOptions']
-        } as UniversalColumnConfig<T>;
+        pluginOptions.push(frontileOption);
       }
 
-      return universalColumn as UniversalColumnConfig<T>;
+      // Add ColumnVisibility plugin option if isVisible is explicitly set
+      if (isVisible !== undefined) {
+        pluginOptions.push(ColumnVisibility.forColumn(() => ({ isVisible })));
+      }
+
+      return {
+        ...universalColumn,
+        pluginOptions:
+          pluginOptions as UniversalColumnConfig<T>['pluginOptions']
+      } as UniversalColumnConfig<T>;
     });
   }
 
@@ -85,8 +103,8 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     data: () => this.args.items,
     columns: () => this.processColumns(this.args.columns),
     plugins: [
+      ColumnVisibility
       // ColumnResizing,
-      // ColumnVisibility
     ]
   });
 
@@ -197,12 +215,26 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
       {{this.tableInstance.modifiers.container}}
       data-component="table-wrapper"
     >
+      {{#if (has-block "toolbar")}}
+        <div class="table-toolbar" data-component="table-toolbar">
+          {{yield
+            (hash
+              ColumnVisibility=(component
+                this.ColumnVisibility tableInstance=this.tableInstance
+              )
+            )
+            to="toolbar"
+          }}
+        </div>
+      {{/if}}
+
       <SimpleTable
         @classes={{this.args.classes}}
         @size={{@size}}
         @layout={{@layout}}
         @isStriped={{@isStriped}}
         @isScrollable={{@isScrollable}}
+        @hasWrapper={{false}}
         as |t|
       >
         <t.Header @isSticky={{@isStickyHeader}}>
@@ -241,7 +273,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
             {{#if @emptyContent}}
               <t.Row data-test-id="table-empty-row">
                 <t.Cell
-                  colspan={{this.columns.length}}
+                  colspan={{this.headlessColumns.length}}
                   @class={{(this.styles.emptyCell)}}
                   data-test-id="table-empty-cell"
                 >

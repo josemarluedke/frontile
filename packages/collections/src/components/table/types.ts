@@ -24,6 +24,8 @@ export interface ColumnConfig<T = unknown> extends UniversalColumnConfig<T> {
   isSticky?: boolean;
   /** Position where the sticky column should stick. @default 'left' */
   stickyPosition?: 'left' | 'right';
+  /** Whether this column should be visible. @default true */
+  isVisible?: boolean;
 }
 
 export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };
