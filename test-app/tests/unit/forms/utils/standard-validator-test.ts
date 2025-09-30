@@ -57,6 +57,44 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     assert.ok(ageIssue, 'Should have an issue for age below minimum');
   });
 
+  test('validate works with nested schema fields', async function (assert) {
+    assert.expect(3);
+
+    const UserSchema = v.object({
+      name: v.string(),
+      profile: v.object({
+        age: v.pipe(v.number(), v.minValue(18)),
+        contact: v.object({
+          email: v.pipe(v.string(), v.email())
+        })
+      })
+    });
+
+    const invalidData = {
+      name: 'John',
+      profile: {
+        age: 16,
+        contact: {
+          email: 'invalid-email'
+        }
+      }
+    };
+
+    const result = await StandardValidator.validate(invalidData, UserSchema);
+
+    assert.ok(result, 'Should have validation issues for nested fields');
+    assert.strictEqual(
+      result?.length,
+      2,
+      'Should have 2 issues from nested validation'
+    );
+
+    const hasNestedErrors = result?.some(
+      (issue) => issue.path && issue.path.length > 1
+    );
+    assert.ok(hasNestedErrors, 'Should have errors with nested paths');
+  });
+
   test('validateField returns undefined for valid field data', async function (assert) {
     assert.expect(3);
     const UserSchema = v.object({
@@ -217,6 +255,56 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     );
   });
 
+  test('validateField works with nested fields using dot notation', async function (assert) {
+    assert.expect(4);
+
+    const UserSchema = v.object({
+      profile: v.object({
+        age: v.pipe(v.number(), v.minValue(18)),
+        contact: v.object({
+          email: v.pipe(v.string(), v.email()),
+          phone: v.pipe(v.string(), v.minLength(10))
+        })
+      })
+    });
+
+    const data = {
+      profile: {
+        age: 16, // Invalid
+        contact: {
+          email: 'invalid', // Invalid
+          phone: '123' // Invalid
+        }
+      }
+    };
+
+    // Validate nested email field
+    const emailResult = await StandardValidator.validateField(
+      data,
+      'profile.contact.email',
+      UserSchema
+    );
+    assert.ok(emailResult, 'Should have error for invalid nested email');
+    assert.strictEqual(
+      emailResult?.length,
+      1,
+      'Should have exactly one email error'
+    );
+
+    // Validate nested age field
+    const ageResult = await StandardValidator.validateField(
+      data,
+      'profile.age',
+      UserSchema
+    );
+    assert.ok(ageResult, 'Should have error for invalid nested age');
+    assert.strictEqual(
+      ageResult?.length,
+      1,
+      'Should have exactly one age error'
+    );
+  });
+
   test('validateCustom works for valid and invalid data', async function (assert) {
     assert.expect(7);
     // Custom validator that checks if age is between 18 and 65
@@ -319,6 +407,160 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     assert.ok(emailResult, 'Should have email issues');
     assert.strictEqual(emailResult?.length, 1, 'Should have exactly one issue');
     assert.strictEqual(emailResult?.[0]?.message, 'Invalid email');
+  });
+
+  test('validateCustom works with deeply nested field validation', async function (assert) {
+    assert.expect(4);
+
+    const customValidator = async (data: {
+      user?: {
+        profile?: {
+          settings?: {
+            notifications?: {
+              email?: boolean;
+              sms?: boolean;
+            };
+            privacy?: {
+              shareProfile?: boolean;
+            };
+          };
+        };
+      };
+    }) => {
+      const issues = [];
+
+      // Validate deeply nested notification settings
+      if (data.user?.profile?.settings?.notifications) {
+        const notif = data.user.profile.settings.notifications;
+
+        if (!notif.email && !notif.sms) {
+          issues.push({
+            message: 'At least one notification method must be enabled',
+            path: [
+              { key: 'user' },
+              { key: 'profile' },
+              { key: 'settings' },
+              { key: 'notifications' }
+            ]
+          });
+        }
+      }
+
+      // Validate deeply nested privacy settings
+      if (data.user?.profile?.settings?.privacy?.shareProfile === undefined) {
+        issues.push({
+          message: 'Privacy preference must be set',
+          path: [
+            { key: 'user' },
+            { key: 'profile' },
+            { key: 'settings' },
+            { key: 'privacy' },
+            { key: 'shareProfile' }
+          ]
+        });
+      }
+
+      return issues.length > 0 ? issues : undefined;
+    };
+
+    const invalidData = {
+      user: {
+        profile: {
+          settings: {
+            notifications: {
+              email: false,
+              sms: false
+            },
+            privacy: {}
+          }
+        }
+      }
+    };
+
+    const result = await StandardValidator.validateCustom(
+      invalidData,
+      customValidator
+    );
+
+    assert.ok(result, 'Should have validation issues for nested fields');
+    assert.strictEqual(result?.length, 2, 'Should have 2 validation issues');
+
+    // Check that all errors have deeply nested paths
+    const allDeeplyNested = result?.every(
+      (issue) => issue.path && issue.path.length >= 4
+    );
+    assert.ok(allDeeplyNested, 'All errors should have deeply nested paths');
+
+    // Verify we can filter these nested errors
+    if (result) {
+      const notificationErrors = StandardValidator.filterFieldIssues(
+        result,
+        'user.profile.settings.notifications'
+      );
+      assert.ok(
+        notificationErrors?.length === 1,
+        'Should filter deeply nested notification errors'
+      );
+    }
+  });
+
+  test('validateFieldCustom works with nested fields using dot notation', async function (assert) {
+    assert.expect(3);
+
+    const customValidator = async (data: {
+      profile?: {
+        age?: number;
+        contact?: {
+          email?: string;
+        };
+      };
+    }) => {
+      const issues = [];
+
+      // Validate nested profile.age field
+      if (data.profile?.age && data.profile.age < 21) {
+        issues.push({
+          message: 'Must be 21 or older',
+          path: [{ key: 'profile' }, { key: 'age' }]
+        });
+      }
+
+      // Validate nested profile.contact.email field
+      if (
+        data.profile?.contact?.email &&
+        !data.profile.contact.email.endsWith('@company.com')
+      ) {
+        issues.push({
+          message: 'Must use company email',
+          path: [{ key: 'profile' }, { key: 'contact' }, { key: 'email' }]
+        });
+      }
+
+      return issues.length > 0 ? issues : undefined;
+    };
+
+    const data = {
+      profile: {
+        age: 18,
+        contact: {
+          email: 'user@example.com'
+        }
+      }
+    };
+
+    // Validate only nested email field with dot notation
+    const emailResult = await StandardValidator.validateFieldCustom(
+      data,
+      'profile.contact.email',
+      customValidator
+    );
+    assert.ok(emailResult, 'Should have email validation issue');
+    assert.strictEqual(
+      emailResult?.length,
+      1,
+      'Should have exactly one email issue'
+    );
+    assert.strictEqual(emailResult?.[0]?.message, 'Must use company email');
   });
 
   test('validateAll merges schema and custom validation errors', async function (assert) {
@@ -500,6 +742,74 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     );
   });
 
+  test('validateAll works with nested fields', async function (assert) {
+    assert.expect(5);
+
+    const schema = v.object({
+      user: v.object({
+        profile: v.object({
+          personal: v.object({
+            age: v.pipe(v.number(), v.minValue(18)),
+            name: v.pipe(v.string(), v.minLength(2))
+          }),
+          contact: v.object({
+            email: v.pipe(v.string(), v.email()),
+            phone: v.pipe(v.string(), v.minLength(10))
+          })
+        })
+      })
+    });
+
+    const invalidData = {
+      user: {
+        profile: {
+          personal: {
+            age: 16, // Invalid
+            name: 'J' // Invalid
+          },
+          contact: {
+            email: 'not-email', // Invalid
+            phone: '123' // Invalid
+          }
+        }
+      }
+    };
+
+    const result = await StandardValidator.validateAll(invalidData, schema);
+
+    assert.ok(result, 'Should have validation issues');
+    assert.strictEqual(result?.length, 4, 'Should have 4 validation errors');
+
+    // Verify each nested field has an error with proper path
+    const fields = ['age', 'name', 'email', 'phone'];
+    const allFieldsHaveErrors = fields.every((field) =>
+      result?.some((issue) =>
+        issue.path?.some((p) =>
+          typeof p === 'object' && 'key' in p ? p.key === field : p === field
+        )
+      )
+    );
+    assert.ok(allFieldsHaveErrors, 'All nested fields should have errors');
+
+    // Check that paths are properly nested (length > 1)
+    const allErrorsAreNested = result?.every(
+      (issue) => issue.path && issue.path.length > 1
+    );
+    assert.ok(allErrorsAreNested, 'All errors should have nested paths');
+
+    // Verify we can filter a specific deeply nested field
+    if (result) {
+      const emailErrors = StandardValidator.filterFieldIssues(
+        result,
+        'user.profile.contact.email'
+      );
+      assert.ok(
+        emailErrors?.length === 1,
+        'Should be able to filter deeply nested field errors'
+      );
+    }
+  });
+
   test('validateFieldAll merges schema and custom errors for single field only', async function (assert) {
     assert.expect(5);
     // Schema validation
@@ -583,6 +893,88 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     );
   });
 
+  test('validateFieldAll works with nested fields using dot notation', async function (assert) {
+    assert.expect(4);
+
+    // Schema validation for nested fields
+    const schema = v.object({
+      profile: v.object({
+        contact: v.object({
+          email: v.pipe(v.string(), v.email()),
+          phone: v.pipe(v.string(), v.minLength(10))
+        })
+      })
+    });
+
+    // Custom validator for additional nested field rules
+    const customValidator = async (data: {
+      profile?: {
+        contact?: {
+          email?: string;
+          phone?: string;
+        };
+      };
+    }) => {
+      const issues = [];
+
+      if (
+        data.profile?.contact?.email &&
+        !data.profile.contact.email.endsWith('@company.com')
+      ) {
+        issues.push({
+          message: 'Must use company email',
+          path: [{ key: 'profile' }, { key: 'contact' }, { key: 'email' }]
+        });
+      }
+
+      if (
+        data.profile?.contact?.phone &&
+        !data.profile.contact.phone.startsWith('+1')
+      ) {
+        issues.push({
+          message: 'Must be US phone number',
+          path: [{ key: 'profile' }, { key: 'contact' }, { key: 'phone' }]
+        });
+      }
+
+      return issues.length > 0 ? issues : undefined;
+    };
+
+    const data = {
+      profile: {
+        contact: {
+          email: 'invalid', // Fails both schema and custom
+          phone: '555-1234' // Fails both schema and custom
+        }
+      }
+    };
+
+    // Validate only nested email field - should get errors from both validators
+    const emailResult = await StandardValidator.validateFieldAll(
+      data,
+      'profile.contact.email',
+      schema,
+      customValidator
+    );
+
+    assert.ok(emailResult, 'Should have nested email validation issues');
+    assert.strictEqual(
+      emailResult?.length,
+      2,
+      'Should have 2 email issues (1 schema + 1 custom)'
+    );
+
+    const hasSchemaError = emailResult?.some(
+      (issue) => !issue.message?.includes('company')
+    );
+    const hasCustomError = emailResult?.some(
+      (issue) => issue.message === 'Must use company email'
+    );
+
+    assert.ok(hasSchemaError, 'Should have schema validation error for email');
+    assert.ok(hasCustomError, 'Should have custom validation error for email');
+  });
+
   test('filterFieldIssues returns only issues for specified field', function (assert) {
     assert.expect(6);
     const issues = [
@@ -609,5 +1001,143 @@ module('Unit | Forms | StandardValidator', function (hooks) {
       phoneIssues,
       'Should return undefined for field with no issues'
     );
+  });
+
+  test('filterFieldIssues works with nested fields using dot notation', function (assert) {
+    assert.expect(5);
+
+    const issues = [
+      { message: 'Age too low', path: [{ key: 'profile' }, { key: 'age' }] },
+      {
+        message: 'Invalid email',
+        path: [{ key: 'profile' }, { key: 'contact' }, { key: 'email' }]
+      },
+      {
+        message: 'Phone too short',
+        path: [{ key: 'profile' }, { key: 'contact' }, { key: 'phone' }]
+      },
+      { message: 'Name required', path: [{ key: 'name' }] }
+    ];
+    // Test filtering nested field with dot notation
+    const emailIssues = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.contact.email'
+    );
+    assert.ok(emailIssues, 'Should find nested email field');
+    assert.strictEqual(
+      emailIssues?.length,
+      1,
+      'Should return exactly one email issue'
+    );
+    assert.strictEqual(emailIssues?.[0]?.message, 'Invalid email');
+
+    // Test filtering another nested field
+    const ageIssues = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.age'
+    );
+    assert.ok(ageIssues, 'Should find nested age field');
+    assert.strictEqual(ageIssues?.[0]?.message, 'Age too low');
+  });
+
+  test('filterFieldIssues handles mixed path segment types correctly', function (assert) {
+    assert.expect(4);
+
+    const issues = [
+      // Path with mixed segment types: string and object formats
+      {
+        message: 'Email invalid',
+        path: ['profile', { key: 'contact' }, { key: 'email' }]
+      },
+      {
+        message: 'Phone invalid',
+        path: [{ key: 'profile' }, 'contact', { key: 'phone' }]
+      },
+      {
+        message: 'Age invalid',
+        path: ['user', 'profile', { key: 'age' }]
+      },
+      {
+        message: 'Name invalid',
+        path: [{ key: 'user' }, { key: 'name' }]
+      }
+    ];
+
+    // Test filtering with mixed segment types in path
+    const emailIssues = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.contact.email'
+    );
+    assert.ok(emailIssues, 'Should find field with mixed segment types');
+    assert.strictEqual(
+      emailIssues?.length,
+      1,
+      'Should match exactly one issue'
+    );
+
+    const phoneIssues = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.contact.phone'
+    );
+    assert.ok(
+      phoneIssues,
+      'Should find field with different mixed segment pattern'
+    );
+    assert.strictEqual(phoneIssues?.[0]?.message, 'Phone invalid');
+  });
+
+  test('filterFieldIssues correctly distinguishes between similar nested paths', function (assert) {
+    assert.expect(6);
+
+    const issues = [
+      { message: 'Email 1 invalid', path: [{ key: 'email' }] }, // top-level email
+      {
+        message: 'Email 2 invalid',
+        path: [{ key: 'profile' }, { key: 'email' }]
+      }, // profile.email
+      {
+        message: 'Email 3 invalid',
+        path: [{ key: 'profile' }, { key: 'contact' }, { key: 'email' }]
+      }, // profile.contact.email
+      {
+        message: 'Email 4 invalid',
+        path: [{ key: 'user' }, { key: 'contact' }, { key: 'email' }]
+      }, // user.contact.email
+      { message: 'Contact invalid', path: [{ key: 'contact' }] }, // top-level contact
+      { message: 'Profile invalid', path: [{ key: 'profile' }] } // top-level profile
+    ];
+
+    // Test that simple 'email' only matches top-level email
+    const topLevelEmail = StandardValidator.filterFieldIssues(issues, 'email');
+    assert.strictEqual(
+      topLevelEmail?.length,
+      1,
+      'Should match only top-level email'
+    );
+    assert.strictEqual(topLevelEmail?.[0]?.message, 'Email 1 invalid');
+
+    // Test that 'profile.email' only matches that specific path
+    const profileEmail = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.email'
+    );
+    assert.strictEqual(
+      profileEmail?.length,
+      1,
+      'Should match only profile.email'
+    );
+    assert.strictEqual(profileEmail?.[0]?.message, 'Email 2 invalid');
+
+    // Test that 'profile.contact.email' only matches that specific nested path
+    const nestedEmail = StandardValidator.filterFieldIssues(
+      issues,
+      'profile.contact.email'
+    );
+    assert.strictEqual(
+      nestedEmail?.length,
+      1,
+      'Should match only profile.contact.email'
+    );
+    assert.strictEqual(nestedEmail?.[0]?.message, 'Email 3 invalid');
   });
 });

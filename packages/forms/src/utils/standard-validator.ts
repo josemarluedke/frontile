@@ -204,9 +204,11 @@ class StandardValidator {
 
   /**
    * Filters issues to those related to the specified field name.
+   * Supports both simple field names and dotted notation for nested fields.
    *
    * @param issues The issues to filter.
-   * @param fieldName The name of the field to filter by.
+   * @param fieldName The name of the field to filter by (e.g., "email" or
+   *        "profile.contact.email").
    * @returns The issues related to the specified field, or undefined if
    *          there are none.
    */
@@ -214,20 +216,25 @@ class StandardValidator {
     issues: Issues,
     fieldName: string
   ): Issues | undefined {
+    const fieldParts = fieldName.split('.');
+
     const fieldIssues = issues.filter((issue) => {
-      if (!issue.path) {
-        return false;
-      }
-      return issue.path.some((segment) => {
-        if (typeof segment === 'object' && 'key' in segment) {
-          return segment.key === fieldName;
-        }
-        return segment === fieldName;
-      });
+      if (!issue.path) return false;
+
+      // Extract keys from path segments
+      const pathKeys = issue.path
+        .map((s) => (typeof s === 'object' && 'key' in s ? s.key : s))
+        .filter(Boolean);
+
+      // For exact path matching:
+      // The paths must be the same length and match exactly
+      return (
+        pathKeys.length === fieldParts.length &&
+        pathKeys.every((key, i) => key === fieldParts[i])
+      );
     });
-    if (fieldIssues.length > 0) {
-      return fieldIssues;
-    }
+
+    return fieldIssues.length > 0 ? fieldIssues : undefined;
   }
 }
 
