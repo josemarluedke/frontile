@@ -25,6 +25,8 @@ interface SimpleTableSignature {
     isScrollable?: boolean;
     /** Whether to render the wrapper div. @defaultValue true */
     hasWrapper?: boolean;
+    /** Enable loading state styling and behavior */
+    isLoading?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -54,6 +56,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
       striped: this.args.isStriped,
       isScrollable: this.args.isScrollable || false,
       hasStickyHeader: false, // Will be determined by header component
+      isLoading: this.args.isLoading || false,
       class: this.args.classes?.base
     });
   }
@@ -75,6 +78,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
           class={{this.tableClassNames}}
           data-test-id="table"
           data-component="table"
+          data-loading={{this.args.isLoading}}
           ...attributes
         >
           {{yield
@@ -104,6 +108,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
         class={{this.tableClassNames}}
         data-test-id="table"
         data-component="table"
+        data-loading={{this.args.isLoading}}
         ...attributes
       >
         {{yield
@@ -133,4 +138,3 @@ class SimpleTable extends Component<SimpleTableSignature> {
 
 export { SimpleTable, type SimpleTableSignature };
 export default SimpleTable;
-

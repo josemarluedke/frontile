@@ -1,10 +1,7 @@
 export { Table, type TableSignature } from './table';
-export type { ColumnConfig } from './types';
+export type { ColumnConfig, ColumnKeys } from './types';
 
 // SimpleTable exports
-export {
-  SimpleTable,
-  type SimpleTableSignature,
-} from '../simple-table';
+export { SimpleTable, type SimpleTableSignature } from '../simple-table';
 
 export { default } from './table';

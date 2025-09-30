@@ -45,12 +45,12 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' },
     { key: 'role', name: 'Role' }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
@@ -81,7 +81,7 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     {
       key: 'name',
@@ -98,7 +98,7 @@ export default class DemoComponent extends Component {
       name: 'Admin Status',
       value: (ctx) => (ctx.row.data.role === 'admin' ? 'Yes' : 'No')
     }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
@@ -122,14 +122,14 @@ interface Product {
   price: number;
 }
 
-const columns: ColumnConfig<Product>[] = [
+const columns = [
   { key: 'name', name: 'Product Name' },
   {
     key: 'price',
     name: 'Price',
     value: (ctx) => `$${ctx.row.data.price.toFixed(2)}`
   }
-];
+] as const satisfies ColumnConfig<Product>[];
 ```
 
 ## Styling Options
@@ -155,11 +155,11 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     { id: '1', name: 'John Doe', email: 'john@example.com' },
@@ -198,17 +198,17 @@ interface Product {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<Product>[] = [
+  columns = [
     { key: 'name', name: 'Product' },
     { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}` },
     { key: 'category', name: 'Category' }
-  ];
+  ] as const satisfies ColumnConfig<Product>[];
 
-  footerColumns: ColumnConfig[] = [
+  footerColumns = [
     { key: 'total_label', name: 'Total Items' },
     { key: 'total_price', name: '$127.97' },
     { key: 'categories', name: '3 Categories' }
-  ];
+  ] as const satisfies ColumnConfig[];
 
   items: Product[] = [
     { id: '1', name: 'Laptop', price: 99.99, category: 'Electronics' },
@@ -245,13 +245,13 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' },
     { key: 'department', name: 'Department' },
     { key: 'role', name: 'Role' }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering', role: 'Senior Developer' },
@@ -310,7 +310,7 @@ interface Employee {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<Employee>[] = [
+  columns = [
     {
       key: 'id',
       name: 'Employee ID',
@@ -330,7 +330,7 @@ export default class DemoComponent extends Component {
       stickyPosition: 'right',
       value: () => 'Edit'
     }
-  ];
+  ] as const satisfies ColumnConfig<Employee>[];
 
   items: Employee[] = [
     {
@@ -396,12 +396,12 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' },
     { key: 'department', name: 'Department' }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     {
@@ -486,12 +486,12 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' },
     { key: 'role', name: 'Role' }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     {
@@ -559,7 +559,7 @@ interface Transaction {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<Transaction>[] = [
+  columns = [
     { key: 'date', name: 'Date' },
     { key: 'description', name: 'Description' },
     {
@@ -568,13 +568,13 @@ export default class DemoComponent extends Component {
       value: (ctx) =>
         ctx.row.data.amount < 0 ? `-$${Math.abs(ctx.row.data.amount)}` : `$${ctx.row.data.amount}`
     }
-  ];
+  ] as const satisfies ColumnConfig<Transaction>[];
 
-  footerColumns: ColumnConfig[] = [
+  footerColumns = [
     { key: 'summary', name: 'Account Total' },
     { key: 'empty', name: '' },
     { key: 'total', name: '$1,234.56' }
-  ];
+  ] as const satisfies ColumnConfig[];
 
   items: Transaction[] = [
     {
@@ -649,11 +649,11 @@ import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from '@frontile/collections';
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig[] = [
+  columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' },
     { key: 'email', name: 'Email' }
-  ];
+  ] as const satisfies ColumnConfig[];
 
   emptyItems = [];
 
@@ -664,6 +664,365 @@ export default class DemoComponent extends Component {
       @emptyContent='No data to display'
     />
   </template>
+}
+```
+
+## Custom Cell Rendering
+
+The Table component supports custom cell rendering through the `:cell` named block, allowing you to override the default cell content with custom components, formatting, or conditional rendering.
+
+### Basic Cell Customization
+
+Use the `:cell` named block to customize how individual cells are rendered:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: 'active' | 'inactive';
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' },
+    { key: 'status', name: 'Status' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'admin',
+      status: 'active'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'user',
+      status: 'inactive'
+    }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:cell as |c|>
+        <c.For @key="name">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+              {{c.value.[0]}}
+            </div>
+            <span class="font-medium">{{c.value}}</span>
+          </div>
+        </c.For>
+
+        <c.For @key="email">
+          <a href="mailto:{{c.value}}" class="text-blue-600 hover:underline">
+            {{c.value}}
+          </a>
+        </c.For>
+
+        <c.For @key="role">
+          {{#if (this.isAdmin c.value)}}
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+              {{c.value}}
+            </span>
+          {{else}}
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {{c.value}}
+            </span>
+          {{/if}}
+        </c.For>
+
+        <c.For @key="status">
+          <div class="flex items-center space-x-2">
+            {{#if (this.isActive c.value)}}
+              <div class="w-2 h-2 rounded-full bg-green-500"></div>
+              <span class="capitalize text-green-700">{{c.value}}</span>
+            {{else}}
+              <div class="w-2 h-2 rounded-full bg-red-500"></div>
+              <span class="capitalize text-red-700">{{c.value}}</span>
+            {{/if}}
+          </div>
+        </c.For>
+      </:cell>
+    </Table>
+  </template>
+
+  get isAdmin() {
+    return (role: string) => role === 'admin';
+  }
+
+  get isActive() {
+    return (status: string) => status === 'active';
+  }
+}
+```
+
+### Cell Context and Components
+
+The `:cell` block provides access to cell context and utility components:
+
+- **`c.column`** - The current column configuration
+- **`c.row`** - The current row data
+- **`c.value`** - The computed value for the current cell
+- **`c.For`** - Component for conditional rendering based on column key
+- **`c.Default`** - Component for default rendering of unmatched columns
+
+### Type-Safe Column Keys
+
+When using `as const satisfies ColumnConfig<T>[]`, the `@key` parameter in `c.For` is type-checked against your column keys:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Product' },
+    { key: 'price', name: 'Price' },
+    { key: 'inStock', name: 'Availability' }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  items: Product[] = [
+    { id: '1', name: 'Laptop', price: 999.99, inStock: true },
+    { id: '2', name: 'Mouse', price: 29.99, inStock: false },
+    { id: '3', name: 'Keyboard', price: 79.99, inStock: true }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:cell as |c|>
+        {{! Type-safe keys - these will be validated by TypeScript }}
+        <c.For @key="name">
+          <strong>{{c.value}}</strong>
+        </c.For>
+
+        <c.For @key="price">
+          <span class="font-mono">${{c.value}}</span>
+        </c.For>
+
+        <c.For @key="inStock">
+          {{#if c.value}}
+            <span class="text-green-600">✓ In Stock</span>
+          {{else}}
+            <span class="text-red-600">✗ Out of Stock</span>
+          {{/if}}
+        </c.For>
+      </:cell>
+    </Table>
+  </template>
+}
+```
+
+### Default Cell Rendering
+
+Use `c.Default` to provide fallback rendering for columns that don't have specific `c.For` components:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'admin'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'user'
+    }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:cell as |c|>
+        {{! Only customize the name column }}
+        <c.For @key="name">
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-gray-300 rounded-full mr-2"></div>
+            <span class="font-semibold">{{c.value}}</span>
+          </div>
+        </c.For>
+
+        {{! All other columns use default rendering }}
+        <c.Default>
+          <span class="text-gray-700">{{c.value}}</span>
+        </c.Default>
+      </:cell>
+    </Table>
+  </template>
+}
+```
+
+### Excluding Columns from Default
+
+Use `c.Default` with the `@except` parameter to exclude specific columns from default rendering:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { array } from '@ember/helper';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'admin'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'user'
+    }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:cell as |c|>
+        {{! The name column will not render anything }}
+        {{! since it's excluded from default and has no c.For }}
+
+        {{! Email and role columns will use default rendering }}
+        <c.Default @except={{array "name"}}>
+          <span class="italic">{{c.value}}</span>
+        </c.Default>
+      </:cell>
+    </Table>
+  </template>
+}
+```
+
+### Advanced Cell Customization
+
+You can access the full row data and column information for complex customizations:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Transaction {
+  id: string;
+  type: 'income' | 'expense';
+  description: string;
+  amount: number;
+  date: string;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'date', name: 'Date' },
+    { key: 'description', name: 'Description' },
+    { key: 'amount', name: 'Amount' },
+    { key: 'actions', name: 'Actions' }
+  ] as const satisfies ColumnConfig<Transaction>[];
+
+  items: Transaction[] = [
+    {
+      id: '1',
+      type: 'income',
+      description: 'Salary',
+      amount: 3000,
+      date: '2024-01-15'
+    },
+    {
+      id: '2',
+      type: 'expense',
+      description: 'Groceries',
+      amount: 150,
+      date: '2024-01-16'
+    }
+  ];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:cell as |c|>
+        <c.For @key="amount">
+          <div class="text-right font-mono">
+            {{#if (this.isIncome c.row.data.type)}}
+              <span class="text-green-600">+${{c.value}}</span>
+            {{else}}
+              <span class="text-red-600">-${{c.value}}</span>
+            {{/if}}
+          </div>
+        </c.For>
+
+        <c.For @key="actions">
+          <div class="flex space-x-2">
+            <button
+              type="button"
+              class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+            >
+              Delete
+            </button>
+          </div>
+        </c.For>
+
+        <c.Default>
+          {{c.value}}
+        </c.Default>
+      </:cell>
+    </Table>
+  </template>
+
+  get isIncome() {
+    return (type: string) => type === 'income';
+  }
 }
 ```
 
@@ -687,12 +1046,12 @@ interface User {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<User>[] = [
+  columns = [
     { key: 'id', name: 'ID', isVisible: true },
     { key: 'name', name: 'Name', isVisible: true },
     { key: 'email', name: 'Email', isVisible: false },
     { key: 'role', name: 'Role', isVisible: true }
-  ];
+  ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin' },
@@ -722,12 +1081,12 @@ The ColumnVisibility component allows users to interactively show and hide colum
 Control which columns are visible by default using the `isVisible` property in your column configuration:
 
 ```ts
-columns: ColumnConfig<User>[] = [
+columns = [
   { key: 'id', name: 'ID', isVisible: true },
   { key: 'name', name: 'Name', isVisible: true },
   { key: 'email', name: 'Email', isVisible: false }, // Hidden by default
   { key: 'role', name: 'Role', isVisible: true }
-];
+] as const satisfies ColumnConfig<User>[];
 ```
 
 #### Custom Icon
@@ -746,11 +1105,11 @@ interface Product {
 }
 
 export default class DemoComponent extends Component {
-  columns: ColumnConfig<Product>[] = [
+  columns = [
     { key: 'name', name: 'Product Name', isVisible: true },
     { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}`, isVisible: true },
     { key: 'category', name: 'Category', isVisible: false }
-  ];
+  ] as const satisfies ColumnConfig<Product>[];
 
   items: Product[] = [
     { id: '1', name: 'Laptop', price: 99.99, category: 'Electronics' },

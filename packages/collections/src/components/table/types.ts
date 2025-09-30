@@ -28,4 +28,13 @@ export interface ColumnConfig<T = unknown> extends UniversalColumnConfig<T> {
   isVisible?: boolean;
 }
 
+// Type utility to extract column keys from ColumnConfig array as literal string union
+export type ColumnKeys<T extends any[]> = T[number] extends {
+  key: infer K;
+}
+  ? K extends string
+    ? K
+    : never
+  : never;
+
 export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };

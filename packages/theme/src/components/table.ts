@@ -53,6 +53,9 @@ const table = tv({
         td: 'p-6 text-base'
       }
     },
+    isLoading: {
+      true: {}
+    },
     layout: {
       auto: {
         table: 'table-auto'

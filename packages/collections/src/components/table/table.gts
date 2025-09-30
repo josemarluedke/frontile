@@ -6,6 +6,9 @@ import { SimpleTable } from '../simple-table';
 import { extractFrontileOptions } from './utils';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import ColumnVisibilityComponent from './column-visibility';
+import CellForComponent from './cell-for';
+import CellDefaultComponent from './cell-default';
+import { CellRenderingContext } from './cell-rendering-context';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
 import { ColumnVisibility } from '@universal-ember/table/plugins/column-visibility';
@@ -24,10 +27,13 @@ import type {
 } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
-interface TableSignature<T> {
+interface TableSignature<
+  T,
+  TColumns extends ColumnConfig<T>[] = ColumnConfig<T>[]
+> {
   Args: {
     /** Array of column configurations for automatic table generation */
-    columns: ColumnConfig<T>[];
+    columns: TColumns;
     /** Array of data items to display in the table */
     items: T[];
     /** Custom CSS classes for different table elements (wrapper, table, th, td, etc.) */
@@ -50,6 +56,8 @@ interface TableSignature<T> {
     footerColumns?: ColumnConfig<T>[];
     /** Make the table footer sticky during vertical scrolling */
     isStickyFooter?: boolean;
+    /** Enable loading state styling and behavior */
+    isLoading?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -62,14 +70,36 @@ interface TableSignature<T> {
         >;
       }
     ];
+    cell: [
+      {
+        column: Column<T>;
+        value: ContentValue;
+        row: Row<T>;
+        For: WithBoundArgs<
+          typeof CellForComponent<T, TColumns>,
+          'column' | 'registry'
+        >;
+        Default: WithBoundArgs<
+          typeof CellDefaultComponent<T>,
+          'column' | 'registry'
+        >;
+      }
+    ];
   };
 }
 
-class Table<T = unknown> extends Component<TableSignature<T>> {
+class Table<
+  T = unknown,
+  TColumns extends ColumnConfig<T>[] = ColumnConfig<T>[]
+> extends Component<TableSignature<T, TColumns>> {
   ColumnVisibility = ColumnVisibilityComponent<T>;
+  CellFor = CellForComponent<T, TColumns>;
+  CellDefault = CellDefaultComponent<T>;
 
   // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
-  processColumns(columns: ColumnConfig<T>[]): UniversalColumnConfig<T>[] {
+  processColumns(
+    columns: readonly ColumnConfig<T>[]
+  ): UniversalColumnConfig<T>[] {
     if (!columns) return [];
     return columns.map((column) => {
       const { isSticky, stickyPosition, isVisible, ...universalColumn } =
@@ -116,6 +146,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
       striped: this.args.isStriped,
       isScrollable: this.args.isScrollable || false,
       hasStickyHeader: this.args.isStickyHeader || false,
+      isLoading: this.args.isLoading || false,
       class: this.args.classes?.base
     });
   }
@@ -155,7 +186,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return this.styles.table({ class: this.args.classes?.table });
   }
 
-  get columns(): ColumnConfig<T>[] {
+  get columns(): readonly ColumnConfig<T>[] {
     return this.args.columns || [];
   }
 
@@ -208,6 +239,17 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
     return '';
   };
 
+  // Create cell context with registry for custom cell rendering
+  createCellContext = (column: Column<T>, row: Row<T>) => {
+    const registry = new CellRenderingContext();
+    return {
+      column,
+      row,
+      value: column.getValueForRow(row),
+      registry
+    };
+  };
+
   <template>
     <div
       class={{this.wrapperClassNames}}
@@ -235,6 +277,7 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
         @isStriped={{@isStriped}}
         @isScrollable={{@isScrollable}}
         @hasWrapper={{false}}
+        @isLoading={{@isLoading}}
         as |t|
       >
         <t.Header @isSticky={{@isStickyHeader}}>
@@ -265,7 +308,33 @@ class Table<T = unknown> extends Component<TableSignature<T>> {
                   @isInStickyRow={{this.rowIsSticky row}}
                   data-column={{column.key}}
                 >
-                  {{column.getValueForRow row}}
+                  {{#if (has-block "cell")}}
+                    {{#let
+                      (this.createCellContext column row)
+                      as |cellContext|
+                    }}
+                      {{yield
+                        (hash
+                          column=cellContext.column
+                          value=cellContext.value
+                          row=cellContext.row
+                          For=(component
+                            this.CellFor
+                            column=column
+                            registry=cellContext.registry
+                          )
+                          Default=(component
+                            this.CellDefault
+                            column=column
+                            registry=cellContext.registry
+                          )
+                        )
+                        to="cell"
+                      }}
+                    {{/let}}
+                  {{else}}
+                    {{column.getValueForRow row}}
+                  {{/if}}
                 </t.Cell>
               {{/each}}
             </t.Row>
