@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, click } from '@ember/test-helpers';
 import { Table, type ColumnConfig } from '@frontile/collections';
 import { array, hash, get } from '@ember/helper';
 import { cell } from 'ember-resources';
@@ -271,7 +271,6 @@ module(
         .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
         .doesNotExist();
     });
-
 
     test('it handles items with different data types', async function (assert) {
       const columns: ColumnConfig[] = [
@@ -896,9 +895,7 @@ module(
         ];
 
         await render(
-          <template>
-            <Table @columns={{columns}} @items={{items}} />
-          </template>
+          <template><Table @columns={{columns}} @items={{items}} /></template>
         );
 
         // Table should render without errors
@@ -1051,6 +1048,456 @@ module(
         // Check that automatic footer generation applies table-level classes
         assert.dom('[data-test-id="table-footer"].table-level-footer').exists();
         assert.dom('[data-test-id="table-footer"] tr.table-level-tr').exists();
+      });
+    });
+
+    // Column Visibility Tests
+    module('Column Visibility in Table Toolbar', function () {
+      test('it renders column visibility in table toolbar', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          },
+          {
+            id: '2',
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            role: 'user'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="text-lg font-semibold">User Management</h2>
+                  <t.ColumnVisibility />
+                </div>
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Should render the table
+        assert.dom('[data-test-id="table"]').exists();
+
+        // Should render the toolbar content
+        assert.dom('h2').containsText('User Management');
+
+        // Should render the column visibility dropdown in toolbar
+        assert.dom('[data-test-id="dropdown-trigger"]').exists();
+        assert
+          .dom('svg')
+          .exists('should have the default column visibility icon');
+
+        // Should show all columns in the dropdown menu when opened
+        await click('[data-test-id="dropdown-trigger"]');
+        assert.dom('[data-test-id="listbox"]').exists();
+        assert.dom('[data-test-id="listbox-item"][data-key="id"]').exists();
+        assert.dom('[data-test-id="listbox-item"][data-key="name"]').exists();
+        assert.dom('[data-test-id="listbox-item"][data-key="email"]').exists();
+
+        // Column names should be displayed
+        assert
+          .dom('[data-test-id="listbox-item"][data-key="id"]')
+          .containsText('ID');
+        assert
+          .dom('[data-test-id="listbox-item"][data-key="name"]')
+          .containsText('Name');
+        assert
+          .dom('[data-test-id="listbox-item"][data-key="email"]')
+          .containsText('Email');
+      });
+
+      test('it renders with custom icon and label in toolbar', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <div class="flex items-center justify-between mb-4">
+                  <h2>User Management</h2>
+                  <t.ColumnVisibility>
+                    <:icon>
+                      <span data-test-id="custom-icon">⚙️</span>
+                    </:icon>
+                    <:default>
+                      Customize Columns
+                    </:default>
+                  </t.ColumnVisibility>
+                </div>
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Should render custom icon and label
+        assert.dom('[data-test-id="custom-icon"]').exists();
+        assert.dom('[data-test-id="custom-icon"]').containsText('⚙️');
+        assert
+          .dom('[data-test-id="dropdown-trigger"]')
+          .containsText('Customize Columns');
+        assert
+          .dom('svg')
+          .doesNotExist(
+            'should not have default SVG when custom icon is provided'
+          );
+      });
+
+      test('it toggles column visibility and updates table display', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <t.ColumnVisibility />
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Initially all columns should be visible in the table
+        assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
+        assert.dom('[data-test-id="table-column"][data-key="name"]').exists();
+        assert.dom('[data-test-id="table-column"][data-key="email"]').exists();
+
+        // All corresponding data cells should be visible
+        assert.dom('[data-test-id="table-row"] [data-column="id"]').exists();
+        assert.dom('[data-test-id="table-row"] [data-column="name"]').exists();
+        assert.dom('[data-test-id="table-row"] [data-column="email"]').exists();
+
+        // Open the column visibility dropdown
+        await click('[data-test-id="dropdown-trigger"]');
+
+        // All items should be selected initially (showing selected icons)
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('ID should show selected icon');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('Name should show selected icon');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('Email should show selected icon');
+
+        // Hide the name column
+        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await settled();
+
+        // Name column should be hidden from the table
+        assert
+          .dom('[data-test-id="table-column"][data-key="id"]')
+          .exists('ID column should still be visible');
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .doesNotExist('Name column should be hidden');
+        assert
+          .dom('[data-test-id="table-column"][data-key="email"]')
+          .exists('Email column should still be visible');
+
+        // Name data cells should also be hidden
+        assert.dom('[data-test-id="table-row"] [data-column="id"]').exists();
+        assert
+          .dom('[data-test-id="table-row"] [data-column="name"]')
+          .doesNotExist();
+        assert.dom('[data-test-id="table-row"] [data-column="email"]').exists();
+
+        // The menu item should not show selected icon
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .doesNotExist('Name should not show selected icon');
+
+        // Show the column again
+        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await settled();
+
+        // Name column should be visible again
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .exists('Name column should be visible again');
+        assert
+          .dom('[data-test-id="table-row"] [data-column="name"]')
+          .exists('Name data should be visible again');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('Name should show selected icon again');
+      });
+
+      test('it handles multiple column toggles in table context', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' },
+          { key: 'role', name: 'Role' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <t.ColumnVisibility />
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Initially all columns should be visible
+        assert.dom('[data-test-id="table-column"]').exists({ count: 4 });
+
+        // Open the dropdown and hide multiple columns
+        await click('[data-test-id="dropdown-trigger"]');
+        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await click('[data-test-id="listbox-item"][data-key="role"]');
+        await settled();
+
+        // Only ID and Email columns should be visible
+        assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .doesNotExist();
+        assert.dom('[data-test-id="table-column"][data-key="email"]').exists();
+        assert
+          .dom('[data-test-id="table-column"][data-key="role"]')
+          .doesNotExist();
+
+        // Check total visible columns
+        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
+
+        // Check menu item selection states
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="id"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('ID should show selected icon');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="name"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .doesNotExist('Name should not show selected icon');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .exists('Email should show selected icon');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="role"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .doesNotExist('Role should not show selected icon');
+      });
+
+      test('it works with pre-configured column visibility', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email', isVisible: false }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <t.ColumnVisibility />
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Should render only 2 columns initially (email is pre-hidden)
+        assert.dom('[data-test-id="table-column"]').exists({ count: 2 });
+        assert
+          .dom('[data-test-id="table-column"][data-key="email"]')
+          .doesNotExist('Email column should be pre-hidden');
+
+        // Column visibility dropdown should reflect the pre-hidden state
+        await click('[data-test-id="dropdown-trigger"]');
+        assert
+          .dom(
+            '[data-test-id="listbox-item"][data-key="email"] [data-test-id="listbox-item-selected-icon"]'
+          )
+          .doesNotExist('Email should not show selected icon in dropdown');
+
+        // Show the email column
+        await click('[data-test-id="listbox-item"][data-key="email"]');
+        await settled();
+
+        // Email column should now be visible
+        assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
+        assert
+          .dom('[data-test-id="table-column"][data-key="email"]')
+          .exists('Email column should now be visible');
+      });
+
+      test('it maintains toolbar layout when toggling columns', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <div class="toolbar-wrapper" data-test-id="toolbar">
+                  <h2>User Management</h2>
+                  <div class="toolbar-actions">
+                    <button type="button">Add User</button>
+                    <t.ColumnVisibility />
+                  </div>
+                </div>
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Toolbar should be rendered
+        assert.dom('[data-test-id="toolbar"]').exists();
+        assert.dom('h2').containsText('User Management');
+        assert.dom('button').containsText('Add User');
+
+        // Column visibility dropdown should be in toolbar
+        assert
+          .dom('[data-test-id="toolbar"] [data-test-id="dropdown-trigger"]')
+          .exists();
+
+        // Toggle columns and verify toolbar remains intact
+        await click('[data-test-id="dropdown-trigger"]');
+        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await settled();
+
+        // Toolbar should still be there and functional
+        assert.dom('[data-test-id="toolbar"]').exists();
+        assert.dom('h2').containsText('User Management');
+        assert.dom('button').containsText('Add User');
+        assert
+          .dom('[data-test-id="toolbar"] [data-test-id="dropdown-trigger"]')
+          .exists();
+
+        // Table should reflect the column change
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .doesNotExist();
+      });
+
+      test('it maintains dropdown open state when toggling columns in toolbar', async function (assert) {
+        const columns: ColumnConfig[] = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:toolbar as |t|>
+                <t.ColumnVisibility />
+              </:toolbar>
+            </Table>
+          </template>
+        );
+
+        // Open the dropdown
+        await click('[data-test-id="dropdown-trigger"]');
+        assert
+          .dom('[data-test-id="listbox"]')
+          .exists('dropdown should be open');
+
+        // Toggle a column
+        await click('[data-test-id="listbox-item"][data-key="name"]');
+        await settled();
+
+        // Dropdown should remain open because closeOnItemSelect is false
+        assert
+          .dom('[data-test-id="listbox"]')
+          .exists('dropdown should remain open after toggling column');
+
+        // Verify the column was actually toggled
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .doesNotExist();
       });
     });
 
