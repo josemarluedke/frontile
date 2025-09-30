@@ -164,7 +164,9 @@ module(
       assert.dom('[data-test-id="table-header"]').exists();
       assert.dom('[data-test-id="table-body"]').exists();
       assert.dom('[data-test-id="table-footer"]').exists();
-      assert.dom('[data-test-id="table-footer"] [data-test-id="table-column"]').containsText('Total: 1 item');
+      assert
+        .dom('[data-test-id="table-footer"] [data-test-id="table-column"]')
+        .containsText('Total: 1 item');
     });
 
     test('it supports size variants', async function (assert) {
@@ -275,7 +277,9 @@ module(
         // The table should render successfully with loading color variant
         assert.dom('[data-test-id="table"]').exists();
         assert.dom('[data-test-id="table"][data-loading="true"]').exists();
-        assert.dom('[data-test-id="table-cell"]').containsText(`Content for ${color}`);
+        assert
+          .dom('[data-test-id="table-cell"]')
+          .containsText(`Content for ${color}`);
       }
     });
   }

@@ -111,7 +111,7 @@ class Table<
         ...baseColumn
       } = column;
 
-      const pluginOptions: any[] = [];
+      const pluginOptions: unknown[] = [];
 
       // Add Frontile sticky options if present
       if (isSticky !== undefined || stickyPosition !== undefined) {
@@ -131,7 +131,10 @@ class Table<
       const universalColumn: UniversalColumnConfig<T> = {
         key: baseColumn.key,
         name: baseColumn.name,
-        pluginOptions: pluginOptions.length > 0 ? pluginOptions : undefined
+        pluginOptions:
+          pluginOptions.length > 0
+            ? (pluginOptions as UniversalColumnConfig<T>['pluginOptions'])
+            : undefined
       };
 
       // Add value function if provided
@@ -246,7 +249,7 @@ class Table<
   };
 
   // Helper to get row key (from existing TableRow logic)
-  getRowKey = (row: any): string => {
+  getRowKey = (row: Row<T>): string => {
     if (row) {
       const actualData = row.data || row;
       try {

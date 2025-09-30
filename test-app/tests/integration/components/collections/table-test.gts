@@ -1253,7 +1253,6 @@ module(
 
         // Hide the name column
         await click('[data-test-id="listbox-item"][data-key="name"]');
-        await settled();
 
         // Name column should be hidden from the table
         assert
@@ -1282,7 +1281,6 @@ module(
 
         // Show the column again
         await click('[data-test-id="listbox-item"][data-key="name"]');
-        await settled();
 
         // Name column should be visible again
         assert
@@ -1332,7 +1330,6 @@ module(
         await click('[data-test-id="dropdown-trigger"]');
         await click('[data-test-id="listbox-item"][data-key="name"]');
         await click('[data-test-id="listbox-item"][data-key="role"]');
-        await settled();
 
         // Only ID and Email columns should be visible
         assert.dom('[data-test-id="table-column"][data-key="id"]').exists();
@@ -1412,7 +1409,6 @@ module(
 
         // Show the email column
         await click('[data-test-id="listbox-item"][data-key="email"]');
-        await settled();
 
         // Email column should now be visible
         assert.dom('[data-test-id="table-column"]').exists({ count: 3 });
@@ -1466,7 +1462,6 @@ module(
         // Toggle columns and verify toolbar remains intact
         await click('[data-test-id="dropdown-trigger"]');
         await click('[data-test-id="listbox-item"][data-key="name"]');
-        await settled();
 
         // Toolbar should still be there and functional
         assert.dom('[data-test-id="toolbar"]').exists();
@@ -1515,7 +1510,6 @@ module(
 
         // Toggle a column
         await click('[data-test-id="listbox-item"][data-key="name"]');
-        await settled();
 
         // Dropdown should remain open because closeOnItemSelect is false
         assert

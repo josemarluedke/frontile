@@ -34,7 +34,7 @@ export default class ColumnVisibility<T> extends Component<
   }
 
   get allColumnKeys() {
-    return this.columns.map((column: any) => column.key);
+    return this.columns.map((column: Column<T>) => column.key);
   }
 
   @action

@@ -77,4 +77,3 @@ class SimpleTableHeader extends Component<SimpleTableHeaderSignature> {
 
 export { SimpleTableHeader, type SimpleTableHeaderSignature };
 export default SimpleTableHeader;
-

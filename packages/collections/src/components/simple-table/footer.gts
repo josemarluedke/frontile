@@ -77,4 +77,3 @@ class SimpleTableFooter extends Component<SimpleTableFooterSignature> {
 
 export { SimpleTableFooter, type SimpleTableFooterSignature };
 export default SimpleTableFooter;
-

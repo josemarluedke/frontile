@@ -51,7 +51,7 @@ export interface ColumnConfig<T = unknown> {
 }
 
 // Type utility to extract column keys from ColumnConfig array as literal string union
-export type ColumnKeys<T extends any[]> = T[number] extends {
+export type ColumnKeys<T extends unknown[]> = T[number] extends {
   key: infer K;
 }
   ? K extends string

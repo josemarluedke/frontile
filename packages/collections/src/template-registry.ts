@@ -1,9 +1,4 @@
-import type {
-  Listbox,
-  Dropdown,
-  Table,
-  SimpleTable
-} from './index';
+import type { Listbox, Dropdown, Table, SimpleTable } from './index';
 
 export default interface Registry {
   Listbox: typeof Listbox;
