@@ -103,8 +103,7 @@ class StandardValidator {
     input: I,
     customValidator: CustomValidatorFn<I>
   ): ValidatorReturn {
-    const customIssues = await customValidator(input);
-    return customIssues;
+    return await customValidator(input);
   }
 
   /**
