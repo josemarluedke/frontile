@@ -38,6 +38,10 @@ export type CustomValidatorFn<Input = unknown> = (
  * @see https://standardschema.dev/
  */
 class StandardValidator {
+  private constructor() {
+    throw new Error('StandardValidator is static and cannot be instantiated');
+  }
+
   /**
    * Validates data against the provided standard schema.
    * If there are errors, they are returned.  Otherwise, nothing is returned.
