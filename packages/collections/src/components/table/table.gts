@@ -18,13 +18,11 @@ import type {
   FrontilePluginOption,
   TableVariants,
   TableSlots,
-  SlotsToClasses
-} from './types';
-import type {
+  SlotsToClasses,
   Column,
-  Row,
-  ColumnConfig as UniversalColumnConfig
-} from '@universal-ember/table';
+  Row
+} from './types';
+import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 
 interface TableSignature<
@@ -102,10 +100,16 @@ class Table<
   ): UniversalColumnConfig<T>[] {
     if (!columns) return [];
     return columns.map((column) => {
-      const { isSticky, stickyPosition, isVisible, ...universalColumn } =
-        column;
+      const {
+        isSticky,
+        stickyPosition,
+        isVisible,
+        Cell,
+        value,
+        ...baseColumn
+      } = column;
 
-      const pluginOptions: any[] = [...(universalColumn.pluginOptions || [])];
+      const pluginOptions: any[] = [];
 
       // Add Frontile sticky options if present
       if (isSticky !== undefined || stickyPosition !== undefined) {
@@ -121,11 +125,24 @@ class Table<
         pluginOptions.push(ColumnVisibility.forColumn(() => ({ isVisible })));
       }
 
-      return {
-        ...universalColumn,
-        pluginOptions:
-          pluginOptions as UniversalColumnConfig<T>['pluginOptions']
-      } as UniversalColumnConfig<T>;
+      // Create the universal-ember column configuration
+      const universalColumn: UniversalColumnConfig<T> = {
+        key: baseColumn.key,
+        name: baseColumn.name,
+        pluginOptions: pluginOptions.length > 0 ? pluginOptions : undefined
+      };
+
+      // Add value function if provided
+      if (value) {
+        universalColumn.value = value;
+      }
+
+      // Add Cell component if provided
+      if (Cell) {
+        universalColumn.Cell = Cell;
+      }
+
+      return universalColumn;
     });
   }
 
@@ -333,7 +350,11 @@ class Table<
                       }}
                     {{/let}}
                   {{else}}
-                    {{column.getValueForRow row}}
+                    {{#if column.Cell}}
+                      <column.Cell @row={{row}} @column={{column}} />
+                    {{else}}
+                      {{column.getValueForRow row}}
+                    {{/if}}
                   {{/if}}
                 </t.Cell>
               {{/each}}
@@ -342,8 +363,8 @@ class Table<
             {{#if @emptyContent}}
               <t.Row data-test-id="table-empty-row">
                 <t.Cell
-                  colspan={{this.headlessColumns.length}}
                   @class={{(this.styles.emptyCell)}}
+                  colspan={{this.headlessColumns.length}}
                   data-test-id="table-empty-cell"
                 >
                   {{@emptyContent}}

@@ -57,9 +57,7 @@ export default class DemoComponent extends Component {
     { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
   ];
 
-  <template>
-    <Table @columns={{this.columns}} @items={{this.items}} />
-  </template>
+  <template><Table @columns={{this.columns}} @items={{this.items}} /></template>
 }
 ```
 
@@ -105,9 +103,7 @@ export default class DemoComponent extends Component {
     { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
   ];
 
-  <template>
-    <Table @columns={{this.columns}} @items={{this.items}} />
-  </template>
+  <template><Table @columns={{this.columns}} @items={{this.items}} /></template>
 }
 ```
 
@@ -170,9 +166,9 @@ export default class DemoComponent extends Component {
     <Table
       @columns={{this.columns}}
       @items={{this.items}}
-      @size="sm"
+      @size='sm'
       @isStriped={{true}}
-      @classes={{hash wrapper="shadow-lg rounded-xl"}}
+      @classes={{hash wrapper='shadow-lg rounded-xl'}}
     />
   </template>
 }
@@ -254,11 +250,41 @@ export default class DemoComponent extends Component {
   ] as const satisfies ColumnConfig<User>[];
 
   items: User[] = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering', role: 'Senior Developer' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Design', role: 'UI/UX Designer' },
-    { id: '3', name: 'Bob Johnson', email: 'bob@example.com', department: 'Product', role: 'Product Manager' },
-    { id: '4', name: 'Alice Brown', email: 'alice@example.com', department: 'Engineering', role: 'Tech Lead' },
-    { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', department: 'Marketing', role: 'Marketing Manager' }
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      department: 'Engineering',
+      role: 'Senior Developer'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      department: 'Design',
+      role: 'UI/UX Designer'
+    },
+    {
+      id: '3',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      department: 'Product',
+      role: 'Product Manager'
+    },
+    {
+      id: '4',
+      name: 'Alice Brown',
+      email: 'alice@example.com',
+      department: 'Engineering',
+      role: 'Tech Lead'
+    },
+    {
+      id: '5',
+      name: 'Charlie Wilson',
+      email: 'charlie@example.com',
+      department: 'Marketing',
+      role: 'Marketing Manager'
+    }
   ];
 
   <template>
@@ -367,7 +393,8 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Sticky Employee ID (left) and Actions (right) columns</h4>
+      <h4 class='font-medium mb-2'>Sticky Employee ID (left) and Actions (right)
+        columns</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
@@ -456,7 +483,8 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Sticky header - scroll to see header stay in place</h4>
+      <h4 class='font-medium mb-2'>Sticky header - scroll to see header stay in
+        place</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
@@ -529,7 +557,8 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Sticky rows - Admin and Guest users stay visible</h4>
+      <h4 class='font-medium mb-2'>Sticky rows - Admin and Guest users stay
+        visible</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
@@ -566,7 +595,9 @@ export default class DemoComponent extends Component {
       key: 'amount',
       name: 'Amount',
       value: (ctx) =>
-        ctx.row.data.amount < 0 ? `-$${Math.abs(ctx.row.data.amount)}` : `$${ctx.row.data.amount}`
+        ctx.row.data.amount < 0
+          ? `-$${Math.abs(ctx.row.data.amount)}`
+          : `$${ctx.row.data.amount}`
     }
   ] as const satisfies ColumnConfig<Transaction>[];
 
@@ -626,7 +657,8 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <h4 class='font-medium mb-2'>Sticky footer - scroll to see footer stay at bottom</h4>
+      <h4 class='font-medium mb-2'>Sticky footer - scroll to see footer stay at
+        bottom</h4>
       <Table
         @columns={{this.columns}}
         @items={{this.items}}
@@ -715,41 +747,47 @@ export default class DemoComponent extends Component {
   <template>
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:cell as |c|>
-        <c.For @key="name">
-          <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+        <c.For @key='name'>
+          <div class='flex items-center space-x-2'>
+            <div
+              class='w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-medium'
+            >
               {{c.value.[0]}}
             </div>
-            <span class="font-medium">{{c.value}}</span>
+            <span class='font-medium'>{{c.value}}</span>
           </div>
         </c.For>
 
-        <c.For @key="email">
-          <a href="mailto:{{c.value}}" class="text-blue-600 hover:underline">
+        <c.For @key='email'>
+          <a href='mailto:{{c.value}}' class='text-primary hover:underline'>
             {{c.value}}
           </a>
         </c.For>
 
-        <c.For @key="role">
+        <c.For @key='role'>
           {{#if (this.isAdmin c.value)}}
-            <span class="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+            <span
+              class='px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary'
+            >
               {{c.value}}
             </span>
           {{else}}
-            <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            <span
+              class='px-2 py-1 rounded-full text-xs font-medium bg-default/10 text-default'
+            >
               {{c.value}}
             </span>
           {{/if}}
         </c.For>
 
-        <c.For @key="status">
-          <div class="flex items-center space-x-2">
+        <c.For @key='status'>
+          <div class='flex items-center space-x-2'>
             {{#if (this.isActive c.value)}}
-              <div class="w-2 h-2 rounded-full bg-green-500"></div>
-              <span class="capitalize text-green-700">{{c.value}}</span>
+              <div class='w-2 h-2 rounded-full bg-success'></div>
+              <span class='capitalize text-success'>{{c.value}}</span>
             {{else}}
-              <div class="w-2 h-2 rounded-full bg-red-500"></div>
-              <span class="capitalize text-red-700">{{c.value}}</span>
+              <div class='w-2 h-2 rounded-full bg-danger'></div>
+              <span class='capitalize text-danger'>{{c.value}}</span>
             {{/if}}
           </div>
         </c.For>
@@ -809,19 +847,19 @@ export default class DemoComponent extends Component {
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:cell as |c|>
         {{! Type-safe keys - these will be validated by TypeScript }}
-        <c.For @key="name">
+        <c.For @key='name'>
           <strong>{{c.value}}</strong>
         </c.For>
 
-        <c.For @key="price">
-          <span class="font-mono">${{c.value}}</span>
+        <c.For @key='price'>
+          <span class='font-mono'>${{c.value}}</span>
         </c.For>
 
-        <c.For @key="inStock">
+        <c.For @key='inStock'>
           {{#if c.value}}
-            <span class="text-green-600">✓ In Stock</span>
+            <span class='text-success'>✓ In Stock</span>
           {{else}}
-            <span class="text-red-600">✗ Out of Stock</span>
+            <span class='text-danger'>✗ Out of Stock</span>
           {{/if}}
         </c.For>
       </:cell>
@@ -871,16 +909,16 @@ export default class DemoComponent extends Component {
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:cell as |c|>
         {{! Only customize the name column }}
-        <c.For @key="name">
-          <div class="flex items-center">
-            <div class="w-6 h-6 bg-gray-300 rounded-full mr-2"></div>
-            <span class="font-semibold">{{c.value}}</span>
+        <c.For @key='name'>
+          <div class='flex items-center'>
+            <div class='w-6 h-6 bg-muted rounded-full mr-2'></div>
+            <span class='font-semibold'>{{c.value}}</span>
           </div>
         </c.For>
 
         {{! All other columns use default rendering }}
         <c.Default>
-          <span class="text-gray-700">{{c.value}}</span>
+          <span class='text-default'>{{c.value}}</span>
         </c.Default>
       </:cell>
     </Table>
@@ -933,8 +971,8 @@ export default class DemoComponent extends Component {
         {{! since it's excluded from default and has no c.For }}
 
         {{! Email and role columns will use default rendering }}
-        <c.Default @except={{array "name"}}>
-          <span class="italic">{{c.value}}</span>
+        <c.Default @except={{array 'name'}}>
+          <span class='italic'>{{c.value}}</span>
         </c.Default>
       </:cell>
     </Table>
@@ -986,27 +1024,27 @@ export default class DemoComponent extends Component {
   <template>
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:cell as |c|>
-        <c.For @key="amount">
-          <div class="text-right font-mono">
+        <c.For @key='amount'>
+          <div class='text-right font-mono'>
             {{#if (this.isIncome c.row.data.type)}}
-              <span class="text-green-600">+${{c.value}}</span>
+              <span class='text-success'>+${{c.value}}</span>
             {{else}}
-              <span class="text-red-600">-${{c.value}}</span>
+              <span class='text-danger'>-${{c.value}}</span>
             {{/if}}
           </div>
         </c.For>
 
-        <c.For @key="actions">
-          <div class="flex space-x-2">
+        <c.For @key='actions'>
+          <div class='flex space-x-2'>
             <button
-              type="button"
-              class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+              type='button'
+              class='text-xs px-2 py-1 bg-primary/10 text-primary rounded hover:bg-primary/20'
             >
               Edit
             </button>
             <button
-              type="button"
-              class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+              type='button'
+              class='text-xs px-2 py-1 bg-danger/10 text-danger rounded hover:bg-danger/20'
             >
               Delete
             </button>
@@ -1025,6 +1063,369 @@ export default class DemoComponent extends Component {
   }
 }
 ```
+
+## Column-Level Cell Components
+
+In addition to the `:cell` named block approach, you can define custom Cell components directly in your column configuration. This approach is useful when you want to encapsulate cell rendering logic in reusable components.
+
+### Basic Column Cell Components
+
+Define Cell components in your column configuration using the `Cell` property:
+
+```gts preview
+import Component from '@glimmer/component';
+import {
+  Table,
+  type ColumnConfig,
+  type CellSignature
+} from '@frontile/collections';
+import type { TOC } from '@ember/component/template-only';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: 'active' | 'inactive';
+}
+
+// Helper functions
+const isAdmin = (role: string) => role === 'admin';
+const isActive = (status: string) => status === 'active';
+
+// Define reusable cell components
+const NameCellComponent: TOC<CellSignature<User>> = <template>
+  <div class='flex items-center space-x-3'>
+    <div
+      class='w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-medium'
+    >
+      {{@row.data.name.[0]}}
+    </div>
+    <div>
+      <div class='font-semibold'>{{@row.data.name}}</div>
+      <div class='text-sm text-muted'>ID: {{@row.data.id}}</div>
+    </div>
+  </div>
+</template>;
+
+const RoleBadgeComponent: TOC<CellSignature<User>> = <template>
+  {{#if (isAdmin @row.data.role)}}
+    <span
+      class='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary'
+    >
+      <svg class='w-3 h-3 mr-1' fill='currentColor' viewBox='0 0 20 20'>
+        <path
+          fill-rule='evenodd'
+          d='M9.664 1.319a.75.75 0 01.672 0 41.059 41.059 0 018.198 5.424.75.75 0 01-.254 1.285 31.372 31.372 0 00-7.86 3.83.75.75 0 01-.84 0 31.508 31.508 0 00-2.08-1.287V9.394c0-.244.116-.463.302-.592a35.504 35.504 0 713.305-2.033.75.75 0 00-.714-1.319 37 37 0 00-3.446 2.12A2.216 2.216 0 006 9.393v.38a31.293 31.293 0 00-4.28-1.746.75.75 0 01-.254-1.285 41.059 41.059 0 018.198-5.424zM6 11.459a29.848 29.848 0 00-2.455-1.158 41.029 41.029 0 00-.39 3.114.75.75 0 00.419.74c.528.256 1.046.53 1.554.82-.21-.899-.385-1.83-.385-2.516zM21 12.61c0 .088-.006.175-.018.261a3.756 3.756 0 01-2.612 3.218c-.583.162-1.18.24-1.8.24a6.24 6.24 0 01-1.8-.24 3.756 3.756 0 01-2.612-3.218.77.77 0 00-.018-.261V9.394a26.136 26.136 0 013.915 2.375c.786.54 1.54 1.102 2.237 1.693a25.298 25.298 0 012.708-1.693V12.61z'
+          clip-rule='evenodd'
+        ></path>
+      </svg>
+      {{@row.data.role}}
+    </span>
+  {{else}}
+    <span
+      class='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted/50 text-default'
+    >
+      {{@row.data.role}}
+    </span>
+  {{/if}}
+</template>;
+
+const StatusIndicatorComponent: TOC<CellSignature<User>> = <template>
+  {{#if (isActive @row.data.status)}}
+    <div class='flex items-center space-x-2'>
+      <div class='w-2 h-2 rounded-full bg-success'></div>
+      <span class='capitalize text-success'>{{@row.data.status}}</span>
+    </div>
+  {{else}}
+    <div class='flex items-center space-x-2'>
+      <div class='w-2 h-2 rounded-full bg-danger'></div>
+      <span class='capitalize text-danger'>{{@row.data.status}}</span>
+    </div>
+  {{/if}}
+</template>;
+
+export default class DemoComponent extends Component {
+  columns = [
+    {
+      key: 'name',
+      name: 'User',
+      Cell: NameCellComponent
+    },
+    {
+      key: 'email',
+      name: 'Email'
+    },
+    {
+      key: 'role',
+      name: 'Role',
+      Cell: RoleBadgeComponent
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      Cell: StatusIndicatorComponent
+    }
+  ] as const satisfies ColumnConfig<User>[];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'admin',
+      status: 'active'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'user',
+      status: 'inactive'
+    },
+    {
+      id: '3',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      role: 'editor',
+      status: 'active'
+    }
+  ];
+
+  <template><Table @columns={{this.columns}} @items={{this.items}} /></template>
+}
+```
+
+### Cell Component Signature
+
+Cell components receive `@row` and `@column` arguments with full type safety:
+
+```ts
+import type { CellSignature } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+
+const PriceCellComponent: TOC<CellSignature<Product>> = <template>
+  <div class="text-right font-mono">
+    <span class="text-lg font-semibold">${{@row.data.price}}</span>
+    {{#unless @row.data.inStock}}
+      <div class="text-xs text-danger">Out of Stock</div>
+    {{/unless}}
+  </div>
+</template>;
+```
+
+### Reusable Cell Components
+
+Create reusable cell components that can be shared across different tables:
+
+```gts preview
+import Component from '@glimmer/component';
+import {
+  Table,
+  type ColumnConfig,
+  type CellSignature
+} from '@frontile/collections';
+import type { TOC } from '@ember/component/template-only';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  inStock: boolean;
+  category: string;
+}
+
+// Reusable components
+const PriceCellComponent: TOC<CellSignature<Product>> = <template>
+  <div class='text-right'>
+    <div class='font-mono text-lg'>${{@row.data.price}}</div>
+    {{#unless @row.data.inStock}}
+      <div class='text-xs text-danger font-medium'>Out of Stock</div>
+    {{/unless}}
+  </div>
+</template>;
+
+const StockStatusComponent: TOC<CellSignature<Product>> = <template>
+  {{#if @row.data.inStock}}
+    <span
+      class='inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-success/10 text-success'
+    >
+      <svg class='w-3 h-3 mr-1' fill='currentColor' viewBox='0 0 20 20'>
+        <path
+          fill-rule='evenodd'
+          d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z'
+          clip-rule='evenodd'
+        ></path>
+      </svg>
+      In Stock
+    </span>
+  {{else}}
+    <span
+      class='inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-danger/10 text-danger'
+    >
+      <svg class='w-3 h-3 mr-1' fill='currentColor' viewBox='0 0 20 20'>
+        <path
+          fill-rule='evenodd'
+          d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z'
+          clip-rule='evenodd'
+        ></path>
+      </svg>
+      Out of Stock
+    </span>
+  {{/if}}
+</template>;
+
+const CategoryBadgeComponent: TOC<CellSignature<Product>> = <template>
+  <span
+    class='inline-block px-2 py-1 text-xs font-medium rounded bg-muted/30 text-default'
+  >
+    {{@row.data.category}}
+  </span>
+</template>;
+
+export default class DemoComponent extends Component {
+  columns = [
+    {
+      key: 'name',
+      name: 'Product Name'
+    },
+    {
+      key: 'category',
+      name: 'Category',
+      Cell: CategoryBadgeComponent
+    },
+    {
+      key: 'price',
+      name: 'Price',
+      Cell: PriceCellComponent
+    },
+    {
+      key: 'inStock',
+      name: 'Availability',
+      Cell: StockStatusComponent
+    }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  items: Product[] = [
+    {
+      id: '1',
+      name: 'Wireless Headphones',
+      price: 199.99,
+      inStock: true,
+      category: 'Electronics'
+    },
+    {
+      id: '2',
+      name: 'Coffee Mug',
+      price: 12.99,
+      inStock: false,
+      category: 'Kitchen'
+    },
+    {
+      id: '3',
+      name: 'Notebook Set',
+      price: 24.99,
+      inStock: true,
+      category: 'Office'
+    }
+  ];
+
+  <template><Table @columns={{this.columns}} @items={{this.items}} /></template>
+}
+```
+
+### Combining Cell Components with Value Functions
+
+You can use both `Cell` components and `value` functions together. The `value` function will be called first to compute the data, then passed to the Cell component:
+
+```gts preview
+import Component from '@glimmer/component';
+import {
+  Table,
+  type ColumnConfig,
+  type CellSignature
+} from '@frontile/collections';
+import type { TOC } from '@ember/component/template-only';
+
+interface Sale {
+  id: string;
+  product: string;
+  amount: number;
+  date: string;
+  salesPerson: string;
+}
+const FormattedAmountComponent: TOC<CellSignature<Sale>> = <template>
+  <div class='text-right'>
+    <div class='font-bold text-lg text-success'>{{@value}}</div>
+    <div class='text-xs text-muted'>{{@row.data.salesPerson}}</div>
+  </div>
+</template>;
+
+export default class DemoComponent extends Component {
+  columns = [
+    {
+      key: 'product',
+      name: 'Product'
+    },
+    {
+      key: 'amount',
+      name: 'Sale Amount',
+      value: (ctx) => `$${ctx.row.data.amount.toLocaleString()}`,
+      Cell: FormattedAmountComponent
+    },
+    {
+      key: 'date',
+      name: 'Date',
+      value: (ctx) => new Date(ctx.row.data.date).toLocaleDateString()
+    }
+  ] as const satisfies ColumnConfig<Sale>[];
+
+  items: Sale[] = [
+    {
+      id: '1',
+      product: 'Enterprise License',
+      amount: 50000,
+      date: '2024-01-15',
+      salesPerson: 'Alice Johnson'
+    },
+    {
+      id: '2',
+      product: 'Pro Subscription',
+      amount: 1200,
+      date: '2024-01-16',
+      salesPerson: 'Bob Smith'
+    }
+  ];
+
+  <template><Table @columns={{this.columns}} @items={{this.items}} /></template>
+}
+```
+
+### When to Use Cell Components vs :cell Block
+
+Choose the approach that best fits your needs:
+
+#### Use **Column-Level Cell Components** when
+
+- You want to create reusable cell components
+- Each column has its own complex rendering logic
+- You prefer component composition over conditional rendering
+- You're building a component library with standard cell types
+
+#### Use the **:cell Named Block** when
+
+- You need conditional rendering across multiple columns
+- You want to share logic between different column types
+- You prefer template-based customization
+- You need access to the full cell context in one place
+
+Both approaches can be used together in the same table - columns without a `Cell` component will fall back to the `:cell` block or default rendering.
 
 ## Toolbar & Column Visibility
 
@@ -1062,8 +1463,8 @@ export default class DemoComponent extends Component {
   <template>
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:toolbar as |t|>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">User Management</h3>
+        <div class='flex items-center justify-between mb-4'>
+          <h3 class='text-lg font-semibold'>User Management</h3>
           <t.ColumnVisibility />
         </div>
       </:toolbar>
@@ -1107,7 +1508,12 @@ interface Product {
 export default class DemoComponent extends Component {
   columns = [
     { key: 'name', name: 'Product Name', isVisible: true },
-    { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}`, isVisible: true },
+    {
+      key: 'price',
+      name: 'Price',
+      value: (ctx) => `$${ctx.row.data.price}`,
+      isVisible: true
+    },
     { key: 'category', name: 'Category', isVisible: false }
   ] as const satisfies ColumnConfig<Product>[];
 
@@ -1120,12 +1526,23 @@ export default class DemoComponent extends Component {
   <template>
     <Table @columns={{this.columns}} @items={{this.items}}>
       <:toolbar as |t|>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">Products</h3>
+        <div class='flex items-center justify-between mb-4'>
+          <h3 class='text-lg font-semibold'>Products</h3>
           <t.ColumnVisibility>
             <:icon>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 12h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 18h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0" />
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke-width='1.5'
+                stroke='currentColor'
+                class='size-4'
+              >
+                <path
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                  d='M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 12h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0M10.5 18h9.75m-9.75 0a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m0 0h9.75m-9.75 0a1.5 1.5 0 0 1 3 0m3 0a1.5 1.5 0 0 0 3 0m0 0a1.5 1.5 0 0 1 3 0m6 0a1.5 1.5 0 1 1-3 0'
+                />
               </svg>
             </:icon>
             <:default>
@@ -1159,7 +1576,7 @@ You can add multiple controls to the toolbar area:
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center space-x-4">
         <h3 class="text-lg font-semibold">Data Table</h3>
-        <span class="text-sm text-gray-500">{{this.items.length}} items</span>
+        <span class="text-sm text-muted">{{this.items.length}} items</span>
       </div>
       <div class="flex items-center space-x-2">
         <button type="button" class="btn btn-sm">Export</button>
@@ -1240,3 +1657,4 @@ These properties take precedence over component-level sticky settings when both 
 - **`isVisible`**: Controls whether the column is visible by default when using the ColumnVisibility feature. When `undefined`, columns are visible by default
 
 This property integrates with the universal-ember ColumnVisibility plugin to provide persistent column state management.
+

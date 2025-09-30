@@ -1,13 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click } from '@ember/test-helpers';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import {
+  Table,
+  type ColumnConfig,
+  type CellSignature
+} from '@frontile/collections';
 import { array, hash } from '@ember/helper';
 import { cell } from 'ember-resources';
-
-function eq(a: unknown, b: unknown): boolean {
-  return a === b;
-}
+import type { TOC } from '@ember/component/template-only';
 
 interface TestItem {
   id: string;
@@ -1908,6 +1909,97 @@ module(
 
         // Default should not render for any column since all have specific c.For components
         assert.dom('[data-test-id="default-content"]').doesNotExist();
+      });
+
+      test('it supports column-level Cell components from universal-ember/table', async function (assert) {
+        // Create a custom cell component with proper types
+        const CustomCellComponent: TOC<CellSignature<TestItem>> = <template>
+          <div class="custom-cell" data-test-id="custom-column-cell">
+            Custom:
+            {{@row.data.name}}
+          </div>
+        </template>;
+
+        const BadgeCellComponent: TOC<CellSignature<TestItem>> = <template>
+          <span
+            class="badge"
+            data-test-id="badge-cell"
+            data-role={{@row.data.role}}
+          >
+            Role:
+            {{@row.data.role}}
+          </span>
+        </template>;
+
+        // Define columns with Cell components
+        const columns = [
+          {
+            key: 'name',
+            name: 'Name',
+            Cell: CustomCellComponent
+          },
+          {
+            key: 'email',
+            name: 'Email'
+          },
+          {
+            key: 'role',
+            name: 'Role',
+            Cell: BadgeCellComponent
+          }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          },
+          {
+            id: '2',
+            name: 'Jane Smith',
+            email: 'jane@example.com',
+            role: 'user'
+          }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        // Should render custom cell component for name column
+        assert.dom('[data-test-id="custom-column-cell"]').exists({ count: 2 });
+        assert
+          .dom('[data-test-id="custom-column-cell"]')
+          .hasText('Custom: John Doe');
+
+        const nameCells = document.querySelectorAll(
+          '[data-test-id="custom-column-cell"]'
+        );
+        assert.dom(nameCells[1]).hasText('Custom: Jane Smith');
+
+        // Should render badge cell component for role column
+        assert.dom('[data-test-id="badge-cell"]').exists({ count: 2 });
+        assert
+          .dom('[data-test-id="badge-cell"][data-role="admin"]')
+          .hasText('Role: admin');
+        assert
+          .dom('[data-test-id="badge-cell"][data-role="user"]')
+          .hasText('Role: user');
+
+        // Email column should render with default behavior (no custom Cell)
+        const emailCells = document.querySelectorAll('[data-column="email"]');
+        assert.dom(emailCells[0]).containsText('john@example.com');
+        assert.dom(emailCells[1]).containsText('jane@example.com');
+
+        // Email cells should not have custom styling
+        assert
+          .dom('[data-column="email"] [data-test-id="custom-column-cell"]')
+          .doesNotExist();
+        assert
+          .dom('[data-column="email"] [data-test-id="badge-cell"]')
+          .doesNotExist();
       });
     });
   }

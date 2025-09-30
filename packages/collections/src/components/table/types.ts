@@ -7,7 +7,21 @@ import type {
 
 // Re-export universal-ember/table types for convenience
 export type { Column, Row, Table } from '@universal-ember/table';
-import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
+import type { Row, Column } from '@universal-ember/table';
+import type { ContentValue } from '@glint/template';
+import type { ComponentLike } from '@glint/template';
+
+export interface CellContext<T> {
+  column: Column<T>;
+  row: Row<T>;
+}
+
+export interface CellSignature<T> {
+  Args: {
+    column: Column<T>;
+    row: Row<T>;
+  };
+}
 
 // Frontile sticky options
 export interface FrontileStickyOptions {
@@ -18,8 +32,16 @@ export interface FrontileStickyOptions {
 // Frontile plugin option type for embedding in universal-ember pluginOptions
 export type FrontilePluginOption = [string, () => FrontileStickyOptions];
 
-// Extended ColumnConfig with Frontile-specific options
-export interface ColumnConfig<T = unknown> extends UniversalColumnConfig<T> {
+// Our own independent ColumnConfig interface
+export interface ColumnConfig<T = unknown> {
+  /** The key to extract data from items */
+  key: string;
+  /** Display name for the column header */
+  name: string;
+  /** Optional function to transform/compute column values */
+  value?: (ctx: CellContext<T>) => ContentValue;
+  /** Custom component to render for this column's cells */
+  Cell?: ComponentLike<CellSignature<T>>;
   /** Whether this column should be sticky during horizontal scrolling */
   isSticky?: boolean;
   /** Position where the sticky column should stick. @default 'left' */
