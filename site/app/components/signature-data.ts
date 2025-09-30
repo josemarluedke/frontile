@@ -10696,7 +10696,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -10712,7 +10712,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -10800,7 +10800,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -10846,7 +10846,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -10922,7 +10922,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -10977,7 +10977,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11002,7 +11002,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11080,7 +11080,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11105,7 +11105,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11175,12 +11175,29 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
         description:
           'Custom CSS classes for different table elements (wrapper, table, th, td, etc.)',
+        tags: {},
+      },
+      {
+        identifier: 'hasWrapper',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether to render the wrapper div.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable loading state styling and behavior',
         tags: {},
       },
       {
@@ -11212,6 +11229,25 @@ const data: ComponentDoc[] = [
           "Table layout algorithm - 'auto' sizes columns by content, 'fixed' uses first row for sizing.",
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
+      },
+      {
+        identifier: 'loadingColor',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Color variant for loading animation.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
       {
         identifier: 'size',
@@ -11329,7 +11365,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11363,7 +11399,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11441,7 +11477,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11457,7 +11493,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11545,7 +11581,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11561,7 +11597,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11616,7 +11652,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11671,7 +11707,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11687,7 +11723,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11765,7 +11801,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11781,7 +11817,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11859,7 +11895,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -11875,7 +11911,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -11945,7 +11981,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -12075,6 +12111,173 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'cell-default',
+    name: 'CellDefaultComponent',
+    fileName:
+      'packages/collections/declarations/components/table/cell-default.d.ts',
+    Args: [
+      {
+        identifier: 'column',
+        type: { type: 'Column&#x3C;T>' },
+        isRequired: true,
+        isInternal: false,
+        description: 'The Column object for the current cell',
+        tags: {},
+      },
+      {
+        identifier: 'registry',
+        type: { type: 'CellRenderingContext' },
+        isRequired: true,
+        isInternal: false,
+        description: 'Registry to check for claimed keys',
+        tags: {},
+      },
+      {
+        identifier: 'except',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Optional array of keys to exclude from default rendering\n(alternative to using the registry system)',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    description:
+      'Default/fallback rendering component for table cells. Only renders its content\nwhen no CellForComponent has claimed the current column key.\n\nUsage:\n```hbs\n<c.Default>\n  Default: {{c.value}}\n</c.Default>\n\n<!-- Or with explicit exclusions -->\n<c.Default',
+    tags: {
+      except: {
+        name: 'except',
+        value: '={{array "status" "actions"}}>\n{{c.value}}\n</c.Default>\n```',
+      },
+    },
+  },
+  {
+    package: 'unknown',
+    module: 'cell-for',
+    name: 'CellForComponent',
+    fileName:
+      'packages/collections/declarations/components/table/cell-for.d.ts',
+    Args: [
+      {
+        identifier: 'column',
+        type: { type: 'Column&#x3C;T>' },
+        isRequired: true,
+        isInternal: false,
+        description: 'The column object for the current cell',
+        tags: {},
+      },
+      {
+        identifier: 'key',
+        type: { type: 'ColumnKeys&#x3C;TColumns>' },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The column key to match against the current column.\nWhen used with defineColumns(), this is type-checked against available column keys.',
+        tags: {},
+      },
+      {
+        identifier: 'registry',
+        type: { type: 'CellRenderingContext' },
+        isRequired: true,
+        isInternal: false,
+        description: 'Registry to track claimed keys',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    description:
+      'Conditional rendering component for table cells. Only renders its content\nwhen the current column key matches the specified',
+    tags: {
+      key: {
+        name: 'key',
+        value: 'argument.\n\nUsage:\n```hbs\n<c.For\n="status">\n<StatusBadge',
+      },
+      status: { name: 'status', value: '={{c.value}} />\n</c.For>\n```' },
+    },
+  },
+  {
+    package: 'unknown',
+    module: 'column-visibility',
+    name: 'ColumnVisibility',
+    fileName:
+      'packages/collections/declarations/components/table/column-visibility.d.ts',
+    Args: [
+      {
+        identifier: 'tableInstance',
+        type: { type: 'Table&#x3C;T>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Universal-ember table instance',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'icon',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLUListElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'table-body',
     name: 'TableBody',
     fileName:
@@ -12091,7 +12294,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -12129,7 +12332,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12292,7 +12495,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -12354,7 +12557,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12454,7 +12657,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12524,7 +12727,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -12561,7 +12764,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12637,7 +12840,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -12673,7 +12876,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12762,7 +12965,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -12828,7 +13031,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -12924,7 +13127,7 @@ const data: ComponentDoc[] = [
         identifier: 'columns',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: 'ColumnConfig&#x3C;T>[]',
+          raw: 'TColumns',
         },
         isRequired: true,
         isInternal: false,
@@ -12943,7 +13146,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -12982,6 +13185,14 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Array of column configurations for automatic footer generation',
+        tags: {},
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Enable loading state styling and behavior',
         tags: {},
       },
       {
@@ -13031,6 +13242,25 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
       {
+        identifier: 'loadingColor',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Color variant for loading animation.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
         identifier: 'size',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -13065,6 +13295,117 @@ const data: ComponentDoc[] = [
         description: '',
         tags: {},
       },
+      {
+        identifier: 'toolbar',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">ColumnVisibility</span>: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'ColumnVisibility',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'cell',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">column</span>: Column&#x3C;T>; value: ContentValue; row: Row&#x3C;T>; For: <span class="hljs-built_in">never</span>; Default: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'column',
+                    type: { type: 'Column&#x3C;T>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'value',
+                    type: {
+                      type: '<span class="hljs-built_in">enum</span>',
+                      raw: 'ContentValue',
+                      items: [
+                        'string',
+                        'number',
+                        'false',
+                        'true',
+                        'void',
+                        'Node',
+                        'SafeString',
+                        'ArglessCurlyComponent',
+                      ],
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'row',
+                    type: { type: 'Row&#x3C;T>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'For',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Default',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
     ],
     Element: {
       identifier: 'Element',
@@ -13073,6 +13414,68 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement',
     },
     description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'typed-cell-for',
+    name: 'TypedCellForComponent',
+    fileName:
+      'packages/collections/declarations/components/table/typed-cell-for.d.ts',
+    Args: [
+      {
+        identifier: 'column',
+        type: { type: 'Column&#x3C;T>' },
+        isRequired: true,
+        isInternal: false,
+        description: 'The column object for the current cell',
+        tags: {},
+      },
+      {
+        identifier: 'columns',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: 'TColumns',
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'Column definitions for type checking',
+        tags: {},
+      },
+      {
+        identifier: 'key',
+        type: { type: 'ColumnKeys&#x3C;TColumns>' },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'The column key to match against - type-checked against available columns',
+        tags: {},
+      },
+      {
+        identifier: 'registry',
+        type: { type: 'CellRenderingContext' },
+        isRequired: true,
+        isInternal: false,
+        description: 'Registry to track claimed keys',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    description:
+      'Type-safe wrapper around CellForComponent that enforces valid column keys\nat compile time when used with typed column arrays.',
     tags: {},
   },
   {
@@ -13093,7 +13496,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -13128,7 +13531,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13269,7 +13672,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -13385,7 +13788,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13523,7 +13926,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13578,7 +13981,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -13615,7 +14018,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13691,7 +14094,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -13728,7 +14131,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13806,7 +14209,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -13872,7 +14275,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | <span class="hljs-string">\'right\'</span> | <span class="hljs-string">\'bottom\'</span> | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">8</span> more ...; emptyCell: (slotProps?: ...',
+          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
         },
         isRequired: false,
         isInternal: true,
@@ -13942,7 +14345,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'emptyCell\'</span>>',
         },
         isRequired: false,
         isInternal: false,
