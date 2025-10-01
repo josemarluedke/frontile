@@ -188,28 +188,28 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await render(
       <template>
         <Form @schema={{schema}} @onSubmit={{onSubmitSpy}} as |form|>
-          <form.Field @name='email' as |field|>
+          <form.Field @name="email" as |field|>
             <field.Input data-test-email />
           </form.Field>
 
-          <form.Field @name='password' as |field|>
-            <field.Input @type='password' data-test-password />
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
           </form.Field>
 
-          <form.Field @name='country' as |field|>
+          <form.Field @name="country" as |field|>
             <field.Select
               @items={{countries}}
               @allowEmpty={{true}}
-              @placeholder='Select a country'
+              @placeholder="Select a country"
               data-test-country
             />
           </form.Field>
 
-          <form.Field @name='terms' as |field|>
-            <field.Checkbox @label='I accept the terms' data-test-terms />
+          <form.Field @name="terms" as |field|>
+            <field.Checkbox @label="I accept the terms" data-test-terms />
           </form.Field>
 
-          <button type='submit' data-test-submit>Submit</button>
+          <button type="submit" data-test-submit>Submit</button>
         </Form>
       </template>
     );
