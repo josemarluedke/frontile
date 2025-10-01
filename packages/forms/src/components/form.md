@@ -364,10 +364,7 @@ import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
 export default class ValidatedForm extends Component {
-  @tracked formData: FormResultData = {};
-  @tracked errors: Record<string, string[]> = {};
   @tracked submitMessage = '';
-  @tracked selectedAccountType: string | null = null;
 
   accountTypes = [
     { label: 'Personal', key: 'personal' },
@@ -396,6 +393,7 @@ export default class ValidatedForm extends Component {
       v.regex(/\d/, 'Password must contain at least one number')
     ),
     accountType: v.pipe(
+      v.fallback(v.string(), ''),
       v.string(),
       v.nonEmpty('Please select an account type')
     ),
@@ -407,149 +405,69 @@ export default class ValidatedForm extends Component {
 
   handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
-    // Real-time validation on input changes
-    this.validateField(data);
     console.log('Form input:', { data, event });
   };
 
-  validateField = (data: FormResultData) => {
-    // Prepare data for validation
-    const validationData = {
-      ...data,
-      accountType: this.selectedAccountType
-    };
-
-    // Try to parse the entire form, but only clear errors for valid fields
-    try {
-      v.parse(this.FormSchema, validationData);
-      // If validation passes completely, clear all errors
-      this.errors = {};
-    } catch (error) {
-      if (error instanceof v.ValiError) {
-        // Keep existing errors, but clear errors for fields that are now valid
-        const newErrors = { ...this.errors };
-        const invalidFields = new Set(
-          error.issues.map((issue) => issue.path?.[0]?.key).filter(Boolean)
-        );
-
-        // Clear errors for fields that are no longer invalid
-        Object.keys(newErrors).forEach((field) => {
-          if (!invalidFields.has(field)) {
-            delete newErrors[field];
-          }
-        });
-
-        this.errors = newErrors;
-      }
-    }
-  };
-
   handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
-    this.formData = data;
-    this.errors = {};
-    this.submitMessage = '';
-    console.log('Form submit:', { data, event });
-
-    // Prepare data for validation
-    const validationData = {
-      ...data,
-      accountType: this.selectedAccountType
-    };
-
-    // Validate using Valibot
-    try {
-      const validatedData = v.parse(this.FormSchema, validationData);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      this.submitMessage = 'Account created successfully!';
-      console.log('Form submitted successfully:', validatedData);
-    } catch (error) {
-      if (error instanceof v.ValiError) {
-        // Convert Valibot errors to our error format
-        const validationErrors: Record<string, string[]> = {};
-
-        for (const issue of error.issues) {
-          const path = issue.path?.[0]?.key as string;
-          if (path) {
-            if (!validationErrors[path]) {
-              validationErrors[path] = [];
-            }
-            validationErrors[path].push(issue.message);
-          }
-        }
-
-        this.errors = validationErrors;
-      } else {
-        this.submitMessage = 'An error occurred. Please try again.';
-      }
-    }
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.submitMessage = 'Account created successfully!';
+    console.log('Form submitted successfully:', validatedData);
   };
 
   get isSuccessMessage() {
     return this.submitMessage.includes('success');
   }
 
-  handleAccountTypeChange = (selectedKey: string | null) => {
-    this.selectedAccountType = selectedKey;
-    // Clear errors when selection is made
-    if (selectedKey && this.errors.accountType) {
-      const newErrors = { ...this.errors };
-      delete newErrors.accountType;
-      this.errors = newErrors;
-    }
-  };
-
   <template>
     <div class='flex flex-col gap-4 w-80'>
       <Form
+        @schema={{this.FormSchema}}
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
         as |form|
       >
         <div class='flex flex-col gap-4'>
+          <form.Field @name='name' as |field|>
+            <field.Input
+              @label='Full Name'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='name'
-            @label='Full Name'
-            @errors={{this.errors.name}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='email'
-            @label='Email Address'
-            @type='email'
-            @errors={{this.errors.email}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @description='Must be at least 6 characters'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='password'
-            @label='Password'
-            @type='password'
-            @description='Must be at least 6 characters'
-            @errors={{this.errors.password}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='accountType' as |field|>
+            <field.Select
+              @label='Account Type'
+              @items={{this.accountTypes}}
+              @allowEmpty={{true}}
+              @placeholder='Select account type'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Select
-            @name='accountType'
-            @label='Account Type'
-            @items={{this.accountTypes}}
-            @placeholder='Select account type'
-            @selectedKey={{this.selectedAccountType}}
-            @onSelectionChange={{this.handleAccountTypeChange}}
-            @errors={{this.errors.accountType}}
-            @isRequired={{true}}
-          />
-
-          <Checkbox
-            @name='terms'
-            @label='I agree to the terms and conditions'
-            @errors={{this.errors.terms}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='terms' as |field|>
+            <field.Checkbox
+              @label='I agree to the terms and conditions'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
           <Button type='submit' disabled={{form.isLoading}} @class='mt-4'>
             {{if form.isLoading 'Creating Account...' 'Create Account'}}

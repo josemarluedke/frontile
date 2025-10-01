@@ -1,4 +1,5 @@
 export * from './components/form';
+export * from './components/field';
 export * from './components/checkbox';
 export * from './components/checkbox-group';
 export * from './components/form-description';
