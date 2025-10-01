@@ -156,7 +156,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
    *    is called with the correct data
    */
   test('it validates form using schema with submitted form data and prevents submission on validation errors', async function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     const schema = v.object({
       email: v.pipe(v.string(), v.email('Invalid email address')),
@@ -171,6 +171,11 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
           (val) => val !== undefined && val !== '',
           'Please select a country'
         )
+      ),
+      favoriteColor: v.pipe(
+        v.fallback(v.string(), ''),
+        v.string(),
+        v.check((val) => val === 'taupe', 'The correct answer is taupe')
       ),
       terms: v.pipe(
         v.boolean(),
@@ -205,6 +210,15 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
             />
           </form.Field>
 
+          <form.Field @name="favoriteColor" as |field|>
+            <field.RadioGroup data-test-favorite-color as |Radio|>
+              <Radio @label="Taupe" @value="taupe" />
+              <Radio @label="Mauve" @value="mauve" />
+              <Radio @label="Celadon" @value="celadon" />
+              <Radio @label="Puce" @value="puce" />
+            </field.RadioGroup>
+          </form.Field>
+
           <form.Field @name="terms" as |field|>
             <field.Checkbox @label="I accept the terms" data-test-terms />
           </form.Field>
@@ -228,8 +242,8 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     );
     assert.equal(
       feedbackElements.length,
-      4,
-      'Four error messages are displayed'
+      5,
+      'Five error messages are displayed'
     );
     assert.ok(
       Array.from(feedbackElements).some((el) =>
@@ -255,11 +269,18 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       ),
       'Terms error message is displayed'
     );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('The correct answer is taupe')
+      ),
+      'Favorite color error message is displayed'
+    );
 
     // Submit with valid data
     await fillIn('[data-test-email]', 'test@example.com');
     await fillIn('[data-test-password]', 'password123');
     await selectOptionByKey('[data-test-country]', 'canada');
+    await click('[data-test-favorite-color] [value="taupe"]');
     await click('[data-test-terms]');
     await click('[data-test-submit]');
 
@@ -276,6 +297,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
         email: 'test@example.com',
         password: 'password123',
         country: 'canada',
+        favoriteColor: 'taupe',
         terms: true
       },
       'onSubmit should be called with correct data'
