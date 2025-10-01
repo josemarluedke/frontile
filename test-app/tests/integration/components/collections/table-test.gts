@@ -278,6 +278,122 @@ module(
         .doesNotExist();
     });
 
+    test('it displays empty content using named block', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+      const empty: TestItem[] = [];
+
+      await render(
+        <template>
+          <Table @columns={{columns}} @items={{empty}}>
+            <:empty>
+              <div data-test-id="custom-empty">
+                <h3>No Records Found</h3>
+                <p>Try adjusting your search criteria.</p>
+              </div>
+            </:empty>
+          </Table>
+        </template>
+      );
+
+      // Should show the custom empty block content
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-test-id="table-empty-cell"]').exists();
+      assert.dom('[data-test-id="custom-empty"]').exists();
+      assert
+        .dom('[data-test-id="custom-empty"] h3')
+        .containsText('No Records Found');
+      assert
+        .dom('[data-test-id="custom-empty"] p')
+        .containsText('Try adjusting your search criteria.');
+      assert
+        .dom('[data-test-id="table-row"]:not([data-test-id="table-empty-row"])')
+        .doesNotExist();
+    });
+
+    test('it prioritizes named block over emptyContent parameter', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+      const empty: TestItem[] = [];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{empty}}
+            @emptyContent="This should not show"
+          >
+            <:empty>
+              <div data-test-id="priority-empty">Named block content</div>
+            </:empty>
+          </Table>
+        </template>
+      );
+
+      // Should show named block content, not parameter content
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert.dom('[data-test-id="priority-empty"]').exists();
+      assert
+        .dom('[data-test-id="priority-empty"]')
+        .containsText('Named block content');
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .doesNotContainText('This should not show');
+    });
+
+    test('it falls back to emptyContent parameter when no named block provided', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+      const empty: TestItem[] = [];
+
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{empty}}
+            @emptyContent="Fallback content"
+          />
+        </template>
+      );
+
+      // Should show parameter content when no block is provided
+      assert.dom('[data-test-id="table-empty-row"]').exists();
+      assert
+        .dom('[data-test-id="table-empty-cell"]')
+        .containsText('Fallback content');
+    });
+
+    test('it hides empty block when items exist', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' }
+      ];
+
+      await render(
+        <template>
+          <Table @columns={{columns}} @items={{items}}>
+            <:empty>
+              <div data-test-id="should-not-show">Empty content</div>
+            </:empty>
+          </Table>
+        </template>
+      );
+
+      // Should not show empty block when items exist
+      assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      assert.dom('[data-test-id="should-not-show"]').doesNotExist();
+      assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+    });
+
     test('it handles items with different data types', async function (assert) {
       const columns = [
         { key: 'id', name: 'ID' },

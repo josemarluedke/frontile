@@ -85,6 +85,7 @@ interface TableSignature<
         >;
       }
     ];
+    empty: [];
   };
 }
 
@@ -367,10 +368,20 @@ class Table<
               {{/each}}
             </t.Row>
           {{else}}
-            {{#if @emptyContent}}
+            {{#if (has-block "empty")}}
               <t.Row data-test-id="table-empty-row">
                 <t.Cell
-                  @class={{(this.styles.emptyCell)}}
+                  @class={{(this.styles.empty)}}
+                  colspan={{this.headlessColumns.length}}
+                  data-test-id="table-empty-cell"
+                >
+                  {{yield to="empty"}}
+                </t.Cell>
+              </t.Row>
+            {{else if @emptyContent}}
+              <t.Row data-test-id="table-empty-row">
+                <t.Cell
+                  @class={{(this.styles.empty)}}
                   colspan={{this.headlessColumns.length}}
                   data-test-id="table-empty-cell"
                 >

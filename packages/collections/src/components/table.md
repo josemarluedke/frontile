@@ -767,7 +767,11 @@ export default class DemoComponent extends Component {
 
 ## Empty State Handling
 
-The table gracefully handles empty data by displaying headers without rows:
+The table supports both simple text and rich custom content for empty states when no data is available.
+
+### Simple Text Content
+
+Use the `@emptyContent` parameter for simple text messages:
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -788,6 +792,102 @@ export default class DemoComponent extends Component {
       @items={{this.emptyItems}}
       @emptyContent='No data to display'
     />
+  </template>
+}
+```
+
+### Rich Empty Content with Named Block
+
+Use the `empty` named block for custom HTML content, including headings, paragraphs, buttons, and other interactive elements:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { Button } from '@frontile/buttons';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  emptyItems: User[] = [];
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.emptyItems}}>
+      <:empty>
+        <div class='text-center py-8 px-4'>
+          <div class='w-16 h-16 mx-auto mb-4 text-muted'>
+            <svg fill='none' stroke='currentColor' viewBox='0 0 48 48'>
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003 0 0124 26c4.21 0 7.813 2.602 9.288 6.286M30 14a6 6 0 11-12 0 6 6 0 0112 0zm12 6a4 4 0 11-8 0 4 4 0 018 0zm-28 0a4 4 0 11-8 0 4 4 0 018 0z'
+              />
+            </svg>
+          </div>
+          <h3 class='text-lg font-medium text-foreground mb-2'>No Users Found</h3>
+          <p class='text-muted mb-4'>
+            There are no users in your system yet. Get started by adding your
+            first user.
+          </p>
+          <Button @intent='primary' @size='sm'>
+            Add First User
+          </Button>
+        </div>
+      </:empty>
+    </Table>
+  </template>
+}
+```
+
+When both `@emptyContent` parameter and `empty` named block are provided, the named block takes precedence:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Product' },
+    { key: 'price', name: 'Price' }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  emptyItems: Product[] = [];
+
+  <template>
+    {{! The named block content will be shown, not the @emptyContent text }}
+    <Table
+      @columns={{this.columns}}
+      @items={{this.emptyItems}}
+      @emptyContent='This text will be ignored'
+    >
+      <:empty>
+        <div class='text-center py-6'>
+          <h4 class='text-md font-medium text-primary mb-2'>Named Block Priority</h4>
+          <p class='text-muted'>
+            This content from the named block takes precedence over the
+            @emptyContent parameter.
+          </p>
+        </div>
+      </:empty>
+    </Table>
   </template>
 }
 ```
