@@ -86,6 +86,11 @@ interface TableSignature<
       }
     ];
     empty: [];
+    header: [
+      {
+        column: Column<T>;
+      }
+    ];
   };
 }
 
@@ -313,7 +318,11 @@ class Table<
               @stickyPosition={{this.columnStickyPosition column}}
               data-key={{column.key}}
             >
-              {{column.name}}
+              {{#if (has-block "header")}}
+                {{yield (hash column=column) to="header"}}
+              {{else}}
+                {{column.name}}
+              {{/if}}
             </t.Column>
           {{/each}}
         </t.Header>

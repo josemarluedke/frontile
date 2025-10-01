@@ -1620,6 +1620,111 @@ Choose the approach that best fits your needs:
 
 Both approaches can be used together in the same table - columns without a `Cell` component will fall back to the `:cell` block or default rendering.
 
+## Custom Header Rendering
+
+The Table component supports custom header content through the `header` named block, allowing you to override the default column names with custom styling, sorting controls, icons, or interactive elements.
+
+### Basic Header Customization
+
+Use the `header` named block to customize how column headers are rendered:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: 'active' | 'inactive';
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Full Name' },
+    { key: 'email', name: 'Email Address' },
+    { key: 'role', name: 'Role' },
+    { key: 'status', name: 'Status' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  items: User[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'admin',
+      status: 'active'
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'user',
+      status: 'inactive'
+    }
+  ];
+
+  isNameColumn = (key: string) => key === 'name';
+  isEmailColumn = (key: string) => key === 'email';
+  isStatusColumn = (key: string) => key === 'status';
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:header as |h|>
+        {{#if (this.isNameColumn h.column.key)}}
+          <div class='flex items-center space-x-2'>
+            <svg
+              class='w-4 h-4 text-primary'
+              fill='currentColor'
+              viewBox='0 0 20 20'
+            >
+              <path
+                fill-rule='evenodd'
+                d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
+                clip-rule='evenodd'
+              />
+            </svg>
+            <span class='font-semibold'>{{h.column.name}}</span>
+          </div>
+        {{else if (this.isEmailColumn h.column.key)}}
+          <div class='flex items-center space-x-2'>
+            <svg
+              class='w-4 h-4 text-primary'
+              fill='currentColor'
+              viewBox='0 0 20 20'
+            >
+              <path
+                d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z'
+              />
+              <path
+                d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z'
+              />
+            </svg>
+            <span class='font-semibold'>{{h.column.name}}</span>
+          </div>
+        {{else if (this.isStatusColumn h.column.key)}}
+          <div class='flex items-center space-x-2'>
+            <div class='w-2 h-2 bg-success rounded-full'></div>
+            <span class='font-semibold'>{{h.column.name}}</span>
+          </div>
+        {{else}}
+          <span class='font-semibold text-muted'>{{h.column.name}}</span>
+        {{/if}}
+      </:header>
+    </Table>
+  </template>
+}
+```
+
+### Header Context
+
+The `header` block provides access to column information through the yielded context:
+
+- **`h.column`** - The current column configuration object
+- **`h.column.key`** - The column key for conditional rendering
+- **`h.column.name`** - The display name defined in the column config
+
 ## Toolbar & Column Visibility
 
 The Table component supports a toolbar area that can render additional controls and features before the table content. The most common use case is providing column visibility controls to let users show/hide columns interactively.

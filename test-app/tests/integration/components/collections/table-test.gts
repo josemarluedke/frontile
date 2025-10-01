@@ -2113,6 +2113,240 @@ module(
       });
     });
 
+    // Custom Header Rendering Tests
+    module('Custom Header Rendering', function () {
+      test('it renders default header content when no header block is provided', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Full Name' },
+          { key: 'email', name: 'Email Address' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        // Should show default column names
+        assert
+          .dom('[data-test-id="table-header"] th[data-key="name"]')
+          .containsText('Full Name');
+        assert
+          .dom('[data-test-id="table-header"] th[data-key="email"]')
+          .containsText('Email Address');
+      });
+
+      test('it renders custom header content using header named block', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Full Name' },
+          { key: 'email', name: 'Email Address' },
+          { key: 'role', name: 'Role' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        const isNameColumn = (key: string) => key === 'name';
+        const isEmailColumn = (key: string) => key === 'email';
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:header as |h|>
+                {{#if (isNameColumn h.column.key)}}
+                  <div class="custom-name-header">
+                    <span class="header-icon">👤</span>
+                    <span
+                      data-test-id="name-header-text"
+                    >{{h.column.name}}</span>
+                  </div>
+                {{else if (isEmailColumn h.column.key)}}
+                  <div class="custom-email-header" data-test-id="email-header">
+                    <span class="header-icon">📧</span>
+                    {{h.column.name}}
+                  </div>
+                {{else}}
+                  {{h.column.name}}
+                {{/if}}
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Should show custom header content for name column
+        assert.dom('[data-key="name"] .custom-name-header').exists();
+        assert.dom('[data-key="name"] .header-icon').containsText('👤');
+        assert
+          .dom('[data-key="name"] [data-test-id="name-header-text"]')
+          .containsText('Full Name');
+
+        // Should show custom header content for email column
+        assert.dom('[data-key="email"] [data-test-id="email-header"]').exists();
+        assert.dom('[data-key="email"] .header-icon').containsText('📧');
+        assert
+          .dom('[data-key="email"] [data-test-id="email-header"]')
+          .containsText('Email Address');
+
+        // Should show default content for role column (fallback)
+        assert.dom('[data-key="role"]').containsText('Role');
+        assert.dom('[data-key="role"] .custom-name-header').doesNotExist();
+        assert
+          .dom('[data-key="role"] [data-test-id="email-header"]')
+          .doesNotExist();
+      });
+
+      test('it provides correct column context to header block', async function (assert) {
+        const columns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:header as |h|>
+                <div data-test-id="header-info-{{h.column.key}}">
+                  Key:
+                  {{h.column.key}}
+                  | Name:
+                  {{h.column.name}}
+                </div>
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Should provide correct column context
+        assert
+          .dom('[data-test-id="header-info-id"]')
+          .containsText('Key: id | Name: ID');
+        assert
+          .dom('[data-test-id="header-info-name"]')
+          .containsText('Key: name | Name: Name');
+      });
+
+      test('it works with sortable columns when using header block', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+          { id: '2', name: 'Alice', email: 'alice@example.com', role: 'user' }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:header as |h|>
+                <button
+                  type="button"
+                  class="sortable-header"
+                  data-test-id="sort-{{h.column.key}}"
+                >
+                  {{h.column.name}}
+                  ↕️
+                </button>
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Should render sortable buttons in headers
+        assert.dom('[data-test-id="sort-name"]').exists();
+        assert.dom('[data-test-id="sort-name"]').containsText('Name ↕️');
+        assert.dom('[data-test-id="sort-email"]').exists();
+        assert.dom('[data-test-id="sort-email"]').containsText('Email ↕️');
+
+        // Headers should be clickable
+        assert.dom('[data-test-id="sort-name"]').hasTagName('button');
+        assert.dom('[data-test-id="sort-email"]').hasTagName('button');
+      });
+
+      test('it works with sticky headers', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isStickyHeader={{true}}
+            >
+              <:header as |h|>
+                <div
+                  class="sticky-custom-header"
+                  data-test-id="sticky-header-{{h.column.key}}"
+                >
+                  📌
+                  {{h.column.name}}
+                </div>
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Should render custom headers in sticky header
+        assert.dom('[data-test-id="sticky-header-name"]').exists();
+        assert
+          .dom('[data-test-id="sticky-header-name"]')
+          .containsText('📌 Name');
+        assert.dom('[data-test-id="sticky-header-email"]').exists();
+        assert
+          .dom('[data-test-id="sticky-header-email"]')
+          .containsText('📌 Email');
+
+        // Should maintain sticky positioning
+        assert.dom('[data-test-id="table-header"]').hasClass(/sticky|fixed/);
+      });
+
+      test('it works with column visibility', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isVisible: true },
+          { key: 'email', name: 'Email', isVisible: false },
+          { key: 'role', name: 'Role', isVisible: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          { id: '1', name: 'John', email: 'john@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:header as |h|>
+                <span
+                  class="visible-header"
+                  data-test-id="visible-{{h.column.key}}"
+                >
+                  ✓
+                  {{h.column.name}}
+                </span>
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Should only render headers for visible columns
+        assert.dom('[data-test-id="visible-name"]').exists();
+        assert.dom('[data-test-id="visible-name"]').containsText('✓ Name');
+        assert.dom('[data-test-id="visible-role"]').exists();
+        assert.dom('[data-test-id="visible-role"]').containsText('✓ Role');
+
+        // Should not render header for hidden column
+        assert.dom('[data-test-id="visible-email"]').doesNotExist();
+      });
+    });
+
     // Loading Tests
     module('Loading Functionality', function () {
       test('it supports loading state', async function (assert) {
