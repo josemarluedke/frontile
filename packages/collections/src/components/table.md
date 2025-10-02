@@ -88,15 +88,19 @@ import {
   type ColumnConfig,
   type CellSignature
 } from '@frontile/collections';
+import { Chip } from '@frontile/buttons';
 import { users, type User } from 'site/components/table-demo-data';
 import type { TOC } from '@ember/component/template-only';
 
 const StatusCell: TOC<CellSignature<User>> = <template>
-  {{#if (eq @row.data.status 'active')}}
-    <span class='text-success'>● Active</span>
-  {{else}}
-    <span class='text-danger'>● Inactive</span>
-  {{/if}}
+  <Chip
+    @size='sm'
+    @appearance='outlined'
+    @intent='{{if (eq @row.data.status "active") "success" "danger"}}'
+    @withDot={{true}}
+  >
+    {{@row.data.status}}
+  </Chip>
 </template>;
 
 export default class DemoComponent extends Component {
@@ -144,6 +148,7 @@ export default class DemoComponent extends Component {
 ```
 
 **Options:**
+
 - `@size` - `sm`, `md` (default), `lg`
 - `@isStriped` - Alternating row colors
 - `@layout` - `auto` (default), `fixed`
@@ -286,7 +291,12 @@ export default class DemoComponent extends Component {
       role: 'Administrator'
     },
     { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Developer' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'Designer' },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      role: 'Designer'
+    },
     { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Manager' },
     {
       id: 'guest',
@@ -528,12 +538,14 @@ export default class DemoComponent extends Component {
 
 ## Custom Cell Rendering
 
-Use the `:cell` block for custom cell content:
+Use the `:cell` block for custom cell content. Alternatively, you can define a `Cell` component in the [column configuration](#column-level-cell-components) for reusable cell rendering.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from '@frontile/collections';
 import { users, type User } from 'site/components/table-demo-data';
+import { Avatar } from '@frontile/utilities';
+import { Chip } from '@frontile/buttons';
 
 export default class DemoComponent extends Component {
   columns = [
@@ -548,21 +560,25 @@ export default class DemoComponent extends Component {
       <:cell as |c|>
         <c.For @key='name'>
           <div class='flex items-center space-x-2'>
-            <div
-              class='w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm'
-            >
-              {{c.value.[0]}}
-            </div>
+            <Avatar
+              @name={{c.value}}
+              @size='sm'
+              @src='https://i.pravatar.cc/150?img={{c.value}}'
+            />
             <span class='font-medium'>{{c.value}}</span>
           </div>
         </c.For>
 
         <c.For @key='status'>
-          {{#if (eq c.value 'active')}}
-            <span class='text-success'>● {{c.value}}</span>
-          {{else}}
-            <span class='text-danger'>● {{c.value}}</span>
-          {{/if}}
+          <Chip
+            @size='sm'
+            @appearance='outlined'
+            @intent='{{if (eq c.value "active") "success" "danger"}}'
+            @withDot={{true}}
+          >
+            {{c.value}}
+          </Chip>
+
         </c.For>
 
         <c.Default>
@@ -579,6 +595,7 @@ function eq(a: string | undefined, b: string) {
 ```
 
 **Context:**
+
 - `c.column` - Column configuration
 - `c.row` - Row data
 - `c.value` - Computed cell value
@@ -750,6 +767,7 @@ export default class DemoComponent extends Component {
 ```
 
 **Features:**
+
 - Tri-state sorting: descending → ascending → none
 - Custom sort property: Use `sortProperty` to sort by a different field
 - Initial sort: Set with `@initialSort`
