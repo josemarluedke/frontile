@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { dataFrom } from 'form-data-utils';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 
 type FormResultData = ReturnType<typeof dataFrom>;
 
@@ -17,6 +18,10 @@ interface FormContext {
 interface FormSignature {
   Element: HTMLFormElement;
   Args: {
+    /**
+     * The standard schema to validate form data against.
+     */
+    schema?: StandardSchemaV1;
     /**
      * Optional callback invoked on input changes within the form.
      */

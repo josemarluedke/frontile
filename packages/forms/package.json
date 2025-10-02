@@ -75,6 +75,7 @@
     "@glint/environment-ember-template-imports": "1.5.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.0",
+    "@standard-schema/spec": "^1.0.0",
     "@tsconfig/ember": "^3.0.9",
     "babel-plugin-ember-template-compilation": "^2.2.1",
     "concurrently": "^9.1.0",
