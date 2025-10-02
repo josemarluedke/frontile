@@ -37,7 +37,7 @@ interface PortalSignature {
      * There are 3 options: 1) `Element` object, 2) element id, 3) portal target name.
      *
      * For element id, string must be prefixed with `#`.
-     * If no value is passee in, we will render to the closest unnamed portal target,
+     * If no value is passed in, we will render to the closest unnamed portal target,
      * parent portal or `document.body`.
      */
     target?: string | Element;
