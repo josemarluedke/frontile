@@ -348,7 +348,7 @@ export default class ComprehensiveForm extends Component {
 
 ### Form Validation Integration
 
-The Form component works seamlessly with validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.
+The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.  The use of custom validators is also supported.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -373,7 +373,7 @@ export default class ValidatedForm extends Component {
   ];
 
   // Valibot schema for form validation
-  FormSchema = v.object({
+  schema = v.object({
     name: v.pipe(
       v.string(),
       v.nonEmpty('Name is required'),
@@ -403,6 +403,15 @@ export default class ValidatedForm extends Component {
     )
   });
 
+  customValidator(data: FormResultData) {
+    if (data['password'] !== data['confirmPassword']) {
+      return [{
+        message: 'Passwords must match',
+        path: [{ key: 'confirmPassword' }]
+      }];
+    }
+  };
+
   handleFormChange = (data: FormResultData, event: Event) => {
     this.formData = data;
     console.log('Form input:', { data, event });
@@ -422,7 +431,8 @@ export default class ValidatedForm extends Component {
   <template>
     <div class='flex flex-col gap-4 w-80'>
       <Form
-        @schema={{this.FormSchema}}
+        @schema={{this.schema}}
+        @validate={{this.customValidator}}
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
         as |form|
@@ -447,7 +457,14 @@ export default class ValidatedForm extends Component {
             <field.Input
               @label='Password'
               @type='password'
-              @description='Must be at least 6 characters'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='confirmPassword' as |field|>
+            <field.Input
+              @label='Confirm Password'
+              @type='password'
               @isRequired={{true}}
             />
           </form.Field>

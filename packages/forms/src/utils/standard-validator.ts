@@ -13,13 +13,19 @@ export type Issues = readonly StandardSchemaV1.Issue[];
 export type ValidatorReturn = Promise<Issues | undefined>;
 
 /**
+ * StandardSchemaV1 issues as either a promise or synchronous.  If there are
+ * no issues, `undefined` is returned.
+ */
+export type CustomValidatorReturn = ValidatorReturn | Issues | undefined;
+
+/**
  * A custom validator function.
  * If there are errors, they are returned by the validator as
  * StandardSchemaV1 issues.  If there are no errors, nothing is returned.
  */
 export type CustomValidatorFn<Input = unknown> = (
   input: Input
-) => ValidatorReturn | Issues | undefined;
+) => CustomValidatorReturn;
 
 /**
  * Provides convenience methods for validating data using Standard Schema.

@@ -18,7 +18,8 @@ import {
   Textarea,
   NativeSelect,
   Select,
-  type FormResultData
+  type FormResultData,
+  type CustomValidatorReturn
 } from '@frontile/forms';
 import { cell } from 'ember-resources';
 import * as v from 'valibot';
@@ -301,6 +302,294 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
         terms: true
       },
       'onSubmit should be called with correct data'
+    );
+  });
+
+  /**
+   * Test that Form validates against a custom validator function
+   * 1. Custom validator runs on form submission
+   * 2. When validation fails, error messages from custom validator are displayed
+   * 3. onSubmit is not called when custom validation fails
+   * 4. When valid data is submitted, error messages are cleared and onSubmit is called
+   */
+  test('it validates form using custom validator function', async function (assert) {
+    assert.expect(6);
+
+    // Custom validator that checks if password matches confirmPassword
+    const customValidator = (data: FormResultData): CustomValidatorReturn => {
+      const issues = [];
+      if (data['password'] !== data['confirmPassword']) {
+        issues.push({
+          message: 'Passwords do not match',
+          path: [{ key: 'confirmPassword' }]
+        });
+      }
+      if (
+        data['username'] &&
+        (data['username'] as string).toLowerCase() === 'admin'
+      ) {
+        issues.push({
+          message: 'Username "admin" is reserved',
+          path: [{ key: 'username' }]
+        });
+      }
+      return issues.length > 0 ? issues : undefined;
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @validate={{customValidator}} @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <form.Field @name="confirmPassword" as |field|>
+            <field.Input @type="password" data-test-confirm-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Submit with invalid data (mismatched passwords and reserved username)
+    await fillIn('[data-test-username]', 'admin');
+    await fillIn('[data-test-password]', 'password123');
+    await fillIn('[data-test-confirm-password]', 'password456');
+    await click('[data-test-submit]');
+
+    // onSubmit should not be called due to validation errors
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
+
+    // Verify error messages are displayed
+    const feedbackElements = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(
+      feedbackElements.length,
+      2,
+      'Two error messages are displayed'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Passwords do not match')
+      ),
+      'Password mismatch error message is displayed'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Username "admin" is reserved')
+      ),
+      'Reserved username error message is displayed'
+    );
+
+    // Submit with valid data
+    await fillIn('[data-test-username]', 'john');
+    await fillIn('[data-test-password]', 'password123');
+    await fillIn('[data-test-confirm-password]', 'password123');
+    await click('[data-test-submit]');
+
+    // Verify error messages are cleared
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error messages are cleared');
+
+    // onSubmit should be called with valid data
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+  });
+
+  /**
+   * Test that Form can validate using both a schema and a custom validator function
+   * 1. Schema validation runs first
+   * 2. Custom validator runs after schema validation
+   * 3. Both validation errors are displayed when both fail
+   * 4. onSubmit is not called when either validation fails
+   * 5. When valid data is submitted, both validations pass and onSubmit is called
+   */
+  test('it validates form using both schema and custom validator function', async function (assert) {
+    assert.expect(11);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      ),
+      confirmPassword: v.pipe(v.string(), v.minLength(1))
+    });
+
+    // Custom validator that checks if password matches confirmPassword
+    const customValidator = (data: FormResultData): CustomValidatorReturn => {
+      const issues = [];
+      if (data['password'] !== data['confirmPassword']) {
+        issues.push({
+          message: 'Passwords do not match',
+          path: [{ key: 'confirmPassword' }]
+        });
+      }
+      return issues.length > 0 ? issues : undefined;
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validate={{customValidator}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <form.Field @name="confirmPassword" as |field|>
+            <field.Input @type="password" data-test-confirm-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Submit with invalid data (both schema and custom validator should fail)
+    await fillIn('[data-test-email]', 'invalid-email');
+    await fillIn('[data-test-password]', 'abc');
+    await fillIn('[data-test-confirm-password]', 'xyz');
+    await click('[data-test-submit]');
+
+    // onSubmit should not be called due to validation errors
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
+
+    // Verify both schema and custom validator errors are displayed (3 total: 2 schema + 1 custom)
+    let feedbackElements = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(
+      feedbackElements.length,
+      3,
+      'Three error messages are displayed (2 schema errors + 1 custom validator error)'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Invalid email address')
+      ),
+      'Email error message is displayed'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Password must be at least 6 characters')
+      ),
+      'Password error message is displayed'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Passwords do not match')
+      ),
+      'Password mismatch error message is displayed'
+    );
+
+    // Submit with valid schema but invalid custom validator
+    await fillIn('[data-test-email]', 'test@example.com');
+    await fillIn('[data-test-password]', 'password123');
+    await fillIn('[data-test-confirm-password]', 'password456');
+    await click('[data-test-submit]');
+
+    // onSubmit should not be called due to custom validation error
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
+
+    // Verify custom validator error is displayed
+    feedbackElements = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(
+      feedbackElements.length,
+      1,
+      'One error message is displayed (custom validator error)'
+    );
+    assert.ok(
+      Array.from(feedbackElements).some((el) =>
+        el.textContent?.includes('Passwords do not match')
+      ),
+      'Password mismatch error message is displayed'
+    );
+
+    // Submit with valid data (both schema and custom validator should pass)
+    await fillIn('[data-test-email]', 'test@example.com');
+    await fillIn('[data-test-password]', 'password123');
+    await fillIn('[data-test-confirm-password]', 'password123');
+    await click('[data-test-submit]');
+
+    // Verify error messages are cleared
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error messages are cleared');
+
+    // onSubmit should be called with valid data
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0],
+      {
+        email: 'test@example.com',
+        password: 'password123',
+        confirmPassword: 'password123'
+      },
+      'onSubmit should be called with correct data'
+    );
+  });
+
+  /**
+   * Test that Form can submit successfully without any validation
+   * 1. Form with neither schema nor custom validator allows submission
+   * 2. onSubmit is called with the form data
+   * 3. No validation errors are displayed
+   */
+  test('it submits form with neither schema nor custom validator', async function (assert) {
+    assert.expect(2);
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Fill in form data and submit
+    await fillIn('[data-test-username]', 'john');
+    await fillIn('[data-test-email]', 'not-even-a-valid-email');
+    await click('[data-test-submit]');
+
+    // onSubmit should be called with the data (no validation)
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0],
+      {
+        username: 'john',
+        email: 'not-even-a-valid-email'
+      },
+      'onSubmit should be called with the form data'
     );
   });
 });

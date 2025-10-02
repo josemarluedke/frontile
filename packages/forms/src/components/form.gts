@@ -9,7 +9,7 @@ import { Field } from './field';
 
 import type { WithBoundArgs } from '@glint/template';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import type { Issues } from '../utils/standard-validator';
+import type { Issues, CustomValidatorFn } from '../utils/standard-validator';
 
 type FormResultData = ReturnType<typeof dataFrom>;
 
@@ -33,7 +33,13 @@ interface FormSignature {
     /**
      * The standard schema to validate form data against.
      */
-    schema?: StandardSchemaV1;
+    schema?: StandardSchemaV1<FormResultData>;
+    /**
+     * Optional custom validation function.  A custom validator should return
+     * an array of Standard Schema issues, or `undefined` if there are none.
+     * This function may be async or sync.
+     */
+    validate?: CustomValidatorFn<FormResultData>;
     /**
      * Optional callback invoked on input changes within the form.
      */
@@ -85,7 +91,11 @@ class Form extends Component<FormSignature> {
    */
   async validate(data: FormResultData): Promise<FormErrors | undefined> {
     // Run validator and get issues
-    const errors = await StandardValidator.validateAll(data, this.args.schema);
+    const errors = await StandardValidator.validateAll(
+      data,
+      this.args.schema,
+      this.args.validate
+    );
     // Convert validator errors to FormErrors
     if (errors) {
       const formErrors = validatorToFormErrors(errors);
