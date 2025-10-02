@@ -1,5 +1,5 @@
 ---
-name: New
+label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
@@ -596,7 +596,12 @@ export default class DemoComponent extends Component {
   @tracked loadingColor = 'primary';
 
   items: Product[] = [
-    { id: '1', name: 'Wireless Headphones', price: 199.99, category: 'Electronics' },
+    {
+      id: '1',
+      name: 'Wireless Headphones',
+      price: 199.99,
+      category: 'Electronics'
+    },
     { id: '2', name: 'Coffee Mug', price: 12.99, category: 'Kitchen' },
     { id: '3', name: 'Notebook Set', price: 24.99, category: 'Office' }
   ];
@@ -641,7 +646,11 @@ export default class DemoComponent extends Component {
         />
       </div>
 
-      <SimpleTable @isLoading={{this.isLoading}} @loadingColor={{this.loadingColor}} as |t|>
+      <SimpleTable
+        @isLoading={{this.isLoading}}
+        @loadingColor={{this.loadingColor}}
+        as |t|
+      >
         <t.Header>
           <t.Column>ID</t.Column>
           <t.Column>Product</t.Column>
@@ -681,4 +690,3 @@ The loading feature supports five color variants:
 <Signature @component="SimpleTableColumn" />
 <Signature @component="SimpleTableRow" />
 <Signature @component="SimpleTableCell" />
-

@@ -1,5 +1,5 @@
 ---
-name: New
+label: New
 imports:
   - import Signature from 'site/components/signature';
   - import { users, products, employees, type User, type Product, type Employee } from 'site/components/table-demo-data';
