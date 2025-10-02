@@ -29,6 +29,8 @@ interface SimpleTableSignature {
     isLoading?: boolean;
     /** Color variant for loading animation. @defaultValue 'default' */
     loadingColor?: TableVariants['loadingColor'];
+    /** Whether a custom loading block is provided (disables CSS loading indicator) */
+    hasCustomLoading?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -58,7 +60,9 @@ class SimpleTable extends Component<SimpleTableSignature> {
       striped: this.args.isStriped,
       isScrollable: this.args.isScrollable || false,
       hasStickyHeader: false, // Will be determined by header component
-      isLoading: this.args.isLoading || false,
+      isLoading: this.args.hasCustomLoading
+        ? false
+        : this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
       class: this.args.classes?.base
     });

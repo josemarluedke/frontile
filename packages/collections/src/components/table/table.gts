@@ -109,8 +109,13 @@ interface TableSignature<
         onSort: () => void;
       }
     ];
+    loading: [];
   };
 }
+
+const and = (a: unknown, b: unknown) => {
+  return a && b;
+};
 
 class Table<
   T = unknown,
@@ -379,6 +384,7 @@ class Table<
         @hasWrapper={{false}}
         @isLoading={{@isLoading}}
         @loadingColor={{@loadingColor}}
+        @hasCustomLoading={{has-block "loading"}}
         as |t|
       >
         <t.Header @isSticky={{@isStickyHeader}}>
@@ -465,28 +471,41 @@ class Table<
               {{/each}}
             </t.Row>
           {{else}}
-            {{#if (has-block "empty")}}
-              <t.Row data-test-id="table-empty-row">
-                <t.Cell
-                  @class={{(this.styles.empty)}}
-                  colspan={{this.headlessColumns.length}}
-                  data-test-id="table-empty-cell"
-                >
-                  {{yield to="empty"}}
-                </t.Cell>
-              </t.Row>
-            {{else if @emptyContent}}
-              <t.Row data-test-id="table-empty-row">
-                <t.Cell
-                  @class={{(this.styles.empty)}}
-                  colspan={{this.headlessColumns.length}}
-                  data-test-id="table-empty-cell"
-                >
-                  {{@emptyContent}}
-                </t.Cell>
-              </t.Row>
-            {{/if}}
+            {{#unless @isLoading}}
+              {{#if (has-block "empty")}}
+                <t.Row data-test-id="table-empty-row">
+                  <t.Cell
+                    @class={{(this.styles.empty)}}
+                    colspan={{this.headlessColumns.length}}
+                    data-test-id="table-empty-cell"
+                  >
+                    {{yield to="empty"}}
+                  </t.Cell>
+                </t.Row>
+              {{else if @emptyContent}}
+                <t.Row data-test-id="table-empty-row">
+                  <t.Cell
+                    @class={{(this.styles.empty)}}
+                    colspan={{this.headlessColumns.length}}
+                    data-test-id="table-empty-cell"
+                  >
+                    {{@emptyContent}}
+                  </t.Cell>
+                </t.Row>
+              {{/if}}
+            {{/unless}}
           {{/each}}
+
+          {{#if (and @isLoading (has-block "loading"))}}
+            <t.Row data-test-id="table-loading-row">
+              <t.Cell
+                colspan={{this.headlessColumns.length}}
+                data-test-id="table-loading-cell"
+              >
+                {{yield to="loading"}}
+              </t.Cell>
+            </t.Row>
+          {{/if}}
         </t.Body>
 
         {{#if this.footerColumns.length}}

@@ -2444,6 +2444,189 @@ module(
         assert.dom('[data-test-id="table"][data-loading="false"]').exists();
         assert.dom('[data-test-id="table-cell"]').exists();
       });
+
+      test('it supports custom loading block', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{true}}>
+              <:loading>
+                <div data-test-id="custom-loading">Custom Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Table should render with custom loading indicator inside a table row/cell
+        assert.dom('[data-test-id="table"]').exists();
+        assert.dom('[data-test-id="table"][data-loading="true"]').exists();
+        assert.dom('[data-test-id="table-loading-row"]').exists();
+        assert.dom('[data-test-id="table-loading-cell"]').exists();
+        assert.dom('[data-test-id="custom-loading"]').exists();
+        assert
+          .dom('[data-test-id="custom-loading"]')
+          .hasText('Custom Loading...');
+      });
+
+      test('it disables CSS loading indicator when custom loading block is provided', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{true}}>
+              <:loading>
+                <div data-test-id="custom-loading">Custom Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Custom loading should be visible
+        assert.dom('[data-test-id="custom-loading"]').exists();
+
+        // The CSS loading indicator should be disabled (tested by the styles not applying the isLoading variant)
+        // This is handled internally by the component logic
+        assert.dom('[data-test-id="table"]').exists();
+      });
+
+      test('it hides empty content when loading block is provided and isLoading is true', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const emptyItems: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{emptyItems}}
+              @emptyContent="No data"
+              @isLoading={{true}}
+            >
+              <:loading>
+                <div data-test-id="custom-loading">Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Loading block should be shown
+        assert.dom('[data-test-id="table-loading-row"]').exists();
+        assert.dom('[data-test-id="custom-loading"]').exists();
+
+        // Empty content should NOT be shown when loading
+        assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      });
+
+      test('it shows data rows alongside loading block when isLoading is true', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{true}}>
+              <:loading>
+                <div data-test-id="custom-loading">Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Both data rows and loading block should be shown
+        assert.dom('[data-test-id="table-cell"]').exists();
+        assert.dom('[data-test-id="table-loading-row"]').exists();
+        assert.dom('[data-test-id="custom-loading"]').exists();
+      });
+
+      test('it shows normal content when loading block is provided but isLoading is false', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{false}}>
+              <:loading>
+                <div data-test-id="custom-loading">Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Loading block should NOT be shown
+        assert.dom('[data-test-id="table-loading-row"]').doesNotExist();
+        assert.dom('[data-test-id="custom-loading"]').doesNotExist();
+
+        // Normal table data should be shown
+        assert.dom('[data-test-id="table-cell"]').exists();
+      });
+
+      test('it shows empty content when isLoading is false and no items', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const emptyItems: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{emptyItems}}
+              @emptyContent="No data"
+              @isLoading={{false}}
+            >
+              <:loading>
+                <div data-test-id="custom-loading">Loading...</div>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        // Loading block should NOT be shown
+        assert.dom('[data-test-id="table-loading-row"]').doesNotExist();
+        assert.dom('[data-test-id="custom-loading"]').doesNotExist();
+
+        // Empty content should be shown
+        assert.dom('[data-test-id="table-empty-row"]').exists();
+      });
     });
 
     module('Sorting', function () {

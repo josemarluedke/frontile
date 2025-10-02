@@ -676,6 +676,10 @@ export default class DemoComponent extends Component {
 
 The Table component supports loading states with different color variants to indicate when data is being fetched or processed. Loading states provide visual feedback to users during async operations.
 
+### Default Loading Indicator
+
+The default loading indicator displays as an animated progress bar under the table header:
+
 ```gts preview
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from '@frontile/collections';
@@ -764,6 +768,101 @@ export default class DemoComponent extends Component {
   </template>
 }
 ```
+
+### Custom Loading Indicator
+
+You can provide a custom loading indicator using the `loading` named block. When this block is provided, the default CSS loading animation is automatically disabled, and the loading content is rendered as an additional row after the data rows:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Button } from '@frontile/buttons';
+import { Spinner } from '@frontile/utilities';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+}
+
+export default class DemoComponent extends Component {
+  @tracked isLoading = true;
+
+  columns = [
+    { key: 'id', name: 'ID' },
+    { key: 'name', name: 'Product' },
+    { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}` },
+    { key: 'category', name: 'Category' }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  items: Product[] = [
+    {
+      id: '1',
+      name: 'Wireless Headphones',
+      price: 199.99,
+      category: 'Electronics'
+    },
+    { id: '2', name: 'Coffee Mug', price: 12.99, category: 'Kitchen' },
+    { id: '3', name: 'Notebook Set', price: 24.99, category: 'Office' }
+  ];
+
+  @action
+  toggleLoading() {
+    this.isLoading = !this.isLoading;
+  }
+
+  <template>
+    <div class='space-y-4'>
+      <div class='flex justify-center'>
+        <Button
+          @onPress={{this.toggleLoading}}
+          @size='sm'
+          @appearance='outlined'
+          @intent={{if this.isLoading 'danger' 'primary'}}
+        >
+          {{if this.isLoading 'Stop Loading' 'Start Loading'}}
+        </Button>
+      </div>
+
+      <div class='relative'>
+        <Table
+          @columns={{this.columns}}
+          @items={{this.items}}
+          @isLoading={{this.isLoading}}
+        >
+          <:loading>
+            <div
+              class='absolute z-2 inset-0 bg-background/80 backdrop-blur-sm flex items-center flex-col justify-center'
+            >
+              <Spinner @size='lg' class='mb-2' />
+              <p class='text-sm text-muted'>Loading products...</p>
+            </div>
+          </:loading>
+        </Table>
+      </div>
+    </div>
+  </template>
+}
+```
+
+The `loading` named block gives you complete control over the loading experience, allowing you to:
+
+- Use custom spinners, skeleton screens, or progress indicators
+- Add custom messages or branding
+- Control styling and layout within the table cell
+- Display loading UI alongside existing data rows or instead of empty state
+
+**Important**: When the `loading` block is provided AND `@isLoading` is true:
+
+- The loading row is rendered as an additional row in the table body
+- If there are data rows, the loading row appears after them
+- If there are no data rows, the empty state is hidden and only the loading row is shown
+- When `@isLoading` is false, the loading row is not shown and normal behavior resumes
+
+This allows you to define the loading UI once and toggle it with the `@isLoading` prop, supporting scenarios like loading more data while displaying existing items.
 
 ## Empty State Handling
 
@@ -1937,8 +2036,20 @@ interface User {
 
 export default class DemoComponent extends Component {
   @tracked items: User[] = [
-    { id: '1', name: 'Charlie', email: 'charlie@example.com', role: 'user', count: 30 },
-    { id: '2', name: 'Alice', email: 'alice@example.com', role: 'admin', count: 10 },
+    {
+      id: '1',
+      name: 'Charlie',
+      email: 'charlie@example.com',
+      role: 'user',
+      count: 30
+    },
+    {
+      id: '2',
+      name: 'Alice',
+      email: 'alice@example.com',
+      role: 'admin',
+      count: 10
+    },
     { id: '3', name: 'Bob', email: 'bob@example.com', role: 'user', count: 20 }
   ];
 
@@ -1969,7 +2080,11 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <Table @columns={{this.columns}} @items={{this.items}} @onSort={{this.handleSort}} />
+    <Table
+      @columns={{this.columns}}
+      @items={{this.items}}
+      @onSort={{this.handleSort}}
+    />
   </template>
 }
 ```
@@ -1998,9 +2113,24 @@ interface User {
 
 export default class DemoComponent extends Component {
   items: User[] = [
-    { id: '1', displayName: 'Mr. Charlie', sortableName: 'Charlie', email: 'charlie@example.com' },
-    { id: '2', displayName: 'Ms. Alice', sortableName: 'Alice', email: 'alice@example.com' },
-    { id: '3', displayName: 'Dr. Bob', sortableName: 'Bob', email: 'bob@example.com' }
+    {
+      id: '1',
+      displayName: 'Mr. Charlie',
+      sortableName: 'Charlie',
+      email: 'charlie@example.com'
+    },
+    {
+      id: '2',
+      displayName: 'Ms. Alice',
+      sortableName: 'Alice',
+      email: 'alice@example.com'
+    },
+    {
+      id: '3',
+      displayName: 'Dr. Bob',
+      sortableName: 'Bob',
+      email: 'bob@example.com'
+    }
   ];
 
   columns = [
@@ -2031,7 +2161,11 @@ export default class DemoComponent extends Component {
   };
 
   <template>
-    <Table @columns={{this.columns}} @items={{this.items}} @onSort={{this.handleSort}} />
+    <Table
+      @columns={{this.columns}}
+      @items={{this.items}}
+      @onSort={{this.handleSort}}
+    />
   </template>
 }
 ```
@@ -2056,6 +2190,7 @@ You can customize the header rendering while maintaining sorting functionality:
 ```
 
 The header block yields:
+
 - `column` - The column instance
 - `isSortable` - Whether the column is sortable
 - `sortDirection` - Current sort direction ('ascending', 'descending', or 'none')
