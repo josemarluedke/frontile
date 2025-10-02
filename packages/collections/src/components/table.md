@@ -1916,6 +1916,216 @@ Use [SimpleTable](./simple-table) instead of Table when you need:
 - Block-form composition patterns
 - Minimal styling without advanced features
 
+## Sorting
+
+The Table component supports column sorting through the universal-ember table plugin. Columns can be made sortable by setting `isSortable: true` in the column configuration, and you provide a sorting function to handle the actual data sorting.
+
+### Basic Sorting
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Table, type ColumnConfig, type SortItem } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  count: number;
+}
+
+export default class DemoComponent extends Component {
+  @tracked items: User[] = [
+    { id: '1', name: 'Charlie', email: 'charlie@example.com', role: 'user', count: 30 },
+    { id: '2', name: 'Alice', email: 'alice@example.com', role: 'admin', count: 10 },
+    { id: '3', name: 'Bob', email: 'bob@example.com', role: 'user', count: 20 }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name', isSortable: true },
+    { key: 'email', name: 'Email', isSortable: true },
+    { key: 'role', name: 'Role' },
+    { key: 'count', name: 'Count', isSortable: true }
+  ] as const satisfies ColumnConfig<User>[];
+
+  handleSort = (items: User[], sortDescriptor: SortItem<User>) => {
+    if (sortDescriptor.direction === 'none') {
+      return items;
+    }
+
+    return [...items].sort((a, b) => {
+      const aValue = a[sortDescriptor.property];
+      const bValue = b[sortDescriptor.property];
+
+      if (aValue === undefined || bValue === undefined) return 0;
+
+      if (sortDescriptor.direction === 'ascending') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  };
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}} @onSort={{this.handleSort}} />
+  </template>
+}
+```
+
+### Sorting Features
+
+- **Tri-state sorting**: Click a sortable column header to cycle through descending → ascending → none
+- **Visual indicators**: Sort icons appear on hover for sortable columns, and remain visible when actively sorted
+- **Keyboard accessible**: Sort buttons are proper `<button>` elements for keyboard navigation
+- **Custom sort properties**: Use `sortProperty` to sort by a different field than the display key
+
+### Custom Sort Property
+
+When the display key differs from the property you want to sort by, use `sortProperty`:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig, type SortItem } from '@frontile/collections';
+
+interface User {
+  id: string;
+  displayName: string;
+  sortableName: string;
+  email: string;
+}
+
+export default class DemoComponent extends Component {
+  items: User[] = [
+    { id: '1', displayName: 'Mr. Charlie', sortableName: 'Charlie', email: 'charlie@example.com' },
+    { id: '2', displayName: 'Ms. Alice', sortableName: 'Alice', email: 'alice@example.com' },
+    { id: '3', displayName: 'Dr. Bob', sortableName: 'Bob', email: 'bob@example.com' }
+  ];
+
+  columns = [
+    {
+      key: 'displayName',
+      name: 'Name',
+      isSortable: true,
+      sortProperty: 'sortableName' // Sort by this instead of displayName
+    },
+    { key: 'email', name: 'Email', isSortable: true }
+  ] as const satisfies ColumnConfig<User>[];
+
+  handleSort = (items: User[], sortDescriptor: SortItem<User>) => {
+    if (sortDescriptor.direction === 'none') return items;
+
+    return [...items].sort((a, b) => {
+      const aValue = a[sortDescriptor.property];
+      const bValue = b[sortDescriptor.property];
+
+      if (aValue === undefined || bValue === undefined) return 0;
+
+      if (sortDescriptor.direction === 'ascending') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  };
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}} @onSort={{this.handleSort}} />
+  </template>
+}
+```
+
+### Custom Header with Sorting
+
+You can customize the header rendering while maintaining sorting functionality:
+
+```gts
+<Table @columns={{this.columns}} @items={{this.items}} @onSort={{this.handleSort}}>
+  <:header as |h|>
+    <div class="flex items-center gap-2">
+      {{h.column.name}}
+      {{#if h.isSortable}}
+        <button type="button" {{on "click" h.onSort}}>
+          Sort ({{h.sortDirection}})
+        </button>
+      {{/if}}
+    </div>
+  </:header>
+</Table>
+```
+
+The header block yields:
+- `column` - The column instance
+- `isSortable` - Whether the column is sortable
+- `sortDirection` - Current sort direction ('ascending', 'descending', or 'none')
+- `isSorted` - Whether the column is currently sorted
+- `onSort` - Function to trigger sorting
+
+### Initial Sort State
+
+You can set an initial sort state using the `@initialSort` prop. Note that this only applies to the initial render - subsequent changes to the prop are ignored as the component maintains its own internal sort state.
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig, type SortItem } from '@frontile/collections';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export default class DemoComponent extends Component {
+  items: User[] = [
+    { id: '1', name: 'Charlie', email: 'charlie@example.com', role: 'user' },
+    { id: '2', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '3', name: 'Bob', email: 'bob@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name', isSortable: true },
+    { key: 'email', name: 'Email', isSortable: true },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  // Set initial sort to ascending by name
+  initialSort: SortItem<User> = {
+    property: 'name',
+    direction: 'ascending'
+  };
+
+  handleSort = (items: User[], sortDescriptor: SortItem<User>) => {
+    if (sortDescriptor.direction === 'none') return items;
+
+    return [...items].sort((a, b) => {
+      const aValue = a[sortDescriptor.property];
+      const bValue = b[sortDescriptor.property];
+
+      if (aValue === undefined || bValue === undefined) return 0;
+
+      if (sortDescriptor.direction === 'ascending') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  };
+
+  <template>
+    <Table
+      @columns={{this.columns}}
+      @items={{this.items}}
+      @onSort={{this.handleSort}}
+      @initialSort={{this.initialSort}}
+    />
+  </template>
+}
+```
+
+The table will render with the "Name" column already sorted in ascending order. Users can still change the sort by clicking on column headers, but changes to the `@initialSort` prop after the initial render will have no effect.
+
 ## API
 
 <Signature @component="Table" />
@@ -1936,6 +2146,10 @@ interface ColumnConfig<T = unknown> {
   stickyPosition?: 'left' | 'right';
   /** Whether this column should be visible by default */
   isVisible?: boolean;
+  /** Whether this column is sortable. @default false */
+  isSortable?: boolean;
+  /** Use this key instead of the column key for sorting */
+  sortProperty?: string;
 }
 ```
 
@@ -1955,3 +2169,10 @@ These properties take precedence over component-level sticky settings when both 
 - **`isVisible`**: Controls whether the column is visible by default when using the ColumnVisibility feature. When `undefined`, columns are visible by default
 
 This property integrates with the universal-ember ColumnVisibility plugin to provide persistent column state management.
+
+#### Sorting Properties
+
+- **`isSortable`**: When `true`, the column header will display a sort button that allows users to sort the data. Defaults to `false`
+- **`sortProperty`**: Specifies an alternative property name to use for sorting when it differs from the column's `key`. Useful when displaying formatted data but sorting by the raw value
+
+These properties integrate with the universal-ember DataSorting plugin and require an `@onSort` callback to handle the actual data sorting.

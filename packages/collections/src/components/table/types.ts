@@ -11,6 +11,13 @@ import type { Row, Column } from '@universal-ember/table';
 import type { ContentValue } from '@glint/template';
 import type { ComponentLike } from '@glint/template';
 
+// Re-export sorting types from universal-ember/table
+export {
+  SortDirection,
+  type Sort,
+  type SortItem
+} from '@universal-ember/table/plugins/data-sorting';
+
 export interface CellContext<T> {
   column: Column<T>;
   row: Row<T>;
@@ -48,6 +55,10 @@ export interface ColumnConfig<T = unknown> {
   stickyPosition?: 'left' | 'right';
   /** Whether this column should be visible. @default true */
   isVisible?: boolean;
+  /** Whether this column is sortable. @default false */
+  isSortable?: boolean;
+  /** Use this key instead of the column key for sorting. Useful when the display key differs from the data key */
+  sortProperty?: string;
 }
 
 // Type utility to extract column keys from ColumnConfig array as literal string union

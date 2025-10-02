@@ -29,8 +29,36 @@ const table = tv({
       'align-middle',
       'font-medium',
       'text-foreground-600',
-      '[&:has([role=checkbox])]:pr-0'
+      '[&:has([role=checkbox])]:pr-0',
+      'data-[sortable=true]:cursor-pointer'
     ],
+    sortButton: [
+      'group/sort',
+      'inline-flex',
+      'items-center',
+      'gap-1',
+      'w-full',
+      'text-left',
+      'font-medium',
+      'text-foreground-600',
+      'outline-hidden',
+      'focus-visible:z-10',
+      'focus-visible:ring-3',
+      'focus-visible:ring-focus',
+      'focus-visible:ring-offset-2',
+      'focus-visible:ring-offset-background'
+    ],
+    sortIcon: [
+      'size-4',
+      'flex-shrink-0',
+      'text-foreground-400',
+      'transition-opacity',
+      'data-[sorted=false]:opacity-0',
+      'group-hover/sort:data-[sorted=false]:opacity-100',
+      'data-[sorted=true]:opacity-100'
+    ],
+    columnVisibilityButton: ['flex'],
+    columnVisibilityIcon: ['size-6'],
     td: [
       'p-4',
       'align-middle',

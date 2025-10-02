@@ -25,7 +25,7 @@ module(
           <Listbox
             @selectionMode="none"
             @onAction={{onAction}}
-            @disabledKeys={{(array "item-3" "item-4")}}
+            @disabledKeys={{array "item-3" "item-4"}}
             as |l|
           >
             <l.Item
@@ -335,7 +335,7 @@ module(
           <Listbox
             @selectionMode="none"
             @onAction={{onAction}}
-            @disabledKeys={{(array "item-3" "item-4")}}
+            @disabledKeys={{array "item-3" "item-4"}}
             as |l|
           >
             <l.Item

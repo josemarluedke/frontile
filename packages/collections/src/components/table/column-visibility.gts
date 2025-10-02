@@ -1,17 +1,21 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { useStyles } from '@frontile/theme';
 import { Dropdown } from '../dropdown';
 import {
   hide,
   show,
   isVisible
 } from '@universal-ember/table/plugins/column-visibility';
+import { ColumnVisibilityIcon } from './icons';
 import type { Table, Column } from './types';
 
 interface ColumnVisibilitySignature<T> {
   Args: {
     /** Universal-ember table instance */
     tableInstance?: Table<T>;
+    /** Size of the column visibility button. @defaultValue 'xs' */
+    size?: 'xs' | 'sm' | 'lg' | 'xl';
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -23,6 +27,15 @@ interface ColumnVisibilitySignature<T> {
 export default class ColumnVisibility<T> extends Component<
   ColumnVisibilitySignature<T>
 > {
+  get styles() {
+    const { table } = useStyles();
+    return table();
+  }
+
+  get size() {
+    return this.args.size ?? 'xs';
+  }
+
   get columns() {
     return this.args.tableInstance?.columns.values() || [];
   }
@@ -55,25 +68,18 @@ export default class ColumnVisibility<T> extends Component<
   <template>
     <Dropdown @closeOnItemSelect={{false}} ...attributes>
       <:default as |d|>
-        <d.Trigger @intent="default" @size="sm">
+        <d.Trigger
+          @intent="default"
+          @size={{this.size}}
+          @class={{(this.styles.columnVisibilityButton)}}
+        >
 
           {{#if (has-block "icon")}}
             {{yield to="icon"}}
           {{else}}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z"
-              />
-            </svg>
+            <ColumnVisibilityIcon
+              class={{(this.styles.columnVisibilityIcon)}}
+            />
           {{/if}}
           {{yield}}
         </d.Trigger>

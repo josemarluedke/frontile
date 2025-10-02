@@ -1,17 +1,25 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
+import { hash, fn } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import { tracked } from '@glimmer/tracking';
 import { SimpleTable } from '../simple-table';
 import { extractFrontileOptions } from './utils';
 import { keyAndLabelForItem } from '../../utils/listManager';
 import ColumnVisibilityComponent from './column-visibility';
 import CellForComponent from './cell-for';
 import CellDefaultComponent from './cell-default';
+import SortButtonComponent from './sort-button';
 import { CellRenderingContext } from './cell-rendering-context';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
 import { ColumnVisibility } from '@universal-ember/table/plugins/column-visibility';
+import { DataSorting } from '@universal-ember/table/plugins/data-sorting';
+import {
+  sort as sortColumn,
+  isSortable as isColumnSortable,
+  sortDirection as getColumnSortDirection
+} from '@universal-ember/table/plugins/data-sorting';
 
 import type {
   ColumnConfig,
@@ -20,10 +28,12 @@ import type {
   TableSlots,
   SlotsToClasses,
   Column,
-  Row
+  Row,
+  SortItem
 } from './types';
 import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
+import type Owner from '@ember/owner';
 
 interface TableSignature<
   T,
@@ -58,6 +68,10 @@ interface TableSignature<
     isLoading?: boolean;
     /** Color variant for loading animation. @defaultValue 'default' */
     loadingColor?: TableVariants['loadingColor'];
+    /** Function to sort items when sorting is triggered. Receives the items array and sort descriptor. Returns sorted items. */
+    onSort?: (items: T[], sortDescriptor: SortItem<T>) => T[];
+    /** Initial sort descriptor to apply on mount. Only used for initial render, subsequent changes are ignored. */
+    initialSort?: SortItem<T>;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -89,6 +103,10 @@ interface TableSignature<
     header: [
       {
         column: Column<T>;
+        isSortable: boolean;
+        sortDirection: string;
+        isSorted: boolean;
+        onSort: () => void;
       }
     ];
   };
@@ -101,6 +119,18 @@ class Table<
   ColumnVisibility = ColumnVisibilityComponent<T>;
   CellFor = CellForComponent<T, TColumns>;
   CellDefault = CellDefaultComponent<T>;
+  SortButton = SortButtonComponent<T>;
+
+  // Tracked state for sorting
+  @tracked sorts: SortItem<T>[] = [];
+
+  constructor(owner: Owner, args: TableSignature<T, TColumns>['Args']) {
+    super(owner, args);
+    // Initialize sorts from initialSort if provided (only on mount)
+    if (args.initialSort) {
+      this.sorts = [args.initialSort];
+    }
+  }
 
   // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
   processColumns(
@@ -112,6 +142,8 @@ class Table<
         isSticky,
         stickyPosition,
         isVisible,
+        isSortable,
+        sortProperty,
         Cell,
         value,
         ...baseColumn
@@ -132,6 +164,14 @@ class Table<
       if (isVisible !== undefined) {
         pluginOptions.push(ColumnVisibility.forColumn(() => ({ isVisible })));
       }
+
+      // Add DataSorting plugin option - always add it to override the default (true) with our default (false)
+      pluginOptions.push(
+        DataSorting.forColumn(() => ({
+          isSortable: isSortable ?? false, // Default to false (override universal-ember's default of true)
+          sortProperty
+        }))
+      );
 
       // Create the universal-ember column configuration
       const universalColumn: UniversalColumnConfig<T> = {
@@ -157,14 +197,40 @@ class Table<
     });
   }
 
+  // Handler for sort state changes from the DataSorting plugin
+  handleSortChange = (newSorts: SortItem<T>[]) => {
+    this.sorts = newSorts;
+  };
+
   tableInstance = createHeadlessTable<T>(this, {
-    data: () => this.args.items,
+    data: () => this.sortedItems,
     columns: () => this.processColumns(this.args.columns),
     plugins: [
-      ColumnVisibility
-      // ColumnResizing,
+      ColumnVisibility,
+      DataSorting.with(() => ({
+        sorts: this.sorts,
+        onSort: this.handleSortChange
+      }))
     ]
   });
+
+  // Computed property that returns sorted items based on current sort state
+  get sortedItems(): T[] {
+    const items = this.args.items || [];
+
+    // If no onSort handler or no active sorts, return items as-is
+    if (!this.args.onSort || this.sorts.length === 0) {
+      return items;
+    }
+
+    // Only use the first sort item (single column sorting)
+    const sortDescriptor = this.sorts[0];
+    if (!sortDescriptor) {
+      return items;
+    }
+
+    return this.args.onSort(items, sortDescriptor);
+  }
 
   get styles() {
     const { table } = useStyles();
@@ -279,6 +345,11 @@ class Table<
     };
   };
 
+  // Helper to check if column is currently sorted
+  columnIsSorted = (column: Column<T>): boolean => {
+    return getColumnSortDirection(column) !== 'none';
+  };
+
   <template>
     <div
       class={{this.wrapperClassNames}}
@@ -317,9 +388,26 @@ class Table<
               @isSticky={{this.columnIsSticky column}}
               @stickyPosition={{this.columnStickyPosition column}}
               data-key={{column.key}}
+              data-sortable="{{(isColumnSortable column)}}"
             >
               {{#if (has-block "header")}}
-                {{yield (hash column=column) to="header"}}
+                {{yield
+                  (hash
+                    column=column
+                    isSortable=(isColumnSortable column)
+                    sortDirection=(getColumnSortDirection column)
+                    isSorted=(this.columnIsSorted column)
+                    onSort=(fn sortColumn column)
+                  )
+                  to="header"
+                }}
+              {{else if (isColumnSortable column)}}
+                <this.SortButton
+                  @column={{column}}
+                  @sortDirection={{getColumnSortDirection column}}
+                  @isSorted={{this.columnIsSorted column}}
+                  @onSort={{fn sortColumn column}}
+                />
               {{else}}
                 {{column.name}}
               {{/if}}

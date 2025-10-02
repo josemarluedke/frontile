@@ -4,7 +4,8 @@ import { render, settled, click } from '@ember/test-helpers';
 import {
   Table,
   type ColumnConfig,
-  type CellSignature
+  type CellSignature,
+  type SortItem
 } from '@frontile/collections';
 import { array, hash } from '@ember/helper';
 import { cell } from 'ember-resources';
@@ -683,7 +684,7 @@ module(
           <Table
             @columns={{columns}}
             @items={{items}}
-            @stickyKeys={{(array "1" "3")}}
+            @stickyKeys={{array "1" "3"}}
           />
         </template>
       );
@@ -725,7 +726,7 @@ module(
             @items={{items}}
             @isScrollable={{true}}
             @isStickyHeader={{true}}
-            @stickyKeys={{(array "1")}}
+            @stickyKeys={{array "1"}}
           />
         </template>
       );
@@ -2442,6 +2443,611 @@ module(
         assert.dom('[data-test-id="table"]').exists();
         assert.dom('[data-test-id="table"][data-loading="false"]').exists();
         assert.dom('[data-test-id="table-cell"]').exists();
+      });
+    });
+
+    module('Sorting', function () {
+      test('it renders sortable columns with sort buttons', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true },
+          { key: 'email', name: 'Email', isSortable: true },
+          { key: 'role', name: 'Role' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+          { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        // Sortable columns should have data-sortable attribute
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .hasAttribute('data-sortable', 'true');
+        assert
+          .dom('[data-test-id="table-column"][data-key="email"]')
+          .hasAttribute('data-sortable', 'true');
+
+        // Non-sortable column should not have data-sortable attribute or should be false
+        assert
+          .dom('[data-test-id="table-column"][data-key="role"]')
+          .hasAttribute('data-sortable', 'false');
+
+        // Sortable columns should have sort buttons
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
+          )
+          .exists();
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="email"] button[type="button"]'
+          )
+          .exists();
+
+        // Non-sortable column should not have a sort button
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="role"] button[type="button"]'
+          )
+          .doesNotExist();
+      });
+
+      test('it sorts data when onSort callback is provided', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true },
+          { key: 'count', name: 'Count', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const baseItems: TestItem[] = [
+          {
+            id: '1',
+            name: 'Charlie',
+            email: 'charlie@example.com',
+            role: 'user',
+            count: 30
+          },
+          {
+            id: '2',
+            name: 'Alice',
+            email: 'alice@example.com',
+            role: 'admin',
+            count: 10
+          },
+          {
+            id: '3',
+            name: 'Bob',
+            email: 'bob@example.com',
+            role: 'user',
+            count: 20
+          }
+        ];
+
+        const handleSort = (
+          items: TestItem[],
+          sortDescriptor: SortItem<TestItem>
+        ) => {
+          return [...items].sort((a, b) => {
+            const aValue = a[sortDescriptor.property];
+            const bValue = b[sortDescriptor.property];
+
+            if (aValue === undefined || bValue === undefined) return 0;
+
+            if (sortDescriptor.direction === 'ascending') {
+              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            } else {
+              return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+            }
+          });
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{baseItems}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        // Initial order (unsorted)
+        const rows = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+        assert.strictEqual(rows.length, 3);
+        assert
+          .dom(rows[0]?.querySelector('[data-column="name"]'))
+          .hasText('Charlie');
+        assert
+          .dom(rows[1]?.querySelector('[data-column="name"]'))
+          .hasText('Alice');
+        assert
+          .dom(rows[2]?.querySelector('[data-column="name"]'))
+          .hasText('Bob');
+
+        // Click to sort by name ascending
+        await click(
+          '[data-test-id="table-column"][data-key="name"] button[type="button"]'
+        );
+
+        // Check sorted order (ascending)
+        const rowsAfterSort = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+        assert
+          .dom(rowsAfterSort[0]?.querySelector('[data-column="name"]'))
+          .hasText('Charlie');
+        assert
+          .dom(rowsAfterSort[1]?.querySelector('[data-column="name"]'))
+          .hasText('Bob');
+        assert
+          .dom(rowsAfterSort[2]?.querySelector('[data-column="name"]'))
+          .hasText('Alice');
+      });
+
+      test('it toggles sort direction through tri-state cycle', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Charlie', email: 'c@example.com', role: 'user' },
+          { id: '2', name: 'Alice', email: 'a@example.com', role: 'admin' },
+          { id: '3', name: 'Bob', email: 'b@example.com', role: 'user' }
+        ];
+
+        const handleSort = (
+          items: TestItem[],
+          sortDescriptor: SortItem<TestItem>
+        ) => {
+          if (sortDescriptor.direction === 'none') {
+            return items;
+          }
+
+          return [...items].sort((a, b) => {
+            const aValue = a[sortDescriptor.property];
+            const bValue = b[sortDescriptor.property];
+
+            if (aValue === undefined || bValue === undefined) return 0;
+
+            if (sortDescriptor.direction === 'ascending') {
+              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            } else {
+              return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+            }
+          });
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        const sortButton =
+          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+
+        // Click 1: Sort descending (universal-ember starts with descending)
+        await click(sortButton);
+
+        assert
+          .dom(sortButton)
+          .hasAttribute('data-sort-direction', 'descending');
+
+        // Click 2: Sort ascending
+        await click(sortButton);
+
+        assert.dom(sortButton).hasAttribute('data-sort-direction', 'ascending');
+
+        // Click 3: Clear sort (none)
+        await click(sortButton);
+
+        assert.dom(sortButton).hasAttribute('data-sort-direction', 'none');
+      });
+
+      test('it uses sortProperty when specified', async function (assert) {
+        interface TestItemWithNested {
+          id: string;
+          displayName: string;
+          sortableName: string;
+          role: string;
+        }
+
+        const columns = [
+          {
+            key: 'displayName',
+            name: 'Name',
+            isSortable: true,
+            sortProperty: 'sortableName'
+          }
+        ] as const satisfies ColumnConfig<TestItemWithNested>[];
+
+        const items: TestItemWithNested[] = [
+          {
+            id: '1',
+            displayName: 'Mr. Charlie',
+            sortableName: 'Charlie',
+            role: 'user'
+          },
+          {
+            id: '2',
+            displayName: 'Ms. Alice',
+            sortableName: 'Alice',
+            role: 'admin'
+          }
+        ];
+
+        let lastSortProperty = '';
+        const handleSort = (
+          items: TestItemWithNested[],
+          sortDescriptor: SortItem<TestItemWithNested>
+        ) => {
+          lastSortProperty = sortDescriptor.property as string;
+          return items;
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        await click(
+          '[data-test-id="table-column"][data-key="displayName"] button[type="button"]'
+        );
+
+        // Should use sortProperty instead of key
+        assert.strictEqual(lastSortProperty, 'sortableName');
+      });
+
+      test('it supports custom header rendering with sorting info', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:header as |h|>
+                <span data-test-custom-header>
+                  {{h.column.name}}
+                  {{#if h.isSortable}}
+                    (Sortable:
+                    {{h.sortDirection}})
+                  {{/if}}
+                </span>
+              </:header>
+            </Table>
+          </template>
+        );
+
+        // Check that custom header received sorting info
+        assert.dom('[data-test-custom-header]').exists();
+        assert.dom('[data-test-custom-header]').containsText('Name');
+        assert.dom('[data-test-custom-header]').containsText('Sortable');
+      });
+
+      test('it does not show sort button for non-sortable columns', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: false },
+          { key: 'email', name: 'Email' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        // Columns should just show text, not buttons
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
+          )
+          .doesNotExist();
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .containsText('Name');
+
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="email"] button[type="button"]'
+          )
+          .doesNotExist();
+        assert
+          .dom('[data-test-id="table-column"][data-key="email"]')
+          .containsText('Email');
+      });
+
+      test('it handles sorting with empty items array', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [];
+
+        const handleSort = () => {
+          assert.step('onSort called');
+          return items;
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        // Should render sort button even with empty items
+        assert
+          .dom(
+            '[data-test-id="table-column"][data-key="name"] button[type="button"]'
+          )
+          .exists();
+
+        // Click should work without error
+        await click(
+          '[data-test-id="table-column"][data-key="name"] button[type="button"]'
+        );
+
+        assert.verifySteps(['onSort called']);
+      });
+
+      test('it maintains accessibility with aria attributes', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        const sortButton =
+          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+
+        // Sort button should be a button element for accessibility
+        assert.dom(sortButton).hasTagName('button');
+        assert.dom(sortButton).hasAttribute('type', 'button');
+      });
+
+      test('it accepts initialSort to set initial sort state', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Charlie', email: 'c@example.com', role: 'user' },
+          { id: '2', name: 'Alice', email: 'a@example.com', role: 'admin' },
+          { id: '3', name: 'Bob', email: 'b@example.com', role: 'user' }
+        ];
+
+        const initialSort: SortItem<TestItem> = {
+          property: 'name',
+          direction: 'ascending'
+        };
+
+        const handleSort = (
+          items: TestItem[],
+          sortDescriptor: SortItem<TestItem>
+        ) => {
+          return [...items].sort((a, b) => {
+            const aValue = a[sortDescriptor.property];
+            const bValue = b[sortDescriptor.property];
+
+            if (aValue === undefined || bValue === undefined) return 0;
+
+            if (sortDescriptor.direction === 'ascending') {
+              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            } else {
+              return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+            }
+          });
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+              @initialSort={{initialSort}}
+            />
+          </template>
+        );
+
+        const sortButton =
+          '[data-test-id="table-column"][data-key="name"] button[type="button"]';
+
+        // Should start with ascending sort applied
+        assert.dom(sortButton).hasAttribute('data-sort-direction', 'ascending');
+        assert.dom(sortButton).hasAttribute('data-sorted', 'true');
+      });
+
+      test('it sorts by nested properties using sortProperty', async function (assert) {
+        interface UserWithProfile {
+          id: string;
+          profile: {
+            name: string;
+            age: number;
+          };
+          email: string;
+        }
+
+        const columns = [
+          {
+            key: 'profile',
+            name: 'Name',
+            isSortable: true,
+            sortProperty: 'profile.name',
+            value: (ctx) => ctx.row.data.profile.name
+          },
+          {
+            key: 'age',
+            name: 'Age',
+            isSortable: true,
+            sortProperty: 'profile.age',
+            value: (ctx) => ctx.row.data.profile.age
+          },
+          { key: 'email', name: 'Email' }
+        ] as const satisfies ColumnConfig<UserWithProfile>[];
+
+        const items: UserWithProfile[] = [
+          {
+            id: '1',
+            profile: { name: 'Charlie', age: 35 },
+            email: 'charlie@example.com'
+          },
+          {
+            id: '2',
+            profile: { name: 'Alice', age: 28 },
+            email: 'alice@example.com'
+          },
+          {
+            id: '3',
+            profile: { name: 'Bob', age: 42 },
+            email: 'bob@example.com'
+          }
+        ];
+
+        // Helper to get nested property value
+        const getNestedValue = (obj: UserWithProfile, path: string) => {
+          return path.split('.').reduce((current: unknown, key: string) => {
+            return current?.[key];
+          }, obj);
+        };
+
+        const handleSort = (
+          items: UserWithProfile[],
+          sortDescriptor: SortItem<UserWithProfile>
+        ) => {
+          if (sortDescriptor.direction === 'none') return items;
+
+          return [...items].sort((a, b) => {
+            // For nested properties, sortProperty will be like 'profile.name'
+            const sortProperty = sortDescriptor.property as string;
+            const aValue = getNestedValue(a, sortProperty);
+            const bValue = getNestedValue(b, sortProperty);
+
+            if (aValue === undefined || bValue === undefined) return 0;
+
+            if (sortDescriptor.direction === 'ascending') {
+              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            } else {
+              return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+            }
+          });
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        const rows = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+        assert.strictEqual(rows.length, 3);
+
+        // Initial order (unsorted)
+        assert
+          .dom(rows[0]?.querySelector('[data-column="profile"]'))
+          .hasText('Charlie');
+        assert
+          .dom(rows[1]?.querySelector('[data-column="profile"]'))
+          .hasText('Alice');
+        assert
+          .dom(rows[2]?.querySelector('[data-column="profile"]'))
+          .hasText('Bob');
+
+        // Click to sort by name descending
+        await click(
+          '[data-test-id="table-column"][data-key="profile"] button[type="button"]'
+        );
+
+        const rowsAfterSort = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+
+        // Descending order: Charlie, Bob, Alice
+        assert
+          .dom(rowsAfterSort[0]?.querySelector('[data-column="profile"]'))
+          .hasText('Charlie');
+        assert
+          .dom(rowsAfterSort[1]?.querySelector('[data-column="profile"]'))
+          .hasText('Bob');
+        assert
+          .dom(rowsAfterSort[2]?.querySelector('[data-column="profile"]'))
+          .hasText('Alice');
+
+        // Click again to sort ascending
+        await click(
+          '[data-test-id="table-column"][data-key="profile"] button[type="button"]'
+        );
+
+        const rowsAfterSecondSort = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+
+        // Ascending order: Alice, Bob, Charlie
+        assert
+          .dom(rowsAfterSecondSort[0]?.querySelector('[data-column="profile"]'))
+          .hasText('Alice');
+        assert
+          .dom(rowsAfterSecondSort[1]?.querySelector('[data-column="profile"]'))
+          .hasText('Bob');
+        assert
+          .dom(rowsAfterSecondSort[2]?.querySelector('[data-column="profile"]'))
+          .hasText('Charlie');
+
+        // Test sorting by nested age property
+        await click(
+          '[data-test-id="table-column"][data-key="age"] button[type="button"]'
+        );
+
+        const rowsAfterAgeSort = this.element.querySelectorAll(
+          '[data-test-id="table-row"]'
+        );
+
+        // Descending order by age: Bob (42), Charlie (35), Alice (28)
+        assert
+          .dom(rowsAfterAgeSort[0]?.querySelector('[data-column="age"]'))
+          .hasText('42');
+        assert
+          .dom(rowsAfterAgeSort[1]?.querySelector('[data-column="age"]'))
+          .hasText('35');
+        assert
+          .dom(rowsAfterAgeSort[2]?.querySelector('[data-column="age"]'))
+          .hasText('28');
       });
     });
   }
