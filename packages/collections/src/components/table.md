@@ -864,6 +864,131 @@ The `loading` named block gives you complete control over the loading experience
 
 This allows you to define the loading UI once and toggle it with the `@isLoading` prop, supporting scenarios like loading more data while displaying existing items.
 
+## Body Top and Bottom Blocks
+
+The Table component provides `bodyTop` and `bodyBottom` named blocks for rendering custom content at the beginning and end of the table body. These blocks are useful for adding summary rows, action bars, pagination controls, or any other custom content that should appear within the table body.
+
+### Basic Usage
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Product' },
+    { key: 'quantity', name: 'Qty' },
+    { key: 'price', name: 'Price', value: (ctx) => `$${ctx.row.data.price}` }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  items: Product[] = [
+    { id: '1', name: 'Laptop', price: 999.99, quantity: 2 },
+    { id: '2', name: 'Mouse', price: 29.99, quantity: 5 },
+    { id: '3', name: 'Keyboard', price: 79.99, quantity: 3 }
+  ];
+
+  get total() {
+    return this.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+  }
+
+  <template>
+    <Table @columns={{this.columns}} @items={{this.items}}>
+      <:bodyTop>
+        <tr>
+          <td colspan='3' class='bg-muted/30 px-4 py-2 text-sm font-medium'>
+            Order Summary
+          </td>
+        </tr>
+      </:bodyTop>
+      <:bodyBottom>
+        <tr>
+          <td
+            colspan='3'
+            class='bg-muted/50 px-4 py-3 flex justify-between font-semibold'
+          >
+            <span>Total:</span>
+            <span>${{this.total}}</span>
+          </td>
+        </tr>
+      </:bodyBottom>
+    </Table>
+  </template>
+}
+```
+
+### Key Features
+
+- **`bodyTop`**: Renders at the start of the table body, before data rows
+- **`bodyBottom`**: Renders at the end of the table body, after data rows (and after the loading row if present)
+- You provide your own table row (`<tr>`) and cell (`<td>`) elements for complete control
+- Use `colspan` to span across all columns (match your column count)
+- Blocks are always rendered when provided, regardless of whether data exists
+- Works seamlessly with empty states, loading indicators, and other table features
+
+### Use Cases
+
+**Summary Information:**
+```gts
+<:bodyTop>
+  <tr>
+    <td colspan="3" class="px-4 py-2 bg-info/10 text-info">
+      Showing {{@items.length}} of {{this.totalCount}} items
+    </td>
+  </tr>
+</:bodyTop>
+```
+
+**Action Bars:**
+```gts
+<:bodyBottom>
+  <tr>
+    <td colspan="3" class="px-4 py-2">
+      <div class="flex justify-end gap-2">
+        <Button @size="sm">Export</Button>
+        <Button @size="sm" @intent="primary">Load More</Button>
+      </div>
+    </td>
+  </tr>
+</:bodyBottom>
+```
+
+**Informational Messages:**
+```gts
+<:bodyTop>
+  <tr>
+    <td colspan="3" class="px-4 py-2 bg-warning/10 text-warning text-sm">
+      <strong>Notice:</strong> Some items are on backorder
+    </td>
+  </tr>
+</:bodyTop>
+```
+
+**Multiple Rows:**
+```gts
+<:bodyTop>
+  <tr class="bg-primary/5">
+    <td colspan="3" class="px-4 py-2 font-semibold">
+      Featured Items
+    </td>
+  </tr>
+  <tr class="bg-info/5">
+    <td colspan="3" class="px-4 py-1 text-xs text-muted">
+      These items are highlighted for your attention
+    </td>
+  </tr>
+</:bodyTop>
+```
+
 ## Empty State Handling
 
 The table supports both simple text and rich custom content for empty states when no data is available.

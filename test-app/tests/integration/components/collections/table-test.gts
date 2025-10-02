@@ -2629,6 +2629,173 @@ module(
       });
     });
 
+    module('Body Top and Bottom Blocks', function () {
+      test('it renders bodyTop block at the start of table body', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyTop>
+                <tr data-test-id="body-top-row">
+                  <td colspan="1" data-test-id="body-top-content">
+                    Top Content
+                  </td>
+                </tr>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        // bodyTop content should exist
+        assert.dom('[data-test-id="body-top-row"]').exists();
+        assert.dom('[data-test-id="body-top-content"]').exists();
+        assert.dom('[data-test-id="body-top-content"]').hasText('Top Content');
+      });
+
+      test('it renders bodyBottom block at the end of table body', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyBottom>
+                <tr data-test-id="body-bottom-row">
+                  <td colspan="1" data-test-id="body-bottom-content">
+                    Bottom Content
+                  </td>
+                </tr>
+              </:bodyBottom>
+            </Table>
+          </template>
+        );
+
+        // bodyBottom content should exist
+        assert.dom('[data-test-id="body-bottom-row"]').exists();
+        assert.dom('[data-test-id="body-bottom-content"]').exists();
+        assert
+          .dom('[data-test-id="body-bottom-content"]')
+          .hasText('Bottom Content');
+      });
+
+      test('it renders both bodyTop and bodyBottom blocks together', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyTop>
+                <tr data-test-id="body-top-row">
+                  <td colspan="1">Top Content</td>
+                </tr>
+              </:bodyTop>
+              <:bodyBottom>
+                <tr data-test-id="body-bottom-row">
+                  <td colspan="1">Bottom Content</td>
+                </tr>
+              </:bodyBottom>
+            </Table>
+          </template>
+        );
+
+        // Both blocks should exist
+        assert.dom('[data-test-id="body-top-row"]').exists();
+        assert.dom('[data-test-id="body-bottom-row"]').exists();
+
+        // Data rows should exist between them
+        assert.dom('[data-test-id="table-cell"]').exists();
+      });
+
+      test('it does not render bodyTop/bodyBottom when blocks not provided', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        // Data rows should still exist
+        assert.dom('[data-test-id="table-cell"]').exists();
+
+        // Only data cells should be present (1 row × 1 column = 1 cell)
+        assert.dom('tbody tr').exists({ count: 1 });
+      });
+
+      test('it renders bodyTop and bodyBottom with empty data', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const emptyItems: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{emptyItems}}
+              @emptyContent="No data"
+            >
+              <:bodyTop>
+                <tr data-test-id="body-top-row">
+                  <td colspan="1">Top Content</td>
+                </tr>
+              </:bodyTop>
+              <:bodyBottom>
+                <tr data-test-id="body-bottom-row">
+                  <td colspan="1">Bottom Content</td>
+                </tr>
+              </:bodyBottom>
+            </Table>
+          </template>
+        );
+
+        // Both blocks should exist even with empty data
+        assert.dom('[data-test-id="body-top-row"]').exists();
+        assert.dom('[data-test-id="body-bottom-row"]').exists();
+
+        // Empty content should also be shown
+        assert.dom('[data-test-id="table-empty-row"]').exists();
+      });
+    });
+
     module('Sorting', function () {
       test('it renders sortable columns with sort buttons', async function (assert) {
         const columns = [

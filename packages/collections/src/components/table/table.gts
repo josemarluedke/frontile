@@ -110,6 +110,8 @@ interface TableSignature<
       }
     ];
     loading: [];
+    bodyTop: [];
+    bodyBottom: [];
   };
 }
 
@@ -422,6 +424,10 @@ class Table<
         </t.Header>
 
         <t.Body>
+          {{#if (has-block "bodyTop")}}
+            {{yield to="bodyTop"}}
+          {{/if}}
+
           {{#each this.headlessRows as |row|}}
             <t.Row
               {{this.tableInstance.modifiers.row row}}
@@ -505,6 +511,10 @@ class Table<
                 {{yield to="loading"}}
               </t.Cell>
             </t.Row>
+          {{/if}}
+
+          {{#if (has-block "bodyBottom")}}
+            {{yield to="bodyBottom"}}
           {{/if}}
         </t.Body>
 
