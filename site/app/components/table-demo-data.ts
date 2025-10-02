@@ -33,22 +33,22 @@ export const users: User[] = [
     name: 'John Doe',
     email: 'john@example.com',
     role: 'admin',
-    status: 'active'
+    status: 'active',
   },
   {
     id: '2',
     name: 'Jane Smith',
     email: 'jane@example.com',
     role: 'user',
-    status: 'active'
+    status: 'active',
   },
   {
     id: '3',
     name: 'Bob Johnson',
     email: 'bob@example.com',
     role: 'editor',
-    status: 'inactive'
-  }
+    status: 'inactive',
+  },
 ];
 
 export const products: Product[] = [
@@ -57,22 +57,22 @@ export const products: Product[] = [
     name: 'Laptop',
     price: 999.99,
     category: 'Electronics',
-    inStock: true
+    inStock: true,
   },
   {
     id: '2',
     name: 'Mouse',
     price: 29.99,
     category: 'Accessories',
-    inStock: true
+    inStock: true,
   },
   {
     id: '3',
     name: 'Keyboard',
     price: 79.99,
     category: 'Accessories',
-    inStock: false
-  }
+    inStock: false,
+  },
 ];
 
 export const employees: Employee[] = [
@@ -84,7 +84,7 @@ export const employees: Employee[] = [
     department: 'Engineering',
     role: 'Senior Developer',
     location: 'San Francisco, CA',
-    manager: 'Alice Brown'
+    manager: 'Alice Brown',
   },
   {
     id: '002',
@@ -94,7 +94,7 @@ export const employees: Employee[] = [
     department: 'Design',
     role: 'UI/UX Designer',
     location: 'New York, NY',
-    manager: 'Bob Wilson'
+    manager: 'Bob Wilson',
   },
   {
     id: '003',
@@ -104,6 +104,6 @@ export const employees: Employee[] = [
     department: 'Product',
     role: 'Product Manager',
     location: 'Austin, TX',
-    manager: 'Carol Davis'
-  }
+    manager: 'Carol Davis',
+  },
 ];
