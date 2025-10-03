@@ -11,6 +11,13 @@ import Textarea from './textarea';
 
 import type { WithBoundArgs } from '@glint/template';
 import type { FormErrors } from './form';
+import type { SelectSignature } from './select';
+import type { WithBoundArgsForSignature } from './field-types';
+
+type BoundSelect<S = unknown> = WithBoundArgsForSignature<
+  SelectSignature<S>,
+  'name' | 'errors'
+>;
 
 interface FieldSignature {
   Element: HTMLElement;
@@ -28,7 +35,7 @@ interface FieldSignature {
         Input: WithBoundArgs<typeof Input, 'name' | 'errors'>;
         Radio: WithBoundArgs<typeof Radio, 'name' | 'errors'>;
         RadioGroup: WithBoundArgs<typeof RadioGroup, 'name' | 'errors'>;
-        Select: WithBoundArgs<typeof Select, 'name' | 'errors'>;
+        Select: BoundSelect;
         Switch: WithBoundArgs<typeof Switch, 'name' | 'errors'>;
         Textarea: WithBoundArgs<typeof Textarea, 'name' | 'errors'>;
       }
