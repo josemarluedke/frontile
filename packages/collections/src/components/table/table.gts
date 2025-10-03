@@ -3,6 +3,7 @@ import { hash, fn } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
+import { cached } from '@glimmer/tracking';
 import { SimpleTable } from '../simple-table';
 import { extractFrontileOptions } from './utils';
 import { keyAndLabelForItem } from '../../utils/listManager';
@@ -136,6 +137,65 @@ const and = (a: unknown, b: unknown) => {
   return a && b;
 };
 
+// Standalone helper functions that don't depend on component state
+
+function columnIsSticky<T>(column: Column<T>): boolean {
+  const frontileOptions = extractFrontileOptions(column);
+  return frontileOptions?.isSticky ?? false;
+}
+
+function columnStickyPosition<T>(
+  column: Column<T>
+): 'left' | 'right' | undefined {
+  const frontileOptions = extractFrontileOptions(column);
+  return frontileOptions?.stickyPosition;
+}
+
+function createCellContext<T>(column: Column<T>, row: Row<T>) {
+  const registry = new CellRenderingContext();
+  return {
+    column,
+    row,
+    value: column.getValueForRow(row),
+    registry
+  };
+}
+
+function columnIsSorted<T>(column: Column<T>): boolean {
+  return getColumnSortDirection(column) !== 'none';
+}
+
+function isSelectionColumn<T>(column: Column<T>): boolean {
+  return column.key === '__selection__';
+}
+
+const calculateHeaderHeight = modifier(
+  (el: HTMLDivElement, [isStickyHeader]: [boolean | undefined]) => {
+    if (isStickyHeader) {
+      const updateHeight = () => {
+        const thead = el.querySelector('thead');
+        if (thead) {
+          const headerHeight = Math.round(thead.offsetHeight);
+          el.style.setProperty('--table-header-height', `${headerHeight}px`);
+        }
+      };
+
+      requestAnimationFrame(updateHeight);
+
+      // Update on resize
+      let observer: ResizeObserver;
+      observer = new ResizeObserver(updateHeight);
+      observer.observe(el);
+
+      return () => {
+        if (observer) {
+          observer.disconnect();
+        }
+      };
+    }
+  }
+);
+
 class Table<
   T = unknown,
   TColumns extends ColumnConfig<T>[] = ColumnConfig<T>[]
@@ -160,11 +220,6 @@ class Table<
     }
   }
 
-  // Check if selection is controlled (has selectedKeys prop)
-  get isControlled(): boolean {
-    return this.args.selectedKeys !== undefined;
-  }
-
   // Selection helpers
   get selectionMode(): SelectionMode {
     return this.args.selectionMode ?? 'none';
@@ -174,40 +229,52 @@ class Table<
     return this.selectionMode !== 'none';
   }
 
-  get hasMultipleSelection(): boolean {
-    return this.selectionMode === 'multiple';
-  }
-
-  get showSelectAll(): boolean {
-    return this.args.showSelectAll ?? true;
-  }
-
+  @cached
   get selectedKeysSet(): Set<string> {
     // Use controlled state if provided, otherwise use internal state
-    if (this.isControlled) {
-      const keys = this.args.selectedKeys;
-      if (!keys) return new Set();
-      return keys instanceof Set ? keys : new Set(keys);
+    const isControlled = this.args.selectedKeys !== undefined;
+    const sourceKeys = isControlled
+      ? this.args.selectedKeys
+      : this.internalSelectedKeys;
+
+    if (!sourceKeys) {
+      return new Set();
     }
-    return this.internalSelectedKeys;
+    return sourceKeys instanceof Set ? sourceKeys : new Set(sourceKeys);
   }
 
+  @cached
   get disabledKeysSet(): Set<string> {
     const keys = this.args.disabledKeys;
-    if (!keys) return new Set();
-    return new Set(keys);
+    return keys ? new Set(keys) : new Set();
   }
 
-  // Get key function - use provided or default to keyAndLabelForItem
-  getItemKey = (item: T): string => {
+  // Extract actual data from row (handles both row.data and direct row)
+  getRowData = (row: Row<T>): T => {
+    if (row.data && row.table) {
+      return row.data;
+    }
+    return row as T;
+  };
+
+  // Get key from item or row - unified method
+  getKey = (itemOrRow: T | Row<T>): string => {
+    // Extract the actual item from row if needed
+    const item = (itemOrRow as Row<T>).data
+      ? this.getRowData(itemOrRow as Row<T>)
+      : (itemOrRow as T);
+
+    // Use provided getKey function if available
     if (this.args.getKey) {
       return this.args.getKey(item);
     }
+
+    // Try keyAndLabelForItem helper
     try {
       const { key } = keyAndLabelForItem(item);
       return key;
     } catch {
-      // Fallback if keyAndLabelForItem fails
+      // Final fallback
       return String(item);
     }
   };
@@ -233,7 +300,8 @@ class Table<
     }
 
     // Update internal state if uncontrolled
-    if (!this.isControlled) {
+    const isControlled = this.args.selectedKeys !== undefined;
+    if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
@@ -248,7 +316,8 @@ class Table<
     newSelection.delete(key);
 
     // Update internal state if uncontrolled
-    if (!this.isControlled) {
+    const isControlled = this.args.selectedKeys !== undefined;
+    if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
@@ -258,23 +327,17 @@ class Table<
 
   // Check if a row is selected
   isRowSelected = (row: Row<T>): boolean => {
-    const data = (row.data || row) as T;
-    const key = this.getItemKey(data);
-    return this.selectedKeysSet.has(key);
+    return this.selectedKeysSet.has(this.getKey(row.data));
   };
 
   // Check if a row is disabled
   isRowDisabled = (row: Row<T>): boolean => {
-    const data = (row.data || row) as T;
-    const key = this.getItemKey(data);
-    return this.isKeyDisabled(key);
+    return this.isKeyDisabled(this.getKey(row.data));
   };
 
   // Handler for row checkbox change
   handleRowSelectionChange = (row: Row<T>, checked: boolean): void => {
-    const data = (row.data || row) as T;
-    const key = this.getItemKey(data);
-
+    const key = this.getKey(row.data);
     if (checked) {
       this.handleSelect(key);
     } else {
@@ -294,7 +357,7 @@ class Table<
       const allRows = Array.from(
         currentElement
           .closest('tbody')
-          ?.querySelectorAll('[data-test-id="table-row"]') || []
+          ?.querySelectorAll('[data-selectable="true"]') || []
       ) as HTMLElement[];
 
       const currentIndex = allRows.indexOf(currentElement);
@@ -317,8 +380,7 @@ class Table<
     // Prevent default behavior (scroll for Space, form submission for Enter)
     event.preventDefault();
 
-    const data = (row.data || row) as T;
-    const key = this.getItemKey(data);
+    const key = this.getKey(row.data);
     const isSelected = this.isRowSelected(row);
 
     if (this.selectionMode === 'single') {
@@ -351,7 +413,7 @@ class Table<
   get selectableKeys(): string[] {
     const items = this.args.items || [];
     return items
-      .map((item) => this.getItemKey(item))
+      .map((item) => this.getKey(item))
       .filter((key) => !this.isKeyDisabled(key));
   }
 
@@ -385,7 +447,8 @@ class Table<
     }
 
     // Update internal state if uncontrolled
-    if (!this.isControlled) {
+    const isControlled = this.args.selectedKeys !== undefined;
+    if (!isControlled) {
       this.internalSelectedKeys = newSelection;
     }
 
@@ -395,7 +458,7 @@ class Table<
 
   // Add checkbox column for multiple selection
   get columnsWithSelection(): readonly ColumnConfig<T>[] {
-    if (!this.hasMultipleSelection) {
+    if (this.selectionMode !== 'multiple') {
       return this.args.columns;
     }
 
@@ -493,7 +556,7 @@ class Table<
         ? [
             RowSelection.with(() => ({
               selection: this.selectedKeysSet,
-              key: this.getItemKey,
+              key: this.getKey,
               onSelect: this.handleSelect,
               onDeselect: this.handleDeselect
             }))
@@ -541,45 +604,8 @@ class Table<
     });
   }
 
-  calculateHeaderHeight = modifier((el: HTMLDivElement) => {
-    if (this.args.isStickyHeader) {
-      const updateHeight = () => {
-        const thead = el.querySelector('thead');
-        if (thead) {
-          const headerHeight = Math.round(thead.offsetHeight);
-          el.style.setProperty('--table-header-height', `${headerHeight}px`);
-        }
-      };
-
-      requestAnimationFrame(updateHeight);
-
-      // Update on resize
-      let observer: ResizeObserver;
-      observer = new ResizeObserver(updateHeight);
-      observer.observe(el);
-
-      return () => {
-        if (observer) {
-          observer.disconnect();
-        }
-      };
-    }
-  });
-
   get tableClassNames() {
     return this.styles.table({ class: this.args.classes?.table });
-  }
-
-  get columns(): readonly ColumnConfig<T>[] {
-    return this.args.columns || [];
-  }
-
-  get footerColumns(): ColumnConfig<T>[] {
-    return this.args.footerColumns || [];
-  }
-
-  get items(): T[] {
-    return this.tableInstance.rows.values() as T[];
   }
 
   get headlessColumns() {
@@ -590,63 +616,15 @@ class Table<
     return this.tableInstance.rows.values();
   }
 
-  // Helper to check if a column is sticky
-  columnIsSticky = (column: Column<T>): boolean => {
-    const frontileOptions = extractFrontileOptions(column);
-    return frontileOptions?.isSticky ?? false;
-  };
-
-  // Helper to get column sticky position
-  columnStickyPosition = (column: Column<T>): 'left' | 'right' | undefined => {
-    const frontileOptions = extractFrontileOptions(column);
-    return frontileOptions?.stickyPosition;
-  };
-
   // Helper to check if a row is sticky
-  rowIsSticky = (row: Row<T>): boolean => {
-    if (!this.args.stickyKeys) return false;
-    const rowKey = this.getRowKey(row);
-    return this.args.stickyKeys.includes(rowKey);
-  };
-
-  // Helper to get row key - uses getItemKey to avoid duplication
-  getRowKey = (row: Row<T>): string => {
-    if (row) {
-      const actualData = (row.data || row) as T;
-      try {
-        return this.getItemKey(actualData);
-      } catch (error) {
-        return row.index?.toString() || '';
-      }
-    }
-    return '';
-  };
-
-  // Create cell context with registry for custom cell rendering
-  createCellContext = (column: Column<T>, row: Row<T>) => {
-    const registry = new CellRenderingContext();
-    return {
-      column,
-      row,
-      value: column.getValueForRow(row),
-      registry
-    };
-  };
-
-  // Helper to check if column is currently sorted
-  columnIsSorted = (column: Column<T>): boolean => {
-    return getColumnSortDirection(column) !== 'none';
-  };
-
-  // Helper to check if column is the selection column
-  isSelectionColumn = (column: Column<T>): boolean => {
-    return column.key === '__selection__';
+  isRowSticky = (row: Row<T>): boolean => {
+    return !!this.args.stickyKeys?.includes(this.getKey(row));
   };
 
   <template>
     <div
       class={{this.wrapperClassNames}}
-      {{this.calculateHeaderHeight}}
+      {{calculateHeaderHeight @isStickyHeader}}
       {{this.tableInstance.modifiers.container}}
       data-component="table-wrapper"
     >
@@ -680,14 +658,14 @@ class Table<
           {{#each this.headlessColumns as |column|}}
             <t.Column
               {{this.tableInstance.modifiers.columnHeader column}}
-              @isSticky={{this.columnIsSticky column}}
-              @stickyPosition={{this.columnStickyPosition column}}
+              @isSticky={{columnIsSticky column}}
+              @stickyPosition={{columnStickyPosition column}}
               data-key={{column.key}}
               data-sortable="{{(isColumnSortable column)}}"
             >
-              {{#if (this.isSelectionColumn column)}}
+              {{#if (isSelectionColumn column)}}
                 {{! Selection column header - render select all checkbox if enabled (default true) }}
-                {{#if this.showSelectAll}}
+                {{#if (if @showSelectAll @showSelectAll true)}}
                   <this.Checkbox
                     @checked={{this.isAllSelected}}
                     @indeterminate={{this.isSomeSelected}}
@@ -702,7 +680,7 @@ class Table<
                     column=column
                     isSortable=(isColumnSortable column)
                     sortDirection=(getColumnSortDirection column)
-                    isSorted=(this.columnIsSorted column)
+                    isSorted=(columnIsSorted column)
                     onSort=(fn sortColumn column)
                   )
                   to="header"
@@ -711,7 +689,7 @@ class Table<
                 <this.SortButton
                   @column={{column}}
                   @sortDirection={{getColumnSortDirection column}}
-                  @isSorted={{this.columnIsSorted column}}
+                  @isSorted={{columnIsSorted column}}
                   @onSort={{fn sortColumn column}}
                 />
               {{else}}
@@ -730,9 +708,9 @@ class Table<
             <t.Row
               {{this.tableInstance.modifiers.row row}}
               {{this.rowKeyboardHandler row}}
-              @isSticky={{this.rowIsSticky row}}
+              @isSticky={{this.isRowSticky row}}
               @hasStickyHeader={{@isStickyHeader}}
-              data-key={{this.getRowKey row}}
+              data-key={{this.getKey row}}
               data-selected={{if (this.isRowSelected row) "true" "false"}}
               data-disabled={{if (this.isRowDisabled row) "true"}}
               data-selectable={{if this.hasSelection "true"}}
@@ -740,12 +718,12 @@ class Table<
             >
               {{#each this.headlessColumns as |column|}}
                 <t.Cell
-                  @isSticky={{this.columnIsSticky column}}
-                  @stickyPosition={{this.columnStickyPosition column}}
-                  @isInStickyRow={{this.rowIsSticky row}}
+                  @isSticky={{columnIsSticky column}}
+                  @stickyPosition={{columnStickyPosition column}}
+                  @isInStickyRow={{this.isRowSticky row}}
                   data-column={{column.key}}
                 >
-                  {{#if (this.isSelectionColumn column)}}
+                  {{#if (isSelectionColumn column)}}
                     {{! Selection column cell - render checkbox }}
                     <this.Checkbox
                       @checked={{this.isRowSelected row}}
@@ -755,10 +733,7 @@ class Table<
                       @ariaLabel="Select row"
                     />
                   {{else if (has-block "cell")}}
-                    {{#let
-                      (this.createCellContext column row)
-                      as |cellContext|
-                    }}
+                    {{#let (createCellContext column row) as |cellContext|}}
                       {{yield
                         (hash
                           column=cellContext.column
@@ -830,9 +805,9 @@ class Table<
           {{/if}}
         </t.Body>
 
-        {{#if this.footerColumns.length}}
+        {{#if @footerColumns}}
           <t.Footer @isSticky={{@isStickyFooter}}>
-            {{#each this.footerColumns as |column|}}
+            {{#each @footerColumns as |column|}}
               <t.Column data-key={{column.key}}>
                 {{column.name}}
               </t.Column>
