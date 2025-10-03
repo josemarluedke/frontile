@@ -9,11 +9,22 @@ const table = tv({
     tbody: [
       'divide-y',
       'divide-default-100',
-      '[&>tr]:data-[selectable=true]:hover:bg-default-50',
-      '[&>tr]:data-[selectable=true]:focus-visible:outline-primary'
+      '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-default-100',
+      '[&>tr]:data-[selectable=true]:transition-colors'
     ],
     tfoot: ['relative'],
-    tr: ['data-[selected=true]:bg-default-50'],
+    tr: [
+      'data-[disabled=true]:opacity-50',
+      'data-[disabled=true]:cursor-not-allowed',
+      'data-[disabled=true]:hover:bg-transparent',
+      'data-[selectable=true]:focus-visible:ring-2',
+      'data-[selectable=true]:focus-visible:ring-inset',
+      'data-[selectable=true]:focus-visible:ring-default',
+      'data-[selectable=true]:focus-visible:z-10',
+      'transition-colors',
+      'duration-150',
+      'outline-hidden'
+    ],
     separator: [
       'absolute',
       'z-2',
@@ -96,6 +107,13 @@ const table = tv({
       }
     },
     loadingColor: {
+      default: {},
+      primary: {},
+      success: {},
+      warning: {},
+      danger: {}
+    },
+    selectionColor: {
       default: {},
       primary: {},
       success: {},
@@ -252,12 +270,49 @@ const table = tv({
       class: {
         thead: `after:bg-danger`
       }
+    },
+    // Selection color variants
+    {
+      selectionColor: 'default',
+      class: {
+        tbody: '[&>tr]:data-[selected=true]:bg-default-200/50',
+        tr: ['data-[selectable=true]:focus-visible:ring-default']
+      }
+    },
+    {
+      selectionColor: 'primary',
+      class: {
+        tbody: '[&>tr]:data-[selected=true]:bg-primary-50',
+        tr: ['data-[selectable=true]:focus-visible:ring-primary']
+      }
+    },
+    {
+      selectionColor: 'success',
+      class: {
+        tbody: '[&>tr]:data-[selected=true]:bg-success-50',
+        tr: ['data-[selectable=true]:focus-visible:ring-success']
+      }
+    },
+    {
+      selectionColor: 'warning',
+      class: {
+        tbody: '[&>tr]:data-[selected=true]:bg-warning-50',
+        tr: ['data-[selectable=true]:focus-visible:ring-warning']
+      }
+    },
+    {
+      selectionColor: 'danger',
+      class: {
+        tbody: '[&>tr]:data-[selected=true]:bg-danger-50',
+        tr: ['data-[selectable=true]:focus-visible:ring-danger']
+      }
     }
   ],
   defaultVariants: {
     size: 'md',
     layout: 'auto',
-    loadingColor: 'default'
+    loadingColor: 'default',
+    selectionColor: 'primary'
   }
 });
 

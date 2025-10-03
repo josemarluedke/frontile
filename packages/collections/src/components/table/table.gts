@@ -10,6 +10,7 @@ import ColumnVisibilityComponent from './column-visibility';
 import CellForComponent from './cell-for';
 import CellDefaultComponent from './cell-default';
 import SortButtonComponent from './sort-button';
+import CheckboxComponent from './checkbox';
 import { CellRenderingContext } from './cell-rendering-context';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
@@ -20,6 +21,7 @@ import {
   isSortable as isColumnSortable,
   sortDirection as getColumnSortDirection
 } from '@universal-ember/table/plugins/data-sorting';
+import { RowSelection } from '@universal-ember/table/plugins/row-selection';
 
 import type {
   ColumnConfig,
@@ -29,7 +31,8 @@ import type {
   SlotsToClasses,
   Column,
   Row,
-  SortItem
+  SortItem,
+  SelectionMode
 } from './types';
 import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
@@ -72,6 +75,20 @@ interface TableSignature<
     onSort?: (items: T[], sortDescriptor: SortItem<T>) => T[];
     /** Initial sort descriptor to apply on mount. Only used for initial render, subsequent changes are ignored. */
     initialSort?: SortItem<T>;
+    /** Selection mode - 'none' (default), 'single' (row clicks only), or 'multiple' (with checkboxes). @defaultValue 'none' */
+    selectionMode?: SelectionMode;
+    /** Color variant for selection highlight. @defaultValue 'primary' */
+    selectionColor?: TableVariants['selectionColor'];
+    /** Set of selected item keys */
+    selectedKeys?: Set<string> | string[];
+    /** Callback when selection changes */
+    onSelectionChange?: (selectedKeys: Set<string>) => void;
+    /** Function to extract unique key from an item. Defaults to using keyAndLabelForItem helper. */
+    getKey?: (item: T) => string;
+    /** Array of keys that should be disabled from selection */
+    disabledKeys?: string[];
+    /** Show "select all" checkbox in header (only for multiple selection mode). @defaultValue true */
+    showSelectAll?: boolean;
   };
   Element: HTMLTableElement;
   Blocks: {
@@ -127,9 +144,13 @@ class Table<
   CellFor = CellForComponent<T, TColumns>;
   CellDefault = CellDefaultComponent<T>;
   SortButton = SortButtonComponent<T>;
+  Checkbox = CheckboxComponent;
 
   // Tracked state for sorting
   @tracked sorts: SortItem<T>[] = [];
+
+  // Tracked state for uncontrolled selection
+  @tracked private internalSelectedKeys = new Set<string>();
 
   constructor(owner: Owner, args: TableSignature<T, TColumns>['Args']) {
     super(owner, args);
@@ -137,6 +158,256 @@ class Table<
     if (args.initialSort) {
       this.sorts = [args.initialSort];
     }
+  }
+
+  // Check if selection is controlled (has selectedKeys prop)
+  get isControlled(): boolean {
+    return this.args.selectedKeys !== undefined;
+  }
+
+  // Selection helpers
+  get selectionMode(): SelectionMode {
+    return this.args.selectionMode ?? 'none';
+  }
+
+  get hasSelection(): boolean {
+    return this.selectionMode !== 'none';
+  }
+
+  get hasMultipleSelection(): boolean {
+    return this.selectionMode === 'multiple';
+  }
+
+  get showSelectAll(): boolean {
+    return this.args.showSelectAll ?? true;
+  }
+
+  get selectedKeysSet(): Set<string> {
+    // Use controlled state if provided, otherwise use internal state
+    if (this.isControlled) {
+      const keys = this.args.selectedKeys;
+      if (!keys) return new Set();
+      return keys instanceof Set ? keys : new Set(keys);
+    }
+    return this.internalSelectedKeys;
+  }
+
+  get disabledKeysSet(): Set<string> {
+    const keys = this.args.disabledKeys;
+    if (!keys) return new Set();
+    return new Set(keys);
+  }
+
+  // Get key function - use provided or default to keyAndLabelForItem
+  getItemKey = (item: T): string => {
+    if (this.args.getKey) {
+      return this.args.getKey(item);
+    }
+    try {
+      const { key } = keyAndLabelForItem(item);
+      return key;
+    } catch {
+      // Fallback if keyAndLabelForItem fails
+      return String(item);
+    }
+  };
+
+  // Check if a key is disabled
+  isKeyDisabled = (key: string): boolean => {
+    return this.disabledKeysSet.has(key);
+  };
+
+  // Selection handlers
+  handleSelect = (key: string): void => {
+    if (this.isKeyDisabled(key)) return;
+
+    const newSelection = new Set(this.selectedKeysSet);
+
+    if (this.selectionMode === 'single') {
+      // Single selection: clear all and add only the new one
+      newSelection.clear();
+      newSelection.add(key);
+    } else {
+      // Multiple selection: add to existing
+      newSelection.add(key);
+    }
+
+    // Update internal state if uncontrolled
+    if (!this.isControlled) {
+      this.internalSelectedKeys = newSelection;
+    }
+
+    // Always call onChange callback if provided
+    this.args.onSelectionChange?.(newSelection);
+  };
+
+  handleDeselect = (key: string): void => {
+    if (this.isKeyDisabled(key)) return;
+
+    const newSelection = new Set(this.selectedKeysSet);
+    newSelection.delete(key);
+
+    // Update internal state if uncontrolled
+    if (!this.isControlled) {
+      this.internalSelectedKeys = newSelection;
+    }
+
+    // Always call onChange callback if provided
+    this.args.onSelectionChange?.(newSelection);
+  };
+
+  // Check if a row is selected
+  isRowSelected = (row: Row<T>): boolean => {
+    const data = (row.data || row) as T;
+    const key = this.getItemKey(data);
+    return this.selectedKeysSet.has(key);
+  };
+
+  // Check if a row is disabled
+  isRowDisabled = (row: Row<T>): boolean => {
+    const data = (row.data || row) as T;
+    const key = this.getItemKey(data);
+    return this.isKeyDisabled(key);
+  };
+
+  // Handler for row checkbox change
+  handleRowSelectionChange = (row: Row<T>, checked: boolean): void => {
+    const data = (row.data || row) as T;
+    const key = this.getItemKey(data);
+
+    if (checked) {
+      this.handleSelect(key);
+    } else {
+      this.handleDeselect(key);
+    }
+  };
+
+  // Handler for keyboard row selection and navigation
+  handleRowKeydown = (row: Row<T>, event: KeyboardEvent): void => {
+    if (!this.hasSelection) return;
+
+    // Handle arrow key navigation
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+
+      const currentElement = event.target as HTMLElement;
+      const allRows = Array.from(
+        currentElement
+          .closest('tbody')
+          ?.querySelectorAll('[data-test-id="table-row"]') || []
+      ) as HTMLElement[];
+
+      const currentIndex = allRows.indexOf(currentElement);
+
+      if (event.key === 'ArrowDown' && currentIndex < allRows.length - 1) {
+        allRows[currentIndex + 1]?.focus();
+      } else if (event.key === 'ArrowUp' && currentIndex > 0) {
+        allRows[currentIndex - 1]?.focus();
+      }
+
+      return;
+    }
+
+    // Handle selection (Space/Enter)
+    if (this.isRowDisabled(row)) return;
+
+    // Only handle Space and Enter keys
+    if (event.key !== ' ' && event.key !== 'Enter') return;
+
+    // Prevent default behavior (scroll for Space, form submission for Enter)
+    event.preventDefault();
+
+    const data = (row.data || row) as T;
+    const key = this.getItemKey(data);
+    const isSelected = this.isRowSelected(row);
+
+    if (this.selectionMode === 'single') {
+      // Single selection: always select the row
+      this.handleSelect(key);
+    } else {
+      // Multiple selection: toggle
+      if (isSelected) {
+        this.handleDeselect(key);
+      } else {
+        this.handleSelect(key);
+      }
+    }
+  };
+
+  // Modifier for row keyboard navigation
+  rowKeyboardHandler = modifier((element: HTMLElement, [row]: [Row<T>]) => {
+    const handler = (event: KeyboardEvent) => {
+      this.handleRowKeydown(row, event);
+    };
+
+    element.addEventListener('keydown', handler);
+
+    return () => {
+      element.removeEventListener('keydown', handler);
+    };
+  });
+
+  // Get all selectable (non-disabled) item keys
+  get selectableKeys(): string[] {
+    const items = this.args.items || [];
+    return items
+      .map((item) => this.getItemKey(item))
+      .filter((key) => !this.isKeyDisabled(key));
+  }
+
+  // Check if all selectable rows are selected
+  get isAllSelected(): boolean {
+    if (this.selectableKeys.length === 0) return false;
+    return this.selectableKeys.every((key) => this.selectedKeysSet.has(key));
+  }
+
+  // Check if some (but not all) selectable rows are selected
+  get isSomeSelected(): boolean {
+    if (this.selectedKeysSet.size === 0) return false;
+    if (this.isAllSelected) return false;
+    return this.selectableKeys.some((key) => this.selectedKeysSet.has(key));
+  }
+
+  // Handler for select all checkbox change
+  handleSelectAllChange = (checked: boolean): void => {
+    const newSelection = new Set(this.selectedKeysSet);
+
+    if (checked) {
+      // Select all selectable rows
+      this.selectableKeys.forEach((key) => {
+        newSelection.add(key);
+      });
+    } else {
+      // Deselect all selectable rows
+      this.selectableKeys.forEach((key) => {
+        newSelection.delete(key);
+      });
+    }
+
+    // Update internal state if uncontrolled
+    if (!this.isControlled) {
+      this.internalSelectedKeys = newSelection;
+    }
+
+    // Always call onChange callback if provided
+    this.args.onSelectionChange?.(newSelection);
+  };
+
+  // Add checkbox column for multiple selection
+  get columnsWithSelection(): readonly ColumnConfig<T>[] {
+    if (!this.hasMultipleSelection) {
+      return this.args.columns;
+    }
+
+    // Add checkbox column as the first column
+    const checkboxColumn: ColumnConfig<T> = {
+      key: '__selection__',
+      name: '', // Empty name, we'll render checkbox in header
+      isSticky: this.args.isScrollable || false,
+      stickyPosition: 'left'
+    };
+
+    return [checkboxColumn, ...this.args.columns];
   }
 
   // Transform Frontile ColumnConfig to universal-ember ColumnConfig with pluginOptions
@@ -211,13 +482,23 @@ class Table<
 
   tableInstance = createHeadlessTable<T>(this, {
     data: () => this.sortedItems,
-    columns: () => this.processColumns(this.args.columns),
+    columns: () => this.processColumns(this.columnsWithSelection),
     plugins: [
       ColumnVisibility,
       DataSorting.with(() => ({
         sorts: this.sorts,
         onSort: this.handleSortChange
-      }))
+      })),
+      ...(this.hasSelection
+        ? [
+            RowSelection.with(() => ({
+              selection: this.selectedKeysSet,
+              key: this.getItemKey,
+              onSelect: this.handleSelect,
+              onDeselect: this.handleDeselect
+            }))
+          ]
+        : [])
     ]
   });
 
@@ -249,6 +530,7 @@ class Table<
       hasStickyHeader: this.args.isStickyHeader || false,
       isLoading: this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
+      selectionColor: this.args.selectionColor,
       class: this.args.classes?.base
     });
   }
@@ -327,13 +609,12 @@ class Table<
     return this.args.stickyKeys.includes(rowKey);
   };
 
-  // Helper to get row key (from existing TableRow logic)
+  // Helper to get row key - uses getItemKey to avoid duplication
   getRowKey = (row: Row<T>): string => {
     if (row) {
-      const actualData = row.data || row;
+      const actualData = (row.data || row) as T;
       try {
-        const { key } = keyAndLabelForItem(actualData);
-        return key;
+        return this.getItemKey(actualData);
       } catch (error) {
         return row.index?.toString() || '';
       }
@@ -355,6 +636,11 @@ class Table<
   // Helper to check if column is currently sorted
   columnIsSorted = (column: Column<T>): boolean => {
     return getColumnSortDirection(column) !== 'none';
+  };
+
+  // Helper to check if column is the selection column
+  isSelectionColumn = (column: Column<T>): boolean => {
+    return column.key === '__selection__';
   };
 
   <template>
@@ -386,6 +672,7 @@ class Table<
         @hasWrapper={{false}}
         @isLoading={{@isLoading}}
         @loadingColor={{@loadingColor}}
+        @selectionColor={{@selectionColor}}
         @hasCustomLoading={{has-block "loading"}}
         as |t|
       >
@@ -398,7 +685,18 @@ class Table<
               data-key={{column.key}}
               data-sortable="{{(isColumnSortable column)}}"
             >
-              {{#if (has-block "header")}}
+              {{#if (this.isSelectionColumn column)}}
+                {{! Selection column header - render select all checkbox if enabled (default true) }}
+                {{#if this.showSelectAll}}
+                  <this.Checkbox
+                    @checked={{this.isAllSelected}}
+                    @indeterminate={{this.isSomeSelected}}
+                    @onChange={{this.handleSelectAllChange}}
+                    @size={{@size}}
+                    @ariaLabel="Select all rows"
+                  />
+                {{/if}}
+              {{else if (has-block "header")}}
                 {{yield
                   (hash
                     column=column
@@ -431,9 +729,14 @@ class Table<
           {{#each this.headlessRows as |row|}}
             <t.Row
               {{this.tableInstance.modifiers.row row}}
+              {{this.rowKeyboardHandler row}}
               @isSticky={{this.rowIsSticky row}}
               @hasStickyHeader={{@isStickyHeader}}
               data-key={{this.getRowKey row}}
+              data-selected={{if (this.isRowSelected row) "true" "false"}}
+              data-disabled={{if (this.isRowDisabled row) "true"}}
+              data-selectable={{if this.hasSelection "true"}}
+              tabindex={{if this.hasSelection "0" "-1"}}
             >
               {{#each this.headlessColumns as |column|}}
                 <t.Cell
@@ -442,7 +745,16 @@ class Table<
                   @isInStickyRow={{this.rowIsSticky row}}
                   data-column={{column.key}}
                 >
-                  {{#if (has-block "cell")}}
+                  {{#if (this.isSelectionColumn column)}}
+                    {{! Selection column cell - render checkbox }}
+                    <this.Checkbox
+                      @checked={{this.isRowSelected row}}
+                      @disabled={{this.isRowDisabled row}}
+                      @onChange={{fn this.handleRowSelectionChange row}}
+                      @size={{@size}}
+                      @ariaLabel="Select row"
+                    />
+                  {{else if (has-block "cell")}}
                     {{#let
                       (this.createCellContext column row)
                       as |cellContext|

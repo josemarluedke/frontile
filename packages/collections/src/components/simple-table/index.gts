@@ -29,6 +29,8 @@ interface SimpleTableSignature {
     isLoading?: boolean;
     /** Color variant for loading animation. @defaultValue 'default' */
     loadingColor?: TableVariants['loadingColor'];
+    /** Color variant for selection highlight. @defaultValue 'primary' */
+    selectionColor?: TableVariants['selectionColor'];
     /** Whether a custom loading block is provided (disables CSS loading indicator) */
     hasCustomLoading?: boolean;
   };
@@ -64,6 +66,7 @@ class SimpleTable extends Component<SimpleTableSignature> {
         ? false
         : this.args.isLoading || false,
       loadingColor: this.args.loadingColor,
+      selectionColor: this.args.selectionColor,
       class: this.args.classes?.base
     });
   }

@@ -70,4 +70,7 @@ export type ColumnKeys<T extends unknown[]> = T[number] extends {
     : never
   : never;
 
+// Selection types
+export type SelectionMode = 'none' | 'single' | 'multiple';
+
 export type { TableVariants, TableSlots, SlotsToClasses, ClassValue };

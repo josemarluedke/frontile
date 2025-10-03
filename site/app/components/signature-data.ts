@@ -10712,7 +10712,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -10846,7 +10846,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -10922,7 +10922,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11002,7 +11002,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11105,7 +11105,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11259,6 +11259,25 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
       {
+        identifier: 'selectionColor',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Color variant for selection highlight.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'primary'" } },
+        defaultValue: '<span class="hljs-string">\'primary\'</span>',
+      },
+      {
         identifier: 'size',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -11408,7 +11427,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11502,7 +11521,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11606,7 +11625,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11661,7 +11680,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11732,7 +11751,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11826,7 +11845,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -11920,7 +11939,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -12236,6 +12255,98 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'checkbox',
+    name: 'Checkbox',
+    fileName:
+      'packages/collections/declarations/components/table/checkbox.d.ts',
+    Args: [
+      {
+        identifier: 'ariaLabel',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'ariaLabelledby',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'checked',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'label\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'labelContainer\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'indeterminate',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(checked: <span class="hljs-built_in">boolean</span>, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'sm'", "'lg'", "'md'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLInputElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
+    },
+    description:
+      'Internal checkbox component for table selection.\nSimplified version without FormControl wrapper.',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'column-visibility',
     name: 'ColumnVisibility',
     fileName:
@@ -12455,7 +12566,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -12680,7 +12791,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -12780,7 +12891,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -12887,7 +12998,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -12999,7 +13110,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -13154,7 +13265,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -13278,6 +13389,17 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Array of keys that should be disabled from selection',
+        tags: {},
+      },
+      {
         identifier: 'emptyContent',
         type: {
           type: '<span class="hljs-built_in">enum</span>',
@@ -13308,6 +13430,18 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Array of column configurations for automatic footer generation',
+        tags: {},
+      },
+      {
+        identifier: 'getKey',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(item: T) => <span class="hljs-built_in">string</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Function to extract unique key from an item. Defaults to using keyAndLabelForItem helper.',
         tags: {},
       },
       {
@@ -13393,6 +13527,17 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
       {
+        identifier: 'onSelectionChange',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(selectedKeys: <span class="hljs-built_in">Set</span>&#x3C;<span class="hljs-built_in">string</span>>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when selection changes',
+        tags: {},
+      },
+      {
         identifier: 'onSort',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -13403,6 +13548,57 @@ const data: ComponentDoc[] = [
         description:
           'Function to sort items when sorting is triggered. Receives the items array and sort descriptor. Returns sorted items.',
         tags: {},
+      },
+      {
+        identifier: 'selectedKeys',
+        type: { type: '<span class="hljs-built_in">any</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Set of selected item keys',
+        tags: {},
+      },
+      {
+        identifier: 'selectionColor',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Color variant for selection highlight.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'primary'" } },
+        defaultValue: '<span class="hljs-string">\'primary\'</span>',
+      },
+      {
+        identifier: 'selectionMode',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: 'SelectionMode',
+          items: ["'none'", "'single'", "'multiple'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Selection mode - 'none' (default), 'single' (row clicks only), or 'multiple' (with checkboxes).",
+        tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
+        defaultValue: '<span class="hljs-string">\'none\'</span>',
+      },
+      {
+        identifier: 'showSelectAll',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Show "select all" checkbox in header (only for multiple selection mode).',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
       },
       {
         identifier: 'size',
@@ -13795,7 +13991,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -14052,7 +14248,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -14190,7 +14386,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -14282,7 +14478,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -14395,7 +14591,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,
@@ -14539,7 +14735,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'styleFns',
         type: {
-          type: '{ <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; layout?: <span class="hljs-string">\'fixed\'</span> | <span class="hljs-string">\'auto\'</span>; striped?: <span class="hljs-built_in">boolean</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'top\'</span> | ... <span class="hljs-number">2</span> more ... | <span class="hljs-string">\'left\'</span>; isScrollable?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; isInSt...',
+          type: '{ <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; isLoading?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; selectionColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isInStickyRow?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; empty: (s...',
         },
         isRequired: false,
         isInternal: true,

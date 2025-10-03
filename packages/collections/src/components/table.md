@@ -12,6 +12,7 @@ A powerful component for displaying structured data with features like sticky he
 **Key Features:**
 
 - Automatic rendering with type-safe column definitions
+- Row selection (single or multiple with checkboxes)
 - Sticky elements (headers, footers, columns, rows)
 - Scrollable containers for large datasets
 - Column sorting and visibility controls
@@ -771,6 +772,364 @@ export default class DemoComponent extends Component {
 - Tri-state sorting: descending → ascending → none
 - Custom sort property: Use `sortProperty` to sort by a different field
 - Initial sort: Set with `@initialSort`
+
+## Row Selection
+
+Enable row selection with `@selectionMode` for single or multiple row selection.
+
+### Multiple Selection
+
+Use checkboxes for multi-select with `selectionMode="multiple"`:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  @tracked selectedKeys = new Set<string>();
+
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  handleSelectionChange = (keys: Set<string>) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <div>
+      <p class='mb-4 text-sm'>
+        Selected: {{this.selectedKeys.size}} row(s)
+      </p>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.handleSelectionChange}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Single Selection
+
+Use row clicks for single selection with `selectionMode="single"`:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  @tracked selectedKeys = new Set<string>();
+
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  handleSelectionChange = (keys: Set<string>) => {
+    this.selectedKeys = keys;
+  };
+
+  get selectedUser() {
+    const key = [...this.selectedKeys][0];
+    return this.items.find((item) => item.id === key);
+  }
+
+  <template>
+    <div>
+      <p class='mb-4 text-sm'>
+        Selected: {{if this.selectedUser this.selectedUser.name 'None'}}
+      </p>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='single'
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.handleSelectionChange}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Disabled Rows
+
+Prevent specific rows from being selected with `@disabledKeys`:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  @tracked selectedKeys = new Set<string>();
+
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  disabledKeys = ['1'];
+
+  handleSelectionChange = (keys: Set<string>) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <div>
+      <p class='mb-4 text-sm'>
+        Note: Admin users cannot be selected
+      </p>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.handleSelectionChange}}
+        @disabledKeys={{this.disabledKeys}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Custom Key Extraction
+
+Provide a custom function to extract unique keys from items:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Table, type ColumnConfig } from '@frontile/collections';
+
+interface Product {
+  sku: string;
+  name: string;
+  price: number;
+}
+
+export default class DemoComponent extends Component {
+  @tracked selectedKeys = new Set<string>();
+
+  items: Product[] = [
+    { sku: 'ABC-123', name: 'Widget', price: 29.99 },
+    { sku: 'DEF-456', name: 'Gadget', price: 49.99 },
+    { sku: 'GHI-789', name: 'Doohickey', price: 19.99 }
+  ];
+
+  columns = [
+    { key: 'sku', name: 'SKU' },
+    { key: 'name', name: 'Product' },
+    { key: 'price', name: 'Price' }
+  ] as const satisfies ColumnConfig<Product>[];
+
+  getItemKey = (item: Product) => item.sku;
+
+  handleSelectionChange = (keys: Set<string>) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Table
+      @columns={{this.columns}}
+      @items={{this.items}}
+      @selectionMode='multiple'
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.handleSelectionChange}}
+      @getKey={{this.getItemKey}}
+    />
+  </template>
+}
+```
+
+### Uncontrolled Selection
+
+The Table supports uncontrolled selection where internal state is managed automatically. Simply omit `@selectedKeys` and provide `@onSelectionChange` to monitor selections:
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  handleSelectionChange = (keys: Set<string>) => {
+    console.log('Selected keys:', Array.from(keys));
+  };
+
+  <template>
+    <Table
+      @columns={{this.columns}}
+      @items={{this.items}}
+      @selectionMode='multiple'
+      @onSelectionChange={{this.handleSelectionChange}}
+    />
+  </template>
+}
+```
+
+### Keyboard Navigation
+
+When selection is enabled, rows can be selected using keyboard:
+
+- **Space** or **Enter**: Toggle selection (multiple mode) or select row (single mode)
+- Rows are focusable with `tabindex="0"` for keyboard accessibility
+- Disabled rows cannot be selected via keyboard
+
+```gts preview
+import Component from '@glimmer/component';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  <template>
+    <div>
+      <p class='mb-4 text-sm text-foreground-600'>
+        Focus a row and press Space or Enter to select it
+      </p>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+      />
+    </div>
+  </template>
+}
+```
+
+### Selection Color
+
+Customize the selection highlight color with `@selectionColor`. Available colors: `default`, `primary`, `success`, `warning`, `danger`:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Table, type ColumnConfig } from '@frontile/collections';
+import { type User } from 'site/components/table-demo-data';
+import { Select } from '@frontile/forms';
+
+export default class DemoComponent extends Component {
+  @tracked selectedKeys = new Set(['1', '2']);
+  @tracked selectionColor = 'primary';
+
+  items: User[] = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', role: 'admin' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', role: 'user' },
+    { id: '3', name: 'Charlie', email: 'charlie@example.com', role: 'user' }
+  ];
+
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  colorOptions = [
+    { key: 'default', name: 'Default' },
+    { key: 'primary', name: 'Primary' },
+    { key: 'success', name: 'Success' },
+    { key: 'warning', name: 'Warning' },
+    { key: 'danger', name: 'Danger' }
+  ];
+
+  handleSelectionChange = (keys: Set<string>) => {
+    this.selectedKeys = keys;
+  };
+
+  @action updateSelectionColor(color: string) {
+    this.selectionColor = color;
+  }
+
+  <template>
+    <div class='space-y-4'>
+      <div class='flex items-end justify-center'>
+        <Select
+          @inputSize='sm'
+          @label='Selection Color'
+          @items={{this.colorOptions}}
+          @selectedKey={{this.selectionColor}}
+          @onSelectionChange={{this.updateSelectionColor}}
+          class='w-40'
+        />
+      </div>
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @selectionMode='multiple'
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.handleSelectionChange}}
+        @selectionColor={{this.selectionColor}}
+      />
+    </div>
+  </template>
+}
+```
+
+**Features:**
+
+- **Multiple selection**: Checkbox column with select all/none and indeterminate state
+- **Single selection**: Row clicks, no checkboxes
+- **Controlled/Uncontrolled modes**: Provide `@selectedKeys` for controlled, omit for uncontrolled
+- **Keyboard navigation**: Use Space or Enter keys to select rows
+- **Disabled rows**: Prevent selection with `@disabledKeys`
+- **Custom keys**: Use `@getKey` for non-standard key extraction
+- **Selection colors**: Customize highlight with `@selectionColor` (default, primary, success, warning, danger)
+- **Sticky selection column**: Auto-sticky on horizontal scroll
+- **Select all control**: Hide with `@showSelectAll={{false}}`
 
 ## API
 
