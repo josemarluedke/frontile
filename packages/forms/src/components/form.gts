@@ -20,9 +20,9 @@ type FormErrors = Record<string, string | string[] | undefined>;
  * The data passed to `onChange` and `onSubmit` callbacks, which is similar
  * to `FormContext` but also includes the form data.
  */
-type FormResultData = {
+type FormResultData<T = FormData> = {
   /** The form data as key/value pairs. */
-  data: FormData;
+  data: T;
   /** Whether the form is valid (i.e. has no validation errors). */
   isValid: boolean;
   /** Whether the form is invalid (i.e. has validation errors). */
@@ -47,26 +47,29 @@ interface FormContext {
   Field: WithBoundArgs<typeof Field, 'errors'>;
 }
 
-interface FormSignature {
+interface FormSignature<T = FormData> {
   Element: HTMLFormElement;
   Args: {
     /**
      * The standard schema to validate form data against.
      */
-    schema?: StandardSchemaV1<FormData>;
+    schema?: StandardSchemaV1<T>;
     /**
      * Optional custom validation function.  A custom validator should return
      * an array of Standard Schema issues, or `undefined` if there are none.
      * This function may be async or sync.
      */
-    validate?: CustomValidatorFn<FormData>;
+    validate?: CustomValidatorFn<T>;
     /**
      * Optional callback invoked on input changes within the form.
      * @param result - The current form result data.
      * @param event - The input event that triggered the change.
      * @returns A promise or void.
      */
-    onChange?: (result: FormResultData, event: Event) => Promise<void> | void;
+    onChange?: (
+      result: FormResultData<T>,
+      event: Event
+    ) => Promise<void> | void;
     /**
      * Callback invoked on form submission.  If `onSubmit` returns a promise,
      * the form will be marked as `isLoading` until the promise resolves.
@@ -75,7 +78,7 @@ interface FormSignature {
      * @returns A promise or void.
      */
     onSubmit: (
-      result: FormResultData,
+      result: FormResultData<T>,
       event: SubmitEvent
     ) => Promise<void> | void;
   };
@@ -104,7 +107,7 @@ interface FormSignature {
  * </Form>
  * ```
  */
-class Form extends Component<FormSignature> {
+class Form<T = FormData> extends Component<FormSignature<T>> {
   /** Whether the form is currently submitting. */
   @tracked isLoading = false;
 
@@ -128,7 +131,7 @@ class Form extends Component<FormSignature> {
    * @param data - The form data to validate.
    * @returns A promise that resolves to the validation errors, if any.
    */
-  async validate(data: FormData): Promise<FormErrors | undefined> {
+  async validate(data: T): Promise<FormErrors | undefined> {
     // Run validator and get issues
     const errors = await StandardValidator.validateAll(
       data,
@@ -151,7 +154,7 @@ class Form extends Component<FormSignature> {
    * @param data - The current form data.
    * @returns The form result data object.
    */
-  buildFormResultData(data: FormData): FormResultData {
+  buildFormResultData(data: T): FormResultData<T> {
     const { isValid, isInvalid, errors } = this;
     return {
       data,
@@ -169,7 +172,7 @@ class Form extends Component<FormSignature> {
   handleInput(event: Event) {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement && this.args.onChange) {
-      const data = dataFrom(event);
+      const data = dataFrom(event) as T;
       const resultData = this.buildFormResultData(data);
       this.args.onChange(resultData, event);
     }
@@ -187,7 +190,7 @@ class Form extends Component<FormSignature> {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement && this.args.onSubmit) {
       this.isLoading = true;
-      const data = dataFrom(event);
+      const data = dataFrom(event) as T;
       const errors = await this.validate(data);
       const resultData = this.buildFormResultData(data);
       try {
