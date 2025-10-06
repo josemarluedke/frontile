@@ -21,6 +21,10 @@ type FormErrors = Record<string, string | string[] | undefined>;
 interface FormContext {
   /** Whether the form is currently submitting. */
   isLoading: boolean;
+  /** Whether the form is valid (i.e. has no validation errors). */
+  isValid: boolean;
+  /** Whether the form is invalid (i.e. has validation errors). */
+  isInvalid: boolean;
   /** The current form validation errors. */
   errors?: FormErrors;
   /** The `Field` component, with `errors` args bound. */
@@ -81,6 +85,16 @@ class Form extends Component<FormSignature> {
 
   /** The current form validation errors. */
   @tracked errors: FormErrors = {};
+
+  /** Whether the form is valid (i.e. has no validation errors). */
+  get isValid() {
+    return Object.keys(this.errors).length === 0;
+  }
+
+  /** Whether the form is invalid (i.e. has validation errors). */
+  get isInvalid() {
+    return !this.isValid;
+  }
 
   /**
    * Validates data against the provided schema using StandardValidator.
@@ -153,6 +167,8 @@ class Form extends Component<FormSignature> {
       {{yield
         (hash
           isLoading=this.isLoading
+          isValid=this.isValid
+          isInvalid=this.isInvalid
           errors=this.errors
           Field=(component Field errors=this.errors)
         )

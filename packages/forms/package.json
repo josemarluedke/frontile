@@ -106,6 +106,7 @@
     "app-js": {
       "./components/checkbox-group.js": "./dist/_app_/components/checkbox-group.js",
       "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
+      "./components/field-types.js": "./dist/_app_/components/field-types.js",
       "./components/field.js": "./dist/_app_/components/field.js",
       "./components/form-control.js": "./dist/_app_/components/form-control.js",
       "./components/form-description.js": "./dist/_app_/components/form-description.js",

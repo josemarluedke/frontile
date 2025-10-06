@@ -1645,7 +1645,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Checkbox</span>: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; Select: <span class="hljs-built_in">never</span>; Switch: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Checkbox</span>: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; Select: BoundSelect&#x3C;unknown>; Switch: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -1694,7 +1694,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Select',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'BoundSelect&#x3C;unknown>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2230,6 +2230,28 @@ const data: ComponentDoc[] = [
                     isRequired: false,
                     isInternal: false,
                     description: 'The current form validation errors.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isValid',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether the form is valid (i.e. has no validation errors).',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isInvalid',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Whether the form is invalid (i.e. has validation errors).',
                     tags: {},
                   },
                   {
@@ -3415,7 +3437,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>',
         },
         isRequired: false,
         isInternal: false,
