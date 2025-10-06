@@ -18,6 +18,7 @@ import {
   Textarea,
   NativeSelect,
   Select,
+  type FormData,
   type FormResultData,
   type CustomValidatorReturn
 } from '@frontile/forms';
@@ -28,14 +29,14 @@ import sinon from 'sinon';
 module('Integration | Component | @frontile/forms/Form', function (hooks) {
   setupRenderingTest(hooks);
 
-  const inputData = cell<FormResultData>();
-  const submitData = cell<FormResultData>();
+  const inputData = cell<FormData>();
+  const submitData = cell<FormData>();
   const onChange = (data: FormResultData, _event: Event) => {
-    inputData.current = data;
+    inputData.current = data['data'];
   };
 
   const onSubmit = async (data: FormResultData, _event: SubmitEvent) => {
-    submitData.current = data;
+    submitData.current = data['data'];
   };
 
   const countries = ['Argentina', 'Brazil', 'Chile', 'United States'];
@@ -293,7 +294,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     // onSubmit should be called with valid data
     assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
     assert.deepEqual(
-      onSubmitSpy.firstCall.args[0],
+      onSubmitSpy.firstCall.args[0].data,
       {
         email: 'test@example.com',
         password: 'password123',
@@ -316,7 +317,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     assert.expect(6);
 
     // Custom validator that checks if password matches confirmPassword
-    const customValidator = (data: FormResultData): CustomValidatorReturn => {
+    const customValidator = (data: FormData): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
         issues.push({
@@ -425,7 +426,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     });
 
     // Custom validator that checks if password matches confirmPassword
-    const customValidator = (data: FormResultData): CustomValidatorReturn => {
+    const customValidator = (data: FormData): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
         issues.push({
@@ -539,7 +540,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     // onSubmit should be called with valid data
     assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
     assert.deepEqual(
-      onSubmitSpy.firstCall.args[0],
+      onSubmitSpy.firstCall.args[0].data,
       {
         email: 'test@example.com',
         password: 'password123',
@@ -584,7 +585,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     // onSubmit should be called with the data (no validation)
     assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
     assert.deepEqual(
-      onSubmitSpy.firstCall.args[0],
+      onSubmitSpy.firstCall.args[0].data,
       {
         username: 'john',
         email: 'not-even-a-valid-email'
