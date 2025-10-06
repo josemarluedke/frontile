@@ -554,17 +554,17 @@ export default class CustomHandlingForm extends Component {
     const errors: Record<string, string[]> = {};
 
     // Real-time email validation
-    if (data.email && typeof data.email === 'string') {
-      if (!data.email.includes('@')) {
+    if (data['data']['email'] && typeof data['data']['email'] === 'string') {
+      if (!data['data']['email'].includes('@')) {
         errors.email = ['Email must contain @ symbol'];
-      } else if (!data.email.includes('.')) {
+      } else if (!data['data']['email'].includes('.')) {
         errors.email = ['Email must contain a domain'];
       }
     }
 
     // Real-time password validation
-    if (data.password && typeof data.password === 'string') {
-      const password = data.password;
+    if (data['data']['password'] && typeof data['data']['password'] === 'string') {
+      const password = data['data']['password'];
       const passwordErrors = [];
 
       if (password.length < 8) {
@@ -595,22 +595,22 @@ export default class CustomHandlingForm extends Component {
     const errors: Record<string, string[]> = {};
 
     if (
-      !data.username ||
-      typeof data.username !== 'string' ||
-      data.username.length < 3
+      !data['data']['username'] ||
+      typeof data['data']['username'] !== 'string' ||
+      data['data']['username'].length < 3
     ) {
       errors.username = ['Username must be at least 3 characters'];
     }
 
     if (
-      !data.email ||
-      typeof data.email !== 'string' ||
-      !data.email.includes('@')
+      !data['data']['email'] ||
+      typeof data['data']['email'] !== 'string' ||
+      !data['data']['email'].includes('@')
     ) {
       errors.email = ['Valid email is required'];
     }
 
-    if (!data.agreeToTerms) {
+    if (!data['data']['agreeToTerms']) {
       errors.agreeToTerms = ['You must agree to the terms'];
     }
 
