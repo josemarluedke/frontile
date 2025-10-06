@@ -360,7 +360,9 @@ import {
   Input,
   Checkbox,
   Select,
-  type FormResultData
+  type FormResultData,
+  type FormErrors,
+  type FormData
 } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
@@ -423,7 +425,11 @@ export default class ValidatedForm extends Component {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     this.submitMessage = 'Account created successfully!';
-    console.log('Form submitted successfully:', validatedData);
+    console.log('Form submitted successfully:', data);
+  };
+
+  handleFormError = (errors: FormErrors, data: FormData, event: SubmitEvent) => {
+    console.log('Validation errors:', errors);
   };
 
   get isSuccessMessage() {
@@ -437,6 +443,7 @@ export default class ValidatedForm extends Component {
         @validate={{this.customValidator}}
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
+        @onError={{this.handleFormError}}
         as |form|
       >
         <div class='flex flex-col gap-4'>

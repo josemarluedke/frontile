@@ -81,6 +81,18 @@ interface FormSignature<T = FormData> {
       result: FormResultData<T>,
       event: SubmitEvent
     ) => Promise<void> | void;
+    /**
+     * Optional callback invoked when validation errors occur on form submission.
+     * @param errors - The validation errors found.
+     * @param data - The form data that was validated.
+     * @param event - The submit event that triggered the validation.
+     * @returns A promise or void.
+     */
+    onError?: (
+      errors: FormErrors,
+      data: T,
+      event: SubmitEvent
+    ) => Promise<void> | void;
   };
   Blocks: {
     default: [FormContext];
@@ -188,13 +200,16 @@ class Form<T = FormData> extends Component<FormSignature<T>> {
   async handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form instanceof HTMLFormElement && this.args.onSubmit) {
+    if (form instanceof HTMLFormElement) {
       this.isLoading = true;
       const data = dataFrom(event) as T;
       const errors = await this.validate(data);
       const resultData = this.buildFormResultData(data);
       try {
-        if (!errors) {
+        if (errors && this.args.onError) {
+          // Call onError handler when there are validation errors
+          await this.args.onError(errors, data, event);
+        } else if (!errors && this.args.onSubmit) {
           // Run `onSubmit` only if there are no validation errors
           await this.args.onSubmit(resultData, event);
         }

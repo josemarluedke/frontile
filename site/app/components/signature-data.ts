@@ -2126,6 +2126,25 @@ const data: ComponentDoc[] = [
         },
       },
       {
+        identifier: 'onError',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(errors: FormErrors, <span class="hljs-attr">data</span>: T, <span class="hljs-attr">event</span>: SubmitEvent) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Optional callback invoked when validation errors occur on form submission.',
+        tags: {
+          param: {
+            name: 'param',
+            value:
+              'errors   - The validation errors found.\ndata   - The form data that was validated.\nevent   - The submit event that triggered the validation.',
+          },
+          returns: { name: 'returns', value: 'A promise or void.' },
+        },
+      },
+      {
         identifier: 'schema',
         type: {
           type: '<span class="hljs-built_in">Object</span>',

@@ -593,6 +593,129 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       'onSubmit should be called with the form data'
     );
   });
+
+  /**
+   * Test that Form calls onError handler when validation fails
+   * 1. onError is called with validation errors when form submission fails validation
+   * 2. onError receives the correct error object, form data, and event
+   * 3. onSubmit is not called when validation fails
+   * 4. When valid data is submitted, onError is not called
+   */
+  test('it calls onError handler when validation fails', async function (assert) {
+    assert.expect(7);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    const onSubmitSpy = sinon.spy();
+    const onErrorSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @onSubmit={{onSubmitSpy}}
+          @onError={{onErrorSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Submit with invalid data
+    await fillIn('[data-test-email]', 'invalid-email');
+    await fillIn('[data-test-password]', 'abc');
+    await click('[data-test-submit]');
+
+    // onError should be called with validation errors
+    assert.ok(onErrorSpy.calledOnce, 'onError should be called once');
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
+
+    // Check the errors object passed to onError
+    const errorArg = onErrorSpy.firstCall.args[0];
+    assert.ok(errorArg.email, 'Email error should be present');
+    assert.equal(
+      errorArg.email,
+      'Invalid email address',
+      'Email error message should match'
+    );
+    assert.ok(errorArg.password, 'Password error should be present');
+
+    // Submit with valid data
+    await fillIn('[data-test-email]', 'test@example.com');
+    await fillIn('[data-test-password]', 'password123');
+    await click('[data-test-submit]');
+
+    // onError should not be called again, onSubmit should be called
+    assert.ok(
+      onErrorSpy.calledOnce,
+      'onError should still be called only once'
+    );
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+  });
+
+  /**
+   * Test that Form handles async onError handler
+   */
+  test('it handles async onError handler', async function (assert) {
+    assert.expect(3);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email'))
+    });
+
+    let resolveError!: () => void;
+    const onErrorWithDelay = () =>
+      new Promise<void>((resolve) => {
+        resolveError = resolve;
+      });
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @onError={{onErrorWithDelay}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <button type="submit" disabled={{form.isLoading}} data-test-submit>
+            {{if form.isLoading "Processing..." "Submit"}}
+          </button>
+        </Form>
+      </template>
+    );
+
+    assert.dom('[data-test-submit]').isNotDisabled();
+
+    const submission = click('[data-test-submit]');
+
+    // Wait for tracked state to flush to the DOM
+    await settled();
+
+    assert.dom('[data-test-submit]').isDisabled();
+
+    resolveError();
+    await submission;
+    await settled();
+
+    assert.dom('[data-test-submit]').isNotDisabled();
+  });
 });
 
 function selectNativeOptionByKey(
