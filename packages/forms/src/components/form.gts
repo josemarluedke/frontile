@@ -145,6 +145,12 @@ class Form extends Component<FormSignature> {
     this.errors = {};
   }
 
+  /**
+   * Builds the form result data object to pass to callbacks.
+   *
+   * @param data - The current form data.
+   * @returns The form result data object.
+   */
   buildFormResultData(data: FormData): FormResultData {
     const { isValid, isInvalid, errors } = this;
     return {

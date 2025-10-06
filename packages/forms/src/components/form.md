@@ -350,6 +350,8 @@ export default class ComprehensiveForm extends Component {
 
 The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.  The use of custom validators is also supported.
 
+**Note**:  When using built-in form validation, the `Field` component _must_ be used (see example below).  The `Field` component handles auomatic error binding.  Use of `Field` is unnecessary when not using built-in form validation.  [Learn more about the `Field` component and see more form validation examples](field).
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
