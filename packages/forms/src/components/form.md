@@ -718,11 +718,11 @@ export default class CustomHandlingForm extends Component {
 
 ### Form Validation
 
-For scalable form validation, we recommend using validation libraries like [Valibot](https://valibot.dev/):
+For scalable form validation, use built-in validation with a library that implements [Standard Schema](https://standardschema.dev/), such as [Valibot](https://valibot.dev/):
 
-```typescript
+```gts
 // Define a Valibot schema for type-safe validation
-FormSchema = v.object({
+schema = v.object({
   email: v.pipe(
     v.string(),
     v.nonEmpty('Email is required'),
@@ -734,37 +734,14 @@ FormSchema = v.object({
   )
 });
 
-// Validate on both input and submit events
-handleFormChange = (data: FormResultData) => {
-  // Real-time validation for better UX
-  this.validateField(data);
-};
-
-handleFormSubmit = async (data: FormResultData) => {
-  // Comprehensive validation on submit
-  await this.validateAndSubmit(data);
-};
-
-validateAndSubmit = async (data: FormResultData) => {
-  try {
-    const validatedData = v.parse(this.FormSchema, data);
-    // Proceed with form submission
-  } catch (error) {
-    if (error instanceof v.ValiError) {
-      // Convert Valibot errors to component error format
-      const validationErrors = this.formatValiError(error);
-      this.errors = validationErrors;
-    }
-  }
-};
-```
-
-### State Management
-
-```typescript
-// Keep form data and validation errors separate
-@tracked formData: FormResultData = {};
-@tracked validationErrors: Record<string, string[]> = {};
+<template>
+  <Form
+    @schema={{schema}}
+    as |form|
+  >
+    ...
+  </Form>
+</template>
 ```
 
 ### Performance Considerations

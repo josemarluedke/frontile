@@ -2091,24 +2091,39 @@ const data: ComponentDoc[] = [
         identifier: 'onSubmit',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(data: Data, <span class="hljs-attr">event</span>: SubmitEvent) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
+          raw: '(result: FormResultData&#x3C;T>, event: SubmitEvent) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
         },
         isRequired: true,
         isInternal: false,
-        description: 'Callback invoked on form submission.',
-        tags: {},
+        description:
+          'Callback invoked on form submission.  If `onSubmit` returns a promise,\nthe form will be marked as `isLoading` until the promise resolves.',
+        tags: {
+          param: {
+            name: 'param',
+            value:
+              'result   - The current form result data.\nevent   - The submit event that triggered the submission.',
+          },
+          returns: { name: 'returns', value: 'A promise or void.' },
+        },
       },
       {
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(data: Data, <span class="hljs-attr">event</span>: Event) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
+          raw: '(result: FormResultData&#x3C;T>, event: Event) => <span class="hljs-built_in">void</span> | <span class="hljs-built_in">Promise</span>&#x3C;<span class="hljs-built_in">void</span>>',
         },
         isRequired: false,
         isInternal: false,
         description:
           'Optional callback invoked on input changes within the form.',
-        tags: {},
+        tags: {
+          param: {
+            name: 'param',
+            value:
+              'result   - The current form result data.\nevent   - The input event that triggered the change.',
+          },
+          returns: { name: 'returns', value: 'A promise or void.' },
+        },
       },
       {
         identifier: 'schema',
@@ -2140,7 +2155,7 @@ const data: ComponentDoc[] = [
                     identifier: 'validate',
                     type: {
                       type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-                      raw: '(value: unknown) => Result&#x3C;Data> | <span class="hljs-built_in">Promise</span>&#x3C;Result&#x3C;Data>>',
+                      raw: '(value: unknown) => Result&#x3C;T> | <span class="hljs-built_in">Promise</span>&#x3C;Result&#x3C;T>>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -2154,7 +2169,7 @@ const data: ComponentDoc[] = [
                       items: [
                         {
                           identifier: 'input',
-                          type: { type: 'Data' },
+                          type: { type: 'T' },
                           isRequired: true,
                           isInternal: false,
                           description: 'The input type of the schema.',
@@ -2162,7 +2177,7 @@ const data: ComponentDoc[] = [
                         },
                         {
                           identifier: 'output',
-                          type: { type: 'Data' },
+                          type: { type: 'T' },
                           isRequired: true,
                           isInternal: false,
                           description: 'The output type of the schema.',
@@ -2193,7 +2208,7 @@ const data: ComponentDoc[] = [
         identifier: 'validate',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: 'CustomValidatorFn&#x3C;Data>',
+          raw: 'CustomValidatorFn&#x3C;T>',
         },
         isRequired: false,
         isInternal: false,
@@ -2225,14 +2240,6 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
-                    identifier: 'errors',
-                    type: { type: 'FormErrors' },
-                    isRequired: false,
-                    isInternal: false,
-                    description: 'The current form validation errors.',
-                    tags: {},
-                  },
-                  {
                     identifier: 'isValid',
                     type: {
                       type: '<span class="hljs-built_in">boolean</span>',
@@ -2252,6 +2259,14 @@ const data: ComponentDoc[] = [
                     isInternal: false,
                     description:
                       'Whether the form is invalid (i.e. has validation errors).',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'errors',
+                    type: { type: 'FormErrors' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'The current form validation errors.',
                     tags: {},
                   },
                   {
@@ -2292,6 +2307,8 @@ const data: ComponentDoc[] = [
       'A form component that handles form submissions and input changes.',
     tags: {
       example: { name: 'example', value: '```hbs\n<Form' },
+      schema: { name: 'schema', value: '={{this.schema}}' },
+      validate: { name: 'validate', value: '={{this.customValidator}}' },
       onSubmit: { name: 'onSubmit', value: '={{this.onSubmit}}' },
       onChange: {
         name: 'onChange',
