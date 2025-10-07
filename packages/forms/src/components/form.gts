@@ -10,6 +10,7 @@ import { Field } from './field';
 import type { WithBoundArgs } from '@glint/template';
 import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { Issues, CustomValidatorFn } from '../utils/standard-validator';
+import type Owner from '@ember/owner';
 
 /** The form data as key/value pairs. */
 type FormDataCompiled = ReturnType<typeof dataFrom>;
@@ -29,6 +30,8 @@ type FormResultData<T = FormDataCompiled> = {
   isInvalid: boolean;
   /** The current form validation errors. */
   errors: FormErrors;
+  /** The set of fields that have changed from their initial values. */
+  dirty: Set<keyof T>;
 };
 
 /**
@@ -60,6 +63,12 @@ interface FormSignature<T = FormDataCompiled> {
      * This function may be async or sync.
      */
     validate?: CustomValidatorFn<T>;
+    /**
+     * The initial form data as key/value pairs.
+     * This is primarily useful for setting default values in the form.
+     * This object receives changes as the user interacts with the form.
+     */
+    data?: T;
     /**
      * Optional callback invoked on input changes within the form.
      * @param result - The current form result data.
@@ -126,6 +135,20 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** The current form validation errors. */
   @tracked errors: FormErrors = {};
 
+  /** Shallow copy of initial data for dirty field tracking. */
+  initialData?: T;
+
+  /** Reference to the form element. */
+  element?: HTMLFormElement;
+
+  constructor(owner: Owner, args: FormSignature<T>['Args']) {
+    super(owner, args);
+    // Create shallow copy of initial data
+    if (args.data) {
+      this.initialData = { ...args.data };
+    }
+  }
+
   /** Whether the form is valid (i.e. has no validation errors). */
   get isValid() {
     return Object.keys(this.errors).length === 0;
@@ -161,6 +184,37 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /**
+   * Computes which fields have changed from their initial values.
+   * Does a shallow comparison between current data and initial data.
+   *
+   * @param data - The current form data.
+   * @returns A set of field names that have changed.
+   */
+  computeDirtyFields(data: T): Set<keyof T> {
+    const dirty = new Set<keyof T>();
+
+    if (!this.initialData) {
+      return dirty;
+    }
+
+    // Check all keys in current data
+    for (const key in data) {
+      if (data[key] !== this.initialData[key]) {
+        dirty.add(key as keyof T);
+      }
+    }
+
+    // Also check for keys in initial data that are missing in current data
+    for (const key in this.initialData) {
+      if (!(key in (data as object)) && this.initialData[key] !== undefined) {
+        dirty.add(key as keyof T);
+      }
+    }
+
+    return dirty;
+  }
+
+  /**
    * Builds the form result data object to pass to callbacks.
    *
    * @param data - The current form data.
@@ -168,11 +222,13 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    */
   buildFormResultData(data: T): FormResultData<T> {
     const { isValid, isInvalid, errors } = this;
+    const dirty = this.computeDirtyFields(data);
     return {
       data,
       isValid,
       isInvalid,
-      errors
+      errors,
+      dirty
     };
   }
 
