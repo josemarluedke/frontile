@@ -12,7 +12,7 @@ import type { StandardSchemaV1 } from '@standard-schema/spec';
 import type { Issues, CustomValidatorFn } from '../utils/standard-validator';
 
 /** The form data as key/value pairs. */
-type FormData = ReturnType<typeof dataFrom>;
+type FormDataCompiled = ReturnType<typeof dataFrom>;
 /** The validation errors for the form, keyed by field name. */
 type FormErrors = Record<string, string | string[] | undefined>;
 
@@ -20,7 +20,7 @@ type FormErrors = Record<string, string | string[] | undefined>;
  * The data passed to `onChange` and `onSubmit` callbacks, which is similar
  * to `FormContext` but also includes the form data.
  */
-type FormResultData<T = FormData> = {
+type FormResultData<T = FormDataCompiled> = {
   /** The form data as key/value pairs. */
   data: T;
   /** Whether the form is valid (i.e. has no validation errors). */
@@ -47,7 +47,7 @@ interface FormContext {
   Field: WithBoundArgs<typeof Field, 'errors'>;
 }
 
-interface FormSignature<T = FormData> {
+interface FormSignature<T = FormDataCompiled> {
   Element: HTMLFormElement;
   Args: {
     /**
@@ -119,7 +119,7 @@ interface FormSignature<T = FormData> {
  * </Form>
  * ```
  */
-class Form<T = FormData> extends Component<FormSignature<T>> {
+class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** Whether the form is currently submitting. */
   @tracked isLoading = false;
 
@@ -282,7 +282,7 @@ export {
   Form,
   type FormContext,
   type FormSignature,
-  type FormData,
+  type FormDataCompiled,
   type FormResultData,
   type FormErrors
 };

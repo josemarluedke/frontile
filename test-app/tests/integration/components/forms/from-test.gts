@@ -18,7 +18,7 @@ import {
   Textarea,
   NativeSelect,
   Select,
-  type FormData,
+  type FormDataCompiled,
   type FormResultData,
   type CustomValidatorReturn
 } from '@frontile/forms';
@@ -29,8 +29,8 @@ import sinon from 'sinon';
 module('Integration | Component | @frontile/forms/Form', function (hooks) {
   setupRenderingTest(hooks);
 
-  const inputData = cell<FormData>();
-  const submitData = cell<FormData>();
+  const inputData = cell<FormDataCompiled>();
+  const submitData = cell<FormDataCompiled>();
   const onChange = (data: FormResultData, _event: Event) => {
     inputData.current = data['data'];
   };
@@ -317,7 +317,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     assert.expect(6);
 
     // Custom validator that checks if password matches confirmPassword
-    const customValidator = (data: FormData): CustomValidatorReturn => {
+    const customValidator = (data: FormDataCompiled): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
         issues.push({
@@ -426,7 +426,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     });
 
     // Custom validator that checks if password matches confirmPassword
-    const customValidator = (data: FormData): CustomValidatorReturn => {
+    const customValidator = (data: FormDataCompiled): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
         issues.push({

@@ -362,7 +362,7 @@ import {
   Select,
   type FormResultData,
   type FormErrors,
-  type FormData
+  type FormDataCompiled
 } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
@@ -428,7 +428,7 @@ export default class ValidatedForm extends Component {
     console.log('Form submitted successfully:', data);
   };
 
-  handleFormError = (errors: FormErrors, data: FormData, event: SubmitEvent) => {
+  handleFormError = (errors: FormErrors, data: FormDataCompiled, event: SubmitEvent) => {
     console.log('Validation errors:', errors);
   };
 
