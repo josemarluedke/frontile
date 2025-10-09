@@ -584,6 +584,41 @@ export default class CompleteFieldForm extends Component {
 }
 ```
 
+## Select Components with Field
+
+When using select components **outside of `Field`**, you use the generic `Select` component.  Rendering of single vs. multi is handled by `Select`.
+
+However, when using select components **with `Field`**, you must explicitly specify which variant you need:
+
+- **`field.SingleSelect`** - For selecting a single item
+- **`field.MultiSelect`** - For selecting multiple items
+
+This distinction allows the Field component to properly bind values to the components.
+
+### Field Select (with validation)
+
+```gts
+{{! Must specify SingleSelect or MultiSelect explicitly }}
+<form.Field @name='country' as |field|>
+  <field.SingleSelect
+    @label='Country'
+    @items={{this.countries}}
+    @allowEmpty={{true}}
+  />
+</form.Field>
+
+<form.Field @name='languages' as |field|>
+  <field.MultiSelect
+    @label='Languages'
+    @items={{this.languages}}
+  />
+</form.Field>
+```
+
+**Key Differences:**
+- With Field: Use `field.SingleSelect` or `field.MultiSelect`
+- Field automatically handles value binding based on the component type
+
 ## Key Features
 
 ### Automatic Error Binding
@@ -593,22 +628,46 @@ The Field component automatically:
 - Passes these errors to any yielded form component
 - Updates error display in real-time as validation occurs
 
+### Automatic Value Binding
+
+When used with a Form component that provides `@data`, Field automatically binds values to form controls:
+
+- Extracts the current value for the field from `form.data`
+- Passes the appropriate value prop to each component type
+- Provides a no-op change handler to put components in controlled mode
+  - This ensures form-level `@onChange` handles all state updates
+  - Prevents components from managing their own internal state
+  - Enables the Form component to be the single source of truth
+
+**Example:**
+```gts
+<Form @data={{this.formData}} @onChange={{this.handleChange}} as |form|>
+  <form.Field @name="email" as |field|>
+    {{! Value automatically bound from formData.email }}
+    {{! onChange automatically handled by Form }}
+    <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
 ### Yielded Components
 
 Field yields bound versions of all form components:
-- `field.Input` - Text input with automatic error binding
-- `field.Textarea` - Textarea with automatic error binding
-- `field.SingleSelect` - Select dropdown with automatic error binding
-- `field.MultiSelect` - Select dropdown with automatic error binding
-- `field.Checkbox` - Single checkbox with automatic error binding
+- `field.Input` - Text input with automatic error and value binding
+- `field.Textarea` - Textarea with automatic error and value binding
+- `field.SingleSelect` - Select dropdown with automatic error and selectedKey binding
+- `field.MultiSelect` - Select dropdown with automatic error and selectedKeys binding
+- `field.Checkbox` - Single checkbox with automatic error and checked binding
 - `field.CheckboxGroup` - Checkbox group with automatic error binding
-- `field.RadioGroup` - Radio group with automatic error binding
-- `field.Switch` - Toggle switch with automatic error binding
-- `field.Radio` - Individual radio button with automatic error binding
+- `field.RadioGroup` - Radio group with automatic error and value binding
+- `field.Switch` - Toggle switch with automatic error and isSelected binding
+- `field.Radio` - Individual radio button with automatic error and value binding
 
 Each component automatically receives:
 - The `@name` prop from the Field
 - Any validation errors for that field name
+- The current value from form data (if provided)
+- A controlled change handler (when form data is provided)
 - All other props passed through normally
 
 ## When to Use Field

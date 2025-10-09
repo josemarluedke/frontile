@@ -301,6 +301,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
           await this.args.onSubmit(resultData, event);
           // Update initial data on successful submit
           this.initialData = { ...data };
+          // Clear dirty state since we've updated the baseline
+          this.dirty = new Set();
         }
       } finally {
         this.isLoading = false;

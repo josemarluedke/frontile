@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, click, settled } from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
+import { tracked } from '@glimmer/tracking';
 
 import { Field } from '@frontile/forms';
 import { cell } from 'ember-resources';
@@ -194,7 +195,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert.equal(selected.current, 'b', 'RadioGroup updates the value');
   });
 
-  test('it yields Select component correctly', async function (assert) {
+  test('it yields SingleSelect component correctly', async function (assert) {
     const selected = cell<string | null>(null);
     const onChange = (val: string | null) => {
       selected.current = val;
@@ -225,6 +226,47 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Test that select works
     await selectOptionByKey('[data-test-select]', 'Banana');
     assert.equal(selected.current, 'Banana', 'Select updates the value');
+  });
+
+  test('it yields MultiSelect component correctly', async function (assert) {
+    const selected = cell<string[]>([]);
+    const onChange = (val: string[]) => {
+      selected.current = val;
+    };
+    const items = ['Apple', 'Banana', 'Orange', 'Grape'];
+
+    await render(
+      <template>
+        <Field @name="testMultiSelect" as |field|>
+          <field.MultiSelect
+            @label="Choose Fruits"
+            @items={{items}}
+            @selectionMode="multiple"
+            @selectedKeys={{selected.current}}
+            @onSelectionChange={{onChange}}
+            data-test-multi-select
+          />
+        </Field>
+      </template>
+    );
+
+    // MultiSelect component exists and is functional
+    assert
+      .dom('[data-test-multi-select]')
+      .exists('MultiSelect component is yielded');
+    assert.dom('[data-component="label"]').hasText('Choose Fruits');
+    assert.dom('[data-component="select-trigger"]').exists();
+
+    // Test that multi-select works
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="Banana"]');
+    await click('[data-component="listbox"] [data-key="Orange"]');
+
+    assert.deepEqual(
+      selected.current,
+      ['Banana', 'Orange'],
+      'MultiSelect updates with multiple values'
+    );
   });
 
   test('it yields Switch component correctly', async function (assert) {
@@ -619,5 +661,52 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       .dom('[name="field1"]')
       .hasValue('Initial value', 'Input has initial value');
     assert.dom('[name="field2"]').isChecked('Checkbox is checked');
+  });
+
+  /**
+   * When formData changes mid-lifecycle, Field should reactively update
+   * the bound values in the yielded components.
+   */
+  test('it reactively updates when formData changes', async function (assert) {
+    assert.expect(4);
+
+    class Model {
+      @tracked formData = {
+        username: 'john',
+        email: 'john@example.com',
+        isActive: true
+      };
+    }
+    const model = new Model();
+
+    await render(
+      <template>
+        <Field @name="username" @formData={{model.formData}} as |field|>
+          <field.Input @label="Username" />
+        </Field>
+        <Field @name="email" @formData={{model.formData}} as |field|>
+          <field.Input @label="Email" />
+        </Field>
+        <Field @name="isActive" @formData={{model.formData}} as |field|>
+          <field.Checkbox @label="Active" />
+        </Field>
+      </template>
+    );
+
+    // Check initial values
+    assert.dom('[name="username"]').hasValue('john');
+    assert.dom('[name="email"]').hasValue('john@example.com');
+
+    // Change formData
+    model.formData = {
+      username: 'jane',
+      email: 'jane@example.com',
+      isActive: false
+    };
+    await settled();
+
+    // Check updated values
+    assert.dom('[name="username"]').hasValue('jane');
+    assert.dom('[name="email"]').hasValue('jane@example.com');
   });
 });

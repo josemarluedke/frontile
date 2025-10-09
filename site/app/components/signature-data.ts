@@ -2322,6 +2322,17 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'dirty',
+                    type: {
+                      type: '<span class="hljs-built_in">Set</span>&#x3C;keyof T>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The set of fields that have changed from their initial values.',
+                    tags: {},
+                  },
+                  {
                     identifier: 'Field',
                     type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,

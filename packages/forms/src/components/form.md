@@ -551,11 +551,8 @@ export default class DirtyTrackingForm extends Component {
     notifications: true
   };
 
-  @tracked dirtyFields = new Set<string>();
-
   handleFormChange = (data: FormResultData, event: Event) => {
-    this.dirtyFields = data.dirty;
-    console.log('Dirty fields:', Array.from(this.dirtyFields));
+    console.log('Dirty fields:', Array.from(data.dirty));
   };
 
   handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
@@ -563,14 +560,6 @@ export default class DirtyTrackingForm extends Component {
     // Reset dirty state by updating formData with submitted values
     this.formData = data.data;
   };
-
-  get hasDirtyFields() {
-    return this.dirtyFields.size > 0;
-  }
-
-  get dirtyFieldsArray() {
-    return Array.from(this.dirtyFields);
-  }
 
   <template>
     <div class='flex flex-col gap-4 w-96'>
@@ -595,19 +584,17 @@ export default class DirtyTrackingForm extends Component {
 
           <Button
             type='submit'
-            disabled={{this.hasDirtyFields}}
           >
             Save Changes
           </Button>
         </div>
-      </Form>
 
-      <div class='p-4 rounded
-        {{if this.hasDirtyFields "bg-warning-50" "bg-default-50"}}'>
-        {{#if this.hasDirtyFields}}
+        <div class='mt-4 p-4 rounded
+        {{if form.dirty.size "bg-warning-50" "bg-default-50"}}'>
+        {{#if form.dirty.size}}
           <p class='font-medium text-warning-800'>
             Unsaved changes in:
-            {{#each this.dirtyFields as |field|}}
+            {{#each form.dirty as |field|}}
               <span class='inline-block px-2 py-1 bg-warning-100 rounded text-sm ml-1'>
                 {{field}}
               </span>
@@ -617,6 +604,7 @@ export default class DirtyTrackingForm extends Component {
           <p class='text-default-600'>No unsaved changes</p>
         {{/if}}
       </div>
+      </Form>
     </div>
   </template>
 }
@@ -825,6 +813,29 @@ export default class CustomHandlingForm extends Component {
 - Nested objects from grouped form elements
 - File uploads (when using file inputs)
 
+### Controlled vs Uncontrolled Forms
+
+The Form component supports both controlled and uncontrolled patterns, similar to React form handling:
+
+**Controlled Forms** (with `@onChange` + `@data`)
+- You provide both `@data` and `@onChange`
+- Form values are controlled by your component state
+- You update state in `@onChange`, which flows back to form inputs
+- Best for forms where you need to validate or transform data in real-time
+- Example: `<Form @data={{this.formData}} @onChange={{this.handleChange}}>`
+
+**Uncontrolled Forms** (without `@onChange`)
+- You provide only `@data` for initial values (or omit it entirely)
+- Form manages its own internal state
+- You receive final data only in `@onSubmit`
+- Simpler pattern for basic forms
+- Example: `<Form @data={{this.initialData}} @onSubmit={{this.handleSubmit}}>`
+
+**Choosing Between Patterns:**
+- Use **controlled** when you need real-time form data access, validation as user types, or complex interdependent fields
+- Use **uncontrolled** for simpler forms where you only care about the final submitted data
+- Both patterns support validation via `@schema` and `@validate`
+
 ## Best Practices
 
 ### Form Validation
@@ -872,5 +883,40 @@ The Form component maintains all standard HTML form accessibility features:
 - Supports all ARIA attributes when passed through `...attributes`
 
 ## API
+
+### Yielded Context
+
+The Form component yields an object with the following properties:
+
+- **`data`**: The current form data as key/value pairs (matches the `@data` prop in controlled forms)
+- **`isLoading`**: Boolean indicating if the form is currently submitting (async `@onSubmit` in progress)
+- **`isValid`**: Boolean indicating if the form has no validation errors
+- **`isInvalid`**: Boolean indicating if the form has validation errors
+- **`errors`**: Object containing validation errors keyed by field name
+- **`dirty`**: Set containing field names that have changed from their initial values
+- **`Field`**: The Field component with `errors` and `formData` already bound
+
+Example usage:
+```gts
+<Form @data={{this.formData}} @onSubmit={{this.handleSubmit}} as |form|>
+  {{! Access current form data }}
+  <div>Current email: {{form.data.email}}</div>
+
+  {{! Show loading state }}
+  <button type="submit" disabled={{form.isLoading}}>
+    {{if form.isLoading "Saving..." "Save"}}
+  </button>
+
+  {{! Check validation state }}
+  {{#if form.isInvalid}}
+    <div class="error">Please fix errors before submitting</div>
+  {{/if}}
+
+  {{! Check for unsaved changes }}
+  {{#if form.dirty.size}}
+    <div class="warning">You have unsaved changes</div>
+  {{/if}}
+</Form>
+```
 
 <Signature @package="forms" @component="Form" />
