@@ -150,6 +150,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** Shallow copy of initial data for dirty field tracking. */
   @tracked initialData?: T;
 
+  /** The set of fields that have changed from their initial values. */
   @tracked dirty: Set<keyof T> = new Set();
 
   /** Reference to the form element. */
