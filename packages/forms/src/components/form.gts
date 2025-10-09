@@ -37,7 +37,9 @@ type FormResultData<T = FormDataCompiled> = {
 /**
  * The context yielded to the default block of the `Form` component.
  */
-interface FormContext {
+interface FormContext<T = FormDataCompiled> {
+  /** The form data as key/value pairs. */
+  data?: T;
   /** Whether the form is currently submitting. */
   isLoading: boolean;
   /** Whether the form is valid (i.e. has no validation errors). */
@@ -46,8 +48,10 @@ interface FormContext {
   isInvalid: boolean;
   /** The current form validation errors. */
   errors: FormErrors;
-  /** The `Field` component, with `errors` args bound. */
-  Field: WithBoundArgs<typeof Field, 'errors'>;
+  /** The set of fields that have changed from their initial values. */
+  dirty: Set<keyof T>;
+  /** The `Field` component, with args bound. */
+  Field: WithBoundArgs<typeof Field, 'errors' | 'formData'>;
 }
 
 interface FormSignature<T = FormDataCompiled> {
@@ -104,7 +108,7 @@ interface FormSignature<T = FormDataCompiled> {
     ) => Promise<void> | void;
   };
   Blocks: {
-    default: [FormContext];
+    default: [FormContext<T>];
   };
 }
 
@@ -114,14 +118,19 @@ interface FormSignature<T = FormDataCompiled> {
  * @example
  * ```hbs
  * <Form
+ *   @data={{this.formData}}
  *   @schema={{this.schema}}
  *   @validate={{this.customValidator}}
  *   @onSubmit={{this.onSubmit}}
  *   @onChange={{this.onChange}}
  * as |form|
  * >
- *   <input name="firstName" />
- *   <input name="lastName" />
+ *   <form.Field name="firstName" as |field|>
+ *     <field.Input />
+ *   </form.Field>
+ *   <form.Field name="lastName" as |field|>
+ *     <field.Input />
+ *   </form.Field>
  *   <button type="submit" disabled={{form.isLoading}}>
  *     {{#if form.isLoading}}Submitting...{{else}}Submit{{/if}}
  *   </button>
@@ -135,8 +144,13 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** The current form validation errors. */
   @tracked errors: FormErrors = {};
 
+  /** The current uncontrolled form data. */
+  @tracked uncontrolledData?: T;
+
   /** Shallow copy of initial data for dirty field tracking. */
-  initialData?: T;
+  @tracked initialData?: T;
+
+  @tracked dirty: Set<keyof T> = new Set();
 
   /** Reference to the form element. */
   element?: HTMLFormElement;
@@ -146,6 +160,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     // Create shallow copy of initial data
     if (args.data) {
       this.initialData = { ...args.data };
+      this.uncontrolledData = { ...args.data };
     }
   }
 
@@ -157,6 +172,19 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** Whether the form is invalid (i.e. has validation errors). */
   get isInvalid() {
     return !this.isValid;
+  }
+
+  /** Whether the form is controlled (`onChange` is provided). */
+  get isControlled(): boolean {
+    return !!this.args.onChange;
+  }
+
+  /** The current form data, from args if controlled, or internal state if uncontrolled. */
+  get currentData(): T | undefined {
+    if (this.isControlled) {
+      return this.args.data;
+    }
+    return this.uncontrolledData;
   }
 
   /**
@@ -211,6 +239,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       }
     }
 
+    this.dirty = dirty;
     return dirty;
   }
 
@@ -239,10 +268,11 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   @action
   handleInput(event: Event) {
     const form = event.currentTarget;
-    if (form instanceof HTMLFormElement && this.args.onChange) {
+    if (form instanceof HTMLFormElement) {
       const data = dataFrom(event) as T;
       const resultData = this.buildFormResultData(data);
-      this.args.onChange(resultData, event);
+      this.uncontrolledData = data;
+      this.args.onChange?.(resultData, event);
     }
   }
 
@@ -261,6 +291,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       const data = dataFrom(event) as T;
       const errors = await this.validate(data);
       const resultData = this.buildFormResultData(data);
+      this.uncontrolledData = data;
       try {
         if (errors && this.args.onError) {
           // Call onError handler when there are validation errors
@@ -268,6 +299,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
         } else if (!errors && this.args.onSubmit) {
           // Run `onSubmit` only if there are no validation errors
           await this.args.onSubmit(resultData, event);
+          // Update initial data on successful submit
+          this.initialData = { ...data };
         }
       } finally {
         this.isLoading = false;
@@ -275,7 +308,17 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     }
   }
 
+  // reset() {
+  //   // Reset to initial data
+  //   this.uncontrolledData = this.initialData ? { ...this.initialData } : undefined;
+  //   this.errors = {};
+  //   const data = dataFrom(event) as T;
+  //   const resultData = this.buildFormResultData(data);
+  //   this.args.onChange?.(resultData, event);
+  // }
+
   <template>
+    {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}
     <form
       {{on "input" this.handleInput}}
       {{on "submit" this.handleSubmit}}
@@ -283,11 +326,13 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     >
       {{yield
         (hash
+          data=this.currentData
           isLoading=this.isLoading
           isValid=this.isValid
           isInvalid=this.isInvalid
           errors=this.errors
-          Field=(component Field errors=this.errors)
+          dirty=this.dirty
+          Field=(component Field errors=this.errors formData=this.currentData)
         )
         to="default"
       }}

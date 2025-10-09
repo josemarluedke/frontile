@@ -361,13 +361,55 @@ import {
   Checkbox,
   Select,
   type FormResultData,
-  type FormErrors,
-  type FormDataCompiled
+  type FormErrors
 } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
+// Valibot schema for form validation
+const schema = v.object({
+  name: v.pipe(
+    v.string(),
+    v.nonEmpty('Name is required'),
+    v.minLength(2, 'Name must be at least 2 characters')
+  ),
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(6, 'Password must be at least 6 characters'),
+    v.regex(/[A-Z]/, 'Password must contain at least one uppercase letter'),
+    v.regex(/[a-z]/, 'Password must contain at least one lowercase letter'),
+    v.regex(/\d/, 'Password must contain at least one number')
+  ),
+  accountType: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select an account type')
+  ),
+  terms: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms and conditions')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
 export default class ValidatedForm extends Component {
+  // Provide a complete initial state for proper dirty tracking
+  @tracked formData: Schema = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    accountType: 'personal',
+    terms: false
+  };
+
   @tracked submitMessage = '';
 
   accountTypes = [
@@ -376,38 +418,7 @@ export default class ValidatedForm extends Component {
     { label: 'Enterprise', key: 'enterprise' }
   ];
 
-  // Valibot schema for form validation
-  schema = v.object({
-    name: v.pipe(
-      v.string(),
-      v.nonEmpty('Name is required'),
-      v.minLength(2, 'Name must be at least 2 characters')
-    ),
-    email: v.pipe(
-      v.string(),
-      v.nonEmpty('Email is required'),
-      v.email('Please enter a valid email address')
-    ),
-    password: v.pipe(
-      v.string(),
-      v.nonEmpty('Password is required'),
-      v.minLength(6, 'Password must be at least 6 characters'),
-      v.regex(/[A-Z]/, 'Password must contain at least one uppercase letter'),
-      v.regex(/[a-z]/, 'Password must contain at least one lowercase letter'),
-      v.regex(/\d/, 'Password must contain at least one number')
-    ),
-    accountType: v.pipe(
-      v.fallback(v.string(), ''),
-      v.string(),
-      v.nonEmpty('Please select an account type')
-    ),
-    terms: v.pipe(
-      v.boolean(),
-      v.literal(true, 'You must accept the terms and conditions')
-    )
-  });
-
-  customValidator(data: FormResultData) {
+  customValidator(data: FormResultData<Schema>) {
     if (data['password'] !== data['confirmPassword']) {
       return [{
         message: 'Passwords must match',
@@ -416,19 +427,19 @@ export default class ValidatedForm extends Component {
     }
   };
 
-  handleFormChange = (data: FormResultData, event: Event) => {
-    this.formData = data;
+  handleFormChange = (data: FormResultData<Schema>, event: Event) => {
+    this.formData = data.data;
     console.log('Form input:', { data, event });
   };
 
-  handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
+  handleFormSubmit = async (data: FormResultData<Schema>, event: SubmitEvent) => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     this.submitMessage = 'Account created successfully!';
     console.log('Form submitted successfully:', data);
   };
 
-  handleFormError = (errors: FormErrors, data: FormDataCompiled, event: SubmitEvent) => {
+  handleFormError = (errors: FormErrors, data: Schema, event: SubmitEvent) => {
     console.log('Validation errors:', errors);
   };
 
@@ -439,7 +450,8 @@ export default class ValidatedForm extends Component {
   <template>
     <div class='flex flex-col gap-4 w-80'>
       <Form
-        @schema={{this.schema}}
+        @data={{this.formData}}
+        @schema={{schema}}
         @validate={{this.customValidator}}
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
@@ -479,7 +491,7 @@ export default class ValidatedForm extends Component {
           </form.Field>
 
           <form.Field @name='accountType' as |field|>
-            <field.Select
+            <field.SingleSelect
               @label='Account Type'
               @items={{this.accountTypes}}
               @allowEmpty={{true}}
@@ -513,6 +525,98 @@ export default class ValidatedForm extends Component {
           {{this.submitMessage}}
         </div>
       {{/if}}
+    </div>
+  </template>
+}
+```
+
+### Dirty Field Tracking
+
+The Form component automatically tracks which fields have been modified by the user. This is useful for showing unsaved changes warnings or enabling/disabling submit buttons.
+
+Enable dirty field tracking by specifying a field in the initial `@data` passed into a `Form` component.  Dirty tracking is enabled only for fields specified in initial data.
+
+Dirty fields reset on submit.  After a sucessful submit, any tracked data is considered clean.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, Input, Checkbox, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+
+export default class DirtyTrackingForm extends Component {
+  @tracked formData = {
+    username: 'john_doe',
+    email: 'john@example.com',
+    notifications: true
+  };
+
+  @tracked dirtyFields = new Set<string>();
+
+  handleFormChange = (data: FormResultData, event: Event) => {
+    this.dirtyFields = data.dirty;
+    console.log('Dirty fields:', Array.from(this.dirtyFields));
+  };
+
+  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
+    console.log('Submitted data:', data);
+    // Reset dirty state by updating formData with submitted values
+    this.formData = data.data;
+  };
+
+  get hasDirtyFields() {
+    return this.dirtyFields.size > 0;
+  }
+
+  get dirtyFieldsArray() {
+    return Array.from(this.dirtyFields);
+  }
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='username' as |field|>
+            <field.Input @label='Username' />
+          </form.Field>
+
+          <form.Field @name='email' as |field|>
+            <field.Input @label='Email' @type='email' />
+          </form.Field>
+
+          <form.Field @name='notifications' as |field|>
+            <field.Checkbox @label='Enable email notifications' />
+          </form.Field>
+
+          <Button
+            type='submit'
+            disabled={{this.hasDirtyFields}}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Form>
+
+      <div class='p-4 rounded
+        {{if this.hasDirtyFields "bg-warning-50" "bg-default-50"}}'>
+        {{#if this.hasDirtyFields}}
+          <p class='font-medium text-warning-800'>
+            Unsaved changes in:
+            {{#each this.dirtyFields as |field|}}
+              <span class='inline-block px-2 py-1 bg-warning-100 rounded text-sm ml-1'>
+                {{field}}
+              </span>
+            {{/each}}
+          </p>
+        {{else}}
+          <p class='text-default-600'>No unsaved changes</p>
+        {{/if}}
+      </div>
     </div>
   </template>
 }

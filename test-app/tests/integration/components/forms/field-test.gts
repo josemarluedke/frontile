@@ -130,8 +130,8 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
   test('it yields Radio component correctly', async function (assert) {
     const selected = cell('');
-    const onChange = (val: string) => {
-      selected.current = val;
+    const onChange = (val: string | number | boolean) => {
+      selected.current = val as string;
     };
 
     await render(
@@ -159,8 +159,8 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
   test('it yields RadioGroup component correctly', async function (assert) {
     const selected = cell('');
-    const onChange = (val: string) => {
-      selected.current = val;
+    const onChange = (val: string | number | boolean) => {
+      selected.current = val as string;
     };
 
     await render(
@@ -204,7 +204,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     await render(
       <template>
         <Field @name="testSelect" as |field|>
-          <field.Select
+          <field.SingleSelect
             @label="Choose Fruit"
             @items={{items}}
             @allowEmpty={{true}}
@@ -238,7 +238,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
         <Field @name="testSwitch" as |field|>
           <field.Switch
             @label="Enable Feature"
-            @checked={{checked.current}}
+            @isSelected={{checked.current}}
             @onChange={{onChange}}
             data-test-switch
           />
@@ -407,7 +407,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     await render(
       <template>
         <Field @name="selection" @errors={{errors.current}} as |field|>
-          <field.Select
+          <field.SingleSelect
             @label="Select Option"
             @items={{items}}
             data-test-select
@@ -589,5 +589,35 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       '[data-component="form-feedback"]'
     );
     assert.equal(feedbacks.length, 2, 'Both components show error feedback');
+  });
+
+  /**
+   * When formData is provided to Field, it should set the initial values
+   * of yielded components based on the field name from formData.
+   */
+  test('it fills initial data from formData', async function (assert) {
+    assert.expect(2);
+
+    const formData = {
+      field1: 'Initial value',
+      field2: true
+    };
+
+    await render(
+      <template>
+        <Field @name="field1" @formData={{formData}} as |field|>
+          <field.Input @label="Input in field" />
+        </Field>
+        <Field @name="field2" @formData={{formData}} as |field|>
+          <field.Checkbox @label="Checkbox in field" />
+        </Field>
+      </template>
+    );
+
+    // Check initial values
+    assert
+      .dom('[name="field1"]')
+      .hasValue('Initial value', 'Input has initial value');
+    assert.dom('[name="field2"]').isChecked('Checkbox is checked');
   });
 });

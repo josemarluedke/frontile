@@ -10,6 +10,7 @@ import {
 } from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 
+import { tracked } from '@glimmer/tracking';
 import {
   Form,
   Input,
@@ -204,7 +205,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
           </form.Field>
 
           <form.Field @name="country" as |field|>
-            <field.Select
+            <field.SingleSelect
               @items={{countries}}
               @allowEmpty={{true}}
               @placeholder="Select a country"
@@ -715,6 +716,133 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await settled();
 
     assert.dom('[data-test-submit]').isNotDisabled();
+  });
+
+  /**
+   * When data is provided to Form, it should set the initial values
+   * of yielded components based on the field name from formData.
+   */
+  test('it fills initial data from data', async function (assert) {
+    assert.expect(2);
+
+    const formData = {
+      field1: 'Initial value',
+      field2: true
+    };
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form @data={{formData}} @onSubmit={{noop}} as |form|>
+          <form.Field @name="field1" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="field2" as |field|>
+            <field.Checkbox />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    assert
+      .dom('[name="field1"]')
+      .hasValue('Initial value', 'Input has initial value');
+    assert.dom('[name="field2"]').isChecked('Checkbox is checked');
+  });
+
+  test('it reflects changes in the bound form data', async function (assert) {
+    assert.expect(4);
+    class Model {
+      @tracked formData = { username: 'john', email: 'john@example.com' };
+    }
+    const model = new Model();
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{noop}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    assert.dom('[name="username"]').hasValue('john');
+    assert.dom('[name="email"]').hasValue('john@example.com');
+
+    model.formData = { username: 'jane', email: 'jane@example.com' };
+    await settled();
+
+    assert.dom('[name="username"]').hasValue('jane');
+    assert.dom('[name="email"]').hasValue('jane@example.com');
+  });
+
+  test('it passes a `dirty` field when the form changes', async function (assert) {
+    assert.expect(4);
+    class Model {
+      @tracked formData = { username: 'john', email: 'john@example.com' };
+    }
+    const model = new Model();
+    const noop = () => {};
+
+    let changeCount = 0;
+    const onChange = (
+      result: FormResultData<{ username: string; email: string }>,
+      _event: Event
+    ) => {
+      changeCount++;
+      if (changeCount === 1) {
+        // After first change (username)
+        assert.ok(result.dirty.has('username'), 'dirty contains username');
+        assert.false(result.dirty.has('email'), 'dirty does not contain email');
+      } else if (changeCount === 2) {
+        // After second change (email)
+        assert.ok(
+          result.dirty.has('username'),
+          'dirty still contains username'
+        );
+        assert.ok(result.dirty.has('email'), 'dirty now contains email');
+      }
+    };
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Change username field
+    await fillIn('[name="username"]', 'jane');
+
+    // Change email field
+    await fillIn('[name="email"]', 'jane@example.com');
   });
 });
 
