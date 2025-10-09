@@ -59,7 +59,7 @@ export default class BasicFieldExample extends Component {
   };
 
   @action
-  whatever() {
+  changeEmail() {
     this.formData.email = 'test@test.com';
     this.formData = this.formData;
   }
@@ -93,7 +93,7 @@ export default class BasicFieldExample extends Component {
           Submit
         </Button>
 
-        <Button @onPress={{this.whatever}}>Whatever</Button>
+        <Button @onPress={{this.changeEmail}}>Update Email via formData</Button>
       </div>
     </Form>
 
