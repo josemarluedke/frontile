@@ -51,7 +51,7 @@ interface FormContext<T = FormDataCompiled> {
   /** The set of fields that have changed from their initial values. */
   dirty: Set<keyof T>;
   /** The `Field` component, with args bound. */
-  Field: WithBoundArgs<typeof Field, 'errors' | 'formData'>;
+  Field: WithBoundArgs<typeof Field, 'errors' | 'formData' | 'disabled'>;
 }
 
 interface FormSignature<T = FormDataCompiled> {
@@ -73,6 +73,11 @@ interface FormSignature<T = FormDataCompiled> {
      * This object receives changes as the user interacts with the form.
      */
     data?: T;
+    /**
+     * Whether the entire form and all its fields should be disabled.  This only
+     * applies when using the yielded `Field` component.
+     */
+    disabled?: boolean;
     /**
      * Optional callback invoked on input changes within the form.
      * @param result - The current form result data.
@@ -335,7 +340,12 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
           isInvalid=this.isInvalid
           errors=this.errors
           dirty=this.dirty
-          Field=(component Field errors=this.errors formData=this.currentData)
+          Field=(component
+            Field
+            errors=this.errors
+            formData=this.currentData
+            disabled=@disabled
+          )
         )
         to="default"
       }}

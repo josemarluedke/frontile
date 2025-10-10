@@ -1137,6 +1137,166 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       .dom('[data-component="form-feedback"]')
       .doesNotExist('No validation errors with valid data');
   });
+
+  /**
+   * Test that Form can be disabled with @disabled={{true}}
+   * When disabled, all yielded Field components should also be disabled
+   */
+  test('it disables all form fields when @disabled={{true}}', async function (assert) {
+    assert.expect(7);
+
+    class Model {
+      @tracked isDisabled = false;
+    }
+    const model = new Model();
+
+    const onSubmitSpy = sinon.spy();
+    const countries = [
+      { label: 'Brazil', key: 'brazil' },
+      { label: 'Canada', key: 'canada' }
+    ];
+
+    await render(
+      <template>
+        <Form
+          @disabled={{model.isDisabled}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input @label="Username" data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input @label="Email" data-test-email />
+          </form.Field>
+
+          <form.Field @name="acceptTerms" as |field|>
+            <field.Checkbox @label="Accept Terms" data-test-checkbox />
+          </form.Field>
+
+          <form.Field @name="country" as |field|>
+            <field.SingleSelect
+              @label="Country"
+              @items={{countries}}
+              data-test-select
+            />
+          </form.Field>
+
+          <form.Field @name="bio" as |field|>
+            <field.Textarea @label="Bio" data-test-textarea />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially, fields should not be disabled
+    assert.dom('[data-test-username]').isNotDisabled('Input is not disabled');
+    assert
+      .dom('[data-test-checkbox]')
+      .isNotDisabled('Checkbox is not disabled');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .isNotDisabled('Select is not disabled');
+    assert
+      .dom('[data-test-textarea]')
+      .isNotDisabled('Textarea is not disabled');
+
+    // Enable disabled state
+    model.isDisabled = true;
+    await settled();
+
+    // Now all fields should be disabled
+    assert.dom('[data-test-username]').isDisabled('Input is disabled');
+    assert.dom('[data-test-checkbox]').isDisabled('Checkbox is disabled');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .isDisabled('Select is disabled');
+  });
+
+  /**
+   * Test that disabled form fields properly render as disabled
+   * Validation is triggered on submit, not on field changes
+   */
+  test('it properly disables form fields', async function (assert) {
+    assert.expect(1);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address'))
+    });
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @disabled={{true}}
+          @schema={{schema}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input @label="Email" data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Field should be disabled
+    assert.dom('[data-test-email]').isDisabled('Input is disabled');
+  });
+
+  /**
+   * Test that disabled state can be toggled dynamically
+   */
+  test('it dynamically updates disabled state', async function (assert) {
+    assert.expect(4);
+
+    class Model {
+      @tracked isDisabled = false;
+    }
+    const model = new Model();
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @disabled={{model.isDisabled}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input @label="Username" data-test-username />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially not disabled
+    assert.dom('[data-test-username]').isNotDisabled('Initially not disabled');
+
+    // Disable the form
+    model.isDisabled = true;
+    await settled();
+    assert.dom('[data-test-username]').isDisabled('Form is disabled');
+
+    // Re-enable the form
+    model.isDisabled = false;
+    await settled();
+    assert.dom('[data-test-username]').isNotDisabled('Form is enabled again');
+
+    // Should be able to submit now
+    await fillIn('[data-test-username]', 'john');
+    await click('[data-test-submit]');
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit is called when enabled');
+  });
 });
 
 function selectNativeOptionByKey(

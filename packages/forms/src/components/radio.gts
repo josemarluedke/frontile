@@ -65,6 +65,7 @@ class Radio<T extends string | boolean | number> extends Component<
         value={{@value}}
         checked={{this.isChecked}}
         type="radio"
+        disabled={{@isDisabled}}
         class={{this.classes.input class=@classes.input}}
         data-component="radio"
         aria-invalid={{if c.isInvalid "true"}}

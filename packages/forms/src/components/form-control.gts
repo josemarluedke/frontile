@@ -12,6 +12,7 @@ interface FormControlSharedArgs {
   description?: string;
   errors?: string[] | string;
   isInvalid?: boolean;
+  isDisabled?: boolean;
 }
 
 interface Args extends FormControlSharedArgs {
