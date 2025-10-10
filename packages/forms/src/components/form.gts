@@ -5,6 +5,12 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { dataFrom } from 'form-data-utils';
 import { StandardValidator } from '../utils/standard-validator';
+import {
+  flattenData,
+  unflattenData,
+  hasNestedData,
+  deepEqual
+} from '../utils/nested-data';
 import { Field } from './field';
 
 import type { WithBoundArgs } from '@glint/template';
@@ -30,8 +36,12 @@ type FormResultData<T = FormDataCompiled> = {
   isInvalid: boolean;
   /** The current form validation errors. */
   errors: FormErrors;
-  /** The set of fields that have changed from their initial values. */
-  dirty: Set<keyof T>;
+  /**
+   * The set of fields that have changed from their initial values.
+   * For flat data structures: contains top-level keys (e.g., "firstName", "email")
+   * For nested data structures: contains dotted paths (e.g., "user.name.first", "profile.email")
+   */
+  dirty: Set<string>;
 };
 
 /**
@@ -48,8 +58,12 @@ interface FormContext<T = FormDataCompiled> {
   isInvalid: boolean;
   /** The current form validation errors. */
   errors: FormErrors;
-  /** The set of fields that have changed from their initial values. */
-  dirty: Set<keyof T>;
+  /**
+   * The set of fields that have changed from their initial values.
+   * For flat data structures: contains top-level keys (e.g., "firstName", "email")
+   * For nested data structures: contains dotted paths (e.g., "user.name.first", "profile.email")
+   */
+  dirty: Set<string>;
   /** The `Field` component, with args bound. */
   Field: WithBoundArgs<typeof Field, 'errors' | 'formData' | 'disabled'>;
 }
@@ -152,20 +166,49 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /** The current uncontrolled form data. */
   @tracked uncontrolledData?: T;
 
-  /** Shallow copy of initial data for dirty field tracking. */
-  @tracked initialData?: T;
+  /**
+   * Flattened snapshot of initial data for dirty field comparison.
+   * Stored in flattened form regardless of whether source data is nested or flat.
+   */
+  @tracked initialDataSnapshot?: Record<string, unknown>;
 
-  /** The set of fields that have changed from their initial values. */
-  @tracked dirty: Set<keyof T> = new Set();
+  /**
+   * Flag indicating whether the form data has a nested structure.
+   * Set once in constructor based on initial data.
+   */
+  isNestedStructure = false;
+
+  /**
+   * The set of fields that have changed from their initial values.
+   * For flat data structures: contains top-level keys (e.g., "firstName", "email")
+   * For nested data structures: contains dotted paths (e.g., "user.name.first", "profile.email")
+   */
+  @tracked dirty: Set<string> = new Set();
 
   /** Reference to the form element. */
   element?: HTMLFormElement;
 
+  /**
+   * Creates a new instance of the Form component.
+   * Initializes internal state based on provided args.
+   * @param owner - The owner of the component.
+   * @param args - The arguments passed to the component.
+   */
   constructor(owner: Owner, args: FormSignature<T>['Args']) {
     super(owner, args);
-    // Create shallow copy of initial data
+    // Create copy of initial data
     if (args.data) {
-      this.initialData = { ...args.data };
+      // Determine structure type once
+      this.isNestedStructure = hasNestedData(
+        args.data as Record<string, unknown>
+      );
+
+      // Store flattened snapshot for dirty tracking
+      this.initialDataSnapshot = this.isNestedStructure
+        ? flattenData(args.data as Record<string, unknown>)
+        : { ...(args.data as Record<string, unknown>) };
+
+      // Keep uncontrolled data in original structure
       this.uncontrolledData = { ...args.data };
     }
   }
@@ -194,6 +237,19 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /**
+   * Flattens data if the form has nested structure, otherwise returns as-is.
+   * Helper method to consolidate flatten logic.
+   *
+   * @param data - The form data to flatten if needed.
+   * @returns Flattened data if nested, otherwise the data as-is.
+   */
+  private flattenIfNeeded(data: T): Record<string, unknown> {
+    return this.isNestedStructure
+      ? flattenData(data as Record<string, unknown>)
+      : (data as Record<string, unknown>);
+  }
+
+  /**
    * Validates data against the provided schema using StandardValidator.
    * Updates the `errors` property with any validation errors found.
    *
@@ -219,38 +275,45 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
 
   /**
    * Computes which fields have changed from their initial values.
-   * Does a shallow comparison between current data and initial data.
+   * Uses deep comparison for consistency across flat and nested structures.
+   * This is a pure function with no side effects.
    *
    * @param data - The current form data.
    * @returns A set of field names that have changed.
    */
-  computeDirtyFields(data: T): Set<keyof T> {
-    const dirty = new Set<keyof T>();
+  computeDirtyFields(data: T): Set<string> {
+    const dirty = new Set<string>();
 
-    if (!this.initialData) {
+    if (!this.initialDataSnapshot) {
       return dirty;
     }
 
-    // Check all keys in current data
-    for (const key in data) {
-      if (data[key] !== this.initialData[key]) {
-        dirty.add(key as keyof T);
+    // Flatten current data to same representation as snapshot
+    const currentFlat = this.flattenIfNeeded(data);
+
+    // Compare all keys in current data
+    for (const key in currentFlat) {
+      if (!deepEqual(currentFlat[key], this.initialDataSnapshot[key])) {
+        dirty.add(key);
       }
     }
 
-    // Also check for keys in initial data that are missing in current data
-    for (const key in this.initialData) {
-      if (!(key in (data as object)) && this.initialData[key] !== undefined) {
-        dirty.add(key as keyof T);
+    // Check for keys in initial data that are missing in current data
+    for (const key in this.initialDataSnapshot) {
+      if (
+        !(key in currentFlat) &&
+        this.initialDataSnapshot[key] !== undefined
+      ) {
+        dirty.add(key);
       }
     }
 
-    this.dirty = dirty;
     return dirty;
   }
 
   /**
    * Builds the form result data object to pass to callbacks.
+   * Also updates the dirty state as a side effect.
    *
    * @param data - The current form data.
    * @returns The form result data object.
@@ -258,6 +321,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   buildFormResultData(data: T): FormResultData<T> {
     const { isValid, isInvalid, errors } = this;
     const dirty = this.computeDirtyFields(data);
+    this.dirty = dirty; // Update tracked state
     return {
       data,
       isValid,
@@ -270,12 +334,19 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   /**
    * Handles the `input` event on the form element.
    * Calls the `onChange` callback with the current form data if provided.
+   * Handles nested data by unflattening dotted field names.
    */
   @action
   handleInput(event: Event) {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
-      const data = dataFrom(event) as T;
+      let data = dataFrom(event) as T;
+
+      // If initial data had nested structure, unflatten the form data
+      if (this.isNestedStructure) {
+        data = unflattenData(data as Record<string, unknown>) as T;
+      }
+
       const resultData = this.buildFormResultData(data);
       this.uncontrolledData = data;
       this.args.onChange?.(resultData, event);
@@ -286,7 +357,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
    * Handles the `submit` event on the form element.
    * Prevents the default form submission and calls the `onSubmit` callback
    * with the current form data. Manages the `isLoading` state during the
-   * submission process.
+   * submission process. Handles nested data by unflattening dotted field names.
    */
   @action
   async handleSubmit(event: SubmitEvent) {
@@ -294,7 +365,13 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     const form = event.currentTarget;
     if (form instanceof HTMLFormElement) {
       this.isLoading = true;
-      const data = dataFrom(event) as T;
+      let data = dataFrom(event) as T;
+
+      // If initial data had nested structure, unflatten the form data
+      if (this.isNestedStructure) {
+        data = unflattenData(data as Record<string, unknown>) as T;
+      }
+
       const errors = await this.validate(data);
       const resultData = this.buildFormResultData(data);
       this.uncontrolledData = data;
@@ -305,8 +382,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
         } else if (!errors && this.args.onSubmit) {
           // Run `onSubmit` only if there are no validation errors
           await this.args.onSubmit(resultData, event);
-          // Update initial data on successful submit
-          this.initialData = { ...data };
+          // Update snapshot on successful submit (new baseline)
+          this.initialDataSnapshot = this.flattenIfNeeded(data);
           // Clear dirty state since we've updated the baseline
           this.dirty = new Set();
         }
@@ -315,15 +392,6 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       }
     }
   }
-
-  // reset() {
-  //   // Reset to initial data
-  //   this.uncontrolledData = this.initialData ? { ...this.initialData } : undefined;
-  //   this.errors = {};
-  //   const data = dataFrom(event) as T;
-  //   const resultData = this.buildFormResultData(data);
-  //   this.args.onChange?.(resultData, event);
-  // }
 
   <template>
     {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}

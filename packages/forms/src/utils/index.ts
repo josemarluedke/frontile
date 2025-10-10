@@ -22,3 +22,10 @@ function triggerFormInputEvent(element?: HTMLElement | null): void {
 }
 
 export { triggerFormInputEvent };
+export {
+  flattenData,
+  unflattenData,
+  getNestedValue,
+  hasNestedData,
+  deepEqual
+} from './nested-data';

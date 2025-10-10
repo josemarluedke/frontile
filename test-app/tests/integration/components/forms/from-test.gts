@@ -1011,7 +1011,9 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     }
     const model = new Model();
 
-    const onChange = (result: FormResultData) => {
+    const onChange = (
+      result: FormResultData<{ username: string; email: string }>
+    ) => {
       model.formData = result.data;
     };
 

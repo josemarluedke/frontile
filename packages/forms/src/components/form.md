@@ -997,6 +997,348 @@ export default class DisabledForm extends Component {
 
 **Note:** The `@disabled` argument affects only the yielded `Field` components. If you're using individual form components without `Field`, you'll need to manage their disabled state separately.
 
+## Nested Fields
+
+The Form component fully supports nested data structures, allowing you to organize form data hierarchically while maintaining flat HTML form field names. Nested objects are automatically converted to dotted field notation (e.g., `user.profile.email`).
+
+### Basic Nested Form
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+
+const formData = {
+  user: {
+    name: {
+      first: 'John',
+      last: 'Doe'
+    },
+    email: 'john@example.com'
+  },
+  preferences: {
+    theme: 'light',
+    notifications: true
+  }
+};
+
+export default class NestedForm extends Component {
+  @tracked formData = formData;
+
+  @tracked submittedData = {};
+
+  handleFormChange = (data: FormResultData<typeof formData>) => {
+    this.formData = data.data;
+  };
+
+  handleFormSubmit = (data: FormResultData<typeof formData>) => {
+    this.submittedData = data.data;
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <h3 class='text-lg font-semibold'>User Information</h3>
+
+          <form.Field @name='user.name.first' as |field|>
+            <field.Input @label='First Name' />
+          </form.Field>
+
+          <form.Field @name='user.name.last' as |field|>
+            <field.Input @label='Last Name' />
+          </form.Field>
+
+          <form.Field @name='user.email' as |field|>
+            <field.Input @label='Email' @type='email' />
+          </form.Field>
+
+          <h3 class='text-lg font-semibold mt-4'>Preferences</h3>
+
+          <form.Field @name='preferences.theme' as |field|>
+            <field.Input @label='Theme' />
+          </form.Field>
+
+          <form.Field @name='preferences.notifications' as |field|>
+            <field.Checkbox @label='Enable notifications' />
+          </form.Field>
+
+          {{#if form.dirty.size}}
+            <div class='p-3 bg-warning-50 rounded text-sm'>
+              <strong>Unsaved changes in:</strong>
+              {{#each form.dirty as |field|}}
+                <span class='inline-block px-2 py-1 bg-warning-100 rounded ml-1'>
+                  {{field}}
+                </span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          <Button type='submit'>
+            Save Changes
+          </Button>
+        </div>
+      </Form>
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Submitted Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.submittedData
+            null
+            2
+          }}</pre>
+      </div>
+    </div>
+  </template>
+}
+```
+
+### Nested Form with Validation
+
+Nested fields work seamlessly with validation schemas. Use nested object structures in your schema that match your data structure.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+// Define nested schema
+const userSchema = v.object({
+  profile: v.object({
+    firstName: v.pipe(
+      v.string(),
+      v.nonEmpty('First name is required'),
+      v.minLength(2, 'Must be at least 2 characters')
+    ),
+    lastName: v.pipe(
+      v.string(),
+      v.nonEmpty('Last name is required')
+    ),
+    contact: v.object({
+      email: v.pipe(
+        v.string(),
+        v.nonEmpty('Email is required'),
+        v.email('Must be a valid email address')
+      ),
+      phone: v.pipe(
+        v.string(),
+        v.nonEmpty('Phone is required'),
+        v.regex(/^\+?[\d\s-()]+$/, 'Must be a valid phone number')
+      )
+    })
+  }),
+  settings: v.object({
+    newsletter: v.boolean()
+  })
+});
+
+type UserSchema = v.InferOutput<typeof userSchema>;
+
+export default class ValidatedNestedForm extends Component {
+  @tracked formData: UserSchema = {
+    profile: {
+      firstName: '',
+      lastName: '',
+      contact: {
+        email: '',
+        phone: ''
+      }
+    },
+    settings: {
+      newsletter: false
+    }
+  };
+
+  @tracked submitMessage = '';
+
+  handleFormSubmit = async (data: FormResultData<UserSchema>) => {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.submitMessage = 'Profile updated successfully!';
+    console.log('Submitted nested data:', data.data);
+  };
+
+  handleFormError = (errors: FormErrors) => {
+    this.submitMessage = '';
+    console.log('Validation errors:', errors);
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @schema={{userSchema}}
+        @onSubmit={{this.handleFormSubmit}}
+        @onError={{this.handleFormError}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <div>
+            <h3 class='text-lg font-semibold mb-3'>Profile Information</h3>
+
+            <div class='flex flex-col gap-4'>
+              <form.Field @name='profile.firstName' as |field|>
+                <field.Input @label='First Name' @isRequired={{true}} />
+              </form.Field>
+
+              <form.Field @name='profile.lastName' as |field|>
+                <field.Input @label='Last Name' @isRequired={{true}} />
+              </form.Field>
+            </div>
+          </div>
+
+          <div>
+            <h3 class='text-lg font-semibold mb-3'>Contact Information</h3>
+
+            <div class='flex flex-col gap-4'>
+              <form.Field @name='profile.contact.email' as |field|>
+                <field.Input
+                  @label='Email Address'
+                  @type='email'
+                  @isRequired={{true}}
+                />
+              </form.Field>
+
+              <form.Field @name='profile.contact.phone' as |field|>
+                <field.Input
+                  @label='Phone Number'
+                  @type='tel'
+                  @isRequired={{true}}
+                />
+              </form.Field>
+            </div>
+          </div>
+
+          <div>
+            <h3 class='text-lg font-semibold mb-3'>Settings</h3>
+
+            <form.Field @name='settings.newsletter' as |field|>
+              <field.Checkbox @label='Subscribe to newsletter' />
+            </form.Field>
+          </div>
+
+          <Button type='submit' disabled={{form.isLoading}}>
+            {{if form.isLoading 'Saving...' 'Save Profile'}}
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-4 bg-success-100 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
+### Mixed Flat and Nested Fields
+
+You can freely mix flat and nested fields in the same form. The Form component automatically detects and handles both structures.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+
+const formData = {
+  // Flat fields
+  username: 'johndoe',
+  age: 30,
+  // Nested fields
+  address: {
+    street: '123 Main St',
+    city: 'Springfield',
+    country: 'USA'
+  },
+  // Another flat field
+  acceptTerms: true
+};
+
+export default class MixedFieldsForm extends Component {
+  @tracked formData = formData;
+
+  handleFormSubmit = (data: FormResultData<typeof formData>) => {
+    console.log('Mixed data structure:', data.data);
+  };
+
+  <template>
+    <div class='w-96'>
+      <Form
+        @data={{this.formData}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          {{! Flat fields }}
+          <form.Field @name='username' as |field|>
+            <field.Input @label='Username' />
+          </form.Field>
+
+          <form.Field @name='age' as |field|>
+            <field.Input @label='Age' @type='number' />
+          </form.Field>
+
+          {{! Nested fields }}
+          <h3 class='text-lg font-semibold mt-2'>Address</h3>
+
+          <form.Field @name='address.street' as |field|>
+            <field.Input @label='Street' />
+          </form.Field>
+
+          <form.Field @name='address.city' as |field|>
+            <field.Input @label='City' />
+          </form.Field>
+
+          <form.Field @name='address.country' as |field|>
+            <field.Input @label='Country' />
+          </form.Field>
+
+          {{! Another flat field }}
+          <form.Field @name='acceptTerms' as |field|>
+            <field.Checkbox @label='I accept the terms and conditions' />
+          </form.Field>
+
+          <Button type='submit'>Submit</Button>
+        </div>
+      </Form>
+    </div>
+  </template>
+}
+```
+
+### Key Points for Nested Fields
+
+**Field Naming Convention:**
+- Use dot notation for nested fields: `@name="user.profile.email"`
+- Validation errors are automatically mapped to dotted field names
+- Dirty tracking works at the leaf level (e.g., `user.name.first` not just `user`)
+
+**Data Structure:**
+- Pass nested objects via `@data`.
+- `@onChange` and `@onSubmit` callbacks receive nested data structure
+- The form automatically flattens data internally and unflattens for callbacks
+
+**Validation:**
+- Schema validators should mirror your data structure
+- Error messages are keyed by dotted paths (e.g., `"user.email": "Email is required"`)
+- Custom validators work with nested data structures
+
+**Dirty Field Tracking:**
+- Dirty fields are tracked using dotted notation
+- Deep comparison ensures nested object changes are detected
+- `form.dirty` contains paths like `"user.profile.email"`, not just `"user"`
+
 ## Accessibility
 
 The Form component maintains all standard HTML form accessibility features:

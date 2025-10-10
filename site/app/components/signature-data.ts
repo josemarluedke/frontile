@@ -2365,12 +2365,12 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'dirty',
                     type: {
-                      type: '<span class="hljs-built_in">Set</span>&#x3C;keyof T>',
+                      type: '<span class="hljs-built_in">Set</span>&#x3C;<span class="hljs-built_in">string</span>>',
                     },
                     isRequired: true,
                     isInternal: false,
                     description:
-                      'The set of fields that have changed from their initial values.',
+                      'The set of fields that have changed from their initial values.\nFor flat data structures: contains top-level keys (e.g., "firstName", "email")\nFor nested data structures: contains dotted paths (e.g., "user.name.first", "profile.email")',
                     tags: {},
                   },
                   {

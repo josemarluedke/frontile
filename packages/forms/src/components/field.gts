@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
+import { getNestedValue } from '../utils/nested-data';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -85,14 +86,25 @@ class Field<
 > extends Component<FieldSignature<T>> {
   /**
    * Returns the validation errors for the field.
+   * Supports dotted field names (e.g., 'profile.email').
    */
   get fieldErrors() {
     return this.args.errors?.[this.args.name];
   }
 
-  /** Returns the current value for the field from formData. */
+  /**
+   * Returns the current value for the field from formData.
+   * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
+   * Always uses getNestedValue for consistency, which handles flat keys correctly.
+   */
   get fieldValue() {
-    return this.args.formData?.[this.args.name];
+    if (!this.args.formData) return undefined;
+
+    // getNestedValue handles both flat keys and dotted paths correctly
+    return getNestedValue(
+      this.args.formData as Record<string, unknown>,
+      this.args.name
+    );
   }
 
   /**
