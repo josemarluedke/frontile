@@ -2374,6 +2374,18 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'reset',
+                    type: {
+                      type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+                      raw: '() => <span class="hljs-built_in">void</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Resets the form to its initial state.\nClears all form fields, validation errors, and dirty tracking.',
+                    tags: {},
+                  },
+                  {
                     identifier: 'Field',
                     type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,

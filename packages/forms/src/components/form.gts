@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
+import { modifier } from 'ember-modifier';
 import { dataFrom } from 'form-data-utils';
 import { StandardValidator } from '../utils/standard-validator';
 import {
@@ -64,6 +65,11 @@ interface FormContext<T = FormDataCompiled> {
    * For nested data structures: contains dotted paths (e.g., "user.name.first", "profile.email")
    */
   dirty: Set<string>;
+  /**
+   * Resets the form to its initial state.
+   * Clears all form fields, validation errors, and dirty tracking.
+   */
+  reset: () => void;
   /** The `Field` component, with args bound. */
   Field: WithBoundArgs<typeof Field, 'errors' | 'formData' | 'disabled'>;
 }
@@ -393,9 +399,70 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     }
   }
 
+  /**
+   * Modifier to capture the form element reference.
+   */
+  captureElement = modifier((element: HTMLFormElement) => {
+    this.element = element;
+  });
+
+  /**
+   * Resets the form to its initial state.
+   * This method:
+   * 1. Calls the native form reset() to clear all form controls
+   * 2. Restores data from the initial snapshot
+   * 3. Clears validation errors
+   * 4. Clears dirty state
+   *
+   * For controlled forms, this triggers onChange with the initial data.
+   * For uncontrolled forms, this updates the internal state.
+   */
+  @action
+  reset() {
+    if (!this.element) {
+      return;
+    }
+
+    this.element.reset();
+
+    // Clear state
+    this.errors = {};
+    this.dirty = new Set();
+
+    // Restore initial data
+    if (this.initialDataSnapshot) {
+      // Unflatten data if it was nested
+      const restoredData = this.isNestedStructure
+        ? (unflattenData(this.initialDataSnapshot) as T)
+        : ({ ...this.initialDataSnapshot } as T);
+
+      // For controlled forms, call onChange to let parent update state
+      if (this.isControlled && this.args.onChange) {
+        const resultData = this.buildFormResultData(restoredData);
+
+        // Create a synthetic event with the form element as currentTarget
+        // This matches the structure expected by handleInput
+        const syntheticEvent = new Event('input', { bubbles: true });
+        Object.defineProperty(syntheticEvent, 'currentTarget', {
+          writable: false,
+          value: this.element
+        });
+
+        this.args.onChange(resultData, syntheticEvent);
+      } else {
+        // For uncontrolled forms, update internal state
+        this.uncontrolledData = restoredData;
+      }
+    } else {
+      // No initial data, just clear uncontrolled data
+      this.uncontrolledData = undefined;
+    }
+  }
+
   <template>
     {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}
     <form
+      {{this.captureElement}}
       {{on "input" this.handleInput}}
       {{on "submit" this.handleSubmit}}
       ...attributes
@@ -408,6 +475,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
           isInvalid=this.isInvalid
           errors=this.errors
           dirty=this.dirty
+          reset=this.reset
           Field=(component
             Field
             errors=this.errors
