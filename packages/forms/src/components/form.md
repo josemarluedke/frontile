@@ -866,6 +866,52 @@ schema = v.object({
 </template>
 ```
 
+### Validation Timing
+
+By default, the Form component validates data on form submission. You can control when validation runs using the `@validateOn` argument.
+
+**Available options:**
+- `submit` - Validate when the form is submitted
+
+**Usage:**
+
+```gts
+// Default behavior - validates on submit
+<Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
+  ...
+</Form>
+
+// Explicit validation on submit
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Skip validation entirely - onSubmit is called regardless of data validity
+<Form
+  @schema={{schema}}
+  @validateOn={{array}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+```
+
+**When to skip validation:**
+- When you want to handle validation manually in your `@onSubmit` handler
+- When building multi-step forms where validation should only run on the final step
+- When you need to submit partial or draft data without validation
+
+**Important notes:**
+- When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
+- All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
+- Future versions will support additional validation triggers beyond `submit`
+
 ### Performance Considerations
 
 - The Form component only re-renders when necessary

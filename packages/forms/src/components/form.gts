@@ -88,6 +88,10 @@ interface FormSignature<T = FormDataCompiled> {
      */
     validate?: CustomValidatorFn<T>;
     /**
+     * When to run validation.  Currently only 'submit' is supported.
+     */
+    validateOn?: Array<'submit'>;
+    /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
      * This object receives changes as the user interacts with the form.
@@ -234,6 +238,16 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return !!this.args.onChange;
   }
 
+  /** The events on which validation should run. Defaults to ['submit']. */
+  get validateOn(): Array<'submit'> {
+    return this.args.validateOn ?? ['submit'];
+  }
+
+  /** Whether validation should run on form submission. */
+  get validateOnSubmit(): boolean {
+    return this.validateOn.includes('submit');
+  }
+
   /** The current form data, from args if controlled, or internal state if uncontrolled. */
   get currentData(): T | undefined {
     if (this.isControlled) {
@@ -378,7 +392,11 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
         data = unflattenData(data as Record<string, unknown>) as T;
       }
 
-      const errors = await this.validate(data);
+      let errors: FormErrors | undefined;
+      if (this.validateOnSubmit) {
+        errors = await this.validate(data);
+      }
+
       const resultData = this.buildFormResultData(data);
       this.uncontrolledData = data;
       try {
@@ -386,7 +404,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
           // Call onError handler when there are validation errors
           await this.args.onError(errors, data, event);
         } else if (!errors && this.args.onSubmit) {
-          // Run `onSubmit` only if there are no validation errors
+          // Run `onSubmit` if validation was skipped OR if validation passed
           await this.args.onSubmit(resultData, event);
           // Update snapshot on successful submit (new baseline)
           this.initialDataSnapshot = this.flattenIfNeeded(data);
