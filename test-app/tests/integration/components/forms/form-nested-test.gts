@@ -616,7 +616,8 @@ module(
         'Initial first name'
       );
       assert.strictEqual(
-        (document.querySelector('[data-test-email]') as HTMLInputElement)?.value,
+        (document.querySelector('[data-test-email]') as HTMLInputElement)
+          ?.value,
         'john@example.com',
         'Initial email'
       );
@@ -741,7 +742,8 @@ module(
 
       // Errors should be displayed
       assert.ok(
-        document.querySelectorAll('[data-component="form-feedback"]').length > 0,
+        document.querySelectorAll('[data-component="form-feedback"]').length >
+          0,
         'Validation errors are displayed'
       );
 

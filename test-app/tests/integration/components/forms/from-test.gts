@@ -1356,7 +1356,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form
     await click('[data-test-reset]');
-    await settled();
 
     // Values should be reset to initial values
     assert.dom('[data-test-username]').hasValue('john');
@@ -1432,7 +1431,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form
     await click('[data-test-reset]');
-    await settled();
 
     // Errors should be cleared
     assert
@@ -1502,7 +1500,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form
     await click('[data-test-reset]');
-    await settled();
 
     // Dirty state should be cleared
     assert.dom('[data-test-dirty-count]').hasText('0');
@@ -1551,7 +1548,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form
     await click('[data-test-reset]');
-    await settled();
 
     // Values should be reset to initial values
     assert.dom('[data-test-username]').hasValue('john');
@@ -1585,14 +1581,10 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form
     await click('[data-test-reset]');
-    await settled();
 
     // Value should be cleared (native reset behavior)
     assert.dom('[data-test-username]').hasValue('');
-    assert.ok(
-      onSubmitSpy.notCalled,
-      'onSubmit should not be called on reset'
-    );
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called on reset');
   });
 
   /**
@@ -1658,7 +1650,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset should restore to the last successful submit (jane), not original (john)
     await click('[data-test-reset]');
-    await settled();
 
     // Values should match the last successful submit data
     assert
@@ -1763,7 +1754,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
 
     // Reset the form (should trigger onChange with initial data)
     await click('[data-test-reset]');
-    await settled();
 
     assert.strictEqual(
       onChangeCallCount,
