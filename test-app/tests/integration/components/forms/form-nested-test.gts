@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, fillIn, settled } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
 import * as v from 'valibot';
 import Component from '@glimmer/component';
@@ -599,7 +600,7 @@ module(
               <field.Input data-test-theme />
             </form.Field>
 
-            <button type="button" onclick={{form.reset}} data-test-reset>
+            <button type="button" {{on "click" form.reset}} data-test-reset>
               Reset
             </button>
           </Form>
@@ -724,7 +725,7 @@ module(
             </form.Field>
 
             <button type="submit" data-test-submit>Submit</button>
-            <button type="button" onclick={{form.reset}} data-test-reset>
+            <button type="button" {{on "click" form.reset}} data-test-reset>
               Reset
             </button>
           </Form>
