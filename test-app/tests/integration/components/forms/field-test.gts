@@ -3,7 +3,6 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, click, settled } from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 import { tracked } from '@glimmer/tracking';
-
 import { Field } from '@frontile/forms';
 import { cell } from 'ember-resources';
 import type { FormErrors } from '@frontile/forms';
@@ -771,6 +770,264 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
       .dom('[data-component="select-trigger"]')
       .isDisabled('Select is disabled');
     assert.dom('[data-test-textarea]').isDisabled('Textarea is disabled');
+  });
+
+  /**
+   * Test that Field validates on change when @validateOn includes 'change'
+   * and @validateField function is provided
+   * Note: 'change' event fires on blur, not on every keystroke
+   */
+  test('it validates field on change when validateOn includes "change"', async function (assert) {
+    assert.expect(5);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+    let validateCallCount = 0;
+
+    const validateField = async (
+      data: typeof formData.current,
+      name: string
+    ): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+
+      // Simple validation: email must contain @
+      if (name === 'email' && data.email && !data.email.includes('@')) {
+        const fieldErrors = { [name]: 'Invalid email format' };
+        errors.current = { ...errors.current, ...fieldErrors };
+        return fieldErrors;
+      } else if (name === 'email') {
+        // Clear error for this field
+        const { [name]: _, ...rest } = errors.current;
+        errors.current = rest;
+      }
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'invalid');
+
+    // Validation should have been called after blur
+    assert.equal(validateCallCount, 1, 'validateField called once after blur');
+
+    // Error should appear
+    await settled();
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after blur');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Invalid email format');
+
+    // Fix email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation should have been called again after blur
+    assert.equal(validateCallCount, 2, 'validateField called twice');
+  });
+
+  /**
+   * Test that Field does NOT validate on change when @validateOn is empty
+   * Even though fillIn triggers blur, validation should not run
+   */
+  test('it does not validate field on change when validateOn is empty', async function (assert) {
+    assert.expect(2);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const emptyValidateOn: 'change'[] = [];
+    let validateCallCount = 0;
+
+    const validateField = async (): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{emptyValidateOn}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type in the field - fillIn triggers blur but validation should not run
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation should NOT have been called (validateOn is empty)
+    assert.equal(
+      validateCallCount,
+      0,
+      'validateField not called when validateOn is empty'
+    );
+
+    // No errors should appear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors when validation is disabled');
+  });
+
+  /**
+   * Test that Field does NOT validate when @validateField is not provided
+   */
+  test('it does not validate when validateField is not provided', async function (assert) {
+    assert.expect(1);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type in the field
+    await fillIn('[data-test-email]', 'invalid');
+
+    // No errors should appear (no validateField function provided)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors when validateField is not provided');
+  });
+
+  /**
+   * Test that Field validates correctly with nested field names
+   * Validation should trigger on blur for nested fields too
+   */
+  test('it validates nested fields on change', async function (assert) {
+    assert.expect(3);
+
+    const formData = cell({ user: { email: '' } });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+    let validateCallCount = 0;
+
+    const validateField = async (
+      data: typeof formData.current,
+      name: string
+    ): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+
+      if (
+        name === 'user.email' &&
+        data.user.email &&
+        !data.user.email.includes('@')
+      ) {
+        const fieldErrors = { [name]: 'Invalid email' };
+        errors.current = { ...errors.current, ...fieldErrors };
+        return fieldErrors;
+      } else if (name === 'user.email') {
+        const { [name]: _, ...rest } = errors.current;
+        errors.current = rest;
+      }
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { user: { email: val } };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="user.email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.user.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'invalid');
+
+    // Validation should have been called with nested field name after blur
+    assert.equal(validateCallCount, 1, 'validateField called once after blur');
+
+    // Error should appear
+    await settled();
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears for nested field');
+
+    // Fix email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation called again after blur
+    assert.equal(validateCallCount, 2, 'validateField called twice');
   });
 
   /**

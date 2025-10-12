@@ -1975,6 +1975,412 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
   });
 
   /**
+   * Test that validation runs on field change when validateOn includes 'change'
+   * This is the default behavior - fields validate when blurred after being modified
+   * Note: The 'change' event fires on blur, not on every keystroke
+   */
+  test('it validates on field change when validateOn includes change (default behavior)', async function (assert) {
+    assert.expect(8);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @schema={{schema}} @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - fillIn triggers change event (blur)
+    await fillIn('[data-test-email]', 'invalid-email');
+
+    // Error should appear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Email error appears after blur');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Invalid email address');
+
+    // Type invalid password - fillIn triggers change event (blur)
+    await fillIn('[data-test-password]', 'abc');
+
+    // Both errors should be visible
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 2 }, 'Both errors visible after blur');
+
+    // Fix email - fillIn triggers change event (blur)
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Only password error should remain
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Email error cleared after blur');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Password must be at least 6 characters');
+
+    // Fix password
+    await fillIn('[data-test-password]', 'password123');
+
+    // All errors should be cleared
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('All errors cleared');
+
+    // Submit should succeed now
+    await click('[data-test-submit]');
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit called with valid data');
+  });
+
+  /**
+   * Test that validation runs on change with explicit validateOn={['change', 'submit']}
+   */
+  test('it validates on change with explicit validateOn={{["change", "submit"]}}', async function (assert) {
+    assert.expect(4);
+
+    const schema = v.object({
+      username: v.pipe(
+        v.string(),
+        v.minLength(3, 'Username must be at least 3 characters')
+      )
+    });
+
+    const validateOn: ('change' | 'submit')[] = ['change', 'submit'];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // No errors initially
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid username - fillIn triggers blur
+    await fillIn('[data-test-username]', 'ab');
+
+    // Error should appear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after blur');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Username must be at least 3 characters');
+
+    // Fix username - fillIn triggers blur
+    await fillIn('[data-test-username]', 'john');
+
+    // Error should clear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after blur');
+  });
+
+  /**
+   * Test that validation does NOT run on change when validateOn={['submit']} only
+   * Change event (blur) should not trigger validation when 'change' is not in validateOn
+   */
+  test('it does not validate on change when validateOn={{["submit"]}} only', async function (assert) {
+    assert.expect(4);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address'))
+    });
+
+    const validateOn: ('change' | 'submit')[] = ['submit'];
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOn}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Type invalid email - fillIn triggers blur, but validation should not run
+    await fillIn('[data-test-email]', 'invalid-email');
+
+    // No error should appear (change validation is disabled)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No error after blur when validateOn=["submit"]');
+
+    // Submit with invalid data
+    await click('[data-test-submit]');
+
+    // Error should appear on submit
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears on submit');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Invalid email address');
+
+    // onSubmit should not be called
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit not called with invalid data');
+  });
+
+  /**
+   * Test that validation runs on change only when validateOn={['change']} only
+   * In this case, validation happens on blur but NOT on submit
+   */
+  test('it validates on change when validateOn={{["change"]}} only', async function (assert) {
+    assert.expect(5);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address'))
+    });
+
+    const validateOn: ('change' | 'submit')[] = ['change'];
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOn}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Type invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'invalid-email');
+
+    // Error should appear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after blur');
+
+    // Submit with invalid data (validation should be skipped on submit)
+    await click('[data-test-submit]');
+
+    // onSubmit should be called even with invalid data (no submit validation)
+    assert.ok(
+      onSubmitSpy.calledOnce,
+      'onSubmit called even with validation errors visible'
+    );
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0].data,
+      { email: 'invalid-email' },
+      'Invalid data was submitted'
+    );
+
+    // Error should still be visible (from change validation)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible after submit');
+
+    // Fix email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Error should clear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after blur');
+  });
+
+  /**
+   * Test that multiple fields validate independently on change (blur)
+   * Each field validates independently when it loses focus
+   */
+  test('it validates multiple fields independently on change', async function (assert) {
+    assert.expect(9);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email')),
+      username: v.pipe(v.string(), v.minLength(3, 'Username too short')),
+      password: v.pipe(v.string(), v.minLength(6, 'Password too short'))
+    });
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form @schema={{schema}} @onSubmit={{noop}} as |form|>
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'bad');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'One error after first field blur');
+
+    // Invalid username - fillIn triggers blur
+    await fillIn('[data-test-username]', 'ab');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 2 }, 'Two errors after second field blur');
+
+    // Invalid password - fillIn triggers blur
+    await fillIn('[data-test-password]', 'abc');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 3 }, 'Three errors after third field blur');
+
+    // Fix email only - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 2 },
+        'Email error cleared after blur, two errors remain'
+      );
+
+    // Fix username only - fillIn triggers blur
+    await fillIn('[data-test-username]', 'john');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 1 },
+        'Username error cleared after blur, one error remains'
+      );
+
+    // Verify remaining error is for password
+    const feedbacks = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(feedbacks.length, 1, 'Only one error remains');
+    assert.ok(
+      feedbacks[0]?.textContent?.includes('Password too short'),
+      'Remaining error is for password'
+    );
+
+    // Fix password
+    await fillIn('[data-test-password]', 'password123');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('All errors cleared');
+  });
+
+  /**
+   * Test that change validation works with custom validators
+   * Custom validators should also trigger on blur
+   */
+  test('it validates on change with custom validator', async function (assert) {
+    assert.expect(4);
+
+    const customValidator = (data: FormDataCompiled): CustomValidatorReturn => {
+      if (data['username'] === 'admin') {
+        return [
+          {
+            message: 'Username "admin" is reserved',
+            path: [{ key: 'username' }]
+          }
+        ];
+      }
+      return undefined;
+    };
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form @validate={{customValidator}} @onSubmit={{noop}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // No errors initially
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type reserved username - fillIn triggers blur
+    await fillIn('[data-test-username]', 'admin');
+
+    // Error should appear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after blur with custom validator');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Username "admin" is reserved');
+
+    // Change to valid username - fillIn triggers blur
+    await fillIn('[data-test-username]', 'john');
+
+    // Error should clear after blur
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after blur');
+  });
+
+  /**
    * Test that other submit functionality works normally when validateOn={[]}
    * This includes dirty state reset and data snapshot updates
    */

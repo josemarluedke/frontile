@@ -868,20 +868,45 @@ schema = v.object({
 
 ### Validation Timing
 
-By default, the Form component validates data on form submission. You can control when validation runs using the `@validateOn` argument.
+By default, the Form component validates data both on field changes and form submission. You can control when validation runs using the `@validateOn` argument.
 
 **Available options:**
-- `submit` - Validate when the form is submitted
+- `change` - Validate individual fields when users change a value and blur/defocus the field (per-field validation)
+- `submit` - Validate the entire form when submitted
+
+**Default behavior:** `@validateOn={{array 'change' 'submit'}}` - validates on both field changes and form submission.
+
+**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. It does NOT fire on every keystroke.
 
 **Usage:**
 
 ```gts
-// Default behavior - validates on submit
+// Default behavior - validates on both change and submit
 <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
   ...
 </Form>
 
-// Explicit validation on submit
+// Equivalent to default - explicit both change and submit
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'change' 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Change validation only - validate as users type, but not on submit
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'change'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Submit validation only - validate only when form is submitted
 <Form
   @schema={{schema}}
   @validateOn={{array 'submit'}}
@@ -891,7 +916,64 @@ By default, the Form component validates data on form submission. You can contro
   ...
 </Form>
 
-// Skip validation entirely - onSubmit is called regardless of data validity
+// Skip validation entirely by omitting a schema or setting `validateOn` to an
+// empty array.  `onSubmit` is called regardless of data validity.
+<Form
+  @schema={{schema}}
+  @validateOn={{array}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+```
+
+**Validation behavior details:**
+
+**Change validation (`'change'`)**:
+- Individual fields validate when users change a value and then blur/defocus the field
+- Validation errors appear after the user moves to the next field
+- Each field validates independently using its specific validation rules
+- Provides feedback without waiting for form submission
+- Uses the Field component's `handleChange` action to trigger validation
+- Based on the HTML `change` event (fires on blur after value modification, not on every keystroke)
+
+**Submit validation (`'submit'`)**:
+- The entire form validates when the submit button is clicked
+- All fields are validated together before calling `@onSubmit`
+- If validation fails, `@onError` is called and `@onSubmit` is not called
+- Validation errors are displayed for all invalid fields
+
+**Common validation patterns:**
+
+**On-blur validation (recommended for most forms):**
+```gts
+// Default - validates when field loses focus AND on submit
+<Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
+  <form.Field @name="email" as |field|>
+    <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
+**Submit-only validation (less intrusive for long forms):**
+```gts
+// Only validates on submit - users can fill entire form without interruption
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  <form.Field @name="email" as |field|>
+    <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
+**Manual validation (advanced use cases):**
+```gts
+// Skip automatic validation - handle it manually
 <Form
   @schema={{schema}}
   @validateOn={{array}}
@@ -908,9 +990,11 @@ By default, the Form component validates data on form submission. You can contro
 - When you need to submit partial or draft data without validation
 
 **Important notes:**
+- When `@validateOn` includes `'change'`, you must use the `form.Field` component for automatic field-level validation
 - When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
 - All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
-- Future versions will support additional validation triggers beyond `submit`
+- Change validation provides better user experience by catching errors as users move between fields
+- The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
 
 ### Performance Considerations
 

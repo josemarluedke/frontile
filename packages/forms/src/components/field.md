@@ -650,6 +650,77 @@ When used with a Form component that provides `@data`, Field automatically binds
 </Form>
 ```
 
+### Change Validation
+
+When the Form component's `@validateOn` argument includes `'change'` (which is the default), Field automatically validates individual fields when users change a value and then blur/defocus the field. This provides feedback without waiting for form submission.
+
+**How it works:**
+1. Form passes `@validateOn` to Field components (defaults to `['change']`)
+2. Field's `handleChange` action checks if `'change'` is included
+3. If change validation is enabled, Field calls `validateField` for that specific field when the field loses focus
+4. Validation errors appear after the user moves to the next field (on blur)
+
+**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. It does NOT fire on every keystroke.
+
+**Example with change validation enabled (default):**
+```gts
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.email('Please enter a valid email address')
+  )
+});
+
+<template>
+  <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
+    {{! Change validation is enabled by default }}
+    {{! Email field validates when user blurs/defocuses after changing value }}
+    <form.Field @name="email" as |field|>
+      <field.Input @label="Email" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Example with change validation disabled:**
+```gts
+<template>
+  <Form
+    @schema={{schema}}
+    @validateOn={{array 'submit'}}
+    @onSubmit={{this.handleSubmit}}
+    as |form|
+  >
+    {{! Change validation is disabled }}
+    {{! Email field only validates on form submit }}
+    <form.Field @name="email" as |field|>
+      <field.Input @label="Email" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Benefits of change validation:**
+- **Early feedback**: Users see validation errors as they move between fields
+- **Better UX**: Errors are caught before form submission, reducing frustration
+- **Per-field validation**: Each field validates independently when blurred
+- **Clear guidance**: Users know exactly what's wrong before submitting
+- **Natural flow**: Validation happens when user is done with a field (on blur)
+
+**When to disable change validation:**
+- Long forms where validation on every field blur might be distracting
+- Forms where you want to allow incomplete data entry until final submission
+- Multi-step forms where validation should only run at specific steps
+
+**Important notes:**
+- Change validation requires using `form.Field` components
+- The Field component automatically handles the validation logic
+- Both `@schema` and `@validate` custom validators work with change validation
+- Change validation uses the same validation rules as submit validation
+- The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
+
 ### Yielded Components
 
 Field yields bound versions of all form components:

@@ -1671,6 +1671,28 @@ const data: ComponentDoc[] = [
         description: 'The form data as key/value pairs.',
         tags: {},
       },
+      {
+        identifier: 'validateField',
+        type: {
+          type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
+          raw: '(data: T, <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">Promise</span>&#x3C;FormErrors>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Function to validate a single field by name.',
+        tags: {},
+      },
+      {
+        identifier: 'validateOn',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '<span class="hljs-string">\'change\'</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'When to run validation.',
+        tags: {},
+      },
     ],
     Blocks: [
       {
@@ -2299,6 +2321,17 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'Optional custom validation function.  A custom validator should return\nan array of Standard Schema issues, or `undefined` if there are none.\nThis function may be async or sync.',
+        tags: {},
+      },
+      {
+        identifier: 'validateOn',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '(<span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'change\'</span>)[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'When to run validation.',
         tags: {},
       },
     ],
@@ -4563,6 +4596,67 @@ const data: ComponentDoc[] = [
       type: { type: 'HTMLInputElement' },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'forms',
+    module: 'test',
+    name: 'Form',
+    fileName: 'packages/forms/declarations/components/test.d.ts',
+    Args: [
+      {
+        identifier: 'data',
+        type: { type: 'T' },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[{ <span class="hljs-attr">Field</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ data: T; }, <span class="hljs-string">\'data\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{}>, HTMLElement>>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'Field',
+                    type: {
+                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ data: T; }, <span class="hljs-string">\'data\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{}>, HTMLElement>>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
     },
     description: '',
     tags: {},
