@@ -71,7 +71,10 @@ interface FormContext<T = FormDataCompiled> {
    */
   reset: () => void;
   /** The `Field` component, with args bound. */
-  Field: WithBoundArgs<typeof Field, 'errors' | 'formData' | 'disabled'>;
+  Field: WithBoundArgs<
+    typeof Field,
+    'errors' | 'formData' | 'disabled' | 'validateOn' | 'validateField'
+  >;
 }
 
 interface FormSignature<T = FormDataCompiled> {
@@ -88,9 +91,9 @@ interface FormSignature<T = FormDataCompiled> {
      */
     validate?: CustomValidatorFn<T>;
     /**
-     * When to run validation.  Currently only 'submit' is supported.
+     * When to run validation.
      */
-    validateOn?: Array<'submit'>;
+    validateOn?: ('change' | 'submit')[];
     /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
@@ -238,14 +241,27 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return !!this.args.onChange;
   }
 
-  /** The events on which validation should run. Defaults to ['submit']. */
-  get validateOn(): Array<'submit'> {
-    return this.args.validateOn ?? ['submit'];
+  /** The events on which validation should run. */
+  get validateOn(): ('change' | 'submit')[] {
+    return this.args.validateOn ?? ['change', 'submit'];
+  }
+
+  /** Whether validation should run on field change. */
+  get validateOnChange(): boolean {
+    return this.validateOn.includes('change');
   }
 
   /** Whether validation should run on form submission. */
   get validateOnSubmit(): boolean {
     return this.validateOn.includes('submit');
+  }
+
+  get fieldValidateOn(): 'change'[] {
+    const v: 'change'[] = [];
+    if (this.validateOnChange) {
+      v.push('change');
+    }
+    return v;
   }
 
   /** The current form data, from args if controlled, or internal state if uncontrolled. */
@@ -291,6 +307,52 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     }
     // Clear errors if no issues
     this.errors = {};
+  }
+
+  /**
+   * Validates a single field against the provided schema using
+   * StandardValidator.  Updates the `errors` property with any validation
+   * errors found for the field.  If the field had previous errors but
+   * is now valid, those errors are cleared.
+   *
+   * @param data - The form data to validate against.
+   * @param name - The name of the field to validate.
+   * @returns A promise that resolves to errors for the field, if any.
+   */
+  @action
+  async validateField(data: T, name: string): Promise<FormErrors | undefined> {
+    if (!this.args.schema && !this.args.validate) {
+      return;
+    }
+    // Run validator and get issues
+    const errors = await StandardValidator.validateFieldAll(
+      data,
+      name,
+      this.args.schema,
+      this.args.validate
+    );
+    // Convert validator errors to FormErrors
+    if (errors) {
+      const formErrors = validatorToFormErrors(errors);
+      if (formErrors[name]) {
+        // Merge with existing errors immutably
+        this.errors = { ...this.errors, [name]: formErrors[name] };
+      }
+      return { [name]: formErrors[name] };
+    }
+    // Clear field error if no issues
+    // Remove field error using immutable pattern:
+    // 1. Use destructuring to extract the field we want to remove
+    //    (assigned to '_' since unused)
+    // 2. Capture all remaining fields in 'rest' using the spread operator
+    // 3. Reassign this.errors to the 'rest' object, effectively removing
+    //    the field
+    // This approach maintains immutability by creating a new object rather than
+    // mutating the existing errors object with 'delete'
+    if (this.errors[name]) {
+      const { [name]: _, ...rest } = this.errors;
+      this.errors = rest;
+    }
   }
 
   /**
@@ -499,6 +561,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
             errors=this.errors
             formData=this.currentData
             disabled=@disabled
+            validateOn=this.fieldValidateOn
+            validateField=this.validateField
           )
         )
         to="default"
