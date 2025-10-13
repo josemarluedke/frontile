@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
+import { ref } from '@frontile/utilities';
 import { dataFrom } from 'form-data-utils';
 import { StandardValidator } from '../utils/standard-validator';
 import {
@@ -192,7 +193,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   @tracked dirty: Set<string> = new Set();
 
   /** Reference to the form element. */
-  element?: HTMLFormElement;
+  element = ref<HTMLFormElement>();
 
   /**
    * Creates a new instance of the Form component.
@@ -434,26 +435,19 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /**
-   * Modifier to capture the form element reference.
-   */
-  captureElement = modifier((element: HTMLFormElement) => {
-    this.element = element;
-  });
-
-  /**
    * Resets the form to its initial state.
    * This method calls the native form reset() to clear all form controls,
    * triggering a `reset` event that is handled in `handleReset`.
    */
   @action
   reset() {
-    this.element?.reset();
+    this.element?.current?.reset();
   }
 
   <template>
     {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}
     <form
-      {{this.captureElement}}
+      {{this.element.setup}}
       {{on "input" this.handleInput}}
       {{on "submit" this.handleSubmit}}
       {{on "reset" this.handleReset}}
