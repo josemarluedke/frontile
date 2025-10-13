@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
-import { modifier } from 'ember-modifier';
 import { ref } from '@frontile/utilities';
 import { dataFrom } from 'form-data-utils';
 import { StandardValidator } from '../utils/standard-validator';
