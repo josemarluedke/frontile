@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action, get } from '@ember/object';
-import { next } from '@ember/runloop';
+import { debounce } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -123,6 +123,11 @@ class Field<
     return get(this.args.formData, this.args.name);
   }
 
+  @action
+  validateField() {
+    this.args.validateField?.(this.args.formData as T, this.args.name);
+  }
+
   /**
    * No-op action to satisfy onChange/onSelectionChange signaling of being
    * in a controlled state.
@@ -130,22 +135,18 @@ class Field<
   @action
   handleChange() {
     if (this.validateOnChange) {
-      this.args.validateField?.(this.args.formData as T, this.args.name);
+      this.validateField();
     }
   }
 
   /**
    * Validates the field on input if input validation is enabled.
-   * Defers validation to the next runloop to ensure form data has been updated.
+   * Debounces validation to avoid excessive validation calls on every keystroke.
    */
   @action
   handleInput() {
     if (this.validateOnInput) {
-      // Defer to next runloop to ensure the form's handleInput has completed
-      // and form data is updated
-      next(() => {
-        this.args.validateField?.(this.args.formData as T, this.args.name);
-      });
+      debounce(this, this.validateField, 300);
     }
   }
 
