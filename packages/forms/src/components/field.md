@@ -769,6 +769,26 @@ const schema = v.object({
 - Forms where you want to allow incomplete data entry until final submission
 - Multi-step forms where validation should only run at specific steps
 
+**Overriding validation timing per field:**
+
+Individual Fields can override the Form's `@validateOn` setting to customize when that specific field validates:
+
+```gts
+<template>
+  <Form @validateOn={{array 'submit'}} as |form|>
+    <form.Field @name="username" as |field|>
+      {{! Inherits Form's validateOn - validates on submit only }}
+      <field.Input />
+    </form.Field>
+
+    <form.Field @name="password" @validateOn={{array 'input'}} as |field|>
+      {{! Overrides to validate as user types }}
+      <field.Input @type="password" />
+    </form.Field>
+  </Form>
+</template>
+```
+
 **Important notes:**
 - Field-level validation (`'change'` or `'input'`) requires using `form.Field` components
 - The Field component automatically handles the validation logic
