@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import {
   flattenData,
   unflattenData,
-  getNestedValue,
   hasNestedData,
   deepEqual
 } from '@frontile/forms';
@@ -231,82 +230,6 @@ module('Unit | Forms | Utils | nested-data', function (hooks) {
       const unflattened = unflattenData(flattened);
 
       assert.deepEqual(unflattened, original);
-    });
-  });
-
-  module('getNestedValue', function () {
-    test('gets value from simple nested path', function (assert) {
-      const obj = {
-        name: { first: 'John', last: 'Doe' },
-        email: 'john@example.com'
-      };
-
-      assert.strictEqual(getNestedValue(obj, 'name.first'), 'John');
-      assert.strictEqual(getNestedValue(obj, 'name.last'), 'Doe');
-      assert.strictEqual(getNestedValue(obj, 'email'), 'john@example.com');
-    });
-
-    test('gets value from deeply nested path', function (assert) {
-      const obj = {
-        user: {
-          profile: {
-            contact: {
-              email: 'john@example.com'
-            }
-          }
-        }
-      };
-
-      assert.strictEqual(
-        getNestedValue(obj, 'user.profile.contact.email'),
-        'john@example.com'
-      );
-    });
-
-    test('returns undefined for non-existent path', function (assert) {
-      const obj = {
-        name: { first: 'John' }
-      };
-
-      assert.strictEqual(getNestedValue(obj, 'name.last'), undefined);
-      assert.strictEqual(getNestedValue(obj, 'email'), undefined);
-      assert.strictEqual(getNestedValue(obj, 'user.profile.email'), undefined);
-    });
-
-    test('returns undefined for path through non-object', function (assert) {
-      const obj = {
-        name: 'John Doe'
-      };
-
-      assert.strictEqual(getNestedValue(obj, 'name.first'), undefined);
-    });
-
-    test('returns undefined for undefined object', function (assert) {
-      assert.strictEqual(getNestedValue(undefined, 'name.first'), undefined);
-    });
-
-    test('handles null values in path', function (assert) {
-      const obj = {
-        user: null
-      };
-
-      assert.strictEqual(getNestedValue(obj, 'user.name'), undefined);
-    });
-
-    test('gets arrays and special objects', function (assert) {
-      const date = new Date('2025-01-01');
-      const obj = {
-        user: {
-          tags: ['developer', 'designer'],
-          birthdate: date
-        }
-      };
-
-      const tags = getNestedValue<string[]>(obj, 'user.tags');
-      assert.deepEqual(tags, ['developer', 'designer']);
-
-      const birthdate = getNestedValue<Date>(obj, 'user.birthdate');
-      assert.strictEqual(birthdate, date);
     });
   });
 
