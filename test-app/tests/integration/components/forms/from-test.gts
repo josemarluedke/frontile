@@ -10,6 +10,7 @@ import {
 } from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 
+import { tracked } from '@glimmer/tracking';
 import {
   Form,
   Input,
@@ -204,7 +205,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
           </form.Field>
 
           <form.Field @name="country" as |field|>
-            <field.Select
+            <field.SingleSelect
               @items={{countries}}
               @allowEmpty={{true}}
               @placeholder="Select a country"
@@ -715,6 +716,426 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await settled();
 
     assert.dom('[data-test-submit]').isNotDisabled();
+  });
+
+  /**
+   * When data is provided to Form, it should set the initial values
+   * of yielded components based on the field name from formData.
+   */
+  test('it fills initial data from data', async function (assert) {
+    assert.expect(2);
+
+    const formData = {
+      field1: 'Initial value',
+      field2: true
+    };
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form @data={{formData}} @onSubmit={{noop}} as |form|>
+          <form.Field @name="field1" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="field2" as |field|>
+            <field.Checkbox />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    assert
+      .dom('[name="field1"]')
+      .hasValue('Initial value', 'Input has initial value');
+    assert.dom('[name="field2"]').isChecked('Checkbox is checked');
+  });
+
+  test('it reflects changes in the bound form data', async function (assert) {
+    assert.expect(4);
+    class Model {
+      @tracked formData = { username: 'john', email: 'john@example.com' };
+    }
+    const model = new Model();
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{noop}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    assert.dom('[name="username"]').hasValue('john');
+    assert.dom('[name="email"]').hasValue('john@example.com');
+
+    model.formData = { username: 'jane', email: 'jane@example.com' };
+    await settled();
+
+    assert.dom('[name="username"]').hasValue('jane');
+    assert.dom('[name="email"]').hasValue('jane@example.com');
+  });
+
+  test('it passes a `dirty` field when the form changes', async function (assert) {
+    assert.expect(4);
+    class Model {
+      @tracked formData = { username: 'john', email: 'john@example.com' };
+    }
+    const model = new Model();
+    const noop = () => {};
+
+    let changeCount = 0;
+    const onChange = (
+      result: FormResultData<{ username: string; email: string }>,
+      _event: Event
+    ) => {
+      changeCount++;
+      if (changeCount === 1) {
+        // After first change (username)
+        assert.ok(result.dirty.has('username'), 'dirty contains username');
+        assert.false(result.dirty.has('email'), 'dirty does not contain email');
+      } else if (changeCount === 2) {
+        // After second change (email)
+        assert.ok(
+          result.dirty.has('username'),
+          'dirty still contains username'
+        );
+        assert.ok(result.dirty.has('email'), 'dirty now contains email');
+      }
+    };
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Change username field
+    await fillIn('[name="username"]', 'jane');
+
+    // Change email field
+    await fillIn('[name="email"]', 'jane@example.com');
+  });
+
+  /**
+   * Test that Form works in uncontrolled mode (without @onChange)
+   * In uncontrolled mode, the form manages its own state internally
+   * and only provides data to onSubmit
+   */
+  test('it works in uncontrolled mode without @onChange', async function (assert) {
+    assert.expect(3);
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Fill in form data
+    await fillIn('[data-test-username]', 'john');
+    await fillIn('[data-test-email]', 'john@example.com');
+
+    // Submit the form
+    await click('[data-test-submit]');
+
+    // onSubmit should be called with the uncontrolled form data
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0].data,
+      {
+        username: 'john',
+        email: 'john@example.com'
+      },
+      'onSubmit should be called with correct data'
+    );
+    assert.ok(
+      onSubmitSpy.firstCall.args[0].isValid,
+      'Form should be valid (no validation)'
+    );
+  });
+
+  /**
+   * Test that uncontrolled form with initial @data pre-fills fields
+   */
+  test('it pre-fills fields in uncontrolled mode with initial @data', async function (assert) {
+    assert.expect(3);
+
+    const initialData = {
+      username: 'jane',
+      email: 'jane@example.com'
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @data={{initialData}} @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Check initial values are set
+    assert.dom('[data-test-username]').hasValue('jane');
+    assert.dom('[data-test-email]').hasValue('jane@example.com');
+
+    // Submit the form without changes
+    await click('[data-test-submit]');
+
+    // onSubmit should be called with initial data
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0].data,
+      initialData,
+      'onSubmit should be called with initial data'
+    );
+  });
+
+  /**
+   * Test that form.data in yielded context provides access to current form data
+   */
+  test('it yields form.data with current form data', async function (assert) {
+    assert.expect(3);
+
+    class Model {
+      @tracked formData = {
+        username: 'john',
+        notifications: true
+      };
+    }
+    const model = new Model();
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{noop}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input />
+          </form.Field>
+
+          <form.Field @name="notifications" as |field|>
+            <field.Checkbox />
+          </form.Field>
+
+          {{! Display current form data }}
+          <div data-test-current-username>{{form.data.username}}</div>
+          <div data-test-current-notifications>
+            {{if form.data.notifications "yes" "no"}}
+          </div>
+        </Form>
+      </template>
+    );
+
+    // Check yielded data reflects initial state
+    assert.dom('[data-test-current-username]').hasText('john');
+    assert
+      .dom('[data-test-current-notifications]')
+      .hasText('yes', 'notifications is true');
+
+    // Update external data
+    model.formData = {
+      username: 'jane',
+      notifications: false
+    };
+    await settled();
+
+    // Check yielded data reflects updated state
+    assert.dom('[data-test-current-username]').hasText('jane');
+  });
+
+  /**
+   * Test that dirty state resets after successful form submission
+   */
+  test('it resets dirty state after successful submit', async function (assert) {
+    assert.expect(4);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com'
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData) => {
+      model.formData = result.data;
+    };
+
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <div data-test-dirty-count>{{form.dirty.size}}</div>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially no dirty fields
+    assert.dom('[data-test-dirty-count]').hasText('0');
+
+    // Change a field
+    await fillIn('[data-test-username]', 'jane');
+
+    // Should have 1 dirty field
+    assert.dom('[data-test-dirty-count]').hasText('1');
+
+    // Change another field
+    await fillIn('[data-test-email]', 'jane@example.com');
+
+    // Should have 2 dirty fields
+    assert.dom('[data-test-dirty-count]').hasText('2');
+
+    // Submit the form
+    await click('[data-test-submit]');
+
+    // After successful submit, dirty state should reset
+    assert
+      .dom('[data-test-dirty-count]')
+      .hasText('0', 'Dirty state resets after submit');
+  });
+
+  /**
+   * Test that Form.Field correctly binds MultiSelect component
+   * This ensures MultiSelect works within the Field abstraction
+   */
+  test('it works with form.Field yielding MultiSelect', async function (assert) {
+    assert.expect(3);
+
+    const schema = v.object({
+      tags: v.pipe(
+        v.fallback(v.array(v.string()), []),
+        v.minLength(1, 'Please select at least 1 tag')
+      )
+    });
+
+    class Model {
+      @tracked formData: { tags: string[] } = {
+        tags: ['js', 'ts'] // Start with valid data
+      };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData<{ tags: string[] }>) => {
+      model.formData = result.data;
+    };
+
+    const onSubmitSpy = sinon.spy();
+    const tags = [
+      { label: 'JavaScript', key: 'js' },
+      { label: 'TypeScript', key: 'ts' },
+      { label: 'Python', key: 'python' }
+    ];
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @schema={{schema}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="tags" as |field|>
+            <field.MultiSelect
+              @label="Tags"
+              @items={{tags}}
+              @selectionMode="multiple"
+              data-test-tags
+            />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Verify MultiSelect is rendered and bound with initial data
+    assert
+      .dom('[data-test-tags]')
+      .exists('MultiSelect component is rendered within Field');
+
+    // Submit with initial valid data - should succeed
+    await click('[data-test-submit]');
+
+    assert.ok(
+      onSubmitSpy.calledOnce,
+      'onSubmit should be called with valid data'
+    );
+
+    // Verify no validation errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No validation errors with valid data');
   });
 });
 

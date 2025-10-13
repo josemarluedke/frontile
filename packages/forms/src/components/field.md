@@ -25,35 +25,50 @@ The Field component is yielded from the Form component when validation is config
 
 ```gts preview
 import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
+// Define validation schema
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  username: v.pipe(
+    v.string(),
+    v.nonEmpty('Username is required'),
+    v.minLength(3, 'Username must be at least 3 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
 export default class BasicFieldExample extends Component {
-  @tracked formData: FormResultData = {};
+  @tracked formData: Schema = { username: 'rememberme' };
 
-  // Define validation schema
-  schema = v.object({
-    email: v.pipe(
-      v.string(),
-      v.nonEmpty('Email is required'),
-      v.email('Please enter a valid email address')
-    ),
-    username: v.pipe(
-      v.string(),
-      v.nonEmpty('Username is required'),
-      v.minLength(3, 'Username must be at least 3 characters')
-    )
-  });
-
-  handleFormSubmit = (data: FormResultData) => {
-    console.log('Form submitted:', data);
+  handleFormChange = (result: FormResultData<Schema>) => {
+    this.formData = result.data;
   };
+
+  handleFormSubmit = (result: FormResultData<Schema>) => {
+    console.log('Form submitted:', result);
+  };
+
+  @action
+  changeEmail() {
+    this.formData.email = 'test@test.com';
+    this.formData = this.formData;
+  }
 
   <template>
     <Form
-      @schema={{this.schema}}
+      @data={{this.formData}}
+      @schema={{schema}}
+      @onChange={{this.handleFormChange}}
       @onSubmit={{this.handleFormSubmit}}
       as |form|
     >
@@ -77,8 +92,12 @@ export default class BasicFieldExample extends Component {
         <Button type='submit'>
           Submit
         </Button>
+
+        <Button @onPress={{this.changeEmail}}>Update Email via formData</Button>
       </div>
     </Form>
+
+
   </template>
 }
 ```
@@ -94,41 +113,49 @@ import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
+const schema = v.object({
+  name: v.pipe(
+    v.string(),
+    v.nonEmpty('Name is required')
+  ),
+  bio: v.pipe(
+    v.string(),
+    v.nonEmpty('Bio is required'),
+    v.minLength(10, 'Bio must be at least 10 characters')
+  ),
+  accountType: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select an account type')
+  ),
+  newsletter: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must subscribe to continue')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
 export default class FieldComponentTypes extends Component {
+  @tracked formData: Schema = {
+    accountType: 'personal',
+    newsletter: true
+  };
+
   accountTypes = [
     { label: 'Personal', key: 'personal' },
     { label: 'Business', key: 'business' },
     { label: 'Enterprise', key: 'enterprise' }
   ];
 
-  schema = v.object({
-    name: v.pipe(
-      v.string(),
-      v.nonEmpty('Name is required')
-    ),
-    bio: v.pipe(
-      v.string(),
-      v.nonEmpty('Bio is required'),
-      v.minLength(10, 'Bio must be at least 10 characters')
-    ),
-    accountType: v.pipe(
-      v.fallback(v.string(), ''),
-      v.string(),
-      v.nonEmpty('Please select an account type')
-    ),
-    newsletter: v.pipe(
-      v.boolean(),
-      v.literal(true, 'You must subscribe to continue')
-    )
-  });
-
-  handleFormSubmit = (data: FormResultData) => {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     console.log('Form submitted:', data);
   };
 
   <template>
     <Form
-      @schema={{this.schema}}
+      @data={{this.data}}
+      @schema={{schema}}
       @onSubmit={{this.handleFormSubmit}}
       as |form|
     >
@@ -153,7 +180,7 @@ export default class FieldComponentTypes extends Component {
 
         {{! Select field }}
         <form.Field @name='accountType' as |field|>
-          <field.Select
+          <field.SingleSelect
             @label='Account Type'
             @items={{this.accountTypes}}
             @placeholder='Choose account type'
@@ -190,23 +217,25 @@ import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
-export default class CustomValidationField extends Component {
-  schema = v.object({
-    password: v.pipe(
-      v.string(),
-      v.nonEmpty('Password is required'),
-      v.minLength(8, 'Password must be at least 8 characters'),
-      v.regex(/[A-Z]/, 'Must contain an uppercase letter'),
-      v.regex(/[0-9]/, 'Must contain a number')
-    ),
-    confirmPassword: v.pipe(
-      v.string(),
-      v.nonEmpty('Please confirm your password')
-    )
-  });
+const schema = v.object({
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(8, 'Password must be at least 8 characters'),
+    v.regex(/[A-Z]/, 'Must contain an uppercase letter'),
+    v.regex(/[0-9]/, 'Must contain a number')
+  ),
+  confirmPassword: v.pipe(
+    v.string(),
+    v.nonEmpty('Please confirm your password')
+  )
+});
 
+type Schema = v.InferOutput<typeof schema>;
+
+export default class CustomValidationField extends Component {
   // Custom validator for password matching
-  customValidator = (data: FormResultData) => {
+  customValidator = (data: Schema) => {
     if (data['password'] !== data['confirmPassword']) {
       return [{
         message: 'Passwords must match',
@@ -215,13 +244,13 @@ export default class CustomValidationField extends Component {
     }
   };
 
-  handleFormSubmit = (data: FormResultData) => {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     console.log('Form submitted:', data);
   };
 
   <template>
     <Form
-      @schema={{this.schema}}
+      @schema={{schema}}
       @validate={{this.customValidator}}
       @onSubmit={{this.handleFormSubmit}}
       as |form|
@@ -264,28 +293,30 @@ import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
-export default class FieldWithGroups extends Component {
-  schema = v.object({
-    experience: v.pipe(
-      v.fallback(v.string(), ''),
-      v.string(),
-      v.nonEmpty('Please select your experience level')
-    ),
-    skills: v.pipe(
-      v.array(v.string()),
-      v.custom((value) => {
-        return value.length >= 2;
-      }, 'Please select at least 2 skills')
-    )
-  });
+const schema = v.object({
+  experience: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select your experience level')
+  ),
+  skills: v.pipe(
+    v.array(v.string()),
+    v.custom((value) => {
+      return value.length >= 2;
+    }, 'Please select at least 2 skills')
+  )
+});
 
-  handleFormSubmit = (data: FormResultData) => {
+type Schema = v.InferOutput<typeof schema>;
+
+export default class FieldWithGroups extends Component {
+  handleFormSubmit = (data: FormResultData<Schema>) => {
     console.log('Form submitted:', data);
   };
 
   <template>
     <Form
-      @schema={{this.schema}}
+      @schema={{schema}}
       @onSubmit={{this.handleFormSubmit}}
       as |form|
     >
@@ -339,6 +370,68 @@ import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
+const schema = v.object({
+  // Personal Information
+  firstName: v.pipe(
+    v.string(),
+    v.nonEmpty('First name is required'),
+    v.minLength(2, 'Must be at least 2 characters')
+  ),
+  lastName: v.pipe(
+    v.string(),
+    v.nonEmpty('Last name is required'),
+    v.minLength(2, 'Must be at least 2 characters')
+  ),
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email')
+  ),
+  phone: v.pipe(
+    v.string(),
+    v.nonEmpty('Phone number is required'),
+    v.regex(/^\+?[\d\s-()]+$/, 'Please enter a valid phone number')
+  ),
+
+  // Address Information
+  country: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select a country')
+  ),
+  bio: v.pipe(
+    v.string(),
+    v.nonEmpty('Bio is required'),
+    v.minLength(20, 'Bio must be at least 20 characters'),
+    v.maxLength(500, 'Bio must be less than 500 characters')
+  ),
+
+  // Preferences
+  contactMethod: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select a contact method')
+  ),
+  notifications: v.pipe(
+    v.array(v.string()),
+    v.custom((value) => {
+      return value.length >= 1;
+    }, 'Please select at least 1 notification method')
+  ),
+
+  // Legal
+  terms: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms')
+  ),
+  privacy: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the privacy policy')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
 export default class CompleteFieldForm extends Component {
   @tracked submitMessage = '';
 
@@ -350,67 +443,7 @@ export default class CompleteFieldForm extends Component {
     { label: 'France', key: 'fr' }
   ];
 
-  schema = v.object({
-    // Personal Information
-    firstName: v.pipe(
-      v.string(),
-      v.nonEmpty('First name is required'),
-      v.minLength(2, 'Must be at least 2 characters')
-    ),
-    lastName: v.pipe(
-      v.string(),
-      v.nonEmpty('Last name is required'),
-      v.minLength(2, 'Must be at least 2 characters')
-    ),
-    email: v.pipe(
-      v.string(),
-      v.nonEmpty('Email is required'),
-      v.email('Please enter a valid email')
-    ),
-    phone: v.pipe(
-      v.string(),
-      v.nonEmpty('Phone number is required'),
-      v.regex(/^\+?[\d\s-()]+$/, 'Please enter a valid phone number')
-    ),
-
-    // Address Information
-    country: v.pipe(
-      v.fallback(v.string(), ''),
-      v.string(),
-      v.nonEmpty('Please select a country')
-    ),
-    bio: v.pipe(
-      v.string(),
-      v.nonEmpty('Bio is required'),
-      v.minLength(20, 'Bio must be at least 20 characters'),
-      v.maxLength(500, 'Bio must be less than 500 characters')
-    ),
-
-    // Preferences
-    contactMethod: v.pipe(
-      v.fallback(v.string(), ''),
-      v.string(),
-      v.nonEmpty('Please select a contact method')
-    ),
-    notifications: v.pipe(
-      v.array(v.string()),
-      v.custom((value) => {
-        return value.length >= 1;
-      }, 'Please select at least 1 notification method')
-    ),
-
-    // Legal
-    terms: v.pipe(
-      v.boolean(),
-      v.literal(true, 'You must accept the terms')
-    ),
-    privacy: v.pipe(
-      v.boolean(),
-      v.literal(true, 'You must accept the privacy policy')
-    )
-  });
-
-  handleFormSubmit = async (data: FormResultData) => {
+  handleFormSubmit = async (data: FormResultData<Schema>) => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     this.submitMessage = 'Registration completed successfully!';
@@ -420,7 +453,7 @@ export default class CompleteFieldForm extends Component {
   <template>
     <div class='max-w-2xl'>
       <Form
-        @schema={{this.schema}}
+        @schema={{schema}}
         @onSubmit={{this.handleFormSubmit}}
         as |form|
       >
@@ -463,7 +496,7 @@ export default class CompleteFieldForm extends Component {
               </form.Field>
 
               <form.Field @name='country' as |field|>
-                <field.Select
+                <field.SingleSelect
                   @label='Country'
                   @items={{this.countries}}
                   @placeholder='Select your country'
@@ -551,6 +584,41 @@ export default class CompleteFieldForm extends Component {
 }
 ```
 
+## Select Components with Field
+
+When using select components **outside of `Field`**, you use the generic `Select` component.  Rendering of single vs. multi is handled by `Select`.
+
+However, when using select components **with `Field`**, you must explicitly specify which variant you need:
+
+- **`field.SingleSelect`** - For selecting a single item
+- **`field.MultiSelect`** - For selecting multiple items
+
+This distinction allows the Field component to properly bind values to the components.
+
+### Field Select (with validation)
+
+```gts
+{{! Must specify SingleSelect or MultiSelect explicitly }}
+<form.Field @name='country' as |field|>
+  <field.SingleSelect
+    @label='Country'
+    @items={{this.countries}}
+    @allowEmpty={{true}}
+  />
+</form.Field>
+
+<form.Field @name='languages' as |field|>
+  <field.MultiSelect
+    @label='Languages'
+    @items={{this.languages}}
+  />
+</form.Field>
+```
+
+**Key Differences:**
+- With Field: Use `field.SingleSelect` or `field.MultiSelect`
+- Field automatically handles value binding based on the component type
+
 ## Key Features
 
 ### Automatic Error Binding
@@ -560,21 +628,46 @@ The Field component automatically:
 - Passes these errors to any yielded form component
 - Updates error display in real-time as validation occurs
 
+### Automatic Value Binding
+
+When used with a Form component that provides `@data`, Field automatically binds values to form controls:
+
+- Extracts the current value for the field from `form.data`
+- Passes the appropriate value prop to each component type
+- Provides a no-op change handler to put components in controlled mode
+  - This ensures form-level `@onChange` handles all state updates
+  - Prevents components from managing their own internal state
+  - Enables the Form component to be the single source of truth
+
+**Example:**
+```gts
+<Form @data={{this.formData}} @onChange={{this.handleChange}} as |form|>
+  <form.Field @name="email" as |field|>
+    {{! Value automatically bound from formData.email }}
+    {{! onChange automatically handled by Form }}
+    <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
 ### Yielded Components
 
 Field yields bound versions of all form components:
-- `field.Input` - Text input with automatic error binding
-- `field.Textarea` - Textarea with automatic error binding
-- `field.Select` - Select dropdown with automatic error binding
-- `field.Checkbox` - Single checkbox with automatic error binding
+- `field.Input` - Text input with automatic error and value binding
+- `field.Textarea` - Textarea with automatic error and value binding
+- `field.SingleSelect` - Select dropdown with automatic error and selectedKey binding
+- `field.MultiSelect` - Select dropdown with automatic error and selectedKeys binding
+- `field.Checkbox` - Single checkbox with automatic error and checked binding
 - `field.CheckboxGroup` - Checkbox group with automatic error binding
-- `field.RadioGroup` - Radio group with automatic error binding
-- `field.Switch` - Toggle switch with automatic error binding
-- `field.Radio` - Individual radio button with automatic error binding
+- `field.RadioGroup` - Radio group with automatic error and value binding
+- `field.Switch` - Toggle switch with automatic error and isSelected binding
+- `field.Radio` - Individual radio button with automatic error and value binding
 
 Each component automatically receives:
 - The `@name` prop from the Field
 - Any validation errors for that field name
+- The current value from form data (if provided)
+- A controlled change handler (when form data is provided)
 - All other props passed through normally
 
 ## When to Use Field
@@ -629,7 +722,7 @@ schema = v.object({
 
 ```handlebars
 <form.Field @name='country' as |field|>
-  <field.Select
+  <field.SingleSelect
     @label='Country'
     @items={{this.countries}}
     @placeholder='Select a country'

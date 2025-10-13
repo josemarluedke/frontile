@@ -1639,13 +1639,21 @@ const data: ComponentDoc[] = [
         description: 'The validation errors for the form, keyed by field name.',
         tags: {},
       },
+      {
+        identifier: 'formData',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The form data as key/value pairs.',
+        tags: {},
+      },
     ],
     Blocks: [
       {
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Checkbox</span>: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; Select: BoundSelect&#x3C;unknown>; Switch: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Checkbox</span>: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; SingleSelect: BoundSingleSelect&#x3C;unknown>; MultiSelect: BoundMultiSelect&#x3C;unknown>; Switch: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -1693,8 +1701,16 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
-                    identifier: 'Select',
-                    type: { type: 'BoundSelect&#x3C;unknown>' },
+                    identifier: 'SingleSelect',
+                    type: { type: 'BoundSingleSelect&#x3C;unknown>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'MultiSelect',
+                    type: { type: 'BoundMultiSelect&#x3C;unknown>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2107,6 +2123,15 @@ const data: ComponentDoc[] = [
         },
       },
       {
+        identifier: 'data',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The initial form data as key/value pairs.\nThis is primarily useful for setting default values in the form.\nThis object receives changes as the user interacts with the form.',
+        tags: {},
+      },
+      {
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -2241,13 +2266,21 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[FormContext]',
+          raw: '[FormContext&#x3C;T>]',
           items: [
             {
               identifier: '0',
               type: {
                 type: '<span class="hljs-built_in">Object</span>',
                 items: [
+                  {
+                    identifier: 'data',
+                    type: { type: 'T' },
+                    isRequired: false,
+                    isInternal: false,
+                    description: 'The form data as key/value pairs.',
+                    tags: {},
+                  },
                   {
                     identifier: 'isLoading',
                     type: {
@@ -2289,12 +2322,22 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'dirty',
+                    type: {
+                      type: '<span class="hljs-built_in">Set</span>&#x3C;keyof T>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'The set of fields that have changed from their initial values.',
+                    tags: {},
+                  },
+                  {
                     identifier: 'Field',
                     type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
-                    description:
-                      'The `Field` component, with `errors` args bound.',
+                    description: 'The `Field` component, with args bound.',
                     tags: {},
                   },
                 ],
@@ -2326,13 +2369,14 @@ const data: ComponentDoc[] = [
       'A form component that handles form submissions and input changes.',
     tags: {
       example: { name: 'example', value: '```hbs\n<Form' },
+      data: { name: 'data', value: '={{this.formData}}' },
       schema: { name: 'schema', value: '={{this.schema}}' },
       validate: { name: 'validate', value: '={{this.customValidator}}' },
       onSubmit: { name: 'onSubmit', value: '={{this.onSubmit}}' },
       onChange: {
         name: 'onChange',
         value:
-          '={{this.onChange}}\nas |form|\n>\n<input name="firstName" />\n<input name="lastName" />\n<button type="submit" disabled={{form.isLoading}}>\n{{#if form.isLoading}}Submitting...{{else}}Submit{{/if}}\n</button>\n</Form>\n```',
+          '={{this.onChange}}\nas |form|\n>\n<form.Field name="firstName" as |field|>\n<field.Input />\n</form.Field>\n<form.Field name="lastName" as |field|>\n<field.Input />\n</form.Field>\n<button type="submit" disabled={{form.isLoading}}>\n{{#if form.isLoading}}Submitting...{{else}}Submit{{/if}}\n</button>\n</Form>\n```',
       },
     },
   },
