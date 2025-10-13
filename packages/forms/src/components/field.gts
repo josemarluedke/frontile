@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { action } from '@ember/object';
-import { getNestedValue } from '../utils/nested-data';
+import { action, get } from '@ember/object';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -95,16 +94,13 @@ class Field<
   /**
    * Returns the current value for the field from formData.
    * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
-   * Always uses getNestedValue for consistency, which handles flat keys correctly.
+   * Uses Ember's get() which handles both flat keys and dotted paths.
    */
   get fieldValue() {
     if (!this.args.formData) return undefined;
 
-    // getNestedValue handles both flat keys and dotted paths correctly
-    return getNestedValue(
-      this.args.formData as Record<string, unknown>,
-      this.args.name
-    );
+    // Ember's get() handles both flat keys and dotted paths correctly
+    return get(this.args.formData, this.args.name);
   }
 
   /**

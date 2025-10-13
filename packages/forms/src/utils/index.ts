@@ -25,7 +25,6 @@ export { triggerFormInputEvent };
 export {
   flattenData,
   unflattenData,
-  getNestedValue,
   hasNestedData,
   deepEqual
 } from './nested-data';
