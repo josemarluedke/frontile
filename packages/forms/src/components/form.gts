@@ -400,31 +400,13 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /**
-   * Modifier to capture the form element reference.
-   */
-  captureElement = modifier((element: HTMLFormElement) => {
-    this.element = element;
-  });
-
-  /**
-   * Resets the form to its initial state.
-   * This method:
-   * 1. Calls the native form reset() to clear all form controls
-   * 2. Restores data from the initial snapshot
-   * 3. Clears validation errors
-   * 4. Clears dirty state
-   *
-   * For controlled forms, this triggers onChange with the initial data.
-   * For uncontrolled forms, this updates the internal state.
+   * Handles the `reset` event on the form element.
+   * Clears validation errors and dirty tracking.
+   * Restores the form data to its initial state.
+   * Calls `onChange` if the form is controlled to let parent update state.
    */
   @action
-  reset() {
-    if (!this.element) {
-      return;
-    }
-
-    this.element.reset();
-
+  handleReset(event: Event) {
     // Clear state
     this.errors = {};
     this.dirty = new Set();
@@ -440,15 +422,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       if (this.isControlled && this.args.onChange) {
         const resultData = this.buildFormResultData(restoredData);
 
-        // Create a synthetic event with the form element as currentTarget
-        // This matches the structure expected by handleInput
-        const syntheticEvent = new Event('input', { bubbles: true });
-        Object.defineProperty(syntheticEvent, 'currentTarget', {
-          writable: false,
-          value: this.element
-        });
-
-        this.args.onChange(resultData, syntheticEvent);
+        this.args.onChange(resultData, event);
       } else {
         // For uncontrolled forms, update internal state
         this.uncontrolledData = restoredData;
@@ -459,12 +433,30 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     }
   }
 
+  /**
+   * Modifier to capture the form element reference.
+   */
+  captureElement = modifier((element: HTMLFormElement) => {
+    this.element = element;
+  });
+
+  /**
+   * Resets the form to its initial state.
+   * This method calls the native form reset() to clear all form controls,
+   * triggering a `reset` event that is handled in `handleReset`.
+   */
+  @action
+  reset() {
+    this.element?.reset();
+  }
+
   <template>
     {{! @glint-nocheck component generics (field) trigger:  type instantiation is excessively deep and possibly infinite }}
     <form
       {{this.captureElement}}
       {{on "input" this.handleInput}}
       {{on "submit" this.handleSubmit}}
+      {{on "reset" this.handleReset}}
       ...attributes
     >
       {{yield
