@@ -93,7 +93,7 @@ interface FormSignature<T = FormDataCompiled> {
     /**
      * When to run validation.
      */
-    validateOn?: ('change' | 'submit')[];
+    validateOn?: ('change' | 'input' | 'submit')[];
     /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
@@ -242,7 +242,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /** The events on which validation should run. */
-  get validateOn(): ('change' | 'submit')[] {
+  get validateOn(): ('change' | 'input' | 'submit')[] {
     return this.args.validateOn ?? ['change', 'submit'];
   }
 
@@ -251,15 +251,23 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return this.validateOn.includes('change');
   }
 
+  /** Whether validation should run on field input. */
+  get validateOnInput(): boolean {
+    return this.validateOn.includes('input');
+  }
+
   /** Whether validation should run on form submission. */
   get validateOnSubmit(): boolean {
     return this.validateOn.includes('submit');
   }
 
-  get fieldValidateOn(): 'change'[] {
-    const v: 'change'[] = [];
+  get fieldValidateOn(): ('change' | 'input')[] {
+    const v: ('change' | 'input')[] = [];
     if (this.validateOnChange) {
       v.push('change');
+    }
+    if (this.validateOnInput) {
+      v.push('input');
     }
     return v;
   }

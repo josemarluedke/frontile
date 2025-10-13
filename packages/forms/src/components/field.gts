@@ -38,7 +38,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
     /** Whether the field should be disabled. */
     disabled?: boolean;
     /** When to run validation. */
-    validateOn?: 'change'[];
+    validateOn?: ('change' | 'input')[];
     /** Function to validate a single field by name. */
     validateField?: (data: T, name: string) => Promise<FormErrors | undefined>;
   };
@@ -55,7 +55,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Input: WithBoundArgs<
           typeof Input,
-          'name' | 'errors' | 'value' | 'onChange' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
         >;
         Radio: WithBoundArgs<
           typeof Radio,
@@ -73,7 +73,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Textarea: WithBoundArgs<
           typeof Textarea,
-          'name' | 'errors' | 'value' | 'onChange' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
         >;
       }
     ];
@@ -97,13 +97,18 @@ class Field<
   }
 
   /** The events on which validation should run. Defaults to ['change']. */
-  get validateOn(): 'change'[] {
+  get validateOn(): ('change' | 'input')[] {
     return this.args.validateOn ?? ['change'];
   }
 
   /** Whether validation should run on field change. */
   get validateOnChange(): boolean {
     return this.validateOn.includes('change');
+  }
+
+  /** Whether validation should run on field input. */
+  get validateOnInput(): boolean {
+    return this.validateOn.includes('input');
   }
 
   /**
@@ -132,6 +137,20 @@ class Field<
     }
   }
 
+  /**
+   * Validates the field on input if input validation is enabled.
+   * Uses a microtask to ensure form data has been updated before validation runs.
+   */
+  @action
+  handleInput() {
+    if (this.validateOnInput) {
+      // Use a microtask to ensure the form's handleInput has completed and form data is updated
+      Promise.resolve().then(() => {
+        this.args.validateField?.(this.args.formData as T, this.args.name);
+      });
+    }
+  }
+
   <template>
     {{! @glint-nocheck component generics (radio, radio-group, select) trigger:  type instantiation is excessively deep and possibly infinite }}
     {{yield
@@ -153,6 +172,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.handleChange
+          onInput=this.handleInput
           isDisabled=@disabled
         )
         Radio=(component
@@ -201,6 +221,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.handleChange
+          onInput=this.handleInput
           isDisabled=@disabled
         )
       )

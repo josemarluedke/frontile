@@ -872,11 +872,12 @@ By default, the Form component validates data both on field changes and form sub
 
 **Available options:**
 - `change` - Validate individual fields when users change a value and blur/defocus the field (per-field validation)
+- `input` - Validate individual fields as users type (real-time validation on every keystroke)
 - `submit` - Validate the entire form when submitted
 
-**Default behavior:** `@validateOn={{array 'change' 'submit'}}` - validates on both field changes and form submission.
+**Default behavior:** `@validateOn={{array 'change' 'submit'}}` - validates on both field changes (blur) and form submission.
 
-**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. It does NOT fire on every keystroke.
+**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types.
 
 **Usage:**
 
@@ -896,10 +897,30 @@ By default, the Form component validates data both on field changes and form sub
   ...
 </Form>
 
-// Change validation only - validate as users type, but not on submit
+// Change validation only - validate on blur, but not on submit
 <Form
   @schema={{schema}}
   @validateOn={{array 'change'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Input validation only - validate as users type, but not on submit
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'input'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Both change and input validation - validate on blur AND as users type
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'change' 'input' 'submit'}}
   @onSubmit={{this.handleSubmit}}
   as |form|
 >
@@ -938,6 +959,15 @@ By default, the Form component validates data both on field changes and form sub
 - Uses the Field component's `handleChange` action to trigger validation
 - Based on the HTML `change` event (fires on blur after value modification, not on every keystroke)
 
+**Input validation (`'input'`)**:
+- Individual fields validate as users type, on every keystroke
+- Validation errors appear in real-time as the user types
+- Each field validates independently using its specific validation rules
+- Provides immediate feedback while the user is still focused on the field
+- Uses the Field component's `handleInput` action to trigger validation
+- Based on the HTML `input` event (fires on every keystroke)
+- Best for fields where real-time feedback is valuable (e.g., password strength, character limits)
+
 **Submit validation (`'submit'`)**:
 - The entire form validates when the submit button is clicked
 - All fields are validated together before calling `@onSubmit`
@@ -952,6 +982,21 @@ By default, the Form component validates data both on field changes and form sub
 <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
   <form.Field @name="email" as |field|>
     <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
+**Real-time validation (best for immediate feedback):**
+```gts
+// Validates as user types - great for password strength, character limits, etc.
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'input' 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  <form.Field @name="password" as |field|>
+    <field.Input @label="Password" @type="password" />
   </form.Field>
 </Form>
 ```
@@ -990,11 +1035,14 @@ By default, the Form component validates data both on field changes and form sub
 - When you need to submit partial or draft data without validation
 
 **Important notes:**
-- When `@validateOn` includes `'change'`, you must use the `form.Field` component for automatic field-level validation
+- When `@validateOn` includes `'change'` or `'input'`, you must use the `form.Field` component for automatic field-level validation
 - When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
 - All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
 - Change validation provides better user experience by catching errors as users move between fields
+- Input validation provides immediate feedback but may be distracting for some use cases
 - The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
+- The `'input'` event fires on every keystroke as the user types
+- Consider using `'input'` validation for fields where real-time feedback is valuable (password strength, character limits, username availability)
 
 ### Performance Considerations
 

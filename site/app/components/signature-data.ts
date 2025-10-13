@@ -1686,7 +1686,7 @@ const data: ComponentDoc[] = [
         identifier: 'validateOn',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '<span class="hljs-string">\'change\'</span>[]',
+          raw: '(<span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'change\'</span>)[]',
         },
         isRequired: false,
         isInternal: false,
@@ -2327,7 +2327,7 @@ const data: ComponentDoc[] = [
         identifier: 'validateOn',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '(<span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'change\'</span>)[]',
+          raw: '(<span class="hljs-string">\'submit\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'change\'</span>)[]',
         },
         isRequired: false,
         isInternal: false,
