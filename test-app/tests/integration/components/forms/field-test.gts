@@ -1120,7 +1120,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             <field.Input data-test-username />
           </form.Field>
 
-          <form.Field @name="password" @validateOn={{validateOnInput}} as |field|>
+          <form.Field
+            @name="password"
+            @validateOn={{validateOnInput}}
+            as |field|
+          >
             {{! This field overrides with validateOn=['input'] }}
             <field.Input @type="password" data-test-password />
           </form.Field>
@@ -1137,15 +1141,15 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type in username field - should NOT validate (inherits Form's submit-only validation)
     await fillIn('[data-test-username]', 'ab');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
-      .doesNotExist('Username does not validate on input (inherits Form setting)');
+      .doesNotExist(
+        'Username does not validate on input (inherits Form setting)'
+      );
 
     // Type in password field - SHOULD validate on input (Field override)
     await fillIn('[data-test-password]', 'abc');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1156,7 +1160,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Fix password - error should clear immediately
     await fillIn('[data-test-password]', 'abcdef');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1220,15 +1223,16 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid email - should validate on blur (inherits Form setting)
     await fillIn('[data-test-email]', 'invalid');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
-      .exists({ count: 1 }, 'Email validates on change (inherits Form setting)');
+      .exists(
+        { count: 1 },
+        'Email validates on change (inherits Form setting)'
+      );
 
     // Type invalid notes - should NOT validate on blur (Field override disables change validation)
     await fillIn('[data-test-notes]', 'short');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1239,26 +1243,30 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Submit - both email and notes should validate (form-level submit validation)
     await click('[data-test-submit]');
-    await settled();
 
     // Both fields show errors on submit (form-level validation runs for all fields)
     assert
       .dom('[data-component="form-feedback"]')
-      .exists({ count: 2 }, 'Both fields validate on submit (form-level validation)');
+      .exists(
+        { count: 2 },
+        'Both fields validate on submit (form-level validation)'
+      );
 
     // Fix email - this should clear on change validation
     await fillIn('[data-test-email]', 'test@example.com');
-    await settled(); // Wait for email validation
+    // Wait for email validation
 
     // Email error should clear, but notes error persists (no change validation for notes)
     assert
       .dom('[data-component="form-feedback"]')
-      .exists({ count: 1 }, 'Email error clears on change, notes error persists');
+      .exists(
+        { count: 1 },
+        'Email error clears on change, notes error persists'
+      );
 
     // Fix notes - this won't clear on change (empty validateOn), need to submit again
     await fillIn('[data-test-notes]', 'This is long enough');
     await click('[data-test-submit]');
-    await settled();
 
     // All errors cleared after successful submit
     assert
@@ -1298,7 +1306,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
           @onSubmit={{noop}}
           as |form|
         >
-          <form.Field @name="username" @validateOn={{usernameValidateOn}} as |field|>
+          <form.Field
+            @name="username"
+            @validateOn={{usernameValidateOn}}
+            as |field|
+          >
             {{! Validates on blur }}
             <field.Input data-test-username />
           </form.Field>
@@ -1308,7 +1320,11 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             <field.Input data-test-email />
           </form.Field>
 
-          <form.Field @name="password" @validateOn={{passwordValidateOn}} as |field|>
+          <form.Field
+            @name="password"
+            @validateOn={{passwordValidateOn}}
+            as |field|
+          >
             {{! Validates on every keystroke }}
             <field.Input @type="password" data-test-password />
           </form.Field>
@@ -1325,7 +1341,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid password - validates on input
     await fillIn('[data-test-password]', 'abc');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1333,7 +1348,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid username - validates on blur
     await fillIn('[data-test-username]', 'ab');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1341,7 +1355,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid email - does NOT validate (submit only)
     await fillIn('[data-test-email]', 'invalid');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1349,7 +1362,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Fix password - error clears on input
     await fillIn('[data-test-password]', 'abcdef');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1357,7 +1369,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Fix username - error clears on blur
     await fillIn('[data-test-username]', 'john');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1365,7 +1376,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Submit - email validation should now run
     await click('[data-test-submit]');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
@@ -1374,7 +1384,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Fix email
     await fillIn('[data-test-email]', 'john@example.com');
     await click('[data-test-submit]');
-    await settled();
 
     assert
       .dom('[data-component="form-feedback"]')
