@@ -100,39 +100,6 @@ export function unflattenData<T = unknown>(
 }
 
 /**
- * Gets a value from a nested object using a dotted path.
- *
- * @example
- * getNestedValue({name: {first: 'John'}}, 'name.first') // Returns: 'John'
- * getNestedValue({name: {first: 'John'}}, 'name.last') // Returns: undefined
- *
- * @param obj - The object to retrieve the value from
- * @param path - The dotted path to the value (e.g., 'user.profile.name')
- * @returns The value at the path, or undefined if not found
- */
-export function getNestedValue<T = unknown>(
-  obj: Record<string, unknown> | undefined,
-  path: string
-): T | undefined {
-  if (!obj) return undefined;
-
-  const keys = path.split('.');
-  let current: unknown = obj;
-
-  for (const key of keys) {
-    if (!key) continue;
-
-    if (!isPlainObject(current)) {
-      return undefined;
-    }
-
-    current = current[key];
-  }
-
-  return current as T;
-}
-
-/**
  * Checks if the data structure contains any nested objects.
  * If true, we need to handle it as nested data.
  *
