@@ -11,6 +11,7 @@ import {
 import { selectOptionByKey } from '@frontile/forms/test-support';
 
 import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 import {
   Form,
   Input,
@@ -1298,6 +1299,467 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-username]', 'john');
     await click('[data-test-submit]');
     assert.ok(onSubmitSpy.calledOnce, 'onSubmit is called when enabled');
+  });
+
+  /**
+   * Test that form reset clears fields to initial values
+   */
+  test('it resets form fields to initial values', async function (assert) {
+    assert.expect(4);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com'
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData<typeof initialData>) => {
+      model.formData = result.data;
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Verify initial values
+    assert.dom('[data-test-username]').hasValue('john');
+    assert.dom('[data-test-email]').hasValue('john@example.com');
+
+    // Change values
+    await fillIn('[data-test-username]', 'jane');
+    await fillIn('[data-test-email]', 'jane@example.com');
+
+    // Reset the form
+    await click('[data-test-reset]');
+
+    // Values should be reset to initial values
+    assert.dom('[data-test-username]').hasValue('john');
+    assert.dom('[data-test-email]').hasValue('john@example.com');
+  });
+
+  /**
+   * Test that form reset clears validation errors
+   */
+  test('it clears validation errors on reset', async function (assert) {
+    assert.expect(3);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    const initialData = {
+      email: 'john@example.com',
+      password: 'password123'
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData<typeof initialData>) => {
+      model.formData = result.data;
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @schema={{schema}}
+          @onChange={{onChange}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="password" as |field|>
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Enter invalid data
+    await fillIn('[data-test-email]', 'invalid-email');
+    await fillIn('[data-test-password]', 'abc');
+
+    // Submit to trigger validation
+    await click('[data-test-submit]');
+
+    // Errors should be displayed
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Validation errors are displayed');
+
+    // Reset the form
+    await click('[data-test-reset]');
+
+    // Errors should be cleared
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Validation errors are cleared after reset');
+
+    // Values should be reset to initial valid values
+    assert.dom('[data-test-email]').hasValue('john@example.com');
+  });
+
+  /**
+   * Test that form reset clears dirty state
+   */
+  test('it clears dirty state on reset', async function (assert) {
+    assert.expect(4);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com'
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData<typeof initialData>) => {
+      model.formData = result.data;
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <div data-test-dirty-count>{{form.dirty.size}}</div>
+
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Initially no dirty fields
+    assert.dom('[data-test-dirty-count]').hasText('0');
+
+    // Change values
+    await fillIn('[data-test-username]', 'jane');
+    await fillIn('[data-test-email]', 'jane@example.com');
+
+    // Should have dirty fields
+    assert.dom('[data-test-dirty-count]').hasText('2');
+
+    // Reset the form
+    await click('[data-test-reset]');
+
+    // Dirty state should be cleared
+    assert.dom('[data-test-dirty-count]').hasText('0');
+
+    // Values should be reset
+    assert.dom('[data-test-username]').hasValue('john');
+  });
+
+  /**
+   * Test that form reset works in uncontrolled mode
+   */
+  test('it resets form in uncontrolled mode', async function (assert) {
+    assert.expect(3);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com'
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @data={{initialData}} @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Verify initial values
+    assert.dom('[data-test-username]').hasValue('john');
+
+    // Change values
+    await fillIn('[data-test-username]', 'jane');
+    await fillIn('[data-test-email]', 'jane@example.com');
+
+    // Reset the form
+    await click('[data-test-reset]');
+
+    // Values should be reset to initial values
+    assert.dom('[data-test-username]').hasValue('john');
+    assert.dom('[data-test-email]').hasValue('john@example.com');
+  });
+
+  /**
+   * Test that form reset works with no initial data
+   */
+  test('it resets form with no initial data', async function (assert) {
+    assert.expect(2);
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmitSpy}} as |form|>
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Enter value
+    await fillIn('[data-test-username]', 'john');
+
+    // Reset the form
+    await click('[data-test-reset]');
+
+    // Value should be cleared (native reset behavior)
+    assert.dom('[data-test-username]').hasValue('');
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called on reset');
+  });
+
+  /**
+   * Test that reset restores data from last successful submit, not original initial data
+   */
+  test('it resets to last successful submit data, not original initial data', async function (assert) {
+    assert.expect(6);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com'
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    const onChange = (result: FormResultData<typeof initialData>) => {
+      model.formData = result.data;
+    };
+
+    const onSubmit = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{onSubmit}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Verify original initial values
+    assert.dom('[data-test-username]').hasValue('john');
+    assert.dom('[data-test-email]').hasValue('john@example.com');
+
+    // Change to new values and submit successfully
+    await fillIn('[data-test-username]', 'jane');
+    await fillIn('[data-test-email]', 'jane@example.com');
+    await click('[data-test-submit]');
+
+    assert.ok(onSubmit.calledOnce, 'onSubmit was called');
+
+    // Now dirty the form again with different values
+    await fillIn('[data-test-username]', 'bob');
+    await fillIn('[data-test-email]', 'bob@example.com');
+
+    // Reset should restore to the last successful submit (jane), not original (john)
+    await click('[data-test-reset]');
+
+    // Values should match the last successful submit data
+    assert
+      .dom('[data-test-username]')
+      .hasValue('jane', 'username reset to last submit value, not original');
+    assert
+      .dom('[data-test-email]')
+      .hasValue(
+        'jane@example.com',
+        'email reset to last submit value, not original'
+      );
+
+    // Verify the component state also matches
+    assert.deepEqual(
+      model.formData,
+      { username: 'jane', email: 'jane@example.com' },
+      'component data matches last submit values'
+    );
+  });
+
+  /**
+   * Test that onChange receives correct data structure on reset
+   */
+  test('it calls onChange with correct data structure on reset', async function (assert) {
+    assert.expect(6);
+
+    const initialData = {
+      username: 'john',
+      email: 'john@example.com',
+      age: 30
+    };
+
+    class Model {
+      @tracked formData = { ...initialData };
+    }
+    const model = new Model();
+
+    let onChangeCallCount = 0;
+    const onChange = (result: FormResultData<typeof initialData>) => {
+      onChangeCallCount++;
+      model.formData = result.data;
+
+      // On reset (after initial changes), verify the data structure
+      if (onChangeCallCount === 3) {
+        // After reset
+        assert.strictEqual(
+          result.data.username,
+          'john',
+          'onChange receives correct username'
+        );
+        assert.strictEqual(
+          result.data.email,
+          'john@example.com',
+          'onChange receives correct email'
+        );
+        assert.strictEqual(
+          result.data.age,
+          30,
+          'onChange receives correct age'
+        );
+        assert.strictEqual(
+          result.dirty.size,
+          0,
+          'dirty set is empty after reset'
+        );
+        assert.ok(result.isValid, 'form is valid after reset');
+      }
+    };
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @data={{model.formData}}
+          @onChange={{onChange}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="age" as |field|>
+            <field.Input @type="number" data-test-age />
+          </form.Field>
+
+          <button type="button" {{on "click" form.reset}} data-test-reset>
+            Reset
+          </button>
+        </Form>
+      </template>
+    );
+
+    // Change values (triggers onChange)
+    await fillIn('[data-test-username]', 'jane');
+    await fillIn('[data-test-email]', 'jane@example.com');
+
+    // Reset the form (should trigger onChange with initial data)
+    await click('[data-test-reset]');
+
+    assert.strictEqual(
+      onChangeCallCount,
+      3,
+      'onChange called exactly 3 times (2 changes + 1 reset)'
+    );
   });
 });
 

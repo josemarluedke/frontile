@@ -1339,6 +1339,187 @@ export default class MixedFieldsForm extends Component {
 - Deep comparison ensures nested object changes are detected
 - `form.dirty` contains paths like `"user.profile.email"`, not just `"user"`
 
+## Resetting Forms
+
+The Form component provides a `reset` function that allows you to reset the form to its initial state. This is useful for implementing "Cancel" or "Reset" buttons in your forms.
+
+### Basic Reset
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import { on } from '@ember/modifier';
+
+export default class ResetForm extends Component {
+  @tracked formData = {
+    username: 'johndoe',
+    email: 'john@example.com',
+    bio: 'Software developer'
+  };
+
+  handleChange = (data: FormResultData<typeof this.formData>) => {
+    this.formData = data.data;
+  };
+
+  handleSubmit = (data: FormResultData<typeof this.formData>) => {
+    console.log('Form submitted:', data.data);
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleChange}}
+        @onSubmit={{this.handleSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='username' as |field|>
+            <field.Input @label='Username' />
+          </form.Field>
+
+          <form.Field @name='email' as |field|>
+            <field.Input @label='Email' @type='email' />
+          </form.Field>
+
+          <form.Field @name='bio' as |field|>
+            <field.Textarea @label='Bio' rows='4' />
+          </form.Field>
+
+          {{#if form.dirty.size}}
+            <div class='p-3 bg-warning-50 rounded text-sm'>
+              You have unsaved changes
+            </div>
+          {{/if}}
+
+          <div class='flex gap-2'>
+            <Button type='submit'>
+              Save Changes
+            </Button>
+            <Button
+              type='button'
+              @intent='default'
+              @appearance='outlined'
+              {{on 'click' form.reset}}
+            >
+              Reset
+            </Button>
+          </div>
+        </div>
+      </Form>
+    </div>
+  </template>
+}
+```
+
+### Reset with Validation
+
+The `reset` function clears validation errors and restores the form to its initial state, including resetting dirty field tracking.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import { on } from '@ember/modifier';
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Must be a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(8, 'Password must be at least 8 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
+export default class ResetValidationForm extends Component {
+  @tracked formData: Schema = {
+    email: 'user@example.com',
+    password: 'password123'
+  };
+
+  handleChange = (data: FormResultData<Schema>) => {
+    this.formData = data.data;
+  };
+
+  handleSubmit = (data: FormResultData<Schema>) => {
+    console.log('Form submitted:', data.data);
+  };
+
+  handleError = (errors: FormErrors) => {
+    console.log('Validation errors:', errors);
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleChange}}
+        @onSubmit={{this.handleSubmit}}
+        @onError={{this.handleError}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input @label='Email' @type='email' @isRequired={{true}} />
+          </form.Field>
+
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <div class='flex gap-2'>
+            <Button type='submit' disabled={{form.isLoading}}>
+              {{if form.isLoading 'Saving...' 'Save'}}
+            </Button>
+            <Button
+              type='button'
+              @intent='default'
+              @appearance='outlined'
+              {{on 'click' form.reset}}
+            >
+              Reset
+            </Button>
+          </div>
+        </div>
+      </Form>
+    </div>
+  </template>
+}
+```
+
+### Reset Behavior
+
+When you call `form.reset()`:
+
+1. **Calls native form reset**: The underlying HTML form element's `reset()` method is called, which resets all form controls to their default values
+2. **Restores initial data**: The form data is restored to the values provided in the initial `@data` prop
+3. **Clears validation errors**: Any validation errors are cleared
+4. **Clears dirty state**: The dirty field tracking is reset to an empty set
+
+**For controlled forms** (with `@onChange`):
+- Calls `@onChange` with the initial data, allowing your component to update its state
+
+**For uncontrolled forms** (without `@onChange`):
+- Updates the internal form state to the initial data
+
+**With no initial data**:
+- Simply calls the native form reset, clearing all fields to empty values
+
 ## Accessibility
 
 The Form component maintains all standard HTML form accessibility features:
@@ -1362,6 +1543,7 @@ The Form component yields an object with the following properties:
 - **`isInvalid`**: Boolean indicating if the form has validation errors
 - **`errors`**: Object containing validation errors keyed by field name
 - **`dirty`**: Set containing field names that have changed from their initial values
+- **`reset`**: Function to reset the form to its initial state (clears fields, errors, and dirty tracking)
 - **`Field`**: The Field component with `errors` and `formData` already bound
 
 Example usage:
@@ -1373,6 +1555,11 @@ Example usage:
   {{! Show loading state }}
   <button type="submit" disabled={{form.isLoading}}>
     {{if form.isLoading "Saving..." "Save"}}
+  </button>
+
+  {{! Reset form to initial state }}
+  <button type="button" {{on "click" form.reset}}>
+    Reset
   </button>
 
   {{! Check validation state }}
