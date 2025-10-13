@@ -386,9 +386,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     // Restore initial data
     if (this.initialDataSnapshot) {
       // Unflatten data if it was nested
-      const restoredData = this.isNestedStructure
-        ? (unflattenData(this.initialDataSnapshot) as T)
-        : ({ ...this.initialDataSnapshot } as T);
+      const restoredData = unflattenData(this.initialDataSnapshot) as T;
 
       // For controlled forms, call onChange to let parent update state
       if (this.isControlled && this.args.onChange) {
