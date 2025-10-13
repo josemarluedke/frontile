@@ -709,4 +709,121 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert.dom('[name="username"]').hasValue('jane');
     assert.dom('[name="email"]').hasValue('jane@example.com');
   });
+
+  /**
+   * Test that Field respects the @disabled argument
+   * When disabled, all yielded components should be disabled
+   */
+  test('it disables yielded components when @disabled={{true}}', async function (assert) {
+    assert.expect(8);
+
+    class Model {
+      @tracked isDisabled = false;
+    }
+    const model = new Model();
+
+    const items = ['Option 1', 'Option 2'];
+
+    await render(
+      <template>
+        <Field @name="input" @disabled={{model.isDisabled}} as |field|>
+          <field.Input @label="Input Field" data-test-input />
+        </Field>
+
+        <Field @name="checkbox" @disabled={{model.isDisabled}} as |field|>
+          <field.Checkbox @label="Checkbox Field" data-test-checkbox />
+        </Field>
+
+        <Field @name="select" @disabled={{model.isDisabled}} as |field|>
+          <field.SingleSelect
+            @label="Select Field"
+            @items={{items}}
+            data-test-select
+          />
+        </Field>
+
+        <Field @name="textarea" @disabled={{model.isDisabled}} as |field|>
+          <field.Textarea @label="Textarea Field" data-test-textarea />
+        </Field>
+      </template>
+    );
+
+    // Initially not disabled
+    assert.dom('[data-test-input]').isNotDisabled('Input is not disabled');
+    assert
+      .dom('[data-test-checkbox]')
+      .isNotDisabled('Checkbox is not disabled');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .isNotDisabled('Select is not disabled');
+    assert
+      .dom('[data-test-textarea]')
+      .isNotDisabled('Textarea is not disabled');
+
+    // Enable disabled state
+    model.isDisabled = true;
+    await settled();
+
+    // Now all fields should be disabled
+    assert.dom('[data-test-input]').isDisabled('Input is disabled');
+    assert.dom('[data-test-checkbox]').isDisabled('Checkbox is disabled');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .isDisabled('Select is disabled');
+    assert.dom('[data-test-textarea]').isDisabled('Textarea is disabled');
+  });
+
+  /**
+   * Test that Field respects the HTML disabled attribute
+   * This ensures that passing disabled={{true}} as a regular HTML attribute
+   * also works correctly (in addition to the @disabled argument)
+   */
+  test('it disables yielded components when HTML disabled={{true}} attribute is passed', async function (assert) {
+    assert.expect(4);
+
+    class Model {
+      @tracked isDisabled = false;
+    }
+    const model = new Model();
+
+    await render(
+      <template>
+        <Field @name="input" as |field|>
+          <field.Input
+            @label="Input Field"
+            disabled={{model.isDisabled}}
+            data-test-input
+          />
+        </Field>
+
+        <Field @name="checkbox" as |field|>
+          <field.Checkbox
+            @label="Checkbox Field"
+            disabled={{model.isDisabled}}
+            data-test-checkbox
+          />
+        </Field>
+      </template>
+    );
+
+    // Initially not disabled
+    assert
+      .dom('[data-test-input]')
+      .isNotDisabled('Input is not disabled initially');
+    assert
+      .dom('[data-test-checkbox]')
+      .isNotDisabled('Checkbox is not disabled initially');
+
+    // Enable disabled state via HTML attribute
+    model.isDisabled = true;
+    await settled();
+
+    // Now fields should be disabled via HTML attribute
+    assert
+      .dom('[data-test-input]')
+      .isDisabled('Input is disabled via HTML attribute');
+    assert
+      .dom('[data-test-checkbox]')
+      .isDisabled('Checkbox is disabled via HTML attribute');
+  });
 });

@@ -17,12 +17,12 @@ import type { WithBoundArgsForSignature } from './field-types';
 
 type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKey'
+  'name' | 'errors' | 'selectedKey' | 'isDisabled'
 >;
 
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKeys'
+  'name' | 'errors' | 'selectedKeys' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -34,22 +34,42 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
     errors?: FormErrors;
     /** The form data as key/value pairs. */
     formData?: T;
+    /** Whether the field should be disabled. */
+    disabled?: boolean;
   };
   Blocks: {
     default: [
       {
-        Checkbox: WithBoundArgs<typeof Checkbox, 'name' | 'errors' | 'checked'>;
-        CheckboxGroup: WithBoundArgs<typeof CheckboxGroup, 'name' | 'errors'>;
-        Input: WithBoundArgs<typeof Input, 'name' | 'errors' | 'value'>;
-        Radio: WithBoundArgs<typeof Radio, 'name' | 'errors' | 'value'>;
+        Checkbox: WithBoundArgs<
+          typeof Checkbox,
+          'name' | 'errors' | 'checked' | 'isDisabled'
+        >;
+        CheckboxGroup: WithBoundArgs<
+          typeof CheckboxGroup,
+          'name' | 'errors' | 'isDisabled'
+        >;
+        Input: WithBoundArgs<
+          typeof Input,
+          'name' | 'errors' | 'value' | 'isDisabled'
+        >;
+        Radio: WithBoundArgs<
+          typeof Radio,
+          'name' | 'errors' | 'value' | 'isDisabled'
+        >;
         RadioGroup: WithBoundArgs<
           typeof RadioGroup,
-          'name' | 'errors' | 'value'
+          'name' | 'errors' | 'value' | 'isDisabled'
         >;
         SingleSelect: BoundSingleSelect;
         MultiSelect: BoundMultiSelect;
-        Switch: WithBoundArgs<typeof Switch, 'name' | 'errors' | 'isSelected'>;
-        Textarea: WithBoundArgs<typeof Textarea, 'name' | 'errors' | 'value'>;
+        Switch: WithBoundArgs<
+          typeof Switch,
+          'name' | 'errors' | 'isSelected' | 'isDisabled'
+        >;
+        Textarea: WithBoundArgs<
+          typeof Textarea,
+          'name' | 'errors' | 'value' | 'isDisabled'
+        >;
       }
     ];
   };
@@ -92,9 +112,10 @@ class Field<
           errors=this.fieldErrors
           checked=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
         CheckboxGroup=(component
-          CheckboxGroup name=@name errors=this.fieldErrors
+          CheckboxGroup name=@name errors=this.fieldErrors isDisabled=@disabled
         )
         Input=(component
           Input
@@ -102,6 +123,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
         Radio=(component
           Radio
@@ -109,6 +131,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
         RadioGroup=(component
           RadioGroup
@@ -116,6 +139,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
         SingleSelect=(component
           Select
@@ -123,6 +147,7 @@ class Field<
           errors=this.fieldErrors
           selectedKey=this.fieldValue
           onSelectionChange=this.noop
+          isDisabled=@disabled
         )
         MultiSelect=(component
           Select
@@ -130,6 +155,7 @@ class Field<
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
           onSelectionChange=this.noop
+          isDisabled=@disabled
         )
         Switch=(component
           Switch
@@ -137,6 +163,7 @@ class Field<
           errors=this.fieldErrors
           isSelected=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
         Textarea=(component
           Textarea
@@ -144,6 +171,7 @@ class Field<
           errors=this.fieldErrors
           value=this.fieldValue
           onChange=this.noop
+          isDisabled=@disabled
         )
       )
       to="default"

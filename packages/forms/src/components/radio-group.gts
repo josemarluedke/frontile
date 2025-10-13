@@ -27,7 +27,10 @@ interface RadioGroupSignature<T> {
   Args: Args<T>;
   Blocks: {
     default: [
-      Radio: WithBoundArgs<typeof Radio, 'name' | 'onChange' | 'checkedValue'>
+      Radio: WithBoundArgs<
+        typeof Radio,
+        'name' | 'onChange' | 'checkedValue' | 'isDisabled'
+      >
     ];
   };
   Element: HTMLDivElement;
@@ -64,7 +67,12 @@ class RadioGroup<T extends string | number | boolean> extends Component<
         {{! @glint-nocheck: Radio has a type param, glint cannt handle that with WithboundArgs}}
         {{yield
           (component
-            Radio name=@name onChange=@onChange size=@size checkedValue=@value
+            Radio
+            name=@name
+            onChange=@onChange
+            size=@size
+            checkedValue=@value
+            isDisabled=@isDisabled
           )
         }}
       </div>

@@ -1408,6 +1408,14 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -1552,6 +1560,14 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -1629,6 +1645,14 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: 'The name of the form field.',
+        tags: {},
+      },
+      {
+        identifier: 'disabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Whether the field should be disabled.',
         tags: {},
       },
       {
@@ -1794,6 +1818,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'id',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -2132,6 +2164,15 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'disabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the entire form and all its fields should be disabled.  This only\napplies when using the yielded `Field` component.',
+        tags: {},
+      },
+      {
         identifier: 'onChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
@@ -2455,6 +2496,14 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -2734,6 +2783,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'id',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -3134,6 +3191,14 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -3288,6 +3353,14 @@ const data: ComponentDoc[] = [
           raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
           items: ['string', 'string[]'],
         },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',
@@ -4521,6 +4594,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'id',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
         description: '',

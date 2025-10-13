@@ -872,6 +872,131 @@ schema = v.object({
 - Form data extraction is optimized using `form-data-utils`
 - Consider debouncing input validation for complex forms
 
+### Disabling Forms
+
+The Form component supports disabling all form fields at once using the `@disabled` argument. This is useful for preventing user interaction during form submission or when certain conditions aren't met.
+
+When `@disabled={{true}}` is passed to the Form component, all yielded Field components and their child form controls (Input, Checkbox, Select, Textarea, etc.) are automatically disabled.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(6, 'Password must be at least 6 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
+export default class DisabledForm extends Component {
+  @tracked formData: Schema = {
+    email: '',
+    password: ''
+  };
+  @tracked isFormDisabled = false;
+  @tracked submitMessage = '';
+
+  handleFormChange = (data: FormResultData<Schema>) => {
+    this.formData = data.data;
+  };
+
+  handleFormSubmit = async (data: FormResultData<Schema>) => {
+    // Simulate API call
+    this.isFormDisabled = true;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    this.submitMessage = 'Login successful!';
+    this.isFormDisabled = false;
+    console.log('Form submitted:', data);
+  };
+
+  toggleDisabled = () => {
+    this.isFormDisabled = !this.isFormDisabled;
+  };
+
+  or(a: unknown, b: unknown) {
+    return a || b;
+  }
+
+  <template>
+    <div class='flex flex-col gap-4 w-80'>
+      <div class='flex items-center gap-2 p-3 bg-default-100 rounded'>
+        <label class='flex items-center gap-2 cursor-pointer'>
+          <input
+            type='checkbox'
+            checked={{this.isFormDisabled}}
+            {{on 'change' this.toggleDisabled}}
+            class='w-4 h-4'
+          />
+          <span class='text-sm font-medium'>Disable form</span>
+        </label>
+      </div>
+
+      <Form
+        @disabled={{this.isFormDisabled}}
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <Button
+            type='submit'
+            disabled={{this.or form.isLoading this.isFormDisabled}}
+          >
+            {{if form.isLoading 'Logging in...' 'Log In'}}
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-4 bg-success-100 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
+**Common use cases for disabled forms:**
+
+- **During submission**: Disable the form while an async operation is in progress to prevent duplicate submissions
+- **Conditional access**: Disable forms when user permissions or prerequisites aren't met
+- **Read-only mode**: Show form data in a non-editable state
+- **Multi-step forms**: Disable previous steps once completed
+
+**Note:** The `@disabled` argument affects only the yielded `Field` components. If you're using individual form components without `Field`, you'll need to manage their disabled state separately.
+
 ## Accessibility
 
 The Form component maintains all standard HTML form accessibility features:
@@ -881,6 +1006,7 @@ The Form component maintains all standard HTML form accessibility features:
 - Works with screen readers and assistive technologies
 - Maintains focus management and navigation
 - Supports all ARIA attributes when passed through `...attributes`
+- Disabled form fields are properly marked with the `disabled` attribute and announced by screen readers
 
 ## API
 
