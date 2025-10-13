@@ -1213,7 +1213,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -4077,7 +4077,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -7547,7 +7547,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -8050,7 +8050,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -8554,7 +8554,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -9251,7 +9251,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
       {
@@ -9481,7 +9481,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passee in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
         tags: {},
       },
     ],
