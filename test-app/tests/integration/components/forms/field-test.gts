@@ -1425,8 +1425,16 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
           @onSubmit={{noop}}
           as |form|
         >
-          <form.Field @name="password" @validateOn={{fieldValidateOn}} as |field|>
-            <field.Input @label="Password" @type="password" data-test-password />
+          <form.Field
+            @name="password"
+            @validateOn={{fieldValidateOn}}
+            as |field|
+          >
+            <field.Input
+              @label="Password"
+              @type="password"
+              data-test-password
+            />
           </form.Field>
         </Form>
       </template>
@@ -1439,7 +1447,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type "a" - should trigger input validation at Field level
     await fillIn('[data-test-password]', 'a');
-    await settled();
 
     // Error should appear after input
     assert
@@ -1451,7 +1458,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type more characters "abc"
     await fillIn('[data-test-password]', 'abc');
-    await settled();
 
     // Error should still be visible
     assert
@@ -1460,7 +1466,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type enough to pass validation "abcdef"
     await fillIn('[data-test-password]', 'abcdef');
-    await settled();
 
     // Error should clear
     assert
@@ -1469,7 +1474,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type back to invalid
     await fillIn('[data-test-password]', 'ab');
-    await settled();
 
     // Error should reappear
     assert
@@ -1515,7 +1519,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid email - should trigger input validation
     await fillIn('[data-test-email]', 'invalid');
-    await settled();
 
     // Error should appear after input
     assert
@@ -1524,7 +1527,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Trigger blur (change event) - should also trigger validation
     await triggerEvent('[data-test-email]', 'blur');
-    await settled();
 
     // Error should still be visible (still invalid)
     assert
@@ -1533,7 +1535,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Fix email
     await fillIn('[data-test-email]', 'test@example.com');
-    await settled();
 
     // Error should clear after input
     assert
@@ -1542,7 +1543,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
 
     // Type invalid again - should show error on input
     await fillIn('[data-test-email]', 'bad');
-    await settled();
 
     // Error should reappear
     assert
