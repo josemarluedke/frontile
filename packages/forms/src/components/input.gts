@@ -171,6 +171,7 @@ class Input extends Component<InputSignature> {
           name={{@name}}
           value={{this.value}}
           type={{this.type}}
+          disabled={{@isDisabled}}
           class={{this.classes.input
             class=@classes.input
             hasStartContent=(has-block "startContent")

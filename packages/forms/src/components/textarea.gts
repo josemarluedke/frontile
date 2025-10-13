@@ -72,6 +72,7 @@ class Textarea extends Component<TextareaSignature> {
         id={{c.id}}
         name={{@name}}
         value={{@value}}
+        disabled={{@isDisabled}}
         class={{this.classes.input class=@classes.input}}
         data-component="textarea"
         aria-invalid={{if c.isInvalid "true"}}

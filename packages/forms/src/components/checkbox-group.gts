@@ -25,7 +25,12 @@ interface Args extends FormControlSharedArgs {
 interface CheckboxGroupSignature {
   Args: Args;
   Blocks: {
-    default: [Checkbox: WithBoundArgs<typeof Checkbox, 'name' | 'onChange'>];
+    default: [
+      Checkbox: WithBoundArgs<
+        typeof Checkbox,
+        'name' | 'onChange' | 'isDisabled'
+      >
+    ];
   };
   Element: HTMLDivElement;
 }
@@ -57,7 +62,13 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
         data-orientation={{if @orientation @orientation "vertical"}}
       >
         {{yield
-          (component Checkbox name=@name onChange=@onChange size=@size)
+          (component
+            Checkbox
+            name=@name
+            onChange=@onChange
+            size=@size
+            isDisabled=@isDisabled
+          )
           to="default"
         }}
       </div>

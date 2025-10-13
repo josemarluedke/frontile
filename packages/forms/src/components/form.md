@@ -348,7 +348,9 @@ export default class ComprehensiveForm extends Component {
 
 ### Form Validation Integration
 
-The Form component works seamlessly with validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.
+The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation libraries like Valibot for scalable form validation. This example demonstrates how to use Valibot schemas for comprehensive form validation.  The use of custom validators is also supported.
+
+**Note**:  When using built-in form validation, the `Field` component _must_ be used (see example below).  The `Field` component handles auomatic error binding.  Use of `Field` is unnecessary when not using built-in form validation.  [Learn more about the `Field` component and see more form validation examples](field).
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -358,16 +360,57 @@ import {
   Input,
   Checkbox,
   Select,
-  type FormResultData
+  type FormResultData,
+  type FormErrors
 } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
 import * as v from 'valibot';
 
+// Valibot schema for form validation
+const schema = v.object({
+  name: v.pipe(
+    v.string(),
+    v.nonEmpty('Name is required'),
+    v.minLength(2, 'Name must be at least 2 characters')
+  ),
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(6, 'Password must be at least 6 characters'),
+    v.regex(/[A-Z]/, 'Password must contain at least one uppercase letter'),
+    v.regex(/[a-z]/, 'Password must contain at least one lowercase letter'),
+    v.regex(/\d/, 'Password must contain at least one number')
+  ),
+  accountType: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select an account type')
+  ),
+  terms: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms and conditions')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
 export default class ValidatedForm extends Component {
-  @tracked formData: FormResultData = {};
-  @tracked errors: Record<string, string[]> = {};
+  // Provide a complete initial state for proper dirty tracking
+  @tracked formData: Schema = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    accountType: 'personal',
+    terms: false
+  };
+
   @tracked submitMessage = '';
-  @tracked selectedAccountType: string | null = null;
 
   accountTypes = [
     { label: 'Personal', key: 'personal' },
@@ -375,181 +418,94 @@ export default class ValidatedForm extends Component {
     { label: 'Enterprise', key: 'enterprise' }
   ];
 
-  // Valibot schema for form validation
-  FormSchema = v.object({
-    name: v.pipe(
-      v.string(),
-      v.nonEmpty('Name is required'),
-      v.minLength(2, 'Name must be at least 2 characters')
-    ),
-    email: v.pipe(
-      v.string(),
-      v.nonEmpty('Email is required'),
-      v.email('Please enter a valid email address')
-    ),
-    password: v.pipe(
-      v.string(),
-      v.nonEmpty('Password is required'),
-      v.minLength(6, 'Password must be at least 6 characters'),
-      v.regex(/[A-Z]/, 'Password must contain at least one uppercase letter'),
-      v.regex(/[a-z]/, 'Password must contain at least one lowercase letter'),
-      v.regex(/\d/, 'Password must contain at least one number')
-    ),
-    accountType: v.pipe(
-      v.string(),
-      v.nonEmpty('Please select an account type')
-    ),
-    terms: v.pipe(
-      v.boolean(),
-      v.literal(true, 'You must accept the terms and conditions')
-    )
-  });
+  customValidator(data: FormResultData<Schema>) {
+    if (data['password'] !== data['confirmPassword']) {
+      return [{
+        message: 'Passwords must match',
+        path: [{ key: 'confirmPassword' }]
+      }];
+    }
+  };
 
-  handleFormChange = (data: FormResultData, event: Event) => {
-    this.formData = data;
-    // Real-time validation on input changes
-    this.validateField(data);
+  handleFormChange = (data: FormResultData<Schema>, event: Event) => {
+    this.formData = data.data;
     console.log('Form input:', { data, event });
   };
 
-  validateField = (data: FormResultData) => {
-    // Prepare data for validation
-    const validationData = {
-      ...data,
-      accountType: this.selectedAccountType
-    };
-
-    // Try to parse the entire form, but only clear errors for valid fields
-    try {
-      v.parse(this.FormSchema, validationData);
-      // If validation passes completely, clear all errors
-      this.errors = {};
-    } catch (error) {
-      if (error instanceof v.ValiError) {
-        // Keep existing errors, but clear errors for fields that are now valid
-        const newErrors = { ...this.errors };
-        const invalidFields = new Set(
-          error.issues.map((issue) => issue.path?.[0]?.key).filter(Boolean)
-        );
-
-        // Clear errors for fields that are no longer invalid
-        Object.keys(newErrors).forEach((field) => {
-          if (!invalidFields.has(field)) {
-            delete newErrors[field];
-          }
-        });
-
-        this.errors = newErrors;
-      }
-    }
+  handleFormSubmit = async (data: FormResultData<Schema>, event: SubmitEvent) => {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.submitMessage = 'Account created successfully!';
+    console.log('Form submitted successfully:', data);
   };
 
-  handleFormSubmit = async (data: FormResultData, event: SubmitEvent) => {
-    this.formData = data;
-    this.errors = {};
-    this.submitMessage = '';
-    console.log('Form submit:', { data, event });
-
-    // Prepare data for validation
-    const validationData = {
-      ...data,
-      accountType: this.selectedAccountType
-    };
-
-    // Validate using Valibot
-    try {
-      const validatedData = v.parse(this.FormSchema, validationData);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      this.submitMessage = 'Account created successfully!';
-      console.log('Form submitted successfully:', validatedData);
-    } catch (error) {
-      if (error instanceof v.ValiError) {
-        // Convert Valibot errors to our error format
-        const validationErrors: Record<string, string[]> = {};
-
-        for (const issue of error.issues) {
-          const path = issue.path?.[0]?.key as string;
-          if (path) {
-            if (!validationErrors[path]) {
-              validationErrors[path] = [];
-            }
-            validationErrors[path].push(issue.message);
-          }
-        }
-
-        this.errors = validationErrors;
-      } else {
-        this.submitMessage = 'An error occurred. Please try again.';
-      }
-    }
+  handleFormError = (errors: FormErrors, data: Schema, event: SubmitEvent) => {
+    console.log('Validation errors:', errors);
   };
 
   get isSuccessMessage() {
     return this.submitMessage.includes('success');
   }
 
-  handleAccountTypeChange = (selectedKey: string | null) => {
-    this.selectedAccountType = selectedKey;
-    // Clear errors when selection is made
-    if (selectedKey && this.errors.accountType) {
-      const newErrors = { ...this.errors };
-      delete newErrors.accountType;
-      this.errors = newErrors;
-    }
-  };
-
   <template>
     <div class='flex flex-col gap-4 w-80'>
       <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @validate={{this.customValidator}}
         @onChange={{this.handleFormChange}}
         @onSubmit={{this.handleFormSubmit}}
+        @onError={{this.handleFormError}}
         as |form|
       >
         <div class='flex flex-col gap-4'>
+          <form.Field @name='name' as |field|>
+            <field.Input
+              @label='Full Name'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='name'
-            @label='Full Name'
-            @errors={{this.errors.name}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='email'
-            @label='Email Address'
-            @type='email'
-            @errors={{this.errors.email}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Input
-            @name='password'
-            @label='Password'
-            @type='password'
-            @description='Must be at least 6 characters'
-            @errors={{this.errors.password}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='confirmPassword' as |field|>
+            <field.Input
+              @label='Confirm Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Select
-            @name='accountType'
-            @label='Account Type'
-            @items={{this.accountTypes}}
-            @placeholder='Select account type'
-            @selectedKey={{this.selectedAccountType}}
-            @onSelectionChange={{this.handleAccountTypeChange}}
-            @errors={{this.errors.accountType}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='accountType' as |field|>
+            <field.SingleSelect
+              @label='Account Type'
+              @items={{this.accountTypes}}
+              @allowEmpty={{true}}
+              @placeholder='Select account type'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-          <Checkbox
-            @name='terms'
-            @label='I agree to the terms and conditions'
-            @errors={{this.errors.terms}}
-            @isRequired={{true}}
-          />
+          <form.Field @name='terms' as |field|>
+            <field.Checkbox
+              @label='I agree to the terms and conditions'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
           <Button type='submit' disabled={{form.isLoading}} @class='mt-4'>
             {{if form.isLoading 'Creating Account...' 'Create Account'}}
@@ -569,6 +525,86 @@ export default class ValidatedForm extends Component {
           {{this.submitMessage}}
         </div>
       {{/if}}
+    </div>
+  </template>
+}
+```
+
+### Dirty Field Tracking
+
+The Form component automatically tracks which fields have been modified by the user. This is useful for showing unsaved changes warnings or enabling/disabling submit buttons.
+
+Enable dirty field tracking by specifying a field in the initial `@data` passed into a `Form` component.  Dirty tracking is enabled only for fields specified in initial data.
+
+Dirty fields reset on submit.  After a sucessful submit, any tracked data is considered clean.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Form, Input, Checkbox, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+
+export default class DirtyTrackingForm extends Component {
+  @tracked formData = {
+    username: 'john_doe',
+    email: 'john@example.com',
+    notifications: true
+  };
+
+  handleFormChange = (data: FormResultData, event: Event) => {
+    console.log('Dirty fields:', Array.from(data.dirty));
+  };
+
+  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
+    console.log('Submitted data:', data);
+    // Reset dirty state by updating formData with submitted values
+    this.formData = data.data;
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-96'>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='username' as |field|>
+            <field.Input @label='Username' />
+          </form.Field>
+
+          <form.Field @name='email' as |field|>
+            <field.Input @label='Email' @type='email' />
+          </form.Field>
+
+          <form.Field @name='notifications' as |field|>
+            <field.Checkbox @label='Enable email notifications' />
+          </form.Field>
+
+          <Button
+            type='submit'
+          >
+            Save Changes
+          </Button>
+        </div>
+
+        <div class='mt-4 p-4 rounded
+        {{if form.dirty.size "bg-warning-50" "bg-default-50"}}'>
+        {{#if form.dirty.size}}
+          <p class='font-medium text-warning-800'>
+            Unsaved changes in:
+            {{#each form.dirty as |field|}}
+              <span class='inline-block px-2 py-1 bg-warning-100 rounded text-sm ml-1'>
+                {{field}}
+              </span>
+            {{/each}}
+          </p>
+        {{else}}
+          <p class='text-default-600'>No unsaved changes</p>
+        {{/if}}
+      </div>
+      </Form>
     </div>
   </template>
 }
@@ -617,17 +653,17 @@ export default class CustomHandlingForm extends Component {
     const errors: Record<string, string[]> = {};
 
     // Real-time email validation
-    if (data.email && typeof data.email === 'string') {
-      if (!data.email.includes('@')) {
+    if (data['data']['email'] && typeof data['data']['email'] === 'string') {
+      if (!data['data']['email'].includes('@')) {
         errors.email = ['Email must contain @ symbol'];
-      } else if (!data.email.includes('.')) {
+      } else if (!data['data']['email'].includes('.')) {
         errors.email = ['Email must contain a domain'];
       }
     }
 
     // Real-time password validation
-    if (data.password && typeof data.password === 'string') {
-      const password = data.password;
+    if (data['data']['password'] && typeof data['data']['password'] === 'string') {
+      const password = data['data']['password'];
       const passwordErrors = [];
 
       if (password.length < 8) {
@@ -658,22 +694,22 @@ export default class CustomHandlingForm extends Component {
     const errors: Record<string, string[]> = {};
 
     if (
-      !data.username ||
-      typeof data.username !== 'string' ||
-      data.username.length < 3
+      !data['data']['username'] ||
+      typeof data['data']['username'] !== 'string' ||
+      data['data']['username'].length < 3
     ) {
       errors.username = ['Username must be at least 3 characters'];
     }
 
     if (
-      !data.email ||
-      typeof data.email !== 'string' ||
-      !data.email.includes('@')
+      !data['data']['email'] ||
+      typeof data['data']['email'] !== 'string' ||
+      !data['data']['email'].includes('@')
     ) {
       errors.email = ['Valid email is required'];
     }
 
-    if (!data.agreeToTerms) {
+    if (!data['data']['agreeToTerms']) {
       errors.agreeToTerms = ['You must agree to the terms'];
     }
 
@@ -777,15 +813,38 @@ export default class CustomHandlingForm extends Component {
 - Nested objects from grouped form elements
 - File uploads (when using file inputs)
 
+### Controlled vs Uncontrolled Forms
+
+The Form component supports both controlled and uncontrolled patterns, similar to React form handling:
+
+**Controlled Forms** (with `@onChange` + `@data`)
+- You provide both `@data` and `@onChange`
+- Form values are controlled by your component state
+- You update state in `@onChange`, which flows back to form inputs
+- Best for forms where you need to validate or transform data in real-time
+- Example: `<Form @data={{this.formData}} @onChange={{this.handleChange}}>`
+
+**Uncontrolled Forms** (without `@onChange`)
+- You provide only `@data` for initial values (or omit it entirely)
+- Form manages its own internal state
+- You receive final data only in `@onSubmit`
+- Simpler pattern for basic forms
+- Example: `<Form @data={{this.initialData}} @onSubmit={{this.handleSubmit}}>`
+
+**Choosing Between Patterns:**
+- Use **controlled** when you need real-time form data access, validation as user types, or complex interdependent fields
+- Use **uncontrolled** for simpler forms where you only care about the final submitted data
+- Both patterns support validation via `@schema` and `@validate`
+
 ## Best Practices
 
 ### Form Validation
 
-For scalable form validation, we recommend using validation libraries like [Valibot](https://valibot.dev/):
+For scalable form validation, use built-in validation with a library that implements [Standard Schema](https://standardschema.dev/), such as [Valibot](https://valibot.dev/):
 
-```typescript
+```gts
 // Define a Valibot schema for type-safe validation
-FormSchema = v.object({
+schema = v.object({
   email: v.pipe(
     v.string(),
     v.nonEmpty('Email is required'),
@@ -797,37 +856,14 @@ FormSchema = v.object({
   )
 });
 
-// Validate on both input and submit events
-handleFormChange = (data: FormResultData) => {
-  // Real-time validation for better UX
-  this.validateField(data);
-};
-
-handleFormSubmit = async (data: FormResultData) => {
-  // Comprehensive validation on submit
-  await this.validateAndSubmit(data);
-};
-
-validateAndSubmit = async (data: FormResultData) => {
-  try {
-    const validatedData = v.parse(this.FormSchema, data);
-    // Proceed with form submission
-  } catch (error) {
-    if (error instanceof v.ValiError) {
-      // Convert Valibot errors to component error format
-      const validationErrors = this.formatValiError(error);
-      this.errors = validationErrors;
-    }
-  }
-};
-```
-
-### State Management
-
-```typescript
-// Keep form data and validation errors separate
-@tracked formData: FormResultData = {};
-@tracked validationErrors: Record<string, string[]> = {};
+<template>
+  <Form
+    @schema={{schema}}
+    as |form|
+  >
+    ...
+  </Form>
+</template>
 ```
 
 ### Performance Considerations
@@ -835,6 +871,131 @@ validateAndSubmit = async (data: FormResultData) => {
 - The Form component only re-renders when necessary
 - Form data extraction is optimized using `form-data-utils`
 - Consider debouncing input validation for complex forms
+
+### Disabling Forms
+
+The Form component supports disabling all form fields at once using the `@disabled` argument. This is useful for preventing user interaction during form submission or when certain conditions aren't met.
+
+When `@disabled={{true}}` is passed to the Form component, all yielded Field components and their child form controls (Input, Checkbox, Select, Textarea, etc.) are automatically disabled.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(6, 'Password must be at least 6 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
+export default class DisabledForm extends Component {
+  @tracked formData: Schema = {
+    email: '',
+    password: ''
+  };
+  @tracked isFormDisabled = false;
+  @tracked submitMessage = '';
+
+  handleFormChange = (data: FormResultData<Schema>) => {
+    this.formData = data.data;
+  };
+
+  handleFormSubmit = async (data: FormResultData<Schema>) => {
+    // Simulate API call
+    this.isFormDisabled = true;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    this.submitMessage = 'Login successful!';
+    this.isFormDisabled = false;
+    console.log('Form submitted:', data);
+  };
+
+  toggleDisabled = () => {
+    this.isFormDisabled = !this.isFormDisabled;
+  };
+
+  or(a: unknown, b: unknown) {
+    return a || b;
+  }
+
+  <template>
+    <div class='flex flex-col gap-4 w-80'>
+      <div class='flex items-center gap-2 p-3 bg-default-100 rounded'>
+        <label class='flex items-center gap-2 cursor-pointer'>
+          <input
+            type='checkbox'
+            checked={{this.isFormDisabled}}
+            {{on 'change' this.toggleDisabled}}
+            class='w-4 h-4'
+          />
+          <span class='text-sm font-medium'>Disable form</span>
+        </label>
+      </div>
+
+      <Form
+        @disabled={{this.isFormDisabled}}
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <Button
+            type='submit'
+            disabled={{this.or form.isLoading this.isFormDisabled}}
+          >
+            {{if form.isLoading 'Logging in...' 'Log In'}}
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-4 bg-success-100 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
+**Common use cases for disabled forms:**
+
+- **During submission**: Disable the form while an async operation is in progress to prevent duplicate submissions
+- **Conditional access**: Disable forms when user permissions or prerequisites aren't met
+- **Read-only mode**: Show form data in a non-editable state
+- **Multi-step forms**: Disable previous steps once completed
+
+**Note:** The `@disabled` argument affects only the yielded `Field` components. If you're using individual form components without `Field`, you'll need to manage their disabled state separately.
 
 ## Accessibility
 
@@ -845,7 +1006,43 @@ The Form component maintains all standard HTML form accessibility features:
 - Works with screen readers and assistive technologies
 - Maintains focus management and navigation
 - Supports all ARIA attributes when passed through `...attributes`
+- Disabled form fields are properly marked with the `disabled` attribute and announced by screen readers
 
 ## API
+
+### Yielded Context
+
+The Form component yields an object with the following properties:
+
+- **`data`**: The current form data as key/value pairs (matches the `@data` prop in controlled forms)
+- **`isLoading`**: Boolean indicating if the form is currently submitting (async `@onSubmit` in progress)
+- **`isValid`**: Boolean indicating if the form has no validation errors
+- **`isInvalid`**: Boolean indicating if the form has validation errors
+- **`errors`**: Object containing validation errors keyed by field name
+- **`dirty`**: Set containing field names that have changed from their initial values
+- **`Field`**: The Field component with `errors` and `formData` already bound
+
+Example usage:
+```gts
+<Form @data={{this.formData}} @onSubmit={{this.handleSubmit}} as |form|>
+  {{! Access current form data }}
+  <div>Current email: {{form.data.email}}</div>
+
+  {{! Show loading state }}
+  <button type="submit" disabled={{form.isLoading}}>
+    {{if form.isLoading "Saving..." "Save"}}
+  </button>
+
+  {{! Check validation state }}
+  {{#if form.isInvalid}}
+    <div class="error">Please fix errors before submitting</div>
+  {{/if}}
+
+  {{! Check for unsaved changes }}
+  {{#if form.dirty.size}}
+    <div class="warning">You have unsaved changes</div>
+  {{/if}}
+</Form>
+```
 
 <Signature @package="forms" @component="Form" />
