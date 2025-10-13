@@ -15,6 +15,7 @@
 /site/lib/**/node_modules/
 /site/app/templates/docs/
 
+
 # misc
 /.env*
 /.pnp*
@@ -26,6 +27,7 @@
 /packages/**/testem.log
 .DS_Store
 yarn-error.log
+packages/**/.eslintcache
 
 # ember-try
 /packages/**/.node_modules.ember-try/
@@ -37,3 +39,4 @@ yarn-error.log
 
 packages/deploy-docs/
 packages/docs/tmp/
+.claude/settings.local.json

@@ -18,3 +18,4 @@ export type SlotsToClasses<S extends string> = {
 };
 
 export { useStyles, registerCustomStyles };
+export type { ClassValue };

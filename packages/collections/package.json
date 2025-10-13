@@ -57,6 +57,7 @@
     "@frontile/overlays": "workspace:0.17.0-beta.25",
     "@frontile/theme": "workspace:0.17.0-beta.25",
     "@frontile/utilities": "workspace:0.17.0-beta.25",
+    "@universal-ember/table": "^3.1.1",
     "ember-modifier": "^4.1.0"
   },
   "devDependencies": {
@@ -101,7 +102,8 @@
     "main": "addon-main.js",
     "app-js": {
       "./components/dropdown.js": "./dist/_app_/components/dropdown.js",
-      "./components/listbox.js": "./dist/_app_/components/listbox.js"
+      "./components/listbox.js": "./dist/_app_/components/listbox.js",
+      "./components/table.js": "./dist/_app_/components/table.js"
     }
   }
 }

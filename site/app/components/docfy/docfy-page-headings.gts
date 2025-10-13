@@ -74,7 +74,7 @@ export default class PageHeadings extends Component<Signature> {
   }
   <template>
     <div
-      class="overflow-y-auto sticky top-16 max-h-(screen-16) pt-12 pb-4 -mt-12 text-sm"
+      class="overflow-y-auto sticky top-16 max-h-screen-16 pt-12 pb-4 -mt-12 text-sm"
     >
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         {{#if page.headings.length}}

@@ -154,7 +154,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
             data-test-id="listbox-item-label"
             class={{this.classNames.label}}
             id={{this.labelId}}
-          >{{yield to="default"}}</span>
+          >{{yield}}</span>
           <span
             data-test-id="listbox-item-description"
             class={{this.classNames.description}}
@@ -165,7 +165,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
           data-test-id="listbox-item-label"
           class={{this.classNames.label}}
           id={{this.labelId}}
-        >{{yield to="default"}}</span>
+        >{{yield}}</span>
       {{/if}}
 
       {{#if @shortcut}}

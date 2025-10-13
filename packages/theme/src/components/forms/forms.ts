@@ -175,7 +175,18 @@ const checkboxRadioGroupBase = tv({
 const checkbox = tv({
   extend: checkboxRadioBase,
   slots: {
-    input: ['checked-bg-checkbox', 'rounded-xs']
+    input: [
+      'checked-bg-checkbox',
+      'indeterminate-bg-checkbox',
+      'rounded-xs',
+      // Indeterminate state styles - show minus/dash icon
+      'indeterminate:bg-primary',
+      'indeterminate:border-primary',
+      'indeterminate:bg-origin-border',
+      'indeterminate:bg-center',
+      'indeterminate:bg-no-repeat',
+      'dark:indeterminate:bg-current'
+    ]
   },
   variants: {
     size: {

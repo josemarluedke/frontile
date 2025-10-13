@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(pnpm build)",
+      "Bash(pnpm ember test:*)",
+      "Bash(pnpm run lint:js:*)",
+      "Bash(pnpm lint:js:*)",
+      "Bash(pnpm --filter buttons build)",
+      "Bash(pnpm --filter collections build)",
+      "Bash(pnpm --filter core build)",
+      "Bash(pnpm --filter forms build)",
+      "Bash(pnpm --filter frontile build)",
+      "Bash(pnpm --filter notifications build)",
+      "Bash(pnpm --filter overlays build)",
+      "Bash(pnpm --filter status build)",
+      "Bash(pnpm --filter theme build)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -249,7 +249,6 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             type=this.role
           )
         )
-        to="default"
       }}
     </ul>
   </template>

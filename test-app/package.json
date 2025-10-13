@@ -13,7 +13,9 @@
   "scripts": {
     "build": "ember build --environment=production",
     "start": "ember serve",
+    "lint:types": "glint",
     "test": "ember test",
+    "ember": "ember",
     "try:one": "ember try:one"
   },
   "devDependencies": {
