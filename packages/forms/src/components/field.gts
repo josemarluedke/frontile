@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action, get } from '@ember/object';
+import { next } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -135,13 +136,14 @@ class Field<
 
   /**
    * Validates the field on input if input validation is enabled.
-   * Uses a microtask to ensure form data has been updated before validation runs.
+   * Defers validation to the next runloop to ensure form data has been updated.
    */
   @action
   handleInput() {
     if (this.validateOnInput) {
-      // Use a microtask to ensure the form's handleInput has completed and form data is updated
-      Promise.resolve().then(() => {
+      // Defer to next runloop to ensure the form's handleInput has completed
+      // and form data is updated
+      next(() => {
         this.args.validateField?.(this.args.formData as T, this.args.name);
       });
     }
