@@ -2732,6 +2732,167 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       .dom('[data-test-username]')
       .hasValue('jane', 'Reset restores to last submit value');
   });
+
+  /**
+   * Test that validation runs on input only when validateOn={['input']} (without 'submit')
+   * In this case, validation happens on keystroke but NOT on submit
+   * This allows the form to submit even with visible validation errors
+   */
+  test('it validates on input when validateOn={{["input"]}} only (no submit validation)', async function (assert) {
+    assert.expect(8);
+
+    const schema = v.object({
+      username: v.pipe(
+        v.string(),
+        v.minLength(3, 'Username must be at least 3 characters')
+      )
+    });
+
+    const validateOn: ('input' | 'submit')[] = ['input'];
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOn}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            <field.Input data-test-username />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // No errors initially
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid username - should show error immediately
+    await fillIn('[data-test-username]', 'ab');
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input event');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Username must be at least 3 characters');
+
+    // Submit with invalid data - validation should be SKIPPED on submit
+    await click('[data-test-submit]');
+
+    // onSubmit should be called even with invalid data (no submit validation)
+    assert.ok(
+      onSubmitSpy.calledOnce,
+      'onSubmit called even with validation errors visible'
+    );
+    assert.deepEqual(
+      onSubmitSpy.firstCall.args[0].data,
+      { username: 'ab' },
+      'Invalid data was submitted'
+    );
+
+    // Error should still be visible (from input validation)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible after submit');
+
+    // Fix username - error should clear on input
+    await fillIn('[data-test-username]', 'john');
+
+    // Error should clear immediately
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after typing valid value');
+
+    // Submit with valid data
+    await click('[data-test-submit]');
+
+    assert.ok(onSubmitSpy.calledTwice, 'onSubmit called again with valid data');
+  });
+
+  /**
+   * Test that changing validateOn dynamically updates validation behavior
+   */
+  test('it responds to dynamic validateOn changes', async function (assert) {
+    assert.expect(6);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email address'))
+    });
+
+    class Model {
+      @tracked validateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    }
+    const model = new Model();
+
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{model.validateOn}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // With validateOn=['submit'], typing should not trigger validation
+    await fillIn('[data-test-email]', 'invalid');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No error with validateOn=["submit"]');
+
+    // Change to input validation
+    model.validateOn = ['input'];
+    await settled();
+
+    // Now typing should trigger validation
+    await fillIn('[data-test-email]', 'invalid2');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after changing to validateOn=["input"]');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Invalid email address');
+
+    // Change back to submit-only validation
+    model.validateOn = ['submit'];
+    await settled();
+
+    // Type more - should not trigger new validation
+    await fillIn('[data-test-email]', 'invalid3');
+
+    // Error should still be present (not cleared by new validateOn)
+    // but no new validation should have run
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Previous error still visible');
+
+    // Submit to trigger validation with new validateOn
+    await click('[data-test-submit]');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears on submit with validateOn=["submit"]');
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit not called with invalid data');
+  });
 });
 
 function selectNativeOptionByKey(

@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, click, settled } from '@ember/test-helpers';
+import {
+  render,
+  fillIn,
+  click,
+  settled,
+  triggerEvent
+} from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 import { tracked } from '@glimmer/tracking';
 import { Field, Form } from '@frontile/forms';
@@ -8,6 +14,7 @@ import { cell } from 'ember-resources';
 import type { FormErrors } from '@frontile/forms';
 import * as v from 'valibot';
 import sinon from 'sinon';
+import { array } from '@ember/helper';
 
 const noop = () => {};
 
@@ -1388,5 +1395,223 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert
       .dom('[data-component="form-feedback"]')
       .doesNotExist('All errors cleared, form submits successfully');
+  });
+
+  /**
+   * Test that Field validates on input when validateOn includes 'input'
+   * Field-level input validation works best within Form context
+   */
+  test('it validates field on input when validateOn includes "input"', async function (assert) {
+    assert.expect(6);
+
+    const schema = v.object({
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    // Form has submit-only validation by default
+    const formValidateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    // Field overrides with input validation
+    const fieldValidateOn: ('change' | 'input')[] = ['input'];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="password" @validateOn={{fieldValidateOn}} as |field|>
+            <field.Input @label="Password" @type="password" data-test-password />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type "a" - should trigger input validation at Field level
+    await fillIn('[data-test-password]', 'a');
+    await settled();
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Password must be at least 6 characters');
+
+    // Type more characters "abc"
+    await fillIn('[data-test-password]', 'abc');
+    await settled();
+
+    // Error should still be visible
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible');
+
+    // Type enough to pass validation "abcdef"
+    await fillIn('[data-test-password]', 'abcdef');
+    await settled();
+
+    // Error should clear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after typing valid value');
+
+    // Type back to invalid
+    await fillIn('[data-test-password]', 'ab');
+    await settled();
+
+    // Error should reappear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error reappears on input');
+  });
+
+  /**
+   * Test that Field validates on both input and change when validateOn includes both
+   */
+  test('it validates field on both input and change when validateOn includes both', async function (assert) {
+    assert.expect(5);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email format'))
+    });
+
+    // Form has submit-only validation
+    const formValidateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    // Field overrides with both input and change validation
+    const fieldValidateOn: ('change' | 'input')[] = ['input', 'change'];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="email" @validateOn={{fieldValidateOn}} as |field|>
+            <field.Input @label="Email" data-test-email />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - should trigger input validation
+    await fillIn('[data-test-email]', 'invalid');
+    await settled();
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input');
+
+    // Trigger blur (change event) - should also trigger validation
+    await triggerEvent('[data-test-email]', 'blur');
+    await settled();
+
+    // Error should still be visible (still invalid)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible after blur');
+
+    // Fix email
+    await fillIn('[data-test-email]', 'test@example.com');
+    await settled();
+
+    // Error should clear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after typing valid email');
+
+    // Type invalid again - should show error on input
+    await fillIn('[data-test-email]', 'bad');
+    await settled();
+
+    // Error should reappear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error reappears on input after typing invalid email');
+  });
+
+  /**
+   * Test that Field explicitly inherits Form validateOn when not specified
+   */
+  test('it inherits Form validateOn when Field validateOn is not specified', async function (assert) {
+    assert.expect(4);
+
+    const schema = v.object({
+      username: v.pipe(
+        v.string(),
+        v.minLength(3, 'Username must be at least 3 characters')
+      )
+    });
+
+    // Form validates on both input and change
+    const formValidateOn: ('change' | 'input' | 'submit')[] = [
+      'input',
+      'change'
+    ];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            {{! Field does not specify @validateOn, should inherit from Form }}
+            <field.Input data-test-username />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid username - should trigger input validation (inherited)
+    await fillIn('[data-test-username]', 'ab');
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input (inherited from Form)');
+
+    // Fix username
+    await fillIn('[data-test-username]', 'john');
+
+    // Error should clear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after input (inherited from Form)');
+
+    // Type invalid again and blur - should trigger change validation (inherited)
+    await fillIn('[data-test-username]', 'ab');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears on input and persists through blur (inherited)');
   });
 });
