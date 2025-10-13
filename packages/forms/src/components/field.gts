@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
-import { action } from '@ember/object';
+import { action, get } from '@ember/object';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -85,14 +85,22 @@ class Field<
 > extends Component<FieldSignature<T>> {
   /**
    * Returns the validation errors for the field.
+   * Supports dotted field names (e.g., 'profile.email').
    */
   get fieldErrors() {
     return this.args.errors?.[this.args.name];
   }
 
-  /** Returns the current value for the field from formData. */
+  /**
+   * Returns the current value for the field from formData.
+   * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
+   * Uses Ember's get() which handles both flat keys and dotted paths.
+   */
   get fieldValue() {
-    return this.args.formData?.[this.args.name];
+    if (!this.args.formData) return undefined;
+
+    // Ember's get() handles both flat keys and dotted paths correctly
+    return get(this.args.formData, this.args.name);
   }
 
   /**
