@@ -475,7 +475,7 @@ export default class ValidatedForm extends Component {
             />
           </form.Field>
 
-          <form.Field @name='password' @validateOn={{array 'input'}} as |field|>
+          <form.Field @name='password' @validateOn={{array 'input' 'blur'}} as |field|>
             <field.Input
               @label='Password'
               @type='password'
@@ -874,11 +874,12 @@ By default, the Form component validates data both on field changes and form sub
 **Available options:**
 - `change` - Validate individual fields when users change a value and blur/defocus the field (per-field validation)
 - `input` - Validate individual fields as users type (real-time validation on every keystroke)
+- `blur` - Validate individual fields when they lose focus, regardless of whether the value changed
 - `submit` - Validate the entire form when submitted
 
 **Default behavior:** `@validateOn={{array 'change' 'submit'}}` - validates on both field changes (blur) and form submission.
 
-**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types.
+**Note on `'change'` vs `'blur'`:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) **only if** its value has been modified. The `'blur'` option validates on the HTML `blur` event, which fires whenever a field loses focus, regardless of whether the value changed. The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types.
 
 **Usage:**
 
@@ -898,10 +899,20 @@ By default, the Form component validates data both on field changes and form sub
   ...
 </Form>
 
-// Change validation only - validate on blur, but not on submit
+// Change validation only - validate on blur after modification, but not on submit
 <Form
   @schema={{schema}}
   @validateOn={{array 'change'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  ...
+</Form>
+
+// Blur validation only - validate on any focus loss, but not on submit
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'blur'}}
   @onSubmit={{this.handleSubmit}}
   as |form|
 >
@@ -918,10 +929,10 @@ By default, the Form component validates data both on field changes and form sub
   ...
 </Form>
 
-// Both change and input validation - validate on blur AND as users type
+// Combined validation - validate on change, blur, AND as users type
 <Form
   @schema={{schema}}
-  @validateOn={{array 'change' 'input' 'submit'}}
+  @validateOn={{array 'change' 'blur' 'input' 'submit'}}
   @onSubmit={{this.handleSubmit}}
   as |form|
 >
@@ -960,6 +971,15 @@ By default, the Form component validates data both on field changes and form sub
 - Uses the Field component's `handleChange` action to trigger validation
 - Based on the HTML `change` event (fires on blur after value modification, not on every keystroke)
 
+**Blur validation (`'blur'`)**:
+- Individual fields validate whenever they lose focus, regardless of whether the value changed
+- Validation errors appear immediately when the user tabs away or clicks outside the field
+- Each field validates independently using its specific validation rules
+- Provides feedback as users navigate between fields
+- Uses the Field component's `handleBlur` action to trigger validation
+- Based on the HTML `blur` event (fires whenever a field loses focus)
+- Useful for ensuring fields are validated even when users skip over them without making changes
+
 **Input validation (`'input'`)**:
 - Individual fields validate as users type, on every keystroke
 - Validation errors appear in real-time as the user types
@@ -979,8 +999,24 @@ By default, the Form component validates data both on field changes and form sub
 
 **On-blur validation (recommended for most forms):**
 ```gts
-// Default - validates when field loses focus AND on submit
+// Default - validates when field loses focus after modification AND on submit
 <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
+  <form.Field @name="email" as |field|>
+    <field.Input @label="Email" />
+  </form.Field>
+</Form>
+```
+
+**Explicit blur validation (validates on any focus loss):**
+```gts
+// Validates whenever field loses focus, even if value didn't change
+// Useful for catching empty required fields as users navigate
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'blur' 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
   <form.Field @name="email" as |field|>
     <field.Input @label="Email" />
   </form.Field>
@@ -993,6 +1029,22 @@ By default, the Form component validates data both on field changes and form sub
 <Form
   @schema={{schema}}
   @validateOn={{array 'input' 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  <form.Field @name="password" as |field|>
+    <field.Input @label="Password" @type="password" />
+  </form.Field>
+</Form>
+```
+
+**Combined blur and input validation:**
+```gts
+// Validates both as user types AND when field loses focus
+// Provides comprehensive feedback throughout the form-filling experience
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'blur' 'input' 'submit'}}
   @onSubmit={{this.handleSubmit}}
   as |form|
 >
@@ -1036,14 +1088,22 @@ By default, the Form component validates data both on field changes and form sub
 - When you need to submit partial or draft data without validation
 
 **Important notes:**
-- When `@validateOn` includes `'change'` or `'input'`, you must use the `form.Field` component for automatic field-level validation
+- When `@validateOn` includes `'change'`, `'blur'`, or `'input'`, you must use the `form.Field` component for automatic field-level validation
 - When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
 - All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
+- **Difference between `'change'` and `'blur'`:**
+  - `'change'` validates only when a field's value has been modified AND the field loses focus
+  - `'blur'` validates whenever a field loses focus, even if the value didn't change
+  - Use `'blur'` to catch empty required fields as users navigate through the form
+  - Use `'change'` for a less intrusive experience that only validates when users actually modify fields
 - Change validation provides better user experience by catching errors as users move between fields
+- Blur validation ensures all fields are validated as users navigate, even if they skip over fields
 - Input validation provides immediate feedback but may be distracting for some use cases
 - The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
+- The `'blur'` event fires whenever a field loses focus, regardless of whether the value changed
 - The `'input'` event fires on every keystroke as the user types
 - Consider using `'input'` validation for fields where real-time feedback is valuable (password strength, character limits, username availability)
+- Consider using `'blur'` validation when you want to ensure required fields are validated even if users skip over them
 
 ### Performance Considerations
 

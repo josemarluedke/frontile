@@ -50,6 +50,11 @@ interface Args extends FormControlSharedArgs {
    * Callback when onchange is triggered
    */
   onChange?: (value: string, event?: InputEvent) => void;
+
+  /**
+   * Callback when onblur is triggered
+   */
+  onBlur?: () => void;
 }
 
 interface InputSignature {
@@ -106,6 +111,10 @@ class Input extends Component<InputSignature> {
     } else {
       this.uncontrolledValue = value;
     }
+  }
+
+  @action handleOnBlur(): void {
+    this.args.onBlur?.();
   }
 
   @action clearValue(): void {
@@ -167,6 +176,7 @@ class Input extends Component<InputSignature> {
           {{this.inputRef.setup}}
           {{on "input" this.handleOnInput}}
           {{on "change" this.handleOnChange}}
+          {{on "blur" this.handleOnBlur}}
           id={{c.id}}
           name={{@name}}
           value={{this.value}}

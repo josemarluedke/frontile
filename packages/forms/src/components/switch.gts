@@ -59,6 +59,11 @@ interface Args extends FormControlSharedArgs {
   onChange?:
     | ((value: boolean, event: Event) => void)
     | ((value: boolean) => void);
+
+  /**
+   * Callback triggered when the Switch loses focus (blur event).
+   */
+  onBlur?: () => void;
 }
 
 interface SwitchSignature {
@@ -103,6 +108,10 @@ class Switch extends Component<SwitchSignature> {
     }
   };
 
+  handleBlur = (): void => {
+    this.args.onBlur?.();
+  };
+
   get classes() {
     const { switchInput } = useStyles();
     return switchInput({
@@ -128,6 +137,7 @@ class Switch extends Component<SwitchSignature> {
       <span class={{this.classes.wrapper class=@classes.wrapper}}>
         <input
           {{on "change" this.handleChange}}
+          {{on "blur" this.handleBlur}}
           id={{c.id}}
           name={{@name}}
           checked={{this.isSelected}}

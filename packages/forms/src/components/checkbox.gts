@@ -19,6 +19,11 @@ interface Args extends FormControlSharedArgs {
    * Callback when onchange is triggered
    */
   onChange?: (value: boolean, event: Event) => void;
+
+  /*
+   * Callback when onblur is triggered
+   */
+  onBlur?: () => void;
 }
 
 interface CheckboxSignature {
@@ -41,6 +46,10 @@ class Checkbox extends Component<CheckboxSignature> {
     }
   }
 
+  @action handleBlur(): void {
+    this.args.onBlur?.();
+  }
+
   get classes() {
     const { checkbox } = useStyles();
     return checkbox({
@@ -60,6 +69,7 @@ class Checkbox extends Component<CheckboxSignature> {
     >
       <input
         {{on "change" this.handleChange}}
+        {{on "blur" this.handleBlur}}
         id={{c.id}}
         name={{@name}}
         checked={{this.isChecked}}

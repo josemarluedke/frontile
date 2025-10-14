@@ -19,6 +19,9 @@ interface Args<T> extends FormControlSharedArgs {
 
   // Callback when onchange is triggered
   onChange?: (value: T, event: Event) => void;
+
+  // Callback when onblur is triggered
+  onBlur?: () => void;
 }
 
 interface RadioSignature<T> {
@@ -41,6 +44,10 @@ class Radio<T extends string | boolean | number> extends Component<
     }
   }
 
+  @action handleBlur(): void {
+    this.args.onBlur?.();
+  }
+
   get classes() {
     const { radio } = useStyles();
     return radio({
@@ -60,6 +67,7 @@ class Radio<T extends string | boolean | number> extends Component<
     >
       <input
         {{on "change" this.handleChange}}
+        {{on "blur" this.handleBlur}}
         id={{c.id}}
         name={{@name}}
         value={{@value}}

@@ -88,7 +88,7 @@ interface FormSignature<T = FormDataCompiled> {
     /**
      * When to run validation.
      */
-    validateOn?: ('change' | 'input' | 'submit')[];
+    validateOn?: ('change' | 'input' | 'blur' | 'submit')[];
     /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
@@ -227,8 +227,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /** The events on which validation should run. */
-  get validateOn(): ('change' | 'input' | 'submit')[] {
-    return this.args.validateOn ?? ['change', 'submit'];
+  get validateOn(): ('change' | 'input' | 'blur' | 'submit')[] {
+    return this.args.validateOn ?? ['change', 'blur', 'submit'];
   }
 
   /** Whether validation should run on field change. */
@@ -241,18 +241,26 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return this.validateOn.includes('input');
   }
 
+  /** Whether validation should run on field blur. */
+  get validateOnBlur(): boolean {
+    return this.validateOn.includes('blur');
+  }
+
   /** Whether validation should run on form submission. */
   get validateOnSubmit(): boolean {
     return this.validateOn.includes('submit');
   }
 
-  get fieldValidateOn(): ('change' | 'input')[] {
-    const v: ('change' | 'input')[] = [];
+  get fieldValidateOn(): ('change' | 'input' | 'blur')[] {
+    const v: ('change' | 'input' | 'blur')[] = [];
     if (this.validateOnChange) {
       v.push('change');
     }
     if (this.validateOnInput) {
       v.push('input');
+    }
+    if (this.validateOnBlur) {
+      v.push('blur');
     }
     return v;
   }
