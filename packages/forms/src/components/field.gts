@@ -129,8 +129,7 @@ class Field<
   }
 
   /**
-   * No-op action to satisfy onChange/onSelectionChange signaling of being
-   * in a controlled state.
+   * Validates the field on change if change validation is enabled.
    */
   @action
   handleChange() {
@@ -195,7 +194,6 @@ class Field<
           name=@name
           errors=this.fieldErrors
           selectedKey=this.fieldValue
-          onSelectionChange=this.handleChange
           isDisabled=@disabled
         )
         MultiSelect=(component
@@ -203,7 +201,6 @@ class Field<
           name=@name
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
-          onSelectionChange=this.handleChange
           isDisabled=@disabled
         )
         Switch=(component
