@@ -355,6 +355,7 @@ The Form component works seamlessly with any [Standard Schema](https://standards
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { array } from '@ember/helper';
 import {
   Form,
   Input,
@@ -474,7 +475,7 @@ export default class ValidatedForm extends Component {
             />
           </form.Field>
 
-          <form.Field @name='password' as |field|>
+          <form.Field @name='password' @validateOn={{array 'input'}} as |field|>
             <field.Input
               @label='Password'
               @type='password'
