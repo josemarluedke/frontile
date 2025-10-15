@@ -232,7 +232,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /** The events on which field-level validation should run. */
-  get fieldValidateOn(): ('change' | 'input' | 'blur' )[] {
+  get fieldValidateOn(): ('change' | 'input' | 'blur')[] {
     return this.validateOn.filter((e) => e !== 'submit');
   }
 
