@@ -118,21 +118,6 @@ class Field<
     return this.args.validateOn ?? ['change'];
   }
 
-  /** Whether validation should run on field change. */
-  get validateOnChange(): boolean {
-    return this.validateOn.includes('change');
-  }
-
-  /** Whether validation should run on field input. */
-  get validateOnInput(): boolean {
-    return this.validateOn.includes('input');
-  }
-
-  /** Whether validation should run on field blur. */
-  get validateOnBlur(): boolean {
-    return this.validateOn.includes('blur');
-  }
-
   /**
    * Returns the current value for the field from formData.
    * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
@@ -145,7 +130,9 @@ class Field<
     return get(this.args.formData, this.args.name);
   }
 
-  @action
+  /**
+   * Validates the field by calling the validateField function passed in args.
+   */
   validateField() {
     this.args.validateField?.(this.args.formData as T, this.args.name);
   }
@@ -155,7 +142,7 @@ class Field<
    */
   @action
   handleChange() {
-    if (this.validateOnChange) {
+    if (this.validateOn?.includes('change')) {
       this.validateField();
     }
   }
@@ -166,7 +153,7 @@ class Field<
    */
   @action
   handleInput() {
-    if (this.validateOnInput) {
+    if (this.validateOn?.includes('input')) {
       debounce(this, this.validateField, 300);
     }
   }
@@ -176,7 +163,7 @@ class Field<
    */
   @action
   handleBlur() {
-    if (this.validateOnBlur) {
+    if (this.validateOn.includes('blur')) {
       this.validateField();
     }
   }

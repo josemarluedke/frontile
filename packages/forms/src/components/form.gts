@@ -231,38 +231,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return this.args.validateOn ?? ['change', 'blur', 'submit'];
   }
 
-  /** Whether validation should run on field change. */
-  get validateOnChange(): boolean {
-    return this.validateOn.includes('change');
-  }
-
-  /** Whether validation should run on field input. */
-  get validateOnInput(): boolean {
-    return this.validateOn.includes('input');
-  }
-
-  /** Whether validation should run on field blur. */
-  get validateOnBlur(): boolean {
-    return this.validateOn.includes('blur');
-  }
-
-  /** Whether validation should run on form submission. */
-  get validateOnSubmit(): boolean {
-    return this.validateOn.includes('submit');
-  }
-
-  get fieldValidateOn(): ('change' | 'input' | 'blur')[] {
-    const v: ('change' | 'input' | 'blur')[] = [];
-    if (this.validateOnChange) {
-      v.push('change');
-    }
-    if (this.validateOnInput) {
-      v.push('input');
-    }
-    if (this.validateOnBlur) {
-      v.push('blur');
-    }
-    return v;
+  get fieldValidateOn(): ('change' | 'input')[] {
+    return this.validateOn.filter((e) => e !== 'submit');
   }
 
   /** The current form data, from args if controlled, or internal state if uncontrolled. */
@@ -441,7 +411,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       data = unflattenData(data as Record<string, unknown>) as T;
 
       let errors: FormErrors | undefined;
-      if (this.validateOnSubmit) {
+      if (this.validateOn.includes('submit')) {
         errors = await this.validate(data);
       }
 
