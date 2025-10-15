@@ -18,12 +18,12 @@ import type { WithBoundArgsForSignature } from './field-types';
 
 type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKey' | 'onSelectionChange' | 'isDisabled'
+  'name' | 'errors' | 'selectedKey' | 'onBlur' | 'isDisabled'
 >;
 
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKeys' | 'onSelectionChange' | 'isDisabled'
+  'name' | 'errors' | 'selectedKeys' | 'onBlur' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -190,9 +190,9 @@ class Field<
           name=@name
           errors=this.fieldErrors
           checked=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onBlur=this.handleBlur
-          isDisabled=@disabled
         )
         CheckboxGroup=(component
           CheckboxGroup name=@name errors=this.fieldErrors isDisabled=@disabled
@@ -202,27 +202,27 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onInput=this.handleInput
           onBlur=this.handleBlur
-          isDisabled=@disabled
         )
         Radio=(component
           Radio
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onBlur=this.handleBlur
-          isDisabled=@disabled
         )
         RadioGroup=(component
           RadioGroup
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.handleChange
           isDisabled=@disabled
+          onChange=this.handleChange
         )
         SingleSelect=(component
           Select
@@ -230,6 +230,7 @@ class Field<
           errors=this.fieldErrors
           selectedKey=this.fieldValue
           isDisabled=@disabled
+          onBlur=this.handleBlur
         )
         MultiSelect=(component
           Select
@@ -237,25 +238,26 @@ class Field<
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
           isDisabled=@disabled
+          onBlur=this.handleBlur
         )
         Switch=(component
           Switch
           name=@name
           errors=this.fieldErrors
           isSelected=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onBlur=this.handleBlur
-          isDisabled=@disabled
         )
         Textarea=(component
           Textarea
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onInput=this.handleInput
           onBlur=this.handleBlur
-          isDisabled=@disabled
         )
       )
       to="default"

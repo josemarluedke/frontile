@@ -407,7 +407,7 @@ export default class ValidatedForm extends Component {
     email: '',
     password: '',
     confirmPassword: '',
-    accountType: 'personal',
+    accountType: '',
     terms: false
   };
 
@@ -511,6 +511,8 @@ export default class ValidatedForm extends Component {
           <Button type='submit' disabled={{form.isLoading}} @class='mt-4'>
             {{if form.isLoading 'Creating Account...' 'Create Account'}}
           </Button>
+
+          <Button @appearance="outlined" type="reset">Reset</Button>
         </div>
       </Form>
 
