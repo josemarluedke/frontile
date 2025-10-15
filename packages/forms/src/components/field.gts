@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action, get } from '@ember/object';
+import { debounce } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
@@ -17,12 +18,12 @@ import type { WithBoundArgsForSignature } from './field-types';
 
 type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKey' | 'isDisabled'
+  'name' | 'errors' | 'selectedKey' | 'onSelectionChange' | 'isDisabled'
 >;
 
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKeys' | 'isDisabled'
+  'name' | 'errors' | 'selectedKeys' | 'onSelectionChange' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -36,13 +37,17 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
     formData?: T;
     /** Whether the field should be disabled. */
     disabled?: boolean;
+    /** When to run validation. */
+    validateOn?: ('change' | 'input')[];
+    /** Function to validate a single field by name. */
+    validateField?: (data: T, name: string) => Promise<FormErrors | undefined>;
   };
   Blocks: {
     default: [
       {
         Checkbox: WithBoundArgs<
           typeof Checkbox,
-          'name' | 'errors' | 'checked' | 'isDisabled'
+          'name' | 'errors' | 'checked' | 'onChange' | 'isDisabled'
         >;
         CheckboxGroup: WithBoundArgs<
           typeof CheckboxGroup,
@@ -50,25 +55,25 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Input: WithBoundArgs<
           typeof Input,
-          'name' | 'errors' | 'value' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
         >;
         Radio: WithBoundArgs<
           typeof Radio,
-          'name' | 'errors' | 'value' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'isDisabled'
         >;
         RadioGroup: WithBoundArgs<
           typeof RadioGroup,
-          'name' | 'errors' | 'value' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'isDisabled'
         >;
         SingleSelect: BoundSingleSelect;
         MultiSelect: BoundMultiSelect;
         Switch: WithBoundArgs<
           typeof Switch,
-          'name' | 'errors' | 'isSelected' | 'isDisabled'
+          'name' | 'errors' | 'isSelected' | 'onChange' | 'isDisabled'
         >;
         Textarea: WithBoundArgs<
           typeof Textarea,
-          'name' | 'errors' | 'value' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
         >;
       }
     ];
@@ -91,6 +96,11 @@ class Field<
     return this.args.errors?.[this.args.name];
   }
 
+  /** The events on which validation should run. Defaults to ['change']. */
+  get validateOn(): ('change' | 'input')[] {
+    return this.args.validateOn ?? ['change'];
+  }
+
   /**
    * Returns the current value for the field from formData.
    * Supports both flat and dotted field names (e.g., 'email' or 'profile.email').
@@ -104,11 +114,32 @@ class Field<
   }
 
   /**
-   * No-op action to satisfy onChange/onSelectionChange signaling of being
-   * in a controlled state.
+   * Validates the field by calling the validateField function passed in args.
+   */
+  validateField() {
+    this.args.validateField?.(this.args.formData as T, this.args.name);
+  }
+
+  /**
+   * Validates the field on change if change validation is enabled.
    */
   @action
-  noop() {}
+  handleChange() {
+    if (this.validateOn?.includes('change')) {
+      this.validateField();
+    }
+  }
+
+  /**
+   * Validates the field on input if input validation is enabled.
+   * Debounces validation to avoid excessive validation calls on every keystroke.
+   */
+  @action
+  handleInput() {
+    if (this.validateOn?.includes('input')) {
+      debounce(this, this.validateField, 300);
+    }
+  }
 
   <template>
     {{! @glint-nocheck component generics (radio, radio-group, select) trigger:  type instantiation is excessively deep and possibly infinite }}
@@ -119,7 +150,7 @@ class Field<
           name=@name
           errors=this.fieldErrors
           checked=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
           isDisabled=@disabled
         )
         CheckboxGroup=(component
@@ -130,7 +161,8 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
+          onInput=this.handleInput
           isDisabled=@disabled
         )
         Radio=(component
@@ -138,7 +170,7 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
           isDisabled=@disabled
         )
         RadioGroup=(component
@@ -146,7 +178,7 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
           isDisabled=@disabled
         )
         SingleSelect=(component
@@ -154,7 +186,6 @@ class Field<
           name=@name
           errors=this.fieldErrors
           selectedKey=this.fieldValue
-          onSelectionChange=this.noop
           isDisabled=@disabled
         )
         MultiSelect=(component
@@ -162,7 +193,6 @@ class Field<
           name=@name
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
-          onSelectionChange=this.noop
           isDisabled=@disabled
         )
         Switch=(component
@@ -170,7 +200,7 @@ class Field<
           name=@name
           errors=this.fieldErrors
           isSelected=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
           isDisabled=@disabled
         )
         Textarea=(component
@@ -178,7 +208,8 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.noop
+          onChange=this.handleChange
+          onInput=this.handleInput
           isDisabled=@disabled
         )
       )

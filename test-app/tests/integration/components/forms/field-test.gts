@@ -1,12 +1,22 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, click, settled } from '@ember/test-helpers';
+import {
+  render,
+  fillIn,
+  click,
+  settled,
+  triggerEvent
+} from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 import { tracked } from '@glimmer/tracking';
-
-import { Field } from '@frontile/forms';
+import { Field, Form } from '@frontile/forms';
 import { cell } from 'ember-resources';
 import type { FormErrors } from '@frontile/forms';
+import * as v from 'valibot';
+import sinon from 'sinon';
+import { array } from '@ember/helper';
+
+const noop = () => {};
 
 module('Integration | Component | @frontile/forms/Field', function (hooks) {
   setupRenderingTest(hooks);
@@ -774,6 +784,264 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
   });
 
   /**
+   * Test that Field validates on change when @validateOn includes 'change'
+   * and @validateField function is provided
+   * Note: 'change' event fires on blur, not on every keystroke
+   */
+  test('it validates field on change when validateOn includes "change"', async function (assert) {
+    assert.expect(5);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+    let validateCallCount = 0;
+
+    const validateField = async (
+      data: typeof formData.current,
+      name: string
+    ): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+
+      // Simple validation: email must contain @
+      if (name === 'email' && data.email && !data.email.includes('@')) {
+        const fieldErrors = { [name]: 'Invalid email format' };
+        errors.current = { ...errors.current, ...fieldErrors };
+        return fieldErrors;
+      } else if (name === 'email') {
+        // Clear error for this field
+        const { [name]: _, ...rest } = errors.current;
+        errors.current = rest;
+      }
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'invalid');
+
+    // Validation should have been called after blur
+    assert.equal(validateCallCount, 1, 'validateField called once after blur');
+
+    // Error should appear
+    await settled();
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after blur');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Invalid email format');
+
+    // Fix email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation should have been called again after blur
+    assert.equal(validateCallCount, 2, 'validateField called twice');
+  });
+
+  /**
+   * Test that Field does NOT validate on change when @validateOn is empty
+   * Even though fillIn triggers blur, validation should not run
+   */
+  test('it does not validate field on change when validateOn is empty', async function (assert) {
+    assert.expect(2);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const emptyValidateOn: 'change'[] = [];
+    let validateCallCount = 0;
+
+    const validateField = async (): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{emptyValidateOn}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type in the field - fillIn triggers blur but validation should not run
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation should NOT have been called (validateOn is empty)
+    assert.equal(
+      validateCallCount,
+      0,
+      'validateField not called when validateOn is empty'
+    );
+
+    // No errors should appear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors when validation is disabled');
+  });
+
+  /**
+   * Test that Field does NOT validate when @validateField is not provided
+   */
+  test('it does not validate when validateField is not provided', async function (assert) {
+    assert.expect(1);
+
+    const formData = cell({ email: '' });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+
+    const onInput = (val: string) => {
+      formData.current = { email: val };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type in the field
+    await fillIn('[data-test-email]', 'invalid');
+
+    // No errors should appear (no validateField function provided)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors when validateField is not provided');
+  });
+
+  /**
+   * Test that Field validates correctly with nested field names
+   * Validation should trigger on blur for nested fields too
+   */
+  test('it validates nested fields on change', async function (assert) {
+    assert.expect(3);
+
+    const formData = cell({ user: { email: '' } });
+    const errors = cell<FormErrors>({});
+    const validateOnChange: 'change'[] = ['change'];
+    let validateCallCount = 0;
+
+    const validateField = async (
+      data: typeof formData.current,
+      name: string
+    ): Promise<FormErrors | undefined> => {
+      validateCallCount++;
+
+      if (
+        name === 'user.email' &&
+        data.user.email &&
+        !data.user.email.includes('@')
+      ) {
+        const fieldErrors = { [name]: 'Invalid email' };
+        errors.current = { ...errors.current, ...fieldErrors };
+        return fieldErrors;
+      } else if (name === 'user.email') {
+        const { [name]: _, ...rest } = errors.current;
+        errors.current = rest;
+      }
+      return undefined;
+    };
+
+    const onInput = (val: string) => {
+      formData.current = { user: { email: val } };
+    };
+
+    await render(
+      <template>
+        <Field
+          @name="user.email"
+          @formData={{formData.current}}
+          @errors={{errors.current}}
+          @validateOn={{validateOnChange}}
+          @validateField={{validateField}}
+          as |field|
+        >
+          <field.Input
+            @label="Email"
+            @value={{formData.current.user.email}}
+            @onInput={{onInput}}
+            data-test-email
+          />
+        </Field>
+      </template>
+    );
+
+    // Type invalid email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'invalid');
+
+    // Validation should have been called with nested field name after blur
+    assert.equal(validateCallCount, 1, 'validateField called once after blur');
+
+    // Error should appear
+    await settled();
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears for nested field');
+
+    // Fix email - fillIn triggers blur
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Validation called again after blur
+    assert.equal(validateCallCount, 2, 'validateField called twice');
+  });
+
+  /**
    * Test that Field respects the HTML disabled attribute
    * This ensures that passing disabled={{true}} as a regular HTML attribute
    * also works correctly (in addition to the @disabled argument)
@@ -825,5 +1093,525 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     assert
       .dom('[data-test-checkbox]')
       .isDisabled('Checkbox is disabled via HTML attribute');
+  });
+
+  /**
+   * Test that Field can override Form's validateOn setting with 'input'
+   * Form validates on submit only, but specific Field validates on input
+   */
+  test('it allows Field to override Form validateOn with input validation', async function (assert) {
+    assert.expect(7);
+
+    const schema = v.object({
+      username: v.pipe(v.string(), v.minLength(3, 'Username too short')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    const validateOnSubmit: ('change' | 'input' | 'submit')[] = ['submit'];
+    const validateOnInput: ('change' | 'input')[] = ['input'];
+    const onSubmitSpy = sinon.spy();
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOnSubmit}}
+          @onSubmit={{onSubmitSpy}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            {{! This field inherits Form's validateOn=['submit'] }}
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field
+            @name="password"
+            @validateOn={{validateOnInput}}
+            as |field|
+          >
+            {{! This field overrides with validateOn=['input'] }}
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type in username field - should NOT validate (inherits Form's submit-only validation)
+    await fillIn('[data-test-username]', 'ab');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist(
+        'Username does not validate on input (inherits Form setting)'
+      );
+
+    // Type in password field - SHOULD validate on input (Field override)
+    await fillIn('[data-test-password]', 'abc');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Password validates on input (Field override)');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Password must be at least 6 characters');
+
+    // Fix password - error should clear immediately
+    await fillIn('[data-test-password]', 'abcdef');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Password error clears on input');
+
+    // Submit with invalid username - both fields should now show errors
+    await click('[data-test-submit]');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Username error appears on submit');
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit not called with invalid data');
+  });
+
+  /**
+   * Test that Field can disable field-level validation by overriding with empty validateOn
+   * Form validates on change and submit, but specific Field disables change validation only
+   * Note: Submit validation still runs for all fields (form-level validation)
+   */
+  test('it allows Field to disable field-level validation by overriding with empty validateOn', async function (assert) {
+    assert.expect(6);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email')),
+      notes: v.pipe(v.string(), v.minLength(10, 'Notes too short'))
+    });
+
+    const validateOnChange: ('change' | 'input' | 'submit')[] = [
+      'change',
+      'submit'
+    ];
+    const emptyValidateOn: ('change' | 'input')[] = [];
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{validateOnChange}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            {{! This field inherits Form's validateOn=['change', 'submit'] }}
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field @name="notes" @validateOn={{emptyValidateOn}} as |field|>
+            {{! This field overrides with empty array - disables field-level validation }}
+            <field.Textarea data-test-notes />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - should validate on blur (inherits Form setting)
+    await fillIn('[data-test-email]', 'invalid');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 1 },
+        'Email validates on change (inherits Form setting)'
+      );
+
+    // Type invalid notes - should NOT validate on blur (Field override disables change validation)
+    await fillIn('[data-test-notes]', 'short');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 1 },
+        'Notes does not validate on change (Field override)'
+      );
+
+    // Submit - both email and notes should validate (form-level submit validation)
+    await click('[data-test-submit]');
+
+    // Both fields show errors on submit (form-level validation runs for all fields)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 2 },
+        'Both fields validate on submit (form-level validation)'
+      );
+
+    // Fix email - this should clear on change validation
+    await fillIn('[data-test-email]', 'test@example.com');
+    // Wait for email validation
+
+    // Email error should clear, but notes error persists (no change validation for notes)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists(
+        { count: 1 },
+        'Email error clears on change, notes error persists'
+      );
+
+    // Fix notes - this won't clear on change (empty validateOn), need to submit again
+    await fillIn('[data-test-notes]', 'This is long enough');
+    await click('[data-test-submit]');
+
+    // All errors cleared after successful submit
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('All errors cleared after successful submit');
+  });
+
+  /**
+   * Test multiple Fields with different validateOn overrides
+   * Demonstrates fine-grained control over validation timing per field
+   */
+  test('it supports multiple Fields with different validateOn overrides', async function (assert) {
+    assert.expect(8);
+
+    const schema = v.object({
+      username: v.pipe(v.string(), v.minLength(3, 'Username too short')),
+      email: v.pipe(v.string(), v.email('Invalid email')),
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    // Form default: only validate on submit
+    const formValidateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    // Override for username: validate on blur
+    const usernameValidateOn: ('change' | 'input')[] = ['change'];
+    // Override for password: validate on every keystroke
+    const passwordValidateOn: ('change' | 'input')[] = ['input'];
+    // Email inherits form default (submit only)
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field
+            @name="username"
+            @validateOn={{usernameValidateOn}}
+            as |field|
+          >
+            {{! Validates on blur }}
+            <field.Input data-test-username />
+          </form.Field>
+
+          <form.Field @name="email" as |field|>
+            {{! Validates on submit only (inherits) }}
+            <field.Input data-test-email />
+          </form.Field>
+
+          <form.Field
+            @name="password"
+            @validateOn={{passwordValidateOn}}
+            as |field|
+          >
+            {{! Validates on every keystroke }}
+            <field.Input @type="password" data-test-password />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid password - validates on input
+    await fillIn('[data-test-password]', 'abc');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Password error appears on input');
+
+    // Type invalid username - validates on blur
+    await fillIn('[data-test-username]', 'ab');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 2 }, 'Username error appears on blur');
+
+    // Type invalid email - does NOT validate (submit only)
+    await fillIn('[data-test-email]', 'invalid');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 2 }, 'Email does not validate yet (submit only)');
+
+    // Fix password - error clears on input
+    await fillIn('[data-test-password]', 'abcdef');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Password error clears on input');
+
+    // Fix username - error clears on blur
+    await fillIn('[data-test-username]', 'john');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Username error clears on blur');
+
+    // Submit - email validation should now run
+    await click('[data-test-submit]');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists({ count: 1 }, 'Email error appears on submit');
+
+    // Fix email
+    await fillIn('[data-test-email]', 'john@example.com');
+    await click('[data-test-submit]');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('All errors cleared, form submits successfully');
+  });
+
+  /**
+   * Test that Field validates on input when validateOn includes 'input'
+   * Field-level input validation works best within Form context
+   */
+  test('it validates field on input when validateOn includes "input"', async function (assert) {
+    assert.expect(6);
+
+    const schema = v.object({
+      password: v.pipe(
+        v.string(),
+        v.minLength(6, 'Password must be at least 6 characters')
+      )
+    });
+
+    // Form has submit-only validation by default
+    const formValidateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    // Field overrides with input validation
+    const fieldValidateOn: ('change' | 'input')[] = ['input'];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field
+            @name="password"
+            @validateOn={{fieldValidateOn}}
+            as |field|
+          >
+            <field.Input
+              @label="Password"
+              @type="password"
+              data-test-password
+            />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type "a" - should trigger input validation at Field level
+    await fillIn('[data-test-password]', 'a');
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input');
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Password must be at least 6 characters');
+
+    // Type more characters "abc"
+    await fillIn('[data-test-password]', 'abc');
+
+    // Error should still be visible
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible');
+
+    // Type enough to pass validation "abcdef"
+    await fillIn('[data-test-password]', 'abcdef');
+
+    // Error should clear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after typing valid value');
+
+    // Type back to invalid
+    await fillIn('[data-test-password]', 'ab');
+
+    // Error should reappear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error reappears on input');
+  });
+
+  /**
+   * Test that Field validates on both input and change when validateOn includes both
+   */
+  test('it validates field on both input and change when validateOn includes both', async function (assert) {
+    assert.expect(5);
+
+    const schema = v.object({
+      email: v.pipe(v.string(), v.email('Invalid email format'))
+    });
+
+    // Form has submit-only validation
+    const formValidateOn: ('change' | 'input' | 'submit')[] = ['submit'];
+    // Field overrides with both input and change validation
+    const fieldValidateOn: ('change' | 'input')[] = ['input', 'change'];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="email" @validateOn={{fieldValidateOn}} as |field|>
+            <field.Input @label="Email" data-test-email />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid email - should trigger input validation
+    await fillIn('[data-test-email]', 'invalid');
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input');
+
+    // Trigger blur (change event) - should also trigger validation
+    await triggerEvent('[data-test-email]', 'blur');
+
+    // Error should still be visible (still invalid)
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error still visible after blur');
+
+    // Fix email
+    await fillIn('[data-test-email]', 'test@example.com');
+
+    // Error should clear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after typing valid email');
+
+    // Type invalid again - should show error on input
+    await fillIn('[data-test-email]', 'bad');
+
+    // Error should reappear
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error reappears on input after typing invalid email');
+  });
+
+  /**
+   * Test that Field explicitly inherits Form validateOn when not specified
+   */
+  test('it inherits Form validateOn when Field validateOn is not specified', async function (assert) {
+    assert.expect(4);
+
+    const schema = v.object({
+      username: v.pipe(
+        v.string(),
+        v.minLength(3, 'Username must be at least 3 characters')
+      )
+    });
+
+    // Form validates on both input and change
+    const formValidateOn: ('change' | 'input' | 'submit')[] = [
+      'input',
+      'change'
+    ];
+    const noop = () => {};
+
+    await render(
+      <template>
+        <Form
+          @schema={{schema}}
+          @validateOn={{formValidateOn}}
+          @onSubmit={{noop}}
+          as |form|
+        >
+          <form.Field @name="username" as |field|>
+            {{! Field does not specify @validateOn, should inherit from Form }}
+            <field.Input data-test-username />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    // Initially no errors
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('No errors initially');
+
+    // Type invalid username - should trigger input validation (inherited)
+    await fillIn('[data-test-username]', 'ab');
+
+    // Error should appear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears after input (inherited from Form)');
+
+    // Fix username
+    await fillIn('[data-test-username]', 'john');
+
+    // Error should clear after input
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error cleared after input (inherited from Form)');
+
+    // Type invalid again and blur - should trigger change validation (inherited)
+    await fillIn('[data-test-username]', 'ab');
+
+    assert
+      .dom('[data-component="form-feedback"]')
+      .exists('Error appears on input and persists through blur (inherited)');
   });
 });

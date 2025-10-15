@@ -650,6 +650,154 @@ When used with a Form component that provides `@data`, Field automatically binds
 </Form>
 ```
 
+### Field-Level Validation
+
+When the Form component's `@validateOn` argument includes `'change'` or `'input'` (defaults to `['change', 'submit']`), Field automatically validates individual fields as users interact with them. This provides feedback without waiting for form submission.
+
+**Change Validation (`'change'`)**
+
+Validates when a field loses focus (blur) after being modified:
+
+**How it works:**
+1. Form passes `@validateOn` to Field components (defaults to `['change']`)
+2. Field's `handleChange` action checks if `'change'` is included
+3. If change validation is enabled, Field calls `validateField` for that specific field when the field loses focus
+4. Validation errors appear after the user moves to the next field (on blur)
+
+**Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. It does NOT fire on every keystroke.
+
+**Input Validation (`'input'`)**
+
+Validates as the user types, on every keystroke:
+
+**How it works:**
+1. Form passes `@validateOn` to Field components
+2. Field's `handleInput` action checks if `'input'` is included
+3. If input validation is enabled, Field calls `validateField` for that specific field on every keystroke
+4. Validation errors appear in real-time as the user types
+
+**Note:** The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types. This provides immediate feedback but may be distracting for some use cases.
+
+**Example with change validation enabled (default):**
+```gts
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.email('Please enter a valid email address')
+  )
+});
+
+<template>
+  <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
+    {{! Change validation is enabled by default }}
+    {{! Email field validates when user blurs/defocuses after changing value }}
+    <form.Field @name="email" as |field|>
+      <field.Input @label="Email" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Example with input validation enabled:**
+```gts
+import * as v from 'valibot';
+
+const schema = v.object({
+  password: v.pipe(
+    v.string(),
+    v.minLength(8, 'Password must be at least 8 characters')
+  )
+});
+
+<template>
+  <Form
+    @schema={{schema}}
+    @validateOn={{array 'input' 'submit'}}
+    @onSubmit={{this.handleSubmit}}
+    as |form|
+  >
+    {{! Input validation is enabled }}
+    {{! Password field validates as user types }}
+    <form.Field @name="password" as |field|>
+      <field.Input @label="Password" @type="password" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Example with change validation disabled:**
+```gts
+<template>
+  <Form
+    @schema={{schema}}
+    @validateOn={{array 'submit'}}
+    @onSubmit={{this.handleSubmit}}
+    as |form|
+  >
+    {{! Change validation is disabled }}
+    {{! Email field only validates on form submit }}
+    <form.Field @name="email" as |field|>
+      <field.Input @label="Email" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Benefits of change validation:**
+- **Early feedback**: Users see validation errors as they move between fields
+- **Better UX**: Errors are caught before form submission, reducing frustration
+- **Per-field validation**: Each field validates independently when blurred
+- **Clear guidance**: Users know exactly what's wrong before submitting
+- **Natural flow**: Validation happens when user is done with a field (on blur)
+
+**Benefits of input validation:**
+- **Immediate feedback**: Users see validation errors in real-time as they type
+- **Perfect for specific cases**: Great for password strength, character limits, username availability
+- **Continuous guidance**: Users can adjust their input immediately based on feedback
+- **Progressive disclosure**: Errors clear as soon as the input becomes valid
+
+**When to use input validation:**
+- Password fields with strength requirements
+- Fields with character limits or specific format requirements
+- Username fields that check availability
+- Fields where immediate feedback improves the user experience
+
+**When to disable field-level validation:**
+- Long forms where validation on every interaction might be distracting
+- Forms where you want to allow incomplete data entry until final submission
+- Multi-step forms where validation should only run at specific steps
+
+**Overriding validation timing per field:**
+
+Individual Fields can override the Form's `@validateOn` setting to customize when that specific field validates:
+
+```gts
+<template>
+  <Form @validateOn={{array 'submit'}} as |form|>
+    <form.Field @name="username" as |field|>
+      {{! Inherits Form's validateOn - validates on submit only }}
+      <field.Input />
+    </form.Field>
+
+    <form.Field @name="password" @validateOn={{array 'input'}} as |field|>
+      {{! Overrides to validate as user types }}
+      <field.Input @type="password" />
+    </form.Field>
+  </Form>
+</template>
+```
+
+**Important notes:**
+- Field-level validation (`'change'` or `'input'`) requires using `form.Field` components
+- The Field component automatically handles the validation logic
+- Both `@schema` and `@validate` custom validators work with field-level validation
+- Field-level validation uses the same validation rules as submit validation
+- The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
+- The `'input'` event fires on every keystroke as the user types
+- Input validation may trigger many validation calls, so consider performance for complex validation logic
+
 ### Yielded Components
 
 Field yields bound versions of all form components:

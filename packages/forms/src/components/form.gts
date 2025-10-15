@@ -66,7 +66,10 @@ interface FormContext<T = FormDataCompiled> {
    */
   reset: () => void;
   /** The `Field` component, with args bound. */
-  Field: WithBoundArgs<typeof Field, 'errors' | 'formData' | 'disabled'>;
+  Field: WithBoundArgs<
+    typeof Field,
+    'errors' | 'formData' | 'disabled' | 'validateOn' | 'validateField'
+  >;
 }
 
 interface FormSignature<T = FormDataCompiled> {
@@ -82,6 +85,10 @@ interface FormSignature<T = FormDataCompiled> {
      * This function may be async or sync.
      */
     validate?: CustomValidatorFn<T>;
+    /**
+     * When to run validation.
+     */
+    validateOn?: ('change' | 'input' | 'submit')[];
     /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
@@ -219,6 +226,15 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return !!this.args.onChange;
   }
 
+  /** The events on which validation should run. */
+  get validateOn(): ('change' | 'input' | 'submit')[] {
+    return this.args.validateOn ?? ['change', 'submit'];
+  }
+
+  get fieldValidateOn(): ('change' | 'input')[] {
+    return this.validateOn.filter((e) => e !== 'submit');
+  }
+
   /** The current form data, from args if controlled, or internal state if uncontrolled. */
   get currentData(): T | undefined {
     if (this.isControlled) {
@@ -249,6 +265,52 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     }
     // Clear errors if no issues
     this.errors = {};
+  }
+
+  /**
+   * Validates a single field against the provided schema using
+   * StandardValidator.  Updates the `errors` property with any validation
+   * errors found for the field.  If the field had previous errors but
+   * is now valid, those errors are cleared.
+   *
+   * @param data - The form data to validate against.
+   * @param name - The name of the field to validate.
+   * @returns A promise that resolves to errors for the field, if any.
+   */
+  @action
+  async validateField(data: T, name: string): Promise<FormErrors | undefined> {
+    if (!this.args.schema && !this.args.validate) {
+      return;
+    }
+    // Run validator and get issues
+    const errors = await StandardValidator.validateFieldAll(
+      data,
+      name,
+      this.args.schema,
+      this.args.validate
+    );
+    // Convert validator errors to FormErrors
+    if (errors) {
+      const formErrors = validatorToFormErrors(errors);
+      if (formErrors[name]) {
+        // Merge with existing errors immutably
+        this.errors = { ...this.errors, [name]: formErrors[name] };
+      }
+      return { [name]: formErrors[name] };
+    }
+    // Clear field error if no issues
+    // Remove field error using immutable pattern:
+    // 1. Use destructuring to extract the field we want to remove
+    //    (assigned to '_' since unused)
+    // 2. Capture all remaining fields in 'rest' using the spread operator
+    // 3. Reassign this.errors to the 'rest' object, effectively removing
+    //    the field
+    // This approach maintains immutability by creating a new object rather than
+    // mutating the existing errors object with 'delete'
+    if (this.errors[name]) {
+      const { [name]: _, ...rest } = this.errors;
+      this.errors = rest;
+    }
   }
 
   /**
@@ -348,7 +410,11 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
       // This is safe for flat data too - keys without dots remain unchanged
       data = unflattenData(data as Record<string, unknown>) as T;
 
-      const errors = await this.validate(data);
+      let errors: FormErrors | undefined;
+      if (this.validateOn.includes('submit')) {
+        errors = await this.validate(data);
+      }
+
       const resultData = this.buildFormResultData(data);
       this.uncontrolledData = data;
       try {
@@ -356,7 +422,7 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
           // Call onError handler when there are validation errors
           await this.args.onError(errors, data, event);
         } else if (!errors && this.args.onSubmit) {
-          // Run `onSubmit` only if there are no validation errors
+          // Run `onSubmit` if validation was skipped OR if validation passed
           await this.args.onSubmit(resultData, event);
           // Update snapshot on successful submit (new baseline)
           this.initialDataSnapshot = flattenData(
@@ -436,6 +502,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
             errors=this.errors
             formData=this.currentData
             disabled=@disabled
+            validateOn=this.fieldValidateOn
+            validateField=this.validateField
           )
         )
         to="default"
