@@ -231,7 +231,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
     return this.args.validateOn ?? ['change', 'blur', 'submit'];
   }
 
-  get fieldValidateOn(): ('change' | 'input')[] {
+  /** The events on which field-level validation should run. */
+  get fieldValidateOn(): ('change' | 'input' | 'blur' )[] {
     return this.validateOn.filter((e) => e !== 'submit');
   }
 
