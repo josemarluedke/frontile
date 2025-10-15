@@ -21,6 +21,8 @@ import { triggerFormInputEvent } from '../utils';
 import { CloseButton } from '@frontile/buttons';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
+import { action } from '@ember/object';
+import { later } from '@ember/runloop';
 // Import helper function directly instead of using ember-truth-helpers
 const eq = (a: unknown, b: unknown) => a === b;
 
@@ -244,6 +246,11 @@ type SelectArgs<T> = (
    * @defaultValue false
    */
   hideEmptyContent?: boolean;
+
+  /**
+   * Callback fired when the select component loses focus.
+   */
+  onBlur?: () => void;
 };
 
 interface SelectSignature<T> {
@@ -426,7 +433,19 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     ) {
       this.isOpen = false;
     }
+
+    // wait a beat for any side effects to complete before calling onBlur
+    later(() => {
+      this.args.onBlur?.();
+    }, 150);
   };
+
+  @action
+  handleBlur() {
+    later(() => {
+      this.args.onBlur?.();
+    }, 150);
+  }
 
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
@@ -637,6 +656,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 }}
                 value={{this.filterFieldValue}}
                 {{on "input" this.onFilterChange}}
+                {{on "blur" this.handleBlur}}
               />
             {{else}}
               <button
@@ -652,6 +672,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   hasStartContent=(has-block "startContent")
                   hasEndContent=true
                 }}
+                {{on "blur" this.handleBlur}}
               >
                 {{#if this.selectedText}}
                   <span>

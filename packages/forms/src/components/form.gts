@@ -88,7 +88,7 @@ interface FormSignature<T = FormDataCompiled> {
     /**
      * When to run validation.
      */
-    validateOn?: ('change' | 'input' | 'submit')[];
+    validateOn?: ('change' | 'input' | 'blur' | 'submit')[];
     /**
      * The initial form data as key/value pairs.
      * This is primarily useful for setting default values in the form.
@@ -227,11 +227,12 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
   }
 
   /** The events on which validation should run. */
-  get validateOn(): ('change' | 'input' | 'submit')[] {
-    return this.args.validateOn ?? ['change', 'submit'];
+  get validateOn(): ('change' | 'input' | 'blur' | 'submit')[] {
+    return this.args.validateOn ?? ['change', 'blur', 'submit'];
   }
 
-  get fieldValidateOn(): ('change' | 'input')[] {
+  /** The events on which field-level validation should run. */
+  get fieldValidateOn(): ('change' | 'input' | 'blur')[] {
     return this.validateOn.filter((e) => e !== 'submit');
   }
 

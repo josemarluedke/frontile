@@ -22,6 +22,9 @@ interface Args extends FormControlSharedArgs {
 
   // Callback when onchange is triggered
   onChange?: (value: string, event: InputEvent) => void;
+
+  // Callback when onblur is triggered
+  onBlur?: () => void;
 }
 
 interface TextareaSignature {
@@ -48,6 +51,10 @@ class Textarea extends Component<TextareaSignature> {
     }
   }
 
+  @action handleOnBlur(): void {
+    this.args.onBlur?.();
+  }
+
   get classes() {
     const { textarea } = useStyles();
     return textarea({
@@ -69,6 +76,7 @@ class Textarea extends Component<TextareaSignature> {
       <textarea
         {{on "input" this.handleOnInput}}
         {{on "change" this.handleOnChange}}
+        {{on "blur" this.handleOnBlur}}
         id={{c.id}}
         name={{@name}}
         value={{@value}}

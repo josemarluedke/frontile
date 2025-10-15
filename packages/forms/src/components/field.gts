@@ -18,12 +18,12 @@ import type { WithBoundArgsForSignature } from './field-types';
 
 type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKey' | 'onSelectionChange' | 'isDisabled'
+  'name' | 'errors' | 'selectedKey' | 'onBlur' | 'isDisabled'
 >;
 
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKeys' | 'onSelectionChange' | 'isDisabled'
+  'name' | 'errors' | 'selectedKeys' | 'onBlur' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -38,7 +38,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
     /** Whether the field should be disabled. */
     disabled?: boolean;
     /** When to run validation. */
-    validateOn?: ('change' | 'input')[];
+    validateOn?: ('change' | 'input' | 'blur')[];
     /** Function to validate a single field by name. */
     validateField?: (data: T, name: string) => Promise<FormErrors | undefined>;
   };
@@ -47,7 +47,7 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
       {
         Checkbox: WithBoundArgs<
           typeof Checkbox,
-          'name' | 'errors' | 'checked' | 'onChange' | 'isDisabled'
+          'name' | 'errors' | 'checked' | 'onChange' | 'onBlur' | 'isDisabled'
         >;
         CheckboxGroup: WithBoundArgs<
           typeof CheckboxGroup,
@@ -55,11 +55,17 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Input: WithBoundArgs<
           typeof Input,
-          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
+          | 'name'
+          | 'errors'
+          | 'value'
+          | 'onChange'
+          | 'onInput'
+          | 'onBlur'
+          | 'isDisabled'
         >;
         Radio: WithBoundArgs<
           typeof Radio,
-          'name' | 'errors' | 'value' | 'onChange' | 'isDisabled'
+          'name' | 'errors' | 'value' | 'onChange' | 'onBlur' | 'isDisabled'
         >;
         RadioGroup: WithBoundArgs<
           typeof RadioGroup,
@@ -69,11 +75,22 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         MultiSelect: BoundMultiSelect;
         Switch: WithBoundArgs<
           typeof Switch,
-          'name' | 'errors' | 'isSelected' | 'onChange' | 'isDisabled'
+          | 'name'
+          | 'errors'
+          | 'isSelected'
+          | 'onChange'
+          | 'onBlur'
+          | 'isDisabled'
         >;
         Textarea: WithBoundArgs<
           typeof Textarea,
-          'name' | 'errors' | 'value' | 'onChange' | 'onInput' | 'isDisabled'
+          | 'name'
+          | 'errors'
+          | 'value'
+          | 'onChange'
+          | 'onInput'
+          | 'onBlur'
+          | 'isDisabled'
         >;
       }
     ];
@@ -97,7 +114,7 @@ class Field<
   }
 
   /** The events on which validation should run. Defaults to ['change']. */
-  get validateOn(): ('change' | 'input')[] {
+  get validateOn(): ('change' | 'input' | 'blur')[] {
     return this.args.validateOn ?? ['change'];
   }
 
@@ -141,6 +158,16 @@ class Field<
     }
   }
 
+  /**
+   * Validates the field on blur if blur validation is enabled.
+   */
+  @action
+  handleBlur() {
+    if (this.validateOn.includes('blur')) {
+      this.validateField();
+    }
+  }
+
   <template>
     {{! @glint-nocheck component generics (radio, radio-group, select) trigger:  type instantiation is excessively deep and possibly infinite }}
     {{yield
@@ -150,8 +177,9 @@ class Field<
           name=@name
           errors=this.fieldErrors
           checked=this.fieldValue
-          onChange=this.handleChange
           isDisabled=@disabled
+          onChange=this.handleChange
+          onBlur=this.handleBlur
         )
         CheckboxGroup=(component
           CheckboxGroup name=@name errors=this.fieldErrors isDisabled=@disabled
@@ -161,25 +189,27 @@ class Field<
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onInput=this.handleInput
-          isDisabled=@disabled
+          onBlur=this.handleBlur
         )
         Radio=(component
           Radio
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.handleChange
           isDisabled=@disabled
+          onChange=this.handleChange
+          onBlur=this.handleBlur
         )
         RadioGroup=(component
           RadioGroup
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
-          onChange=this.handleChange
           isDisabled=@disabled
+          onChange=this.handleChange
         )
         SingleSelect=(component
           Select
@@ -187,6 +217,7 @@ class Field<
           errors=this.fieldErrors
           selectedKey=this.fieldValue
           isDisabled=@disabled
+          onBlur=this.handleBlur
         )
         MultiSelect=(component
           Select
@@ -194,23 +225,26 @@ class Field<
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
           isDisabled=@disabled
+          onBlur=this.handleBlur
         )
         Switch=(component
           Switch
           name=@name
           errors=this.fieldErrors
           isSelected=this.fieldValue
-          onChange=this.handleChange
           isDisabled=@disabled
+          onChange=this.handleChange
+          onBlur=this.handleBlur
         )
         Textarea=(component
           Textarea
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
+          isDisabled=@disabled
           onChange=this.handleChange
           onInput=this.handleInput
-          isDisabled=@disabled
+          onBlur=this.handleBlur
         )
       )
       to="default"
