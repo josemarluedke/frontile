@@ -142,6 +142,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       data-test-id="listbox-item"
       data-component="listbox-item"
       data-key={{this.key}}
+      {{! @glint-ignore: error after glint upgrade }}
       disabled={{this.listItem.isDisabled}}
       class={{this.classNames.base}}
       ...attributes
@@ -169,6 +170,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{/if}}
 
       {{#if @shortcut}}
+        {{! @glint-ignore: error after glint upgrade }}
         <kbd
           data-test-id="listbox-item-shortcut"
           class={{this.classNames.shortcut}}
@@ -183,6 +185,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
           {{#if (has-block "selectedIcon")}}
             {{yield to="selectedIcon"}}
           {{else}}
+            {{! @glint-ignore: error after glint upgrade }}
             <CheckIcon class="h-full w-full" />
           {{/if}}
         </span>
@@ -207,6 +210,7 @@ const CheckIcon: TOC<{
     stroke="currentColor"
     ...attributes
   >
+    {{! @glint-ignore: error after glint upgrade }}
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

@@ -55,7 +55,7 @@ interface PopoverSignature {
   Blocks: {
     default: [
       {
-        anchor: ModifierLike<{ Element: HTMLElement }>;
+        anchor: ModifierLike<{ Element: HTMLElement | SVGElement }>;
         isOpen: boolean;
         toggle: () => void;
         open: () => void;

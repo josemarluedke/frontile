@@ -16,6 +16,7 @@ export const ChevronUpIcon: TOC<IconSignature> = <template>
     stroke="currentColor"
     ...attributes
   >
+    {{! @glint-ignore: error after glint upgrade }}
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -33,6 +34,7 @@ export const ChevronDownIcon: TOC<IconSignature> = <template>
     stroke="currentColor"
     ...attributes
   >
+    {{! @glint-ignore: error after glint upgrade }}
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -50,6 +52,7 @@ export const ColumnVisibilityIcon: TOC<IconSignature> = <template>
     stroke="currentColor"
     ...attributes
   >
+    {{! @glint-ignore: error after glint upgrade }}
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

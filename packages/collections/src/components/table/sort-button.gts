@@ -42,12 +42,14 @@ export default class SortButton<T> extends Component<SortButtonSignature<T>> {
         {{@column.name}}
       </span>
       {{#if this.showUpIcon}}
+        {{! @glint-ignore: error after glint upgrade }}
         <ChevronUpIcon
           class={{(this.styles.sortIcon)}}
           data-sorted="{{@isSorted}}"
           aria-hidden="true"
         />
       {{else}}
+        {{! @glint-ignore: error after glint upgrade }}
         <ChevronDownIcon
           class={{(this.styles.sortIcon)}}
           data-sorted="{{@isSorted}}"

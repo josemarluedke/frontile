@@ -77,6 +77,7 @@ export default class ColumnVisibility<T> extends Component<
           {{#if (has-block "icon")}}
             {{yield to="icon"}}
           {{else}}
+            {{! @glint-ignore: error after glint upgrade }}
             <ColumnVisibilityIcon
               class={{(this.styles.columnVisibilityIcon)}}
             />

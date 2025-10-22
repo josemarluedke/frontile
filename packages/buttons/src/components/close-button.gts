@@ -122,6 +122,7 @@ class CloseButton extends Component<CloseButtonSignature> {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
+          {{! @glint-ignore: error after glint upgrade}}
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
