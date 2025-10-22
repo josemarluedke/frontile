@@ -34,16 +34,16 @@
     "@glint/environment-ember-template-imports": "1.5.2",
     "@underline/eslint-config-ember-typescript": "^0.16.0",
     "@underline/eslint-config-node": "^0.16.0",
+    "concurrently": "^9.2.1",
     "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^6.1.0",
+    "ember-template-lint": "^7.9.3",
     "eslint": "^8.57.1",
-    "eslint-plugin-ember": "^12.3.3",
-    "eslint-plugin-prettier": "^5.2.1",
-    "lerna": "^8.1.9",
+    "eslint-plugin-ember": "^12.7.4",
+    "eslint-plugin-prettier": "^5.5.4",
+    "lerna": "^9.0.0",
     "prettier": "^3.4.2",
-    "concurrently": "^9.1.0",
     "prettier-plugin-ember-template-tag": "^2.0.4",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">= 10.*"
