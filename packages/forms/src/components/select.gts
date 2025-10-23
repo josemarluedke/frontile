@@ -23,6 +23,9 @@ import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
+
+import { modifier } from 'ember-modifier';
+
 // Import helper function directly instead of using ember-truth-helpers
 const eq = (a: unknown, b: unknown) => a === b;
 
@@ -334,19 +337,17 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   onSelectionChange = (keys: string[]) => {
     if (this.args.selectionMode === 'multiple') {
+      this._selectedKeys = keys;
       if (typeof this.args.onSelectionChange === 'function') {
         (this.args.onSelectionChange as (keys: string[]) => void)(keys);
-      } else {
-        this._selectedKeys = keys;
       }
     } else {
       const singleKey: string | null = keys.length > 0 ? keys[0] || null : null;
+      this._selectedKey = singleKey;
       if (typeof this.args.onSelectionChange === 'function') {
         (this.args.onSelectionChange as (key: string | null) => void)(
           singleKey
         );
-      } else {
-        this._selectedKey = singleKey;
       }
     }
 
@@ -355,10 +356,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   onSingleSelectionChange = (key: string | null) => {
+    this._selectedKey = key;
     if (typeof this.args.onSelectionChange === 'function') {
       (this.args.onSelectionChange as (key: string | null) => void)(key);
-    } else {
-      this._selectedKey = key;
     }
 
     this.filterValue = undefined;
@@ -376,12 +376,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   get selectedKeys(): string[] {
     if (this.args.selectionMode === 'multiple') {
-      if (
-        typeof this.args.selectedKeys !== 'undefined' &&
-        typeof this.args.onSelectionChange === 'function'
-      ) {
-        return this.args.selectedKeys;
-      }
+      // if (
+      //   typeof this.args.selectedKeys !== 'undefined' &&
+      //   typeof this.args.onSelectionChange === 'function'
+      // ) {
+      //   return this.args.selectedKeys;
+      // }
       return this._selectedKeys;
     } else {
       // Single mode: convert selectedKey to array for internal use
@@ -395,15 +395,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       return null;
     }
 
-    const singleArgs = this.args as
-      | ExplicitSingleSelectArgs<T>
-      | DefaultSingleSelectArgs<T>;
-    if (
-      typeof singleArgs.selectedKey !== 'undefined' &&
-      typeof this.args.onSelectionChange === 'function'
-    ) {
-      return singleArgs.selectedKey;
-    }
+    // const singleArgs = this.args as
+    //   | ExplicitSingleSelectArgs<T>
+    //   | DefaultSingleSelectArgs<T>;
+    // if (
+    //   typeof singleArgs.selectedKey !== 'undefined' &&
+    //   typeof this.args.onSelectionChange === 'function'
+    // ) {
+    //   return singleArgs.selectedKey;
+    // }
 
     return this._selectedKey;
   }
@@ -529,8 +529,29 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return 'first';
   }
 
+  updateMultipleSelectValue = modifier(
+    (_: HTMLDivElement, [selectedKeys]: [string[] | null | undefined]) => {
+      if (selectedKeys !== undefined && selectedKeys !== null) {
+        this._selectedKeys = selectedKeys;
+      } else {
+        // NOTE: is this the right behavior?
+        this._selectedKeys = [];
+      }
+    }
+  );
+
+  updateSingleSelectValue = modifier(
+    (_: HTMLDivElement, [selectedKey]: [string | null | undefined]) => {
+      if (selectedKey !== undefined) {
+        this._selectedKey = selectedKey;
+      }
+    }
+  );
+
   <template>
     <div
+      {{this.updateMultipleSelectValue @selectedKeys}}
+      {{this.updateSingleSelectValue @selectedKey}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       ...attributes
