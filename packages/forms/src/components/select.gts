@@ -408,7 +408,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * 2. Copies external arg values (@selectedKey or @selectedKeys) to internal tracked state
    * 3. Logs warnings if incorrect args are used for the selection mode
    *
-   * Note: After construction, modifiers keep internal state synced with external arguments.
+   * Note: After instantiation, modifiers keep internal state synced with external arguments.
    */
   constructor(owner: Owner, args: SelectArgs<T>) {
     super(owner, args);
@@ -459,7 +459,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * Handles selection changes from the Listbox component.
    *
    * **Flow:**
-   * 1. Updates internal state (`_selectedKey` or `_selectedKeys`) for immediate UI reactivity
+   * 1. Updates internal state (`_selectedKey` or `_selectedKeys`) for immediate UI updates
    * 2. Calls parent's `@onSelectionChange` callback to notify of the change
    * 3. Parent updates its state, which flows back via modifier to complete the cycle
    *
@@ -706,7 +706,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * - Updates `_selectedKeys` to match the new external value
    * - Normalizes undefined/null to empty array
    *
-   * This enables reactive updates when the parent changes selection programmatically.
+   * This enables UI updates when the external value changes.
    */
   updateMultipleSelectValue = modifier(
     (_: HTMLDivElement, [selectedKeys]: [string[] | null | undefined]) => {
@@ -726,7 +726,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * - Updates `_selectedKey` to match the new external value
    * - Handles null values for cleared selections
    *
-   * This enables reactive updates when the parent changes selection programmatically.
+   * This enables UI updates when the external value changes.
    */
   updateSingleSelectValue = modifier(
     (_: HTMLDivElement, [selectedKey]: [string | null | undefined]) => {
