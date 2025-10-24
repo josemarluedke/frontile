@@ -517,7 +517,6 @@ export default class ValidatedForm extends Component {
             <field.MultiSelect
               @label='Preferred Communication Channels'
               @items={{this.communicationChannels}}
-              @selectionMode='multiple'
               @isRequired={{true}}
             />
           </form.Field>

@@ -23,7 +23,7 @@ type BoundSingleSelect<S = unknown> = WithBoundArgsForSignature<
 
 type BoundMultiSelect<S = unknown> = WithBoundArgsForSignature<
   SelectSignature<S>,
-  'name' | 'errors' | 'selectedKeys' | 'onBlur' | 'isDisabled'
+  'selectionMode' | 'name' | 'errors' | 'selectedKeys' | 'onBlur' | 'isDisabled'
 >;
 
 interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
@@ -221,6 +221,7 @@ class Field<
         )
         MultiSelect=(component
           Select
+          selectionMode="multiple"
           name=@name
           errors=this.fieldErrors
           selectedKeys=this.fieldValue
