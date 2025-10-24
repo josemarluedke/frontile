@@ -279,6 +279,399 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     );
   });
 
+  /**
+   * Test that SingleSelect with Field formData initializes with pre-set value.
+   * Field automatically binds formData value to selectedKey via this.fieldValue.
+   */
+  test('SingleSelect with Field formData - initializes with pre-set value', async function (assert) {
+    assert.expect(2);
+
+    const formData = {
+      fruit: 'Banana'
+    };
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    await render(
+      <template>
+        <Field @name="fruit" @formData={{formData}} as |field|>
+          <field.SingleSelect
+            @label="Choose Fruit"
+            @items={{items}}
+            data-test-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Verify trigger button shows the pre-selected value
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('Banana', 'Trigger shows pre-selected value from formData');
+
+    // Verify native select has the correct value selected
+    assert
+      .dom('[name="fruit"]')
+      .hasValue('Banana', 'Native select has pre-selected value from formData');
+  });
+
+  /**
+   * Test that SingleSelect with Field formData updates when formData changes.
+   * External state (formData) → Internal state (UI) should update automatically.
+   */
+  test('SingleSelect with Field formData - updates when formData changes', async function (assert) {
+    assert.expect(3);
+
+    class Model {
+      @tracked formData = {
+        fruit: 'Apple'
+      };
+    }
+    const model = new Model();
+    const items = ['Apple', 'Banana', 'Cherry'];
+
+    await render(
+      <template>
+        <Field @name="fruit" @formData={{model.formData}} as |field|>
+          <field.SingleSelect
+            @label="Choose Fruit"
+            @items={{items}}
+            data-test-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Verify initial value
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('Apple', 'Trigger shows initial value');
+
+    // Change formData externally
+    model.formData = { fruit: 'Cherry' };
+    await settled();
+
+    // Verify trigger updated
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('Cherry', 'Trigger updates to new formData value');
+
+    // Verify native select updated
+    assert
+      .dom('[name="fruit"]')
+      .hasValue(
+        'Cherry',
+        'Native select updates to new formData value'
+      );
+  });
+
+  /**
+   * Test that MultiSelect with Field formData initializes with pre-set values.
+   * Field automatically binds formData value to selectedKeys via this.fieldValue.
+   */
+  test('MultiSelect with Field formData - initializes with pre-set values', async function (assert) {
+    assert.expect(5);
+
+    const formData = {
+      fruits: ['Banana', 'Cherry']
+    };
+    const items = ['Apple', 'Banana', 'Cherry', 'Date'];
+
+    await render(
+      <template>
+        <Field @name="fruits" @formData={{formData}} as |field|>
+          <field.MultiSelect
+            @label="Choose Fruits"
+            @items={{items}}
+            @selectionMode="multiple"
+            data-test-multi-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Verify trigger shows comma-separated values in items array order
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(
+        'Banana, Cherry',
+        'Trigger shows pre-selected values from formData'
+      );
+
+    // Open listbox to verify selected items
+    await click('[data-component="select-trigger"]');
+
+    // Verify Banana and Cherry are selected
+    assert
+      .dom('[data-component="listbox"] [data-key="Banana"]')
+      .hasAttribute('data-selected', 'true', 'Banana is selected in listbox');
+    assert
+      .dom('[data-component="listbox"] [data-key="Cherry"]')
+      .hasAttribute('data-selected', 'true', 'Cherry is selected in listbox');
+
+    // Verify Apple and Date are not selected
+    assert
+      .dom('[data-component="listbox"] [data-key="Apple"]')
+      .hasAttribute(
+        'data-selected',
+        'false',
+        'Apple is not selected in listbox'
+      );
+    assert
+      .dom('[data-component="listbox"] [data-key="Date"]')
+      .hasAttribute(
+        'data-selected',
+        'false',
+        'Date is not selected in listbox'
+      );
+  });
+
+  /**
+   * Test that MultiSelect with Field formData updates when formData changes.
+   * External state (formData) → Internal state (UI) should update automatically.
+   */
+  test('MultiSelect with Field formData - updates when formData changes', async function (assert) {
+    assert.expect(7);
+
+    class Model {
+      @tracked formData = {
+        fruits: ['Apple']
+      };
+    }
+    const model = new Model();
+    const items = ['Apple', 'Banana', 'Cherry', 'Date'];
+
+    await render(
+      <template>
+        <Field @name="fruits" @formData={{model.formData}} as |field|>
+          <field.MultiSelect
+            @label="Choose Fruits"
+            @items={{items}}
+            @selectionMode="multiple"
+            data-test-multi-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Verify initial value
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('Apple', 'Trigger shows initial value');
+
+    // Change formData externally
+    model.formData = { fruits: ['Banana', 'Date'] };
+    await settled();
+
+    // Verify trigger updated to show new values
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(
+        'Banana, Date',
+        'Trigger updates to new formData values'
+      );
+
+    // Open listbox to verify correct items are selected
+    await click('[data-component="select-trigger"]');
+
+    // Verify Banana and Date are now selected
+    assert
+      .dom('[data-component="listbox"] [data-key="Banana"]')
+      .hasAttribute(
+        'data-selected',
+        'true',
+        'Banana is selected after formData change'
+      );
+    assert
+      .dom('[data-component="listbox"] [data-key="Date"]')
+      .hasAttribute(
+        'data-selected',
+        'true',
+        'Date is selected after formData change'
+      );
+
+    // Verify Apple and Cherry are not selected
+    assert
+      .dom('[data-component="listbox"] [data-key="Apple"]')
+      .hasAttribute(
+        'data-selected',
+        'false',
+        'Apple is not selected after formData change'
+      );
+    assert
+      .dom('[data-component="listbox"] [data-key="Cherry"]')
+      .hasAttribute(
+        'data-selected',
+        'false',
+        'Cherry is not selected after formData change'
+      );
+
+    // Close listbox
+    await click('[data-component="select-trigger"]');
+
+    // Verify trigger still shows updated values
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(
+        'Banana, Date',
+        'Trigger maintains updated values after closing'
+      );
+  });
+
+  /**
+   * Test that MultiSelect with Field formData (no initial selection) supports user selections.
+   * User should be able to select multiple items via UI interactions.
+   */
+  test('MultiSelect with Field formData (no initial data) - user can select multiple items', async function (assert) {
+    assert.expect(5);
+
+    class Model {
+      @tracked formData = {
+        fruits: [] as string[]
+      };
+    }
+    const model = new Model();
+    const items = ['Apple', 'Banana', 'Cherry', 'Date'];
+
+    // Track when formData changes (simulating what Form component would do)
+    const onChange = (val: string[]) => {
+      model.formData = { fruits: val };
+    };
+
+    await render(
+      <template>
+        <Field @name="fruits" @formData={{model.formData}} as |field|>
+          <field.MultiSelect
+            @label="Choose Fruits"
+            @items={{items}}
+            @selectionMode="multiple"
+            @onSelectionChange={{onChange}}
+            data-test-multi-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Open listbox and select multiple items
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="Banana"]');
+    await click('[data-component="listbox"] [data-key="Cherry"]');
+    await click('[data-component="listbox"] [data-key="Date"]');
+
+    // Verify formData was updated via onChange
+    assert.deepEqual(
+      model.formData.fruits,
+      ['Banana', 'Cherry', 'Date'],
+      'formData updated with all selected items'
+    );
+
+    // Verify trigger shows all selections
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(
+        'Banana, Cherry, Date',
+        'Trigger shows all selected items'
+      );
+
+    // Verify listbox shows correct selections
+    assert
+      .dom('[data-component="listbox"] [data-key="Banana"]')
+      .hasAttribute('data-selected', 'true', 'Banana is selected');
+    assert
+      .dom('[data-component="listbox"] [data-key="Cherry"]')
+      .hasAttribute('data-selected', 'true', 'Cherry is selected');
+    assert
+      .dom('[data-component="listbox"] [data-key="Date"]')
+      .hasAttribute('data-selected', 'true', 'Date is selected');
+  });
+
+  /**
+   * Test that MultiSelect with Field formData (with initial selections) allows adding/removing selections.
+   * User should be able to toggle selections when starting with pre-selected items.
+   */
+  test('MultiSelect with Field formData (with initial data) - user can add and remove selections', async function (assert) {
+    assert.expect(8);
+
+    class Model {
+      @tracked formData = {
+        fruits: ['Apple', 'Cherry']
+      };
+    }
+    const model = new Model();
+    const items = ['Apple', 'Banana', 'Cherry', 'Date'];
+
+    // Track when formData changes (simulating what Form component would do)
+    const onChange = (val: string[]) => {
+      model.formData = { fruits: val };
+    };
+
+    await render(
+      <template>
+        <Field @name="fruits" @formData={{model.formData}} as |field|>
+          <field.MultiSelect
+            @label="Choose Fruits"
+            @items={{items}}
+            @selectionMode="multiple"
+            @onSelectionChange={{onChange}}
+            data-test-multi-select
+          />
+        </Field>
+      </template>
+    );
+
+    // Verify initial selections
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('Apple, Cherry', 'Trigger shows initial selections');
+
+    // Open listbox
+    await click('[data-component="select-trigger"]');
+
+    // Verify initial selections in listbox
+    assert
+      .dom('[data-component="listbox"] [data-key="Apple"]')
+      .hasAttribute('data-selected', 'true', 'Apple initially selected');
+    assert
+      .dom('[data-component="listbox"] [data-key="Cherry"]')
+      .hasAttribute('data-selected', 'true', 'Cherry initially selected');
+
+    // Remove one selection (click to deselect)
+    await click('[data-component="listbox"] [data-key="Apple"]');
+
+    // Verify formData updated
+    assert.deepEqual(
+      model.formData.fruits,
+      ['Cherry'],
+      'formData updated after removing Apple'
+    );
+
+    // Add new selections
+    await click('[data-component="listbox"] [data-key="Banana"]');
+    await click('[data-component="listbox"] [data-key="Date"]');
+
+    // Verify formData has all changes (in items array order: Banana, Cherry, Date)
+    assert.deepEqual(
+      model.formData.fruits,
+      ['Banana', 'Cherry', 'Date'],
+      'formData updated with added selections'
+    );
+
+    // Verify trigger shows updated selections (in items array order)
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(
+        'Banana, Cherry, Date',
+        'Trigger shows updated selections in items array order'
+      );
+
+    // Verify listbox reflects all changes
+    assert
+      .dom('[data-component="listbox"] [data-key="Apple"]')
+      .hasAttribute('data-selected', 'false', 'Apple is no longer selected');
+    assert
+      .dom('[data-component="listbox"] [data-key="Banana"]')
+      .hasAttribute('data-selected', 'true', 'Banana is now selected');
+  });
+
   test('it yields Switch component correctly', async function (assert) {
     const checked = cell(false);
     const onChange = (val: boolean) => {
