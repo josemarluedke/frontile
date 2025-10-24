@@ -534,12 +534,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    */
   get selectedKeys(): string[] {
     if (this.args.selectionMode === 'multiple') {
-      // if (
-      //   typeof this.args.selectedKeys !== 'undefined' &&
-      //   typeof this.args.onSelectionChange === 'function'
-      // ) {
-      //   return this.args.selectedKeys;
-      // }
       return this._selectedKeys;
     } else {
       // Single mode: convert selectedKey to array for internal use
@@ -561,20 +555,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * @returns The selected key, or null if none selected or in multiple mode
    */
   get getSelectedKey(): string | null {
-    if (this.args.selectionMode === 'multiple') {
-      return null;
-    }
-
-    // const singleArgs = this.args as
-    //   | ExplicitSingleSelectArgs<T>
-    //   | DefaultSingleSelectArgs<T>;
-    // if (
-    //   typeof singleArgs.selectedKey !== 'undefined' &&
-    //   typeof this.args.onSelectionChange === 'function'
-    // ) {
-    //   return singleArgs.selectedKey;
-    // }
-
     return this._selectedKey;
   }
 
