@@ -358,10 +358,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Verify native select updated
     assert
       .dom('[name="fruit"]')
-      .hasValue(
-        'Cherry',
-        'Native select updates to new formData value'
-      );
+      .hasValue('Cherry', 'Native select updates to new formData value');
   });
 
   /**
@@ -465,10 +462,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Verify trigger updated to show new values
     assert
       .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Banana, Date',
-        'Trigger updates to new formData values'
-      );
+      .hasText('Banana, Date', 'Trigger updates to new formData values');
 
     // Open listbox to verify correct items are selected
     await click('[data-component="select-trigger"]');
@@ -567,10 +561,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     // Verify trigger shows all selections
     assert
       .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Banana, Cherry, Date',
-        'Trigger shows all selected items'
-      );
+      .hasText('Banana, Cherry, Date', 'Trigger shows all selected items');
 
     // Verify listbox shows correct selections
     assert
