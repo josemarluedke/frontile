@@ -371,9 +371,9 @@ interface SelectSignature<T> {
  *    - Parent updates its state, which flows back through step 1
  *
  * ### Why Both Internal State AND Callbacks?
- * - **Internal state:** Enables immediate, reactive UI updates (`_selectedKey` / `_selectedKeys`)
- * - **Parent callback:** Enables parent to control and validate changes (`@onSelectionChange`)
- * - This pattern provides both responsive UX and parent control over state
+ * - **Internal state:** Enables immediate, responsive UI updates (`_selectedKey` / `_selectedKeys`)
+ * - **Parent callback:** Enables parent to take action when changes occur (`@onSelectionChange`)
+ * - This pattern provides both responsive UX and parent inclusion over state
  *
  * ### Example Flow
  * ```
