@@ -392,6 +392,10 @@ const schema = v.object({
     v.string(),
     v.nonEmpty('Please select an account type')
   ),
+  communicationChannels: v.pipe(
+    v.array(v.string()),
+    v.minLength(1, 'Please select at least one communication channel')
+  ),
   terms: v.pipe(
     v.boolean(),
     v.literal(true, 'You must accept the terms and conditions')
@@ -408,6 +412,7 @@ export default class ValidatedForm extends Component {
     password: '',
     confirmPassword: '',
     accountType: '',
+    communicationChannels: ['SMS'],
     terms: false
   };
 
@@ -417,6 +422,13 @@ export default class ValidatedForm extends Component {
     { label: 'Personal', key: 'personal' },
     { label: 'Business', key: 'business' },
     { label: 'Enterprise', key: 'enterprise' }
+  ];
+
+  communicationChannels = [
+    { label: 'Email', key: 'Email' },
+    { label: 'SMS', key: 'SMS' },
+    { label: 'Phone', key: 'Phone' },
+    { label: 'Push Notifications', key: 'Push' }
   ];
 
   customValidator(data: FormResultData<Schema>) {
@@ -497,6 +509,14 @@ export default class ValidatedForm extends Component {
               @items={{this.accountTypes}}
               @allowEmpty={{true}}
               @placeholder='Select account type'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='communicationChannels' as |field|>
+            <field.MultiSelect
+              @label='Preferred Communication Channels'
+              @items={{this.communicationChannels}}
               @isRequired={{true}}
             />
           </form.Field>

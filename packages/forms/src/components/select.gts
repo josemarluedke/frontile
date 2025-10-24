@@ -23,6 +23,9 @@ import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem } from '@frontile/collections/utils/listManager';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
+
+import { modifier } from 'ember-modifier';
+
 // Import helper function directly instead of using ember-truth-helpers
 const eq = (a: unknown, b: unknown) => a === b;
 
@@ -66,6 +69,32 @@ interface BaseSelectArgs<T>
 interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * The currently selected key for single selection mode.
+   *
+   * **Data Flow:**
+   * - Pass this to set the initial selection
+   * - Update this in your `onSelectionChange` handler to maintain two-way binding
+   * - The component calls `onSelectionChange` whenever the user changes the selection
+   *
+   * @example
+   * ```gts
+   * import { tracked } from '@glimmer/tracking';
+   *
+   * class MyComponent {
+   *   @tracked selectedKey = 'option1';
+   *
+   *   handleSelectionChange = (key: string | null) => {
+   *     this.selectedKey = key; // Update parent state
+   *   }
+   *
+   *   <template>
+   *     <Select
+   *       @selectedKey={{this.selectedKey}}
+   *       @onSelectionChange={{this.handleSelectionChange}}
+   *       @items={{this.items}}
+   *     />
+   *   </template>
+   * }
+   * ```
    */
   selectedKey?: string | null;
 
@@ -76,6 +105,10 @@ interface BaseSingleSelectArgs<T> extends BaseSelectArgs<T> {
 
   /**
    * Callback fired when the selection changes in single mode.
+   *
+   * Update your `@selectedKey` state in this callback to maintain two-way binding.
+   *
+   * @param key - The newly selected key, or null if selection was cleared
    */
   onSelectionChange?: (key: string | null) => void;
 }
@@ -114,11 +147,42 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
 
   /**
    * The currently selected keys for multiple selection mode.
+   *
+   * **Data Flow:**
+   * - Pass this to set the initial selection (array of keys)
+   * - Update this in your `onSelectionChange` handler to maintain two-way binding
+   * - The component calls `onSelectionChange` whenever the user changes the selection
+   *
+   * @example
+   * ```gts
+   * import { tracked } from '@glimmer/tracking';
+   *
+   * class MyComponent {
+   *   @tracked selectedKeys = ['option1', 'option2'];
+   *
+   *   handleSelectionChange = (keys: string[]) => {
+   *     this.selectedKeys = keys; // Update parent state
+   *   }
+   *
+   *   <template>
+   *     <Select
+   *       @selectionMode="multiple"
+   *       @selectedKeys={{this.selectedKeys}}
+   *       @onSelectionChange={{this.handleSelectionChange}}
+   *       @items={{this.items}}
+   *     />
+   *   </template>
+   * }
+   * ```
    */
   selectedKeys?: string[];
 
   /**
    * Callback fired when the selection changes in multiple mode.
+   *
+   * Update your `@selectedKeys` state in this callback to maintain two-way binding.
+   *
+   * @param keys - The newly selected keys (empty array if all selections cleared)
    */
   onSelectionChange?: (keys: string[]) => void;
 }
@@ -144,8 +208,9 @@ type SelectArgs<T> = (
    * - 'sm': Small
    * - 'md': Medium
    * - 'lg': Large
-   *   'trigger': Same size as the trigger
-   *   @defaultValue 'trigger'
+   * - 'trigger': Same size as the trigger
+   *
+   * @defaultValue 'trigger'
    */
   popoverSize?: 'sm' | 'md' | 'lg' | 'trigger';
 
@@ -232,9 +297,8 @@ type SelectArgs<T> = (
 
   /**
    * Controls pointer-events property of endContent.
-   * Defauled to `none` to pass the click event to the input. If your content
-   * needs to capture events, consider adding `pointer-events-auto` class to that
-   * element only.
+   * Defaults to `none` to pass click events to the input. If your content
+   * needs to capture events, add the `pointer-events-auto` class to that element.
    *
    * @defaultValue 'none'
    */
@@ -281,12 +345,71 @@ interface SelectSignature<T> {
   };
 }
 
+/**
+ * Select Component - A feature-rich dropdown selection component
+ *
+ * ## Selection State Architecture
+ *
+ * This component uses a **two-way data binding pattern** for managing selection state:
+ *
+ * ### Data Flow
+ * 1. **External → Internal (Initialization & Updates)**
+ *    - Parent passes `@selectedKey` or `@selectedKeys` as arguments
+ *    - Constructor initializes internal tracked properties (`_selectedKey` or `_selectedKeys`)
+ *    - Modifiers (`updateSingleSelectValue`, `updateMultipleSelectValue`) sync internal state
+ *      when parent updates the arguments
+ *
+ * 2. **Internal State Management**
+ *    - `_selectedKey` / `_selectedKeys`: Internal tracked state (prefixed with underscore)
+ *    - These serve as the "source of truth" for rendering and reactivity
+ *    - Getters (`getSelectedKey`, `selectedKeys`) expose this internal state to the template
+ *
+ * 3. **Internal → External (User Interactions)**
+ *    - User interactions trigger selection change handlers
+ *    - Handlers update internal `_selectedKey` / `_selectedKeys` for immediate UI update
+ *    - Handlers call parent's `@onSelectionChange` callback to notify of state change
+ *    - Parent updates its state, which flows back through step 1
+ *
+ * ### Why Both Internal State AND Callbacks?
+ * - **Internal state:** Enables immediate, responsive UI updates (`_selectedKey` / `_selectedKeys`)
+ * - **Parent callback:** Enables parent to take action when changes occur (`@onSelectionChange`)
+ * - This pattern provides both responsive UX and parent inclusion over state
+ *
+ * ### Example Flow
+ * ```
+ * User clicks item
+ *   → onSelectionChange handler
+ *   → Updates _selectedKey (immediate UI update)
+ *   → Calls parent's @onSelectionChange callback
+ *   → Parent updates its @selectedKey state
+ *   → updateSingleSelectValue modifier syncs _selectedKey with new arg value
+ * ```
+ */
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
   @tracked isOpen = false;
+  /**
+   * Internal tracked state for single selection mode.
+   * Source of truth for rendering. Synced with @selectedKey via the updateSingleSelectValue modifier.
+   */
   @tracked _selectedKey: string | null = null;
+
+  /**
+   * Internal tracked state for multiple selection mode.
+   * Source of truth for rendering. Synced with @selectedKeys via the updateMultipleSelectValue modifier.
+   */
   @tracked _selectedKeys: string[] = [];
 
+  /**
+   * Initializes the component and sets up initial selection state.
+   *
+   * **Initialization:**
+   * 1. Determines selection mode (single vs multiple)
+   * 2. Copies external arg values (@selectedKey or @selectedKeys) to internal tracked state
+   * 3. Logs warnings if incorrect args are used for the selection mode
+   *
+   * Note: After instantiation, modifiers keep internal state synced with external arguments.
+   */
   constructor(owner: Owner, args: SelectArgs<T>) {
     super(owner, args);
 
@@ -332,21 +455,33 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   containerRef = ref<HTMLDivElement>();
   triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
 
+  /**
+   * Handles selection changes from the Listbox component.
+   *
+   * **Flow:**
+   * 1. Updates internal state (`_selectedKey` or `_selectedKeys`) for immediate UI updates
+   * 2. Calls parent's `@onSelectionChange` callback to notify of the change
+   * 3. Parent updates its state, which flows back via modifier to complete the cycle
+   *
+   * **Side effects:**
+   * - Clears filter value (for searchable selects)
+   * - Triggers form input event for native form integration
+   *
+   * @param keys - Array of selected keys from Listbox (converted to single value in single mode)
+   */
   onSelectionChange = (keys: string[]) => {
     if (this.args.selectionMode === 'multiple') {
+      this._selectedKeys = keys;
       if (typeof this.args.onSelectionChange === 'function') {
         (this.args.onSelectionChange as (keys: string[]) => void)(keys);
-      } else {
-        this._selectedKeys = keys;
       }
     } else {
       const singleKey: string | null = keys.length > 0 ? keys[0] || null : null;
+      this._selectedKey = singleKey;
       if (typeof this.args.onSelectionChange === 'function') {
         (this.args.onSelectionChange as (key: string | null) => void)(
           singleKey
         );
-      } else {
-        this._selectedKey = singleKey;
       }
     }
 
@@ -354,11 +489,22 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     triggerFormInputEvent(this.containerRef.current);
   };
 
+  /**
+   * Handles selection changes from the native <select> element.
+   *
+   * This is similar to `onSelectionChange` but accepts a single key directly
+   * rather than an array, matching the native select's single-value API.
+   *
+   * **Flow:**
+   * 1. Updates internal `_selectedKey` for immediate UI update
+   * 2. Calls parent's `@onSelectionChange` callback
+   *
+   * @param key - The selected key, or null if cleared
+   */
   onSingleSelectionChange = (key: string | null) => {
+    this._selectedKey = key;
     if (typeof this.args.onSelectionChange === 'function') {
       (this.args.onSelectionChange as (key: string | null) => void)(key);
-    } else {
-      this._selectedKey = key;
     }
 
     this.filterValue = undefined;
@@ -374,14 +520,20 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     this.filterValue = target.value;
   };
 
+  /**
+   * Returns current selection as an array for template rendering.
+   *
+   * Normalizes both single and multiple selection modes to a consistent array interface:
+   * - Multiple mode: Returns `_selectedKeys` directly
+   * - Single mode: Converts `_selectedKey` to array format (or empty array if null)
+   *
+   * Note: Always returns internal tracked state rather than arguments. External updates
+   * sync through modifiers to maintain consistency.
+   *
+   * @returns Array of selected keys (empty array if none selected)
+   */
   get selectedKeys(): string[] {
     if (this.args.selectionMode === 'multiple') {
-      if (
-        typeof this.args.selectedKeys !== 'undefined' &&
-        typeof this.args.onSelectionChange === 'function'
-      ) {
-        return this.args.selectedKeys;
-      }
       return this._selectedKeys;
     } else {
       // Single mode: convert selectedKey to array for internal use
@@ -390,21 +542,19 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }
   }
 
+  /**
+   * Returns the selected key for single selection mode.
+   *
+   * **Returns:**
+   * - Single mode: Returns `_selectedKey` (string or null)
+   * - Multiple mode: Returns null (not applicable)
+   *
+   * Note: Always returns internal tracked state rather than arguments. External updates
+   * sync through modifiers to maintain consistency.
+   *
+   * @returns The selected key, or null if none selected or in multiple mode
+   */
   get getSelectedKey(): string | null {
-    if (this.args.selectionMode === 'multiple') {
-      return null;
-    }
-
-    const singleArgs = this.args as
-      | ExplicitSingleSelectArgs<T>
-      | DefaultSingleSelectArgs<T>;
-    if (
-      typeof singleArgs.selectedKey !== 'undefined' &&
-      typeof this.args.onSelectionChange === 'function'
-    ) {
-      return singleArgs.selectedKey;
-    }
-
     return this._selectedKey;
   }
 
@@ -529,8 +679,47 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return 'first';
   }
 
+  /**
+   * Syncs internal `_selectedKeys` with external `@selectedKeys` argument.
+   *
+   * Runs whenever `@selectedKeys` changes:
+   * - Updates `_selectedKeys` to match the new external value
+   * - Normalizes undefined/null to empty array
+   *
+   * This enables UI updates when the external value changes.
+   */
+  updateMultipleSelectValue = modifier(
+    (_: HTMLDivElement, [selectedKeys]: [string[] | null | undefined]) => {
+      if (selectedKeys !== undefined && selectedKeys !== null) {
+        this._selectedKeys = selectedKeys;
+      } else {
+        // NOTE: is this the right behavior?
+        this._selectedKeys = [];
+      }
+    }
+  );
+
+  /**
+   * Syncs internal `_selectedKey` with external `@selectedKey` argument.
+   *
+   * Runs whenever `@selectedKey` changes:
+   * - Updates `_selectedKey` to match the new external value
+   * - Handles null values for cleared selections
+   *
+   * This enables UI updates when the external value changes.
+   */
+  updateSingleSelectValue = modifier(
+    (_: HTMLDivElement, [selectedKey]: [string | null | undefined]) => {
+      if (selectedKey !== undefined) {
+        this._selectedKey = selectedKey;
+      }
+    }
+  );
+
   <template>
     <div
+      {{this.updateMultipleSelectValue @selectedKeys}}
+      {{this.updateSingleSelectValue @selectedKey}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       ...attributes
