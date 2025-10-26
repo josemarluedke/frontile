@@ -318,6 +318,8 @@ export default class CheckboxWithDescriptions extends Component {
 
 The CheckboxGroup component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
 
+**Note:** CheckboxGroup currently supports validation on form submit, but does not support automatic field-level validation (change/blur/input events) when used with `form.Field`. This differs from `RadioGroup`, which does support field-level validation. For CheckboxGroup, validation errors will only appear after the form is submitted.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

@@ -350,7 +350,9 @@ export default class ComprehensiveForm extends Component {
 
 The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation library, such as Valibot, for scalable form validation.  Frontile does not ship with a validation library by default, so you can choose which is right for you.  The only requirement is that it is compatible with Standard Schema.  _Validation logic_, however, is built in--concerns such as running validation on submit and blur events.  The following example demonstrates how to use Valibot for comprehensive form validation.  The use of hand-rolled custom validators is also supported.
 
-**Note**:  When using built-in form validation, the `Field` component _must_ be used (see example below).  The `Field` component handles auomatic error binding.  Use of `Field` is unnecessary when not using built-in form validation.  [Learn more about the `Field` component and see more form validation examples](field).
+**Note**:  When using built-in form validation, the `Field` component _must_ be used (see example below).  The `Field` component handles automatic error binding.  Use of `Field` is unnecessary when not using built-in form validation.  [Learn more about the `Field` component and see more form validation examples](field).
+
+**Validation timing:** Most form components support field-level validation (validates on change/blur/input events). However, `CheckboxGroup` currently only supports validation on form submit, not field-level validation events. See the [CheckboxGroup](checkbox-group) and [Field](field) documentation for more details.
 
 ```gts preview
 import Component from '@glimmer/component';

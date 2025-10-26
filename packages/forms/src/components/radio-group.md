@@ -241,6 +241,8 @@ export default class RadioWithDescriptions extends Component {
 
 The RadioGroup component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
 
+**Note:** RadioGroup supports both field-level validation (validates on change/blur/input events based on `@validateOn`) and validation on form submit when used with `form.Field`. This means validation errors can appear as soon as the user changes their selection, providing immediate feedback. This differs from `CheckboxGroup`, which only supports validation on form submit.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
