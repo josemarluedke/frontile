@@ -1,6 +1,6 @@
 {
   "name": "@frontile/collections",
-  "version": "0.17.0-beta.25",
+  "version": "0.17.0-beta.26",
   "description": "Component Library for Ember Octane apps: Collections",
   "keywords": [
     "ember-addon",
@@ -53,10 +53,10 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/buttons": "workspace:0.17.0-beta.25",
-    "@frontile/overlays": "workspace:0.17.0-beta.25",
-    "@frontile/theme": "workspace:0.17.0-beta.25",
-    "@frontile/utilities": "workspace:0.17.0-beta.25",
+    "@frontile/buttons": "workspace:0.17.0-beta.26",
+    "@frontile/overlays": "workspace:0.17.0-beta.26",
+    "@frontile/theme": "workspace:0.17.0-beta.26",
+    "@frontile/utilities": "workspace:0.17.0-beta.26",
     "@universal-ember/table": "^3.1.1",
     "ember-modifier": "^4.1.0"
   },
