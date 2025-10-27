@@ -19,7 +19,7 @@ jobs:
       VOLTA_FEATURE_PNPM: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: volta-cli/action@v4
         with:
           node-version: 21.x
