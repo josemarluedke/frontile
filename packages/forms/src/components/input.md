@@ -27,28 +27,28 @@ import { Input } from '@frontile/forms';
 
 ### Controlled Input
 
-You can control the input value by providing `@value` and handling updates with `@onInput` or `@onChange`.
+You can control the input value using the Form component's data binding pattern. The Form automatically manages the input's value and updates.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Input } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
 export default class ControlledInput extends Component {
-  @tracked name = '';
+  @tracked formData = { name: '' };
 
-  updateName = (value: string) => {
-    this.name = value;
+  handleFormChange = (result: FormResultData) => {
+    this.formData = result.data;
   };
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Input
-        @label='Your Name'
-        @value={{this.name}}
-        @onInput={{this.updateName}}
-      />
-      <p>Current value: {{this.name}}</p>
+      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+        <form.Field @name='name' as |field|>
+          <field.Input @label='Your Name' />
+        </form.Field>
+      </Form>
+      <p>Current value: {{this.formData.name}}</p>
     </div>
   </template>
 }
@@ -75,53 +75,6 @@ export default class InputTypes extends Component {
 }
 ```
 
-### Sizes
-
-Control the size of the input using the `@size` argument.
-
-```gts preview
-import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
-
-export default class InputSizes extends Component {
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Input @label='Small Input' @size='sm' />
-      <Input @label='Medium Input' @size='md' />
-      <Input @label='Large Input' @size='lg' />
-    </div>
-  </template>
-}
-```
-
-### Disabled State
-
-Input fields can be disabled to prevent user interaction while maintaining their visual presence and current value.
-
-```gts preview
-import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
-
-export default class DisabledInput extends Component {
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Input
-        @label='Disabled Text Input'
-        @value='This text cannot be edited'
-        disabled={{true}}
-      />
-
-      <Input
-        @label='Disabled Input with Description'
-        @description='This input is disabled and cannot be modified'
-        @value='Sample value'
-        disabled={{true}}
-      />
-
-    </div>
-  </template>
-}
-```
 
 ### Start and End Content
 
@@ -229,245 +182,161 @@ Enable a clear button that appears when the input has a value by setting `@isCle
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Input } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
 export default class ClearableInput extends Component {
-  @tracked searchQuery = '';
+  @tracked formData = { searchQuery: '' };
 
-  updateSearchQuery = (value: string) => {
-    this.searchQuery = value;
+  handleFormChange = (result: FormResultData) => {
+    this.formData = result.data;
   };
 
   <template>
-    <Input
-      @label='Search Query'
-      @value={{this.searchQuery}}
-      @onInput={{this.updateSearchQuery}}
-      @isClearable={{true}}
-      placeholder='Type to search...'
-    />
+    <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+      <form.Field @name='searchQuery' as |field|>
+        <field.Input
+          @label='Search Query'
+          @isClearable={{true}}
+          placeholder='Type to search...'
+        />
+      </form.Field>
+    </Form>
   </template>
 }
 ```
 
 ### Form Validation
 
-The Input component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
+The Input component integrates with form validation by displaying error messages and updating ARIA attributes accordingly. This example demonstrates validation using Valibot schema with the Form/Field components.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Input } from '@frontile/forms';
+import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+// Define validation schema
+const schema = v.object({
+  name: v.pipe(
+    v.string(),
+    v.nonEmpty('Name is required'),
+    v.minLength(2, 'Name must be at least 2 characters')
+  ),
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class ValidatedInput extends Component {
-  @tracked email = '';
-  @tracked emailErrors: string[] = [];
-
-  updateEmail = (value: string) => {
-    this.email = value;
-    // Clear errors when user starts typing
-    this.emailErrors = [];
+  @tracked formData: Schema = {
+    name: '',
+    email: ''
   };
 
-  validateEmail = () => {
-    const email = this.email;
-    const errors = [];
+  handleFormChange = (result: FormResultData<Schema>) => {
+    this.formData = result.data;
+  };
 
-    if (!email) {
-      errors.push('Email is required');
-    } else if (!email.includes('@')) {
-      errors.push('Please enter a valid email address');
-    }
+  handleFormSubmit = (result: FormResultData<Schema>) => {
+    console.log('Form submitted:', result.data);
+  };
 
-    this.emailErrors = errors;
+  handleFormError = (errors: FormErrors) => {
+    console.log('Validation errors:', errors);
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
-      <Input
-        @label='Email Address'
-        @type='email'
-        @value={{this.email}}
-        @onInput={{this.updateEmail}}
-        @errors={{this.emailErrors}}
-        @isRequired={{true}}
-      />
+    <Form
+      @data={{this.formData}}
+      @schema={{schema}}
+      @onChange={{this.handleFormChange}}
+      @onSubmit={{this.handleFormSubmit}}
+      @onError={{this.handleFormError}}
+      as |form|
+    >
+      <form.Field @name='name' as |field|>
+        <field.Input @label='Name' @isRequired={{true}} />
+      </form.Field>
 
-      <Button @onPress={{this.validateEmail}}>
-        Validate
-      </Button>
-    </div>
-  </template>
-}
-```
-
-### With Description
-
-Add helpful description text that appears below the input.
-
-```gts preview
-import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
-
-export default class InputWithDescription extends Component {
-  <template>
-    <Input
-      @label='Username'
-      @description='Choose a unique username that will be visible to other users'
-      placeholder='Enter your username'
-    />
-  </template>
-}
-```
-
-### Complete Form Example
-
-Here's a more comprehensive example showing multiple inputs in a form context:
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
-import { Button } from '@frontile/buttons';
-
-export default class CompleteForm extends Component {
-  @tracked fullName = '';
-  @tracked email = '';
-  @tracked phone = '';
-
-  @tracked fullNameErrors: string[] = [];
-  @tracked emailErrors: string[] = [];
-
-  updateFullName = (value: string) => {
-    this.fullName = value;
-    this.fullNameErrors = [];
-  };
-
-  updateEmail = (value: string) => {
-    this.email = value;
-    this.emailErrors = [];
-  };
-
-  updatePhone = (value: string) => {
-    this.phone = value;
-  };
-
-  handleSubmit = (event: Event) => {
-    event.preventDefault();
-
-    // Basic validation
-    const errors = [];
-
-    if (!this.fullName) {
-      this.fullNameErrors = ['Full name is required'];
-      errors.push('fullName');
-    }
-
-    if (!this.email) {
-      this.emailErrors = ['Email is required'];
-      errors.push('email');
-    } else if (!this.email.includes('@')) {
-      this.emailErrors = ['Please enter a valid email address'];
-      errors.push('email');
-    }
-
-    if (errors.length === 0) {
-      console.log('Form submitted successfully!', {
-        fullName: this.fullName,
-        email: this.email,
-        phone: this.phone
-      });
-    }
-  };
-
-  <template>
-    <form {{on 'submit' this.handleSubmit}}>
-      <div class='flex flex-col gap-6'>
-
-        <Input
-          @label='Full Name'
-          @value={{this.fullName}}
-          @onInput={{this.updateFullName}}
-          @isRequired={{true}}
-          @errors={{this.fullNameErrors}}
-        />
-
-        <Input
+      <form.Field @name='email' as |field|>
+        <field.Input
           @label='Email Address'
           @type='email'
-          @value={{this.email}}
-          @onInput={{this.updateEmail}}
           @isRequired={{true}}
-          @errors={{this.emailErrors}}
-          @description="We'll never share your email with anyone else"
         />
+      </form.Field>
 
-        <Input
-          @label='Phone Number'
-          @type='tel'
-          @value={{this.phone}}
-          @onInput={{this.updatePhone}}
-        >
-          <:startContent>
-            +1
-          </:startContent>
-        </Input>
-
-        <Button @class='mt-4'>
-          Submit
-        </Button>
-
-      </div>
-    </form>
+      <Button type='submit'>Submit</Button>
+    </Form>
   </template>
 }
 ```
 
-### Custom Styling
+### Miscellaneous Options
 
-You can customize the appearance of different parts of the input using the `@classes` argument.
+The Input component supports various optional configurations for sizing, states, and styling.
 
 ```gts preview
-import Component from '@glimmer/component';
 import { Input } from '@frontile/forms';
 import { hash } from '@ember/helper';
 
-export default class CustomStyledInput extends Component {
-  <template>
-    <Input
-      @label='Custom Styled Input'
-      @classes={{hash
-        base='my-custom-form-control'
-        input='my-custom-input-field'
-        innerContainer='my-custom-container'
-        startContent='my-start-content'
-        endContent='my-end-content'
-      }}
-    >
-      <:startContent>
-        <SearchIcon />
-      </:startContent>
-    </Input>
-  </template>
-}
-const SearchIcon = <template>
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    fill='none'
-    viewBox='0 0 24 24'
-    stroke-width='1.5'
-    stroke='currentColor'
-    class='size-5'
-  >
-    <path
-      stroke-linecap='round'
-      stroke-linejoin='round'
-      d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
-    />
-  </svg>
-</template>;
+<template>
+  <div class='flex flex-col gap-6'>
+    {{! Size variants }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Size Variants</h4>
+      <div class='flex flex-col gap-3'>
+        <Input @label='Small Input' @size='sm' />
+        <Input @label='Medium Input' @size='md' />
+        <Input @label='Large Input' @size='lg' />
+      </div>
+    </div>
+
+    {{! Disabled state }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Disabled State</h4>
+      <div class='flex flex-col gap-3'>
+        <Input
+          @label='Disabled Input'
+          @value='Cannot edit this text'
+          disabled={{true}}
+        />
+        <Input
+          @label='Disabled with Description'
+          @description='This input is disabled'
+          @value='Sample value'
+          disabled={{true}}
+        />
+      </div>
+    </div>
+
+    {{! With description }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>With Description</h4>
+      <Input
+        @label='Username'
+        @description='Choose a unique username'
+      />
+    </div>
+
+    {{! Custom styling }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Custom Styling</h4>
+      <Input
+        @label='Custom Classes'
+        @classes={{hash
+          base='my-custom-form-control'
+          input='my-custom-input-field'
+        }}
+      />
+    </div>
+  </div>
+</template>
 ```
 
 ## Accessibility
