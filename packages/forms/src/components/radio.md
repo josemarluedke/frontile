@@ -6,7 +6,7 @@ imports:
 
 # Radio
 
-A standalone radio button component that allows users to select a single option. While typically used within a RadioGroup, it can also be used individually when you need more control over the layout and behavior.
+A radio button component that allows users to select a single option from a group of choices. Radio components integrate seamlessly with the Form and Field components for automatic data binding and validation. For grouped radio buttons, use RadioGroup which provides built-in grouping and state management.
 
 ## Import
 
@@ -23,297 +23,44 @@ The most basic usage of a Radio component with a label and value.
 ```gts preview
 import { Radio } from '@frontile/forms';
 
-<template><Radio @label='Accept Terms' @value='accepted' /></template>
+<template><Radio @name='terms' @label='Accept Terms' @value='accepted' /></template>
 ```
 
-### Controlled Radio
+> **Modern Usage:** For most use cases, prefer using Radio components with the Form and Field components. This provides automatic data binding, validation, and state management without manual `@onChange` handlers. See the "Controlled with Form/Field" example below.
 
-You can control the radio state by providing `@checkedValue` and handling updates with `@onChange`.
+> **RadioGroup vs Individual Radio:** When you have multiple related radio options, use `field.RadioGroup` which automatically manages the grouping and state. Individual `field.Radio` components require manual `@value` specification on each radio button.
+
+### Controlled with Form/Field
+
+You can control the radio state using the Form component's data binding system. The Form automatically manages the radio value and updates.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
 export default class ControlledRadio extends Component {
-  @tracked selectedValue = '';
+  @tracked formData = { newsletter: '' };
 
-  updateValue = (value: string) => {
-    this.selectedValue = value;
+  handleFormChange = (result: FormResultData) => {
+    this.formData = result.data;
   };
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Radio
-        @label='Subscribe to newsletter'
-        @value='newsletter'
-        @checkedValue={{this.selectedValue}}
-        @onChange={{this.updateValue}}
-      />
+      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+        <form.Field @name='newsletter' as |field|>
+          <field.RadioGroup @label='Newsletter Preference' as |Radio|>
+            <Radio @label='Daily Digest' @value='daily' />
+            <Radio @label='Weekly Summary' @value='weekly' />
+            <Radio @label='No Newsletter' @value='none' />
+          </field.RadioGroup>
+        </form.Field>
+      </Form>
 
       <div class='p-3 border border-default-300 rounded'>
-        <p class='text-sm'>
-          Status:
-          {{if this.selectedValue 'Subscribed' 'Not subscribed'}}
-        </p>
+        <p class='text-sm'>Selected: {{this.formData.newsletter}}</p>
       </div>
-    </div>
-  </template>
-}
-```
-
-### Multiple Independent Radios
-
-When you need multiple independent radio buttons (not part of a group), each should have a unique name.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
-
-export default class IndependentRadios extends Component {
-  @tracked emailNotifications = '';
-  @tracked smsNotifications = '';
-  @tracked pushNotifications = '';
-
-  updateEmailNotifications = (value: string) => {
-    this.emailNotifications = value;
-  };
-
-  updateSmsNotifications = (value: string) => {
-    this.smsNotifications = value;
-  };
-
-  updatePushNotifications = (value: string) => {
-    this.pushNotifications = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <div class='space-y-3'>
-        <Radio
-          @name='email-notifications'
-          @label='Enable email notifications'
-          @value='enabled'
-          @checkedValue={{this.emailNotifications}}
-          @onChange={{this.updateEmailNotifications}}
-        />
-
-        <Radio
-          @name='sms-notifications'
-          @label='Enable SMS notifications'
-          @value='enabled'
-          @checkedValue={{this.smsNotifications}}
-          @onChange={{this.updateSmsNotifications}}
-        />
-
-        <Radio
-          @name='push-notifications'
-          @label='Enable push notifications'
-          @value='enabled'
-          @checkedValue={{this.pushNotifications}}
-          @onChange={{this.updatePushNotifications}}
-        />
-      </div>
-
-      <div class='p-4 border-default-300 rounded'>
-        <h4 class='font-medium mb-2'>Notification Settings:</h4>
-        <ul class='text-sm space-y-1'>
-          <li>Email: {{if this.emailNotifications 'Enabled' 'Disabled'}}</li>
-          <li>SMS: {{if this.smsNotifications 'Enabled' 'Disabled'}}</li>
-          <li>Push: {{if this.pushNotifications 'Enabled' 'Disabled'}}</li>
-        </ul>
-      </div>
-    </div>
-  </template>
-}
-```
-
-### Manual Radio Group
-
-Create a custom radio group using individual Radio components with the same name.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
-
-export default class ManualRadioGroup extends Component {
-  @tracked selectedTheme = 'light';
-
-  updateTheme = (value: string) => {
-    this.selectedTheme = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <fieldset>
-        <legend class='text-lg font-medium mb-3'>Choose Theme</legend>
-        <div class='space-y-3'>
-          <Radio
-            @name='theme-preference'
-            @label='Light Theme'
-            @value='light'
-            @checkedValue={{this.selectedTheme}}
-            @onChange={{this.updateTheme}}
-          />
-          <Radio
-            @name='theme-preference'
-            @label='Dark Theme'
-            @value='dark'
-            @checkedValue={{this.selectedTheme}}
-            @onChange={{this.updateTheme}}
-          />
-          <Radio
-            @name='theme-preference'
-            @label='System Theme'
-            @value='system'
-            @checkedValue={{this.selectedTheme}}
-            @onChange={{this.updateTheme}}
-          />
-        </div>
-      </fieldset>
-
-      <div class='p-3 border border-default-300 rounded'>
-        <p class='text-sm'>
-          Selected theme:
-          <strong>{{this.selectedTheme}}</strong>
-        </p>
-      </div>
-    </div>
-  </template>
-}
-```
-
-### Sizes
-
-Control the size of radio buttons using the `@size` argument.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
-
-export default class RadioSizes extends Component {
-  @tracked smallValue = '';
-  @tracked mediumValue = '';
-  @tracked largeValue = '';
-
-  updateSmallValue = (value: string) => {
-    this.smallValue = value;
-  };
-
-  updateMediumValue = (value: string) => {
-    this.mediumValue = value;
-  };
-
-  updateLargeValue = (value: string) => {
-    this.largeValue = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Radio
-        @name='small-radio'
-        @label='Small Radio'
-        @size='sm'
-        @value='small'
-        @checkedValue={{this.smallValue}}
-        @onChange={{this.updateSmallValue}}
-      />
-
-      <Radio
-        @name='medium-radio'
-        @label='Medium Radio'
-        @size='md'
-        @value='medium'
-        @checkedValue={{this.mediumValue}}
-        @onChange={{this.updateMediumValue}}
-      />
-
-      <Radio
-        @name='large-radio'
-        @label='Large Radio'
-        @size='lg'
-        @value='large'
-        @checkedValue={{this.largeValue}}
-        @onChange={{this.updateLargeValue}}
-      />
-    </div>
-  </template>
-}
-```
-
-### Disabled State
-
-Radio buttons can be disabled to prevent user interaction while maintaining their visual presence and current state.
-
-```gts preview
-import Component from '@glimmer/component';
-import { Radio } from '@frontile/forms';
-
-export default class DisabledRadio extends Component {
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Radio
-        @name='disabled-plan'
-        @label='Basic Plan - $9/month'
-        @value='basic'
-        @checkedValue='basic'
-        disabled={{true}}
-      />
-
-      <Radio
-        @name='disabled-plan'
-        @label='Pro Plan - $19/month'
-        @value='pro'
-        disabled={{true}}
-      />
-
-      <Radio
-        @name='disabled-plan'
-        @label='Enterprise Plan - $49/month'
-        @value='enterprise'
-        disabled={{true}}
-      />
-    </div>
-  </template>
-}
-```
-
-### Radio with Description
-
-Add helpful description text that appears below the radio label.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
-
-export default class RadioWithDescription extends Component {
-  @tracked agreement = '';
-
-  updateAgreement = (value: string) => {
-    this.agreement = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Radio
-        @name='terms-agreement'
-        @label='I agree to the terms and conditions'
-        @description='By checking this box, you agree to our terms of service, privacy policy, and cookie policy. You can review these documents at any time.'
-        @value='agreed'
-        @checkedValue={{this.agreement}}
-        @onChange={{this.updateAgreement}}
-      />
-
-      <Radio
-        @name='marketing-consent'
-        @label='I consent to receive marketing communications'
-        @description='We will send you occasional updates about new features, promotions, and company news. You can unsubscribe at any time.'
-        @value='consented'
-      />
     </div>
   </template>
 }
@@ -321,171 +68,188 @@ export default class RadioWithDescription extends Component {
 
 ### Form Validation
 
-The Radio component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
+> **Field-Level Validation:** RadioGroup supports field-level validation that runs on change events based on the Form's `@validateOn` setting, providing immediate feedback.
+
+RadioGroup integrates with Form validation through Valibot schemas. The Form component handles validation automatically and displays errors through the Field component. Here's a comprehensive example showing RadioGroup with other form fields:
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import { array } from '@ember/helper';
+import * as v from 'valibot';
 
-export default class ValidatedRadio extends Component {
-  @tracked termsAccepted = '';
-  @tracked termsErrors: string[] = [];
+const schema = v.object({
+  fullName: v.pipe(
+    v.string(),
+    v.nonEmpty('Full name is required'),
+    v.minLength(2, 'Name must be at least 2 characters')
+  ),
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  experience: v.pipe(
+    v.fallback(v.string(), ''),
+    v.string(),
+    v.nonEmpty('Please select your experience level')
+  ),
+  remoteWork: v.boolean()
+});
 
-  updateTermsAccepted = (value: string) => {
-    this.termsAccepted = value;
-    // Clear errors when user makes a selection
-    this.termsErrors = [];
+type Schema = v.InferOutput<typeof schema>;
+
+export default class FormValidationExample extends Component {
+  @tracked formData: Schema = {
+    fullName: '',
+    email: '',
+    experience: '',
+    remoteWork: false
   };
 
-  validateTerms = () => {
-    if (!this.termsAccepted) {
-      this.termsErrors = [
-        'You must accept the terms and conditions to continue'
-      ];
-    } else {
-      this.termsErrors = [];
-      console.log('Terms accepted');
-    }
+  handleFormChange = (result: FormResultData<Schema>) => {
+    this.formData = result.data;
+  };
+
+  handleSubmit = (result: FormResultData<Schema>) => {
+    console.log('Application submitted successfully:', result.data);
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
-      <Radio
-        @name='terms-validation'
-        @label='I accept the terms and conditions'
-        @description='Please read and accept our terms and conditions before proceeding.'
-        @value='accepted'
-        @checkedValue={{this.termsAccepted}}
-        @onChange={{this.updateTermsAccepted}}
-        @errors={{this.termsErrors}}
-        @isRequired={{true}}
-      />
+    <Form
+      @data={{this.formData}}
+      @schema={{schema}}
+      @onChange={{this.handleFormChange}}
+      @onSubmit={{this.handleSubmit}}
+      @validateOn={{array 'change' 'submit'}}
+      as |form|
+    >
+      <div class='flex flex-col gap-4'>
+        <form.Field @name='fullName' as |field|>
+          <field.Input @label='Full Name' @isRequired={{true}} />
+        </form.Field>
 
-      <div>
-        <Button @onPress={{this.validateTerms}}>
-          Continue
-        </Button>
+        <form.Field @name='email' as |field|>
+          <field.Input
+            @label='Email Address'
+            @type='email'
+            @isRequired={{true}}
+          />
+        </form.Field>
+
+        <form.Field @name='experience' as |field|>
+          <field.RadioGroup @label='Experience Level' @isRequired={{true}} as |Radio|>
+            <Radio @label='Junior (0-2 years)' @value='junior' />
+            <Radio @label='Mid-level (3-5 years)' @value='mid' />
+            <Radio @label='Senior (5+ years)' @value='senior' />
+          </field.RadioGroup>
+        </form.Field>
+
+        <form.Field @name='remoteWork' as |field|>
+          <field.Checkbox @label='Open to remote work' />
+        </form.Field>
+
+        <div>
+          <Button type='submit'>Submit Application</Button>
+        </div>
       </div>
-    </div>
+    </Form>
   </template>
 }
 ```
 
-### Horizontal Layout
+### Miscellaneous Options
 
-Create a horizontal layout using CSS Grid or Flexbox.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
-
-export default class HorizontalRadios extends Component {
-  @tracked rating = '';
-
-  updateRating = (value: string) => {
-    this.rating = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <fieldset>
-        <legend class='text-lg font-medium mb-3'>Rate your experience</legend>
-        <div class='flex gap-4'>
-          <Radio
-            @name='experience-rating'
-            @label='Poor'
-            @value='poor'
-            @checkedValue={{this.rating}}
-            @onChange={{this.updateRating}}
-          />
-          <Radio
-            @name='experience-rating'
-            @label='Fair'
-            @value='fair'
-            @checkedValue={{this.rating}}
-            @onChange={{this.updateRating}}
-          />
-          <Radio
-            @name='experience-rating'
-            @label='Good'
-            @value='good'
-            @checkedValue={{this.rating}}
-            @onChange={{this.updateRating}}
-          />
-          <Radio
-            @name='experience-rating'
-            @label='Excellent'
-            @value='excellent'
-            @checkedValue={{this.rating}}
-            @onChange={{this.updateRating}}
-          />
-        </div>
-      </fieldset>
-
-      {{#if this.rating}}
-        <div class='p-3 border border-default-300 rounded'>
-          <p class='text-sm'>You rated your experience as:
-            <strong>{{this.rating}}</strong></p>
-        </div>
-      {{/if}}
-    </div>
-  </template>
-}
-```
-
-### Custom Styling
-
-You can customize the appearance of different parts of the radio using the `@classes` argument.
+The Radio component supports various optional configurations for sizing, states, descriptions, layout, and styling.
 
 ```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Radio } from '@frontile/forms';
+import { Radio, RadioGroup } from '@frontile/forms';
 import { hash } from '@ember/helper';
 
-export default class CustomStyledRadio extends Component {
-  @tracked customValue = '';
+<template>
+  <div class='flex flex-col gap-6'>
+    {{! Size variants }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Size Variants</h4>
+      <div class='flex flex-col gap-3'>
+        <RadioGroup @name='sizeSmall' @label='Small Size' @size='sm' as |Radio|>
+          <Radio @label='Option A' @value='a' />
+          <Radio @label='Option B' @value='b' />
+        </RadioGroup>
+        <RadioGroup @name='sizeMedium' @label='Medium Size' @size='md' as |Radio|>
+          <Radio @label='Option A' @value='a' />
+          <Radio @label='Option B' @value='b' />
+        </RadioGroup>
+        <RadioGroup @name='sizeLarge' @label='Large Size' @size='lg' as |Radio|>
+          <Radio @label='Option A' @value='a' />
+          <Radio @label='Option B' @value='b' />
+        </RadioGroup>
+      </div>
+    </div>
 
-  updateCustomValue = (value: string) => {
-    this.customValue = value;
-  };
+    {{! Disabled state }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Disabled State</h4>
+      <RadioGroup @name='subscription' @label='Subscription Plan' @value='basic' disabled={{true}} as |Radio|>
+        <Radio @label='Basic Plan - $9/month' @value='basic' />
+        <Radio @label='Pro Plan - $19/month' @value='pro' />
+        <Radio @label='Enterprise Plan - $49/month' @value='enterprise' />
+      </RadioGroup>
+    </div>
 
-  <template>
-    <Radio
-      @name='custom-styled'
-      @label='Custom Styled Radio'
-      @value='custom'
-      @checkedValue={{this.customValue}}
-      @onChange={{this.updateCustomValue}}
-      @classes={{hash
-        base='my-custom-radio-base'
-        input='my-custom-radio-input'
-        labelContainer='my-custom-label-container'
-        label='my-custom-radio-label'
-      }}
-    />
-  </template>
-}
+    {{! With description }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>With Description</h4>
+      <RadioGroup @name='plan' @label='Choose your subscription plan' as |Radio|>
+        <Radio
+          @label='Basic'
+          @value='basic'
+          @description='Perfect for individuals getting started. Includes basic features.'
+        />
+        <Radio
+          @label='Pro'
+          @value='pro'
+          @description='Great for professionals. Includes advanced features and priority support.'
+        />
+        <Radio
+          @label='Enterprise'
+          @value='enterprise'
+          @description='For large teams. Includes all features, dedicated support, and custom integrations.'
+        />
+      </RadioGroup>
+    </div>
+
+    {{! Horizontal layout }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Horizontal Layout</h4>
+      <RadioGroup @name='rating' @label='Rating' @orientation='horizontal' as |Radio|>
+        <Radio @label='Poor' @value='poor' />
+        <Radio @label='Fair' @value='fair' />
+        <Radio @label='Good' @value='good' />
+        <Radio @label='Excellent' @value='excellent' />
+      </RadioGroup>
+    </div>
+
+    {{! Custom styling }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Custom Styling</h4>
+      <Radio
+        @name='custom-styled'
+        @label='Custom Styled Radio'
+        @value='custom'
+        @classes={{hash
+          base='my-custom-radio-base'
+          input='my-custom-radio-input'
+          labelContainer='my-custom-label-container'
+          label='my-custom-radio-label'
+        }}
+      />
+    </div>
+  </div>
+</template>
 ```
-
-## When to Use Radio vs RadioGroup
-
-**Use the standalone Radio component when:**
-
-- You need a single checkbox-like behavior (independent selection)
-- You want complete control over layout and spacing
-- You're building a custom form layout
-- Each radio represents a separate boolean choice
-
-**Use RadioGroup when:**
-
-- You have multiple mutually exclusive options
-- You want automatic grouping and name management
-- You need consistent spacing and layout
-- You want built-in label and description support for the group
 
 ## Accessibility
 
