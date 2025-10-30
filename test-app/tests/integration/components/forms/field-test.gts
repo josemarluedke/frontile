@@ -727,82 +727,18 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
     );
   });
 
-  test('it displays errors for Input component', async function (assert) {
+  test('it displays errors for all field components', async function (assert) {
     const errors = cell<FormErrors>({});
+    const items = ['Option 1', 'Option 2'];
 
     await render(
       <template>
         <Field @name="email" @errors={{errors.current}} as |field|>
           <field.Input @label="Email" data-test-input />
         </Field>
-      </template>
-    );
-
-    // No errors initially
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('No error message initially');
-    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
-
-    // Add errors
-    errors.current = { email: ['Invalid email format', 'Email is required'] };
-    await settled();
-
-    // Check errors are displayed
-    assert
-      .dom('[data-component="form-feedback"]')
-      .exists('Error message is displayed');
-    assert
-      .dom('[data-component="form-feedback"]')
-      .hasText('Invalid email format; Email is required');
-    assert.dom('[data-test-input]').hasAttribute('aria-invalid', 'true');
-
-    // Clear errors
-    errors.current = {};
-    await settled();
-
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('Error message is cleared');
-    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
-  });
-
-  test('it displays errors for Checkbox component', async function (assert) {
-    const errors = cell<FormErrors>({});
-
-    await render(
-      <template>
         <Field @name="terms" @errors={{errors.current}} as |field|>
           <field.Checkbox @label="Accept Terms" data-test-checkbox />
         </Field>
-      </template>
-    );
-
-    // No errors initially
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('No error message initially');
-    assert.dom('[data-test-checkbox]').doesNotHaveAttribute('aria-invalid');
-
-    // Add errors
-    errors.current = { terms: ['You must accept the terms'] };
-    await settled();
-
-    // Check errors are displayed
-    assert
-      .dom('[data-component="form-feedback"]')
-      .exists('Error message is displayed');
-    assert
-      .dom('[data-component="form-feedback"]')
-      .hasText('You must accept the terms');
-    assert.dom('[data-test-checkbox]').hasAttribute('aria-invalid', 'true');
-  });
-
-  test('it displays errors for RadioGroup component', async function (assert) {
-    const errors = cell<FormErrors>({});
-
-    await render(
-      <template>
         <Field @name="choice" @errors={{errors.current}} as |field|>
           <field.RadioGroup
             @label="Make a choice"
@@ -813,35 +749,6 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             <Radio @label="No" @value="no" />
           </field.RadioGroup>
         </Field>
-      </template>
-    );
-
-    // No errors initially
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('No error message initially');
-
-    // Add errors
-    errors.current = { choice: ['Please make a selection'] };
-    await settled();
-
-    // Check errors are displayed
-    assert
-      .dom('[data-component="form-feedback"]')
-      .exists('Error message is displayed');
-    assert
-      .dom('[data-component="form-feedback"]')
-      .hasText('Please make a selection');
-    // Verify radio inputs exist and error is shown
-    assert.dom('[name="choice"]').exists({ count: 2 }, 'Radio inputs exist');
-  });
-
-  test('it displays errors for Select component', async function (assert) {
-    const errors = cell<FormErrors>({});
-    const items = ['Option 1', 'Option 2'];
-
-    await render(
-      <template>
         <Field @name="selection" @errors={{errors.current}} as |field|>
           <field.SingleSelect
             @label="Select Option"
@@ -849,62 +756,89 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             data-test-select
           />
         </Field>
-      </template>
-    );
-
-    // No errors initially
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('No error message initially');
-
-    // Add errors
-    errors.current = { selection: ['Selection is required'] };
-    await settled();
-
-    // Check errors are displayed
-    assert
-      .dom('[data-component="form-feedback"]')
-      .exists('Error message is displayed');
-    assert
-      .dom('[data-component="form-feedback"]')
-      .hasText('Selection is required');
-    // Verify select trigger exists and error is shown
-    assert
-      .dom('[data-component="select-trigger"]')
-      .exists('Select trigger exists');
-  });
-
-  test('it displays errors for Textarea component', async function (assert) {
-    const errors = cell<FormErrors>({});
-
-    await render(
-      <template>
         <Field @name="description" @errors={{errors.current}} as |field|>
           <field.Textarea @label="Description" data-test-textarea />
         </Field>
       </template>
     );
 
-    // No errors initially
+    // No errors initially for any field
     assert
       .dom('[data-component="form-feedback"]')
-      .doesNotExist('No error message initially');
+      .doesNotExist('No error messages initially');
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
+    assert.dom('[data-test-checkbox]').doesNotHaveAttribute('aria-invalid');
     assert.dom('[data-test-textarea]').doesNotHaveAttribute('aria-invalid');
 
-    // Add errors
+    // Add errors for all fields
     errors.current = {
+      email: ['Invalid email format', 'Email is required'],
+      terms: ['You must accept the terms'],
+      choice: ['Please make a selection'],
+      selection: ['Selection is required'],
       description: ['Description must be at least 10 characters']
     };
     await settled();
 
-    // Check errors are displayed
+    // Check all errors are displayed
+    const feedbacks = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(feedbacks.length, 5, 'All 5 fields show error messages');
+
+    // Verify Input error
+    assert.dom('[data-test-input]').hasAttribute('aria-invalid', 'true');
+    assert.equal(
+      feedbacks[0]?.textContent?.trim(),
+      'Invalid email format; Email is required',
+      'Input shows correct error message'
+    );
+
+    // Verify Checkbox error
+    assert.dom('[data-test-checkbox]').hasAttribute('aria-invalid', 'true');
+    assert.equal(
+      feedbacks[1]?.textContent?.trim(),
+      'You must accept the terms',
+      'Checkbox shows correct error message'
+    );
+
+    // Verify RadioGroup error
+    assert.dom('[name="choice"]').exists({ count: 2 }, 'Radio inputs exist');
+    assert.equal(
+      feedbacks[2]?.textContent?.trim(),
+      'Please make a selection',
+      'RadioGroup shows correct error message'
+    );
+
+    // Verify Select error
     assert
-      .dom('[data-component="form-feedback"]')
-      .exists('Error message is displayed');
-    assert
-      .dom('[data-component="form-feedback"]')
-      .hasText('Description must be at least 10 characters');
+      .dom('[data-component="select-trigger"]')
+      .exists('Select trigger exists');
+    assert.equal(
+      feedbacks[3]?.textContent?.trim(),
+      'Selection is required',
+      'Select shows correct error message'
+    );
+
+    // Verify Textarea error
     assert.dom('[data-test-textarea]').hasAttribute('aria-invalid', 'true');
+    assert.equal(
+      feedbacks[4]?.textContent?.trim(),
+      'Description must be at least 10 characters',
+      'Textarea shows correct error message'
+    );
+
+    // Clear errors
+    errors.current = {};
+    await settled();
+
+    // Verify all errors are cleared
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('All error messages cleared');
+    assert.dom('[data-test-input]').doesNotHaveAttribute('aria-invalid');
+    assert.dom('[data-test-checkbox]').doesNotHaveAttribute('aria-invalid');
+    assert.dom('[data-test-textarea]').doesNotHaveAttribute('aria-invalid');
   });
 
   test('it passes field name to yielded components', async function (assert) {
