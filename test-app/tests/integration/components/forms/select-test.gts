@@ -1128,7 +1128,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     selectedKeys.current = ['Apple', 'Cherry'];
     await settled();
-    assert.equal(callCount, 0, 'callback should not be called on external change');
+    assert.equal(
+      callCount,
+      0,
+      'callback should not be called on external change'
+    );
     assert.dom(trigger).hasText('Apple, Cherry');
 
     await click(trigger);
@@ -1165,6 +1169,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assertListboxSelection(assert, 'Cherry', false);
     assertListboxSelection(assert, 'Date', true);
 
-    assert.equal(callCount, 3, 'callback should only be called for user clicks');
+    assert.equal(
+      callCount,
+      3,
+      'callback should only be called for user clicks'
+    );
   });
 });
