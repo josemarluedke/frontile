@@ -34,70 +34,75 @@ import { CheckboxGroup } from '@frontile/forms';
 
 ### Controlled Checkbox Group
 
-You can control individual checkbox states by providing `@checked` and handling updates with `@onChange`.
+You can control individual checkbox states by providing `@checked` and handling updates with `@onChange`. This example uses an array-based data structure with a single reusable handler.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
 import { CheckboxGroup } from '@frontile/forms';
 
 export default class ControlledCheckboxGroup extends Component {
-  @tracked selectedInterests = {
-    music: false,
-    sports: false,
-    technology: false,
-    art: false
+  @tracked formData = {
+    interests: [] as string[]
   };
 
-  updateMusic = (checked: boolean) => {
-    this.selectedInterests = { ...this.selectedInterests, music: checked };
-  };
+  // Helper to check if a value is selected
+  isChecked = (value: string) => {
+    return this.formData.interests?.includes(value) ?? false;
+  }
 
-  updateSports = (checked: boolean) => {
-    this.selectedInterests = { ...this.selectedInterests, sports: checked };
-  };
+  isChecked(value: string) {
+    return this.formData.interests?.includes(value) ?? false;
+  }
 
-  updateTechnology = (checked: boolean) => {
-    this.selectedInterests = { ...this.selectedInterests, technology: checked };
-  };
+  // Single reusable handler for checkbox changes
+  @action
+  handleCheckboxChange(value: string, checked: boolean) {
+    const current = this.formData.interests || [];
 
-  updateArt = (checked: boolean) => {
-    this.selectedInterests = { ...this.selectedInterests, art: checked };
-  };
+    if (checked) {
+      this.formData = { ...this.formData, interests: [...current, value] };
+    } else {
+      this.formData = { ...this.formData, interests: current.filter((v) => v !== value) };
+    }
+  }
 
   get selectedCount() {
-    return Object.values(this.selectedInterests).filter(Boolean).length;
+    return this.formData.interests?.length ?? 0;
   }
 
   get selectedItems() {
-    return Object.entries(this.selectedInterests)
-      .filter(([_, selected]) => selected)
-      .map(([key]) => key)
-      .join(', ');
+    return this.formData.interests?.join(', ') ?? '';
   }
 
   <template>
     <div class='flex flex-col gap-4'>
       <CheckboxGroup @label='What are your interests?' as |Checkbox|>
         <Checkbox
+          value='music'
           @label='Music'
-          @checked={{this.selectedInterests.music}}
-          @onChange={{this.updateMusic}}
+          @checked={{this.isChecked 'music'}}
+          @onChange={{fn this.handleCheckboxChange 'music'}}
         />
         <Checkbox
+          value='sports'
           @label='Sports'
-          @checked={{this.selectedInterests.sports}}
-          @onChange={{this.updateSports}}
+          @checked={{this.isChecked 'sports'}}
+          @onChange={{fn this.handleCheckboxChange 'sports'}}
         />
         <Checkbox
+          value='technology'
           @label='Technology'
-          @checked={{this.selectedInterests.technology}}
-          @onChange={{this.updateTechnology}}
+          @checked={{this.isChecked 'technology'}}
+          @onChange={{fn this.handleCheckboxChange 'technology'}}
         />
         <Checkbox
+          value='art'
           @label='Art'
-          @checked={{this.selectedInterests.art}}
-          @onChange={{this.updateArt}}
+          @checked={{this.isChecked 'art'}}
+          @onChange={{fn this.handleCheckboxChange 'art'}}
         />
       </CheckboxGroup>
 
@@ -107,209 +112,16 @@ export default class ControlledCheckboxGroup extends Component {
           {{this.selectedItems}}
         </p>
       </div>
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Current Selection:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
+      </div>
     </div>
-  </template>
-}
-```
-
-### Orientation
-
-Control the layout orientation of checkbox options using the `@orientation` argument. Options can be arranged vertically (default) or horizontally.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
-
-export default class OrientationExample extends Component {
-  @tracked verticalOptions = {
-    option1: false,
-    option2: false,
-    option3: false
-  };
-
-  @tracked horizontalOptions = {
-    sm: false,
-    md: false,
-    lg: false,
-    xl: false
-  };
-
-  updateVerticalOption = (key: string) => (checked: boolean) => {
-    this.verticalOptions = { ...this.verticalOptions, [key]: checked };
-  };
-
-  updateHorizontalOption = (key: string) => (checked: boolean) => {
-    this.horizontalOptions = { ...this.horizontalOptions, [key]: checked };
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <CheckboxGroup
-        @label='Vertical Layout (Default)'
-        @orientation='vertical'
-        as |Checkbox|
-      >
-        <Checkbox
-          @label='Option 1'
-          @checked={{this.verticalOptions.option1}}
-          @onChange={{this.updateVerticalOption 'option1'}}
-        />
-        <Checkbox
-          @label='Option 2'
-          @checked={{this.verticalOptions.option2}}
-          @onChange={{this.updateVerticalOption 'option2'}}
-        />
-        <Checkbox
-          @label='Option 3'
-          @checked={{this.verticalOptions.option3}}
-          @onChange={{this.updateVerticalOption 'option3'}}
-        />
-      </CheckboxGroup>
-
-      <CheckboxGroup
-        @label='Horizontal Layout'
-        @orientation='horizontal'
-        as |Checkbox|
-      >
-        <Checkbox
-          @label='Small'
-          @checked={{this.horizontalOptions.sm}}
-          @onChange={{this.updateHorizontalOption 'sm'}}
-        />
-        <Checkbox
-          @label='Medium'
-          @checked={{this.horizontalOptions.md}}
-          @onChange={{this.updateHorizontalOption 'md'}}
-        />
-        <Checkbox
-          @label='Large'
-          @checked={{this.horizontalOptions.lg}}
-          @onChange={{this.updateHorizontalOption 'lg'}}
-        />
-        <Checkbox
-          @label='Extra Large'
-          @checked={{this.horizontalOptions.xl}}
-          @onChange={{this.updateHorizontalOption 'xl'}}
-        />
-      </CheckboxGroup>
-    </div>
-  </template>
-}
-```
-
-### Sizes
-
-Control the size of checkbox inputs using the `@size` argument.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
-
-export default class CheckboxGroupSizes extends Component {
-  @tracked smallOptions = { a: false, b: false };
-  @tracked mediumOptions = { a: false, b: false };
-  @tracked largeOptions = { a: false, b: false };
-
-  updateSmallOption = (key: string) => (checked: boolean) => {
-    this.smallOptions = { ...this.smallOptions, [key]: checked };
-  };
-
-  updateMediumOption = (key: string) => (checked: boolean) => {
-    this.mediumOptions = { ...this.mediumOptions, [key]: checked };
-  };
-
-  updateLargeOption = (key: string) => (checked: boolean) => {
-    this.largeOptions = { ...this.largeOptions, [key]: checked };
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <CheckboxGroup @label='Small Size' @size='sm' as |Checkbox|>
-        <Checkbox
-          @label='Option A'
-          @checked={{this.smallOptions.a}}
-          @onChange={{this.updateSmallOption 'a'}}
-        />
-        <Checkbox
-          @label='Option B'
-          @checked={{this.smallOptions.b}}
-          @onChange={{this.updateSmallOption 'b'}}
-        />
-      </CheckboxGroup>
-
-      <CheckboxGroup @label='Medium Size' @size='md' as |Checkbox|>
-        <Checkbox
-          @label='Option A'
-          @checked={{this.mediumOptions.a}}
-          @onChange={{this.updateMediumOption 'a'}}
-        />
-        <Checkbox
-          @label='Option B'
-          @checked={{this.mediumOptions.b}}
-          @onChange={{this.updateMediumOption 'b'}}
-        />
-      </CheckboxGroup>
-
-      <CheckboxGroup @label='Large Size' @size='lg' as |Checkbox|>
-        <Checkbox
-          @label='Option A'
-          @checked={{this.largeOptions.a}}
-          @onChange={{this.updateLargeOption 'a'}}
-        />
-        <Checkbox
-          @label='Option B'
-          @checked={{this.largeOptions.b}}
-          @onChange={{this.updateLargeOption 'b'}}
-        />
-      </CheckboxGroup>
-    </div>
-  </template>
-}
-```
-
-### Checkbox Options with Descriptions
-
-Each checkbox option can include its own description text for additional context.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
-
-export default class CheckboxWithDescriptions extends Component {
-  @tracked features = {
-    basic: false,
-    pro: false,
-    enterprise: false
-  };
-
-  updateFeature = (key: string) => (checked: boolean) => {
-    this.features = { ...this.features, [key]: checked };
-  };
-
-  <template>
-    <CheckboxGroup @label='Select features to include' as |Checkbox|>
-      <Checkbox
-        @label='Basic Features'
-        @description='Includes essential functionality for getting started.'
-        @checked={{this.features.basic}}
-        @onChange={{this.updateFeature 'basic'}}
-      />
-      <Checkbox
-        @label='Pro Features'
-        @description='Advanced features for power users and professionals.'
-        @checked={{this.features.pro}}
-        @onChange={{this.updateFeature 'pro'}}
-      />
-      <Checkbox
-        @label='Enterprise Features'
-        @description='Full feature set with dedicated support and custom integrations.'
-        @checked={{this.features.enterprise}}
-        @onChange={{this.updateFeature 'enterprise'}}
-      />
-    </CheckboxGroup>
   </template>
 }
 ```
@@ -318,293 +130,351 @@ export default class CheckboxWithDescriptions extends Component {
 
 The CheckboxGroup component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
 
+**Note:** CheckboxGroup currently supports validation on form submit, but does not support automatic field-level validation (change/blur/input events) when used with `form.Field`. This differs from `RadioGroup`, which does support field-level validation. For CheckboxGroup, validation errors will only appear after the form is submitted.
+
+This example demonstrates the recommended pattern for using CheckboxGroup with the Form component's validation system. It uses an array-based data structure with a single reusable handler for managing checkbox state.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Form, CheckboxGroup, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+// Define validation schema with array of strings
+const schema = v.object({
+  notificationMethods: v.pipe(
+    v.array(v.string()),
+    v.minLength(1, 'Please select at least one notification method')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class ValidatedCheckboxGroup extends Component {
-  @tracked preferences = {
-    email: false,
-    sms: false,
-    push: false
+  @tracked formData: Schema = {
+    notificationMethods: []
   };
-  @tracked errors: string[] = [];
+  @tracked submitMessage = '';
 
-  updatePreference = (key: string) => (checked: boolean) => {
-    this.preferences = { ...this.preferences, [key]: checked };
-    // Clear errors when user makes a selection
+  // Helper to check if a value is selected
+  isChecked = (value: string) => {
+    return this.formData.notificationMethods?.includes(value) ?? false;
+  };
+
+  // Single reusable handler for checkbox changes
+  @action
+  handleCheckboxChange(value: string, checked: boolean) {
+    const current = this.formData.notificationMethods || [];
+
     if (checked) {
-      this.errors = [];
-    }
-  };
-
-  validatePreferences = () => {
-    const hasSelection = Object.values(this.preferences).some(Boolean);
-
-    if (!hasSelection) {
-      this.errors = ['Please select at least one notification method'];
+      this.formData.notificationMethods = [...current, value];
     } else {
-      this.errors = [];
-      console.log('Valid selection:', this.preferences);
+      this.formData.notificationMethods = current.filter((v) => v !== value);
     }
-  };
+  }
+
+  @action
+  handleFormChange(data: FormResultData<Schema>) {
+    this.formData = data.data;
+  }
+
+  @action
+  handleFormSubmit(data: FormResultData<Schema>) {
+    this.submitMessage = 'Preferences saved successfully!';
+    console.log('Submitted data:', data.data);
+  }
 
   <template>
     <div class='flex flex-col gap-4'>
-      <CheckboxGroup
-        @label='Notification Preferences'
-        @description='Choose how you would like to receive notifications'
-        @errors={{this.errors}}
-        @isRequired={{true}}
-        as |Checkbox|
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
       >
-        <Checkbox
-          @label='Email notifications'
-          @checked={{this.preferences.email}}
-          @onChange={{this.updatePreference 'email'}}
-        />
-        <Checkbox
-          @label='SMS notifications'
-          @checked={{this.preferences.sms}}
-          @onChange={{this.updatePreference 'sms'}}
-        />
-        <Checkbox
-          @label='Push notifications'
-          @checked={{this.preferences.push}}
-          @onChange={{this.updatePreference 'push'}}
-        />
-      </CheckboxGroup>
+        <form.Field @name='notificationMethods' as |field|>
+          <field.CheckboxGroup
+            @label='Notification Preferences'
+            @description='Choose how you would like to receive notifications'
+            @isRequired={{true}}
+            as |Checkbox|
+          >
+            <Checkbox
+              value='email'
+              @label='Email notifications'
+              @checked={{this.isChecked 'email'}}
+              @onChange={{fn this.handleCheckboxChange 'email'}}
+            />
+            <Checkbox
+              value='sms'
+              @label='SMS notifications'
+              @checked={{this.isChecked 'sms'}}
+              @onChange={{fn this.handleCheckboxChange 'sms'}}
+            />
+            <Checkbox
+              value='push'
+              @label='Push notifications'
+              @checked={{this.isChecked 'push'}}
+              @onChange={{fn this.handleCheckboxChange 'push'}}
+            />
+          </field.CheckboxGroup>
+        </form.Field>
 
-      <div>
-        <Button @onPress={{this.validatePreferences}}>
-          Save Preferences
-        </Button>
+        <div>
+          <Button type='submit'>
+            Save Preferences
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Form Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
       </div>
     </div>
   </template>
 }
 ```
 
-### With Description
-
-Add helpful description text to the entire checkbox group that appears below the label.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
-
-export default class CheckboxGroupWithDescription extends Component {
-  @tracked permissions = {
-    read: false,
-    write: false,
-    delete: false
-  };
-
-  updatePermission = (key: string) => (checked: boolean) => {
-    this.permissions = { ...this.permissions, [key]: checked };
-  };
-
-  <template>
-    <CheckboxGroup
-      @label='User Permissions'
-      @description='Select the permissions this user should have. You can modify these later in the user settings.'
-      as |Checkbox|
-    >
-      <Checkbox
-        @label='Read access'
-        @checked={{this.permissions.read}}
-        @onChange={{this.updatePermission 'read'}}
-      />
-      <Checkbox
-        @label='Write access'
-        @checked={{this.permissions.write}}
-        @onChange={{this.updatePermission 'write'}}
-      />
-      <Checkbox
-        @label='Delete access'
-        @checked={{this.permissions.delete}}
-        @onChange={{this.updatePermission 'delete'}}
-      />
-    </CheckboxGroup>
-  </template>
-}
-```
-
 ### Complete Form Example
 
-Here's a comprehensive example showing a CheckboxGroup in a form context with other inputs:
+Here's a comprehensive example showing CheckboxGroup with the modern Form validation system, combining multiple CheckboxGroups with other input types. This example demonstrates array-based checkbox data and schema validation with both required and optional checkbox groups.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { CheckboxGroup } from '@frontile/forms';
-import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
+import { action } from '@ember/object';
+import { fn } from '@ember/helper';
+import { Form, CheckboxGroup, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+// Define validation schema
+const schema = v.object({
+  name: v.pipe(
+    v.string(),
+    v.nonEmpty('Name is required'),
+    v.minLength(2, 'Name must be at least 2 characters')
+  ),
+  interests: v.pipe(
+    v.array(v.string()),
+    v.minLength(1, 'Please select at least one interest')
+  ),
+  newsletters: v.array(v.string()) // Optional - no minimum required
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class CompleteFormWithCheckbox extends Component {
-  @tracked name = '';
-  @tracked interests = {
-    technology: false,
-    sports: false,
-    music: false,
-    travel: false
+  @tracked formData: Schema = {
+    name: '',
+    interests: [],
+    newsletters: []
   };
-  @tracked newsletters = {
-    weekly: false,
-    monthly: false
-  };
+  @tracked submitMessage = '';
 
-  @tracked nameErrors: string[] = [];
-  @tracked interestsErrors: string[] = [];
-  @tracked newslettersErrors: string[] = [];
-
-  updateName = (value: string) => {
-    this.name = value;
-    this.nameErrors = [];
+  // Helper to check if a value is selected in a field
+  isChecked = (field: 'interests' | 'newsletters', value: string) => {
+    return this.formData[field]?.includes(value) ?? false;
   };
 
-  updateInterest = (key: string) => (checked: boolean) => {
-    this.interests = { ...this.interests, [key]: checked };
-    this.interestsErrors = [];
-  };
+  // Single reusable handler for any checkbox group
+  @action
+  handleCheckboxChange(field: 'interests' | 'newsletters', value: string, checked: boolean) {
+    const current = this.formData[field] || [];
 
-  updateNewsletter = (key: string) => (checked: boolean) => {
-    this.newsletters = { ...this.newsletters, [key]: checked };
-    this.newslettersErrors = [];
-  };
-
-  handleSubmit = (event: Event) => {
-    event.preventDefault();
-
-    // Reset errors
-    this.nameErrors = [];
-    this.interestsErrors = [];
-    this.newslettersErrors = [];
-
-    // Validate form
-    let hasErrors = false;
-
-    if (!this.name.trim()) {
-      this.nameErrors = ['Name is required'];
-      hasErrors = true;
+    if (checked) {
+      this.formData[field] = [...current, value];
+    } else {
+      this.formData[field] = current.filter((v) => v !== value);
     }
+  }
 
-    const hasInterests = Object.values(this.interests).some(Boolean);
-    if (!hasInterests) {
-      this.interestsErrors = ['Please select at least one interest'];
-      hasErrors = true;
-    }
+  @action
+  handleFormChange(data: FormResultData<Schema>) {
+    this.formData = data.data;
+  }
 
-    if (!hasErrors) {
-      console.log('Form submitted successfully!', {
-        name: this.name,
-        interests: this.interests,
-        newsletters: this.newsletters
-      });
-    }
-  };
+  @action
+  handleFormSubmit(data: FormResultData<Schema>) {
+    this.submitMessage = 'Registration submitted successfully!';
+    console.log('Form submitted:', data.data);
+  }
 
   <template>
-    <form {{on 'submit' this.handleSubmit}}>
-      <div class='flex flex-col gap-4'>
+    <div class='flex flex-col gap-4'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='name' as |field|>
+            <field.Input
+              @label='Full Name'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Input
-          @label='Full Name'
-          @value={{this.name}}
-          @onInput={{this.updateName}}
-          @isRequired={{true}}
-          @errors={{this.nameErrors}}
-        />
+          <form.Field @name='interests' as |field|>
+            <field.CheckboxGroup
+              @label='Areas of Interest'
+              @description='Select topics you would like to hear about'
+              @isRequired={{true}}
+              @orientation='horizontal'
+              as |Checkbox|
+            >
+              <Checkbox
+                value='technology'
+                @label='Technology'
+                @checked={{this.isChecked 'interests' 'technology'}}
+                @onChange={{fn this.handleCheckboxChange 'interests' 'technology'}}
+              />
+              <Checkbox
+                value='sports'
+                @label='Sports'
+                @checked={{this.isChecked 'interests' 'sports'}}
+                @onChange={{fn this.handleCheckboxChange 'interests' 'sports'}}
+              />
+              <Checkbox
+                value='music'
+                @label='Music'
+                @checked={{this.isChecked 'interests' 'music'}}
+                @onChange={{fn this.handleCheckboxChange 'interests' 'music'}}
+              />
+              <Checkbox
+                value='travel'
+                @label='Travel'
+                @checked={{this.isChecked 'interests' 'travel'}}
+                @onChange={{fn this.handleCheckboxChange 'interests' 'travel'}}
+              />
+            </field.CheckboxGroup>
+          </form.Field>
 
-        <CheckboxGroup
-          @label='Areas of Interest'
-          @description='Select topics you would like to hear about'
-          @errors={{this.interestsErrors}}
-          @isRequired={{true}}
-          @orientation='horizontal'
-          as |Checkbox|
-        >
-          <Checkbox
-            @label='Technology'
-            @checked={{this.interests.technology}}
-            @onChange={{this.updateInterest 'technology'}}
-          />
-          <Checkbox
-            @label='Sports'
-            @checked={{this.interests.sports}}
-            @onChange={{this.updateInterest 'sports'}}
-          />
-          <Checkbox
-            @label='Music'
-            @checked={{this.interests.music}}
-            @onChange={{this.updateInterest 'music'}}
-          />
-          <Checkbox
-            @label='Travel'
-            @checked={{this.interests.travel}}
-            @onChange={{this.updateInterest 'travel'}}
-          />
-        </CheckboxGroup>
+          <form.Field @name='newsletters' as |field|>
+            <field.CheckboxGroup
+              @label='Newsletter Subscriptions'
+              @description='Optional newsletters you can subscribe to'
+              as |Checkbox|
+            >
+              <Checkbox
+                value='weekly'
+                @label='Weekly Newsletter'
+                @description='Get the latest updates every week'
+                @checked={{this.isChecked 'newsletters' 'weekly'}}
+                @onChange={{fn this.handleCheckboxChange 'newsletters' 'weekly'}}
+              />
+              <Checkbox
+                value='monthly'
+                @label='Monthly Digest'
+                @description='Monthly summary of important news and updates'
+                @checked={{this.isChecked 'newsletters' 'monthly'}}
+                @onChange={{fn this.handleCheckboxChange 'newsletters' 'monthly'}}
+              />
+            </field.CheckboxGroup>
+          </form.Field>
 
-        <CheckboxGroup
-          @label='Newsletter Subscriptions'
-          @description='Optional newsletters you can subscribe to'
-          as |Checkbox|
-        >
-          <Checkbox
-            @label='Weekly Newsletter'
-            @description='Get the latest updates every week'
-            @checked={{this.newsletters.weekly}}
-            @onChange={{this.updateNewsletter 'weekly'}}
-          />
-          <Checkbox
-            @label='Monthly Digest'
-            @description='Monthly summary of important news and updates'
-            @checked={{this.newsletters.monthly}}
-            @onChange={{this.updateNewsletter 'monthly'}}
-          />
-        </CheckboxGroup>
-
-        <div>
-          <Button @class='mt-4'>
-            Submit Registration
-          </Button>
+          <div>
+            <Button type='submit'>
+              Submit Registration
+            </Button>
+          </div>
         </div>
+      </Form>
 
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Form Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
       </div>
-    </form>
+    </div>
   </template>
 }
 ```
 
-### Custom Styling
+### Miscellaneous Options
 
-You can customize the appearance of different parts of the checkbox group using the `@classes` argument.
+This example demonstrates various optional arguments and configurations available for CheckboxGroup:
+
+- **Orientation**: Use `@orientation='horizontal'` to arrange checkboxes horizontally (default is vertical)
+- **Size**: Control checkbox size with `@size='sm'`, `@size='md'`, or `@size='lg'`
+- **Description**: Add helpful text to the group with `@description`, and to individual checkboxes with `@description` on each Checkbox
+- **Custom Styling**: Customize appearance with `@classes` argument
 
 ```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { CheckboxGroup } from '@frontile/forms';
 import { hash } from '@ember/helper';
 
-export default class CustomStyledCheckboxGroup extends Component {
-  @tracked customOptions = {
-    option1: false,
-    option2: false,
-    option3: false
-  };
-
-  updateCustomOption = (key: string) => (checked: boolean) => {
-    this.customOptions = { ...this.customOptions, [key]: checked };
-  };
-
-  <template>
+<template>
+  <div class='flex flex-col gap-6'>
+    {{! Horizontal Orientation }}
     <CheckboxGroup
-      @label='Custom Styled Checkbox Group'
+      @label='Horizontal Layout'
+      @orientation='horizontal'
+      as |Checkbox|
+    >
+      <Checkbox @label='Option A' @description='First option in horizontal layout' />
+      <Checkbox @label='Option B' @description='Second option in horizontal layout' />
+      <Checkbox @label='Option C' @description='Third option in horizontal layout' />
+    </CheckboxGroup>
+
+    {{! Different Sizes }}
+    <div class='flex flex-col gap-4'>
+      <CheckboxGroup @label='Small Size' @size='sm' as |Checkbox|>
+        <Checkbox @label='Small Option A' @description='Compact checkbox size' />
+        <Checkbox @label='Small Option B' @description='Another compact size' />
+      </CheckboxGroup>
+
+      <CheckboxGroup @label='Medium Size' @size='md' as |Checkbox|>
+        <Checkbox @label='Medium Option A' @description='Standard checkbox size' />
+        <Checkbox @label='Medium Option B' @description='Another standard size' />
+      </CheckboxGroup>
+
+      <CheckboxGroup @label='Large Size' @size='lg' as |Checkbox|>
+        <Checkbox @label='Large Option A' @description='Spacious checkbox size' />
+        <Checkbox @label='Large Option B' @description='Another spacious size' />
+      </CheckboxGroup>
+    </div>
+
+    {{! With Group Description }}
+    <CheckboxGroup
+      @label='User Permissions'
+      @description='Select the permissions this user should have. You can modify these later.'
+      as |Checkbox|
+    >
+      <Checkbox @label='Read access' @description='View files and data' />
+      <Checkbox @label='Write access' @description='Create and edit content' />
+      <Checkbox @label='Delete access' @description='Remove files permanently' />
+    </CheckboxGroup>
+
+    {{! Custom Styling }}
+    <CheckboxGroup
+      @label='Custom Styled Group'
       @classes={{hash
         base='my-custom-checkbox-group'
         label='my-custom-label'
@@ -612,24 +482,12 @@ export default class CustomStyledCheckboxGroup extends Component {
       }}
       as |Checkbox|
     >
-      <Checkbox
-        @label='Option 1'
-        @checked={{this.customOptions.option1}}
-        @onChange={{this.updateCustomOption 'option1'}}
-      />
-      <Checkbox
-        @label='Option 2'
-        @checked={{this.customOptions.option2}}
-        @onChange={{this.updateCustomOption 'option2'}}
-      />
-      <Checkbox
-        @label='Option 3'
-        @checked={{this.customOptions.option3}}
-        @onChange={{this.updateCustomOption 'option3'}}
-      />
+      <Checkbox @label='Styled Option 1' @description='First custom styled option' />
+      <Checkbox @label='Styled Option 2' @description='Second custom styled option' />
+      <Checkbox @label='Styled Option 3' @description='Third custom styled option' />
     </CheckboxGroup>
-  </template>
-}
+  </div>
+</template>
 ```
 
 ## Accessibility

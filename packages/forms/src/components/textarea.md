@@ -28,87 +28,42 @@ import { Textarea } from '@frontile/forms';
 
 ### Controlled Textarea
 
-You can control the textarea value by providing `@value` and handling updates with `@onInput` or `@onChange`.
+You can control the textarea value using the Form component's data binding system.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
 export default class ControlledTextarea extends Component {
-  @tracked message = '';
+  @tracked formData = {
+    message: ''
+  };
 
-  updateMessage = (value: string) => {
-    this.message = value;
+  handleFormChange = (result: FormResultData) => {
+    this.formData = result.data;
   };
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Textarea
-        @label='Your Message'
-        @value={{this.message}}
-        @onInput={{this.updateMessage}}
-        placeholder='Enter your message here...'
-      />
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        as |form|
+      >
+        <form.Field @name='message' as |field|>
+          <field.Textarea
+            @label='Your Message'
+            placeholder='Enter your message here...'
+          />
+        </form.Field>
+      </Form>
+
       <div class='p-3 border border-default-300 rounded'>
         <p class='text-sm text-default-600'>Character count:
-          {{this.message.length}}</p>
-        <p class='text-sm'>Current message: {{this.message}}</p>
+          {{this.formData.message.length}}</p>
+        <p class='text-sm'>Current message: {{this.formData.message}}</p>
       </div>
-    </div>
-  </template>
-}
-```
-
-### Sizes
-
-Control the size of the textarea using the `@size` argument.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
-
-export default class TextareaSizes extends Component {
-  @tracked smallValue = '';
-  @tracked mediumValue = '';
-  @tracked largeValue = '';
-
-  updateSmallValue = (value: string) => {
-    this.smallValue = value;
-  };
-
-  updateMediumValue = (value: string) => {
-    this.mediumValue = value;
-  };
-
-  updateLargeValue = (value: string) => {
-    this.largeValue = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Textarea
-        @label='Small Textarea'
-        @size='sm'
-        @value={{this.smallValue}}
-        @onInput={{this.updateSmallValue}}
-        placeholder='Small size textarea'
-      />
-      <Textarea
-        @label='Medium Textarea'
-        @size='md'
-        @value={{this.mediumValue}}
-        @onInput={{this.updateMediumValue}}
-        placeholder='Medium size textarea'
-      />
-      <Textarea
-        @label='Large Textarea'
-        @size='lg'
-        @value={{this.largeValue}}
-        @onInput={{this.updateLargeValue}}
-        placeholder='Large size textarea'
-      />
     </div>
   </template>
 }
@@ -144,108 +99,59 @@ export default class DisabledTextarea extends Component {
 }
 ```
 
-### Rows and Resize Behavior
+### Form-Level Change Handling
 
-Control the initial height and resize behavior using standard HTML attributes.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
-
-export default class TextareaRowsExample extends Component {
-  @tracked fixedMessage = '';
-  @tracked verticalMessage = '';
-  @tracked tallMessage = '';
-
-  updateFixedMessage = (value: string) => {
-    this.fixedMessage = value;
-  };
-
-  updateVerticalMessage = (value: string) => {
-    this.verticalMessage = value;
-  };
-
-  updateTallMessage = (value: string) => {
-    this.tallMessage = value;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Textarea
-        @label='Fixed Height (No Resize)'
-        @value={{this.fixedMessage}}
-        @onInput={{this.updateFixedMessage}}
-        rows='3'
-        style='resize: none;'
-        placeholder='This textarea cannot be resized'
-      />
-
-      <Textarea
-        @label='Vertical Resize Only'
-        @value={{this.verticalMessage}}
-        @onInput={{this.updateVerticalMessage}}
-        rows='4'
-        style='resize: vertical;'
-        placeholder='This textarea can only be resized vertically'
-      />
-
-      <Textarea
-        @label='Tall Textarea'
-        @value={{this.tallMessage}}
-        @onInput={{this.updateTallMessage}}
-        rows='8'
-        placeholder='This is a taller textarea with 8 rows by default'
-      />
-    </div>
-  </template>
-}
-```
-
-### OnInput vs OnChange
-
-The Textarea component supports both `@onInput` and `@onChange` callbacks with different triggering behaviors.
+When using Form and Field components, all change events are handled centrally by the Form component via its `@onChange` callback. This demonstrates how Form automatically captures all field updates in real-time as the user types.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
-export default class TextareaEvents extends Component {
-  @tracked text = '';
-  @tracked inputEvents = 0;
-  @tracked changeEvents = 0;
+export default class TextareaWithFormChange extends Component {
+  @tracked formData = { text: '' };
+  @tracked changeEventCount = 0;
 
-  handleInput = (value: string) => {
-    this.text = value;
-    this.inputEvents += 1;
-  };
-
-  handleChange = () => {
-    this.changeEvents += 1;
+  handleFormChange = (data: FormResultData) => {
+    this.formData = data.data;
+    this.changeEventCount += 1;
   };
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Textarea
-        @label='Event Demonstration'
-        @value={{this.text}}
-        @onInput={{this.handleInput}}
-        @onChange={{this.handleChange}}
-        placeholder='Type something and then click outside to see the difference between onInput and onChange'
-      />
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        as |form|
+      >
+        <form.Field @name='text' as |field|>
+          <field.Textarea
+            @label='Message'
+            @description='Form-level @onChange fires on every keystroke, providing real-time data updates'
+            rows='4'
+            placeholder='Type something to see form-level change events...'
+          />
+        </form.Field>
+      </Form>
 
-      <div class='p-4 bg-gray-50 rounded'>
-        <div class='grid grid-cols-2 gap-4 text-sm'>
+      <div class='p-4 bg-default-50 rounded'>
+        <div class='space-y-2 text-sm'>
           <div>
-            <strong>onInput events:</strong>
-            {{this.inputEvents}}
-            <p class='text-gray-600'>Fires on every keystroke</p>
+            <strong>Form @onChange events:</strong>
+            <span class='ml-2'>{{this.changeEventCount}}</span>
+            <p class='text-default-600 mt-1'>
+              Fires on every keystroke, providing complete form data
+            </p>
+          </div>
+          <div class='pt-2 border-t border-default-200'>
+            <strong>Current value length:</strong>
+            <span class='ml-2'>{{this.formData.text.length}} characters</span>
           </div>
           <div>
-            <strong>onChange events:</strong>
-            {{this.changeEvents}}
-            <p class='text-gray-600'>Fires when focus is lost</p>
+            <strong>Current value:</strong>
+            <p class='mt-1 p-2 bg-white rounded border border-default-200 break-words'>
+              {{if this.formData.text this.formData.text '(empty)'}}
+            </p>
           </div>
         </div>
       </div>
@@ -256,248 +162,227 @@ export default class TextareaEvents extends Component {
 
 ### Form Validation
 
-The Textarea component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
+The Textarea component integrates with the Form validation system, providing automatic error display and field-level validation using Valibot schema.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
+import { array } from '@ember/helper';
+import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+// Define validation schema
+const schema = v.object({
+  feedback: v.pipe(
+    v.string(),
+    v.nonEmpty('Feedback is required'),
+    v.minLength(10, 'Feedback must be at least 10 characters long'),
+    v.maxLength(500, 'Feedback must be less than 500 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class ValidatedTextarea extends Component {
-  @tracked feedback = '';
-  @tracked feedbackErrors: string[] = [];
+  @tracked formData: Schema = {
+    feedback: ''
+  };
+  @tracked submitMessage = '';
 
-  updateFeedback = (value: string) => {
-    this.feedback = value;
-    // Clear errors when user starts typing
-    this.feedbackErrors = [];
+  handleFormChange = (result: FormResultData<Schema>) => {
+    this.formData = result.data;
   };
 
-  validateFeedback = () => {
-    const feedback = this.feedback;
-    const errors = [];
+  handleFormSubmit = async (result: FormResultData<Schema>) => {
+    this.submitMessage = 'Feedback submitted successfully!';
+    console.log('Form submitted:', result.data);
+  };
 
-    if (!feedback.trim()) {
-      errors.push('Feedback is required');
-    } else if (feedback.trim().length < 10) {
-      errors.push('Feedback must be at least 10 characters long');
-    } else if (feedback.trim().length > 500) {
-      errors.push('Feedback must be less than 500 characters');
-    }
-
-    this.feedbackErrors = errors;
+  handleFormError = (errors: FormErrors) => {
+    console.log('Validation errors:', errors);
   };
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Textarea
-        @label='Your Feedback'
-        @value={{this.feedback}}
-        @onInput={{this.updateFeedback}}
-        @errors={{this.feedbackErrors}}
-        @isRequired={{true}}
-        rows='5'
-        placeholder='Please share your thoughts...'
-      />
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @onError={{this.handleFormError}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <form.Field @name='feedback' as |field|>
+          <field.Textarea
+            @label='Your Feedback'
+            @isRequired={{true}}
+            rows='5'
+            placeholder='Please share your thoughts...'
+          />
+        </form.Field>
 
-      <div class='flex justify-between items-center text-sm text-gray-600'>
-        <span>{{this.feedback.length}}/500 characters</span>
-        <Button @onPress={{this.validateFeedback}}>
-          Validate
-        </Button>
-      </div>
+        <div class='flex justify-between items-center text-sm text-gray-600'>
+          <span>{{this.formData.feedback.length}}/500 characters</span>
+          <Button type='submit' disabled={{form.isLoading}}>
+            {{if form.isLoading 'Submitting...' 'Submit Feedback'}}
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
     </div>
-  </template>
-}
-```
-
-### With Description
-
-Add helpful description text that appears below the textarea.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
-
-export default class TextareaWithDescription extends Component {
-  @tracked bio = '';
-
-  updateBio = (value: string) => {
-    this.bio = value;
-  };
-
-  <template>
-    <Textarea
-      @label='Biography'
-      @description='Tell us about yourself. This will be visible on your public profile.'
-      @value={{this.bio}}
-      @onInput={{this.updateBio}}
-      rows='6'
-      placeholder='Write a brief description about yourself...'
-    />
   </template>
 }
 ```
 
 ### Complete Form Example
 
-Here's a comprehensive example showing a Textarea in a form context with other inputs:
+Here's a comprehensive example showing a Textarea integrated with the Form validation system, combining Input and Textarea fields with Valibot schema validation.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Textarea } from '@frontile/forms';
-import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
+import { array } from '@ember/helper';
+import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import * as v from 'valibot';
+
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  subject: v.pipe(
+    v.string(),
+    v.nonEmpty('Subject is required'),
+    v.minLength(5, 'Subject must be at least 5 characters')
+  ),
+  message: v.pipe(
+    v.string(),
+    v.nonEmpty('Message is required'),
+    v.minLength(20, 'Message must be at least 20 characters long'),
+    v.maxLength(1000, 'Message must be less than 1000 characters')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class CompleteFormWithTextarea extends Component {
-  @tracked subject = '';
-  @tracked message = '';
-  @tracked email = '';
-
-  @tracked subjectErrors: string[] = [];
-  @tracked messageErrors: string[] = [];
-  @tracked emailErrors: string[] = [];
-
-  updateSubject = (value: string) => {
-    this.subject = value;
-    this.subjectErrors = [];
+  @tracked formData: Schema = {
+    email: '',
+    subject: '',
+    message: ''
   };
 
-  updateMessage = (value: string) => {
-    this.message = value;
-    this.messageErrors = [];
+  handleFormChange = (result: FormResultData<Schema>) => {
+    this.formData = result.data;
   };
 
-  updateEmail = (value: string) => {
-    this.email = value;
-    this.emailErrors = [];
-  };
-
-  handleSubmit = (event: Event) => {
-    event.preventDefault();
-
-    // Reset errors
-    this.subjectErrors = [];
-    this.messageErrors = [];
-    this.emailErrors = [];
-
-    // Validate form
-    let hasErrors = false;
-
-    if (!this.subject.trim()) {
-      this.subjectErrors = ['Subject is required'];
-      hasErrors = true;
-    }
-
-    if (!this.message.trim()) {
-      this.messageErrors = ['Message is required'];
-      hasErrors = true;
-    } else if (this.message.trim().length < 20) {
-      this.messageErrors = ['Message must be at least 20 characters long'];
-      hasErrors = true;
-    }
-
-    if (!this.email.trim()) {
-      this.emailErrors = ['Email is required'];
-      hasErrors = true;
-    } else if (!this.email.includes('@')) {
-      this.emailErrors = ['Please enter a valid email address'];
-      hasErrors = true;
-    }
-
-    if (!hasErrors) {
-      console.log('Form submitted successfully!', {
-        subject: this.subject,
-        message: this.message,
-        email: this.email
-      });
-    }
+  handleFormSubmit = (result: FormResultData<Schema>) => {
+    console.log('Form submitted:', result.data);
   };
 
   <template>
-    <form {{on 'submit' this.handleSubmit}}>
-      <div class='flex flex-col gap-4'>
-
-        <Input
+    <Form
+      @data={{this.formData}}
+      @schema={{schema}}
+      @onChange={{this.handleFormChange}}
+      @onSubmit={{this.handleFormSubmit}}
+      @validateOn={{array 'change' 'submit'}}
+      as |form|
+    >
+      <form.Field @name='email' as |field|>
+        <field.Input
           @label='Email Address'
           @type='email'
-          @value={{this.email}}
-          @onInput={{this.updateEmail}}
           @isRequired={{true}}
-          @errors={{this.emailErrors}}
         />
+      </form.Field>
 
-        <Input
+      <form.Field @name='subject' as |field|>
+        <field.Input
           @label='Subject'
-          @value={{this.subject}}
-          @onInput={{this.updateSubject}}
           @isRequired={{true}}
-          @errors={{this.subjectErrors}}
-          placeholder='Brief description of your inquiry'
         />
+      </form.Field>
 
-        <Textarea
+      <form.Field @name='message' as |field|>
+        <field.Textarea
           @label='Message'
-          @value={{this.message}}
-          @onInput={{this.updateMessage}}
           @isRequired={{true}}
-          @errors={{this.messageErrors}}
-          @description='Please provide detailed information about your inquiry'
           rows='6'
-          placeholder='Describe your question or concern in detail...'
         />
+      </form.Field>
 
-        <div class='flex justify-between items-center text-sm text-gray-600'>
-          <span>{{this.message.length}} characters</span>
-        </div>
-
-        <div>
-          <Button @class='mt-4'>
-            Send Message
-          </Button>
-        </div>
-
-      </div>
-    </form>
+      <Button type='submit'>
+        Send Message
+      </Button>
+    </Form>
   </template>
 }
 ```
 
-### Custom Styling
+### Miscellaneous Options
 
-You can customize the appearance of different parts of the textarea using the `@classes` argument.
+The Textarea component supports various optional configurations for sizing, layout, and styling.
 
 ```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { Textarea } from '@frontile/forms';
 import { hash } from '@ember/helper';
 
-export default class CustomStyledTextarea extends Component {
-  @tracked customValue = '';
+<template>
+  <div class='flex flex-col gap-6'>
+    {{! Size variants }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Size Variants</h4>
+      <div class='flex flex-col gap-3'>
+        <Textarea @label='Small' @size='sm' rows='3' />
+        <Textarea @label='Medium' @size='md' rows='3' />
+        <Textarea @label='Large' @size='lg' rows='3' />
+      </div>
+    </div>
 
-  updateCustomValue = (value: string) => {
-    this.customValue = value;
-  };
+    {{! Rows and resize behavior }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Rows and Resize Behavior</h4>
+      <div class='flex flex-col gap-3'>
+        <Textarea @label='Fixed (No Resize)' rows='3' style='resize: none;' />
+        <Textarea @label='Vertical Resize' rows='4' style='resize: vertical;' />
+        <Textarea @label='Tall (8 rows)' rows='8' />
+      </div>
+    </div>
 
-  <template>
-    <Textarea
-      @label='Custom Styled Textarea'
-      @value={{this.customValue}}
-      @onInput={{this.updateCustomValue}}
-      @classes={{hash
-        base='my-custom-form-control'
-        input='my-custom-textarea-field'
-      }}
-      rows='4'
-      placeholder='This textarea has custom styling'
-    />
-  </template>
-}
+    {{! With description }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>With Description</h4>
+      <Textarea
+        @label='Biography'
+        @description='Tell us about yourself'
+        rows='4'
+      />
+    </div>
+
+    {{! Custom styling }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Custom Styling</h4>
+      <Textarea
+        @label='Custom Classes'
+        @classes={{hash
+          base='my-custom-form-control'
+          input='my-custom-textarea-field'
+        }}
+        rows='3'
+      />
+    </div>
+  </div>
+</template>
 ```
 
 ## Accessibility

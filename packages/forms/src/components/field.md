@@ -284,7 +284,9 @@ export default class CustomValidationField extends Component {
 
 ### Field with Radio and Checkbox Groups
 
-Field components work seamlessly with grouped form controls.  Note that checkbox groups contain individual checkboxes.  Validations may appear on the checkbox group OR individual checkboxes, unlike with radio groups.
+`RadioGroup` supports field-level validation (validates on change/blur/input events based on `@validateOn`), while `CheckboxGroup` currently only supports validation on form submit. Both components display validation errors and work with `form.Field`, but only RadioGroup will automatically validate when the user changes their selection before submitting the form.
+
+**Note on Radio Components:** When using individual `field.Radio` components (not within `field.RadioGroup`), you must manually specify the `@value` prop on each radio to identify it uniquely (e.g., `@value="junior"`, `@value="senior"`). The Field component automatically binds the form data to the `@checkedValue` parameter to control which radio is selected. For most use cases, prefer using `field.RadioGroup` which handles this binding automatically.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -809,7 +811,7 @@ Field yields bound versions of all form components:
 - `field.CheckboxGroup` - Checkbox group with automatic error binding
 - `field.RadioGroup` - Radio group with automatic error and value binding
 - `field.Switch` - Toggle switch with automatic error and isSelected binding
-- `field.Radio` - Individual radio button with automatic error and value binding
+- `field.Radio` - Individual radio button with automatic error and checkedValue binding (requires manual `@value` for each radio's unique identifier)
 
 Each component automatically receives:
 - The `@name` prop from the Field

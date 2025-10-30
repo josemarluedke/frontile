@@ -40,6 +40,261 @@ import FormCheckbox from '@frontile/forms-legacy/components/form-checkbox';
 import { Input, Checkbox } from '@frontile/forms';
 ```
 
+## Recommended Approach: Form + Field Pattern
+
+The modern `@frontile/forms` package introduces a powerful **Form + Field pattern** that simplifies data binding and validation. This is the recommended approach for new forms and migrations.
+
+### Why Use Form + Field?
+
+- **Automatic data binding** - no manual state management needed
+- **Built-in validation** with Valibot, Zod, or custom validators
+- **Less boilerplate** - Field handles value and error binding automatically
+- **Nested data support** - use dot notation for nested fields
+
+### Quick Example
+
+```gts
+import Component from '@glimmer/component';
+import { Form } from '@frontile/forms';
+import type { FormResultData } from '@frontile/forms';
+import * as v from 'valibot';
+
+const loginSchema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.minLength(6, 'Password must be at least 6 characters')
+  )
+});
+
+type LoginSchema = v.InferOutput<typeof loginSchema>;
+
+export default class LoginForm extends Component {
+  schema = loginSchema;
+
+  handleSubmit = (result: FormResultData<LoginSchema>) => {
+    if (result.isValid) {
+      // result.data is typed as LoginSchema
+      this.login(result.data);
+    }
+  };
+
+  <template>
+    <Form
+      @schema={{this.schema}}
+      @onSubmit={{this.handleSubmit}}
+      as |form|
+    >
+      <form.Field @name='email' as |field|>
+        <field.Input @label='Email' @type='email' />
+      </form.Field>
+
+      <form.Field @name='password' as |field|>
+        <field.Input @label='Password' @type='password' />
+      </form.Field>
+
+      <button type='submit'>Login</button>
+    </Form>
+  </template>
+}
+```
+
+**Key Benefits:**
+
+- `form.Field` automatically binds the value and errors to the input
+- Validation runs automatically based on the schema
+- No need to manually manage `@tracked` properties for form data
+- `result.data` contains all form values on submit
+
+For complete documentation on the Form component, validation patterns, nested data, and advanced features, see the [Form Component Documentation](https://frontile.dev/docs/forms/form).
+
+## Migrating Validation
+
+If you're using manual validation with forms-legacy, you can migrate to schema-based validation with Valibot for a better developer experience.
+
+### Before (forms-legacy with manual validation)
+
+```gts
+import { tracked } from '@glimmer/tracking';
+import { Input, Textarea } from '@frontile/forms-legacy';
+
+export default class UserProfileForm extends Component {
+  @tracked email = '';
+  @tracked bio = '';
+  @tracked errors = {};
+
+  validateForm = () => {
+    const errors = {};
+
+    if (!this.email) {
+      errors.email = 'Email is required';
+    } else if (!this.email.includes('@')) {
+      errors.email = 'Invalid email format';
+    }
+
+    if (this.bio && this.bio.length < 10) {
+      errors.bio = 'Bio must be at least 10 characters';
+    }
+
+    return errors;
+  };
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.errors = this.validateForm();
+
+    if (Object.keys(this.errors).length === 0) {
+      this.saveProfile({ email: this.email, bio: this.bio });
+    }
+  };
+
+  <template>
+    <form {{on 'submit' this.handleSubmit}}>
+      <FormInput
+        @label='Email'
+        @value={{this.email}}
+        @onInput={{fn (mut this.email)}}
+        @errors={{this.errors.email}}
+      />
+
+      <FormTextarea
+        @label='Bio'
+        @value={{this.bio}}
+        @onInput={{fn (mut this.bio)}}
+        @errors={{this.errors.bio}}
+      />
+
+      <button type='submit'>Save Profile</button>
+    </form>
+  </template>
+}
+```
+
+### After (forms with Valibot validation)
+
+```gts
+import Component from '@glimmer/component';
+import { Form } from '@frontile/forms';
+import type { FormResultData } from '@frontile/forms';
+import * as v from 'valibot';
+
+const profileSchema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Invalid email format')
+  ),
+  bio: v.optional(
+    v.pipe(
+      v.string(),
+      v.minLength(10, 'Bio must be at least 10 characters')
+    )
+  )
+});
+
+type ProfileSchema = v.InferOutput<typeof profileSchema>;
+
+export default class UserProfileForm extends Component {
+  schema = profileSchema;
+
+  handleSubmit = (result: FormResultData<ProfileSchema>) => {
+    if (result.isValid) {
+      // result.data is typed as ProfileSchema
+      this.saveProfile(result.data);
+    }
+  };
+
+  <template>
+    <Form
+      @schema={{this.schema}}
+      @onSubmit={{this.handleSubmit}}
+      as |form|
+    >
+      <form.Field @name='email' as |field|>
+        <field.Input @label='Email' @type='email' />
+      </form.Field>
+
+      <form.Field @name='bio' as |field|>
+        <field.Textarea @label='Bio' />
+      </form.Field>
+
+      <button type='submit'>Save Profile</button>
+    </Form>
+  </template>
+}
+```
+
+**Key Improvements:**
+
+- No need for `@tracked` properties or manual state management
+- Validation logic is declarative and reusable
+- Errors are automatically displayed by Field components
+- Validation runs automatically on blur and submit (configurable with `@validateOn`)
+- Less code overall
+
+For complex validation scenarios or custom validation functions, see the [Form Component Documentation](https://frontile.dev/docs/forms/form).
+
+## Nested Data Support
+
+The Form + Field pattern supports nested data structures using dot notation in field names. This makes it easy to work with complex data models without flattening your data structure.
+
+```gts
+import Component from '@glimmer/component';
+import { Form } from '@frontile/forms';
+import type { FormResultData } from '@frontile/forms';
+import * as v from 'valibot';
+
+const userSchema = v.object({
+  user: v.object({
+    profile: v.object({
+      email: v.pipe(v.string(), v.email()),
+      firstName: v.string(),
+      lastName: v.string()
+    }),
+    settings: v.object({
+      notifications: v.boolean()
+    })
+  })
+});
+
+type UserSchema = v.InferOutput<typeof userSchema>;
+
+export default class UserSettingsForm extends Component {
+  schema = userSchema;
+
+  handleSubmit = (result: FormResultData<UserSchema>) => {
+    if (result.isValid) {
+      // result.data.user.profile.email is fully typed
+      this.saveUserSettings(result.data);
+    }
+  };
+
+  <template>
+    <Form @schema={{this.schema}} @onSubmit={{this.handleSubmit}} as |form|>
+      <form.Field @name='user.profile.email' as |field|>
+        <field.Input @label='Email' />
+      </form.Field>
+
+      <form.Field @name='user.profile.firstName' as |field|>
+        <field.Input @label='First Name' />
+      </form.Field>
+
+      <form.Field @name='user.settings.notifications' as |field|>
+        <field.Checkbox @label='Enable notifications' />
+      </form.Field>
+
+      <button type='submit'>Save</button>
+    </Form>
+  </template>
+}
+```
+
+The Form component automatically handles data flattening and unflattening. On submit, `result.data` will contain the properly nested structure. See the [Form Component Documentation](https://frontile.dev/docs/forms/form) for more details.
+
 ## Breaking Changes
 
 ### 1. Component Names
@@ -493,33 +748,7 @@ onChange = (key) => {
 
 ### Form Component
 
-The new Form component provides automatic form data extraction and handling.
-
-```hbs
-<Form
-  @onChange={{this.handleFormChange}}
-  @onSubmit={{this.handleFormSubmit}}
->
-  <Input @name='firstName' @label='First Name' />
-  <Input @name='lastName' @label='Last Name' />
-  <Textarea @name='bio' @label='Bio' />
-
-  <button type='submit'>Save</button>
-</Form>
-```
-
-```js
-handleFormChange = (data) => {
-  // data contains all form field values automatically
-  this.formData = data;
-  console.log('Realtime data:', data);
-};
-
-handleFormSubmit = (data) => {
-  // Handle form submission
-  console.log('Submitting:', data);
-};
-```
+The new Form component provides automatic form data extraction, validation, and handling. See the [Recommended Approach section](#recommended-approach-form--field-pattern) above for a complete example with validation.
 
 ### Switch Component
 
@@ -571,14 +800,14 @@ For simple dropdown needs without the complexity of the full Select component.
 ### Error Handling
 
 ```hbs
-// Before: Multiple error state props
+{{! Before: Multiple error state props }}
 <FormInput
   @errors={{this.errors}}
   @hasSubmitted={{this.hasSubmitted}}
   @showError={{this.forceShowErrors}}
 />
 
-// After: Simplified approach
+{{! After: Simplified approach }}
 <Input @errors={{this.errors}} @isInvalid={{this.hasErrors}} />
 ```
 
@@ -598,123 +827,51 @@ For simple dropdown needs without the complexity of the full Select component.
 />
 ```
 
-### Form Validation Integration
-
-```js
-// Using a validation library like ember-changeset-validations
-export default class MyFormComponent extends Component {
-  @tracked formData = {};
-  @tracked errors = {};
-
-  handleFormChange = (data) => {
-    this.formData = data;
-    // Run validation
-    this.errors = this.validateForm(data);
-  };
-
-  handleSubmit = async (data) => {
-    const errors = this.validateForm(data);
-    if (Object.keys(errors).length === 0) {
-      await this.saveForm(data);
-    } else {
-      this.errors = errors;
-    }
-  };
-}
-```
-
-### Complex Form Layout
-
-```hbs
-<Form @onChange={{this.handleFormChange}}>
-  <div class='grid grid-cols-2 gap-4'>
-    <Input @name='firstName' @label='First Name' />
-    <Input @name='lastName' @label='Last Name' />
-  </div>
-
-  <Input @name='email' @label='Email' @type='email' @isClearable={{true}}>
-    <:startContent><EmailIcon /></:startContent>
-  </Input>
-
-  <Select
-    @name='country'
-    @label='Country'
-    @items={{this.countries}}
-    @isFilterable={{true}}
-  >
-    <:item as |item|>
-      <item.Item @key={{item.key}}>{{item.label}}</item.Item>
-    </:item>
-  </Select>
-
-  <CheckboxGroup
-    @name='interests'
-    @label='Interests'
-    @onChange={{this.setInterests}}
-    as |Checkbox|
-  >
-    {{#each this.interestOptions as |option|}}
-      <Checkbox
-        @value={{option.value}}
-        @checked={{this.isInterestSelected option.value}}
-      >
-        {{option.label}}
-      </Checkbox>
-    {{/each}}
-  </CheckboxGroup>
-</Form>
-```
+For form validation patterns, see the [Migrating Validation](#migrating-validation) section above.
 
 ## Migration Checklist
 
-### Pre-Migration
-
-- [ ] Review current form implementations
-- [ ] Update `@frontile/theme` to compatible version
-- [ ] Plan Select component migrations carefully (highest effort)
-
-### Package Changes
+### 1. Package Setup
 
 - [ ] Uninstall `@frontile/forms-legacy`
 - [ ] Install `@frontile/forms`
+- [ ] Update `@frontile/theme` to compatible version
 - [ ] Update imports to use named imports
 
-### Component Updates
+### 2. Choose Your Migration Strategy
+
+**Option A: Full Migration to Form + Field (Recommended)**
+
+- [ ] Install validation library (`valibot` or `zod`)
+- [ ] Define validation schemas for your forms
+- [ ] Wrap forms with `<Form>` component
+- [ ] Wrap fields with `<form.Field>` component
+- [ ] Remove manual state management (`@tracked` properties)
+- [ ] Update submit handlers to use `result.data`
+
+**Option B: Component-Level Migration**
 
 - [ ] Rename all `Form*` components (drop `Form` prefix)
-- [ ] Update error handling props (`hasSubmitted`, `hasError`, etc.)
+- [ ] Update error handling props (remove `@hasSubmitted`, `@hasError`)
 - [ ] Migrate `@hint` to `@description`
 - [ ] Update CSS class props to `@classes` object
-- [ ] **Radio components**: Rename `@checked` to `@checkedValue` (same value, just renamed prop)
-- [ ] **Checkbox components**: No change needed - still uses `@checked`
+- [ ] **Radio**: Rename `@checked` to `@checkedValue`
+- [ ] **Select**: Convert to key-based selection (see [Select Migration](#formselect--select))
 
-### FormSelect Migration (Complex)
-
-- [ ] Convert data format (add `key` and `label` properties)
-- [ ] Update `@selected` to `@selectedKeys` array
-- [ ] Replace `@onChange` with `@onSelectionChange`
-- [ ] Update template to use `<:item>` slot
-- [ ] Test filtering behavior
-- [ ] Handle multiple selection if needed
-
-### Group Components (CheckboxGroup/RadioGroup)
-
-- [ ] **CheckboxGroup**: Minimal changes - still uses block params and `@onChange`
-- [ ] **RadioGroup**: Uses `@value` for current selected value, still uses block params
-- [ ] Add `@name` prop to group components
-
-### Testing
+### 3. Testing
 
 - [ ] Test all form interactions
 - [ ] Verify error states display correctly
-- [ ] Test keyboard navigation and accessibility
-- [ ] Validate form submission with new data formats
+- [ ] Test validation behavior
+- [ ] Verify keyboard navigation and accessibility
 
-### Optional Enhancements
+### 4. Optional Enhancements
 
 - [ ] Add `@isClearable` to appropriate inputs
 - [ ] Use start/end content slots for icons or buttons
-- [ ] Implement new `Form` component for automatic data extraction
-- [ ] Consider using `Switch` component where appropriate
+- [ ] Consider using `Switch` component for toggles
+- [ ] Implement nested data patterns where beneficial
 
-This migration guide covers all the essential changes needed to move from `@frontile/forms-legacy` to `@frontile/forms`. While some components require significant changes (especially FormSelect), the new package provides a much improved developer experience with better accessibility, flexibility, and maintainability.
+---
+
+This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `@frontile/forms`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/forms/form).

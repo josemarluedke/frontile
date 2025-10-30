@@ -6,7 +6,11 @@ imports:
 
 # Switch
 
-The `Switch` component is a customizable toggle control that can be used both as a controlled and uncontrolled component. It supports custom content blocks—`startContent`, `thumbContent`, and `endContent`—to render additional elements such as icons or labels. The component integrates with Frontile’s `FormControl` to provide labels, descriptions, and error feedback, ensuring a consistent and accessible experience.
+A customizable toggle control that allows users to switch between two states (on/off, enabled/disabled). The Switch component integrates seamlessly with the Form and Field components for automatic data binding and validation, providing a consistent and accessible experience. It supports custom content blocks for icons and labels.
+
+> **Modern Usage:** For most use cases, prefer using Switch with the Form and Field components. This provides automatic data binding, validation, and state management without manual `@onChange` handlers.
+
+> **Field-Level Validation:** Switch supports field-level validation that runs on change/blur events based on the Form's `@validateOn` setting, providing immediate feedback as users toggle the switch.
 
 ## Import
 
@@ -16,53 +20,156 @@ import { Switch } from '@frontile/forms';
 
 ## Usage
 
-### Uncontrolled Switch
+### Basic Switch
 
-In uncontrolled mode, the switch manages its own state based on the initial `defaultSelected` value. If a `booolen` value is passed to the `isSelected` argument, the switch will be controlled independently of `defaultSelected`. The `onChange` callback is called with the new value when the switch is toggled.
+The most basic usage of a Switch component with a label.
 
 ```gts preview
-import Component from '@glimmer/component';
 import { Switch } from '@frontile/forms';
 
-export default class UncontrolledSwitchExample extends Component {
-  // The switch maintains its own state.
-  onChange = (value: boolean, event: Event) => {
-    console.log('Switch toggled to:', value);
-  };
-
-  <template>
-    <Switch
-      @label='Enable Notifications'
-      @defaultSelected={{true}}
-      @onChange={{this.onChange}}
-    />
-  </template>
-}
+<template><Switch @label='Enable Notifications' /></template>
 ```
 
-### Controlled Switch
+### Controlled with Form/Field
 
-In controlled mode, you pass the current state via isSelected and update it through the onChange callback.
+The recommended pattern for using Switch is with Form and Field components, which provides automatic data binding and state management without manual onChange handlers.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Switch } from '@frontile/forms';
+import { Form, type FormResultData } from '@frontile/forms';
 
-export default class ControlledSwitchExample extends Component {
-  @tracked isEnabled = false;
+export default class ControlledSwitch extends Component {
+  @tracked formData = { notifications: false };
 
-  onChange = (value: boolean, event: Event) => {
-    this.isEnabled = value;
+  handleFormChange = (result: FormResultData) => {
+    this.formData = result.data;
   };
 
   <template>
-    <Switch
-      @label='Dark Mode'
-      @isSelected={{this.isEnabled}}
-      @onChange={{this.onChange}}
-    />
-    <p>Dark Mode is {{if this.isEnabled 'enabled' 'disabled'}}</p>
+    <div class='flex flex-col gap-4'>
+      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+        <form.Field @name='notifications' as |field|>
+          <field.Switch @label='Enable Email Notifications' />
+        </form.Field>
+      </Form>
+
+      <div class='p-3 border border-default-300 rounded'>
+        <p class='text-sm'>
+          Notifications are
+          <strong>{{if this.formData.notifications 'enabled' 'disabled'}}</strong>
+        </p>
+      </div>
+    </div>
+  </template>
+}
+```
+
+### Form Validation
+
+**Note:** Switch supports field-level validation that runs on change/blur/input events based on the Form's `@validateOn` setting, providing immediate feedback as users interact with the switch.
+
+The Switch component integrates with the Form validation system, providing automatic error display and field-level validation. This example demonstrates using Valibot schema validation with the Form/Field components.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Form, type FormResultData } from '@frontile/forms';
+import { Button } from '@frontile/buttons';
+import { array } from '@ember/helper';
+import * as v from 'valibot';
+
+// Define validation schema
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  termsAccepted: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms and conditions')
+  ),
+  notifications: v.boolean()
+});
+
+type Schema = v.InferOutput<typeof schema>;
+
+export default class ValidatedSwitch extends Component {
+  @tracked formData: Schema = {
+    email: '',
+    termsAccepted: false,
+    notifications: true
+  };
+  @tracked submitMessage = '';
+
+  @action
+  handleFormChange(data: FormResultData<Schema>) {
+    this.formData = data.data;
+  }
+
+  @action
+  handleFormSubmit(data: FormResultData<Schema>) {
+    this.submitMessage = 'Registration successful!';
+    console.log('Form submitted:', data.data);
+  }
+
+  <template>
+    <div class='flex flex-col gap-4'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='termsAccepted' as |field|>
+            <field.Switch
+              @label='I accept the terms and conditions'
+              @description='You must accept our terms to continue'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <form.Field @name='notifications' as |field|>
+            <field.Switch
+              @label='Send me email notifications'
+              @description='Optional: Receive updates about new features'
+            />
+          </form.Field>
+
+          <Button type='submit'>
+            Register
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Form Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
+      </div>
+    </div>
   </template>
 }
 ```
@@ -167,46 +274,92 @@ const Sun = <template>
 </template>;
 ```
 
-### Intent
+### Miscellaneous Options
+
+The Switch component supports various optional configurations for sizing, visual styling, states, and custom classes.
 
 ```gts preview
 import { Switch } from '@frontile/forms';
+import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex gap-4'>
-    <Switch @intent='default' @label='Default' @defaultSelected={{true}} />
-    <Switch @intent='primary' @label='Primary' @defaultSelected={{true}} />
-    <Switch @intent='success' @label='Success' @defaultSelected={{true}} />
-    <Switch @intent='warning' @label='Warning' @defaultSelected={{true}} />
-    <Switch @intent='danger' @label='Danger' @defaultSelected={{true}} />
+  <div class='flex flex-col gap-6'>
+    {{! Size variants }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Size Variants</h4>
+      <div class='flex gap-4'>
+        <Switch @size='sm' @label='Small' />
+        <Switch @size='md' @label='Medium' />
+        <Switch @size='lg' @label='Large' />
+      </div>
+    </div>
+
+    {{! Intent variants }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Intent Variants</h4>
+      <div class='flex gap-4'>
+        <Switch @intent='default' @label='Default' @defaultSelected={{true}} />
+        <Switch @intent='primary' @label='Primary' @defaultSelected={{true}} />
+        <Switch @intent='success' @label='Success' @defaultSelected={{true}} />
+        <Switch @intent='warning' @label='Warning' @defaultSelected={{true}} />
+        <Switch @intent='danger' @label='Danger' @defaultSelected={{true}} />
+      </div>
+    </div>
+
+    {{! Disabled state }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Disabled State</h4>
+      <div class='flex flex-col gap-3'>
+        <Switch
+          @label='Disabled Switch (Off)'
+          @defaultSelected={{false}}
+          @isDisabled={{true}}
+        />
+        <Switch
+          @label='Disabled Switch (On)'
+          @defaultSelected={{true}}
+          @isDisabled={{true}}
+        />
+        <Switch
+          @label='Disabled with Description'
+          @description='This switch is disabled and cannot be toggled'
+          @defaultSelected={{true}}
+          @isDisabled={{true}}
+        />
+      </div>
+    </div>
+
+    {{! Custom styling }}
+    <div>
+      <h4 class='text-sm font-medium mb-2'>Custom Styling</h4>
+      <Switch
+        @label='Custom Styled Switch'
+        @description='This switch has custom styling applied'
+        @classes={{hash
+          base='my-custom-switch-base'
+          wrapper='my-custom-switch-wrapper'
+          thumb='my-custom-switch-thumb'
+          label='my-custom-switch-label'
+        }}
+      />
+    </div>
   </div>
 </template>
 ```
 
-### Sizes
+## Accessibility
 
-```gts preview
-import { Switch } from '@frontile/forms';
+The Switch component follows accessibility best practices:
 
-<template>
-  <div class='flex gap-4'>
-    <Switch @size='sm' @label='Small' />
-    <Switch @size='md' @label='Medium' />
-    <Switch @size='lg' @label='large' />
-  </div>
-</template>
-```
-
-### Disabled
-
-```gts preview
-import Component from '@glimmer/component';
-import { Switch } from '@frontile/forms';
-
-export default class CustomContentSwitchExample extends Component {
-  <template><Switch @label='Dark Mode' @isDisabled={{true}} /></template>
-}
-```
+- Uses semantic checkbox input with `role="switch"` behavior
+- Proper label association using `for` and `id` attributes
+- ARIA attributes for invalid states (`aria-invalid`)
+- Descriptive text association using `aria-describedby`
+- Support for required field indication
+- Keyboard navigation (Space to toggle, Tab to focus)
+- Screen reader announcements for labels, descriptions, and validation messages
+- Visual focus indicators
+- Disabled state properly communicated to assistive technologies
 
 ## API
 

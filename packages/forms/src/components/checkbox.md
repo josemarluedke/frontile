@@ -134,6 +134,8 @@ export default class IndependentCheckboxes extends Component {
 }
 ```
 
+> **Note:** This example shows manual state management. For forms with validation, see the "Form Validation" and "Complete Form Example" sections which use Form/Field components.
+
 ### Sizes
 
 Control the size of checkboxes using the `@size` argument.
@@ -272,86 +274,84 @@ export default class CheckboxWithDescription extends Component {
 
 ### Form Validation
 
-The Checkbox component integrates with form validation by displaying error messages and updating ARIA attributes accordingly.
+**Note:** When used with `field.Checkbox` as demonstrated in the examples below, individual Checkbox components support field-level validation (validates on change/blur/input events based on `@validateOn`). This differs from CheckboxGroup, which currently only supports validation on form submit.
+
+The Checkbox component integrates with the Form validation system, providing automatic error display and field-level validation. This example demonstrates using a required checkbox with the Form/Field components.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { action } from '@ember/object';
+import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import { array } from '@ember/helper';
+import * as v from 'valibot';
+
+// Define validation schema - checkbox must be true
+const schema = v.object({
+  termsAccepted: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms and conditions to continue')
+  )
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class ValidatedCheckbox extends Component {
-  @tracked termsAccepted = false;
-  @tracked privacyAccepted = false;
-  @tracked termsErrors: string[] = [];
-  @tracked privacyErrors: string[] = [];
-
-  updateTermsAccepted = (checked: boolean) => {
-    this.termsAccepted = checked;
-    // Clear errors when user checks the box
-    if (checked) {
-      this.termsErrors = [];
-    }
+  @tracked formData: Schema = {
+    termsAccepted: false
   };
+  @tracked submitMessage = '';
 
-  updatePrivacyAccepted = (checked: boolean) => {
-    this.privacyAccepted = checked;
-    // Clear errors when user checks the box
-    if (checked) {
-      this.privacyErrors = [];
-    }
-  };
+  @action
+  handleFormChange(data: FormResultData<Schema>) {
+    this.formData = data.data;
+  }
 
-  validateForm = () => {
-    // Reset errors
-    this.termsErrors = [];
-    this.privacyErrors = [];
-
-    let hasErrors = false;
-
-    if (!this.termsAccepted) {
-      this.termsErrors = [
-        'You must accept the terms and conditions to continue'
-      ];
-      hasErrors = true;
-    }
-
-    if (!this.privacyAccepted) {
-      this.privacyErrors = ['You must accept the privacy policy to continue'];
-      hasErrors = true;
-    }
-
-    if (!hasErrors) {
-      console.log('Form is valid!');
-    }
-  };
+  @action
+  handleFormSubmit(data: FormResultData<Schema>) {
+    this.submitMessage = 'Terms accepted successfully!';
+    console.log('Form submitted:', data.data);
+  }
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Checkbox
-        @name='terms-validation'
-        @label='I accept the terms and conditions'
-        @description='Please read and accept our terms and conditions before proceeding.'
-        @checked={{this.termsAccepted}}
-        @onChange={{this.updateTermsAccepted}}
-        @errors={{this.termsErrors}}
-        @isRequired={{true}}
-      />
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <form.Field @name='termsAccepted' as |field|>
+          <field.Checkbox
+            @label='I accept the terms and conditions'
+            @description='Please read and accept our terms and conditions before proceeding.'
+            @isRequired={{true}}
+          />
+        </form.Field>
 
-      <Checkbox
-        @name='privacy-validation'
-        @label='I accept the privacy policy'
-        @description='Please read and accept our privacy policy before proceeding.'
-        @checked={{this.privacyAccepted}}
-        @onChange={{this.updatePrivacyAccepted}}
-        @errors={{this.privacyErrors}}
-        @isRequired={{true}}
-      />
+        <div>
+          <Button type='submit'>
+            Continue
+          </Button>
+        </div>
+      </Form>
 
-      <div>
-        <Button @onPress={{this.validateForm}}>
-          Continue
-        </Button>
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Form Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
       </div>
     </div>
   </template>
@@ -361,6 +361,8 @@ export default class ValidatedCheckbox extends Component {
 ### Horizontal Layout
 
 Create a horizontal layout using CSS Grid or Flexbox.
+
+> **Note:** For horizontal layouts of related checkboxes, consider using `CheckboxGroup` with `@orientation='horizontal'`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -419,148 +421,109 @@ export default class HorizontalCheckboxes extends Component {
 
 ### Complete Form Example
 
-Here's a comprehensive example showing Checkbox components in a form context:
+Here's a comprehensive example showing Checkbox components integrated with the Form validation system. This example demonstrates a registration form with an Input field, a required checkbox, and an optional checkbox.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
-import { Input } from '@frontile/forms';
-import { on } from '@ember/modifier';
+import { action } from '@ember/object';
+import { Form, type FormResultData } from '@frontile/forms';
 import { Button } from '@frontile/buttons';
+import { array } from '@ember/helper';
+import * as v from 'valibot';
+
+// Define validation schema
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  termsAccepted: v.pipe(
+    v.boolean(),
+    v.literal(true, 'You must accept the terms and conditions')
+  ),
+  marketingConsent: v.boolean() // Optional checkbox - no literal(true) requirement
+});
+
+type Schema = v.InferOutput<typeof schema>;
 
 export default class CompleteFormWithCheckbox extends Component {
-  @tracked email = '';
-  @tracked firstName = '';
-  @tracked agreements = {
-    terms: false,
-    privacy: false,
-    marketing: false
+  @tracked formData: Schema = {
+    email: '',
+    termsAccepted: false,
+    marketingConsent: false
   };
+  @tracked submitMessage = '';
 
-  @tracked emailErrors: string[] = [];
-  @tracked firstNameErrors: string[] = [];
-  @tracked termsErrors: string[] = [];
-  @tracked privacyErrors: string[] = [];
+  @action
+  handleFormChange(data: FormResultData<Schema>) {
+    this.formData = data.data;
+  }
 
-  updateEmail = (value: string) => {
-    this.email = value;
-    this.emailErrors = [];
-  };
-
-  updateFirstName = (value: string) => {
-    this.firstName = value;
-    this.firstNameErrors = [];
-  };
-
-  updateAgreement = (key: string) => (checked: boolean) => {
-    this.agreements = { ...this.agreements, [key]: checked };
-    // Clear respective errors
-    if (key === 'terms') this.termsErrors = [];
-    if (key === 'privacy') this.privacyErrors = [];
-  };
-
-  handleSubmit = (event: Event) => {
-    event.preventDefault();
-
-    // Reset errors
-    this.emailErrors = [];
-    this.firstNameErrors = [];
-    this.termsErrors = [];
-    this.privacyErrors = [];
-
-    // Validate form
-    let hasErrors = false;
-
-    if (!this.firstName.trim()) {
-      this.firstNameErrors = ['First name is required'];
-      hasErrors = true;
-    }
-
-    if (!this.email.trim()) {
-      this.emailErrors = ['Email is required'];
-      hasErrors = true;
-    } else if (!this.email.includes('@')) {
-      this.emailErrors = ['Please enter a valid email address'];
-      hasErrors = true;
-    }
-
-    if (!this.agreements.terms) {
-      this.termsErrors = ['You must accept the terms and conditions'];
-      hasErrors = true;
-    }
-
-    if (!this.agreements.privacy) {
-      this.privacyErrors = ['You must accept the privacy policy'];
-      hasErrors = true;
-    }
-
-    if (!hasErrors) {
-      console.log('Form submitted successfully!', {
-        firstName: this.firstName,
-        email: this.email,
-        agreements: this.agreements
-      });
-    }
-  };
+  @action
+  handleFormSubmit(data: FormResultData<Schema>) {
+    this.submitMessage = 'Account created successfully!';
+    console.log('Form submitted:', data.data);
+  }
 
   <template>
-    <form {{on 'submit' this.handleSubmit}}>
-      <div class='flex flex-col gap-4'>
+    <div class='flex flex-col gap-4'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input
+              @label='Email Address'
+              @type='email'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Input
-          @label='First Name'
-          @value={{this.firstName}}
-          @onInput={{this.updateFirstName}}
-          @isRequired={{true}}
-          @errors={{this.firstNameErrors}}
-        />
+          <form.Field @name='termsAccepted' as |field|>
+            <field.Checkbox
+              @label='I agree to the Terms and Conditions'
+              @description='You must accept our terms to create an account'
+              @isRequired={{true}}
+            />
+          </form.Field>
 
-        <Input
-          @label='Email Address'
-          @type='email'
-          @value={{this.email}}
-          @onInput={{this.updateEmail}}
-          @isRequired={{true}}
-          @errors={{this.emailErrors}}
-        />
+          <form.Field @name='marketingConsent' as |field|>
+            <field.Checkbox
+              @label='I would like to receive marketing emails'
+              @description='Optional: Get updates about new features and promotions'
+            />
+          </form.Field>
 
-        <Checkbox
-          @name='terms-agreement'
-          @label='I agree to the Terms and Conditions'
-          @description='You must accept our terms to create an account'
-          @checked={{this.agreements.terms}}
-          @onChange={{this.updateAgreement 'terms'}}
-          @errors={{this.termsErrors}}
-          @isRequired={{true}}
-        />
-
-        <Checkbox
-          @name='privacy-agreement'
-          @label='I agree to the Privacy Policy'
-          @description='You must accept our privacy policy to create an account'
-          @checked={{this.agreements.privacy}}
-          @onChange={{this.updateAgreement 'privacy'}}
-          @errors={{this.privacyErrors}}
-          @isRequired={{true}}
-        />
-
-        <Checkbox
-          @name='marketing-consent'
-          @label='I would like to receive marketing emails'
-          @description='Optional: Get updates about new features and promotions'
-          @checked={{this.agreements.marketing}}
-          @onChange={{this.updateAgreement 'marketing'}}
-        />
-
-        <div>
-          <Button @class='mt-4'>
-            Create Account
-          </Button>
+          <div>
+            <Button type='submit' disabled={{form.isSubmitting}}>
+              {{if form.isSubmitting 'Creating Account...' 'Create Account'}}
+            </Button>
+          </div>
         </div>
+      </Form>
 
+      {{#if this.submitMessage}}
+        <div class='p-3 bg-success-50 text-success-800 rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+
+      <div class='p-4 bg-default-50 rounded'>
+        <h4 class='font-medium mb-2'>Form Data:</h4>
+        <pre class='text-sm overflow-auto'>{{JSON.stringify
+            this.formData
+            null
+            2
+          }}</pre>
       </div>
-    </form>
+    </div>
   </template>
 }
 ```
@@ -608,6 +571,7 @@ export default class CustomStyledCheckbox extends Component {
 - You want complete control over layout and spacing
 - You're building a custom form layout
 - Each checkbox represents a separate decision
+- You need field-level validation with change/blur/input events
 
 **Use CheckboxGroup when:**
 
@@ -615,6 +579,7 @@ export default class CustomStyledCheckbox extends Component {
 - You want automatic grouping and consistent layout
 - You need group-level validation and error handling
 - You want built-in label and description support for the group
+- Note: CheckboxGroup currently only supports validation on form submit, not on change/blur/input events
 
 ## Accessibility
 

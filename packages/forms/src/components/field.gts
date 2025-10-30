@@ -65,7 +65,12 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Radio: WithBoundArgs<
           typeof Radio,
-          'name' | 'errors' | 'value' | 'onChange' | 'onBlur' | 'isDisabled'
+          | 'name'
+          | 'errors'
+          | 'checkedValue'
+          | 'onChange'
+          | 'onBlur'
+          | 'isDisabled'
         >;
         RadioGroup: WithBoundArgs<
           typeof RadioGroup,
@@ -198,7 +203,7 @@ class Field<
           Radio
           name=@name
           errors=this.fieldErrors
-          value=this.fieldValue
+          checkedValue=this.fieldValue
           isDisabled=@disabled
           onChange=this.handleChange
           onBlur=this.handleBlur
