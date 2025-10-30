@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, type Assert } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import {
   render,
@@ -160,6 +160,60 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
    * 4. When valid data is submitted, error messages are cleared and onSubmit
    *    is called with the correct data
    */
+  // Helper to assert error messages are displayed
+  function assertErrorMessages(
+    assert: Assert,
+    expectedErrors: string[],
+    description?: string
+  ) {
+    const feedbackElements = document.querySelectorAll(
+      '[data-component="form-feedback"]'
+    );
+    assert.equal(
+      feedbackElements.length,
+      expectedErrors.length,
+      description || `${expectedErrors.length} error message(s) displayed`
+    );
+    expectedErrors.forEach((errorMessage) => {
+      assert.ok(
+        Array.from(feedbackElements).some((el) =>
+          el.textContent?.includes(errorMessage)
+        ),
+        `Error message "${errorMessage}" is displayed`
+      );
+    });
+  }
+
+  // Helper to assert successful form submission
+  async function assertSuccessfulSubmission(
+    assert: Assert,
+    onSubmitSpy: sinon.SinonSpy,
+    expectedData?: FormDataCompiled
+  ) {
+    assert
+      .dom('[data-component="form-feedback"]')
+      .doesNotExist('Error messages are cleared');
+    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+    if (expectedData) {
+      assert.deepEqual(
+        onSubmitSpy.firstCall.args[0].data,
+        expectedData,
+        'onSubmit should be called with correct data'
+      );
+    }
+  }
+
+  // Helper to assert validation failure
+  function assertValidationFailure(
+    assert: Assert,
+    onSubmitSpy: sinon.SinonSpy,
+    expectedErrors: string[],
+    description?: string
+  ) {
+    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
+    assertErrorMessages(assert, expectedErrors, description);
+  }
+
   test('it validates form using schema with submitted form data and prevents submission on validation errors', async function (assert) {
     assert.expect(10);
 
@@ -238,48 +292,13 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-password]', 'abc');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to validation errors
-    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify error messages are displayed
-    const feedbackElements = document.querySelectorAll(
-      '[data-component="form-feedback"]'
-    );
-    assert.equal(
-      feedbackElements.length,
-      5,
-      'Five error messages are displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Invalid email address')
-      ),
-      'Email error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Password must be at least 6 characters')
-      ),
-      'Password error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Please select a country')
-      ),
-      'Country error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('You must accept the terms')
-      ),
-      'Terms error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('The correct answer is taupe')
-      ),
-      'Favorite color error message is displayed'
-    );
+    assertValidationFailure(assert, onSubmitSpy, [
+      'Invalid email address',
+      'Password must be at least 6 characters',
+      'Please select a country',
+      'You must accept the terms',
+      'The correct answer is taupe'
+    ]);
 
     // Submit with valid data
     await fillIn('[data-test-email]', 'test@example.com');
@@ -289,24 +308,13 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await click('[data-test-terms]');
     await click('[data-test-submit]');
 
-    // Verify error messages are cleared
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('Error messages are cleared');
-
-    // onSubmit should be called with valid data
-    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
-    assert.deepEqual(
-      onSubmitSpy.firstCall.args[0].data,
-      {
-        email: 'test@example.com',
-        password: 'password123',
-        country: 'canada',
-        favoriteColor: 'taupe',
-        terms: true
-      },
-      'onSubmit should be called with correct data'
-    );
+    await assertSuccessfulSubmission(assert, onSubmitSpy, {
+      email: 'test@example.com',
+      password: 'password123',
+      country: 'canada',
+      favoriteColor: 'taupe',
+      terms: true
+    });
   });
 
   /**
@@ -319,7 +327,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
   test('it validates form using custom validator function', async function (assert) {
     assert.expect(6);
 
-    // Custom validator that checks if password matches confirmPassword
     const customValidator = (data: FormDataCompiled): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
@@ -368,30 +375,10 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-confirm-password]', 'password456');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to validation errors
-    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify error messages are displayed
-    const feedbackElements = document.querySelectorAll(
-      '[data-component="form-feedback"]'
-    );
-    assert.equal(
-      feedbackElements.length,
-      2,
-      'Two error messages are displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Passwords do not match')
-      ),
-      'Password mismatch error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Username "admin" is reserved')
-      ),
-      'Reserved username error message is displayed'
-    );
+    assertValidationFailure(assert, onSubmitSpy, [
+      'Passwords do not match',
+      'Username "admin" is reserved'
+    ]);
 
     // Submit with valid data
     await fillIn('[data-test-username]', 'john');
@@ -399,13 +386,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-confirm-password]', 'password123');
     await click('[data-test-submit]');
 
-    // Verify error messages are cleared
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('Error messages are cleared');
-
-    // onSubmit should be called with valid data
-    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
+    await assertSuccessfulSubmission(assert, onSubmitSpy);
   });
 
   /**
@@ -428,7 +409,6 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       confirmPassword: v.pipe(v.string(), v.minLength(1))
     });
 
-    // Custom validator that checks if password matches confirmPassword
     const customValidator = (data: FormDataCompiled): CustomValidatorReturn => {
       const issues = [];
       if (data['password'] !== data['confirmPassword']) {
@@ -473,35 +453,15 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-confirm-password]', 'xyz');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to validation errors
-    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify both schema and custom validator errors are displayed (3 total: 2 schema + 1 custom)
-    let feedbackElements = document.querySelectorAll(
-      '[data-component="form-feedback"]'
-    );
-    assert.equal(
-      feedbackElements.length,
-      3,
+    assertValidationFailure(
+      assert,
+      onSubmitSpy,
+      [
+        'Invalid email address',
+        'Password must be at least 6 characters',
+        'Passwords do not match'
+      ],
       'Three error messages are displayed (2 schema errors + 1 custom validator error)'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Invalid email address')
-      ),
-      'Email error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Password must be at least 6 characters')
-      ),
-      'Password error message is displayed'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Passwords do not match')
-      ),
-      'Password mismatch error message is displayed'
     );
 
     // Submit with valid schema but invalid custom validator
@@ -510,23 +470,11 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-confirm-password]', 'password456');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to custom validation error
-    assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify custom validator error is displayed
-    feedbackElements = document.querySelectorAll(
-      '[data-component="form-feedback"]'
-    );
-    assert.equal(
-      feedbackElements.length,
-      1,
+    assertValidationFailure(
+      assert,
+      onSubmitSpy,
+      ['Passwords do not match'],
       'One error message is displayed (custom validator error)'
-    );
-    assert.ok(
-      Array.from(feedbackElements).some((el) =>
-        el.textContent?.includes('Passwords do not match')
-      ),
-      'Password mismatch error message is displayed'
     );
 
     // Submit with valid data (both schema and custom validator should pass)
@@ -535,22 +483,11 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-confirm-password]', 'password123');
     await click('[data-test-submit]');
 
-    // Verify error messages are cleared
-    assert
-      .dom('[data-component="form-feedback"]')
-      .doesNotExist('Error messages are cleared');
-
-    // onSubmit should be called with valid data
-    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
-    assert.deepEqual(
-      onSubmitSpy.firstCall.args[0].data,
-      {
-        email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123'
-      },
-      'onSubmit should be called with correct data'
-    );
+    await assertSuccessfulSubmission(assert, onSubmitSpy, {
+      email: 'test@example.com',
+      password: 'password123',
+      confirmPassword: 'password123'
+    });
   });
 
   /**
@@ -1768,7 +1705,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
    * This ensures backward compatibility - existing forms continue to validate on submit
    */
   test('it validates on submit by default when validateOn is not provided', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     const schema = v.object({
       email: v.pipe(v.string(), v.email('Invalid email address')),
@@ -1801,10 +1738,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-password]', 'abc');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to validation errors
     assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify error messages are displayed
     assert
       .dom('[data-component="form-feedback"]')
       .exists({ count: 2 }, 'Validation errors are displayed');
@@ -1814,23 +1748,17 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-password]', 'password123');
     await click('[data-test-submit]');
 
-    // onSubmit should be called with valid data
-    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
-    assert.deepEqual(
-      onSubmitSpy.firstCall.args[0].data,
-      {
-        email: 'test@example.com',
-        password: 'password123'
-      },
-      'onSubmit should be called with correct data'
-    );
+    await assertSuccessfulSubmission(assert, onSubmitSpy, {
+      email: 'test@example.com',
+      password: 'password123'
+    });
   });
 
   /**
    * Test that validation runs when validateOn={['submit']} is explicitly provided
    */
   test('it validates on submit when validateOn={["submit"]} is explicitly provided', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     const schema = v.object({
       email: v.pipe(v.string(), v.email('Invalid email address')),
@@ -1868,10 +1796,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-password]', 'abc');
     await click('[data-test-submit]');
 
-    // onSubmit should not be called due to validation errors
     assert.ok(onSubmitSpy.notCalled, 'onSubmit should not be called');
-
-    // Verify error messages are displayed
     assert
       .dom('[data-component="form-feedback"]')
       .exists({ count: 2 }, 'Validation errors are displayed');
@@ -1881,16 +1806,10 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
     await fillIn('[data-test-password]', 'password123');
     await click('[data-test-submit]');
 
-    // onSubmit should be called with valid data
-    assert.ok(onSubmitSpy.calledOnce, 'onSubmit should be called once');
-    assert.deepEqual(
-      onSubmitSpy.firstCall.args[0].data,
-      {
-        email: 'test@example.com',
-        password: 'password123'
-      },
-      'onSubmit should be called with correct data'
-    );
+    await assertSuccessfulSubmission(assert, onSubmitSpy, {
+      email: 'test@example.com',
+      password: 'password123'
+    });
   });
 
   /**

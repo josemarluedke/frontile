@@ -1,6 +1,13 @@
 import { module, test } from 'qunit';
+import type { Assert } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
+import {
+  click,
+  render,
+  triggerKeyEvent,
+  fillIn,
+  settled
+} from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Select } from '@frontile/forms';
 import { array } from '@ember/helper';
@@ -12,34 +19,48 @@ const eq = (a: unknown, b: unknown) => a === b;
 module('Integration | Component | Select | @frontile/forms', function (hooks) {
   setupRenderingTest(hooks);
 
+  const getNativeSelect = () => {
+    const select = document.querySelector('[data-component="native-select"]');
+    if (!select) throw new Error('native-select not found');
+    return select;
+  };
+
+  const checkSelected = (
+    assert: { ok: (val: boolean, mes: string) => void },
+    queryString: string,
+    shouldBeSelected: boolean
+  ): void => {
+    const option = getNativeSelect().querySelector(queryString);
+    const isSelected = option && (option as HTMLOptionElement).selected;
+    const msg = shouldBeSelected
+      ? `Expected ${queryString} to be selected`
+      : `Expected ${queryString} to not be selected`;
+    assert.ok(shouldBeSelected ? !!isSelected : !isSelected, msg);
+  };
+
   const isSelected = (
     assert: { ok: (val: boolean, mes: string) => void },
     queryString: string
-  ): void => {
-    const select = document.querySelector('[data-component="native-select"]');
-    if (!select) {
-      throw new Error(
-        'did not find native-select to check if options is selected'
-      );
-    }
-    const option = select.querySelector(queryString);
-    const isSelected = option && (option as HTMLOptionElement).selected;
-    assert.ok(!!isSelected, `Expected ${queryString} to be selected`);
-  };
+  ) => checkSelected(assert, queryString, true);
 
   const isNotSelected = (
     assert: { ok: (val: boolean, mes: string) => void },
     queryString: string
-  ): void => {
-    const select = document.querySelector('[data-component="native-select"]');
-    if (!select) {
-      throw new Error(
-        'did not find native-select to check if options is selected'
+  ) => checkSelected(assert, queryString, false);
+
+  const assertListboxSelection = (
+    assert: Assert,
+    key: string,
+    expected: boolean,
+    message?: string
+  ) => {
+    assert
+      .dom(`[data-component="listbox"] [data-key="${key}"]`)
+      .hasAttribute(
+        'data-selected',
+        String(expected),
+        message || `${key} should ${expected ? '' : 'not '}be selected`
       );
-    }
-    const option = select.querySelector(queryString);
-    const isSelected = option && (option as HTMLOptionElement).selected;
-    assert.ok(!isSelected, `Expected ${queryString} to not be selected`);
   };
 
   test('it renders static items in NativeSelect and Listbox', async function (assert) {
@@ -726,51 +747,22 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Initially no selection - should show placeholder
     assert
       .dom('[data-component="select-trigger"]')
       .hasText('Select a fruit', 'trigger should show placeholder initially');
 
-    // Set selectedKey externally to 'Apple'
     selectedKey.current = 'Apple';
-    await render(
-      <template>
-        <Select
-          @items={{items}}
-          @selectedKey={{selectedKey.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select a fruit"
-        />
-      </template>
-    );
-
-    // Verify trigger button text updates
+    await settled();
     assert
       .dom('[data-component="select-trigger"]')
       .hasText('Apple', 'trigger should display Apple');
-
-    // Verify native select reflects the selection
     isSelected(assert, '[data-key="Apple"]');
 
-    // Change selectedKey externally to 'Banana'
     selectedKey.current = 'Banana';
-    await render(
-      <template>
-        <Select
-          @items={{items}}
-          @selectedKey={{selectedKey.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select a fruit"
-        />
-      </template>
-    );
-
-    // Verify trigger button text updates to Banana
+    await settled();
     assert
       .dom('[data-component="select-trigger"]')
       .hasText('Banana', 'trigger should display Banana');
-
-    // Verify native select reflects the new selection
     isSelected(assert, '[data-key="Banana"]');
     isNotSelected(assert, '[data-key="Apple"]');
   });
@@ -795,79 +787,32 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify initial selection in native select
     isSelected(assert, '[data-key="item-1"]');
     assert.dom('[data-component="select-trigger"]').hasText('Item 1');
 
-    // Open listbox and verify selection
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'true');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false');
-
-    // Close listbox
+    assertListboxSelection(assert, 'item-1', true);
+    assertListboxSelection(assert, 'item-2', false);
     await click('[data-component="select-trigger"]');
 
-    // Change selectedKey externally from item-1 to item-2
     selectedKey.current = 'item-2';
-    await render(
-      <template>
-        <Select
-          @selectedKey={{selectedKey.current}}
-          @onSelectionChange={{onSelectionChange}}
-          as |l|
-        >
-          <l.Item @key="item-1">Item 1</l.Item>
-          <l.Item @key="item-2">Item 2</l.Item>
-          <l.Item @key="item-3">Item 3</l.Item>
-        </Select>
-      </template>
-    );
-
-    // Verify native select updated
+    await settled();
     isSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-1"]');
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Item 2', 'trigger should show Item 2');
+    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
 
-    // Open listbox and verify selection updated
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'true', 'item-2 should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false', 'item-1 should not be selected');
+    assertListboxSelection(assert, 'item-2', true);
+    assertListboxSelection(assert, 'item-1', false);
+    await click('[data-component="select-trigger"]');
 
-    // Close and change to item-3
-    await click('[data-component="select-trigger"]');
     selectedKey.current = 'item-3';
-    await render(
-      <template>
-        <Select
-          @selectedKey={{selectedKey.current}}
-          @onSelectionChange={{onSelectionChange}}
-          as |l|
-        >
-          <l.Item @key="item-1">Item 1</l.Item>
-          <l.Item @key="item-2">Item 2</l.Item>
-          <l.Item @key="item-3">Item 3</l.Item>
-        </Select>
-      </template>
-    );
-
-    // Verify final state
+    await settled();
     isSelected(assert, '[data-key="item-3"]');
     assert.dom('[data-component="select-trigger"]').hasText('Item 3');
 
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'true');
+    assertListboxSelection(assert, 'item-3', true);
   });
 
   test('Multiple mode: external @selectedKeys changes update trigger display', async function (assert) {
@@ -889,95 +834,24 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Initially no selection - should show placeholder
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Select fruits', 'trigger should show placeholder initially');
+    const trigger = '[data-component="select-trigger"]';
+    assert.dom(trigger).hasText('Select fruits');
 
-    // Set selectedKeys externally to ['Apple']
     selectedKeys.current = ['Apple'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @items={{items}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select fruits"
-        />
-      </template>
-    );
+    await settled();
+    assert.dom(trigger).hasText('Apple');
 
-    // Verify trigger displays single selection
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Apple', 'trigger should display Apple');
-
-    // Set selectedKeys externally to ['Apple', 'Banana']
     selectedKeys.current = ['Apple', 'Banana'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @items={{items}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select fruits"
-        />
-      </template>
-    );
+    await settled();
+    assert.dom(trigger).hasText('Apple, Banana');
 
-    // Verify trigger displays comma-separated values
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Apple, Banana',
-        'trigger should display comma-separated values'
-      );
-
-    // Set selectedKeys externally to ['Cherry', 'Date', 'Apple']
     selectedKeys.current = ['Cherry', 'Date', 'Apple'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @items={{items}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select fruits"
-        />
-      </template>
-    );
+    await settled();
+    assert.dom(trigger).hasText('Apple, Cherry, Date');
 
-    // Verify trigger displays all three comma-separated (in items array order)
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Apple, Cherry, Date',
-        'trigger should display three comma-separated values in items array order'
-      );
-
-    // Clear selection externally
     selectedKeys.current = [];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @items={{items}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select fruits"
-        />
-      </template>
-    );
-
-    // Verify trigger shows placeholder again when selection cleared
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Select fruits',
-        'trigger should show placeholder when selection cleared'
-      );
+    await settled();
+    assert.dom(trigger).hasText('Select fruits');
   });
 
   test('Multiple mode: external @selectedKeys changes update listbox selections', async function (assert) {
@@ -1002,122 +876,37 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Open listbox - nothing should be selected
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false');
-
-    // Close listbox
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-2', false);
     await click('[data-component="select-trigger"]');
 
-    // Set selectedKeys externally to ['item-1', 'item-3']
     selectedKeys.current = ['item-1', 'item-3'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          as |l|
-        >
-          <l.Item @key="item-1">Item 1</l.Item>
-          <l.Item @key="item-2">Item 2</l.Item>
-          <l.Item @key="item-3">Item 3</l.Item>
-          <l.Item @key="item-4">Item 4</l.Item>
-        </Select>
-      </template>
-    );
-
-    // Open listbox and verify selections
+    await settled();
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'true', 'item-1 should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false', 'item-2 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'true', 'item-3 should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-4"]')
-      .hasAttribute('data-selected', 'false', 'item-4 should not be selected');
-
-    // Close listbox
+    assertListboxSelection(assert, 'item-1', true);
+    assertListboxSelection(assert, 'item-2', false);
+    assertListboxSelection(assert, 'item-3', true);
+    assertListboxSelection(assert, 'item-4', false);
     await click('[data-component="select-trigger"]');
 
-    // Add item-2 to selection, remove item-1
     selectedKeys.current = ['item-2', 'item-3'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          as |l|
-        >
-          <l.Item @key="item-1">Item 1</l.Item>
-          <l.Item @key="item-2">Item 2</l.Item>
-          <l.Item @key="item-3">Item 3</l.Item>
-          <l.Item @key="item-4">Item 4</l.Item>
-        </Select>
-      </template>
-    );
-
-    // Open listbox and verify updated selections
+    await settled();
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute(
-        'data-selected',
-        'false',
-        'item-1 should no longer be selected'
-      );
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'true', 'item-2 should now be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'true', 'item-3 should still be selected');
-
-    // Close and clear all selections
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-2', true);
+    assertListboxSelection(assert, 'item-3', true);
     await click('[data-component="select-trigger"]');
+
     selectedKeys.current = [];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          as |l|
-        >
-          <l.Item @key="item-1">Item 1</l.Item>
-          <l.Item @key="item-2">Item 2</l.Item>
-          <l.Item @key="item-3">Item 3</l.Item>
-          <l.Item @key="item-4">Item 4</l.Item>
-        </Select>
-      </template>
-    );
-
-    // Verify nothing is selected
+    await settled();
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'false');
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-2', false);
+    assertListboxSelection(assert, 'item-3', false);
   });
 
   test('Single mode: initializes correctly with pre-set @selectedKey', async function (assert) {
-    // Initialize with a pre-set value BEFORE first render
     const selectedKey = cell<string | null>('item-2');
     let callCount = 0;
 
@@ -1140,58 +929,24 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify onSelectionChange was NOT called during initialization
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called during component initialization'
-    );
-
-    // Verify trigger button shows the pre-set selection
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Item 2', 'trigger should display the initialized selection');
-
-    // Verify native select has the correct option selected
+    assert.equal(callCount, 0, 'callback should not be called during init');
+    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
     isSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    // Open listbox and verify the pre-set selection is shown
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute(
-        'data-selected',
-        'true',
-        'item-2 should be selected in listbox'
-      );
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false', 'item-1 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'false', 'item-3 should not be selected');
+    assertListboxSelection(assert, 'item-2', true);
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-3', false);
+    assert.equal(callCount, 0, 'callback should not be called after opening');
 
-    // Verify callback still not called after opening listbox
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should still not be called after opening listbox'
-    );
-
-    // Now test that user interaction DOES trigger callback
     await click('[data-component="listbox"] [data-key="item-3"]');
-    assert.equal(
-      callCount,
-      1,
-      'onSelectionChange should be called once after user clicks'
-    );
-    assert.equal(selectedKey.current, 'item-3', 'selection should update');
+    assert.equal(callCount, 1, 'callback should be called after user click');
+    assert.equal(selectedKey.current, 'item-3');
   });
 
   test('Multiple mode: initializes correctly with pre-set @selectedKeys', async function (assert) {
-    // Initialize with pre-set values BEFORE first render
     const selectedKeys = cell<string[]>(['Apple', 'Cherry']);
     let callCount = 0;
 
@@ -1213,59 +968,22 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify onSelectionChange was NOT called during initialization
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called during component initialization'
-    );
+    assert.equal(callCount, 0, 'callback should not be called during init');
+    assert.dom('[data-component="select-trigger"]').hasText('Apple, Cherry');
 
-    // Verify trigger shows the pre-set selections (in items array order)
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Apple, Cherry',
-        'trigger should display the initialized selections'
-      );
-
-    // Open listbox and verify the pre-set selections are shown
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="Apple"]')
-      .hasAttribute('data-selected', 'true', 'Apple should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Banana"]')
-      .hasAttribute('data-selected', 'false', 'Banana should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Cherry"]')
-      .hasAttribute('data-selected', 'true', 'Cherry should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Date"]')
-      .hasAttribute('data-selected', 'false', 'Date should not be selected');
+    assertListboxSelection(assert, 'Apple', true);
+    assertListboxSelection(assert, 'Banana', false);
+    assertListboxSelection(assert, 'Cherry', true);
+    assertListboxSelection(assert, 'Date', false);
+    assert.equal(callCount, 0, 'callback should not be called after opening');
 
-    // Verify callback still not called after opening listbox
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should still not be called after opening listbox'
-    );
-
-    // Now test that user interaction DOES trigger callback
     await click('[data-component="listbox"] [data-key="Banana"]');
-    assert.equal(
-      callCount,
-      1,
-      'onSelectionChange should be called once after user clicks'
-    );
-    assert.deepEqual(
-      selectedKeys.current,
-      ['Apple', 'Cherry', 'Banana'],
-      'selection should include Banana'
-    );
+    assert.equal(callCount, 1, 'callback should be called after user click');
+    assert.deepEqual(selectedKeys.current, ['Apple', 'Cherry', 'Banana']);
   });
 
   test('Single mode: initializes with null (no selection)', async function (assert) {
-    // Initialize with null BEFORE first render
     const selectedKey = cell<string | null>(null);
     let callCount = 0;
 
@@ -1290,48 +1008,20 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify onSelectionChange was NOT called during initialization
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called during initialization with null'
-    );
-
-    // Verify trigger shows placeholder
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Select an item',
-        'trigger should display placeholder when null'
-      );
-
-    // Verify native select has no selection
+    assert.equal(callCount, 0, 'callback should not be called during init');
+    assert.dom('[data-component="select-trigger"]').hasText('Select an item');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    // Open listbox and verify no items are selected
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false', 'item-1 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false', 'item-2 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'false', 'item-3 should not be selected');
-
-    // Verify callback still not called
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should still not be called after opening listbox'
-    );
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-2', false);
+    assertListboxSelection(assert, 'item-3', false);
+    assert.equal(callCount, 0, 'callback should not be called after opening');
   });
 
   test('Multiple mode: initializes with empty array (no selections)', async function (assert) {
-    // Initialize with empty array BEFORE first render
     const selectedKeys = cell<string[]>([]);
     let callCount = 0;
 
@@ -1354,43 +1044,17 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify onSelectionChange was NOT called during initialization
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called during initialization with empty array'
-    );
+    assert.equal(callCount, 0, 'callback should not be called during init');
+    assert.dom('[data-component="select-trigger"]').hasText('Select fruits');
 
-    // Verify trigger shows placeholder
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Select fruits',
-        'trigger should display placeholder when empty'
-      );
-
-    // Open listbox and verify no items are selected
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="Apple"]')
-      .hasAttribute('data-selected', 'false', 'Apple should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Banana"]')
-      .hasAttribute('data-selected', 'false', 'Banana should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Cherry"]')
-      .hasAttribute('data-selected', 'false', 'Cherry should not be selected');
-
-    // Verify callback still not called
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should still not be called after opening listbox'
-    );
+    assertListboxSelection(assert, 'Apple', false);
+    assertListboxSelection(assert, 'Banana', false);
+    assertListboxSelection(assert, 'Cherry', false);
+    assert.equal(callCount, 0, 'callback should not be called after opening');
   });
 
   test('Edge case: initializes with undefined @selectedKey (not passed)', async function (assert) {
-    // Don't pass @selectedKey at all (simulates uncontrolled component)
     let callCount = 0;
     let lastSelectedKey: string | null = null;
 
@@ -1414,60 +1078,22 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Verify component renders without errors
-    assert
-      .dom('[data-component="select-trigger"]')
-      .exists('component should render without @selectedKey');
-
-    // Verify onSelectionChange was NOT called during initialization
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called during initialization without @selectedKey'
-    );
-
-    // Verify trigger shows placeholder
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Select an item',
-        'trigger should show placeholder when @selectedKey undefined'
-      );
-
-    // Verify native select has no selection
+    assert.dom('[data-component="select-trigger"]').exists();
+    assert.equal(callCount, 0, 'callback should not be called during init');
+    assert.dom('[data-component="select-trigger"]').hasText('Select an item');
     isNotSelected(assert, '[data-key="item-1"]');
     isNotSelected(assert, '[data-key="item-2"]');
     isNotSelected(assert, '[data-key="item-3"]');
 
-    // Open listbox and verify no items are selected
     await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-1"]')
-      .hasAttribute('data-selected', 'false', 'item-1 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-2"]')
-      .hasAttribute('data-selected', 'false', 'item-2 should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('data-selected', 'false', 'item-3 should not be selected');
+    assertListboxSelection(assert, 'item-1', false);
+    assertListboxSelection(assert, 'item-2', false);
+    assertListboxSelection(assert, 'item-3', false);
 
-    // Verify component works - user can select an item
     await click('[data-component="listbox"] [data-key="item-2"]');
-    assert.equal(
-      callCount,
-      1,
-      'callback should be called after user selection'
-    );
-    assert.equal(
-      lastSelectedKey,
-      'item-2',
-      'callback should receive correct key'
-    );
-
-    // Verify UI updates (component manages its own internal state)
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Item 2', 'trigger should show selected item');
+    assert.equal(callCount, 1, 'callback should be called after user click');
+    assert.equal(lastSelectedKey, 'item-2');
+    assert.dom('[data-component="select-trigger"]').hasText('Item 2');
   });
 
   test('Multiple mode: external state + user interactions work together via onSelectionChange', async function (assert) {
@@ -1478,10 +1104,11 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     const onSelectionChange = (keys: string[]) => {
       callCount++;
       lastCallbackValue = keys;
-      selectedKeys.current = keys; // Update parent state
+      selectedKeys.current = keys;
     };
 
     const items = ['Apple', 'Banana', 'Cherry', 'Date'];
+    const trigger = '[data-component="select-trigger"]';
 
     await render(
       <template>
@@ -1495,177 +1122,49 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
-    // Initial state - no selections, callback not called yet
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should not be called initially'
-    );
-    assert.equal(
-      selectedKeys.current.length,
-      0,
-      'should start with no selections'
-    );
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Select fruits', 'should show placeholder');
+    assert.equal(callCount, 0, 'callback should not be called initially');
+    assert.equal(selectedKeys.current.length, 0);
+    assert.dom(trigger).hasText('Select fruits');
 
-    // Set external state to ['Apple', 'Cherry']
     selectedKeys.current = ['Apple', 'Cherry'];
-    await render(
-      <template>
-        <Select
-          @selectionMode="multiple"
-          @items={{items}}
-          @selectedKeys={{selectedKeys.current}}
-          @onSelectionChange={{onSelectionChange}}
-          @placeholder="Select fruits"
-        />
-      </template>
-    );
+    await settled();
+    assert.equal(callCount, 0, 'callback should not be called on external change');
+    assert.dom(trigger).hasText('Apple, Cherry');
 
-    // Verify external state update did NOT trigger callback
-    assert.equal(
-      callCount,
-      0,
-      'onSelectionChange should NOT be called when @selectedKeys changes externally'
-    );
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Apple, Cherry', 'should show externally set selections');
+    await click(trigger);
+    assertListboxSelection(assert, 'Apple', true);
+    assertListboxSelection(assert, 'Banana', false);
+    assertListboxSelection(assert, 'Cherry', true);
+    assertListboxSelection(assert, 'Date', false);
 
-    // Open listbox and verify external selections are shown
-    await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="Apple"]')
-      .hasAttribute('data-selected', 'true', 'Apple should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Banana"]')
-      .hasAttribute('data-selected', 'false', 'Banana should not be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Cherry"]')
-      .hasAttribute('data-selected', 'true', 'Cherry should be selected');
-    assert
-      .dom('[data-component="listbox"] [data-key="Date"]')
-      .hasAttribute('data-selected', 'false', 'Date should not be selected');
-
-    // User clicks Banana (adding to selection)
     await click('[data-component="listbox"] [data-key="Banana"]');
+    assert.equal(callCount, 1);
+    assert.deepEqual(lastCallbackValue, ['Apple', 'Cherry', 'Banana']);
+    assert.deepEqual(selectedKeys.current, ['Apple', 'Cherry', 'Banana']);
+    assertListboxSelection(assert, 'Banana', true);
+    assert.dom(trigger).hasText('Apple, Banana, Cherry');
 
-    // Verify callback WAS called with correct value
-    assert.equal(
-      callCount,
-      1,
-      'onSelectionChange should be called once after user clicks'
-    );
-    assert.deepEqual(
-      lastCallbackValue,
-      ['Apple', 'Cherry', 'Banana'],
-      'callback should receive updated array with Banana added'
-    );
-    assert.deepEqual(
-      selectedKeys.current,
-      ['Apple', 'Cherry', 'Banana'],
-      'parent state should be updated'
-    );
-
-    // Verify UI updated
-    assert
-      .dom('[data-component="listbox"] [data-key="Banana"]')
-      .hasAttribute('data-selected', 'true', 'Banana should now be selected');
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Apple, Banana, Cherry', 'trigger should show all selections');
-
-    // User clicks Cherry (removing from selection)
     await click('[data-component="listbox"] [data-key="Cherry"]');
+    assert.equal(callCount, 2);
+    assert.deepEqual(lastCallbackValue, ['Apple', 'Banana']);
+    assert.deepEqual(selectedKeys.current, ['Apple', 'Banana']);
+    assertListboxSelection(assert, 'Cherry', false);
+    assert.dom(trigger).hasText('Apple, Banana');
 
-    // Verify callback called again with correct value
-    assert.equal(
-      callCount,
-      2,
-      'onSelectionChange should be called again after second click'
-    );
-    assert.deepEqual(
-      lastCallbackValue,
-      ['Apple', 'Banana'],
-      'callback should receive array with Cherry removed'
-    );
-    assert.deepEqual(
-      selectedKeys.current,
-      ['Apple', 'Banana'],
-      'parent state should reflect removal'
-    );
-
-    // Verify UI updated
-    assert
-      .dom('[data-component="listbox"] [data-key="Cherry"]')
-      .hasAttribute(
-        'data-selected',
-        'false',
-        'Cherry should now be unselected'
-      );
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText('Apple, Banana', 'trigger should show remaining selections');
-
-    // User clicks Date (adding to selection)
     await click('[data-component="listbox"] [data-key="Date"]');
+    assert.equal(callCount, 3);
+    assert.deepEqual(lastCallbackValue, ['Apple', 'Banana', 'Date']);
+    assert.dom(trigger).hasText('Apple, Banana, Date');
 
-    assert.equal(callCount, 3, 'onSelectionChange should be called third time');
-    assert.deepEqual(
-      lastCallbackValue,
-      ['Apple', 'Banana', 'Date'],
-      'callback should receive array with Date added'
-    );
-    assert
-      .dom('[data-component="select-trigger"]')
-      .hasText(
-        'Apple, Banana, Date',
-        'trigger should show all three selections'
-      );
+    await click(trigger);
+    assert.dom('[data-component="listbox"]').doesNotExist();
 
-    // Close and verify listbox can be reopened with correct state
-    await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"]')
-      .doesNotExist('listbox should close');
+    await click(trigger);
+    assertListboxSelection(assert, 'Apple', true);
+    assertListboxSelection(assert, 'Banana', true);
+    assertListboxSelection(assert, 'Cherry', false);
+    assertListboxSelection(assert, 'Date', true);
 
-    await click('[data-component="select-trigger"]');
-    assert
-      .dom('[data-component="listbox"] [data-key="Apple"]')
-      .hasAttribute(
-        'data-selected',
-        'true',
-        'Apple still selected after reopen'
-      );
-    assert
-      .dom('[data-component="listbox"] [data-key="Banana"]')
-      .hasAttribute(
-        'data-selected',
-        'true',
-        'Banana still selected after reopen'
-      );
-    assert
-      .dom('[data-component="listbox"] [data-key="Cherry"]')
-      .hasAttribute(
-        'data-selected',
-        'false',
-        'Cherry still unselected after reopen'
-      );
-    assert
-      .dom('[data-component="listbox"] [data-key="Date"]')
-      .hasAttribute(
-        'data-selected',
-        'true',
-        'Date still selected after reopen'
-      );
-
-    // Final verification: callback was only called for user interactions, not external updates
-    assert.equal(
-      callCount,
-      3,
-      'onSelectionChange should only have been called 3 times (once per user click)'
-    );
+    assert.equal(callCount, 3, 'callback should only be called for user clicks');
   });
 });
