@@ -8,15 +8,15 @@ import {
   RadioGroup,
   Select,
   type FormResultData
-} from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+} from 'frontile';
+import { Button } from 'frontile';
 import {
   NotificationsContainer,
   type CustomAction,
   type NotificationOptions,
   type NotificationsContainerSignature,
   type NotificationsService
-} from '@frontile/notifications';
+} from 'frontile';
 
 interface DemoArgs {}
 

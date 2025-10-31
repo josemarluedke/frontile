@@ -14,7 +14,7 @@ The `toggleState` utility is a lightweight helper for managing boolean state in 
 ## Import
 
 ```js
-import { toggleState } from '@frontile/utilities';
+import { toggleState } from 'frontile';
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ import { toggleState } from '@frontile/utilities';
 You can create a toggle state using the helper function:
 
 ```ts
-import { toggleState } from '@frontile/utilities';
+import { toggleState } from 'frontile';
 
 let state = toggleState(false, (val) => {
   console.log('State changed to:', val);
@@ -59,8 +59,8 @@ Below is an example of a component that uses toggleState:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { toggleState } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { toggleState } from 'frontile';
+import { Button } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class MyTestComponent extends Component {
@@ -105,8 +105,8 @@ export default class MyTestComponent extends Component {
 You can also use toggleState directly within your templates:
 
 ```gts preview
-import { toggleState } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { toggleState } from 'frontile';
+import { Button } from 'frontile';
 
 <template>
   {{#let (toggleState) as |state|}}
@@ -129,8 +129,8 @@ Below is an example that demonstrates how to use `toggleState` with an `onChange
 
 ```gts preview
 import Component from '@glimmer/component';
-import { toggleState } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { toggleState } from 'frontile';
+import { Button } from 'frontile';
 
 export default class CallbackToggleExample extends Component {
   // Create a toggle state with an initial value of false and an onChange callback.

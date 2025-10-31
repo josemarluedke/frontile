@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 import { hash } from '@ember/helper';
 
 interface TestItem {

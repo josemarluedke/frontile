@@ -10,13 +10,13 @@ Chips are compact elements that represent an input, attribute, or action.
 ## Import 
 
 ```js
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 ```
 
 ## Usage
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <Chip>Chip</Chip>
@@ -26,7 +26,7 @@ import { Chip } from '@frontile/buttons';
 ## Chip Appearances
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <div>
@@ -40,7 +40,7 @@ import { Chip } from '@frontile/buttons';
 ## Chip Intents
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <div>
@@ -70,7 +70,7 @@ import { Chip } from '@frontile/buttons';
 ## Chip with Dots
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <div>
@@ -89,7 +89,7 @@ If you pass the `@onClose` argument, the close button will be visible.
 ```gjs preview
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 export default class DemoComponent extends Component {
   @action
@@ -110,7 +110,7 @@ export default class DemoComponent extends Component {
 ## Chip Sizes
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <Chip @size='sm'>Chip</Chip>
@@ -124,7 +124,7 @@ import { Chip } from '@frontile/buttons';
 You can pass the argument `@isDisabled` to represent a disabled chip.
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <div>
@@ -140,7 +140,7 @@ import { Chip } from '@frontile/buttons';
 You can also use TailwindCSS classes to customize even further.
 
 ```gjs preview
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 <template>
   <Chip @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>

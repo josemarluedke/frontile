@@ -4,8 +4,8 @@ import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import VersionDropdown from '../components/version-dropdown';
-import { VisuallyHidden } from '@frontile/utilities';
-import { PortalTarget } from '@frontile/overlays';
+import { VisuallyHidden } from 'frontile';
+import { PortalTarget } from 'frontile';
 
 <template>
   {{pageTitle "Frontile"}}

@@ -11,7 +11,7 @@ A radio group component that allows users to select a single option from a group
 ## Import
 
 ```js
-import { RadioGroup } from '@frontile/forms';
+import { RadioGroup } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { RadioGroup } from '@frontile/forms';
 The most basic usage of the RadioGroup component with a label and options.
 
 ```gts preview
-import { RadioGroup } from '@frontile/forms';
+import { RadioGroup } from 'frontile';
 
 <template>
   <RadioGroup @name='interests' @label='Interests' as |Radio|>
@@ -43,7 +43,7 @@ The recommended pattern for using RadioGroup is with Form and Field components, 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ControlledRadioGroup extends Component {
   @tracked formData = { theme: '' };
@@ -81,8 +81,8 @@ RadioGroup integrates seamlessly with Form validation through Valibot schemas.  
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -168,7 +168,7 @@ export default class FormValidation extends Component {
 The RadioGroup component supports various optional configurations for layout, sizing, descriptions, and custom styling.
 
 ```gts preview
-import { RadioGroup } from '@frontile/forms';
+import { RadioGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

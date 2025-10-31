@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, find, settled, click } from '@ember/test-helpers';
 
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/forms/Input', function (hooks) {

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click } from '@ember/test-helpers';
 
-import { RadioGroup, type RadioGroupSignature } from '@frontile/forms';
+import { RadioGroup, type RadioGroupSignature } from 'frontile';
 import { cell } from 'ember-resources';
 
 module(

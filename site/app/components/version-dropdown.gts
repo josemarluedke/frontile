@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { Dropdown } from '@frontile/collections';
+import { Dropdown } from 'frontile';
 
 interface VersionDropdownSignature {
   Element: HTMLDivElement;

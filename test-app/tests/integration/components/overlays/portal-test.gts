@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
-import { Portal, PortalTarget } from '@frontile/overlays';
-import { ref } from '@frontile/utilities';
+import { Portal, PortalTarget } from 'frontile';
+import { ref } from 'frontile';
 
 module('Integration | Component | @frontile/overlays/Portal', function (hooks) {
   setupRenderingTest(hooks);

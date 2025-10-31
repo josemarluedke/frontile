@@ -6,7 +6,7 @@ import {
   type ColumnConfig,
   type CellSignature,
   type SortItem
-} from '@frontile/collections';
+} from 'frontile';
 import { array, hash } from '@ember/helper';
 import { cell } from 'ember-resources';
 import type { TOC } from '@ember/component/template-only';

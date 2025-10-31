@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 import { hash } from '@ember/helper';
 import {
   Form,
@@ -13,8 +13,8 @@ import {
   RadioGroup,
   CheckboxGroup,
   Switch
-} from '@frontile/forms';
-import { Spinner } from '@frontile/utilities';
+} from 'frontile';
+import { Spinner } from 'frontile';
 
 const animals = [
   'cheetah',

@@ -2,8 +2,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { action } from '@ember/object';
-import { VisuallyHidden } from '@frontile/utilities';
-import { Drawer } from '@frontile/overlays';
+import { VisuallyHidden } from 'frontile';
+import { Drawer } from 'frontile';
 import Content from './content';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 

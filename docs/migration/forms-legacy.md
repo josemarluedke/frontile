@@ -37,7 +37,7 @@ import FormInput from '@frontile/forms-legacy/components/form-input';
 import FormCheckbox from '@frontile/forms-legacy/components/form-checkbox';
 
 // After (forms)
-import { Input, Checkbox } from '@frontile/forms';
+import { Input, Checkbox } from 'frontile';
 ```
 
 ## Recommended Approach: Form + Field Pattern
@@ -55,8 +55,8 @@ The modern `@frontile/forms` package introduces a powerful **Form + Field patter
 
 ```gts
 import Component from '@glimmer/component';
-import { Form } from '@frontile/forms';
-import type { FormResultData } from '@frontile/forms';
+import { Form } from 'frontile';
+import type { FormResultData } from 'frontile';
 import * as v from 'valibot';
 
 const loginSchema = v.object({
@@ -178,8 +178,8 @@ export default class UserProfileForm extends Component {
 
 ```gts
 import Component from '@glimmer/component';
-import { Form } from '@frontile/forms';
-import type { FormResultData } from '@frontile/forms';
+import { Form } from 'frontile';
+import type { FormResultData } from 'frontile';
 import * as v from 'valibot';
 
 const profileSchema = v.object({
@@ -244,8 +244,8 @@ The Form + Field pattern supports nested data structures using dot notation in f
 
 ```gts
 import Component from '@glimmer/component';
-import { Form } from '@frontile/forms';
-import type { FormResultData } from '@frontile/forms';
+import { Form } from 'frontile';
+import type { FormResultData } from 'frontile';
 import * as v from 'valibot';
 
 const userSchema = v.object({

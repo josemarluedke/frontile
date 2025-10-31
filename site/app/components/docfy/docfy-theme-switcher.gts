@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { later } from '@ember/runloop';
-import { VisuallyHidden } from '@frontile/utilities';
+import { VisuallyHidden } from 'frontile';
 
 interface Signature {
   Element: HTMLButtonElement;

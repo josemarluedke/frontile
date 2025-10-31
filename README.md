@@ -25,7 +25,7 @@ Visit [frontile.dev](https://frontile.dev/) to read the docs and see live demos.
 
 ```gjs
 import Component from '@glimmer/component';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 export default class Example extends Component {
   onClick = () => {
@@ -42,7 +42,7 @@ export default class Example extends Component {
 
 ```gjs
 import Component from '@glimmer/component';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 const options = [
   { key: 'apple', label: 'Apple' },
@@ -114,7 +114,7 @@ registerCustomStyles({
 Frontile components internally use Tailwind Variants, but you can override them by passing `@classes`. Class conflicts are handled automatically by Tailwind Variants.
 
 ```gjs
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

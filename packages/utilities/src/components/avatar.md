@@ -11,7 +11,7 @@ The Avatar component is used to represent a user by displaying either their init
 ## Import
 
 ```js
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Avatar } from '@frontile/utilities';
 By default, the Avatar component will display initials derived from the `@name`, `@firstName`, and `@lastName` arguments.
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-4 py-2'>
@@ -36,7 +36,7 @@ import { Avatar } from '@frontile/utilities';
 If an `@src` is provided, the avatar will display the image instead of initials.
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 <template>
   <Avatar @src='https://i.pravatar.cc/150?img=5' @alt='Jon Snow' />
@@ -48,7 +48,7 @@ import { Avatar } from '@frontile/utilities';
 The `@size` property allows you to customize the avatar's size.
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-4 py-2'>
@@ -74,7 +74,7 @@ import { Avatar } from '@frontile/utilities';
 The `@shape` property changes the avatar shape.
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-4 py-2'>
@@ -89,7 +89,7 @@ import { Avatar } from '@frontile/utilities';
 To provide better accessibility, the `@alt` attribute should be used when displaying an image.
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 <template>
   <Avatar @src='https://i.pravatar.cc/150?img=5' @alt='User profile picture' />
@@ -103,7 +103,7 @@ If no `@alt` is provided, screen readers will read the initials.
 You can pass custom `@classes` to override styling:
 
 ```gts preview
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

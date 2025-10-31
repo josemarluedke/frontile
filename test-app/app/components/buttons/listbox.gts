@@ -2,8 +2,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { array } from '@ember/helper';
-import { Listbox } from '@frontile/collections';
-import { Divider } from '@frontile/utilities';
+import { Listbox } from 'frontile';
+import { Divider } from 'frontile';
 
 const animals = [
   'cheetah',

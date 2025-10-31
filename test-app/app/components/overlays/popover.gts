@@ -1,9 +1,9 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Popover, Portal } from '@frontile/overlays';
-import { Divider } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { Popover, Portal } from 'frontile';
+import { Divider } from 'frontile';
+import { Button } from 'frontile';
 
 export default class Example extends Component {
   @tracked isOpen = false;

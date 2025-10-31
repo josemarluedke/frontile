@@ -5,7 +5,7 @@ import { render, click } from '@ember/test-helpers';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { ref } from '@frontile/utilities';
+import { ref } from 'frontile';
 
 class MyTestComponent extends Component {
   @tracked isShowing = false;

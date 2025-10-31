@@ -9,13 +9,13 @@ The Button component can be used to trigger an action, such as submitting a form
 ## Import 
 
 ```js
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 ```
 
 ## Usage
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button>Button</Button>
@@ -25,7 +25,7 @@ import { Button } from '@frontile/buttons';
 ## Button Appearances
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <div>
@@ -49,7 +49,7 @@ The default styles are mainly structural. Intent colors are applied as `color`.
 ## Button Intents
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <div>
@@ -70,7 +70,7 @@ import { Button } from '@frontile/buttons';
 ## Button Sizes
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button @size='xs'>Button</Button>
@@ -88,7 +88,7 @@ Frontile provides the option to disable rendering the `button` element, but inst
 the class names it would use.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button @isRenderless={{true}} as |btn|>
@@ -102,7 +102,7 @@ import { Button } from '@frontile/buttons';
 You can compose appearance with intents and more to create the button that best fits your needs.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button @appearance='outlined' @intent='primary'>Button</Button>
@@ -114,7 +114,7 @@ import { Button } from '@frontile/buttons';
 You can also use TailwindCSS classes to customize even further.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
@@ -126,7 +126,7 @@ import { Button } from '@frontile/buttons';
 Here is another example using TailwindCSS classes with the `custom` appearance.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 <template>
   <Button
@@ -147,7 +147,7 @@ argument `@class` will override and merge TailwindCSS class names.
 The Button component supports press interactions through the `@onPress` callback, which provides cross-platform support for mouse, touch, and keyboard events.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 

@@ -4,29 +4,35 @@ title: Installation
 
 # Installation
 
-Frontile is separated into several packages so you can choose what features you
-want in your project. Here you can find information on how to install all the packages.
+Frontile is a comprehensive component library for Ember.js that provides all the components you need in a single package. Modern build tools with tree-shaking will ensure only the components you use are included in your final bundle.
 
-## Packages
+## Install Frontile
+
+Install the main `frontile` package along with the theme:
 
 ```sh
-# Independently of which other packages you will use,
-# you will need to have those two packages installed:
-pnpm install @frontile/utilities
-pnpm install @frontile/theme
-
-# Optional packages:
-pnpm install @frontile/buttons
-pnpm install @frontile/collections
-pnpm install @frontile/status
-pnpm install @frontile/forms
-pnpm install @frontile/notifications
-pnpm install @frontile/overlays
+pnpm install frontile @frontile/theme
 ```
 
+That's it! You now have access to all Frontile components:
+
+```js
+import { Button, Input, Modal, Table } from 'frontile';
+```
+
+With modern build tools and explicit imports (`.gts`/`.gjs`), only the components you import will be included in your application bundle through tree-shaking.
+
 > **Note:** The following packages are deprecated and will be removed before v1 release:
+>
 > - `@frontile/changeset-form` - Use `@frontile/forms` instead for form handling
 > - `@frontile/forms-legacy` - Migrate to the new `@frontile/forms` package
+>
+> If you're currently using the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), you can migrate to the consolidated `frontile` package. Simply update your imports:
+>
+> ```diff
+> - import { Button } from '@frontile/buttons';
+> + import { Button } from 'frontile';
+> ```
 
 ## Setup Theme
 
@@ -89,5 +95,4 @@ module.exports = {
   ]
   // ...
 };
-
 ```

@@ -15,7 +15,7 @@ Toast notifications provide brief, non-intrusive feedback about an operation thr
 import {
   NotificationsContainer,
   type NotificationsService
-} from '@frontile/notifications';
+} from 'frontile';
 ```
 
 > **Note**: In most applications, you should place a single `NotificationsContainer` in your application template rather than including it in individual components. This prevents conflicts and provides a consistent notification experience across your app.
@@ -61,8 +61,8 @@ The simplest way to show a notification is to inject the notifications service a
 ```gts preview
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { Button } from '@frontile/buttons';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class BasicExample extends Component {
   @service notifications!: NotificationsService;
@@ -86,8 +86,8 @@ Use different appearances to convey the appropriate message type.
 ```gts preview
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { Button } from '@frontile/buttons';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class AppearanceExample extends Component {
   @service notifications!: NotificationsService;
@@ -135,12 +135,12 @@ Control where notifications appear on screen with the `@placement` argument.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
-import { Button } from '@frontile/buttons';
-import { RadioGroup } from '@frontile/forms';
+import { Button } from 'frontile';
+import { RadioGroup } from 'frontile';
 import {
   NotificationsContainer,
   type NotificationsService
-} from '@frontile/notifications';
+} from 'frontile';
 
 export default class PositionExample extends Component {
   @service notifications!: NotificationsService;
@@ -197,8 +197,8 @@ Add action buttons to notifications for user interaction.
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { Button } from '@frontile/buttons';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class ActionsExample extends Component {
   @service notifications!: NotificationsService;
@@ -270,8 +270,8 @@ Use `preserve: true` to prevent automatic dismissal.
 ```gts preview
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { Button } from '@frontile/buttons';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class PersistentExample extends Component {
   @service notifications!: NotificationsService;
@@ -348,8 +348,8 @@ Then from any component, add notifications with metadata:
 ```gts preview
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { Button } from '@frontile/buttons';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class CallbackExample extends Component {
   @service notifications!: NotificationsService;
@@ -381,9 +381,9 @@ Control timing for individual notifications.
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { Button } from '@frontile/buttons';
-import { Input } from '@frontile/forms';
-import type { NotificationsService } from '@frontile/notifications';
+import { Button } from 'frontile';
+import { Input } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
 export default class TimingExample extends Component {
   @service notifications!: NotificationsService;

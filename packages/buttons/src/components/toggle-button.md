@@ -12,7 +12,7 @@ between two states or modes.
 ## Import 
 
 ```js
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { ToggleButton } from '@frontile/buttons';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 
 export default class Example extends Component {
   @tracked
@@ -56,7 +56,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 
 export default class Example extends Component {
   @tracked
@@ -91,7 +91,7 @@ export default class Example extends Component {
 ## ToggleButton Sizes
 
 ```gjs preview
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 
 <template>
   <ToggleButton @size='xs'>ToggleButton</ToggleButton>
@@ -107,7 +107,7 @@ import { ToggleButton } from '@frontile/buttons';
 You can pass the attribute `disabled` to disable a toggle button.
 
 ```gjs preview
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 
 <template>
   <div>

@@ -9,7 +9,7 @@ import {
   settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 import { array } from '@ember/helper';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 

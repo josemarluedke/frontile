@@ -87,8 +87,8 @@ Complete GTS component with template:
 ```typescript
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define schema outside class (replaces changeset validations)

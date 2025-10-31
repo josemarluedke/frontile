@@ -21,7 +21,7 @@ The `ref` utility offers a straightforward method to create a reference to a DOM
 ## Import
 
 ```js
-import { ref } from '@frontile/utilities';
+import { ref } from 'frontile';
 ```
 
 ## Usage
@@ -30,8 +30,8 @@ import { ref } from '@frontile/utilities';
 
 ```gts preview
 import Component from '@glimmer/component';
-import { ref, toggleState } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { ref, toggleState } from 'frontile';
+import { Button } from 'frontile';
 
 export default class MyTestComponent extends Component {
   toggle = toggleState(true);
@@ -65,7 +65,7 @@ In this example, a callback is provided to `ref` so that whenever the element is
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { ref } from '@frontile/utilities';
+import { ref } from 'frontile';
 
 export default class ElementMeasureComponent extends Component {
   @tracked elementWidth = 0;
@@ -99,8 +99,8 @@ could be achieved using a getter property on the component as well.
 You can also use `ref` directly within your templates:
 
 ```gts preview
-import { ref, toggleState } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { ref, toggleState } from 'frontile';
+import { Button } from 'frontile';
 
 <template>
   {{#let (ref) as |myRef|}}

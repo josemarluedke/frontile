@@ -10,7 +10,7 @@ The Overlay component is the foundation for building overlay interactions like M
 ## Import
 
 ```js
-import { Overlay } from '@frontile/overlays';
+import { Overlay } from 'frontile';
 ```
 
 ## Key Features
@@ -36,8 +36,8 @@ The most basic usage of the Overlay component.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class BasicOverlay extends Component {
   @tracked isOpen = false;
@@ -80,8 +80,8 @@ Control the appearance of the backdrop behind the overlay.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class BackdropTypes extends Component {
   @tracked fadedOpen = false;
@@ -162,8 +162,8 @@ By default, overlays are rendered in a portal. You can render them in-place inst
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class RenderInPlace extends Component {
   @tracked portalOpen = false;
@@ -231,8 +231,8 @@ Control when and how the overlay can be closed.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class CustomCloseBehavior extends Component {
   @tracked normalOpen = false;
@@ -336,9 +336,9 @@ Demonstrate focus trapping and restoration features.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
-import { Input } from '@frontile/forms';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
+import { Input } from 'frontile';
 
 export default class FocusManagement extends Component {
   @tracked focusTrapOpen = false;
@@ -420,8 +420,8 @@ Customize overlay animations and transition duration.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class AnimationsAndTransitions extends Component {
   @tracked fastOpen = false;
@@ -505,8 +505,8 @@ The Overlay component has two different click-to-close mechanisms that work toge
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Overlay } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Overlay } from 'frontile';
+import { Button } from 'frontile';
 
 export default class OverlayElementClick extends Component {
   @tracked defaultOpen = false;

@@ -6,7 +6,7 @@ import {
   toggleOptionByKey
 } from '@frontile/forms/test-support';
 import { cell } from 'ember-resources';
-import { NativeSelect } from '@frontile/forms';
+import { NativeSelect } from 'frontile';
 import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 

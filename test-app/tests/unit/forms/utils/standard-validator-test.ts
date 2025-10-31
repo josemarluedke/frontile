@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { StandardValidator } from '@frontile/forms';
+import { StandardValidator } from 'frontile';
 import * as v from 'valibot';
 
 module('Unit | Forms | StandardValidator', function (hooks) {

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, click, triggerKeyEvent } from '@ember/test-helpers';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 

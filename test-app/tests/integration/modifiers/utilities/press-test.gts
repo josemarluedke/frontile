@@ -10,7 +10,7 @@ import {
 import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { press, type PressEvent } from '@frontile/utilities';
+import { press, type PressEvent } from 'frontile';
 
 class PressTestComponent extends Component {
   @tracked startCount = 0;

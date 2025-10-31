@@ -23,14 +23,14 @@ context of popovers, ensuring consistency and flexibility in UI design and behav
 ## Import
 
 ```js
-import { Popover } from '@frontile/overlays';
+import { Popover } from 'frontile';
 ```
 
 ## Usage
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
 
 <template>
   <Popover as |p|>
@@ -52,9 +52,9 @@ ensuring better accessibility and usability. To enable this option, ensure a
 focusable element is rendered at all times within the popover content.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
-import { Input } from '@frontile/forms';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+import { Input } from 'frontile';
 
 <template>
   <Popover as |p|>
@@ -81,8 +81,8 @@ In the example below, the popover is showned when the user hovers the trigger bu
 
 ```gjs preview
 import { on } from '@ember/modifier';
-import { Popover } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Popover } from 'frontile';
+import { Button } from 'frontile';
 
 <template>
   <Popover as |pop|>
@@ -108,9 +108,9 @@ Prevent scrolling of the main window when the popover is open, focusing the
 user's attention on the popover content.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
-import { Input } from '@frontile/forms';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+import { Input } from 'frontile';
 
 <template>
   <Popover as |p|>
@@ -132,9 +132,9 @@ import { Input } from '@frontile/forms';
 Choose from various backdrop options such as none, faded, blur, or transparent.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
-import { Input } from '@frontile/forms';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+import { Input } from 'frontile';
 
 const backdrops = ['none', 'faded', 'blur', 'transparent'];
 
@@ -166,8 +166,8 @@ Easily specify the placement of the popover relative to its trigger element,
 ensuring optimal positioning in various UI layouts.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
 
 const placements = [
   'top',
@@ -206,8 +206,8 @@ The size of the content. It can be overwritten by passing width Tailwind classes
 to the `Content` yielded component.
 
 ```gjs preview
-import { Button } from '@frontile/buttons';
-import { Popover } from '@frontile/overlays';
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
 
 const sizes = ['sm', 'md', 'lg', 'xl'];
 
@@ -235,9 +235,9 @@ popover is open or closed.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Popover } from '@frontile/overlays';
-import { Divider } from '@frontile/utilities';
-import { Button } from '@frontile/buttons';
+import { Popover } from 'frontile';
+import { Divider } from 'frontile';
+import { Button } from 'frontile';
 
 export default class Example extends Component {
   @tracked isOpen = false;
@@ -290,8 +290,8 @@ Similarly, clicking outside of the overlays prioritizes the most recent addition
 closing it before proceeding to the underlying layers.
 
 ```gjs preview
-import { Popover } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Popover } from 'frontile';
+import { Button } from 'frontile';
 
 <template>
   <Popover as |pop|>

@@ -11,7 +11,7 @@ A powerful form wrapper component that automatically handles form data extractio
 ## Import
 
 ```js
-import { Form } from '@frontile/forms';
+import { Form } from 'frontile';
 ```
 
 ## Usage
@@ -23,8 +23,8 @@ The most basic usage of the Form component with automatic data extraction.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, Input, Select, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, Input, Select, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 
 export default class BasicForm extends Component {
   @tracked formData: FormResultData = {};
@@ -107,8 +107,8 @@ import {
   Checkbox,
   Select,
   type FormResultData
-} from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+} from 'frontile';
+import { Button } from 'frontile';
 
 export default class RealtimeForm extends Component {
   @tracked inputData: FormResultData = {};
@@ -219,8 +219,8 @@ import {
   NativeSelect,
   Select,
   type FormResultData
-} from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+} from 'frontile';
+import { Button } from 'frontile';
 
 export default class ComprehensiveForm extends Component {
   @tracked formData: FormResultData = {};
@@ -365,8 +365,8 @@ import {
   Select,
   type FormResultData,
   type FormErrors
-} from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+} from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Valibot schema for form validation
@@ -566,8 +566,8 @@ Dirty fields reset on submit.  After a sucessful submit, any tracked data is con
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, Input, Checkbox, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, Input, Checkbox, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 
 export default class DirtyTrackingForm extends Component {
   @tracked formData = {
@@ -642,8 +642,8 @@ Advanced usage showing how to handle complex form logic and custom validation.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, Input, Checkbox, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, Input, Checkbox, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 
 export default class CustomHandlingForm extends Component {
   @tracked formData: FormResultData = {};
@@ -1145,8 +1145,8 @@ When `@disabled={{true}}` is passed to the Form component, all yielded Field com
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -1269,8 +1269,8 @@ The Form component fully supports nested data structures, allowing you to organi
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 
 const formData = {
   user: {
@@ -1369,8 +1369,8 @@ Nested fields work seamlessly with validation schemas. Use nested object structu
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define nested schema
@@ -1511,8 +1511,8 @@ You can freely mix flat and nested fields in the same form. The Form component a
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 
 const formData = {
   // Flat fields
@@ -1611,8 +1611,8 @@ The Form component provides a `reset` function that allows you to reset the form
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class ResetForm extends Component {
@@ -1684,8 +1684,8 @@ The `reset` function clears validation errors and restores the form to its initi
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
+import { Button } from 'frontile';
 import { on } from '@ember/modifier';
 import * as v from 'valibot';
 

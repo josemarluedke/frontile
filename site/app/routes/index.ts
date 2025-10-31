@@ -1,12 +1,12 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
 import RouterService from '@ember/routing/router-service';
-import * as buttons from '@frontile/buttons';
-import * as utilities from '@frontile/utilities';
-import * as collections from '@frontile/collections';
-import * as status from '@frontile/status';
-import * as overlays from '@frontile/overlays';
-import * as forms from '@frontile/forms';
+import * as buttons from 'frontile';
+import * as utilities from 'frontile';
+import * as collections from 'frontile';
+import * as status from 'frontile';
+import * as overlays from 'frontile';
+import * as forms from 'frontile';
 
 export default class IndexRoute extends Route {
   @service router!: RouterService;

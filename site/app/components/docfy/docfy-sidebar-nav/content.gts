@@ -6,7 +6,7 @@ import { fn } from '@ember/helper';
 import { concat } from '@ember/helper';
 import { service } from '@ember/service';
 import DocfyLink from '@docfy/ember/components/docfy-link';
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
 import type Owner from '@ember/owner';

@@ -1,4 +1,4 @@
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
 const Comp: TOC<null> = <template>

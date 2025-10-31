@@ -9,7 +9,7 @@ import {
   Select,
   RadioGroup,
   CheckboxGroup
-} from '@frontile/forms';
+} from 'frontile';
 
 const animals = [
   'cheetah',

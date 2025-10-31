@@ -8,7 +8,7 @@ This component provides unstyled collapsible ability.
 
 ## Import 
 ```js
-import { Collapsible } from '@frontile/utilities';
+import { Collapsible } from 'frontile';
 ```
 ## Usage
 
@@ -18,7 +18,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { Collapsible } from '@frontile/utilities';
+import { Collapsible } from 'frontile';
 
 export default class CollapsibleDemo extends Component {
   @tracked isOpen = false;
@@ -62,7 +62,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { Collapsible } from '@frontile/utilities';
+import { Collapsible } from 'frontile';
 
 export default class CollapsibleDemo extends Component {
   @tracked isOpen = false;

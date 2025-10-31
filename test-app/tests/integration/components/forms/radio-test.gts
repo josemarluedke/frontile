@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, settled } from '@ember/test-helpers';
 
-import { Radio } from '@frontile/forms';
+import { Radio } from 'frontile';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/forms/Radio', function (hooks) {

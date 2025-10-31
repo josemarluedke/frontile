@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerEvent } from '@ember/test-helpers';
+import { NotificationCard } from 'frontile';
 import {
   Notification,
-  NotificationCard,
   type NotificationsService
 } from '@frontile/notifications';
 import sinon from 'sinon';

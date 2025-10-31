@@ -11,13 +11,13 @@ A button group is used to group buttons whose actions are related.
 ## Import 
 
 ```js
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 ```
 
 ## Using with Button
 
 ```gjs preview
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 
 <template>
   <ButtonGroup as |g|>
@@ -35,7 +35,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 
 export default class Example extends Component {
   @tracked
@@ -72,7 +72,7 @@ A common use case for `ButtonGroup` is to create a split button.
 
 
 ```gjs preview
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 
 <template>
   <ButtonGroup @size="sm" @intent="primary" as |g|>
@@ -94,7 +94,7 @@ You pass pass arguments to `ButtonGroup` and they will be passed in to each of t
 You can overwrite at the specific component as well.
 
 ```gjs preview
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 
 <template>
   <ButtonGroup @size="sm" @intent="primary" as |g|>

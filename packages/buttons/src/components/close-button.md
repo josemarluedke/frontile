@@ -12,11 +12,11 @@ It is also used under other components in Frontile, for example `Modal` and `Dra
 ## Import
 
 ```js
-import { CloseButton } from '@frontile/buttons';
+import { CloseButton } from 'frontile';
 ```
 
 ```gjs preview
-import { CloseButton } from '@frontile/buttons';
+import { CloseButton } from 'frontile';
 
 <template>
   <div class='flex items-center space-x-2'>
@@ -34,7 +34,7 @@ import { CloseButton } from '@frontile/buttons';
 The CloseButton component supports press interactions through the `@onPress` callback, providing cross-platform support for mouse, touch, and keyboard events.
 
 ```gjs preview
-import { CloseButton } from '@frontile/buttons';
+import { CloseButton } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 

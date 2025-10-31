@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import data, { type ComponentDoc } from './signature-data';
-import { Popover } from '@frontile/overlays';
+import { Popover } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
 interface SignatureSignature {
