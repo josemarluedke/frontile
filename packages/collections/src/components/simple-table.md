@@ -21,7 +21,7 @@ For automatic rendering with advanced features like sticky elements and data man
 ## Import
 
 ```js
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 ```
 
 ## Basic Usage
@@ -30,7 +30,7 @@ SimpleTable uses block form composition where you manually define the table stru
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 
 export default class DemoComponent extends Component {
   items = [
@@ -69,8 +69,8 @@ Create complex header layouts with custom content:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
-import { Button, Chip } from '@frontile/buttons';
+import { SimpleTable } from 'frontile';
+import { Button, Chip } from 'frontile';
 
 export default class DemoComponent extends Component {
   users = [
@@ -155,8 +155,8 @@ SimpleTable excels at complex cell layouts and interactive content:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
-import { Button, Chip } from '@frontile/buttons';
+import { SimpleTable } from 'frontile';
+import { Button, Chip } from 'frontile';
 
 export default class DemoComponent extends Component {
   products = [
@@ -240,7 +240,7 @@ Control table spacing with size variants:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 
 export default class DemoComponent extends Component {
   data = [
@@ -314,7 +314,7 @@ Control column sizing behavior:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 
 export default class DemoComponent extends Component {
   data = [
@@ -389,8 +389,8 @@ Enable alternating row colors for better readability:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
-import { Chip } from '@frontile/buttons';
+import { SimpleTable } from 'frontile';
+import { Chip } from 'frontile';
 
 export default class DemoComponent extends Component {
   users = [
@@ -451,8 +451,8 @@ Apply custom styling to specific table elements:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
-import { Chip } from '@frontile/buttons';
+import { SimpleTable } from 'frontile';
+import { Chip } from 'frontile';
 import { hash } from '@ember/helper';
 
 export default class DemoComponent extends Component {
@@ -518,7 +518,7 @@ Add footers for summaries and totals:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
+import { SimpleTable } from 'frontile';
 
 export default class DemoComponent extends Component {
   orders = [
@@ -577,12 +577,12 @@ The SimpleTable component supports loading states with different color variants 
 
 ```gts preview
 import Component from '@glimmer/component';
-import { SimpleTable } from '@frontile/collections';
-import { Select } from '@frontile/forms';
+import { SimpleTable } from 'frontile';
+import { Select } from 'frontile';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 interface Product {
   id: string;

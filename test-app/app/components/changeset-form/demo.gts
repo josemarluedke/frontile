@@ -3,7 +3,7 @@ import validateFormat from 'ember-changeset-validations/validators/format';
 import validatePresence from 'ember-changeset-validations/validators/presence';
 import countries from './countries';
 import ChangesetForm from '@frontile/changeset-form/components/changeset-form/index';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 // @ts-ignore
 import changeset from 'ember-changeset/helpers/changeset';
 

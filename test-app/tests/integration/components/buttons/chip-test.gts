@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 
 registerCustomStyles({
   chip: tv({

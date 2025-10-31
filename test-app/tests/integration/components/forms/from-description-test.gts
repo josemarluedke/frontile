@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 
-import { FormDescription } from '@frontile/forms';
+import { FormDescription } from 'frontile';
 
 module(
   'Integration | Component | @frontile/forms/FormDescription',

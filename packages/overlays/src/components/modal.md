@@ -11,7 +11,7 @@ The Modal component is a centered dialog that appears over the main content. It'
 ## Import
 
 ```js
-import { Modal } from '@frontile/overlays';
+import { Modal } from 'frontile';
 ```
 
 ## Key Features
@@ -33,8 +33,8 @@ A simple modal with header, body, and footer sections.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class BasicModal extends Component {
   @tracked isOpen = false;
@@ -83,8 +83,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class ModalSizes extends Component {
   @tracked isOpen = false;
@@ -184,8 +184,8 @@ Control vertical centering with the `@isCentered` argument.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class ModalPositioning extends Component {
   @tracked standardOpen = false;
@@ -253,8 +253,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class ModalBackdrops extends Component {
   @tracked isOpen = false;
@@ -336,8 +336,8 @@ A practical example showing a confirmation dialog pattern.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class ConfirmationDialog extends Component {
   @tracked isOpen = false;
@@ -437,9 +437,9 @@ A modal containing a complete form with validation.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
-import { Input, Textarea, Select } from '@frontile/forms';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
+import { Input, Textarea, Select } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class FormModal extends Component {
@@ -604,8 +604,8 @@ Control the visibility and behavior of the close button.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class ModalCloseButton extends Component {
   @tracked normalOpen = false;
@@ -699,8 +699,8 @@ Example showing modals that can open other modals.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Modal } from 'frontile';
+import { Button } from 'frontile';
 
 export default class NestedModals extends Component {
   @tracked firstModalOpen = false;

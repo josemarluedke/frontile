@@ -8,8 +8,8 @@ import { DocfyService } from '@docfy/ember';
 import RouterService from '@ember/routing/router-service';
 import type { PageMetadata } from '@docfy/core/lib/types';
 import Fuse from 'fuse.js';
-import { Overlay } from '@frontile/overlays';
-import { VisuallyHidden } from '@frontile/utilities';
+import { Overlay } from 'frontile';
+import { VisuallyHidden } from 'frontile';
 import DocfyLink from '@docfy/ember/components/docfy-link';
 
 interface DocfyJumpToArgs {}

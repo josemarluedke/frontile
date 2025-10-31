@@ -11,7 +11,7 @@ The `Select` component is a powerful and flexible dropdown component. It support
 ## Import
 
 ```js
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Select } from '@frontile/forms';
 The most basic usage of a single-select dropdown with static options.
 
 ```gts preview
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
@@ -42,7 +42,7 @@ When working with forms, the Form component automatically manages the selected v
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
@@ -78,8 +78,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { array } from '@ember/helper';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const countries = ['United States', 'Canada', 'Mexico', 'United Kingdom', 'Germany', 'France', 'Japan', 'Australia'];
@@ -188,7 +188,7 @@ Enable filtering so users can quickly search through the options. Filtering only
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 const countries = [
   'Argentina',
@@ -252,7 +252,7 @@ Customize the display of each option by yielding the item to a block. This is us
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 export default class CustomUserSelect extends Component {
   @tracked selectedKey: string | null = null;
@@ -333,7 +333,7 @@ You can also define options directly inside the component using block syntax (re
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 export default class DeclarativeItemsSelect extends Component {
   @tracked selectedKeys: string[] = [];
@@ -371,7 +371,7 @@ The built-in clear button can be enabled using the `@isClearable` flag. This all
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 const colors = ['Red', 'Green', 'Blue'];
 
@@ -404,7 +404,7 @@ Display a loading spinner in place of the dropdown icon by enabling the `@isLoad
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 const sizes = ['Small', 'Medium', 'Large'];
 
@@ -437,7 +437,7 @@ This example demonstrates how to use the `:startContent`, `:endContent`, and `:e
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 const fruits = ['Apple', 'Banana', 'Cherry', 'Date'];
 
@@ -482,7 +482,7 @@ By using `NativeSelect` directly, you can simplify your markup while still benef
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { NativeSelect } from '@frontile/forms';
+import { NativeSelect } from 'frontile';
 
 const options = ['Option 1', 'Option 2', 'Option 3'];
 

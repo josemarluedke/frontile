@@ -24,7 +24,7 @@ For manual composition and custom layouts, use [SimpleTable](./simple-table) ins
 ## Import
 
 ```js
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 ```
 
 ## Basic Usage
@@ -33,7 +33,7 @@ Define columns and items to render a table automatically:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -56,7 +56,7 @@ Transform or compute values dynamically:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -88,8 +88,8 @@ import {
   Table,
   type ColumnConfig,
   type CellSignature
-} from '@frontile/collections';
-import { Chip } from '@frontile/buttons';
+} from 'frontile';
+import { Chip } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 import type { TOC } from '@ember/component/template-only';
 
@@ -125,7 +125,7 @@ Control table appearance with size, striping, and layout options:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 import { hash } from '@ember/helper';
 
@@ -161,7 +161,7 @@ Enable scrolling with fixed heights or widths:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { employees, type Employee } from 'site/components/table-demo-data';
 import { hash } from '@ember/helper';
 
@@ -193,7 +193,7 @@ Keep the header visible while scrolling:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 import { hash } from '@ember/helper';
 
@@ -228,7 +228,7 @@ Pin columns to the left or right during horizontal scrolling:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { employees, type Employee } from 'site/components/table-demo-data';
 import { hash } from '@ember/helper';
 
@@ -272,7 +272,7 @@ Freeze specific rows by their keys:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 import { array, hash } from '@ember/helper';
 
@@ -325,7 +325,7 @@ Display summary information with `@footerColumns`:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -361,10 +361,10 @@ Show loading indicators while data is being fetched:
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
-import { Button } from '@frontile/buttons';
-import { Select } from '@frontile/forms';
+import { Button } from 'frontile';
+import { Select } from 'frontile';
 
 export default class DemoComponent extends Component {
   @tracked isLoading = true;
@@ -431,10 +431,10 @@ Use the `loading` named block for custom indicators:
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
-import { Button } from '@frontile/buttons';
-import { Spinner } from '@frontile/utilities';
+import { Button } from 'frontile';
+import { Spinner } from 'frontile';
 
 export default class DemoComponent extends Component {
   @tracked isLoading = true;
@@ -482,9 +482,9 @@ Display custom content when there are no items:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 
 export default class DemoComponent extends Component {
   columns = [
@@ -515,7 +515,7 @@ Use `@emptyContent` for plain text messages:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -543,10 +543,10 @@ Use the `:cell` block for custom cell content. Alternatively, you can define a `
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
-import { Avatar } from '@frontile/utilities';
-import { Chip } from '@frontile/buttons';
+import { Avatar } from 'frontile';
+import { Chip } from 'frontile';
 
 export default class DemoComponent extends Component {
   columns = [
@@ -609,7 +609,7 @@ Customize column headers with the `header` block:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -652,7 +652,7 @@ Add custom rows at the top or bottom of the table body:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { products, type Product } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -693,7 +693,7 @@ Enable users to show/hide columns with the toolbar:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -726,7 +726,7 @@ Enable column sorting with `isSortable` and `@onSort`:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Table, type ColumnConfig, type SortItem } from '@frontile/collections';
+import { Table, type ColumnConfig, type SortItem } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -784,7 +784,7 @@ Use checkboxes for multi-select with `selectionMode="multiple"`:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -830,7 +830,7 @@ Use row clicks for single selection with `selectionMode="single"`:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -881,7 +881,7 @@ Prevent specific rows from being selected with `@disabledKeys`:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -930,7 +930,7 @@ Provide a custom function to extract unique keys from items:
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 
 interface Product {
   sku: string;
@@ -978,7 +978,7 @@ The Table supports uncontrolled selection where internal state is managed automa
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -1019,7 +1019,7 @@ When selection is enabled, rows can be selected using keyboard:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
 
 export default class DemoComponent extends Component {
@@ -1058,9 +1058,9 @@ Customize the selection highlight color with `@selectionColor`. Available colors
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Table, type ColumnConfig } from '@frontile/collections';
+import { Table, type ColumnConfig } from 'frontile';
 import { type User } from 'site/components/table-demo-data';
-import { Select } from '@frontile/forms';
+import { Select } from 'frontile';
 
 export default class DemoComponent extends Component {
   @tracked selectedKeys = new Set(['1', '2']);

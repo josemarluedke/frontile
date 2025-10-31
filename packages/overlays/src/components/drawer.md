@@ -11,7 +11,7 @@ The Drawer component is a slide-out panel that appears from any edge of the scre
 ## Import
 
 ```js
-import { Drawer } from '@frontile/overlays';
+import { Drawer } from 'frontile';
 ```
 
 ## Key Features
@@ -33,8 +33,8 @@ A simple drawer that slides in from the right side.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 
 export default class BasicDrawer extends Component {
   @tracked isOpen = false;
@@ -82,8 +82,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 
 export default class DrawerPlacements extends Component {
   @tracked isOpen = false;
@@ -166,8 +166,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class DrawerSizes extends Component {
@@ -261,8 +261,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 
 export default class DrawerBackdrops extends Component {
   @tracked isOpen = false;
@@ -345,8 +345,8 @@ Control the visibility and behavior of the close button.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 
 export default class DrawerCloseButton extends Component {
   @tracked normalOpen = false;
@@ -432,9 +432,9 @@ A practical example showing a form inside a drawer.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
-import { Input, Textarea } from '@frontile/forms';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { Input, Textarea } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class DrawerForm extends Component {
@@ -531,9 +531,9 @@ A drawer that cannot be closed by normal means.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
-import { ProgressBar } from '@frontile/status';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
+import { ProgressBar } from 'frontile';
 
 export default class NonDismissibleDrawer extends Component {
   @tracked isOpen = false;
@@ -629,10 +629,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Drawer } from '@frontile/overlays';
-import { Button } from '@frontile/buttons';
+import { Drawer } from 'frontile';
+import { Button } from 'frontile';
 import { on } from '@ember/modifier';
-import { Divider } from '@frontile/utilities';
+import { Divider } from 'frontile';
 
 export default class NavigationDrawer extends Component {
   @tracked isOpen = false;

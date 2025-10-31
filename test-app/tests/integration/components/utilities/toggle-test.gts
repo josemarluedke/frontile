@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
-import { toggleState } from '@frontile/utilities';
+import { toggleState } from 'frontile';
 
 class MyTestComponent extends Component {
   showingState = toggleState(false);

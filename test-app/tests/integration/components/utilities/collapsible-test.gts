@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
-import { Collapsible } from '@frontile/utilities';
+import { Collapsible } from 'frontile';
 import { cell } from 'ember-resources';
 
 module(

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, find, settled } from '@ember/test-helpers';
 
-import { Textarea } from '@frontile/forms';
+import { Textarea } from 'frontile';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/forms/Textarea', function (hooks) {

@@ -11,7 +11,7 @@ A versatile input component that provides a clean interface for text input with 
 ## Import
 
 ```js
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Input } from '@frontile/forms';
 The most basic usage of the Input component with only a label.
 
 ```gts preview
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 <template><Input @label='Full Name' /></template>
 ```
 
@@ -32,7 +32,7 @@ You can control the input value using the Form component's data binding pattern.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ControlledInput extends Component {
   @tracked formData = { name: '' };
@@ -60,7 +60,7 @@ The Input component supports different HTML input types through the `@type` argu
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 
 export default class InputTypes extends Component {
   <template>
@@ -82,7 +82,7 @@ You can add custom content at the beginning or end of the input using named bloc
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 
 export default class InputWithContent extends Component {
   <template>
@@ -131,7 +131,7 @@ When using interactive content in start or end slots, you can control pointer ev
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 import { on } from '@ember/modifier';
 
 export default class SearchInput extends Component {
@@ -182,7 +182,7 @@ Enable a clear button that appears when the input has a value by setting `@isCle
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ClearableInput extends Component {
   @tracked formData = { searchQuery: '' };
@@ -212,8 +212,8 @@ The Input component integrates with form validation by displaying error messages
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define validation schema
@@ -282,7 +282,7 @@ export default class ValidatedInput extends Component {
 The Input component supports various optional configurations for sizing, states, and styling.
 
 ```gts preview
-import { Input } from '@frontile/forms';
+import { Input } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

@@ -6,7 +6,7 @@ import {
   type NotificationsService,
   type NotificationOptions,
   type NotificationsContainerSignature
-} from '@frontile/notifications';
+} from 'frontile';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';

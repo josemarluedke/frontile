@@ -1,4 +1,4 @@
-import { ProgressBar } from '@frontile/status';
+import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
 import type { TOC } from '@ember/component/template-only';
 

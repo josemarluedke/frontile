@@ -4,7 +4,7 @@ This component provides text for screen readers that is visually hidden.
 
 ## Import 
 ```js
-import { VisuallyHidden } from '@frontile/utilities';
+import { VisuallyHidden } from 'frontile';
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ Unfortunately, this simple and common action can be problematic for users of scr
 In the following example, screen readers will announce "Save" and will ignore the icon; the browser displays the icon and ignores the text.
 
 ```gts preview
-import { VisuallyHidden } from '@frontile/utilities';
+import { VisuallyHidden } from 'frontile';
 
 <template>
   <button class='inline-block p-2 bg-teal-300 border rounded hover:bg-teal-400'>

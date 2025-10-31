@@ -3,8 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import type Owner from '@ember/owner';
-import { Button } from '@frontile/buttons';
-import { VisuallyHidden } from '@frontile/utilities';
+import { Button } from 'frontile';
+import { VisuallyHidden } from 'frontile';
 import { on } from '@ember/modifier';
 
 interface ThemeSwitcherSignature {

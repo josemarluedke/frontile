@@ -9,13 +9,13 @@ Indicate loading state in your components, offering a smooth, animated visual cu
 
 ## Import 
 ```js
-import { Spinner } from '@frontile/utilities';
+import { Spinner } from 'frontile';
 ```
 
 ## Usage
 
 ```gts preview
-import { Spinner } from '@frontile/utilities';
+import { Spinner } from 'frontile';
 
 <template>
   <Spinner />
@@ -30,7 +30,7 @@ Spinner into different areas of your UI, whether you need a small indicator for
 a button or a large one for page loading.
 
 ```gts preview
-import { Spinner } from '@frontile/utilities';
+import { Spinner } from 'frontile';
 
 <template>
   <div class="flex items-center space-x-2">
@@ -48,7 +48,7 @@ The intent option changes the Spinner's color to match common UI patterns, such
 as `primary` actions, `success` states, `warnings`, and `danger` actions.
 
 ```gts preview
-import { Spinner } from '@frontile/utilities';
+import { Spinner } from 'frontile';
 
 <template>
   <div class="flex items-center space-x-2">
@@ -70,7 +70,7 @@ work for your use case. You can also overwrite the colors using
 modify the background.
 
 ```gts preview
-import { Spinner } from '@frontile/utilities';
+import { Spinner } from 'frontile';
 
 <template>
   <div class="flex items-center justify-center">

@@ -11,7 +11,7 @@ A radio button component that allows users to select a single option from a grou
 ## Import
 
 ```js
-import { Radio } from '@frontile/forms';
+import { Radio } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Radio } from '@frontile/forms';
 The most basic usage of a Radio component with a label and value.
 
 ```gts preview
-import { Radio } from '@frontile/forms';
+import { Radio } from 'frontile';
 
 <template><Radio @name='terms' @label='Accept Terms' @value='accepted' /></template>
 ```
@@ -37,7 +37,7 @@ You can control the radio state using the Form component's data binding system. 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ControlledRadio extends Component {
   @tracked formData = { newsletter: '' };
@@ -75,8 +75,8 @@ RadioGroup integrates with Form validation through Valibot schemas. The Form com
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import { array } from '@ember/helper';
 import * as v from 'valibot';
 
@@ -165,7 +165,7 @@ export default class FormValidationExample extends Component {
 The Radio component supports various optional configurations for sizing, states, descriptions, layout, and styling.
 
 ```gts preview
-import { Radio, RadioGroup } from '@frontile/forms';
+import { Radio, RadioGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

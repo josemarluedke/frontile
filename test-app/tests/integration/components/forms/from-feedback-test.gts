@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 
-import { FormFeedback, type FormFeedbackSignature } from '@frontile/forms';
+import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
 
 module(

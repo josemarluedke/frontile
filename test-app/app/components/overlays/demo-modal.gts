@@ -1,11 +1,11 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Button } from '@frontile/buttons';
-import { Modal } from '@frontile/overlays';
+import { Button } from 'frontile';
+import { Modal } from 'frontile';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
-import { RadioGroup } from '@frontile/forms';
+import { RadioGroup } from 'frontile';
 import type { ModalSignature } from '@frontile/overlays/components/modal';
 
 interface DemoModalArgs {}

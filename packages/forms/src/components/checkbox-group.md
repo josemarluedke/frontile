@@ -11,7 +11,7 @@ A flexible checkbox group component that allows users to select multiple options
 ## Import
 
 ```js
-import { CheckboxGroup } from '@frontile/forms';
+import { CheckboxGroup } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { CheckboxGroup } from '@frontile/forms';
 The most basic usage of the CheckboxGroup component with a label and options.
 
 ```gts preview
-import { CheckboxGroup } from '@frontile/forms';
+import { CheckboxGroup } from 'frontile';
 
 <template>
   <CheckboxGroup @label='Interests' as |Checkbox|>
@@ -41,7 +41,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { CheckboxGroup } from '@frontile/forms';
+import { CheckboxGroup } from 'frontile';
 
 export default class ControlledCheckboxGroup extends Component {
   @tracked formData = {
@@ -139,8 +139,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Form, CheckboxGroup, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, CheckboxGroup, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define validation schema with array of strings
@@ -259,8 +259,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import { Form, CheckboxGroup, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, CheckboxGroup, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define validation schema
@@ -427,7 +427,7 @@ This example demonstrates various optional arguments and configurations availabl
 - **Custom Styling**: Customize appearance with `@classes` argument
 
 ```gts preview
-import { CheckboxGroup } from '@frontile/forms';
+import { CheckboxGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import { ButtonGroup } from '@frontile/buttons';
+import { ButtonGroup } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 

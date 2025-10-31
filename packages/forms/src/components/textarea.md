@@ -11,7 +11,7 @@ A versatile textarea component that provides a clean interface for multi-line te
 ## Import
 
 ```js
-import { Textarea } from '@frontile/forms';
+import { Textarea } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Textarea } from '@frontile/forms';
 The most basic usage of the Textarea component with only a label.
 
 ```gts preview
-import { Textarea } from '@frontile/forms';
+import { Textarea } from 'frontile';
 
 <template><Textarea @label='Message' /></template>
 ```
@@ -33,7 +33,7 @@ You can control the textarea value using the Form component's data binding syste
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ControlledTextarea extends Component {
   @tracked formData = {
@@ -75,7 +75,7 @@ Textarea fields can be disabled to prevent user interaction while maintaining th
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Textarea } from '@frontile/forms';
+import { Textarea } from 'frontile';
 
 export default class DisabledTextarea extends Component {
   <template>
@@ -106,7 +106,7 @@ When using Form and Field components, all change events are handled centrally by
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class TextareaWithFormChange extends Component {
   @tracked formData = { text: '' };
@@ -168,8 +168,8 @@ The Textarea component integrates with the Form validation system, providing aut
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define validation schema
@@ -249,8 +249,8 @@ Here's a comprehensive example showing a Textarea integrated with the Form valid
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { array } from '@ember/helper';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -334,7 +334,7 @@ export default class CompleteFormWithTextarea extends Component {
 The Textarea component supports various optional configurations for sizing, layout, and styling.
 
 ```gts preview
-import { Textarea } from '@frontile/forms';
+import { Textarea } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
 import { registerCustomStyles, tv } from '@frontile/theme';
-import { Button } from '@frontile/buttons';
+import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 

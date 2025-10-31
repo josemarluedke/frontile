@@ -1,14 +1,14 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Button, CloseButton } from '@frontile/buttons';
+import { Button, CloseButton } from 'frontile';
 import {
   Avatar,
   Collapsible,
   Divider,
   Spinner,
   VisuallyHidden
-} from '@frontile/utilities';
+} from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
 class CollapsibleDemo extends Component {

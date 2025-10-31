@@ -15,7 +15,7 @@ A customizable toggle control that allows users to switch between two states (on
 ## Import
 
 ```js
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ import { Switch } from '@frontile/forms';
 The most basic usage of a Switch component with a label.
 
 ```gts preview
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 
 <template><Switch @label='Enable Notifications' /></template>
 ```
@@ -37,7 +37,7 @@ The recommended pattern for using Switch is with Form and Field components, whic
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
+import { Form, type FormResultData } from 'frontile';
 
 export default class ControlledSwitch extends Component {
   @tracked formData = { notifications: false };
@@ -75,8 +75,8 @@ The Switch component integrates with the Form validation system, providing autom
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import { array } from '@ember/helper';
 import * as v from 'valibot';
 
@@ -184,7 +184,7 @@ Customize the switch appearance by using content blocks:
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 
 export default class CustomContentSwitchExample extends Component {
   <template>
@@ -230,7 +230,7 @@ const Sun = <template>
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 
 export default class CustomContentSwitchExample extends Component {
   <template>
@@ -279,7 +279,7 @@ const Sun = <template>
 The Switch component supports various optional configurations for sizing, visual styling, states, and custom classes.
 
 ```gts preview
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>

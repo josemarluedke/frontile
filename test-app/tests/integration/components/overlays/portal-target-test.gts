@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { PortalTarget } from '@frontile/overlays';
+import { PortalTarget } from 'frontile';
 
 module(
   'Integration | Component | @frontile/overlays/PortalTarget',

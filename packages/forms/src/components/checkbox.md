@@ -11,7 +11,7 @@ A standalone checkbox component that allows users to select or deselect individu
 ## Import
 
 ```js
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Checkbox } from '@frontile/forms';
 The most basic usage of a Checkbox component with a label.
 
 ```gts preview
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 <template><Checkbox @label='Subscribe to newsletter' /></template>
 ```
@@ -33,7 +33,7 @@ You can control the checkbox state by providing `@checked` and handling updates 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class ControlledCheckbox extends Component {
   @tracked isSubscribed = false;
@@ -68,7 +68,7 @@ When you need multiple independent checkboxes, each should have a unique name an
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class IndependentCheckboxes extends Component {
   @tracked notifications = {
@@ -143,7 +143,7 @@ Control the size of checkboxes using the `@size` argument.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class CheckboxSizes extends Component {
   @tracked smallChecked = false;
@@ -198,7 +198,7 @@ Checkboxes can be disabled to prevent user interaction while maintaining their v
 
 ```gts preview
 import Component from '@glimmer/component';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class DisabledCheckbox extends Component {
   <template>
@@ -236,7 +236,7 @@ Add helpful description text that appears below the checkbox label.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class CheckboxWithDescription extends Component {
   @tracked termsAccepted = false;
@@ -282,8 +282,8 @@ The Checkbox component integrates with the Form validation system, providing aut
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import { array } from '@ember/helper';
 import * as v from 'valibot';
 
@@ -367,7 +367,7 @@ Create a horizontal layout using CSS Grid or Flexbox.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 
 export default class HorizontalCheckboxes extends Component {
   @tracked preferences = {
@@ -427,8 +427,8 @@ Here's a comprehensive example showing Checkbox components integrated with the F
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import { array } from '@ember/helper';
 import * as v from 'valibot';
 
@@ -535,7 +535,7 @@ You can customize the appearance of different parts of the checkbox using the `@
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Checkbox } from '@frontile/forms';
+import { Checkbox } from 'frontile';
 import { hash } from '@ember/helper';
 
 export default class CustomStyledCheckbox extends Component {

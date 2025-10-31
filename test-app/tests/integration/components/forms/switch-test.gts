@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, settled } from '@ember/test-helpers';
 
-import { Switch } from '@frontile/forms';
+import { Switch } from 'frontile';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/forms/Switch', function (hooks) {

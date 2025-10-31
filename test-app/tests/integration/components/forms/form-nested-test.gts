@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, fillIn, settled } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Form, type FormResultData, type FormErrors } from '@frontile/forms';
+import { Form, type FormResultData, type FormErrors } from 'frontile';
 import * as v from 'valibot';
 import Component from '@glimmer/component';
 

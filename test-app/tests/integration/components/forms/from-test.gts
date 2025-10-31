@@ -24,7 +24,7 @@ import {
   type FormDataCompiled,
   type FormResultData,
   type CustomValidatorReturn
-} from '@frontile/forms';
+} from 'frontile';
 import { cell } from 'ember-resources';
 import * as v from 'valibot';
 import sinon from 'sinon';

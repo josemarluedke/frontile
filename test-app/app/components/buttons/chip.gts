@@ -1,4 +1,4 @@
-import { Chip } from '@frontile/buttons';
+import { Chip } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
 
 const Comp: TOC<null> = <template>

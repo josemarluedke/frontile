@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { VisuallyHidden } from '@frontile/utilities';
+import { VisuallyHidden } from 'frontile';
 
 module(
   'Integration | Component | @frontile/utilities/VisuallyHidden',

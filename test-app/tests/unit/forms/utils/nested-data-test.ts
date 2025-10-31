@@ -1,11 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import {
-  flattenData,
-  unflattenData,
-  hasNestedData,
-  deepEqual
-} from '@frontile/forms';
+import { flattenData, unflattenData, hasNestedData, deepEqual } from 'frontile';
 
 module('Unit | Forms | Utils | nested-data', function (hooks) {
   setupTest(hooks);

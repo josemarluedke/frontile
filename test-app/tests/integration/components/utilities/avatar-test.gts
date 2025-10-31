@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { Avatar } from '@frontile/utilities';
+import { Avatar } from 'frontile';
 
 module(
   'Integration | Component | @frontile/utilities/Avatar',

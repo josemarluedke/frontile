@@ -13,7 +13,7 @@ A component wrapper that provides conveniences for form fields when using built-
 ## Import
 
 ```js
-import { Form } from '@frontile/forms';
+import { Form } from 'frontile';
 // Field is yielded from Form when using validation
 ```
 
@@ -27,8 +27,8 @@ The Field component is yielded from the Form component when validation is config
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 // Define validation schema
@@ -109,8 +109,8 @@ The Field component yields bound versions of all form components, each automatic
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -213,8 +213,8 @@ Use custom validation functions alongside Field components for complex validatio
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -291,8 +291,8 @@ export default class CustomValidationField extends Component {
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
@@ -368,8 +368,8 @@ A comprehensive example showing Field components in a real-world scenario.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { Form, type FormResultData } from '@frontile/forms';
-import { Button } from '@frontile/buttons';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({

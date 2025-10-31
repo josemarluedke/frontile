@@ -9,9 +9,9 @@ import {
 } from '@ember/test-helpers';
 import { selectOptionByKey } from '@frontile/forms/test-support';
 import { tracked } from '@glimmer/tracking';
-import { Field, Form } from '@frontile/forms';
+import { Field, Form } from 'frontile';
 import { cell } from 'ember-resources';
-import type { FormErrors } from '@frontile/forms';
+import type { FormErrors } from 'frontile';
 import * as v from 'valibot';
 import sinon from 'sinon';
 import { array } from '@ember/helper';

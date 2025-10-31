@@ -4,7 +4,7 @@ import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
-import { Listbox, type ListboxSignature } from '@frontile/collections';
+import { Listbox, type ListboxSignature } from 'frontile';
 import { array } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';

@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import { ToggleButton } from '@frontile/buttons';
+import { ToggleButton } from 'frontile';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 

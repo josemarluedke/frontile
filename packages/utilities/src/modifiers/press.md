@@ -9,7 +9,7 @@ A modifier that handles press interactions across mouse, touch, keyboard, and sc
 ## Import
 
 ```js
-import { press } from '@frontile/utilities';
+import { press } from 'frontile';
 ```
 
 ## Features
@@ -25,7 +25,7 @@ import { press } from '@frontile/utilities';
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { press, type PressEvent } from '@frontile/utilities';
+import { press, type PressEvent } from 'frontile';
 
 export default class PressExample extends Component {
   @tracked events = [];
