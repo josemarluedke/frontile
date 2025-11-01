@@ -1495,7 +1495,7 @@ importers:
         specifier: ^7.0.3
         version: 7.0.6(@glimmer/component@2.0.0)(@glint/template@1.5.2)
       ember-source:
-        specifier: ^6.1.0
+        specifier: ~6.6.0
         version: 6.6.0(@glimmer/component@2.0.0)(rsvp@4.8.5)
       ember-template-imports:
         specifier: ^4.2.0
