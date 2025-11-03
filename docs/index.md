@@ -24,11 +24,7 @@ Get started with Frontile in just a few steps:
 ### Installation
 
 ```sh
-# Install core packages
-pnpm install @frontile/utilities @frontile/theme
-
-# Install additional packages as needed
-pnpm install @frontile/buttons @frontile/forms @frontile/overlays
+pnpm install frontile @frontile/theme
 ```
 
 ### Basic Setup
@@ -60,24 +56,6 @@ export default class Example extends Component {
   </template>
 }
 ```
-
-## Available Packages
-
-Frontile is organized into focused packages that you can mix and match based on your needs:
-
-### Core Packages
-
-- **`@frontile/theme`** – Theming system with semantic colors and Tailwind Variants integration
-- **`@frontile/utilities`** – Essential utility components and helpers
-
-### UI Components
-
-- **`@frontile/buttons`** – Button components with multiple variants, sizes, and states
-- **`@frontile/forms`** – Comprehensive form components including Input, Select, Checkbox, and more
-- **`@frontile/collections`** – Data display components like Listbox and dropdown menus
-- **`@frontile/overlays`** – Overlay components including Modal, Drawer, and Popover
-- **`@frontile/notifications`** – Toast-style notification system
-- **`@frontile/status`** – Status indicators like progress bars and loading states
 
 ### Legacy Packages
 
