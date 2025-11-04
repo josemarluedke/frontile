@@ -11,7 +11,6 @@ Frontile aims to provide the legos (components, helpers, modifiers, and styles) 
 - **🎯 Built for Ember** – Seamless integration with Ember Octane & Glimmer components
 - **♿ Accessibility First** – Built with accessibility in mind into every component, following WAI-ARIA guidelines
 - **🎨 Fully Customizable** – Uses Tailwind CSS with Tailwind Variants for highly customizable styling
-- **📦 Modular Architecture** – Logically separated packages, so you can choose only the pieces you need
 - **🔧 TypeScript & Glint Support** – Fully typed templates with Glint for a better developer experience
 - **🌙 Theme Support** – Dark & light mode support with theme-aware components that automatically adapt
 - **📱 Responsive Design** – All styles are fully responsive using TailwindCSS utilities

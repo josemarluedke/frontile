@@ -73,18 +73,13 @@ A common use case for `ButtonGroup` is to create a split button.
 
 ```gjs preview
 import { ButtonGroup } from 'frontile';
+import { ChevronDownIcon } from 'site/components/icons';
 
 <template>
   <ButtonGroup @size="sm" @intent="primary" as |g|>
     <g.Button>Create a merge commit</g.Button>
-    <g.Button @class="border-l-primary-400"><Icon/></g.Button>
+    <g.Button @class="border-l-primary-400"><ChevronDownIcon /></g.Button>
   </ButtonGroup>
-</template>
-
-const Icon = <template>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-  </svg>
 </template>
 ```
 
