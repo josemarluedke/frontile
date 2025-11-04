@@ -34,64 +34,64 @@
 
   /* Global typography color hierarchy */
   .prose {
-    /* Headers remain fully dark/white */
-    --tw-prose-headings: theme(colors.gray.900);
-    /* Body text is softer */
-    --tw-prose-body: theme(colors.gray.700);
+    /* Headers with softer contrast */
+    --tw-prose-headings: theme(colors.default.900);
+    /* Body text is softer for better readability */
+    --tw-prose-body: theme(colors.default.600);
     /* Even softer for captions and quotes */
-    --tw-prose-quote-borders: theme(colors.gray.300);
-    --tw-prose-quotes: theme(colors.gray.600);
-    --tw-prose-captions: theme(colors.gray.600);
+    --tw-prose-quote-borders: theme(colors.default.300);
+    --tw-prose-quotes: theme(colors.default.500);
+    --tw-prose-captions: theme(colors.default.500);
     /* Code blocks */
-    --tw-prose-code: theme(colors.gray.900);
-    --tw-prose-pre-code: theme(colors.gray.200);
-    --tw-prose-pre-bg: theme(colors.gray.900);
+    --tw-prose-code: theme(colors.default.800);
+    --tw-prose-pre-code: theme(colors.default.200);
+    --tw-prose-pre-bg: theme(colors.default.900);
     /* Links */
     --tw-prose-links: theme(colors.blue.600);
     /* Tables */
-    --tw-prose-th-borders: theme(colors.gray.300);
-    --tw-prose-td-borders: theme(colors.gray.200);
+    --tw-prose-th-borders: theme(colors.default.300);
+    --tw-prose-td-borders: theme(colors.default.200);
   }
 
   /* Dark mode typography */
   .dark .prose {
-    /* Headers remain fully white */
-    --tw-prose-headings: theme(colors.white);
-    /* Body text is softer gray */
-    --tw-prose-body: theme(colors.gray.300);
+    /* Headers with better contrast in dark mode */
+    --tw-prose-headings: theme(colors.default.50);
+    /* Body text is softer for comfort */
+    --tw-prose-body: theme(colors.default.400);
     /* Even softer for secondary content */
-    --tw-prose-quote-borders: theme(colors.gray.700);
-    --tw-prose-quotes: theme(colors.gray.400);
-    --tw-prose-captions: theme(colors.gray.400);
+    --tw-prose-quote-borders: theme(colors.default.700);
+    --tw-prose-quotes: theme(colors.default.500);
+    --tw-prose-captions: theme(colors.default.500);
     /* Code blocks */
-    --tw-prose-code: theme(colors.white);
-    --tw-prose-pre-code: theme(colors.gray.300);
-    --tw-prose-pre-bg: theme(colors.gray.800);
+    --tw-prose-code: theme(colors.default.200);
+    --tw-prose-pre-code: theme(colors.default.300);
+    --tw-prose-pre-bg: theme(colors.default.900);
     /* Links */
     --tw-prose-links: theme(colors.blue.400);
     /* Tables */
-    --tw-prose-th-borders: theme(colors.gray.600);
-    --tw-prose-td-borders: theme(colors.gray.700);
+    --tw-prose-th-borders: theme(colors.default.700);
+    --tw-prose-td-borders: theme(colors.default.800);
   }
 
   /* Apply softer text colors globally */
   body {
-    @apply text-gray-700 dark:text-gray-300;
+    @apply text-default-600;
   }
 
-  /* Headers maintain strong contrast */
+  /* Headers with appropriate contrast */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-gray-900 dark:text-white;
+    @apply text-default-900;
   }
 
   /* Paragraphs and general text content */
-  p, li, td, th, span, div {
-    @apply text-gray-700 dark:text-gray-300;
+  p, li, td, th {
+    @apply text-default-600;
   }
 
   /* Even softer for secondary content */
   .text-muted, .caption, blockquote {
-    @apply text-gray-600 dark:text-gray-400;
+    @apply text-default-500;
   }
 }
 

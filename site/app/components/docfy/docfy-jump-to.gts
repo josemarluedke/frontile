@@ -174,7 +174,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
       Search
       <code
-        class="hidden sm:block ml-3 rounded border font-bold border-default-600 px-2 py-1 text-xs leading-none"
+        class="hidden sm:block ml-3 rounded border font-bold border-default-400 px-2 py-1 text-xs leading-none"
       >
         /
       </code>
