@@ -41,7 +41,12 @@ class Label extends Component<{ Args: { label: unknown } }> {
   }
 
   <template>
-    <Chip @size="sm" @appearance="faded" @intent={{this.intent}} @class="ml-1">
+    <Chip
+      @size="sm"
+      @appearance="faded"
+      @intent={{this.intent}}
+      @class="ml-1 !text-[10px] !px-1.5 !py-0 !h-4 !min-h-4"
+    >
       {{this.label}}
     </Chip>
   </template>
@@ -148,8 +153,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-2 text-sm hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-                    @activeClass="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-default-600 hover:text-default-900 hover:bg-default-100 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
+                    @activeClass="bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-900 font-medium"
                   >
                     {{page.title}}
                   </DocfyLink>
@@ -161,7 +166,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
 
         {{#each @node.children as |child|}}
           <div>
-            <h3 class="px-6 py-2 text-base font-semibold">
+            <h3 class="px-6 py-1.5 text-base font-semibold">
               {{child.label}}
             </h3>
 
@@ -170,8 +175,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-2 text-sm hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-                    @activeClass="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-default-600 hover:text-default-900 hover:bg-default-100 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
+                    @activeClass="bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-900 font-medium"
                   >
                     {{page.title}}
                     {{#if page.frontmatter.label}}
@@ -185,7 +190,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <button
                     type="button"
-                    class="flex w-full items-center justify-between px-6 py-2 text-left text-sm hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+                    class="flex w-full items-center justify-between px-6 py-1.5 text-left text-sm text-default-600 hover:text-default-900 hover:bg-default-100 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
                     {{on
                       "click"
                       (fn
@@ -225,8 +230,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                         <li>
                           <DocfyLink
                             @to={{page.url}}
-                            class="transition flex items-center pl-12 pr-6 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-                            @activeClass="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium"
+                            class="transition flex items-center pl-12 pr-6 py-1.5 text-sm text-default-500 hover:text-default-900 hover:bg-default-100 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded"
+                            @activeClass="bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-900 font-medium"
                           >
                             {{page.title}}
                           </DocfyLink>

@@ -4,27 +4,35 @@ category: accessibility
 
 # Focus management
 
-The outline styles (that blue line around the outside of a focused element)
-are an essential part of accessibility for users using keyboard to navigate
-around, it indicates which element is in focus at a given time. Users can
-choose to "click" them by just pressing the `Enter` key in the keyboard, instead of
-using the mouse.
+Focus indicators (typically an outline around a focused element) are essential for accessibility. They help keyboard users navigate and identify which element currently has focus, allowing users to interact with elements by pressing `Enter` instead of using a mouse.
 
-These styles are less important for users using the mouse, usually having
-them enabled can be annoying.
+While focus indicators are critical for keyboard navigation, they can feel unnecessary when using a mouse. Frontile solves this with smart focus management.
 
-Frontile includes a [library](https://github.com/WICG/focus-visible) based
-in the proposed CSS `:focus-visible` pseudo-selector. It adds a `focus-visible` class
-to the focused element, but it only adds the class when `Tab`, `Shift + Tab`, or an
-arrow key is used to focus an element. If the mouse is used to focus, the class
-will not be added (with the exception of input and textarea elements).
+## How it works
 
-```hbs preview-template
-<FormInput placeholder='Test me for focus' />
-<a
-  class='inline-block px-4 py-2 mt-4 bg-primary-200 rounded hover:bg-primary-100'
-  href='javascript:void(0)'
->
-  Test me for focus
-</a>
+Frontile includes a [library](https://github.com/WICG/focus-visible) based on the proposed CSS `:focus-visible` pseudo-selector. It adds a `focus-visible` class to focused elements **only when keyboard navigation is detected** (`Tab`, `Shift + Tab`, or arrow keys).
+
+When the mouse is used to focus an element, the class is not added—except for text inputs and textareas, where focus indicators are always helpful.
+
+## Example
+
+Try focusing these elements with both keyboard (`Tab` key) and mouse to see the difference:
+
+```gts preview
+import { Input } from 'frontile';
+
+<template>
+  <div class='space-y-4'>
+    <Input @placeholder='Focus me with Tab or mouse' />
+
+    <a
+      class='inline-block px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2'
+      href='javascript:void(0)'
+    >
+      Focus me with Tab or mouse
+    </a>
+  </div>
+</template>
 ```
+
+Notice how the keyboard focus is clearly visible with `Tab`, but clicking with the mouse doesn't show the focus ring on the button.
