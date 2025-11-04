@@ -611,6 +611,7 @@ Customize column headers with the `header` block:
 import Component from '@glimmer/component';
 import { Table, type ColumnConfig } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
+import { UserIcon } from 'site/components/icons';
 
 export default class DemoComponent extends Component {
   columns = [
@@ -624,13 +625,7 @@ export default class DemoComponent extends Component {
       <:header as |h|>
         {{#if (eq h.column.key 'name')}}
           <div class='flex items-center space-x-2'>
-            <svg class='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
-              <path
-                fill-rule='evenodd'
-                d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
-                clip-rule='evenodd'
-              />
-            </svg>
+            <UserIcon />
             <span>{{h.column.name}}</span>
           </div>
         {{else}}

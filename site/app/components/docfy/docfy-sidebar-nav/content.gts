@@ -26,7 +26,7 @@ class Label extends Component<{ Args: { label: unknown } }> {
     }
 
     if (this.args.label.toLowerCase() == 'new') {
-      return 'primary';
+      return 'default';
     } else if (this.args.label.toLowerCase() == 'updated') {
       return 'success';
     } else if (this.args.label.toLowerCase() == 'deprecated') {
@@ -41,12 +41,7 @@ class Label extends Component<{ Args: { label: unknown } }> {
   }
 
   <template>
-    <Chip
-      @size="sm"
-      @appearance="outlined"
-      @intent={{this.intent}}
-      @class="ml-1"
-    >
+    <Chip @size="sm" @appearance="faded" @intent={{this.intent}} @class="ml-1">
       {{this.label}}
     </Chip>
   </template>
