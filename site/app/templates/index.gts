@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { LinkTo } from '@ember/routing';
+import { DocfyLink } from '@docfy/ember';
 import {
   Button,
   Input,
@@ -907,17 +908,32 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        primary: '#3490dc',
-        secondary: '#6b7280',
-        success: '#10b981',
-        danger: '#ef4444',
-        warning: '#f59e0b'
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
+          DEFAULT: '#3b82f6',
+          foreground: '#ffffff'
+        }
       }
     },
     dark: {
       colors: {
-        primary: '#1c3d5a',
-        background: '#0a0a0a'
+        primary: {
+          DEFAULT: '#60a5fa',
+          foreground: '#ffffff'
+        },
+        background: {
+          DEFAULT: '#0a0a0a'
+        }
       }
     }
   }
@@ -936,8 +952,32 @@ module.exports = frontile({
                 <code
                   class="px-1 py-0.5 bg-default-200 rounded text-sm"
                 >bg-background</code>
-                for consistent theming.
+                for consistent theming across your application.
               </p>
+              <div class="flex justify-center">
+                <DocfyLink @to="/docs/customization/theme">
+                  <Button
+                    @intent="primary"
+                    @size="md"
+                    @class="flex items-center"
+                  >
+                    Learn More About Theming
+                    <svg
+                      class="ml-2 w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
+                  </Button>
+                </DocfyLink>
+              </div>
             </div>
           </div>
         </div>
