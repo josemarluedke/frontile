@@ -5,7 +5,7 @@ function triggerFormInputEvent(element?: HTMLElement | null): void {
   if (!element) return;
   const waiterToken = waiter.beginAsync();
 
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     let parent = element.parentElement;
     while (parent) {
       if (parent.tagName === 'FORM') {
@@ -18,7 +18,7 @@ function triggerFormInputEvent(element?: HTMLElement | null): void {
     }
 
     waiter.endAsync(waiterToken);
-  });
+  }, 0);
 }
 
 export { triggerFormInputEvent };
