@@ -19,7 +19,9 @@ const ComponentPackageCard: TOC<Signature> = <template>
     <div class="flex items-center mb-3">
       {{yield to="icon"}}
       <h3 class="font-bold text-default-900">{{@name}}</h3>
-      <span class="ml-auto text-sm font-semibold {{@countColor}}">{{@count}}</span>
+      <span
+        class="ml-auto text-sm font-semibold {{@countColor}}"
+      >{{@count}}</span>
     </div>
     <p class="text-sm text-default-700">
       {{@description}}

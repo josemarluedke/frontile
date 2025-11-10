@@ -1,6 +1,7 @@
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/template';
 import type { SafeString } from '@ember/template';
+// @ts-ignore: missing types
 import lowlight from 'lowlight';
 
 interface HighlightCodeSignature {
@@ -10,6 +11,32 @@ interface HighlightCodeSignature {
   Return: SafeString;
 }
 
+// HAST node types for lowlight
+interface HastText {
+  type: 'text';
+  value: string;
+}
+
+interface HastElement {
+  type: 'element';
+  tagName: string;
+  properties?: {
+    className?: string[];
+  };
+  children?: HastNode[];
+}
+
+interface HastRoot {
+  type: 'root';
+  children: HastNode[];
+}
+
+interface HastLowlightResult {
+  value: HastNode[];
+}
+
+type HastNode = HastText | HastElement | HastRoot | HastLowlightResult;
+
 // Map gjs/gts to their base languages
 const languageMap: Record<string, string> = {
   gjs: 'javascript',
@@ -17,19 +44,19 @@ const languageMap: Record<string, string> = {
 };
 
 // Simple HAST to HTML converter for lowlight results
-function hastToHtml(node: any): string {
+function hastToHtml(node: HastNode): string {
   // Handle lowlight result format which has a 'value' array at the root
-  if (node.value && Array.isArray(node.value)) {
+  if ('value' in node && Array.isArray(node.value)) {
     return node.value.map(hastToHtml).join('');
   }
 
   // Handle text nodes
-  if (node.type === 'text') {
+  if ('type' in node && node.type === 'text') {
     return escapeHtml(node.value);
   }
 
   // Handle element nodes
-  if (node.type === 'element') {
+  if ('type' in node && node.type === 'element') {
     const className = node.properties?.className
       ? ` class="${node.properties.className.join(' ')}"`
       : '';
@@ -38,7 +65,7 @@ function hastToHtml(node: any): string {
   }
 
   // Handle root nodes
-  if (node.type === 'root' && node.children) {
+  if ('type' in node && node.type === 'root') {
     return node.children.map(hastToHtml).join('');
   }
 
@@ -62,23 +89,15 @@ function highlightCode([code, language = 'javascript']: [
     // Debug: Check if code is empty
     if (!code) {
       console.warn('highlightCode: code is empty or undefined');
-      return htmlSafe(`<code class="hljs language-${language}">NO CODE PROVIDED</code>`);
+      return htmlSafe(
+        `<code class="hljs language-${language}">NO CODE PROVIDED</code>`
+      );
     }
 
     // Map gjs/gts to their base languages
     const actualLanguage = languageMap[language] || language;
-
-    console.log('Highlighting code:', {
-      codeLength: code.length,
-      codeSample: code.substring(0, 50),
-      language: actualLanguage
-    });
-
     const result = lowlight.highlight(actualLanguage, code);
-    console.log('Lowlight result:', JSON.stringify(result, null, 2).substring(0, 500));
-
     const html = hastToHtml(result);
-    console.log('HTML output length:', html.length, 'Sample:', html.substring(0, 100));
 
     return htmlSafe(`<code class="hljs language-${language}">${html}</code>`);
   } catch (error) {

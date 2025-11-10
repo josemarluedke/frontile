@@ -321,7 +321,7 @@ class IndexPage extends Component {
             </ComponentDemoCard>
 
             {{! Chips & Avatars }}
-            <ComponentDemoCard @title="Chips & Tags">
+            <ComponentDemoCard @title="Chips & Avatars">
               <div class="space-y-4">
                 <div class="flex flex-wrap gap-2">
                   <Chip>Default Chip</Chip>
@@ -897,7 +897,8 @@ Listbox<Country>
             <div
               class="p-8 bg-default-100 rounded-xl shadow-lg border border-default-200"
             >
-              <h3 class="text-xl font-bold text-default-900 mb-6">Semantic Theme System</h3>
+              <h3 class="text-xl font-bold text-default-900 mb-6">Semantic Theme
+                System</h3>
               <CodeBlock
                 @code="const { frontile } = require('@frontile/theme/plugin');
 
@@ -924,7 +925,18 @@ module.exports = frontile({
                 @language="javascript"
               />
               <p class="text-default-600 mt-6 mb-6">
-                Customize light and dark themes with semantic colors that adapt automatically. Use tokens like <code class="px-1 py-0.5 bg-default-200 rounded text-sm">bg-primary</code>, <code class="px-1 py-0.5 bg-default-200 rounded text-sm">text-danger</code>, and <code class="px-1 py-0.5 bg-default-200 rounded text-sm">bg-background</code> for consistent theming.
+                Customize light and dark themes with semantic colors that adapt
+                automatically. Use tokens like
+                <code
+                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                >bg-primary</code>,
+                <code
+                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                >text-danger</code>, and
+                <code
+                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                >bg-background</code>
+                for consistent theming.
               </p>
             </div>
           </div>

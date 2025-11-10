@@ -14,7 +14,11 @@ export interface Signature {
 const SectionHeader: TOC<Signature> = <template>
   <div class="text-center mb-16">
     {{#if (has-block "icon")}}
-      <div class="inline-flex items-center justify-center w-16 h-16 {{@iconBg}} rounded-full mb-6">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16
+          {{@iconBg}}
+          rounded-full mb-6"
+      >
         {{yield to="icon"}}
       </div>
     {{/if}}
