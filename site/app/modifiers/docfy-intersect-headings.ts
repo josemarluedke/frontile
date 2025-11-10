@@ -112,7 +112,7 @@ export default class IntersectHeadingsModifier extends Modifier<Signature> {
   }
 
   unobserve(): void {
-    if (this.observer) {
+    if (this && this.observer) {
       this.observer.disconnect();
     }
   }

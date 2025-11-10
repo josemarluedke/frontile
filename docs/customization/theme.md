@@ -86,7 +86,7 @@ Then update your `app/styles/app.css` to use the custom configuration:
 Frontile's theming system provides:
 
 - **Default Themes**: Light and dark themes with predefined color schemes.
-- **Semantic Colors**: A set of color variables (e.g., `primary`, `secondary`, `success`, `danger`, `default`) that adapt based on the active theme.
+- **Semantic Colors**: A set of color variables (e.g., `primary`, `success`, `danger`, `default`) that adapt based on the active theme.
 - **Customization Options**: Ability to define custom themes and override default settings.
 
 ## Usage
@@ -148,7 +148,21 @@ module.exports = {
       themes: {
         light: {
           colors: {
-            primary: '#3490dc'
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554',
+              DEFAULT: '#3b82f6',
+              foreground: '#ffffff'
+            }
             // ...other color overrides
           },
           layout: {
@@ -158,7 +172,21 @@ module.exports = {
         },
         dark: {
           colors: {
-            primary: '#1c3d5a'
+            primary: {
+              50: '#172554',
+              100: '#1e3a8a',
+              200: '#1e40af',
+              300: '#1d4ed8',
+              400: '#2563eb',
+              500: '#3b82f6',
+              600: '#60a5fa',
+              700: '#93c5fd',
+              800: '#bfdbfe',
+              900: '#dbeafe',
+              950: '#eff6ff',
+              DEFAULT: '#60a5fa',
+              foreground: '#ffffff'
+            }
             // ...other color overrides
           },
           layout: {
@@ -169,8 +197,13 @@ module.exports = {
         highContrastDark: {
           extend: 'dark',
           colors: {
-            primary: '#ffffff',
-            background: '#000000'
+            primary: {
+              DEFAULT: '#ffffff',
+              foreground: '#000000'
+            },
+            background: {
+              DEFAULT: '#000000'
+            }
             // Adjust colors for higher contrast
           }
         }
@@ -185,16 +218,48 @@ This example demonstrates how to create a `highContrastDark` theme by extending 
 
 You can also create entirely new themes by defining a new set of colors and layout properties from scratch. This flexibility allows you to cater to different branding requirements or accessibility needs.
 
+### Understanding Color Scale Structure
+
+Each semantic color in Frontile uses a color scale object with the following properties:
+
+- **Numeric scale (50-950)**: Provides utility classes like `bg-primary-50`, `text-primary-500`, `border-primary-900`, etc.
+- **`DEFAULT`**: The color used when no numeric suffix is specified. For example, `bg-primary` will use the `DEFAULT` value.
+- **`foreground`**: The color used for text or content that sits on top of the base color, ensuring proper contrast. Used with classes like `text-primary-foreground`.
+
+**Example usage:**
+
+```hbs
+{{! Uses the DEFAULT color from primary scale }}
+<button class='bg-primary text-primary-foreground'>
+  Click Me
+</button>
+
+{{! Uses the specific 500 shade from primary scale }}
+<div class='bg-primary-500 text-white'>
+  Content
+</div>
+
+{{! Uses the 50 shade for a lighter background }}
+<div class='bg-primary-50 text-primary-900'>
+  Light background
+</div>
+```
+
+When defining custom colors, you can provide either:
+
+- A **full scale object** with all numeric values, `DEFAULT`, and `foreground`
+- A **minimal object** with just `DEFAULT` and optionally `foreground` (you won't get numeric utility classes)
+- A **simple string** (you'll only get the base class like `bg-primary`, no scale utilities or foreground)
+
 ### Inspiration
 
-Frontile's theming system was inspired by NextUI theming, bringing a similar approach to customizable and flexible theme management.
+Frontile's theming system was inspired by HeroUI theming, bringing a similar approach to customizable and flexible theme management.
 
 ## Semantic Colors
 
 Frontile's semantic theming system provides pre-defined semantic colors:
 
 - **`primary`**
-- **`secondary`**
 - **`success`**
 - **`danger`**
 - **`warning`**
