@@ -1,3 +1,3 @@
-export * from './colors/defaults';
-export * from './colors/semantic';
+export * from './colors/palette-light';
+export * from './colors/config';
 export type * from './colors/types';

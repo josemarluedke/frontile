@@ -1,4 +1,4 @@
-import { semanticColors } from '../colors/semantic';
+import { semanticColors } from '../colors/config';
 import type { LayoutTheme } from '../types';
 
 const baseLayout: LayoutTheme = {

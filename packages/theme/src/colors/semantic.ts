@@ -1,139 +1,133 @@
-import { readableColor } from 'color2k';
-import { swapColorValues } from './util';
-import { gray, blue, green, red, yellow } from './defaults';
+/**
+ * Frontile Semantic Colors
+ *
+ * AUTO-GENERATED - DO NOT EDIT
+ * Generated from design tokens via npm run generate:frontile:semantic
+ *
+ * Semantic color mappings for light and dark themes.
+ */
 
-import type { ThemeColors, SemanticBaseColors } from './types';
+import * as lightPalette from './palette-light';
+import * as darkPalette from './palette-dark';
+import * as absolute from './palette-absolute';
 
-const base: SemanticBaseColors = {
-  light: {
-    background: {
-      DEFAULT: '#FFFFFF'
-    },
-    foreground: {
-      ...gray,
-      DEFAULT: gray[800]
-    },
-    divider: {
-      DEFAULT: 'rgba(17, 17, 17, 0.15)'
-    },
-    focus: {
-      DEFAULT: blue[500]
-    },
-    overlay: {
-      DEFAULT: '#000000'
-    },
-    content1: {
-      DEFAULT: '#FFFFFF',
-      foreground: gray[800]
-    },
-    content2: {
-      DEFAULT: gray[100],
-      foreground: gray[800]
-    },
-    content3: {
-      DEFAULT: gray[200],
-      foreground: gray[800]
-    },
-    content4: {
-      DEFAULT: gray[300],
-      foreground: gray[800]
-    }
-  },
-  dark: {
-    background: {
-      DEFAULT: gray[950]
-    },
-    foreground: {
-      ...swapColorValues(gray),
-      DEFAULT: gray[200]
-    },
-    focus: {
-      DEFAULT: blue[400]
-    },
-    overlay: {
-      DEFAULT: '#000000'
-    },
-    divider: {
-      DEFAULT: 'rgba(255, 255, 255, 0.15)'
-    },
-    content1: {
-      DEFAULT: gray[900],
-      foreground: gray[200]
-    },
-    content2: {
-      DEFAULT: gray[800],
-      foreground: gray[200]
-    },
-    content3: {
-      DEFAULT: gray[700],
-      foreground: gray[100]
-    },
-    content4: {
-      DEFAULT: gray[600],
-      foreground: gray[50]
-    }
-  }
-};
+import type { ThemeColors } from './types';
 
 const themeColorsLight: ThemeColors = {
-  ...base.light,
-  default: {
-    ...gray,
-    foreground: readableColor(gray[300]),
-    DEFAULT: gray[300]
-  },
-  primary: {
-    ...blue,
-    foreground: readableColor(blue[500]),
-    DEFAULT: blue[500]
+  neutral: {
+    'contrast-1': absolute.white,
+    strong: absolute.black,
+    medium: `${absolute.black}c9`,
+    DEFAULT: `${absolute.black}c9`,
+    soft: `${absolute.black}73`,
+    subtle: `${absolute.black}0f`,
+    'contrast-2': absolute.black
   },
   success: {
-    ...green,
-    foreground: readableColor(green[600]),
-    DEFAULT: green[600]
+    'contrast-1': absolute.white,
+    subtle: `${lightPalette.green['400']}80`,
+    medium: lightPalette.green['800'],
+    DEFAULT: lightPalette.green['800'],
+    strong: lightPalette.green['900'],
+    soft: lightPalette.green['600'],
+    'contrast-2': absolute.black
   },
-  warning: {
-    ...yellow,
-    foreground: readableColor(yellow[700]),
-    DEFAULT: yellow[700]
+  inverse: {
+    'contrast-1': absolute.black,
+    subtle: `${absolute.white}24`,
+    soft: `${absolute.white}4f`,
+    medium: `${absolute.white}c4`,
+    DEFAULT: `${absolute.white}c4`,
+    strong: absolute.white,
+    'contrast-2': absolute.white
+  },
+  brand: {
+    'contrast-1': absolute.white,
+    subtle: `${lightPalette.blue['800']}0d`,
+    medium: lightPalette.blue['800'],
+    DEFAULT: lightPalette.blue['800'],
+    soft: lightPalette.blue['500'],
+    strong: lightPalette.blue['1000'],
+    'contrast-2': absolute.black
   },
   danger: {
-    ...red,
-    foreground: '#ffffff',
-    DEFAULT: red[600]
+    'contrast-1': absolute.white,
+    subtle: `${lightPalette.red['800']}1a`,
+    soft: lightPalette.red['500'],
+    medium: lightPalette.red['800'],
+    DEFAULT: lightPalette.red['800'],
+    strong: lightPalette.red['900'],
+    'contrast-2': absolute.black
+  },
+  warning: {
+    'contrast-1': absolute.white,
+    subtle: `${lightPalette.orange['700']}1a`,
+    soft: lightPalette.orange['600'],
+    medium: lightPalette.orange['700'],
+    DEFAULT: lightPalette.orange['700'],
+    strong: lightPalette.orange['800'],
+    'contrast-2': absolute.black
   }
 };
 
 const themeColorsDark: ThemeColors = {
-  ...base.dark,
-  default: {
-    ...swapColorValues(gray),
-    foreground: readableColor(gray[700]),
-    DEFAULT: gray[700]
-  },
-  primary: {
-    ...swapColorValues(blue),
-    foreground: readableColor(blue[500]),
-    DEFAULT: blue[400]
+  neutral: {
+    'contrast-1': absolute.black,
+    subtle: `${absolute.white}24`,
+    soft: `${absolute.white}4f`,
+    medium: `${absolute.white}c4`,
+    DEFAULT: `${absolute.white}c4`,
+    strong: absolute.white,
+    'contrast-2': absolute.white
   },
   success: {
-    ...swapColorValues(green),
-    foreground: '#ffffff',
-    DEFAULT: green[500]
+    'contrast-1': absolute.white,
+    subtle: `${darkPalette.green['1000']}33`,
+    soft: darkPalette.green['600'],
+    medium: darkPalette.green['900'],
+    DEFAULT: darkPalette.green['900'],
+    strong: darkPalette.green['1000'],
+    'contrast-2': absolute.black
   },
-  warning: {
-    ...swapColorValues(yellow),
-    foreground: readableColor(yellow[500]),
-    DEFAULT: yellow[500]
+  inverse: {
+    'contrast-1': absolute.white,
+    subtle: `${absolute.black}0f`,
+    soft: `${absolute.black}73`,
+    medium: `${absolute.black}c9`,
+    DEFAULT: `${absolute.black}c9`,
+    strong: absolute.black,
+    'contrast-2': absolute.black
+  },
+  brand: {
+    'contrast-1': absolute.white,
+    subtle: `${darkPalette.blue['1000']}33`,
+    soft: darkPalette.blue['700'],
+    medium: darkPalette.blue['800'],
+    DEFAULT: darkPalette.blue['800'],
+    strong: darkPalette.blue['1000'],
+    'contrast-2': absolute.black
   },
   danger: {
-    ...swapColorValues(red),
-    foreground: readableColor(red[400]),
-    DEFAULT: red[400]
+    'contrast-1': absolute.white,
+    subtle: `${darkPalette.red['1000']}59`,
+    soft: darkPalette.red['500'],
+    medium: darkPalette.red['800'],
+    DEFAULT: darkPalette.red['800'],
+    strong: darkPalette.red['1000'],
+    'contrast-2': absolute.black
+  },
+  warning: {
+    'contrast-1': absolute.white,
+    subtle: `${darkPalette.orange['1000']}59`,
+    soft: darkPalette.orange['800'],
+    medium: darkPalette.orange['900'],
+    DEFAULT: darkPalette.orange['900'],
+    strong: darkPalette.orange['1000'],
+    'contrast-2': absolute.black
   }
 };
 
-export const semanticColors = {
+export default {
   light: themeColorsLight,
   dark: themeColorsDark
 };
