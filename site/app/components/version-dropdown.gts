@@ -7,10 +7,10 @@ interface VersionDropdownSignature {
 }
 
 export default class VersionDropdown extends Component<VersionDropdownSignature> {
-  versions = [
+  baseVersions = [
     {
       key: 'v0.17',
-      label: 'v0.17 (latest)',
+      label: 'v0.17',
       url: '/',
       isLatest: true,
     },
@@ -22,12 +22,39 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
     },
   ];
 
+  get versions() {
+    const currentDomain = window.location.origin.replace(/^https?:\/\//, '');
+
+    // Only add the Next version if we're on the next subdomain
+    if (currentDomain.includes('next')) {
+      return [
+        ...this.baseVersions,
+        {
+          key: 'next',
+          label: 'Next',
+          url: 'https://next.frontile.dev/',
+          isLatest: false,
+        },
+      ];
+    }
+
+    return this.baseVersions;
+  }
+
   get latestVersion() {
     return this.versions.find((v) => v.isLatest);
   }
 
   get currentVersion() {
     const currentDomain = window.location.origin.replace(/^https?:\/\//, '');
+
+    // Check if domain contains "next" and return the Next version
+    if (currentDomain.includes('next')) {
+      const nextVersion = this.versions.find((v) => v.key === 'next');
+      if (nextVersion) {
+        return nextVersion;
+      }
+    }
 
     // Try to find a version that matches the current domain
     const matchedVersion = this.versions.find((version) => {
@@ -57,6 +84,10 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
     return this.currentVersion ? [this.currentVersion.key] : [];
   }
 
+  getVersionLabel(version: { label: string; isLatest: boolean }) {
+    return version.isLatest ? `${version.label} (latest)` : version.label;
+  }
+
   <template>
     <div ...attributes>
       <Dropdown as |d|>
@@ -64,7 +95,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
           @appearance="minimal"
           @class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-default-600 bg-default-100 border border-default-200 rounded-lg hover:bg-default-200 focus:bg-default-200 transition-all duration-200"
         >
-          <span>{{this.currentVersion.label}}</span>
+          <span>{{this.getVersionLabel this.currentVersion}}</span>
           <svg
             class="w-4 h-4 text-default-500"
             fill="none"
@@ -87,7 +118,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
         >
           {{#each this.versions as |version|}}
             <Item @key={{version.key}}>
-              {{version.label}}
+              {{this.getVersionLabel version}}
             </Item>
           {{/each}}
         </d.Menu>
