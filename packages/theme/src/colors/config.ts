@@ -1,31 +1,20 @@
 import * as light from './palette-light';
 import * as dark from './palette-dark';
+import * as absolute from './palette-absolute';
 
 import type { SemanticBaseColors } from './types';
 import tokens from './semantic';
 
 const base: SemanticBaseColors = {
   light: {
-    background: {
-      DEFAULT: '#FFFFFF'
-    },
-    focus: {
-      DEFAULT: light.blue[800]
-    },
-    divider: {
-      DEFAULT: 'rgba(17, 17, 17, 0.15)'
-    }
+    background: absolute.white,
+    focus: light.blue[800],
+    divider: 'rgba(17, 17, 17, 0.15)'
   },
   dark: {
-    background: {
-      DEFAULT: dark.gray[100]
-    },
-    focus: {
-      DEFAULT: dark.blue[800]
-    },
-    divider: {
-      DEFAULT: 'rgba(255, 255, 255, 0.15)'
-    }
+    background: dark.gray[100],
+    focus: dark.blue[800],
+    divider: 'rgba(255, 255, 255, 0.15)'
   }
 };
 

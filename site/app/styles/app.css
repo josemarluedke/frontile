@@ -32,10 +32,8 @@
     content: none;
   }
 
-
-
   /* Global typography color hierarchy */
-  .prose {
+  .prose, .dark .theme-inverse {
     /* Headers with softer contrast */
     --tw-prose-headings: theme(colors.neutral.strong);
     /* Body text is softer for better readability */
@@ -56,7 +54,7 @@
   }
 
   /* Dark mode typography */
-  .dark .prose {
+  .dark .prose, .light .theme-inverse {
     /* Headers with better contrast in dark mode */
     --tw-prose-headings: theme(colors.neutral.strong);
     /* Body text is softer for comfort */
@@ -97,7 +95,8 @@
   }
 }
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));
+@custom-variant light (&:is(.light *, .dark .theme-inverse *):not(.light .theme-inverse *));
 @custom-variant focus-visible (&[data-focus-visible-added]);
 
 @import './highlight.css';
