@@ -1032,7 +1032,7 @@ export default class DemoComponent extends Component {
 
   <template>
     <div>
-      <p class='mb-4 text-sm text-foreground-600'>
+      <p class='mb-4 text-sm text-neutral-strong'>
         Focus a row and press Space or Enter to select it
       </p>
       <Table
