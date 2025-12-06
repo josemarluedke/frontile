@@ -21,7 +21,7 @@
 
 @theme {
   --font-family-sans: Inter, system-ui, sans-serif;
-  --color-brand: #4B65F7;
+  --color-brand: theme(colors.brand.medium);
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
 }
@@ -31,6 +31,8 @@
   .prose code::after {
     content: none;
   }
+
+
 
   /* Global typography color hierarchy */
   .prose {
@@ -47,7 +49,7 @@
     --tw-prose-pre-code: theme(colors.neutral.subtle);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
-    --tw-prose-links: theme(colors.blue.600);
+    --tw-prose-links: theme(colors.brand.soft);
     /* Tables */
     --tw-prose-th-borders: theme(colors.neutral.soft);
     --tw-prose-td-borders: theme(colors.neutral.subtle);
@@ -68,7 +70,7 @@
     --tw-prose-pre-code: theme(colors.neutral.soft);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
-    --tw-prose-links: theme(colors.blue.400);
+    --tw-prose-links: theme(colors.brand.strong);
     /* Tables */
     --tw-prose-th-borders: theme(colors.neutral.medium);
     --tw-prose-td-borders: theme(colors.neutral.strong);

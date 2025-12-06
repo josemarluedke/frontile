@@ -1,7 +1,6 @@
 ---
-category: customization
-title: Component Styles
-label: New
+order: 5
+category: theme
 ---
 
 # Customizing Component Styles
