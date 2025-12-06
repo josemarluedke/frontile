@@ -10,32 +10,27 @@ const notificationCard = tv({
     customActions: 'flex flex-nowrap',
     customActionButton: [
       ...btn,
-      'first:ml-4 last:-mr-2 font-semibold py-1 px-2 rounded-sm'
+      'first:ml-4 last:-mr-2 font-semibold py-1 px-2 rounded-sm hover:bg-surface-overlay-soft'
     ],
-    closeButton: [...btn, 'inline-block p-2 ml-2 -mr-2 rounded-full']
+    closeButton: [
+      ...btn,
+      'inline-block p-2 ml-2 -mr-2 rounded-full hover:bg-surface-overlay-soft'
+    ]
   },
 
   variants: {
     appearance: {
       info: {
-        base: 'text-white bg-neutral-strong dark:text-surface-solid-11 dark:bg-inverse-subtle',
-        closeButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft',
-        customActionButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft'
+        base: 'bg-neutral-strong text-neutral-contrast-1'
       },
       success: {
-        base: 'bg-success text-success-contrast-1',
-        closeButton: 'hover:bg-success-medium',
-        customActionButton: 'hover:bg-success-medium'
+        base: 'bg-success text-success-contrast-1'
       },
       warning: {
-        base: 'bg-warning text-warning-contrast-1',
-        closeButton: 'hover:bg-warning-medium',
-        customActionButton: 'hover:bg-warning-medium'
+        base: 'bg-warning text-warning-contrast-1'
       },
       error: {
-        base: 'bg-danger text-danger-contrast-1',
-        closeButton: 'hover:bg-danger-medium',
-        customActionButton: 'hover:bg-danger-medium'
+        base: 'bg-danger text-danger-contrast-1'
       }
     }
   },
