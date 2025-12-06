@@ -99,11 +99,11 @@ class IndexPage extends Component {
   }
 
   <template>
-    <div class="min-h-screen bg-white dark:bg-neutral-subtle">
+    <div class="min-h-screen bg-white dark:bg-black">
 
       {{! Hero Section }}
       <section
-        class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-neutral-subtle dark:to-black/60 pt-20 pb-24 sm:pt-24 sm:pb-32"
+        class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-950 dark:to-black pt-20 pb-24 sm:pt-24 sm:pb-32"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
@@ -146,7 +146,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Quick Install Section }}
-      <section class="py-12 bg-neutral-subtle border-y border-neutral-subtle">
+      <section class="py-12 bg-gray-50 dark:bg-gray-950 border-y border-gray-200 dark:border-gray-800">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
@@ -244,7 +244,7 @@ class IndexPage extends Component {
 
       {{! Component Showcase with Live Demos }}
       <section
-        class="py-24 bg-gradient-to-b from-neutral-subtle to-white dark:to-neutral-subtle"
+        class="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-black"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -295,6 +295,7 @@ class IndexPage extends Component {
                     @placeholder="Enter your email"
                     @value={{this.email}}
                     @onInput={{this.handleEmailChange}}
+                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <Field @name="fullName" as |field|>
@@ -303,6 +304,7 @@ class IndexPage extends Component {
                     @placeholder="John Doe"
                     @value={{this.fullName}}
                     @onInput={{this.handleNameChange}}
+                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <Field @name="country" as |field|>
@@ -312,6 +314,7 @@ class IndexPage extends Component {
                     @items={{this.countries}}
                     @selectedKey={{this.selectedCountry}}
                     @onSelectionChange={{this.handleCountryChange}}
+                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <div class="flex items-center gap-6 pt-2">
@@ -472,7 +475,7 @@ class IndexPage extends Component {
                   <p class="text-neutral-medium mt-4">
                     Try pressing
                     <kbd
-                      class="px-2 py-1 bg-neutral-subtle rounded text-sm font-mono"
+                      class="px-2 py-1 bg-surface-overlay-subtle rounded text-sm font-mono"
                     >Escape</kbd>
                     to close!
                   </p>
@@ -510,21 +513,21 @@ class IndexPage extends Component {
                 </drawer.Header>
                 <drawer.Body>
                   <div class="space-y-4">
-                    <div class="p-4 bg-neutral-subtle rounded-lg">
+                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Components</h4>
                       <p class="text-sm text-neutral-medium">Browse all 30+
                         components</p>
                     </div>
-                    <div class="p-4 bg-neutral-subtle rounded-lg">
+                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Documentation</h4>
                       <p class="text-sm text-neutral-medium">Learn how to use
                         Frontile</p>
                     </div>
-                    <div class="p-4 bg-neutral-subtle rounded-lg">
+                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Examples</h4>
@@ -546,7 +549,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Inventory }}
-      <section class="py-24 bg-white dark:bg-neutral-subtle">
+      <section class="py-24 bg-white dark:bg-black">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader @title="30+ Components, Organized by Purpose" />
 
@@ -645,9 +648,9 @@ class IndexPage extends Component {
               @name="Utilities"
               @count={{5}}
               @description="Avatar, Collapsible, Divider, Spinner, VisuallyHidden"
-              @gradient="bg-gradient-to-br from-neutral-subtle to-primary-50"
-              @borderColor="border-neutral-subtle"
-              @countColor="text-neutral-medium"
+              @gradient="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20"
+              @borderColor="border-gray-200 dark:border-gray-800"
+              @countColor="text-gray-600 dark:text-gray-400"
             >
               <:icon>
                 <ComponentIcon class="w-5 h-5 text-neutral-medium mr-2" />
@@ -691,7 +694,7 @@ class IndexPage extends Component {
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -707,7 +710,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -723,7 +726,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -739,7 +742,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -755,7 +758,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -771,7 +774,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
@@ -790,7 +793,7 @@ class IndexPage extends Component {
       </section>
 
       {{! TypeScript Excellence }}
-      <section class="py-24 bg-neutral-subtle">
+      <section class="py-24 bg-gray-50 dark:bg-gray-950">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Type Safety from Components to Templates"
@@ -804,7 +807,7 @@ class IndexPage extends Component {
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div
-              class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
             >
               <h3 class="text-lg font-bold text-neutral-strong mb-4">Component
                 Signatures</h3>
@@ -820,7 +823,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
             >
               <h3 class="text-lg font-bold text-neutral-strong mb-4">Template
                 Type Checking</h3>
@@ -835,7 +838,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
             >
               <h3 class="text-lg font-bold text-neutral-strong mb-4">Generic
                 Support</h3>
@@ -897,7 +900,7 @@ Listbox<Country>
 
           <div class="max-w-4xl mx-auto">
             <div
-              class="p-8 bg-neutral-subtle rounded-xl shadow-lg border border-neutral-subtle"
+              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-purple-200 dark:border-purple-800"
             >
               <h3 class="text-xl font-bold text-neutral-strong mb-6">Semantic
                 Theme System</h3>
@@ -909,31 +912,33 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
-          DEFAULT: '#3b82f6',
-          foreground: '#ffffff'
+        brand: {
+          'contrast-1': '#ffffff',
+          subtle: '#eff6ff',
+          soft: '#93c5fd',
+          medium: '#3b82f6',
+          strong: '#1e40af',
+          'contrast-2': '#000000'
+        },
+        neutral: {
+          'contrast-1': '#ffffff',
+          subtle: '#f5f5f5',
+          soft: '#a3a3a3',
+          medium: '#525252',
+          strong: '#171717',
+          'contrast-2': '#000000'
         }
       }
     },
     dark: {
       colors: {
-        primary: {
-          DEFAULT: '#60a5fa',
-          foreground: '#ffffff'
-        },
-        background: {
-          DEFAULT: '#0a0a0a'
+        brand: {
+          'contrast-1': '#000000',
+          subtle: '#1e3a8a',
+          soft: '#3b82f6',
+          medium: '#60a5fa',
+          strong: '#dbeafe',
+          'contrast-2': '#ffffff'
         }
       }
     }
@@ -945,18 +950,18 @@ module.exports = frontile({
                 Customize light and dark themes with semantic colors that adapt
                 automatically. Use tokens like
                 <code
-                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
-                >bg-primary</code>,
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                >bg-brand-medium</code>,
                 <code
-                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
-                >text-danger</code>, and
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                >text-danger-strong</code>, and
                 <code
-                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
-                >bg-background</code>
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                >text-neutral-soft</code>
                 for consistent theming across your application.
               </p>
               <div class="flex justify-center">
-                <DocfyLink @to="/docs/customization/theme">
+                <DocfyLink @to="/docs/theme/overview">
                   <Button
                     @intent="primary"
                     @size="md"
@@ -1049,19 +1054,19 @@ module.exports = frontile({
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
-            <div class="p-6 bg-white/10 backdrop-blur rounded-lg">
+            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
               <h3 class="font-bold mb-2 text-white">Quick Start</h3>
               <p class="text-blue-100 text-sm">
                 Installation, setup, and your first component in minutes
               </p>
             </div>
-            <div class="p-6 bg-white/10 backdrop-blur rounded-lg">
+            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
               <h3 class="font-bold mb-2 text-white">Browse Components</h3>
               <p class="text-blue-100 text-sm">
                 Interactive examples and API documentation
               </p>
             </div>
-            <div class="p-6 bg-white/10 backdrop-blur rounded-lg">
+            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
               <h3 class="font-bold mb-2 text-white">Join Community</h3>
               <p class="text-blue-100 text-sm">
                 GitHub discussions and issue tracker
