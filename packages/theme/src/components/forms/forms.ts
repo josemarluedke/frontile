@@ -3,7 +3,7 @@ import { focusVisibleRing, focusVisibleWithinRing } from '../shared';
 
 const label = tv({
   slots: {
-    base: 'text-foreground inline-block font-semibold leading-tight pb-1',
+    base: 'text-neutral-strong inline-block font-semibold leading-tight pb-1',
     asterisk: 'text-danger'
   },
   variants: {
@@ -69,7 +69,7 @@ const input = tv({
       'bg-white dark:bg-neutral-subtle',
       'text-neutral-strong',
       'placeholder-neutral-soft',
-      'text-base text-left text-foreground',
+      'text-base text-left',
       'border',
       'border-neutral-soft',
       'rounded-sm',
@@ -78,7 +78,7 @@ const input = tv({
       'focus:ring-focus',
       'focus:outline-hidden',
       'focus:border-brand-soft',
-      'selection:bg-content3',
+      'selection:bg-surface-overlay-soft',
       'disabled:border-neutral-subtle disabled:text-neutral-soft',
       'aria-invalid:border-danger-soft',
       'aria-invalid:focus:ring-danger-soft'

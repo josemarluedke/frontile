@@ -18,7 +18,7 @@ const notificationCard = tv({
   variants: {
     appearance: {
       info: {
-        base: 'text-white bg-neutral-strong dark:text-foreground dark:bg-inverse-subtle',
+        base: 'text-white bg-neutral-strong dark:text-surface-solid-11 dark:bg-inverse-subtle',
         closeButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft',
         customActionButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft'
       },
