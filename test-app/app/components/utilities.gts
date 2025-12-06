@@ -25,7 +25,7 @@ class CollapsibleDemo extends Component {
       </Button>
 
       <Collapsible @isOpen={{this.isOpen}}>
-        <div class="p-8 mt-4 text-white bg-primary-800 rounded">
+        <div class="p-8 mt-4 text-white bg-brand-strong rounded">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
           malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
           dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
@@ -46,7 +46,7 @@ const Title: TOC<{
   };
 }> = <template>
   <h1
-    class="inline-block mb-6 text-2xl font-bold border-b-4 border-primary"
+    class="inline-block mb-6 text-2xl font-bold border-b-4 border-brand-medium"
     ...attributes
   >
     {{yield}}

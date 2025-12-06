@@ -4,7 +4,7 @@ import Navigation from '../components/navigation';
 <template>
   <div class="container p-4 mx-auto">
     <div class="flex flex-wrap items-center justify-between mb-4">
-      <h2 class="inline-block text-3xl font-bold text-primary">
+      <h2 class="inline-block text-3xl font-bold text-brand">
         Frontile playground
       </h2>
       <div class="flex">

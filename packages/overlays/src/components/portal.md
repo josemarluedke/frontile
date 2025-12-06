@@ -49,11 +49,11 @@ import { Portal, PortalTarget } from 'frontile';
   </div>
 
   <Portal
-    class='absolute w-content bg-default/50 left-0 p-4 border border-default rounded'
+    class='absolute w-content bg-neutral/50 left-0 p-4 border border-neutral-soft rounded'
   >
     First portal (Outer)
     <Portal
-      class='absolute w-content bg-primary/50 border border-primary left-12 rounded'
+      class='absolute w-content bg-brand/50 border border-brand-medium left-12 rounded'
     >
       Second portal (Inner)
       <Portal

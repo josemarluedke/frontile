@@ -316,7 +316,7 @@ export default class ModalBackdrops extends Component {
         <m.Header>{{this.currentBackdropOption.title}}</m.Header>
         <m.Body>
           <p>{{this.currentBackdropOption.description}}</p>
-          <p class='mt-2 text-sm text-default-500'>Notice how the backdrop
+          <p class='mt-2 text-sm text-neutral-soft'>Notice how the backdrop
             behind this modal changes based on the selected type.</p>
         </m.Body>
         <m.Footer>
@@ -376,7 +376,7 @@ export default class ConfirmationDialog extends Component {
       </Button>
 
       {{#if this.result}}
-        <div class='p-3 rounded border bg-default-50'>
+        <div class='p-3 rounded border bg-neutral-subtle'>
           {{this.result}}
         </div>
       {{/if}}
@@ -395,7 +395,7 @@ export default class ConfirmationDialog extends Component {
         <m.Body>
           <div class='space-y-3'>
             <p>Are you sure you want to delete this item?</p>
-            <p class='text-sm text-default-600'>This action cannot be undone.</p>
+            <p class='text-sm text-neutral-medium'>This action cannot be undone.</p>
 
             {{#if this.isDeleting}}
               <div class='flex items-center space-x-2'>
@@ -741,7 +741,7 @@ export default class NestedModals extends Component {
         <m.Body>
           <p class='mb-4'>This is the first modal. You can open another modal
             from here.</p>
-          <p class='text-sm text-default-600'>Notice how the backdrop becomes
+          <p class='text-sm text-neutral-medium'>Notice how the backdrop becomes
             darker with each modal layer.</p>
 
           <!-- Second Modal -->
@@ -755,7 +755,7 @@ export default class NestedModals extends Component {
             <m.Body>
               <p class='mb-4'>This is the second modal, opened from the first
                 one.</p>
-              <p class='text-sm text-default-600'>You can continue nesting
+              <p class='text-sm text-neutral-medium'>You can continue nesting
                 modals as needed.</p>
 
               <!-- Third Modal -->
@@ -769,7 +769,7 @@ export default class NestedModals extends Component {
                 <m.Body>
                   <p class='mb-4'>This is the third and final modal in this
                     example.</p>
-                  <p class='text-sm text-default-600'>Each modal maintains its
+                  <p class='text-sm text-neutral-medium'>Each modal maintains its
                     own focus trap and can be closed independently.</p>
                 </m.Body>
                 <m.Footer @class='flex gap-2'>

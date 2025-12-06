@@ -28,15 +28,26 @@ export type BaseColors = {
   content4: ColorScale;
 };
 
-export type ThemeColors = BaseColors & {
-  default: ColorScale;
-  primary: ColorScale;
-  success: ColorScale;
-  warning: ColorScale;
-  danger: ColorScale;
-};
-
 export type SemanticBaseColors = {
   light: BaseColors;
   dark: BaseColors;
 };
+
+export interface SemanticColorCategory {
+  'contrast-1': string;
+  'contrast-2': string;
+  subtle: string;
+  medium: string;
+  strong: string;
+  soft: string;
+  DEFAULT: string;
+}
+
+export interface ThemeColors {
+  neutral: SemanticColorCategory;
+  brand: SemanticColorCategory;
+  success: SemanticColorCategory;
+  warning: SemanticColorCategory;
+  danger: SemanticColorCategory;
+  inverse: SemanticColorCategory;
+}

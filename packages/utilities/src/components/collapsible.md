@@ -52,7 +52,7 @@ export default class BasicCollapsible extends Component {
         <div
           class='p-8 mt-4 bg-primary-100 rounded-lg border border-primary-200'
         >
-          <p class='text-default-900'>
+          <p class='text-neutral-strong'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
             malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
             dolor sit amet, consectetur adipiscing elit.
@@ -85,11 +85,11 @@ export default class PreviewCollapsible extends Component {
 
   <template>
     <div class='max-w-md'>
-      <div class='border border-default-200 rounded-lg overflow-hidden'>
+      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
         <Collapsible @isOpen={{this.isOpen}} @initialHeight='80px'>
-          <div class='p-6 bg-default-50'>
+          <div class='p-6 bg-neutral-subtle'>
             <h3 class='text-lg font-semibold mb-2'>Article Title</h3>
-            <p class='text-default-700'>
+            <p class='text-neutral-medium'>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
               eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -100,7 +100,7 @@ export default class PreviewCollapsible extends Component {
           </div>
         </Collapsible>
 
-        <div class='px-6 py-3 bg-default-100 border-t border-default-200'>
+        <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
           <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
             {{if this.isOpen 'Read Less' 'Read More'}}
           </Button>
@@ -157,22 +157,22 @@ export default class FaqAccordion extends Component {
   <template>
     <div class='max-w-2xl space-y-2'>
       {{#each this.faqs as |faq|}}
-        <div class='border border-default-200 rounded-lg overflow-hidden'>
+        <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
           <Button
             @appearance='minimal'
-            @class='w-full text-left px-6 py-4 hover:bg-default-50'
+            @class='w-full text-left px-6 py-4 hover:bg-neutral-subtle'
             @onPress={{fn this.toggleItem faq.id}}
           >
             <div class='flex items-center justify-between'>
               <span class='font-semibold'>{{faq.question}}</span>
-              <span class='text-default-500'>
+              <span class='text-neutral-soft'>
                 {{if (this.isOpen faq.id) '−' '+'}}
               </span>
             </div>
           </Button>
 
           <Collapsible @isOpen={{this.isOpen faq.id}}>
-            <div class='px-6 pb-4 text-default-700'>
+            <div class='px-6 pb-4 text-neutral-medium'>
               {{faq.answer}}
             </div>
           </Collapsible>
@@ -201,41 +201,41 @@ export default class ExpandableCard extends Component {
   }
 
   <template>
-    <div class='max-w-md border border-default-200 rounded-lg overflow-hidden'>
+    <div class='max-w-md border border-neutral-subtle rounded-lg overflow-hidden'>
       <div class='p-6'>
         <div class='flex items-start gap-4'>
           <div
             class='w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center'
           >
-            <span class='text-primary-600 font-semibold text-lg'>JD</span>
+            <span class='text-brand-medium font-semibold text-lg'>JD</span>
           </div>
           <div class='flex-1'>
             <h3 class='font-semibold text-lg'>John Doe</h3>
-            <p class='text-default-500 text-sm'>Software Engineer</p>
+            <p class='text-neutral-soft text-sm'>Software Engineer</p>
           </div>
         </div>
 
         <Collapsible @isOpen={{this.isExpanded}}>
-          <div class='mt-4 pt-4 border-t border-default-200'>
+          <div class='mt-4 pt-4 border-t border-neutral-subtle'>
             <dl class='space-y-2 text-sm'>
               <div class='flex'>
                 <dt class='font-medium w-24'>Email:</dt>
-                <dd class='text-default-700'>john.doe@example.com</dd>
+                <dd class='text-neutral-medium'>john.doe@example.com</dd>
               </div>
               <div class='flex'>
                 <dt class='font-medium w-24'>Phone:</dt>
-                <dd class='text-default-700'>+1 (555) 123-4567</dd>
+                <dd class='text-neutral-medium'>+1 (555) 123-4567</dd>
               </div>
               <div class='flex'>
                 <dt class='font-medium w-24'>Location:</dt>
-                <dd class='text-default-700'>San Francisco, CA</dd>
+                <dd class='text-neutral-medium'>San Francisco, CA</dd>
               </div>
             </dl>
           </div>
         </Collapsible>
       </div>
 
-      <div class='px-6 py-3 bg-default-50 border-t border-default-200'>
+      <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
         <Button @size='sm' @appearance='minimal' @onPress={{this.toggleExpand}}>
           {{if this.isExpanded 'Show Less' 'Show More'}}
         </Button>
@@ -274,8 +274,8 @@ export default class MultiplePanels extends Component {
 
   <template>
     <div class='max-w-md space-y-4'>
-      <div class='border border-default-200 rounded-lg overflow-hidden'>
-        <div class='p-4 bg-primary-50 border-b border-default-200'>
+      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
+        <div class='p-4 bg-primary-50 border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -287,7 +287,7 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelOneOpen}}>
           <div class='p-4'>
-            <ul class='space-y-2 text-default-700'>
+            <ul class='space-y-2 text-neutral-medium'>
               <li>✓ Smooth animations</li>
               <li>✓ Fully customizable</li>
               <li>✓ Accessible by default</li>
@@ -296,8 +296,8 @@ export default class MultiplePanels extends Component {
         </Collapsible>
       </div>
 
-      <div class='border border-default-200 rounded-lg overflow-hidden'>
-        <div class='p-4 bg-success-50 border-b border-default-200'>
+      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
+        <div class='p-4 bg-success-50 border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -309,15 +309,15 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelTwoOpen}}>
           <div class='p-4'>
-            <p class='text-default-700'>
+            <p class='text-neutral-medium'>
               Starting at $9.99/month with a 14-day free trial.
             </p>
           </div>
         </Collapsible>
       </div>
 
-      <div class='border border-default-200 rounded-lg overflow-hidden'>
-        <div class='p-4 bg-warning-50 border-b border-default-200'>
+      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
+        <div class='p-4 bg-warning-50 border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -333,7 +333,7 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelThreeOpen}}>
           <div class='p-4'>
-            <p class='text-default-700'>
+            <p class='text-neutral-medium'>
               24/7 email support with average response time of 2 hours.
             </p>
           </div>
@@ -370,11 +370,11 @@ export default class InitiallyOpen extends Component {
 
         <Collapsible @isOpen={{this.isOpen}}>
           <div class='p-4'>
-            <p class='text-default-700 mb-4'>
+            <p class='text-neutral-medium mb-4'>
               Thank you for signing up! Here are some quick tips to get started
               with our platform.
             </p>
-            <ul class='space-y-2 text-default-700'>
+            <ul class='space-y-2 text-neutral-medium'>
               <li>→ Complete your profile</li>
               <li>→ Connect your accounts</li>
               <li>→ Explore the dashboard</li>
@@ -382,7 +382,7 @@ export default class InitiallyOpen extends Component {
           </div>
         </Collapsible>
 
-        <div class='px-4 py-3 bg-default-50 border-t border-default-200'>
+        <div class='px-4 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
           <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
             {{if this.isOpen 'Dismiss' 'Show Again'}}
           </Button>
@@ -422,8 +422,8 @@ export default class NestedCollapsibles extends Component {
 
   <template>
     <div class='max-w-md'>
-      <div class='border border-default-200 rounded-lg overflow-hidden'>
-        <div class='p-4 bg-default-100'>
+      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
+        <div class='p-4 bg-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -436,8 +436,8 @@ export default class NestedCollapsibles extends Component {
 
         <Collapsible @isOpen={{this.isParentOpen}}>
           <div class='p-4 space-y-2'>
-            <div class='border border-default-200 rounded overflow-hidden'>
-              <div class='p-3 bg-default-50'>
+            <div class='border border-neutral-subtle rounded overflow-hidden'>
+              <div class='p-3 bg-neutral-subtle'>
                 <Button
                   @appearance='minimal'
                   @size='sm'
@@ -453,14 +453,14 @@ export default class NestedCollapsibles extends Component {
                 </Button>
               </div>
               <Collapsible @isOpen={{this.isChildOneOpen}}>
-                <div class='p-3 text-sm text-default-700'>
+                <div class='p-3 text-sm text-neutral-medium'>
                   Details for subcategory 1
                 </div>
               </Collapsible>
             </div>
 
-            <div class='border border-default-200 rounded overflow-hidden'>
-              <div class='p-3 bg-default-50'>
+            <div class='border border-neutral-subtle rounded overflow-hidden'>
+              <div class='p-3 bg-neutral-subtle'>
                 <Button
                   @appearance='minimal'
                   @size='sm'
@@ -476,7 +476,7 @@ export default class NestedCollapsibles extends Component {
                 </Button>
               </div>
               <Collapsible @isOpen={{this.isChildTwoOpen}}>
-                <div class='p-3 text-sm text-default-700'>
+                <div class='p-3 text-sm text-neutral-medium'>
                   Details for subcategory 2
                 </div>
               </Collapsible>

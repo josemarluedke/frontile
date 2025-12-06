@@ -8,8 +8,8 @@ const table = tv({
     thead: ['relative'],
     tbody: [
       'divide-y',
-      'divide-default-100',
-      '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-default-100',
+      'divide-neutral-subtle',
+      '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-neutral-subtle',
       '[&>tr]:data-[selectable=true]:transition-colors'
     ],
     tfoot: ['relative'],
@@ -31,7 +31,7 @@ const table = tv({
       'left-0',
       'w-full',
       'h-px',
-      'bg-default-200'
+      'bg-neutral-subtle'
     ],
     th: [
       'h-12',
@@ -131,7 +131,7 @@ const table = tv({
     striped: {
       true: {
         tbody:
-          '[&_tr:nth-child(odd)]:bg-default-100/50 dark:[&_tr:nth-child(odd)]:bg-default-200/10'
+          '[&_tr:nth-child(odd)]:bg-neutral-subtle/50 dark:[&_tr:nth-child(odd)]:bg-neutral-subtle/10'
       }
     },
     isSticky: {
@@ -240,14 +240,14 @@ const table = tv({
       isLoading: true,
       loadingColor: 'default',
       class: {
-        thead: `after:bg-default`
+        thead: `after:bg-neutral`
       }
     },
     {
       isLoading: true,
       loadingColor: 'primary',
       class: {
-        thead: `after:bg-primary`
+        thead: `after:bg-brand`
       }
     },
     {
@@ -275,35 +275,35 @@ const table = tv({
     {
       selectionColor: 'default',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-default-200/50',
+        tbody: '[&>tr]:data-[selected=true]:bg-neutral-subtle/50',
         tr: ['data-[selectable=true]:focus-visible:ring-default']
       }
     },
     {
       selectionColor: 'primary',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-primary-50',
-        tr: ['data-[selectable=true]:focus-visible:ring-primary']
+        tbody: '[&>tr]:data-[selected=true]:bg-brand-subtle',
+        tr: ['data-[selectable=true]:focus-visible:ring-brand-soft']
       }
     },
     {
       selectionColor: 'success',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-success-50',
+        tbody: '[&>tr]:data-[selected=true]:bg-success-subtle',
         tr: ['data-[selectable=true]:focus-visible:ring-success']
       }
     },
     {
       selectionColor: 'warning',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-warning-50',
+        tbody: '[&>tr]:data-[selected=true]:bg-warning-subtle',
         tr: ['data-[selectable=true]:focus-visible:ring-warning']
       }
     },
     {
       selectionColor: 'danger',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-danger-50',
+        tbody: '[&>tr]:data-[selected=true]:bg-danger-subtle',
         tr: ['data-[selectable=true]:focus-visible:ring-danger']
       }
     }

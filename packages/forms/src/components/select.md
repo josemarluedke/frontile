@@ -168,8 +168,8 @@ export default class SelectFormValidation extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-4 bg-success-50 border border-success-200 rounded'>
-          <p class='text-success-900'>{{this.submitMessage}}</p>
+        <div class='p-4 bg-success-50 border border-success-subtle rounded'>
+          <p class='text-success-strong'>{{this.submitMessage}}</p>
           <div class='mt-2 text-sm'>
             <p><strong>Country:</strong> {{this.formData.country}}</p>
             <p><strong>Interests:</strong> {{this.formData.interests}}</p>
@@ -278,8 +278,8 @@ export default class CustomUserSelect extends Component {
               class='w-10 h-10 rounded-full'
             />
             <div>
-              <div class='font-medium text-default-900'>{{o.item.name}}</div>
-              <div class='text-sm text-default-500'>{{o.item.email}}</div>
+              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
             </div>
           </div>
         </o.Item>

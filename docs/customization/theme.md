@@ -95,17 +95,17 @@ To apply Frontile's theming in your components:
 
 ### Utilize Semantic Colors
 
-Frontile defines semantic color classes that adjust according to the active theme. For example, using the `text-primary` class will apply the primary color of the current theme to the text.
+Frontile defines semantic color classes that adjust according to the active theme. For example, using the `text-brand` class will apply the primary color of the current theme to the text.
 
-Each semantic color also has a default color for the theme. For instance, `text-danger` without a number will use the default configured color for danger in the theme. Additionally, these semantic colors have a foreground version, such as `text-primary-foreground`, which is used to provide appropriate contrast against the background.
+Each semantic color also has a default color for the theme. For instance, `text-danger` without a number will use the default configured color for danger in the theme. Additionally, these semantic colors have a foreground version, such as `text-brand-contrast-1`, which is used to provide appropriate contrast against the background.
 
 ```hbs
-<button class='bg-primary text-primary-foreground'>
+<button class='bg-brand text-brand-contrast-1'>
   Click Me
 </button>
 ```
 
-In this example, `bg-primary` sets the button's background to the primary color, and `text-primary-foreground` sets the text color to ensure sufficient contrast.
+In this example, `bg-brand` sets the button's background to the primary color, and `text-brand-contrast-1` sets the text color to ensure sufficient contrast.
 
 ### Switch Between Themes
 
@@ -222,25 +222,25 @@ You can also create entirely new themes by defining a new set of colors and layo
 
 Each semantic color in Frontile uses a color scale object with the following properties:
 
-- **Numeric scale (50-950)**: Provides utility classes like `bg-primary-50`, `text-primary-500`, `border-primary-900`, etc.
-- **`DEFAULT`**: The color used when no numeric suffix is specified. For example, `bg-primary` will use the `DEFAULT` value.
-- **`foreground`**: The color used for text or content that sits on top of the base color, ensuring proper contrast. Used with classes like `text-primary-foreground`.
+- **Numeric scale (50-950)**: Provides utility classes like `bg-primary-50`, `text-brand-soft`, `border-brand-strong`, etc.
+- **`DEFAULT`**: The color used when no numeric suffix is specified. For example, `bg-brand` will use the `DEFAULT` value.
+- **`foreground`**: The color used for text or content that sits on top of the base color, ensuring proper contrast. Used with classes like `text-brand-contrast-1`.
 
 **Example usage:**
 
 ```hbs
 {{! Uses the DEFAULT color from primary scale }}
-<button class='bg-primary text-primary-foreground'>
+<button class='bg-brand text-brand-contrast-1'>
   Click Me
 </button>
 
 {{! Uses the specific 500 shade from primary scale }}
-<div class='bg-primary-500 text-white'>
+<div class='bg-brand-soft text-white'>
   Content
 </div>
 
 {{! Uses the 50 shade for a lighter background }}
-<div class='bg-primary-50 text-primary-900'>
+<div class='bg-primary-50 text-brand-strong'>
   Light background
 </div>
 ```
@@ -249,7 +249,7 @@ When defining custom colors, you can provide either:
 
 - A **full scale object** with all numeric values, `DEFAULT`, and `foreground`
 - A **minimal object** with just `DEFAULT` and optionally `foreground` (you won't get numeric utility classes)
-- A **simple string** (you'll only get the base class like `bg-primary`, no scale utilities or foreground)
+- A **simple string** (you'll only get the base class like `bg-brand`, no scale utilities or foreground)
 
 ### Inspiration
 
@@ -266,7 +266,7 @@ Frontile's semantic theming system provides pre-defined semantic colors:
 - **`info`**
 - **`default`**
 
-It is recommended to use these instead of Tailwind CSS's utility classes, such as `bg-gray-400`. For example, in Frontile, you can use `bg-default-400` for consistency.
+It is recommended to use these instead of Tailwind CSS's utility classes, such as `bg-gray-400`. For example, in Frontile, you can use `bg-neutral-soft` for consistency.
 
 These colors adapt based on the active theme, ensuring a consistent and accessible design across different themes.
 

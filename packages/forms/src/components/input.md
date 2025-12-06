@@ -90,10 +90,10 @@ export default class InputWithContent extends Component {
     <div class='flex flex-col gap-4'>
       <Input @label='Price'>
         <:startContent>
-          <span class='text-default-500'>$</span>
+          <span class='text-neutral-soft'>$</span>
         </:startContent>
         <:endContent>
-          <span class='text-default-500'>USD</span>
+          <span class='text-neutral-soft'>USD</span>
         </:endContent>
       </Input>
 

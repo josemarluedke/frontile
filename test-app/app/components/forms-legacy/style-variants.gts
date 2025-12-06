@@ -14,7 +14,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
     {{! @glint-nocheck }}
     <div class="pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormInput
       </h1>
@@ -41,7 +41,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
     <div class="mt-8 pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormTextarea
       </h1>
@@ -76,7 +76,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
     <div class="mt-8 pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormCheckbox
       </h1>
@@ -116,7 +116,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
     <div class="mt-8 pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormCheckboxGroup
       </h1>
@@ -165,7 +165,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
     <div class="mt-8 pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormRadio
       </h1>
@@ -212,7 +212,7 @@ export default class StyleVariants extends Component<StyleVariantsArgs> {
 
     <div class="my-8 pt-4 border-t">
       <h1
-        class="mb-6 text-2xl font-bold inline-block border-b-4 border-primary"
+        class="mb-6 text-2xl font-bold inline-block border-b-4 border-brand-medium"
       >
         FormRadioGroup
       </h1>

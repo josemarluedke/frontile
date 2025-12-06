@@ -155,7 +155,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
   <template>
     <button
       type="button"
-      class="transition flex items-center rounded focus-visible:ring outline-none hover:text-default-800"
+      class="transition flex items-center rounded focus-visible:ring outline-none hover:text-neutral-strong"
       {{on "click" this.toggle}}
       {{this.setupShortcut}}
     >
@@ -174,7 +174,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
       Search
       <code
-        class="hidden sm:block ml-3 rounded border font-bold border-default-400 px-2 py-1 text-xs leading-none"
+        class="hidden sm:block ml-3 rounded border font-bold border-neutral-soft px-2 py-1 text-xs leading-none"
       >
         /
       </code>
@@ -191,7 +191,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
         {{this.registerContainerElement}}
       >
         <div
-          class="bg-default-50 backdrop-blur bg-opacity-80 rounded overflow-hidden border border-default-200"
+          class="bg-neutral-subtle backdrop-blur bg-opacity-80 rounded overflow-hidden border border-neutral-subtle"
         >
           {{!  template-lint-disable self-closing-void-elements  }}
           <VisuallyHidden>
@@ -203,8 +203,8 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
             id="docfy-jump-to-input"
             autocomplete="off"
             placeholder="Search..."
-            class="p-4 bg-transparent w-full focus:outline-none placeholder-default-500
-              {{if this.results.length 'border-b border-default-300'}}
+            class="p-4 bg-transparent w-full focus:outline-none placeholder-neutral-soft
+              {{if this.results.length 'border-b border-neutral-soft'}}
               "
             {{on "input" this.search}}
             {{on "keydown" this.onInputKeyDown}}
@@ -218,7 +218,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
                     (eq this.selected index)
-                    'bg-primary-500 text-primary-foreground'
+                    'bg-brand-soft text-brand-contrast-1'
                   }}"
                 data-result={{index}}
                 {{on "click" this.onItemClick}}
@@ -243,7 +243,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                   ></path>
                 </svg>
 
-                <span class="text-default-800">
+                <span class="text-neutral-strong">
                   {{result.item.title}}
                 </span>
               </DocfyLink>

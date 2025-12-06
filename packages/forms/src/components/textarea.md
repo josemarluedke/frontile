@@ -59,8 +59,8 @@ export default class ControlledTextarea extends Component {
         </form.Field>
       </Form>
 
-      <div class='p-3 border border-default-300 rounded'>
-        <p class='text-sm text-default-600'>Character count:
+      <div class='p-3 border border-neutral-soft rounded'>
+        <p class='text-sm text-neutral-medium'>Character count:
           {{this.formData.message.length}}</p>
         <p class='text-sm'>Current message: {{this.formData.message}}</p>
       </div>
@@ -134,22 +134,22 @@ export default class TextareaWithFormChange extends Component {
         </form.Field>
       </Form>
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <div class='space-y-2 text-sm'>
           <div>
             <strong>Form @onChange events:</strong>
             <span class='ml-2'>{{this.changeEventCount}}</span>
-            <p class='text-default-600 mt-1'>
+            <p class='text-neutral-medium mt-1'>
               Fires on every keystroke, providing complete form data
             </p>
           </div>
-          <div class='pt-2 border-t border-default-200'>
+          <div class='pt-2 border-t border-neutral-subtle'>
             <strong>Current value length:</strong>
             <span class='ml-2'>{{this.formData.text.length}} characters</span>
           </div>
           <div>
             <strong>Current value:</strong>
-            <p class='mt-1 p-2 bg-white rounded border border-default-200 break-words'>
+            <p class='mt-1 p-2 bg-white rounded border border-neutral-subtle break-words'>
               {{if this.formData.text this.formData.text '(empty)'}}
             </p>
           </div>
@@ -232,7 +232,7 @@ export default class ValidatedTextarea extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-800 rounded'>
+        <div class='p-3 bg-success-50 text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

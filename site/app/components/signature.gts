@@ -121,7 +121,7 @@ const PropertiesTable: TOC<{
                 {{#if arg.isInternal}}
                   <Popover as |pop|>
                     <button
-                      class="ml-1 hover:bg-default-200 rounded-full"
+                      class="ml-1 hover:bg-neutral-subtle rounded-full"
                       {{pop.trigger "hover"}}
                       {{pop.anchor}}
                     >
@@ -148,7 +148,7 @@ const PropertiesTable: TOC<{
                 {{#if arg.type.raw}}
                   <Popover as |pop|>
                     <button
-                      class="ml-1 hover:bg-default-200 rounded-full"
+                      class="ml-1 hover:bg-neutral-subtle rounded-full"
                       {{pop.trigger "hover"}}
                       {{pop.anchor}}
                     >

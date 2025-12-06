@@ -43,7 +43,7 @@ export default class Example extends Component {
   }
 
   <template>
-    <div class="w-[260px] border px-1 py-2 rounded border-default-200 mt-4">
+    <div class="w-[260px] border px-1 py-2 rounded border-neutral-subtle mt-4">
       <Listbox
         @allowEmpty={{true}}
         @selectionMode="multiple"
@@ -60,7 +60,7 @@ export default class Example extends Component {
       </Listbox>
     </div>
     <Divider @class="my-8" />
-    <div class="w-[260px] border px-1 py-2 rounded border-default-200">
+    <div class="w-[260px] border px-1 py-2 rounded border-neutral-subtle">
       <Listbox
         @allowEmpty={{true}}
         @selectionMode="single"
@@ -71,7 +71,7 @@ export default class Example extends Component {
       />
     </div>
     <Divider @class="my-8" />
-    <div class="w-[260px] border px-1 py-2 rounded border-default-200">
+    <div class="w-[260px] border px-1 py-2 rounded border-neutral-subtle">
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}

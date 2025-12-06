@@ -93,11 +93,11 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
       <Dropdown as |d|>
         <d.Trigger
           @appearance="minimal"
-          @class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-default-600 bg-default-100 border border-default-200 rounded-lg hover:bg-default-200 focus:bg-default-200 transition-all duration-200"
+          @class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-neutral-medium bg-neutral-subtle border border-neutral-subtle rounded-lg hover:bg-neutral-subtle focus:bg-neutral-subtle transition-all duration-200"
         >
           <span>{{this.getVersionLabel this.currentVersion}}</span>
           <svg
-            class="w-4 h-4 text-default-500"
+            class="w-4 h-4 text-neutral-soft"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

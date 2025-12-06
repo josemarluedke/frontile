@@ -57,7 +57,7 @@ export default class BasicListbox extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @selectionMode='single'
@@ -67,7 +67,7 @@ export default class BasicListbox extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -107,7 +107,7 @@ export default class MultipleSelection extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @allowEmpty={{true}}
@@ -118,7 +118,7 @@ export default class MultipleSelection extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -154,7 +154,7 @@ export default class StaticItems extends Component {
   }
 
   <template>
-    <div class='w-[280px] border px-1 py-2 rounded border-default-200'>
+    <div class='w-[280px] border px-1 py-2 rounded border-neutral-subtle'>
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
@@ -216,7 +216,7 @@ export default class ActionMenu extends Component {
   }
 
   <template>
-    <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+    <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @selectionMode='none'
@@ -291,7 +291,7 @@ export default class Appearances extends Component {
         </g.ToggleButton>
       </ButtonGroup>
 
-      <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @selectionMode='single'
@@ -317,7 +317,7 @@ import { Listbox } from 'frontile';
 
 export default class IntentColors extends Component {
   <template>
-    <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+    <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
       <Listbox @isKeyboardEventsEnabled={{true}} @appearance='faded' as |l|>
         <l.Item @key='default'>Default Color</l.Item>
         <l.Item @key='primary' @intent='primary'>Primary Color</l.Item>
@@ -354,7 +354,7 @@ export default class DisabledItems extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @selectionMode='single'
@@ -365,7 +365,7 @@ export default class DisabledItems extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Items "feature3" and "feature4" are disabled
       </div>
     </div>
@@ -420,7 +420,7 @@ export default class CustomItems extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='w-[320px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[320px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @selectionMode='single'
@@ -434,14 +434,14 @@ export default class CustomItems extends Component {
               <:default>
                 {{o.item.name}}
                 <span
-                  class='text-xs text-default-400 ml-2'
+                  class='text-xs text-neutral-soft ml-2'
                 >({{o.item.role}})</span>
               </:default>
             </o.Item>
           </:item>
         </Listbox>
       </div>
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -467,7 +467,7 @@ export default class WithDividers extends Component {
   }
 
   <template>
-    <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+    <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @selectionMode='none'
@@ -521,7 +521,7 @@ export default class EmptySelection extends Component {
         </Button>
       </div>
 
-      <div class='w-[260px] border px-1 py-2 rounded border-default-200'>
+      <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
           @selectionMode='single'
@@ -533,7 +533,7 @@ export default class EmptySelection extends Component {
         />
       </div>
 
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         {{#if this.allowEmpty}}
           You can deselect all items by clicking the selected item.
         {{else}}

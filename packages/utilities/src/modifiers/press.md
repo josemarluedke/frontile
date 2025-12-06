@@ -58,12 +58,12 @@ export default class PressExample extends Component {
           onPressChange=this.handlePressChange
         }}
         class={{if this.isPressed 'bg-success' 'bg-success/70'}}
-        class='text-success-foreground p-4 rounded'
+        class='text-success-contrast-1 p-4 rounded'
       >
         Press me! ({{if this.isPressed 'pressed' 'not pressed'}})
       </button>
       <div
-        class='w-48 h-48 overflow-auto mt-4 space-y-1 border border-default-200 rounded p-2'
+        class='w-48 h-48 overflow-auto mt-4 space-y-1 border border-neutral-subtle rounded p-2'
       >
         Output:
         <ul>

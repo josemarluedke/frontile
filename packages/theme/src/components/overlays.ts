@@ -35,7 +35,7 @@ const modal = tv({
     closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-default-200 bg-content2 p-4`
+    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-content2 p-4`
   },
   variants: {
     size: {
@@ -58,7 +58,7 @@ const drawer = tv({
     closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-default-200 bg-content2 p-4`
+    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-content2 p-4`
   },
   variants: {
     size: {

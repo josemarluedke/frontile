@@ -18,24 +18,24 @@ const notificationCard = tv({
   variants: {
     appearance: {
       info: {
-        base: 'text-white bg-default-900 dark:text-foreground dark:bg-default-200',
-        closeButton: 'hover:bg-default-800 dark:hover:bg-default-300',
-        customActionButton: 'hover:bg-default-800 dark:hover:bg-default-300'
+        base: 'text-white bg-neutral-strong dark:text-foreground dark:bg-inverse-subtle',
+        closeButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft',
+        customActionButton: 'hover:bg-neutral-strong dark:hover:bg-inverse-soft'
       },
       success: {
-        base: 'bg-success text-success-foreground',
-        closeButton: 'hover:bg-success-600',
-        customActionButton: 'hover:bg-success-600'
+        base: 'bg-success text-success-contrast-1',
+        closeButton: 'hover:bg-success-medium',
+        customActionButton: 'hover:bg-success-medium'
       },
       warning: {
-        base: 'bg-warning text-warning-foreground',
-        closeButton: 'hover:bg-warning-600',
-        customActionButton: 'hover:bg-warning-600'
+        base: 'bg-warning text-warning-contrast-1',
+        closeButton: 'hover:bg-warning-medium',
+        customActionButton: 'hover:bg-warning-medium'
       },
       error: {
-        base: 'bg-danger text-danger-foreground',
-        closeButton: 'hover:bg-danger-600',
-        customActionButton: 'hover:bg-danger-600'
+        base: 'bg-danger text-danger-contrast-1',
+        closeButton: 'hover:bg-danger-medium',
+        customActionButton: 'hover:bg-danger-medium'
       }
     }
   },

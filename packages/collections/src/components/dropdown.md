@@ -199,7 +199,7 @@ export default class SelectableDropdown extends Component {
         </d.Menu>
       </Dropdown>
 
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -421,7 +421,7 @@ export default class KeepOpenDropdown extends Component {
         </d.Menu>
       </Dropdown>
 
-      <div class='text-sm text-default-500'>
+      <div class='text-sm text-neutral-soft'>
         Active filters:
         {{this.filters}}
       </div>

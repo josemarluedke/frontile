@@ -461,7 +461,7 @@ export default class CompleteFieldForm extends Component {
       >
         <div class='flex flex-col gap-6'>
           {{! Personal Information Section }}
-          <div class='border-b border-default-200 pb-6'>
+          <div class='border-b border-neutral-subtle pb-6'>
             <h3 class='text-lg font-medium mb-4'>Personal Information</h3>
 
             <div class='grid grid-cols-2 gap-4'>
@@ -519,7 +519,7 @@ export default class CompleteFieldForm extends Component {
           </div>
 
           {{! Communication Preferences Section }}
-          <div class='border-b border-default-200 pb-6'>
+          <div class='border-b border-neutral-subtle pb-6'>
             <h3 class='text-lg font-medium mb-4'>Communication Preferences</h3>
 
             <form.Field @name='contactMethod' as |field|>
@@ -577,7 +577,7 @@ export default class CompleteFieldForm extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='mt-4 p-4 bg-success-50 text-success-800 rounded'>
+        <div class='mt-4 p-4 bg-success-50 text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

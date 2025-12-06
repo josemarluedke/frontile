@@ -99,23 +99,23 @@ class IndexPage extends Component {
   }
 
   <template>
-    <div class="min-h-screen bg-white dark:bg-default-100">
+    <div class="min-h-screen bg-white dark:bg-neutral-subtle">
 
       {{! Hero Section }}
       <section
-        class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-default-50 dark:to-black/60 pt-20 pb-24 sm:pt-24 sm:pb-32"
+        class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-neutral-subtle dark:to-black/60 pt-20 pb-24 sm:pt-24 sm:pb-32"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1
-              class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-default-900 dark:text-white mb-6"
+              class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-strong dark:text-white mb-6"
             >
               Production-Ready UI Components
               <span class="block text-blue-600 dark:text-blue-400 mt-2">for
                 Ember.js</span>
             </h1>
             <p
-              class="mt-6 text-xl sm:text-2xl text-default-600 max-w-4xl mx-auto leading-relaxed"
+              class="mt-6 text-xl sm:text-2xl text-neutral-medium max-w-4xl mx-auto leading-relaxed"
             >
               Build accessible, beautiful applications with 30+ TypeScript-typed
               components, Tailwind Variants theming, and built-in dark mode
@@ -146,14 +146,14 @@ class IndexPage extends Component {
       </section>
 
       {{! Quick Install Section }}
-      <section class="py-12 bg-default-50 border-y border-default-200">
+      <section class="py-12 bg-neutral-subtle border-y border-neutral-subtle">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
-              class="text-sm font-semibold text-default-600 uppercase tracking-wide mb-4"
+              class="text-sm font-semibold text-neutral-medium uppercase tracking-wide mb-4"
             >Quick Install</p>
             <CodeBlock @code="pnpm install frontile @frontile/theme" />
-            <p class="mt-4 text-sm text-default-600">
+            <p class="mt-4 text-sm text-neutral-medium">
               Also available via npm and yarn
             </p>
           </div>
@@ -244,7 +244,7 @@ class IndexPage extends Component {
 
       {{! Component Showcase with Live Demos }}
       <section
-        class="py-24 bg-gradient-to-b from-default-50 to-white dark:to-default-100"
+        class="py-24 bg-gradient-to-b from-neutral-subtle to-white dark:to-neutral-subtle"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -344,7 +344,7 @@ class IndexPage extends Component {
             <ComponentDemoCard @title="Status Indicators">
               <div class="space-y-4">
                 <div>
-                  <p class="text-sm text-default-600 mb-2">Progress Bar</p>
+                  <p class="text-sm text-neutral-medium mb-2">Progress Bar</p>
                   <ProgressBar
                     @intent="primary"
                     @progress={{75}}
@@ -352,7 +352,7 @@ class IndexPage extends Component {
                   />
                 </div>
                 <div>
-                  <p class="text-sm text-default-600 mb-2">Loading States</p>
+                  <p class="text-sm text-neutral-medium mb-2">Loading States</p>
                   <div class="flex gap-3 items-center">
                     <Spinner @size="sm" />
                     <Spinner @size="md" />
@@ -360,7 +360,7 @@ class IndexPage extends Component {
                   </div>
                 </div>
                 <Divider />
-                <p class="text-sm text-default-600">
+                <p class="text-sm text-neutral-medium">
                   Visual feedback for user actions and system processes
                 </p>
               </div>
@@ -464,15 +464,15 @@ class IndexPage extends Component {
                   Welcome to Frontile
                 </modal.Header>
                 <modal.Body>
-                  <p class="text-default-700">
+                  <p class="text-neutral-medium">
                     This is a fully accessible modal dialog with keyboard
                     navigation, focus trapping, and backdrop click-to-close
                     functionality.
                   </p>
-                  <p class="text-default-700 mt-4">
+                  <p class="text-neutral-medium mt-4">
                     Try pressing
                     <kbd
-                      class="px-2 py-1 bg-default-200 rounded text-sm font-mono"
+                      class="px-2 py-1 bg-neutral-subtle rounded text-sm font-mono"
                     >Escape</kbd>
                     to close!
                   </p>
@@ -510,25 +510,25 @@ class IndexPage extends Component {
                 </drawer.Header>
                 <drawer.Body>
                   <div class="space-y-4">
-                    <div class="p-4 bg-default-100 rounded-lg">
+                    <div class="p-4 bg-neutral-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-default-900 mb-2"
+                        class="font-semibold text-neutral-strong mb-2"
                       >Components</h4>
-                      <p class="text-sm text-default-600">Browse all 30+
+                      <p class="text-sm text-neutral-medium">Browse all 30+
                         components</p>
                     </div>
-                    <div class="p-4 bg-default-100 rounded-lg">
+                    <div class="p-4 bg-neutral-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-default-900 mb-2"
+                        class="font-semibold text-neutral-strong mb-2"
                       >Documentation</h4>
-                      <p class="text-sm text-default-600">Learn how to use
+                      <p class="text-sm text-neutral-medium">Learn how to use
                         Frontile</p>
                     </div>
-                    <div class="p-4 bg-default-100 rounded-lg">
+                    <div class="p-4 bg-neutral-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-default-900 mb-2"
+                        class="font-semibold text-neutral-strong mb-2"
                       >Examples</h4>
-                      <p class="text-sm text-default-600">See components in
+                      <p class="text-sm text-neutral-medium">See components in
                         action</p>
                     </div>
                   </div>
@@ -546,7 +546,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Inventory }}
-      <section class="py-24 bg-white dark:bg-default-50">
+      <section class="py-24 bg-white dark:bg-neutral-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader @title="30+ Components, Organized by Purpose" />
 
@@ -645,12 +645,12 @@ class IndexPage extends Component {
               @name="Utilities"
               @count={{5}}
               @description="Avatar, Collapsible, Divider, Spinner, VisuallyHidden"
-              @gradient="bg-gradient-to-br from-default-50 to-primary-50"
-              @borderColor="border-default-200"
-              @countColor="text-default-600"
+              @gradient="bg-gradient-to-br from-neutral-subtle to-primary-50"
+              @borderColor="border-neutral-subtle"
+              @countColor="text-neutral-medium"
             >
               <:icon>
-                <ComponentIcon class="w-5 h-5 text-default-600 mr-2" />
+                <ComponentIcon class="w-5 h-5 text-neutral-medium mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -691,95 +691,96 @@ class IndexPage extends Component {
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
                 <h3
-                  class="font-bold text-default-900 dark:text-white mb-2"
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Keyboard Navigation</h3>
-                <p class="text-default-600 text-sm">
+                <p class="text-neutral-medium text-sm">
                   Full keyboard support for all interactive components
                 </p>
               </div>
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
                 <h3
-                  class="font-bold text-default-900 dark:text-white mb-2"
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Screen Reader Support</h3>
-                <p class="text-default-600 text-sm">
+                <p class="text-neutral-medium text-sm">
                   Proper ARIA labels and live regions
                 </p>
               </div>
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
                 <h3
-                  class="font-bold text-default-900 dark:text-white mb-2"
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Focus Management</h3>
-                <p class="text-default-600 text-sm">
+                <p class="text-neutral-medium text-sm">
                   Visible focus indicators and logical tab order
                 </p>
               </div>
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
                 <h3
-                  class="font-bold text-default-900 dark:text-white mb-2"
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
                 >WAI-ARIA Compliant</h3>
-                <p class="text-default-600 text-sm">
+                <p class="text-neutral-medium text-sm">
                   Follows authoring practices guidelines
                 </p>
               </div>
             </div>
 
             <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3 class="font-bold text-default-900 dark:text-white mb-2">High
-                  Contrast</h3>
-                <p class="text-default-600 text-sm">
-                  Works with OS high contrast modes
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-white dark:bg-default-50 rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
             >
               <CheckIcon
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
                 <h3
-                  class="font-bold text-default-900 dark:text-white mb-2"
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
+                >High Contrast</h3>
+                <p class="text-neutral-medium text-sm">
+                  Works with OS high contrast modes
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-start p-6 bg-white dark:bg-neutral-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+            >
+              <CheckIcon
+                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+              />
+              <div>
+                <h3
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Motion Preferences</h3>
-                <p class="text-default-600 text-sm">
+                <p class="text-neutral-medium text-sm">
                   Respects prefers-reduced-motion
                 </p>
               </div>
@@ -789,7 +790,7 @@ class IndexPage extends Component {
       </section>
 
       {{! TypeScript Excellence }}
-      <section class="py-24 bg-default-50">
+      <section class="py-24 bg-neutral-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Type Safety from Components to Templates"
@@ -805,7 +806,7 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
             >
-              <h3 class="text-lg font-bold text-default-900 mb-4">Component
+              <h3 class="text-lg font-bold text-neutral-strong mb-4">Component
                 Signatures</h3>
               <CodeBlock
                 @code="interface Signature {
@@ -821,8 +822,8 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
             >
-              <h3 class="text-lg font-bold text-default-900 mb-4">Template Type
-                Checking</h3>
+              <h3 class="text-lg font-bold text-neutral-strong mb-4">Template
+                Type Checking</h3>
               <CodeBlock
                 @code="<Table
   @rows={{this.users}}
@@ -836,7 +837,7 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
             >
-              <h3 class="text-lg font-bold text-default-900 mb-4">Generic
+              <h3 class="text-lg font-bold text-neutral-strong mb-4">Generic
                 Support</h3>
               <CodeBlock
                 @code="Table<User>
@@ -853,25 +854,25 @@ Listbox<Country>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >100%</div>
-              <div class="text-sm text-default-600">TypeScript Coverage</div>
+              <div class="text-sm text-neutral-medium">TypeScript Coverage</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >Glint</div>
-              <div class="text-sm text-default-600">Template Types</div>
+              <div class="text-sm text-neutral-medium">Template Types</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >30+</div>
-              <div class="text-sm text-default-600">Typed Components</div>
+              <div class="text-sm text-neutral-medium">Typed Components</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >Full</div>
-              <div class="text-sm text-default-600">IDE IntelliSense</div>
+              <div class="text-sm text-neutral-medium">IDE IntelliSense</div>
             </div>
           </div>
         </div>
@@ -896,10 +897,10 @@ Listbox<Country>
 
           <div class="max-w-4xl mx-auto">
             <div
-              class="p-8 bg-default-100 rounded-xl shadow-lg border border-default-200"
+              class="p-8 bg-neutral-subtle rounded-xl shadow-lg border border-neutral-subtle"
             >
-              <h3 class="text-xl font-bold text-default-900 mb-6">Semantic Theme
-                System</h3>
+              <h3 class="text-xl font-bold text-neutral-strong mb-6">Semantic
+                Theme System</h3>
               <CodeBlock
                 @code="const { frontile } = require('@frontile/theme/plugin');
 
@@ -940,17 +941,17 @@ module.exports = frontile({
 });"
                 @language="javascript"
               />
-              <p class="text-default-600 mt-6 mb-6">
+              <p class="text-neutral-medium mt-6 mb-6">
                 Customize light and dark themes with semantic colors that adapt
                 automatically. Use tokens like
                 <code
-                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
                 >bg-primary</code>,
                 <code
-                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
                 >text-danger</code>, and
                 <code
-                  class="px-1 py-0.5 bg-default-200 rounded text-sm"
+                  class="px-1 py-0.5 bg-neutral-subtle rounded text-sm"
                 >bg-background</code>
                 for consistent theming across your application.
               </p>

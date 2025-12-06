@@ -23,7 +23,7 @@ const label = tv({
 });
 
 const formDescription = tv({
-  base: 'text-default-400 text-xs pb-1 last:pb-0',
+  base: 'text-neutral-soft text-xs pb-1 last:pb-0',
   variants: {
     size: {
       sm: 'text-xs',
@@ -40,7 +40,7 @@ const formFeedback = tv({
   base: 'text-xs pt-1',
   variants: {
     intent: {
-      primary: 'text-primary',
+      primary: 'text-brand',
       success: 'text-success',
       danger: 'text-danger',
       warning: 'text-warning'
@@ -66,22 +66,22 @@ const input = tv({
       'appearance-none',
       'flex-1',
       'w-full',
-      'bg-white dark:bg-default-100',
-      'text-default-900',
-      'placeholder-default-400',
+      'bg-white dark:bg-neutral-subtle',
+      'text-neutral-strong',
+      'placeholder-neutral-soft',
       'text-base text-left text-foreground',
       'border',
-      'border-default-400',
+      'border-neutral-soft',
       'rounded-sm',
       'leading-tight',
       'focus:ring-3',
       'focus:ring-focus',
       'focus:outline-hidden',
-      'focus:border-primary-400',
+      'focus:border-brand-soft',
       'selection:bg-content3',
-      'disabled:border-default-200 disabled:text-default-500',
-      'aria-invalid:border-danger-400',
-      'aria-invalid:focus:ring-danger-400'
+      'disabled:border-neutral-subtle disabled:text-neutral-soft',
+      'aria-invalid:border-danger-soft',
+      'aria-invalid:focus:ring-danger-soft'
     ]
   },
   variants: {
@@ -134,10 +134,10 @@ const checkboxRadioBase = tv({
       'shrink-0',
       'h-[1em] w-[1em]',
       'text-base',
-      'text-primary',
-      'border border-default-400',
-      'bg-white dark:bg-default-100',
-      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-default-300',
+      'text-brand',
+      'border border-neutral-soft',
+      'bg-white dark:bg-neutral-subtle',
+      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-neutral-soft',
       ...focusVisibleRing
     ],
     labelContainer: ['flex flex-col ml-2'],
@@ -180,8 +180,8 @@ const checkbox = tv({
       'indeterminate-bg-checkbox',
       'rounded-xs',
       // Indeterminate state styles - show minus/dash icon
-      'indeterminate:bg-primary',
-      'indeterminate:border-primary',
+      'indeterminate:bg-brand',
+      'indeterminate:border-brand-medium',
       'indeterminate:bg-origin-border',
       'indeterminate:bg-center',
       'indeterminate:bg-no-repeat',
@@ -229,7 +229,7 @@ const select = tv({
   extend: input,
   slots: {
     base: [],
-    placeholder: 'text-default-400',
+    placeholder: 'text-neutral-soft',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
@@ -276,7 +276,7 @@ const switchInput = tv({
       'justify-start',
       'shrink-0',
       'overflow-hidden',
-      'bg-default-300',
+      'bg-neutral-soft',
       'rounded-full',
       'cursor-pointer touch-none tap-highlight-transparent select-none',
       'transition-background',
@@ -321,7 +321,7 @@ const switchInput = tv({
       'group-data-[selected=true]:opacity-100'
     ],
     endContent: [
-      'z-0 absolute end-1.5 text-default-600',
+      'z-0 absolute end-1.5 text-neutral-medium',
       'opacity-100',
       'transition-transform-opacity',
       'group-data-[selected=true]:translate-x-3',
@@ -360,32 +360,32 @@ const switchInput = tv({
     intent: {
       default: {
         wrapper: [
-          'group-data-[selected=true]:bg-default-400',
-          'group-data-[selected=true]:text-default-foreground'
+          'group-data-[selected=true]:bg-neutral-soft',
+          'group-data-[selected=true]:text-neutral-contrast-1'
         ]
       },
       primary: {
         wrapper: [
-          'group-data-[selected=true]:bg-primary',
-          'group-data-[selected=true]:text-primary-foreground'
+          'group-data-[selected=true]:bg-brand',
+          'group-data-[selected=true]:text-brand-contrast-1'
         ]
       },
       success: {
         wrapper: [
           'group-data-[selected=true]:bg-success',
-          'group-data-[selected=true]:text-success-foreground'
+          'group-data-[selected=true]:text-success-contrast-1'
         ]
       },
       warning: {
         wrapper: [
           'group-data-[selected=true]:bg-warning',
-          'group-data-[selected=true]:text-warning-foreground'
+          'group-data-[selected=true]:text-warning-contrast-1'
         ]
       },
       danger: {
         wrapper: [
           'group-data-[selected=true]:bg-danger',
-          'data-[selected=true]:text-danger-foreground'
+          'data-[selected=true]:text-danger-contrast-1'
         ]
       }
     }

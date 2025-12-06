@@ -54,7 +54,7 @@ export default class ControlledSwitch extends Component {
         </form.Field>
       </Form>
 
-      <div class='p-3 border border-default-300 rounded'>
+      <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>
           Notifications are
           <strong>{{if this.formData.notifications 'enabled' 'disabled'}}</strong>
@@ -156,12 +156,12 @@ export default class ValidatedSwitch extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-800 rounded'>
+        <div class='p-3 bg-success-50 text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <h4 class='font-medium mb-2'>Form Data:</h4>
         <pre class='text-sm overflow-auto'>{{JSON.stringify
             this.formData
