@@ -146,7 +146,9 @@ class IndexPage extends Component {
       </section>
 
       {{! Quick Install Section }}
-      <section class="py-12 bg-gray-50 dark:bg-gray-950 border-y border-gray-200 dark:border-gray-800">
+      <section
+        class="py-12 bg-gray-50 dark:bg-gray-950 border-y border-gray-200 dark:border-gray-800"
+      >
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
@@ -1054,19 +1056,25 @@ module.exports = frontile({
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
-            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+            <div
+              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+            >
               <h3 class="font-bold mb-2 text-white">Quick Start</h3>
               <p class="text-blue-100 text-sm">
                 Installation, setup, and your first component in minutes
               </p>
             </div>
-            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+            <div
+              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+            >
               <h3 class="font-bold mb-2 text-white">Browse Components</h3>
               <p class="text-blue-100 text-sm">
                 Interactive examples and API documentation
               </p>
             </div>
-            <div class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+            <div
+              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+            >
               <h3 class="font-bold mb-2 text-white">Join Community</h3>
               <p class="text-blue-100 text-sm">
                 GitHub discussions and issue tracker
