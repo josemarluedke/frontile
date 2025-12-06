@@ -54,8 +54,8 @@ export default {
   ],
   labels: {
     accessibility: 'Accessibility',
+    theme: 'Theme',
     migration: 'Migration',
-    customization: 'Customization',
     components: 'Components',
     docs: 'Documentation',
     utilities: 'Utilities',

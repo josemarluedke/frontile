@@ -2,7 +2,7 @@ import { tv } from '../tw';
 
 const progressBar = tv({
   slots: {
-    base: ['overflow-hidden w-full bg-content3 dark:bg-content2'],
+    base: ['overflow-hidden w-full bg-surface-overlay-soft'],
     label: ['flex justify-between pb-1 gap-2 leading-tight'],
     progress: [''],
     description: ['text-neutral-soft text-xs pb-1']

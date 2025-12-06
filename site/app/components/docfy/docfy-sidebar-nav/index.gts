@@ -72,7 +72,7 @@ export default class SidebarNav extends Component<Signature> {
       <m.CloseButton
         class="dark:text-white hover:bg-neutral-strong outline-none focus-visible:ring"
       />
-      <m.Header class="text-foreground">
+      <m.Header class="text-neutral-strong">
         Contents
       </m.Header>
       <m.Body class="dark:text-white">

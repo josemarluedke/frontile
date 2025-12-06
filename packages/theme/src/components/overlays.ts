@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from '../tw';
 
-const obscurer = `before:bg-linear-to-b before:to-content1 before:from-content1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
+const obscurer = `before:bg-linear-to-b before:to-surface-solid-1 before:from-surface-solid-1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 
 const overlay = tv({
   base: 'will-change-transform overflow-auto',
@@ -20,8 +20,8 @@ const backdrop = tv({
     type: {
       none: '',
       transparent: '',
-      blur: 'bg-overlay/[.45] backdrop-blur-sm',
-      faded: 'bg-overlay/[.45]'
+      blur: 'bg-surface-overlay-inverse-strong backdrop-blur-sm',
+      faded: 'bg-surface-overlay-inverse-strong'
     },
     inPlace: {
       true: 'absolute'
@@ -31,11 +31,11 @@ const backdrop = tv({
 
 const modal = tv({
   slots: {
-    base: 'flex flex-col shrink-0 relative text-content1-foreground bg-content1 rounded-sm my-24 w-full outline-hidden overflow-hidden',
-    closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
+    base: 'flex flex-col shrink-0 relative text-surface-solid-11 bg-surface-solid-1 rounded-sm my-24 w-full outline-hidden overflow-hidden',
+    closeButton: 'absolute top-2 right-2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-content2 p-4`
+    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-surface-overlay-subtle p-4`
   },
   variants: {
     size: {
@@ -54,11 +54,11 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-content1-foreground bg-content1 w-full h-full shadow-sm outline-hidden',
-    closeButton: 'absolute top-2 right-2 dark:hover:bg-content2',
+    base: 'flex flex-col absolute text-surface-solid-11 bg-surface-solid-1 w-full h-full shadow-sm outline-hidden',
+    closeButton: 'absolute top-2 right-2',
     header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
     body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-content2 p-4`
+    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-surface-overlay-subtle p-4`
   },
   variants: {
     size: {

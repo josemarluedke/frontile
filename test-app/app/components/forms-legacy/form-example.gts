@@ -108,7 +108,7 @@ export default class FormExample extends Component<FormExampleArgs> {
 
   <template>
     {{! @glint-nocheck }}
-    <div class="p-4 bg-content1 border border-neutral-soft rounded">
+    <div class="p-4 bg-surface-solid-1 border border-neutral-soft rounded">
       <FormRadioGroup
         @label="Size"
         @value={{this.size}}

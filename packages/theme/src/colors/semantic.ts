@@ -1,12 +1,3 @@
-/**
- * Frontile Semantic Colors
- *
- * AUTO-GENERATED - DO NOT EDIT
- * Generated from design tokens via npm run generate:frontile:semantic
- *
- * Semantic color mappings for light and dark themes.
- */
-
 import * as lightPalette from './palette-light';
 import * as darkPalette from './palette-dark';
 import * as absolute from './palette-absolute';
@@ -67,6 +58,34 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: lightPalette.orange['700'],
     strong: lightPalette.orange['800'],
     'contrast-2': absolute.black
+  },
+  surface: {
+    overlay: {
+      subtle: '#00000005',
+      soft: '#0000000a',
+      medium: '#00000012',
+      strong: '#0000001C',
+      inverse: {
+        subtle: '#ffffff4d',
+        soft: '#ffffff80',
+        medium: '#ffffffb3',
+        strong: '#ffffffe6'
+      }
+    },
+    solid: {
+      '0': absolute.white,
+      '1': lightPalette.gray['100'],
+      '2': lightPalette.gray['200'],
+      '3': lightPalette.gray['300'],
+      '4': lightPalette.gray['400'],
+      '5': lightPalette.gray['500'],
+      '6': lightPalette.gray['600'],
+      '7': lightPalette.gray['700'],
+      '8': lightPalette.gray['800'],
+      '9': lightPalette.gray['900'],
+      '10': lightPalette.gray['1000'],
+      '11': absolute.black
+    }
   }
 };
 
@@ -124,6 +143,34 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: darkPalette.orange['900'],
     strong: darkPalette.orange['1000'],
     'contrast-2': absolute.black
+  },
+  surface: {
+    overlay: {
+      subtle: '#ffffff08',
+      soft: '#ffffff0f',
+      medium: '#ffffff26',
+      strong: '#ffffff3d',
+      inverse: {
+        subtle: '#00000026',
+        soft: '#00000033',
+        medium: '#0000004d',
+        strong: '#00000073'
+      }
+    },
+    solid: {
+      '0': absolute.black,
+      '1': darkPalette.gray['100'],
+      '2': darkPalette.gray['200'],
+      '3': darkPalette.gray['300'],
+      '4': darkPalette.gray['400'],
+      '5': darkPalette.gray['500'],
+      '6': darkPalette.gray['600'],
+      '7': darkPalette.gray['700'],
+      '8': darkPalette.gray['800'],
+      '9': darkPalette.gray['900'],
+      '10': darkPalette.gray['1000'],
+      '11': absolute.white
+    }
   }
 };
 

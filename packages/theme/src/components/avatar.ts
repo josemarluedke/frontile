@@ -9,7 +9,7 @@ const avatar = tv({
       'box-border',
       'overflow-hidden',
       'align-middle',
-      'text-foreground',
+      'text-neutral-strong',
       'z-0',
       'bg-neutral-subtle',
       'ring-1 ring-default ring-offset-1 ring-offset-background'

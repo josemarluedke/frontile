@@ -39,7 +39,7 @@ const table = tv({
       'text-left',
       'align-middle',
       'font-medium',
-      'text-foreground-600',
+      'text-neutral-strong',
       '[&:has([role=checkbox])]:pr-0',
       'data-[sortable=true]:cursor-pointer'
     ],
@@ -51,7 +51,7 @@ const table = tv({
       'w-full',
       'text-left',
       'font-medium',
-      'text-foreground-600',
+      'text-neutral-strong',
       'outline-hidden',
       'focus-visible:z-10',
       'focus-visible:ring-3',
@@ -62,7 +62,7 @@ const table = tv({
     sortIcon: [
       'size-4',
       'flex-shrink-0',
-      'text-foreground-400',
+      'text-neutral-soft',
       'transition-opacity',
       'data-[sorted=false]:opacity-0',
       'group-hover/sort:data-[sorted=false]:opacity-100',
@@ -73,10 +73,10 @@ const table = tv({
     td: [
       'p-4',
       'align-middle',
-      'text-foreground',
+      'text-neutral-strong',
       '[&:has([role=checkbox])]:pr-0'
     ],
-    empty: ['text-foreground-400', 'align-middle', 'text-center', 'py-12']
+    empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12']
   },
   variants: {
     size: {

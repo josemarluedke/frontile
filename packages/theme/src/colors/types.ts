@@ -11,21 +11,14 @@ export type ColorScale =
       800: string;
       900: string;
       950: string;
-      foreground: string;
       DEFAULT: string;
     }>
   | string;
 
 export type BaseColors = {
   background: ColorScale;
-  foreground: ColorScale;
   divider: ColorScale;
-  overlay: ColorScale;
   focus: ColorScale;
-  content1: ColorScale;
-  content2: ColorScale;
-  content3: ColorScale;
-  content4: ColorScale;
 };
 
 export type SemanticBaseColors = {
@@ -43,6 +36,39 @@ export interface SemanticColorCategory {
   DEFAULT: string;
 }
 
+export interface SurfaceOverlay {
+  subtle: string;
+  soft: string;
+  medium: string;
+  strong: string;
+  inverse: {
+    subtle: string;
+    soft: string;
+    medium: string;
+    strong: string;
+  };
+}
+
+export interface SurfaceSolid {
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+  7: string;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+}
+
+export interface SurfaceColors {
+  overlay: SurfaceOverlay;
+  solid: SurfaceSolid;
+}
+
 export interface ThemeColors {
   neutral: SemanticColorCategory;
   brand: SemanticColorCategory;
@@ -50,4 +76,5 @@ export interface ThemeColors {
   warning: SemanticColorCategory;
   danger: SemanticColorCategory;
   inverse: SemanticColorCategory;
+  surface: SurfaceColors;
 }

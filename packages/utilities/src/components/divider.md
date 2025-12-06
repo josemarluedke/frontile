@@ -18,7 +18,7 @@ import { Divider } from 'frontile';
 import { Divider } from 'frontile';
 
 <template>
-  <div class="p-2 text-foreground not-prose">
+  <div class="p-2 text-neutral-strong not-prose">
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lobortis ullamcorper est, eget malesuada magna vestibulum ac. Quisque nibh est, posuere non purus eu, auctor molestie quam. Mauris ante sapien, accumsan et nibh eget, ultricies aliquam orci. Praesent in lorem sagittis, facilisis quam quis, condimentum risus. Donec sodales elit ut risus hendrerit, a luctus orci pharetra. Pellentesque sit amet ultricies ante. Quisque suscipit dolor et urna viverra rhoncus.
     </p>

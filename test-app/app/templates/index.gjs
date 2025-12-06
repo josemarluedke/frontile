@@ -6,17 +6,17 @@ import { concat } from '@ember/helper';
     class="grid grid-flow-col justify-center gap-4 font-mono font-bold text-xs text-center"
   >
     <div
-      class="items-center justify-center text-content1-foreground bg-content1 rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-content1</div>
+      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-subtle rounded-lg shadow-lg size-40 hidden md:grid"
+    >bg-surface-overlay-subtle</div>
     <div
-      class="items-center justify-center text-content2-foreground bg-content2 rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-content2</div>
+      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-soft rounded-lg shadow-lg size-40 hidden md:grid"
+    >bg-surface-overlay-soft</div>
     <div
-      class="items-center justify-center text-content3-foreground bg-content3 rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-content3</div>
+      class="items-center justify-center text-surface-solid-11 bg-surface-overlay-medium rounded-lg shadow-lg size-40 hidden md:grid"
+    >bg-surface-overlay-medium</div>
     <div
-      class="items-center justify-center text-content4-foreground bg-content4 rounded-lg shadow-lg size-40 hidden md:grid"
-    >bg-content4</div>
+      class="items-center justify-center text-surface-solid-0 bg-surface-overlay-strong rounded-lg shadow-lg size-40 hidden md:grid"
+    >bg-surface-overlay-strong</div>
   </div>
 
   <div
@@ -25,7 +25,7 @@ import { concat } from '@ember/helper';
     {{#each @controller.model.groups as |group|}}
       <div>
         <div
-          class="text-sm font-semibold text-foreground dark:text-slate-200 2xl:col-end-1 2xl:pt-2.5"
+          class="text-sm font-semibold text-neutral-strong dark:text-slate-200 2xl:col-end-1 2xl:pt-2.5"
         >
           {{group.name}}
         </div>

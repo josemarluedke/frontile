@@ -29,7 +29,7 @@ const listboxItem = tv({
     description: [
       'w-full',
       'text-xs',
-      'text-foreground-500',
+      'text-neutral-medium',
       'group-hover:text-current'
     ],
     selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0'],
@@ -38,7 +38,7 @@ const listboxItem = tv({
       'py-0.5',
       'rounded-sm',
       'font-sans',
-      'text-foreground-500',
+      'text-neutral-medium',
       'text-xs',
       'border',
       'border-neutral-soft',

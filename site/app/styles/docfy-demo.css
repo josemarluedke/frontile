@@ -76,7 +76,7 @@
 }
 
 .dark .docfy-demo__description__header__title {
-  @apply text-brand-soft;
+  @apply text-brand-strong;
 }
 
 .prose h2 > a,
@@ -91,7 +91,7 @@
 .prose h4 > a::before,
 .docfy-demo__description__header__title > a::before {
   content: '#';
-  @apply text-brand-soft -ml-6 pr-2 absolute opacity-100;
+  @apply text-brand-strong -ml-6 pr-2 absolute opacity-100;
 }
 
 @screen lg {
