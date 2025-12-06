@@ -24,21 +24,21 @@ const chip = tv({
     },
     intent: {
       default: {
-        dot: 'bg-default-800 dark:bg-default-700',
+        dot: 'bg-neutral-strong dark:bg-neutral-medium',
         closeButton: [
-          'bg-default-400',
-          'text-default-foreground dark:text-default-background',
-          'dark:bg-default-600',
-          'hover:bg-default-400/60 dark:hover:bg-default-600/60'
+          'bg-neutral-soft',
+          'text-neutral-contrast-1 dark:text-background',
+          'dark:bg-neutral-medium',
+          'hover:bg-neutral-soft/60 dark:hover:bg-neutral-medium/60'
         ]
       },
       primary: {
-        dot: 'bg-primary',
+        dot: 'bg-brand',
         closeButton: [
-          'bg-primary-700',
+          'bg-brand-medium',
           'text-background',
-          'hover:bg-primary-700/60',
-          'focus-visible:ring-primary-700'
+          'hover:bg-brand-medium/60',
+          'focus-visible:ring-brand-medium'
         ]
       },
       success: {
@@ -99,35 +99,35 @@ const chip = tv({
       appearance: 'default',
       intent: 'default',
       class: {
-        base: 'bg-default-800 text-default-50 dark:bg-default dark:text-default-950'
+        base: 'bg-neutral-strong text-neutral-contrast-1 dark:bg-neutral dark:text-inverse-strong'
       }
     },
     {
       appearance: 'default',
       intent: 'primary',
       class: {
-        base: 'bg-primary text-primary-foreground'
+        base: 'bg-brand text-brand-contrast-1'
       }
     },
     {
       appearance: 'default',
       intent: 'success',
       class: {
-        base: 'bg-success text-success-foreground'
+        base: 'bg-success text-success-contrast-1'
       }
     },
     {
       appearance: 'default',
       intent: 'warning',
       class: {
-        base: 'bg-warning text-warning-foreground'
+        base: 'bg-warning text-warning-contrast-1'
       }
     },
     {
       appearance: 'default',
       intent: 'danger',
       class: {
-        base: 'bg-danger text-danger-foreground'
+        base: 'bg-danger text-danger-contrast-1'
       }
     },
 
@@ -136,35 +136,35 @@ const chip = tv({
       appearance: 'faded',
       intent: 'default',
       class: {
-        base: 'text-default-700 border border-default-700 bg-default-400/20'
+        base: 'text-neutral-medium border border-neutral-medium bg-neutral-soft/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'primary',
       class: {
-        base: 'text-primary border border-primary bg-primary-300/20'
+        base: 'text-brand border border-brand-medium bg-brand-soft/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'success',
       class: {
-        base: 'text-success border border-success bg-success-300/20'
+        base: 'text-success border border-success bg-success-soft/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'warning',
       class: {
-        base: 'text-warning border border-warning bg-warning-300/20'
+        base: 'text-warning border border-warning bg-warning-soft/20'
       }
     },
     {
       appearance: 'faded',
       intent: 'danger',
       class: {
-        base: 'text-danger border border-danger bg-danger-300/20'
+        base: 'text-danger border border-danger bg-danger-soft/20'
       }
     },
 
@@ -173,14 +173,14 @@ const chip = tv({
       appearance: 'outlined',
       intent: 'default',
       class: {
-        base: 'text-default-700 border border-default-700'
+        base: 'text-neutral-medium border border-neutral-medium'
       }
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       class: {
-        base: 'text-primary border border-primary'
+        base: 'text-brand border border-brand-medium'
       }
     },
     {

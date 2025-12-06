@@ -58,7 +58,7 @@ export default class ControlledRadio extends Component {
         </form.Field>
       </Form>
 
-      <div class='p-3 border border-default-300 rounded'>
+      <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>Selected: {{this.formData.newsletter}}</p>
       </div>
     </div>

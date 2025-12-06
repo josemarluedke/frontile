@@ -41,9 +41,9 @@ export default class Example extends Component {
       </pop.Content>
     </Popover>
 
-    <Portal class="absolute w-content bg-default left-10">
+    <Portal class="absolute w-content bg-neutral left-10">
       First portal
-      <Portal class="absolute w-content bg-primary left-12">
+      <Portal class="absolute w-content bg-brand left-12">
         Second portal
         <Portal class="absolute w-content bg-danger left-14">
           Last portal

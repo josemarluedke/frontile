@@ -36,7 +36,7 @@ const animals = [
 const stringify = JSON.stringify;
 
 const MyCustomLabel = <template>
-  This is a custom label. <span class="text-primary">Cool right?</span>
+  This is a custom label. <span class="text-brand">Cool right?</span>
 </template> as never;
 
 interface FormExampleArgs {}
@@ -81,7 +81,7 @@ export default class FormExample extends Component<FormExampleArgs> {
         @label="My field 2"
         @description="Nice nice nice"
         @errors="it should be cool, really cool"
-        @classes={{hash label="text-primary"}}
+        @classes={{hash label="text-brand"}}
       />
 
       <Checkbox

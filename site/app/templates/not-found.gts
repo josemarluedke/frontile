@@ -12,7 +12,7 @@ const NotFound = <template>
       <div class="text-2xl">PAGE NOT FOUND</div>
       <LinkTo
         @route="docs"
-        class="w-full text-center mt-6 bg-brand px-4 py-2 text-white rounded hover:bg-primary-500"
+        class="w-full text-center mt-6 bg-brand px-4 py-2 text-white rounded hover:bg-brand-soft"
       >
         Home
       </LinkTo>

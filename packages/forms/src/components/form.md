@@ -79,7 +79,7 @@ export default class BasicForm extends Component {
       </Form>
 
       <div class='grid gap-4'>
-        <div class='p-4 bg-default-50 rounded'>
+        <div class='p-4 bg-neutral-subtle rounded'>
           <h4 class='font-medium mb-2'>Current Form Data:</h4>
           <pre class='text-sm'>{{JSON.stringify this.formData null 2}}</pre>
         </div>
@@ -327,10 +327,10 @@ export default class ComprehensiveForm extends Component {
         </div>
       </Form>
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <div class='flex justify-between items-center mb-2'>
           <h4 class='font-medium'>Form Data</h4>
-          <span class='text-sm text-default-600'>
+          <span class='text-sm text-neutral-medium'>
             Last event:
             <strong>{{this.lastEventType}}</strong>
           </span>
@@ -543,8 +543,8 @@ export default class ValidatedForm extends Component {
           class='p-4 rounded
             {{if
               this.isSuccessMessage
-              "bg-success-100 text-success-800"
-              "bg-danger-100 text-danger-800"
+              "bg-success-subtle text-success-strong"
+              "bg-danger-subtle text-danger-strong"
             }}'
         >
           {{this.submitMessage}}
@@ -615,18 +615,18 @@ export default class DirtyTrackingForm extends Component {
         </div>
 
         <div class='mt-4 p-4 rounded
-        {{if form.dirty.size "bg-warning-50" "bg-default-50"}}'>
+        {{if form.dirty.size "bg-warning-50" "bg-neutral-subtle"}}'>
         {{#if form.dirty.size}}
-          <p class='font-medium text-warning-800'>
+          <p class='font-medium text-warning-strong'>
             Unsaved changes in:
             {{#each form.dirty as |field|}}
-              <span class='inline-block px-2 py-1 bg-warning-100 rounded text-sm ml-1'>
+              <span class='inline-block px-2 py-1 bg-warning-subtle rounded text-sm ml-1'>
                 {{field}}
               </span>
             {{/each}}
           </p>
         {{else}}
-          <p class='text-default-600'>No unsaved changes</p>
+          <p class='text-neutral-medium'>No unsaved changes</p>
         {{/if}}
       </div>
       </Form>
@@ -1195,7 +1195,7 @@ export default class DisabledForm extends Component {
 
   <template>
     <div class='flex flex-col gap-4 w-80'>
-      <div class='flex items-center gap-2 p-3 bg-default-100 rounded'>
+      <div class='flex items-center gap-2 p-3 bg-neutral-subtle rounded'>
         <label class='flex items-center gap-2 cursor-pointer'>
           <input
             type='checkbox'
@@ -1242,7 +1242,7 @@ export default class DisabledForm extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-4 bg-success-100 text-success-800 rounded'>
+        <div class='p-4 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}
@@ -1336,7 +1336,7 @@ export default class NestedForm extends Component {
             <div class='p-3 bg-warning-50 rounded text-sm'>
               <strong>Unsaved changes in:</strong>
               {{#each form.dirty as |field|}}
-                <span class='inline-block px-2 py-1 bg-warning-100 rounded ml-1'>
+                <span class='inline-block px-2 py-1 bg-warning-subtle rounded ml-1'>
                   {{field}}
                 </span>
               {{/each}}
@@ -1349,7 +1349,7 @@ export default class NestedForm extends Component {
         </div>
       </Form>
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <h4 class='font-medium mb-2'>Submitted Data:</h4>
         <pre class='text-sm overflow-auto'>{{JSON.stringify
             this.submittedData
@@ -1495,7 +1495,7 @@ export default class ValidatedNestedForm extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-4 bg-success-100 text-success-800 rounded'>
+        <div class='p-4 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

@@ -1,7 +1,7 @@
 import { tv } from '../tw';
 
 const popover = tv({
-  base: 'bg-content1 rounded-sm border border-default-200',
+  base: 'bg-content1 rounded-sm border border-neutral-subtle',
   variants: {
     size: {
       sm: 'w-40',

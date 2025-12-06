@@ -119,7 +119,7 @@ export default class DemoModal extends Component<DemoModalArgs> {
     </Modal>
 
     <div
-      class="relative h-64 mt-4 border border-default-200 bg-content1 rounded w-3xl"
+      class="relative h-64 mt-4 border border-neutral-subtle bg-content1 rounded w-3xl"
     >
       <Modal
         @isOpen={{this.isInPlaceOpen}}

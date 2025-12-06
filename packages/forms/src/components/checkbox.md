@@ -50,7 +50,7 @@ export default class ControlledCheckbox extends Component {
         @onChange={{this.updateSubscription}}
       />
 
-      <div class='p-3 border border-default-300 rounded'>
+      <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>
           Status:
           {{if this.isSubscribed 'Subscribed' 'Not subscribed'}}
@@ -119,7 +119,7 @@ export default class IndependentCheckboxes extends Component {
         @onChange={{this.updatePushNotifications}}
       />
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <h4 class='font-medium mb-2'>Enabled Notifications:</h4>
         <p class='text-sm'>
           {{if
@@ -340,12 +340,12 @@ export default class ValidatedCheckbox extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-800 rounded'>
+        <div class='p-3 bg-success-50 text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <h4 class='font-medium mb-2'>Form Data:</h4>
         <pre class='text-sm overflow-auto'>{{JSON.stringify
             this.formData
@@ -406,7 +406,7 @@ export default class HorizontalCheckboxes extends Component {
         </div>
       </fieldset>
 
-      <div class='p-3 border border-default-300 rounded'>
+      <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>
           Selected preferences:
           {{#each-in this.preferences as |key value|}}
@@ -510,12 +510,12 @@ export default class CompleteFormWithCheckbox extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-800 rounded'>
+        <div class='p-3 bg-success-50 text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}
 
-      <div class='p-4 bg-default-50 rounded'>
+      <div class='p-4 bg-neutral-subtle rounded'>
         <h4 class='font-medium mb-2'>Form Data:</h4>
         <pre class='text-sm overflow-auto'>{{JSON.stringify
             this.formData

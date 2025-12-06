@@ -11,7 +11,7 @@ const avatar = tv({
       'align-middle',
       'text-foreground',
       'z-0',
-      'bg-default-200',
+      'bg-neutral-subtle',
       'ring-1 ring-default ring-offset-1 ring-offset-background'
     ],
     img: 'size-full',

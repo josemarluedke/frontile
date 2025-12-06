@@ -325,7 +325,7 @@ export default class DrawerBackdrops extends Component {
         <d.Header>{{this.currentBackdropOption.title}}</d.Header>
         <d.Body>
           <p>{{this.currentBackdropOption.description}}</p>
-          <p class='mt-2 text-sm text-default-500'>Notice how the backdrop
+          <p class='mt-2 text-sm text-neutral-soft'>Notice how the backdrop
             behind this drawer changes based on the selected type.</p>
         </d.Body>
         <d.Footer>
@@ -666,32 +666,32 @@ export default class NavigationDrawer extends Component {
           <nav class='space-y-2'>
             <button
               {{on 'click' (fn this.navigateTo 'dashboard')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-default-200 transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-neutral-subtle transition-colors'
             >
               🏠 Dashboard
             </button>
             <button
               {{on 'click' (fn this.navigateTo 'profile')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-default-200 transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-neutral-subtle transition-colors'
             >
               👤 Profile
             </button>
             <button
               {{on 'click' (fn this.navigateTo 'settings')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-default-200 transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-neutral-subtle transition-colors'
             >
               ⚙️ Settings
             </button>
             <button
               {{on 'click' (fn this.navigateTo 'help')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-default-200 transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-neutral-subtle transition-colors'
             >
               ❓ Help
             </button>
             <Divider />
             <button
               {{on 'click' (fn this.navigateTo 'logout')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-danger-100 text-danger-600 transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-danger-subtle text-danger-medium transition-colors'
             >
               🚪 Logout
             </button>

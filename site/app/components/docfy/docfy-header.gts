@@ -20,24 +20,24 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
   <template>
     <div class="sticky top-0 z-1">
       <div
-        class="h-16 border-b border-default-200/50 bg-default-50/60 backdrop-blur-xl backdrop-saturate-150"
+        class="h-16 border-b border-neutral-subtle/50 bg-neutral-subtle/60 backdrop-blur-xl backdrop-saturate-150"
         ...attributes
       >
         <div class="flex h-full px-4 mx-auto sm:px-6 max-w-screen-2xl">
           <div class="flex items-center mr-4">
             <LinkTo
               @route={{if @indexRoute @indexRoute "index"}}
-              class="text-default-900 text-lg font-bold outline-none focus-visible:ring"
+              class="text-neutral-strong text-lg font-bold outline-none focus-visible:ring"
             >
               {{yield to="title"}}
             </LinkTo>
           </div>
           <div
-            class="flex items-center justify-between flex-grow px-2 md:px-6 text-default-600"
+            class="flex items-center justify-between flex-grow px-2 md:px-6 text-neutral-medium"
           >
             {{#let
-              "transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-primary-500 outline-none focus-visible:ring hover:text-default-800"
-              "border-primary-500 text-default-900"
+              "transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-brand-soft outline-none focus-visible:ring hover:text-neutral-strong"
+              "border-brand-soft text-neutral-strong"
               as |linkClass linkClassActive|
             }}
               <div class="flex items-center gap-4">
@@ -51,7 +51,7 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
                   href={{@githubUrl}}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition text-default-600 outline-none focus-visible:ring hover:text-default-800"
+                  class="transition text-neutral-medium outline-none focus-visible:ring hover:text-neutral-strong"
                 >
                   <svg viewBox="0 0 20 20" class="w-6 h-6 fill-current">
                     <title>

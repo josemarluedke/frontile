@@ -41,7 +41,7 @@ const listboxItem = tv({
       'text-foreground-500',
       'text-xs',
       'border',
-      'border-default-300',
+      'border-neutral-soft',
       'group-data-is-active:border-current'
     ]
   },
@@ -95,8 +95,8 @@ const listboxItem = tv({
       intent: 'default',
       class: {
         base: [
-          'data-is-active:bg-default',
-          'data-is-active:text-default-foreground'
+          'data-is-active:bg-neutral',
+          'data-is-active:text-neutral-contrast-1'
         ]
       }
     },
@@ -105,8 +105,8 @@ const listboxItem = tv({
       intent: 'primary',
       class: {
         base: [
-          'data-is-active:bg-primary-500',
-          'data-is-active:text-primary-foreground'
+          'data-is-active:bg-brand-soft',
+          'data-is-active:text-brand-contrast-1'
         ]
       }
     },
@@ -115,8 +115,8 @@ const listboxItem = tv({
       intent: 'success',
       class: {
         base: [
-          'data-is-active:bg-success-500',
-          'data-is-active:text-success-foreground'
+          'data-is-active:bg-success-soft',
+          'data-is-active:text-success-contrast-1'
         ]
       }
     },
@@ -125,8 +125,8 @@ const listboxItem = tv({
       intent: 'warning',
       class: {
         base: [
-          'data-is-active:bg-warning-500',
-          'data-is-active:text-warning-foreground'
+          'data-is-active:bg-warning-soft',
+          'data-is-active:text-warning-contrast-1'
         ]
       }
     },
@@ -135,8 +135,8 @@ const listboxItem = tv({
       intent: 'danger',
       class: {
         base: [
-          'data-is-active:bg-danger-500',
-          'data-is-active:text-danger-foreground'
+          'data-is-active:bg-danger-soft',
+          'data-is-active:text-danger-contrast-1'
         ]
       }
     },
@@ -145,7 +145,7 @@ const listboxItem = tv({
       intent: 'primary',
       isActive: true,
       class: {
-        shortcut: ['text-primary-foreground']
+        shortcut: ['text-brand-contrast-1']
       }
     },
     {
@@ -153,7 +153,7 @@ const listboxItem = tv({
       intent: 'success',
       isActive: true,
       class: {
-        shortcut: ['text-success-foreground']
+        shortcut: ['text-success-contrast-1']
       }
     },
     {
@@ -161,7 +161,7 @@ const listboxItem = tv({
       intent: 'warning',
       isActive: true,
       class: {
-        shortcut: ['text-warning-foreground']
+        shortcut: ['text-warning-contrast-1']
       }
     },
     {
@@ -169,7 +169,7 @@ const listboxItem = tv({
       intent: 'danger',
       isActive: true,
       class: {
-        shortcut: ['text-danger-foreground']
+        shortcut: ['text-danger-contrast-1']
       }
     },
 
@@ -179,8 +179,8 @@ const listboxItem = tv({
       intent: 'default',
       class: {
         base: [
-          'data-is-active:border-default-700',
-          'data-is-active:text-default-700'
+          'data-is-active:border-neutral-medium',
+          'data-is-active:text-neutral-medium'
         ]
       }
     },
@@ -188,7 +188,7 @@ const listboxItem = tv({
       appearance: 'outlined',
       intent: 'primary',
       class: {
-        base: ['data-is-active:border-primary', 'data-is-active:text-primary']
+        base: ['data-is-active:border-brand-medium', 'data-is-active:text-brand']
       }
     },
     {
@@ -219,9 +219,9 @@ const listboxItem = tv({
       intent: 'default',
       class: {
         base: [
-          'data-is-active:bg-default-400/20',
-          'data-is-active:border-default-700',
-          'data-is-active:text-default-700'
+          'data-is-active:bg-neutral-soft/20',
+          'data-is-active:border-neutral-medium',
+          'data-is-active:text-neutral-medium'
         ]
       }
     },
@@ -230,9 +230,9 @@ const listboxItem = tv({
       intent: 'primary',
       class: {
         base: [
-          'data-is-active:bg-primary-300/20',
-          'data-is-active:border-primary',
-          'data-is-active:text-primary'
+          'data-is-active:bg-brand-soft/20',
+          'data-is-active:border-brand-medium',
+          'data-is-active:text-brand'
         ]
       }
     },
@@ -241,7 +241,7 @@ const listboxItem = tv({
       intent: 'success',
       class: {
         base: [
-          'data-is-active:bg-success-300/20',
+          'data-is-active:bg-success-soft/20',
           'data-is-active:border-success',
           'data-is-active:text-success'
         ]
@@ -252,7 +252,7 @@ const listboxItem = tv({
       intent: 'warning',
       class: {
         base: [
-          'data-is-active:bg-warning-300/20',
+          'data-is-active:bg-warning-soft/20',
           'data-is-active:border-warning',
           'data-is-active:text-warning'
         ]
@@ -263,7 +263,7 @@ const listboxItem = tv({
       intent: 'danger',
       class: {
         base: [
-          'data-is-active:bg-danger-300/20',
+          'data-is-active:bg-danger-soft/20',
           'data-is-active:border-danger',
           'data-is-active:text-danger'
         ]

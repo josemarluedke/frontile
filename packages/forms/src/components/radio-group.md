@@ -64,7 +64,7 @@ export default class ControlledRadioGroup extends Component {
         </form.Field>
       </Form>
 
-      <div class='p-3 border border-default-300 rounded'>
+      <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>Selected theme: <strong>{{this.formData.theme}}</strong></p>
       </div>
     </div>
@@ -176,7 +176,7 @@ import { hash } from '@ember/helper';
     {{! Orientation }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Orientation</h4>
-      <p class='text-sm text-default-600 mb-3'>
+      <p class='text-sm text-neutral-medium mb-3'>
         RadioGroup supports vertical (default) and horizontal orientations. This is a RadioGroup-specific feature.
       </p>
       <div class='flex flex-col gap-3'>
@@ -229,7 +229,7 @@ import { hash } from '@ember/helper';
     {{! Descriptions }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Descriptions</h4>
-      <p class='text-sm text-default-600 mb-3'>
+      <p class='text-sm text-neutral-medium mb-3'>
         RadioGroup supports descriptions at both the group and individual radio level.
       </p>
       <div class='flex flex-col gap-3'>

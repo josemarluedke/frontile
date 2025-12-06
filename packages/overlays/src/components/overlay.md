@@ -189,9 +189,9 @@ export default class RenderInPlace extends Component {
       </div>
 
       <div
-        class='relative border-2 border-dashed border-default-300 p-4 min-h-48'
+        class='relative border-2 border-dashed border-neutral-soft p-4 min-h-48'
       >
-        <p class='text-sm text-default-600 mb-4'>This container shows the
+        <p class='text-sm text-neutral-medium mb-4'>This container shows the
           difference between portal and in-place rendering.</p>
 
         <Overlay
@@ -363,7 +363,7 @@ export default class FocusManagement extends Component {
         </Button>
       </div>
 
-      <p class='text-sm text-default-600'>
+      <p class='text-sm text-neutral-medium'>
         Open an overlay and use Tab/Shift+Tab to see focus behavior. Focus
         should return to the trigger button when closed.
       </p>

@@ -15,7 +15,7 @@ export interface Signature {
 
 const FeatureCard: TOC<Signature> = <template>
   <div
-    class="p-8 bg-default-50 rounded-xl shadow-lg border border-default-200 hover:shadow-xl transition-shadow duration-200"
+    class="p-8 bg-neutral-subtle rounded-xl shadow-lg border border-neutral-subtle hover:shadow-xl transition-shadow duration-200"
   >
     <div
       class="w-12 h-12
@@ -24,8 +24,8 @@ const FeatureCard: TOC<Signature> = <template>
     >
       {{yield to="icon"}}
     </div>
-    <h3 class="text-xl font-bold text-default-900 mb-3">{{@title}}</h3>
-    <p class="text-default-600 leading-relaxed">
+    <h3 class="text-xl font-bold text-neutral-strong mb-3">{{@title}}</h3>
+    <p class="text-neutral-medium leading-relaxed">
       {{@description}}
     </p>
   </div>

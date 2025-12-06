@@ -18,12 +18,12 @@ const ComponentPackageCard: TOC<Signature> = <template>
   <div class="p-6 {{@gradient}} rounded-lg border {{@borderColor}}">
     <div class="flex items-center mb-3">
       {{yield to="icon"}}
-      <h3 class="font-bold text-default-900">{{@name}}</h3>
+      <h3 class="font-bold text-neutral-strong">{{@name}}</h3>
       <span
         class="ml-auto text-sm font-semibold {{@countColor}}"
       >{{@count}}</span>
     </div>
-    <p class="text-sm text-default-700">
+    <p class="text-sm text-neutral-medium">
       {{@description}}
     </p>
   </div>
