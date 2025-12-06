@@ -100,7 +100,7 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'primary',
-      class: 'bg-brand-soft text-brand-contrast-1 hover:bg-brand-soft/80'
+      class: 'bg-brand text-brand-contrast-1 hover:bg-brand-strong'
     },
     {
       appearance: 'default',
