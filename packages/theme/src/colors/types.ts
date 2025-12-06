@@ -75,6 +75,5 @@ export interface ThemeColors {
   success: SemanticColorCategory;
   warning: SemanticColorCategory;
   danger: SemanticColorCategory;
-  inverse: SemanticColorCategory;
   surface: SurfaceColors;
 }

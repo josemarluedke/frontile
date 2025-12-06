@@ -193,7 +193,7 @@ const toggleButton = tv({
       intent: 'default',
       isSelected: true,
       class:
-        'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80 dark:bg-neutral dark:text-inverse-strong dark:hover:bg-neutral/40'
+        'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80 dark:bg-neutral dark:text-neutral-strong dark:hover:bg-neutral/40'
     },
     {
       appearance: 'outlined',
