@@ -158,7 +158,7 @@ export default class DemoDrawer extends Component {
       </Drawer>
 
       <div
-        class="relative h-64 mt-4 border border-neutral-subtle bg-content1 rounded w-3xl"
+        class="relative h-64 mt-4 border border-neutral-subtle bg-surface-solid-1 rounded w-3xl"
       >
         <Drawer
           @isOpen={{this.isInPlaceOpen}}
