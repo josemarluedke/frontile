@@ -37,11 +37,18 @@ function resolveThemes(
   for (const [themeName, { extend, layout, colors }] of Object.entries(
     themes
   )) {
-    const cssSelector = `.${themeName}`;
+    let cssSelector = `.${themeName}`;
     let baseSelector = '';
 
     const scheme =
       themeName === 'light' || themeName === 'dark' ? themeName : extend;
+
+    // Add theme-inverse selectors
+    if (themeName == 'light') {
+      cssSelector = `${cssSelector}, .dark .theme-inverse`;
+    } else if (themeName == 'dark') {
+      cssSelector = `${cssSelector}, .light .theme-inverse`;
+    }
 
     // if the theme is the default theme, add the selector to the root element
     if (themeName === defaultTheme) {
@@ -84,8 +91,12 @@ function resolveThemes(
         themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
 
         // set the dynamic color in tailwind config theme.colors
-        resolved.colors[colorName] =
-          `hsl(var(${colorVariable}) / ${defaultAlphaValue ?? '<alpha-value>'})`;
+        // If color has alpha < 1, use it as fixed alpha; otherwise use dynamic alpha-value
+        const alpha =
+          defaultAlphaValue !== undefined && defaultAlphaValue < 1
+            ? defaultAlphaValue.toString()
+            : '<alpha-value>';
+        resolved.colors[colorName] = `hsl(var(${colorVariable}) / ${alpha})`;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log('error', error);

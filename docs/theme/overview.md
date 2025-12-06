@@ -97,6 +97,32 @@ Toggle between light and dark themes by adding or removing the `dark` class on a
 
 Remove the `dark` class to revert to light theme. You can also explicitly use the `light` class if needed.
 
+## Theme Inverse
+
+Create sections with inverted theme colors using the `theme-inverse` utility class. In light mode, these sections display dark theme colors, and vice versa.
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='space-y-8 p-8'>
+    <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
+      <h3 class='text-lg font-bold text-neutral-strong mb-4'>Regular Theme</h3>
+      <Button @intent='primary'>Primary Button</Button>
+    </div>
+
+    <div class='theme-inverse p-6 bg-background rounded-lg'>
+      <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
+        <h3 class='text-lg font-bold text-neutral-strong mb-4'>Inverted Theme</h3>
+        <Button @intent='primary'>Primary Button</Button>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+[Learn more about theme-inverse →](/docs/theme/theme-inverse)
+
 ## Color System
 
 Frontile provides six semantic color categories:
