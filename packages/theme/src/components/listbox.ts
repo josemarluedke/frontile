@@ -188,7 +188,10 @@ const listboxItem = tv({
       appearance: 'outlined',
       intent: 'primary',
       class: {
-        base: ['data-is-active:border-brand-medium', 'data-is-active:text-brand']
+        base: [
+          'data-is-active:border-brand-medium',
+          'data-is-active:text-brand'
+        ]
       }
     },
     {

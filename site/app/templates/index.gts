@@ -761,8 +761,9 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-strong dark:text-white mb-2">High
-                  Contrast</h3>
+                <h3
+                  class="font-bold text-neutral-strong dark:text-white mb-2"
+                >High Contrast</h3>
                 <p class="text-neutral-medium text-sm">
                   Works with OS high contrast modes
                 </p>
@@ -821,8 +822,8 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
             >
-              <h3 class="text-lg font-bold text-neutral-strong mb-4">Template Type
-                Checking</h3>
+              <h3 class="text-lg font-bold text-neutral-strong mb-4">Template
+                Type Checking</h3>
               <CodeBlock
                 @code="<Table
   @rows={{this.users}}
@@ -898,8 +899,8 @@ Listbox<Country>
             <div
               class="p-8 bg-neutral-subtle rounded-xl shadow-lg border border-neutral-subtle"
             >
-              <h3 class="text-xl font-bold text-neutral-strong mb-6">Semantic Theme
-                System</h3>
+              <h3 class="text-xl font-bold text-neutral-strong mb-6">Semantic
+                Theme System</h3>
               <CodeBlock
                 @code="const { frontile } = require('@frontile/theme/plugin');
 

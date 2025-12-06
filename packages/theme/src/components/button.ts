@@ -94,7 +94,8 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'default',
-      class: 'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80'
+      class:
+        'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80'
     },
     {
       appearance: 'default',
@@ -121,7 +122,8 @@ const button = tv({
     {
       appearance: 'minimal',
       intent: 'default',
-      class: 'text-neutral-medium hover:text-neutral-contrast-1 hover:bg-neutral'
+      class:
+        'text-neutral-medium hover:text-neutral-contrast-1 hover:bg-neutral'
     },
     {
       appearance: 'minimal',
