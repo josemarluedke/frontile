@@ -139,10 +139,18 @@ const listboxItem = tv({
     },
     {
       appearance: 'default',
+      intent: 'default',
+      isActive: true,
+      class: {
+        shortcut: ['text-on-neutral', 'border-on-neutral/20']
+      }
+    },
+    {
+      appearance: 'default',
       intent: 'primary',
       isActive: true,
       class: {
-        shortcut: ['text-on-brand-soft']
+        shortcut: ['text-on-brand-soft', 'border-on-brand-soft/20']
       }
     },
     {
@@ -150,7 +158,7 @@ const listboxItem = tv({
       intent: 'success',
       isActive: true,
       class: {
-        shortcut: ['text-on-success-soft']
+        shortcut: ['text-on-success-soft', 'border-on-success-soft/20']
       }
     },
     {
@@ -158,7 +166,7 @@ const listboxItem = tv({
       intent: 'warning',
       isActive: true,
       class: {
-        shortcut: ['text-on-warning-soft']
+        shortcut: ['text-on-warning-soft', 'border-on-warning-soft/20']
       }
     },
     {
@@ -166,7 +174,7 @@ const listboxItem = tv({
       intent: 'danger',
       isActive: true,
       class: {
-        shortcut: ['text-on-danger-soft']
+        shortcut: ['text-on-danger-soft', 'border-on-danger-soft/20']
       }
     },
 
