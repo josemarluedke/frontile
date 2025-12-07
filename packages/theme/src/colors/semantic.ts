@@ -16,45 +16,35 @@ const themeColorsLight: ThemeColors = {
     soft: `${absolute.black}73`,
     medium: `${absolute.black}c9`,
     DEFAULT: `${absolute.black}c9`,
-    strong: absolute.black,
-    'contrast-1': absolute.white,
-    'contrast-2': absolute.black
+    strong: absolute.black
   },
   success: {
     subtle: `${lightPalette.green['400']}80`,
     soft: lightPalette.green['600'],
     medium: lightPalette.green['800'],
     DEFAULT: lightPalette.green['800'],
-    strong: lightPalette.green['900'],
-    'contrast-1': absolute.white,
-    'contrast-2': absolute.black
+    strong: lightPalette.green['900']
   },
   brand: {
     subtle: `${lightPalette.blue['400']}80`,
     soft: lightPalette.blue['600'],
     medium: lightPalette.blue['800'],
     DEFAULT: lightPalette.blue['800'],
-    strong: lightPalette.blue['900'],
-    'contrast-1': absolute.white,
-    'contrast-2': absolute.black
+    strong: lightPalette.blue['900']
   },
   danger: {
     subtle: `${lightPalette.red['800']}59`,
     soft: lightPalette.red['800'],
     medium: lightPalette.red['900'],
     DEFAULT: lightPalette.red['900'],
-    strong: lightPalette.red['950'],
-    'contrast-1': absolute.white,
-    'contrast-2': absolute.black
+    strong: lightPalette.red['950']
   },
   warning: {
     subtle: `${lightPalette.red['500']}59`,
     soft: lightPalette.red['500'],
     medium: lightPalette.red['700'],
     DEFAULT: lightPalette.red['700'],
-    strong: lightPalette.red['800'],
-    'contrast-1': absolute.white,
-    'contrast-2': absolute.black
+    strong: lightPalette.red['800']
   },
   surface: {
     overlay: {
@@ -92,45 +82,35 @@ const themeColorsDark: ThemeColors = {
     soft: `${absolute.white}4f`,
     medium: `${absolute.white}c4`,
     DEFAULT: `${absolute.white}c4`,
-    strong: absolute.white,
-    'contrast-1': absolute.black,
-    'contrast-2': absolute.white
+    strong: absolute.white
   },
   success: {
     subtle: `${darkPalette.green['200']}33`,
     soft: darkPalette.green['700'],
     medium: darkPalette.green['900'],
     DEFAULT: darkPalette.green['900'],
-    strong: darkPalette.green['950'],
-    'contrast-1': absolute.black,
-    'contrast-2': absolute.white
+    strong: darkPalette.green['950']
   },
   brand: {
     subtle: `${darkPalette.blue['200']}33`,
     soft: darkPalette.blue['700'],
     medium: darkPalette.blue['900'],
     DEFAULT: darkPalette.blue['900'],
-    strong: darkPalette.blue['950'],
-    'contrast-1': absolute.black,
-    'contrast-2': absolute.white
+    strong: darkPalette.blue['950']
   },
   danger: {
     subtle: `${darkPalette.red['700']}59`,
     soft: darkPalette.red['800'],
     medium: darkPalette.red['900'],
     DEFAULT: darkPalette.red['900'],
-    strong: darkPalette.red['950'],
-    'contrast-1': absolute.black,
-    'contrast-2': absolute.white
+    strong: darkPalette.red['950']
   },
   warning: {
     subtle: `${darkPalette.red['200']}59`,
     soft: darkPalette.red['400'],
     medium: darkPalette.red['500'],
     DEFAULT: darkPalette.red['500'],
-    strong: darkPalette.red['600'],
-    'contrast-1': absolute.black,
-    'contrast-2': absolute.white
+    strong: darkPalette.red['600']
   },
   surface: {
     overlay: {

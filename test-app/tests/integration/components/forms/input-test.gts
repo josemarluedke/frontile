@@ -87,12 +87,12 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
           @endContentPointerEvents={{endContentPointerEvents.current}}
         >
           <:startContent>
-            <button>
+            <button type="button">
               Start
             </button>
           </:startContent>
           <:endContent>
-            <button>
+            <button type="button">
               Start
             </button>
           </:endContent>

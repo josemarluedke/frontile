@@ -27,12 +27,10 @@ export type SemanticBaseColors = {
 };
 
 export interface SemanticColorCategory {
-  'contrast-1': string;
-  'contrast-2': string;
   subtle: string;
+  soft: string;
   medium: string;
   strong: string;
-  soft: string;
   DEFAULT: string;
 }
 

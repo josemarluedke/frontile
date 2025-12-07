@@ -204,6 +204,6 @@ Theme-inverse works automatically with semantic colors:
 <div class='theme-inverse p-6 bg-background'>
   <h3 class='text-neutral-strong'>Heading</h3>
   <p class='text-neutral-medium'>Body text</p>
-  <button class='bg-brand-medium text-brand-contrast-1'>Action</button>
+  <button class='bg-brand-medium text-on-brand-medium'>Action</button>
 </div>
 ```

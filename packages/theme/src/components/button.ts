@@ -50,26 +50,24 @@ const baseButton = tv({
     {
       appearance: 'outlined',
       intent: 'primary',
-      class:
-        'text-brand hover:text-brand-contrast-1 border-brand-medium hover:bg-brand'
+      class: 'text-brand hover:text-on-brand border-brand-medium hover:bg-brand'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       class:
-        'text-success hover:text-success-contrast-1 border-success hover:bg-success'
+        'text-success hover:text-on-success border-success hover:bg-success'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class:
-        'text-warning hover:text-warning-contrast-1 border-warning hover:bg-warning'
+        'text-warning hover:text-on-warning border-warning hover:bg-warning'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
-      class:
-        'text-danger hover:text-danger-contrast-1 border-danger hover:bg-danger'
+      class: 'text-danger hover:text-on-danger border-danger hover:bg-danger'
     }
   ],
   defaultVariants: {
@@ -95,17 +93,17 @@ const button = tv({
       appearance: 'default',
       intent: 'default',
       class:
-        'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80'
+        'bg-neutral-strong text-on-neutral-strong hover:bg-neutral-strong/80'
     },
     {
       appearance: 'default',
       intent: 'primary',
-      class: 'bg-brand text-brand-contrast-1 hover:bg-brand-strong'
+      class: 'bg-brand text-on-brand hover:bg-brand-strong'
     },
     {
       appearance: 'default',
       intent: 'success',
-      class: 'bg-success-soft text-success-contrast-1 hover:bg-success-soft/80'
+      class: 'bg-success-soft text-on-success-soft hover:bg-success-soft/80'
     },
     {
       appearance: 'default',
@@ -115,35 +113,34 @@ const button = tv({
     {
       appearance: 'default',
       intent: 'danger',
-      class: 'bg-danger text-danger-contrast-1 hover:bg-danger/80'
+      class: 'bg-danger text-on-danger hover:bg-danger/80'
     },
 
     // APPEARANCE: minimal
     {
       appearance: 'minimal',
       intent: 'default',
-      class:
-        'text-neutral-medium hover:text-neutral-contrast-1 hover:bg-neutral'
+      class: 'text-neutral-medium hover:text-on-neutral hover:bg-neutral'
     },
     {
       appearance: 'minimal',
       intent: 'primary',
-      class: 'text-brand hover:text-brand-contrast-1 hover:bg-brand'
+      class: 'text-brand hover:text-on-brand hover:bg-brand'
     },
     {
       appearance: 'minimal',
       intent: 'success',
-      class: 'text-success hover:text-success-contrast-1 hover:bg-success'
+      class: 'text-success hover:text-on-success hover:bg-success'
     },
     {
       appearance: 'minimal',
       intent: 'warning',
-      class: 'text-warning hover:text-warning-contrast-1 hover:bg-warning'
+      class: 'text-warning hover:text-on-warning hover:bg-warning'
     },
     {
       appearance: 'minimal',
       intent: 'danger',
-      class: 'text-danger hover:text-danger-contrast-1 hover:bg-danger'
+      class: 'text-danger hover:text-on-danger hover:bg-danger'
     },
 
     // APPEARANCE: custom
@@ -193,31 +190,31 @@ const toggleButton = tv({
       intent: 'default',
       isSelected: true,
       class:
-        'bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-strong/80 dark:bg-neutral dark:text-neutral-strong dark:hover:bg-neutral/40'
+        'bg-neutral-strong text-on-neutral-strong hover:bg-neutral-strong/80 dark:bg-neutral dark:text-neutral-strong dark:hover:bg-neutral/40'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       isSelected: true,
-      class: 'bg-brand text-brand-contrast-1 hover:bg-brand/80'
+      class: 'bg-brand text-on-brand hover:bg-brand/80'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       isSelected: true,
-      class: 'bg-success text-success-contrast-1 hover:bg-success/80'
+      class: 'bg-success text-on-success hover:bg-success/80'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       isSelected: true,
-      class: 'bg-warning text-warning-contrast-1 hover:bg-warning/80'
+      class: 'bg-warning text-on-warning hover:bg-warning/80'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       isSelected: true,
-      class: 'bg-danger text-danger-contrast-1 hover:bg-danger/80'
+      class: 'bg-danger text-on-danger hover:bg-danger/80'
     }
   ]
 });

@@ -915,37 +915,33 @@ module.exports = frontile({
     light: {
       colors: {
         brand: {
-          'contrast-1': '#ffffff',
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
-          strong: '#1e40af',
-          'contrast-2': '#000000'
+          strong: '#1e40af'
         },
         neutral: {
-          'contrast-1': '#ffffff',
           subtle: '#f5f5f5',
           soft: '#a3a3a3',
           medium: '#525252',
-          strong: '#171717',
-          'contrast-2': '#000000'
+          strong: '#171717'
         }
       }
     },
     dark: {
       colors: {
         brand: {
-          'contrast-1': '#000000',
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
-          strong: '#dbeafe',
-          'contrast-2': '#ffffff'
+          strong: '#dbeafe'
         }
       }
     }
   }
-});"
+});
+
+// Note: on-{color}-{level} classes are automatically generated"
                 @language="javascript"
               />
               <p class="text-neutral-medium mt-6 mb-6">

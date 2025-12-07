@@ -1,14 +1,7 @@
 /**
  * Color levels in order for iteration
  */
-export const colorLevels = [
-  'contrast-1',
-  'subtle',
-  'soft',
-  'medium',
-  'strong',
-  'contrast-2',
-] as const;
+export const colorLevels = ['subtle', 'soft', 'medium', 'strong'] as const;
 
 /**
  * Surface solid levels (0-11)
@@ -58,14 +51,10 @@ export function getSurfaceOverlayClass(
  */
 export function getColorLevelDescription(level: ColorLevel): string {
   const descriptions: Record<ColorLevel, string> = {
-    'contrast-1':
-      'High contrast color for text on colored backgrounds (inverts with theme)',
     subtle: 'Subtle color for minimal emphasis and backgrounds',
     soft: 'Soft color for moderate emphasis and secondary elements',
     medium: 'Medium color for standard emphasis and interactive elements',
     strong: 'Strong color for maximum emphasis and primary elements',
-    'contrast-2':
-      'High contrast color for text on light surfaces (inverts with theme)',
   };
   return descriptions[level];
 }

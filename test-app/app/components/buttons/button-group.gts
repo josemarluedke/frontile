@@ -33,7 +33,7 @@ export default class Example extends Component {
         {{#each-in this.isSelected as |key val|}}
           <g.ToggleButton
             @isSelected={{val}}
-            @onChange={{(fn this.onChange key)}}
+            @onChange={{fn this.onChange key}}
           >
             {{key}}
           </g.ToggleButton>

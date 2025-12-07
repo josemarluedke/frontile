@@ -21,16 +21,16 @@ const notificationCard = tv({
   variants: {
     appearance: {
       info: {
-        base: 'bg-neutral-strong text-neutral-contrast-1'
+        base: 'bg-neutral-strong text-on-neutral-strong'
       },
       success: {
-        base: 'bg-success text-success-contrast-1'
+        base: 'bg-success text-on-success'
       },
       warning: {
-        base: 'bg-warning text-warning-contrast-1'
+        base: 'bg-warning text-on-warning'
       },
       error: {
-        base: 'bg-danger text-danger-contrast-1'
+        base: 'bg-danger text-on-danger'
       }
     }
   },

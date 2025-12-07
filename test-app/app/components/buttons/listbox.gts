@@ -75,7 +75,7 @@ export default class Example extends Component {
       <Listbox
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
-        @disabledKeys={{(array "notifications")}}
+        @disabledKeys={{array "notifications"}}
       >
         <:default as |l|>
           <l.Item @key="profile" @description="View my profile">

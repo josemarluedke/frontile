@@ -387,7 +387,7 @@ module(
               @selectionMode="multiple"
               @selectedKeys={{selectedKeys}}
               @onSelectionChange={{onSelectionChange}}
-              @disabledKeys={{(array "2")}}
+              @disabledKeys={{array "2"}}
             />
           </TestHelper>
         </template>

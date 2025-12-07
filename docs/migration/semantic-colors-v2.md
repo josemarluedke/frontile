@@ -38,10 +38,10 @@ A new `inverse` category has been added for elements on inverted surfaces (dark 
 
 The numbered scale (50, 100, 200, ..., 950) has been replaced with named levels:
 
-| Old Pattern          | New Pattern                                  | Description              |
-| -------------------- | -------------------------------------------- | ------------------------ |
-| `{color}-{number}`   | `{color}-{level}`                            | Named emphasis levels    |
-| `{color}-foreground` | `{color}-contrast-1` or `{color}-contrast-2` | Explicit contrast colors |
+| Old Pattern          | New Pattern           | Description                               |
+| -------------------- | --------------------- | ----------------------------------------- |
+| `{color}-{number}`   | `{color}-{level}`     | Named emphasis levels                     |
+| `{color}-foreground` | `on-{color}-{level}`  | Automatic contrasting colors (black/white) |
 
 ## Color Level Mapping
 
@@ -49,12 +49,11 @@ The numbered scale (50, 100, 200, ..., 950) has been replaced with named levels:
 
 Each semantic color now has these levels:
 
-- **`contrast-1`** — High contrast (white) for text on dark backgrounds
+- **`on-{color}-{level}`** — Automatic contrasting color (black or white) calculated for optimal WCAG contrast on the specified background level
 - **`strong`** — Maximum emphasis, darkest/boldest color
 - **`medium`** (DEFAULT) — Standard emphasis, the primary color
 - **`soft`** — Moderate emphasis, lighter than medium
 - **`subtle`** — Minimal emphasis, very light with transparency
-- **`contrast-2`** — High contrast (black) for text on light backgrounds
 
 ### Migration Mapping Table
 
@@ -74,7 +73,7 @@ Each semantic color now has these levels:
 | `bg-default-900`          | `bg-neutral-strong`                            | Darkest backgrounds        |
 | `bg-default-950`          | `bg-neutral-strong`                            | Maximum contrast           |
 | `text-default`            | `text-neutral-medium` or `text-neutral-strong` | Body text                  |
-| `text-default-foreground` | `text-neutral-contrast-1`                      | White text                 |
+| `text-default-foreground` | `text-on-neutral-medium`                       | Contrasting text on bg     |
 | `border-default`          | `border-neutral-soft`                          | Standard borders           |
 
 #### Brand (formerly Primary)
@@ -87,7 +86,7 @@ Each semantic color now has these levels:
 | `bg-primary-700`          | `bg-brand-medium` or `bg-brand-strong` | Strong emphasis        |
 | `bg-primary-800`          | `bg-brand-strong`                      | Active/pressed states  |
 | `text-primary`            | `text-brand-medium` or `text-brand`    | Brand text             |
-| `text-primary-foreground` | `text-brand-contrast-1`                | White text on brand bg |
+| `text-primary-foreground` | `text-on-brand-medium`                 | Contrasting text on bg |
 | `border-primary`          | `border-brand-medium`                  | Brand borders          |
 | `ring-primary-500`        | `ring-brand-soft`                      | Focus rings            |
 
@@ -101,7 +100,7 @@ Each semantic color now has these levels:
 | `bg-success-600`          | `bg-success-medium` or `bg-success-strong` | Buttons, hover           |
 | `bg-success-800`          | `bg-success-strong`                        | Active states            |
 | `text-success`            | `text-success-medium` or `text-success`    | Success text             |
-| `text-success-foreground` | `text-success-contrast-1`                  | White text on success bg |
+| `text-success-foreground` | `text-on-success-medium`                   | Contrasting text on bg   |
 | `border-success`          | `border-success-medium`                    | Success borders          |
 | `ring-success-500`        | `ring-success-soft`                        | Focus rings              |
 
@@ -115,7 +114,7 @@ Each semantic color now has these levels:
 | `bg-warning-600`          | `bg-warning-medium` or `bg-warning-strong` | Buttons, hover           |
 | `bg-warning-800`          | `bg-warning-strong`                        | Active states            |
 | `text-warning`            | `text-warning-medium` or `text-warning`    | Warning text             |
-| `text-warning-foreground` | `text-warning-contrast-1`                  | White text on warning bg |
+| `text-warning-foreground` | `text-on-warning-medium`                   | Contrasting text on bg   |
 | `border-warning`          | `border-warning-medium`                    | Warning borders          |
 
 #### Danger
@@ -128,7 +127,7 @@ Each semantic color now has these levels:
 | `bg-danger-600`          | `bg-danger-medium` or `bg-danger-strong` | Buttons, hover          |
 | `bg-danger-800`          | `bg-danger-strong`                       | Active states           |
 | `text-danger`            | `text-danger-medium` or `text-danger`    | Danger text             |
-| `text-danger-foreground` | `text-danger-contrast-1`                 | White text on danger bg |
+| `text-danger-foreground` | `text-on-danger-medium`                  | Contrasting text on bg  |
 | `border-danger`          | `border-danger-medium`                   | Danger borders          |
 
 ## Common UI Pattern Migrations
@@ -144,7 +143,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="bg-neutral-strong text-neutral-contrast-1 hover:bg-neutral-medium">
+<button class="bg-neutral-strong text-on-neutral-strong hover:bg-neutral-medium">
   Click me
 </button>
 ```
@@ -158,7 +157,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="bg-brand text-brand-contrast-1 hover:bg-brand-soft">
+<button class="bg-brand text-on-brand hover:bg-brand-soft">
   Submit
 </button>
 ```
@@ -172,7 +171,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="border-brand text-brand hover:bg-brand hover:text-brand-contrast-1">
+<button class="border-brand text-brand hover:bg-brand hover:text-on-brand">
   Cancel
 </button>
 ```
@@ -189,7 +188,7 @@ Each semantic color now has these levels:
 </div>
 
 // After
-<div class="bg-success-subtle border-success-soft text-success-contrast-2">
+<div class="bg-success-subtle border-success-soft text-on-success-subtle">
   <Icon class="text-success-medium" />
   <p>Success message</p>
 </div>
@@ -204,7 +203,7 @@ Each semantic color now has these levels:
 </div>
 
 // After
-<div class="bg-danger-subtle border-danger-medium text-danger-contrast-2">
+<div class="bg-danger-subtle border-danger-medium text-on-danger-subtle">
   Error occurred
 </div>
 ```
@@ -242,7 +241,7 @@ Each semantic color now has these levels:
 </span>
 
 // After
-<span class="bg-success-strong text-success-contrast-1">
+<span class="bg-success-strong text-on-success-strong">
   Active
 </span>
 ```
@@ -253,7 +252,7 @@ The new semantic colors automatically adapt to dark mode. Key changes:
 
 - In dark mode, `strong` becomes the **lightest** shade (inverted from light mode)
 - `subtle` uses darker base colors with lower alpha
-- `contrast-1` and `contrast-2` maintain accessibility standards
+- `on-{color}-{level}` automatically maintains WCAG accessibility standards
 
 **No changes needed** — your dark mode classes will work automatically:
 
@@ -347,8 +346,7 @@ When choosing between levels, ask:
 
 ### Text Colors
 
-- **On dark colored background?** → `{color}-contrast-1` (white)
-- **On light colored background?** → `{color}-contrast-2` (black)
+- **On colored background?** → `on-{color}-{level}` (automatically white or black based on WCAG contrast)
 - **On neutral background?** → `neutral-strong` (heading), `neutral-medium` (body), `neutral-soft` (caption)
 
 ### Borders

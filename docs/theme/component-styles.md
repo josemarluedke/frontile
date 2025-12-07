@@ -132,13 +132,13 @@ If you only need to customize the styles of a specific component instance, it is
 <Drawer
   @isOpen={{true}}
   @classes={{hash
-    header='bg-neutral-strong text-neutral-subtle'
+    header='bg-neutral-strong text-on-neutral-strong'
     body='bg-neutral-subtle'
-    footer='bg-neutral-strong text-neutral-subtle'
+    footer='bg-neutral-strong text-on-neutral-strong'
   }}
 >
   <!-- Drawer content here -->
 </Drawer>
 ```
 
-In this example, the `Drawer` component is provided with specific styles for the `header`, `body`, and `footer` slots. The `header` and `footer` have a dark background (`bg-neutral-strong`) and light text (`text-neutral-subtle`), while the `body` has a light background (`bg-neutral-subtle`). This approach allows for context-specific customizations without impacting other instances of the Drawer component.
+In this example, the `Drawer` component is provided with specific styles for the `header`, `body`, and `footer` slots. The `header` and `footer` have a dark background (`bg-neutral-strong`) with automatically contrasting text (`text-on-neutral-strong`), while the `body` has a light background (`bg-neutral-subtle`). This approach allows for context-specific customizations without impacting other instances of the Drawer component.

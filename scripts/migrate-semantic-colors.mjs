@@ -35,11 +35,12 @@ console.log(`Path: ${targetPath}\n`);
  */
 const colorMigrations = {
   // Foreground colors (text on colored backgrounds) - highest priority, most specific
-  'default-foreground': 'neutral-contrast-1',
-  'primary-foreground': 'brand-contrast-1',
-  'success-foreground': 'success-contrast-1',
-  'warning-foreground': 'warning-contrast-1',
-  'danger-foreground': 'danger-contrast-1',
+  // Note: -foreground colors typically map to on-{color}-medium as that's the most common usage
+  'default-foreground': 'on-neutral-medium',
+  'primary-foreground': 'on-brand-medium',
+  'success-foreground': 'on-success-medium',
+  'warning-foreground': 'on-warning-medium',
+  'danger-foreground': 'on-danger-medium',
 
   // Default/Neutral numbered scales
   'default-50': 'neutral-subtle',

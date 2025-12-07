@@ -12,6 +12,8 @@ import type {
 } from '../types';
 import type { CSSRuleObject } from 'tailwindcss/types/config';
 import { defaultConfig } from './default-config';
+import { getContrastingColor } from '../colors/contrast';
+import * as absolute from '../colors/palette-absolute';
 
 const parsedColorsCache: Record<string, number[]> = {};
 
@@ -20,6 +22,47 @@ interface ResolvedConfig {
   utilities: CSSRuleObject | CSSRuleObject[];
   base: CSSRuleObject | CSSRuleObject[];
   colors: Record<string, string>;
+}
+
+/**
+ * Determine if a color should have an "on-" variant generated
+ *
+ * Includes: semantic colors (neutral, brand, success, danger, warning) and surface-solid-*
+ * Excludes: surface-overlay-*, background, focus, divider
+ */
+function shouldGenerateOnColor(colorName: string): boolean {
+  // Exclude utility colors
+  if (
+    colorName === 'background' ||
+    colorName === 'focus' ||
+    colorName === 'divider'
+  ) {
+    return false;
+  }
+
+  // Exclude surface overlays (they're transparent layers)
+  if (colorName.startsWith('surface-overlay')) {
+    return false;
+  }
+
+  // Include semantic colors (neutral, brand, success, danger, warning)
+  const semanticColorPrefixes = [
+    'neutral',
+    'brand',
+    'success',
+    'danger',
+    'warning'
+  ];
+  if (semanticColorPrefixes.some((prefix) => colorName.startsWith(prefix))) {
+    return true;
+  }
+
+  // Include surface solid colors
+  if (colorName.startsWith('surface-solid')) {
+    return true;
+  }
+
+  return false;
 }
 
 function resolveThemes(
@@ -100,6 +143,48 @@ function resolveThemes(
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log('error', error);
+      }
+    }
+
+    /**
+     * Generate "on-" colors for optimal contrast
+     */
+    const themeBackground =
+      themeName === 'light' ? absolute.white : absolute.black;
+    const onColors: Record<string, string> = {};
+
+    for (const [colorName, colorValue] of Object.entries(flatColors)) {
+      if (!shouldGenerateOnColor(colorName)) {
+        continue;
+      }
+
+      try {
+        const contrastColor = getContrastingColor(colorValue);
+
+        // Generate the "on-" color name
+        const onColorName = `on-${colorName}`;
+        onColors[onColorName] = contrastColor;
+
+        // Process the on- color and add to theme
+        const parsedColor =
+          parsedColorsCache[contrastColor] ||
+          Color(contrastColor).hsl().round().array();
+
+        parsedColorsCache[contrastColor] = parsedColor;
+
+        const [h, s, l, defaultAlphaValue] = parsedColor;
+        const colorVariable = `--${prefix}-${onColorName}`;
+
+        themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
+
+        const alpha =
+          defaultAlphaValue !== undefined && defaultAlphaValue < 1
+            ? defaultAlphaValue.toString()
+            : '<alpha-value>';
+        resolved.colors[onColorName] = `hsl(var(${colorVariable}) / ${alpha})`;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('error generating on-color for', colorName, error);
       }
     }
 

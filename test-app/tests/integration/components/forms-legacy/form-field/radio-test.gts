@@ -102,7 +102,7 @@ module(
         <template>
           <Radio
             data-test-radio
-            @value={{"my-value"}}
+            @value="my-value"
             @checked={{value.current}}
             @onChange={{setName}}
           />
