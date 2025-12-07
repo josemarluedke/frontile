@@ -159,9 +159,7 @@ function resolveThemes(
       }
 
       try {
-        const contrastColor = getContrastingColor(colorValue, {
-          themeBackground
-        });
+        const contrastColor = getContrastingColor(colorValue);
 
         // Generate the "on-" color name
         const onColorName = `on-${colorName}`;
