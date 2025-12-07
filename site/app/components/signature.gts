@@ -51,7 +51,8 @@ export default class Signature extends Component<SignatureSignature> {
         Element:
         <a
           href={{this.component.Element.url}}
-          target="_blank" rel="noopener noreferrer"
+          target="_blank"
+          rel="noopener noreferrer"
         >{{this.component.Element.type.type}}</a>
       </p>
     {{/if}}
@@ -121,7 +122,9 @@ const PropertiesTable: TOC<{
                 {{#if arg.isInternal}}
                   <Popover as |pop|>
                     <button
-                      class="ml-1 hover:bg-neutral-subtle rounded-full" type="button" {{pop.trigger "hover"}}
+                      class="ml-1 hover:bg-neutral-subtle rounded-full"
+                      type="button"
+                      {{pop.trigger "hover"}}
                       {{pop.anchor}}
                     >
                       <InfoIcon />
@@ -147,7 +150,9 @@ const PropertiesTable: TOC<{
                 {{#if arg.type.raw}}
                   <Popover as |pop|>
                     <button
-                      class="ml-1 hover:bg-neutral-subtle rounded-full" type="button" {{pop.trigger "hover"}}
+                      class="ml-1 hover:bg-neutral-subtle rounded-full"
+                      type="button"
+                      {{pop.trigger "hover"}}
                       {{pop.anchor}}
                     >
                       <InfoIcon />

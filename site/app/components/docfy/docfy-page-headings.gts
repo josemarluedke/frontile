@@ -86,8 +86,8 @@ export default class PageHeadings extends Component<Signature> {
                   class="transition block px-2 py-1 border-l-2 hover:text-brand-medium dark:hover:text-primary-300
                     {{if
                       (docfyEq heading.id @currentHeadingId)
-                      "border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400"
-                      "border-transparent"
+                      'border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400'
+                      'border-transparent'
                     }}"
                   {{on "click" this.onClick}}
                 >
@@ -103,8 +103,8 @@ export default class PageHeadings extends Component<Signature> {
                           class="transition block pl-6 py-1 border-l-2 hover:text-brand-medium dark:hover:text-primary-300
                             {{if
                               (docfyEq subHeading.id @currentHeadingId)
-                              "border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400"
-                              "border-transparent"
+                              'border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400'
+                              'border-transparent'
                             }}"
                           {{on "click" this.onClick}}
                         >

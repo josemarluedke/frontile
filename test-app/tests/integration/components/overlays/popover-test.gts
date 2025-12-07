@@ -34,7 +34,12 @@ module(
       await render(
         <template>
           <Popover as |p|>
-            <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -64,7 +69,12 @@ module(
         <template>
           <button type="button" data-test-id="focused-element">Button</button>
           <Popover as |p|>
-            <button data-test-id="trigger" type="button" {{p.trigger "hover"}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -105,7 +115,12 @@ module(
       await render(
         <template>
           <Popover as |p|>
-            <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -132,7 +147,12 @@ module(
       await render(
         <template>
           <Popover as |p|>
-            <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -167,7 +187,12 @@ module(
         <template>
           <div id="outside" tabindex="0"></div>
           <Popover @didClose={{didClose}} as |p|>
-            <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -210,7 +235,12 @@ module(
             @onOpenChange={{onOpenChange}}
             as |p|
           >
-            <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
               Trigger
             </button>
 
@@ -250,7 +280,12 @@ module(
         <template>
           <Popover as |p|>
             <button type="button" {{on "click" parentClick}}>
-              <button data-test-id="trigger" type="button" {{p.trigger}} {{p.anchor}}>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
                 Trigger
               </button>
             </button>

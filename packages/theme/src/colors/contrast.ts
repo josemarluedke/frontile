@@ -28,10 +28,15 @@ export function getContrastingColor(backgroundColor: string): string {
     const contrastWithWhite = bgColor.contrast(white);
 
     // Return the color with better contrast
-    return contrastWithBlack > contrastWithWhite ? absolute.black : absolute.white;
+    return contrastWithBlack > contrastWithWhite
+      ? absolute.black
+      : absolute.white;
   } catch (error) {
     // If color parsing fails, default to white (safe fallback)
-    console.warn(`Failed to calculate contrast for color: ${backgroundColor}`, error);
+    console.warn(
+      `Failed to calculate contrast for color: ${backgroundColor}`,
+      error
+    );
     return absolute.white;
   }
 }

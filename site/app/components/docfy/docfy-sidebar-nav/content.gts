@@ -204,10 +204,10 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                       class="h-3 w-3 transition-transform
                         {{if
                           (this.isExpanded
-                            (concat child.label "-" subChild.label)
+                            (concat child.label '-' subChild.label)
                           )
-                          "rotate-90"
-                          ""
+                          'rotate-90'
+                          ''
                         }}"
                       fill="none"
                       stroke="currentColor"
