@@ -31,7 +31,8 @@ Add this to your `app/styles/app.css`:
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @source '../../node_modules/@frontile';
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));
+@custom-variant light (&:is(.light *, .dark .theme-inverse *):not(.light .theme-inverse *));
 ```
 
 #### Custom Theme Configuration
