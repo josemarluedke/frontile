@@ -2,15 +2,37 @@ import type { ThemeColors } from './colors/types';
 
 export interface LayoutTheme {
   /**
-   * A number between 0 and 1 that is applied as opacity: [value] when the component is hovered.
-   *
-   * format: ".[value]"
-   *
-   * @default .8
+   * Opacity configuration for components.
+   * Supports Tailwind's opacity-* naming convention.
    */
-  hoverOpacity?: string | number;
+  opacity?: {
+    /**
+     * A number between 0 and 1 that is applied as opacity when the component is hovered.
+     * @default .8
+     */
+    hover?: string | number;
+    /**
+     * A number between 0 and 1 that is applied as opacity when the component is disabled.
+     * @default .5
+     */
+    disabled?: string | number;
+  };
 
-  disabledOpacity?: string | number;
+  /**
+   * Border radius configuration for components.
+   * Values can be any valid CSS length unit (px, rem, em, etc.)
+   */
+  radius?: {
+    xs?: string;
+    sm?: string;
+    md?: string;
+    lg?: string;
+    DEFAULT?: string;
+    xl?: string;
+    '2xl'?: string;
+    full?: string;
+    pill?: string;
+  };
 }
 
 export type ConfigTheme = {
@@ -23,11 +45,6 @@ export type ConfigThemes = Record<string, ConfigTheme>;
 export type DefaultThemeType = 'light' | 'dark';
 
 export type PluginConfig = {
-  /**
-   * The prefix for the css variables.
-   * @default "frontile"
-   */
-  prefix?: string;
   themes?: ConfigThemes;
   layout?: LayoutTheme;
   defaultTheme?: DefaultThemeType;

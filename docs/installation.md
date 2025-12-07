@@ -36,20 +36,17 @@ With modern build tools and explicit imports (`.gts`/`.gjs`), only the component
 
 ## Setup Theme
 
-### Tailwind CSS v4 (Recommended)
-
-#### Using Default Theme
+### Using Default Theme
 
 For the default theme, add this to your `app/styles/app.css`:
 
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
-@source '../../node_modules/@frontile';
-@custom-variant dark (&:is(.dark *));
+@import "@frontile/theme";
 ```
 
-#### Customizing Frontile Theme
+### Customizing Frontile Theme
 
 To customize the frontile theme, create a file in the root of your project named `frontile.js` with the following content:
 
@@ -66,33 +63,7 @@ Then update your `app/styles/app.css` to use the custom configuration:
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
-@source '../../node_modules/@frontile';
+@import "@frontile/theme";
 ```
 
-### Tailwind CSS v3 (Legacy)
-
-For projects still using Tailwind CSS v3, add `frontile` plugin to your `tailwind.config.js`, add options to `content` and `safelist`.
-
-```js
-// tailwind.config.js
-const { frontile, safelist } = require('@frontile/theme/plugin');
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: 'class',
-  plugins: [frontile()],
-
-  content: [
-    // ....
-    './node_modules/@frontile/theme/dist/**/*.{js,ts}'
-  ],
-
-  safelist: [
-    ...safelist,
-
-    // Power Select
-    { pattern: /^ember-power-select/ }
-  ]
-  // ...
-};
-```
+For more advanced configuration options, see the [Theme documentation](/docs/theme/overview).

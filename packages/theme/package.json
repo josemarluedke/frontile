@@ -12,6 +12,7 @@
   "exports": {
     ".": {
       "types": "./declarations/index.d.ts",
+      "style": "./src/index.css",
       "default": "./dist/index.js"
     },
     "./*": {
@@ -35,7 +36,8 @@
     "addon-main.js",
     "declarations",
     "dist",
-    "tailwind"
+    "tailwind",
+    "src/index.css"
   ],
   "scripts": {
     "build": "rollup --config",

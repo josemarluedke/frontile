@@ -1,21 +1,20 @@
 import { semanticColors } from '../colors/config';
 import type { LayoutTheme } from '../types';
 
-const baseLayout: LayoutTheme = {
-  disabledOpacity: '.5'
-};
+// No default layout values - defaults are in index.css
+// Users can override via CSS or configure via JS
+const baseLayout: LayoutTheme = {};
 
 const defaultConfig = {
   defaultTheme: 'light',
-  prefix: 'frontile',
   themes: {
     light: {
       colors: semanticColors.light,
-      layout: { ...baseLayout, hoverOpacity: '.8' }
+      layout: baseLayout
     },
     dark: {
       colors: semanticColors.dark,
-      layout: { ...baseLayout, hoverOpacity: '.7' }
+      layout: baseLayout
     }
   }
 };
