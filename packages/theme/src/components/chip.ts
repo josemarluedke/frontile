@@ -27,7 +27,7 @@ const chip = tv({
         dot: 'bg-neutral-strong dark:bg-neutral-medium',
         closeButton: [
           'bg-neutral-soft',
-          'text-neutral-contrast-1 dark:text-background',
+          'text-on-neutral-soft dark:text-background',
           'dark:bg-neutral-medium',
           'hover:bg-neutral-soft/60 dark:hover:bg-neutral-medium/60'
         ]
@@ -99,35 +99,35 @@ const chip = tv({
       appearance: 'default',
       intent: 'default',
       class: {
-        base: 'bg-neutral-strong text-neutral-contrast-1 dark:bg-neutral dark:text-neutral-strong'
+        base: 'bg-neutral-strong text-on-neutral-strong dark:bg-neutral dark:text-neutral-strong'
       }
     },
     {
       appearance: 'default',
       intent: 'primary',
       class: {
-        base: 'bg-brand text-brand-contrast-1'
+        base: 'bg-brand text-on-brand'
       }
     },
     {
       appearance: 'default',
       intent: 'success',
       class: {
-        base: 'bg-success text-success-contrast-1'
+        base: 'bg-success text-on-success'
       }
     },
     {
       appearance: 'default',
       intent: 'warning',
       class: {
-        base: 'bg-warning text-warning-contrast-1'
+        base: 'bg-warning text-on-warning'
       }
     },
     {
       appearance: 'default',
       intent: 'danger',
       class: {
-        base: 'bg-danger text-danger-contrast-1'
+        base: 'bg-danger text-on-danger'
       }
     },
 

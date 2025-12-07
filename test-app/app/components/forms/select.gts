@@ -100,7 +100,7 @@ export default class Example extends Component {
     <Select
       @disableTransitions={{true}}
       @onAction={{this.onAction}}
-      @disabledKeys={{(array "notifications")}}
+      @disabledKeys={{array "notifications"}}
       @selectedKey={{this.selectedKey3}}
       @onSelectionChange={{this.onSelectionChange3}}
       @isDisabled={{true}}

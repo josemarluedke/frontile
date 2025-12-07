@@ -30,7 +30,7 @@ export default class Example extends Component<ExampleArgs> {
       {{#each-in this.isSelected as |key val|}}
         <ToggleButton
           @isSelected={{val}}
-          @onChange={{(fn this.onChange key)}}
+          @onChange={{fn this.onChange key}}
           @intent={{key}}
         >
           Toggle
@@ -42,7 +42,7 @@ export default class Example extends Component<ExampleArgs> {
       {{#each-in this.isSelected as |key val|}}
         <ToggleButton
           @isSelected={{val}}
-          @onChange={{(fn this.onChange key)}}
+          @onChange={{fn this.onChange key}}
           @intent={{key}}
           disabled={{true}}
         >

@@ -184,7 +184,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
       @isOpen={{this.isOpen}}
       @onClose={{this.toggle}}
       @didClose={{this.didClose}}
-      @backdrop={{"blur"}}
+      @backdrop="blur"
     >
       <div
         class="p-4 mx-auto text-white mt-20 max-w-md w-full dark"
@@ -204,7 +204,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
             autocomplete="off"
             placeholder="Search..."
             class="p-4 bg-transparent w-full focus:outline-none placeholder-neutral-soft
-              {{if this.results.length 'border-b border-neutral-soft'}}
+              {{if this.results.length "border-b border-neutral-soft"}}
               "
             {{on "input" this.search}}
             {{on "keydown" this.onInputKeyDown}}
@@ -218,7 +218,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
                     (eq this.selected index)
-                    'bg-brand-soft text-brand-contrast-1'
+                    "bg-brand-soft text-on-brand-soft"
                   }}"
                 data-result={{index}}
                 {{on "click" this.onItemClick}}

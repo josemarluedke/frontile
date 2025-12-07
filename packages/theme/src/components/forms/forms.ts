@@ -361,31 +361,31 @@ const switchInput = tv({
       default: {
         wrapper: [
           'group-data-[selected=true]:bg-neutral-soft',
-          'group-data-[selected=true]:text-neutral-contrast-1'
+          'group-data-[selected=true]:text-on-neutral-soft'
         ]
       },
       primary: {
         wrapper: [
           'group-data-[selected=true]:bg-brand',
-          'group-data-[selected=true]:text-brand-contrast-1'
+          'group-data-[selected=true]:text-on-brand'
         ]
       },
       success: {
         wrapper: [
           'group-data-[selected=true]:bg-success',
-          'group-data-[selected=true]:text-success-contrast-1'
+          'group-data-[selected=true]:text-on-success'
         ]
       },
       warning: {
         wrapper: [
           'group-data-[selected=true]:bg-warning',
-          'group-data-[selected=true]:text-warning-contrast-1'
+          'group-data-[selected=true]:text-on-warning'
         ]
       },
       danger: {
         wrapper: [
           'group-data-[selected=true]:bg-danger',
-          'data-[selected=true]:text-danger-contrast-1'
+          'data-[selected=true]:text-on-danger'
         ]
       }
     }

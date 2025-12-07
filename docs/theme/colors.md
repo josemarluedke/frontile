@@ -24,17 +24,16 @@ Instead of using arbitrary gray scales like `bg-gray-300`, Frontile's semantic c
 
 Text colors:
 
-- `text-neutral-contrast-1` - White text on dark backgrounds (light mode)
 - `text-neutral-soft` - Muted text for hints and placeholders
 - `text-neutral-medium` - Default text color for body content
 - `text-neutral-strong` - Strong emphasis for headings
 
-Background colors:
+Background colors with automatic text colors:
 
-- `bg-neutral-subtle` - Subtle background for hover states
-- `bg-neutral-soft` - Soft background for cards
-- `bg-neutral-medium` - Medium emphasis background
-- `bg-neutral-strong` - Strong emphasis background
+- `bg-neutral-subtle` with `text-on-neutral-subtle` - Subtle background for hover states
+- `bg-neutral-soft` with `text-on-neutral-soft` - Soft background for cards
+- `bg-neutral-medium` with `text-on-neutral-medium` - Medium emphasis background
+- `bg-neutral-strong` with `text-on-neutral-strong` - Strong emphasis background
 
 ### Brand
 
@@ -46,7 +45,7 @@ Background colors:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Button }}
-    <button class='bg-brand-medium text-brand-contrast-1 hover:bg-brand-soft px-4 py-2 rounded'>
+    <button class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft px-4 py-2 rounded'>
       Filled Button
     </button>
 
@@ -76,7 +75,7 @@ Banners:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Banner }}
-    <div class='bg-brand-medium text-brand-contrast-1 p-4 rounded'>
+    <div class='bg-brand-medium text-on-brand-medium p-4 rounded'>
       <div class='font-semibold'>Filled Banner</div>
       <div class='text-sm opacity-90'>High emphasis notification with brand colors</div>
     </div>
@@ -108,7 +107,7 @@ Banners:
     </div>
 
     {{! Success Button }}
-    <button class='bg-success-medium text-success-contrast-1 hover:bg-success-soft px-4 py-2 rounded'>
+    <button class='bg-success-medium text-on-success-medium hover:bg-success-soft px-4 py-2 rounded'>
       Confirm Action
     </button>
   </div>
@@ -133,7 +132,7 @@ Banners:
     </div>
 
     {{! Destructive Button }}
-    <button class='bg-danger-medium text-danger-contrast-1 hover:bg-danger-soft px-4 py-2 rounded'>
+    <button class='bg-danger-medium text-on-danger-medium hover:bg-danger-soft px-4 py-2 rounded'>
       Delete Item
     </button>
   </div>
@@ -159,7 +158,7 @@ Banners:
 
     {{! Warning Button }}
     <button
-      class='bg-warning-medium text-warning-contrast-1 hover:bg-warning-soft rounded'
+      class='bg-warning-medium text-on-warning-medium hover:bg-warning-soft rounded'
     >
       Proceed with Caution
     </button>
@@ -178,7 +177,7 @@ Banners:
 
 ### For Text
 
-- **contrast-1/2**: Text on colored backgrounds (ensures contrast)
+- **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-brand-medium`)
 - **soft**: Muted text, hints, placeholders
 - **medium**: Links, interactive text
 - **strong**: Headings, important text
@@ -191,9 +190,32 @@ Banners:
 
 ## Accessibility
 
-All color combinations in Frontile meet WCAG 2.1 Level AA contrast requirements. Use `contrast-1` or `contrast-2` for text on colored backgrounds to ensure sufficient contrast.
+All color combinations in Frontile meet WCAG 2.1 Level AA contrast requirements (minimum 4.5:1 contrast ratio).
 
-> **Tip**: The `contrast-1` and `contrast-2` levels automatically flip between white and black based on the theme, ensuring optimal contrast in both light and dark modes.
+### Automatic "On-" Colors
+
+Frontile automatically generates optimal contrasting text colors for every background color using WCAG contrast calculations. Simply use the `on-` prefix with the same color level:
+
+```html
+<!-- Automatically generates optimal text color (black or white) -->
+<button class="bg-brand text-on-brand">
+<div class="bg-success-soft text-on-success-soft">
+<div class="bg-neutral-strong text-on-neutral-strong">
+```
+
+**How it works:**
+
+1. Frontile calculates the relative luminance of each background color
+2. Determines contrast ratio with both black and white text
+3. Selects the color with better contrast (≥4.5:1 ratio)
+4. Generates the appropriate `on-{color}-{level}` class automatically
+
+**Benefits:**
+
+- No need to manually determine text colors
+- Always meets WCAG AA standards
+- Automatically adapts to theme changes (light/dark mode)
+- Works with custom theme colors
 
 ## Migrating from Old Colors
 

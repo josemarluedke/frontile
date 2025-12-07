@@ -94,10 +94,7 @@ const listboxItem = tv({
       appearance: 'default',
       intent: 'default',
       class: {
-        base: [
-          'data-is-active:bg-neutral',
-          'data-is-active:text-neutral-contrast-1'
-        ]
+        base: ['data-is-active:bg-neutral', 'data-is-active:text-on-neutral']
       }
     },
     {
@@ -106,7 +103,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-brand-soft',
-          'data-is-active:text-brand-contrast-1'
+          'data-is-active:text-on-brand-soft'
         ]
       }
     },
@@ -116,7 +113,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-success-soft',
-          'data-is-active:text-success-contrast-1'
+          'data-is-active:text-on-success-soft'
         ]
       }
     },
@@ -126,7 +123,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-warning-soft',
-          'data-is-active:text-warning-contrast-1'
+          'data-is-active:text-on-warning-soft'
         ]
       }
     },
@@ -136,7 +133,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-danger-soft',
-          'data-is-active:text-danger-contrast-1'
+          'data-is-active:text-on-danger-soft'
         ]
       }
     },
@@ -145,7 +142,7 @@ const listboxItem = tv({
       intent: 'primary',
       isActive: true,
       class: {
-        shortcut: ['text-brand-contrast-1']
+        shortcut: ['text-on-brand-soft']
       }
     },
     {
@@ -153,7 +150,7 @@ const listboxItem = tv({
       intent: 'success',
       isActive: true,
       class: {
-        shortcut: ['text-success-contrast-1']
+        shortcut: ['text-on-success-soft']
       }
     },
     {
@@ -161,7 +158,7 @@ const listboxItem = tv({
       intent: 'warning',
       isActive: true,
       class: {
-        shortcut: ['text-warning-contrast-1']
+        shortcut: ['text-on-warning-soft']
       }
     },
     {
@@ -169,7 +166,7 @@ const listboxItem = tv({
       intent: 'danger',
       isActive: true,
       class: {
-        shortcut: ['text-danger-contrast-1']
+        shortcut: ['text-on-danger-soft']
       }
     },
 

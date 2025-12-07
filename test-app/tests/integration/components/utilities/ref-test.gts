@@ -23,7 +23,7 @@ class MyTestComponent extends Component {
       </div>
     {{/if}}
 
-    <button data-test-id="toggle" {{on "click" this.toggle}}>
+    <button data-test-id="toggle" type="button" {{on "click" this.toggle}}>
       Toggle
     </button>
 
@@ -88,7 +88,7 @@ module('Integration | @frontile/utilities/ref', function (hooks) {
             Callback Test
           </div>
         {{/if}}
-        <button data-test-id="toggle" {{on "click" this.toggle}}>
+        <button data-test-id="toggle" type="button" {{on "click" this.toggle}}>
           Toggle
         </button>
         <div data-test-id="callback-status">

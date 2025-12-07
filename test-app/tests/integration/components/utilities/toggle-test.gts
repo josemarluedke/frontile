@@ -20,8 +20,7 @@ class MyTestComponent extends Component {
     {{/if}}
 
     <button
-      data-test-id="button-toggle"
-      {{on "click" this.showingState.toggle}}
+      data-test-id="button-toggle" type="button" {{on "click" this.showingState.toggle}}
     >
       Toggle
     </button>
@@ -33,7 +32,7 @@ class MyTestComponent extends Component {
       {{on "change" this.showingState.toggle}}
     />
 
-    <button data-test-id="button-direct" {{on "click" this.show}}>
+    <button data-test-id="button-direct" type="button" {{on "click" this.show}}>
       Show
     </button>
   </template>
@@ -66,7 +65,7 @@ module('Integration | @frontile/utilities/toggleState', function (hooks) {
             </div>
           {{/if}}
 
-          <button data-test-id="button-toggle" {{on "click" state.toggle}}>
+          <button data-test-id="button-toggle" type="button" {{on "click" state.toggle}}>
             Toggle
           </button>
         {{/let}}
@@ -99,7 +98,7 @@ module('Integration | @frontile/utilities/toggleState', function (hooks) {
             </div>
           {{/if}}
 
-          <button data-test-id="button-toggle" {{on "click" state.toggle}}>
+          <button data-test-id="button-toggle" type="button" {{on "click" state.toggle}}>
             Toggle
           </button>
         {{/let}}

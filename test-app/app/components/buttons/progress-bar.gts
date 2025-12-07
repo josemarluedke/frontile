@@ -122,7 +122,7 @@ const Comp: TOC<null> = <template>
     <ProgressBar
       @progress={{50}}
       @label="Custom formatter"
-      @formatOptions={{(hash style="currency" currency="USD")}}
+      @formatOptions={{hash style="currency" currency="USD"}}
     />
   </div>
   <h2 class="text-2xl mt-6">

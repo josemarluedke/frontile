@@ -29,42 +29,58 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
 
   // Lookup tables with complete class strings for Tailwind detection
   private bgClassMap: Record<string, string> = {
-    'neutral-contrast-1': 'bg-neutral-contrast-1',
     'neutral-subtle': 'bg-neutral-subtle',
     'neutral-soft': 'bg-neutral-soft',
     'neutral-medium': 'bg-neutral-medium',
     'neutral-strong': 'bg-neutral-strong',
-    'neutral-contrast-2': 'bg-neutral-contrast-2',
-    'brand-contrast-1': 'bg-brand-contrast-1',
     'brand-subtle': 'bg-brand-subtle',
     'brand-soft': 'bg-brand-soft',
     'brand-medium': 'bg-brand-medium',
     'brand-strong': 'bg-brand-strong',
-    'brand-contrast-2': 'bg-brand-contrast-2',
-    'success-contrast-1': 'bg-success-contrast-1',
     'success-subtle': 'bg-success-subtle',
     'success-soft': 'bg-success-soft',
     'success-medium': 'bg-success-medium',
     'success-strong': 'bg-success-strong',
-    'success-contrast-2': 'bg-success-contrast-2',
-    'danger-contrast-1': 'bg-danger-contrast-1',
     'danger-subtle': 'bg-danger-subtle',
     'danger-soft': 'bg-danger-soft',
     'danger-medium': 'bg-danger-medium',
     'danger-strong': 'bg-danger-strong',
-    'danger-contrast-2': 'bg-danger-contrast-2',
-    'warning-contrast-1': 'bg-warning-contrast-1',
     'warning-subtle': 'bg-warning-subtle',
     'warning-soft': 'bg-warning-soft',
     'warning-medium': 'bg-warning-medium',
     'warning-strong': 'bg-warning-strong',
-    'warning-contrast-2': 'bg-warning-contrast-2',
-    'inverse-contrast-1': 'bg-inverse-contrast-1',
     'inverse-subtle': 'bg-inverse-subtle',
     'inverse-soft': 'bg-inverse-soft',
     'inverse-medium': 'bg-inverse-medium',
     'inverse-strong': 'bg-inverse-strong',
-    'inverse-contrast-2': 'bg-inverse-contrast-2',
+  };
+
+  // Corresponding "on-" text colors for each background
+  private onColorClassMap: Record<string, string> = {
+    'neutral-subtle': 'text-on-neutral-subtle',
+    'neutral-soft': 'text-on-neutral-soft',
+    'neutral-medium': 'text-on-neutral-medium',
+    'neutral-strong': 'text-on-neutral-strong',
+    'brand-subtle': 'text-on-brand-subtle',
+    'brand-soft': 'text-on-brand-soft',
+    'brand-medium': 'text-on-brand-medium',
+    'brand-strong': 'text-on-brand-strong',
+    'success-subtle': 'text-on-success-subtle',
+    'success-soft': 'text-on-success-soft',
+    'success-medium': 'text-on-success-medium',
+    'success-strong': 'text-on-success-strong',
+    'danger-subtle': 'text-on-danger-subtle',
+    'danger-soft': 'text-on-danger-soft',
+    'danger-medium': 'text-on-danger-medium',
+    'danger-strong': 'text-on-danger-strong',
+    'warning-subtle': 'text-on-warning-subtle',
+    'warning-soft': 'text-on-warning-soft',
+    'warning-medium': 'text-on-warning-medium',
+    'warning-strong': 'text-on-warning-strong',
+    'inverse-subtle': 'text-on-inverse-subtle',
+    'inverse-soft': 'text-on-inverse-soft',
+    'inverse-medium': 'text-on-inverse-medium',
+    'inverse-strong': 'text-on-inverse-strong',
   };
 
   get bgClass() {
@@ -77,12 +93,9 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
   }
 
   get textColor() {
-    // Determine appropriate text color based on background level
-    const level = this.args.level;
-    if (level === 'contrast-1' || level === 'subtle' || level === 'soft') {
-      return 'text-surface-solid-11';
-    }
-    return 'text-surface-solid-0';
+    // Use the automatically generated "on-" color for this background
+    const key = `${this.args.category}-${this.args.level}`;
+    return this.onColorClassMap[key] || 'text-surface-solid-11';
   }
 
   handleClick = () => {

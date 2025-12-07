@@ -77,14 +77,14 @@ Here's how easy it is to create a themed button with Frontile:
 ```gts preview
 <template>
   <button
-    class='bg-brand-medium text-brand-contrast-1 hover:bg-brand-soft px-4 py-2 rounded'
+    class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft px-4 py-2 rounded'
   >
     Click me
   </button>
 </template>
 ```
 
-This button automatically adapts to light and dark themes without additional code. The `brand-medium` color provides the right emphasis, while `brand-contrast-1` ensures accessible text contrast.
+This button automatically adapts to light and dark themes without additional code. The `brand-medium` color provides the right emphasis, while `on-brand-medium` automatically calculates the optimal contrasting text color (black or white) for accessibility.
 
 ## Theme Switching
 
@@ -135,7 +135,7 @@ Frontile provides six semantic color categories:
 - **Warning** - Warnings and cautions (orange)
 - **Inverse** - High-contrast overlays
 
-Each category has intuitive levels: `contrast-1`, `subtle`, `soft`, `medium`, `strong`, and `contrast-2`.
+Each category has intuitive levels: `on-{color}-{level}`, `subtle`, `soft`, `medium`, and `strong`. The `on-` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
 
 <ColorPaletteGrid @category="brand" @showDescription={{false}} />
 <ColorPaletteGrid @category="success" @showDescription={{false}} />
@@ -168,29 +168,28 @@ module.exports = frontile({
     light: {
       colors: {
         brand: {
-          'contrast-1': '#ffffff',
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
-          strong: '#1e40af',
-          'contrast-2': '#000000'
+          strong: '#1e40af'
         }
       }
     },
     dark: {
       colors: {
         brand: {
-          'contrast-1': '#000000',
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
-          strong: '#dbeafe',
-          'contrast-2': '#ffffff'
+          strong: '#dbeafe'
         }
       }
     }
   }
 });
+
+// Note: on-{color}-{level} classes are automatically generated
+// based on the background colors you define above
 ```
 
 ### Setting Default Theme
@@ -214,7 +213,7 @@ Always prefer semantic color classes over generic Tailwind utilities:
 
 ```hbs
 {{! Good - uses semantic colors }}
-<button class='bg-brand-medium text-brand-contrast-1 hover:bg-brand-soft'>
+<button class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft'>
   Submit
 </button>
 

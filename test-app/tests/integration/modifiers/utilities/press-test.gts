@@ -36,8 +36,7 @@ class PressTestComponent extends Component {
 
   <template>
     <button
-      data-test-id="press-target"
-      {{press
+      data-test-id="press-target" type="button" {{press
         onPressStart=this.onStart
         onPressEnd=this.onEnd
         onPress=this.onPress
@@ -62,8 +61,7 @@ class StartOnlyComponent extends Component {
 
   <template>
     <button
-      data-test-id="start-only-target"
-      {{press onPressStart=this.onStart}}
+      data-test-id="start-only-target" type="button" {{press onPressStart=this.onStart}}
     >
       Start Only
     </button>
@@ -79,7 +77,7 @@ class EndOnlyComponent extends Component {
   };
 
   <template>
-    <button data-test-id="end-only-target" {{press onPressEnd=this.onEnd}}>
+    <button data-test-id="end-only-target" type="button" {{press onPressEnd=this.onEnd}}>
       End Only
     </button>
     <div data-test-end>{{this.endCount}}</div>
@@ -94,7 +92,7 @@ class PressOnlyComponent extends Component {
   };
 
   <template>
-    <button data-test-id="press-only-target" {{press onPress=this.onPress}}>
+    <button data-test-id="press-only-target" type="button" {{press onPress=this.onPress}}>
       Press Only
     </button>
     <div data-test-press>{{this.pressCount}}</div>
@@ -103,7 +101,7 @@ class PressOnlyComponent extends Component {
 
 class NoCallbacksComponent extends Component {
   <template>
-    <button data-test-id="no-callbacks-target" {{press}}>
+    <button data-test-id="no-callbacks-target" type="button" {{press}}>
       No Callbacks
     </button>
   </template>
@@ -339,8 +337,7 @@ module(
         <template>
           <button
             data-test-id="html-disabled-press-target"
-            disabled
-            {{press
+            disabled type="button" {{press
               onPressStart=this.onStart
               onPressEnd=this.onEnd
               onPress=this.onPress
@@ -391,7 +388,7 @@ module(
         };
 
         <template>
-          <button data-test-id="positional-press-target" {{press this.onPress}}>
+          <button data-test-id="positional-press-target" type="button" {{press this.onPress}}>
             Positional Press
           </button>
           <div data-test-press>{{this.pressCount}}</div>
@@ -432,8 +429,7 @@ module(
 
         <template>
           <button
-            data-test-id="mixed-args-target"
-            {{press
+            data-test-id="mixed-args-target" type="button" {{press
               this.onPress
               onPressStart=this.onStart
               onPressEnd=this.onEnd
@@ -467,8 +463,7 @@ module(
 
         <template>
           <button
-            data-test-id="keyboard-press-target"
-            {{press onPress=this.onPress}}
+            data-test-id="keyboard-press-target" type="button" {{press onPress=this.onPress}}
           >
             Keyboard Press Test
           </button>
@@ -520,7 +515,7 @@ module(
         };
 
         <template>
-          <button data-test-id="modifier-target" {{press onPress=this.onPress}}>
+          <button data-test-id="modifier-target" type="button" {{press onPress=this.onPress}}>
             Modifier Test
           </button>
         </template>
@@ -564,8 +559,7 @@ module(
 
         <template>
           <button
-            data-test-id="coordinate-target"
-            {{press onPress=this.onPress}}
+            data-test-id="coordinate-target" type="button" {{press onPress=this.onPress}}
           >
             Coordinate Test
           </button>
@@ -602,8 +596,7 @@ module(
 
         <template>
           <button
-            data-test-id="propagation-method-target"
-            {{press onPress=this.onPress}}
+            data-test-id="propagation-method-target" type="button" {{press onPress=this.onPress}}
           >
             Propagation Method Test
           </button>
@@ -665,8 +658,7 @@ module(
 
         <template>
           <button
-            data-test-id="event-type-target"
-            {{press
+            data-test-id="event-type-target" type="button" {{press
               onPressStart=this.onPressStart
               onPress=this.onPress
               onPressEnd=this.onPressEnd
@@ -733,8 +725,7 @@ module(
 
         <template>
           <button
-            data-test-id="drag-outside-target"
-            {{press
+            data-test-id="drag-outside-target" type="button" {{press
               onPressStart=this.onPressStart
               onPressEnd=this.onPressEnd
               onPress=this.onPress
@@ -795,8 +786,7 @@ module(
 
         <template>
           <button
-            data-test-id="press-change-target"
-            {{press onPressChange=this.onPressChange}}
+            data-test-id="press-change-target" type="button" {{press onPressChange=this.onPressChange}}
           >
             Press Change Test
           </button>
@@ -847,8 +837,7 @@ module(
 
         <template>
           <button
-            data-test-id="press-change-cancel-target"
-            {{press onPressChange=this.onPressChange}}
+            data-test-id="press-change-cancel-target" type="button" {{press onPressChange=this.onPressChange}}
           >
             Press Change Cancel Test
           </button>
@@ -886,8 +875,7 @@ module(
 
         <template>
           <button
-            data-test-id="prevent-default-target"
-            {{press onPress=this.onPress}}
+            data-test-id="prevent-default-target" type="button" {{press onPress=this.onPress}}
           >
             Prevent Default Test
           </button>
@@ -939,8 +927,7 @@ module(
 
         <template>
           <button
-            data-test-id="regular-button-target"
-            {{press onPress=this.onPress}}
+            data-test-id="regular-button-target" type="button" {{press onPress=this.onPress}}
           >
             Regular Button
           </button>
@@ -1291,8 +1278,7 @@ module(
 
         <template>
           <button
-            data-test-id="button-with-click-target"
-            {{press onPress=this.onPress}}
+            data-test-id="button-with-click-target" type="button" {{press onPress=this.onPress}}
             {{on "click" this.onClick}}
           >
             Button with Press and Click

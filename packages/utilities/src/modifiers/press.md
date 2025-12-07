@@ -58,7 +58,7 @@ export default class PressExample extends Component {
           onPressChange=this.handlePressChange
         }}
         class={{if this.isPressed 'bg-success' 'bg-success/70'}}
-        class='text-success-contrast-1 p-4 rounded'
+        class='text-on-success p-4 rounded'
       >
         Press me! ({{if this.isPressed 'pressed' 'not pressed'}})
       </button>
