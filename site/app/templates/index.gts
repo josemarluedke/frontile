@@ -100,7 +100,6 @@ class IndexPage extends Component {
 
   <template>
     <div class="min-h-screen bg-white dark:bg-black">
-
       {{! Hero Section }}
       <section
         class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-950 dark:to-black pt-20 pb-24 sm:pt-24 sm:pb-32"

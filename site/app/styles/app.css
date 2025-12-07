@@ -1,8 +1,8 @@
 @import "tailwindcss" source("../");
 @plugin "@frontile/theme/plugin/default";
 @plugin "@tailwindcss/typography";
-@source '../../node_modules/@frontile/theme';
 @source '../templates/docs/';
+@import "@frontile/theme";
 
 @font-face Inter {
   src: url(/assets/fonts/inter-var-latin-ext.woff2) format('woff2');
@@ -94,10 +94,6 @@
     @apply text-neutral-soft;
   }
 }
-
-@custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));
-@custom-variant light (&:is(.light *, .dark .theme-inverse *):not(.light .theme-inverse *));
-@custom-variant focus-visible (&[data-focus-visible-added]);
 
 @import './highlight.css';
 @import './docfy-demo.css';

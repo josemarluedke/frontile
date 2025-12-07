@@ -2,19 +2,20 @@ import type { CSSRuleObject, PluginAPI } from 'tailwindcss/types/config';
 
 function drawerSizes(
   addComponents: PluginAPI['addComponents'],
-  sizes: { [key: string]: string },
   margin: string
 ): void {
-  Object.keys(sizes).forEach((key) => {
-    const size = sizes[key] as string;
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full'];
+
+  sizes.forEach((key) => {
+    const sizeVar = `var(--drawer-${key})`;
     let rules: CSSRuleObject = {
-      maxHeight: size
+      maxHeight: sizeVar
     };
 
     if (key !== 'full') {
       rules = {
         ...rules,
-        [`@media(max-height: calc(${size} + ${margin}))`]: {
+        [`@media(max-height: calc(${sizeVar} + ${margin}))`]: {
           maxHeight: `calc(100vh - ${margin})`
         }
       };
@@ -22,13 +23,13 @@ function drawerSizes(
 
     addComponents({ [`.drawer--vertical-${key}`]: rules });
     rules = {
-      maxWidth: size
+      maxWidth: sizeVar
     };
 
     if (key !== 'full') {
       rules = {
         ...rules,
-        [`@media(max-width: calc(${size} + ${margin}))`]: {
+        [`@media(max-width: calc(${sizeVar} + ${margin}))`]: {
           maxWidth: `calc(100vw - ${margin})`
         }
       };
@@ -40,25 +41,26 @@ function drawerSizes(
 
 function modalSizes(
   addComponents: PluginAPI['addComponents'],
-  sizes: { [key: string]: string },
   margin: string
 ): void {
-  Object.keys(sizes).forEach((key) => {
-    const size = sizes[key] as string;
+  const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full'];
+
+  sizes.forEach((key) => {
+    const sizeVar = `var(--modal-${key})`;
     let rules: CSSRuleObject = {};
 
     if (key === 'full') {
       rules = {
-        width: size,
-        height: size,
+        width: sizeVar,
+        height: sizeVar,
         marginTop: 'auto',
         marginBottom: 'auto',
         borderRadius: '0'
       };
     } else {
       rules = {
-        maxWidth: size,
-        [`@media(max-width: ${size})`]: {
+        maxWidth: sizeVar,
+        [`@media(max-width: ${sizeVar})`]: {
           maxWidth: `calc(100vw - ${margin})`
         }
       };

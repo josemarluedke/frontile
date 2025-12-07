@@ -13,7 +13,6 @@ import type {
 import type { CSSRuleObject } from 'tailwindcss/types/config';
 import { defaultConfig } from './default-config';
 import { getContrastingColor } from '../colors/contrast';
-import * as absolute from '../colors/palette-absolute';
 
 const parsedColorsCache: Record<string, number[]> = {};
 
@@ -67,8 +66,7 @@ function shouldGenerateOnColor(colorName: string): boolean {
 
 function resolveThemes(
   themes: ConfigThemes = {},
-  defaultTheme: DefaultThemeType,
-  prefix: string
+  defaultTheme: DefaultThemeType
 ): ResolvedConfig {
   const resolved: ResolvedConfig = {
     variants: [],
@@ -129,7 +127,7 @@ function resolveThemes(
         parsedColorsCache[colorValue] = parsedColor;
 
         const [h, s, l, defaultAlphaValue] = parsedColor;
-        const colorVariable = `--${prefix}-${colorName}`;
+        const colorVariable = `--${colorName}`;
 
         themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
 
@@ -149,8 +147,6 @@ function resolveThemes(
     /**
      * Generate "on-" colors for optimal contrast
      */
-    const themeBackground =
-      themeName === 'light' ? absolute.white : absolute.black;
     const onColors: Record<string, string> = {};
 
     for (const [colorName, colorValue] of Object.entries(flatColors)) {
@@ -173,7 +169,7 @@ function resolveThemes(
         parsedColorsCache[contrastColor] = parsedColor;
 
         const [h, s, l, defaultAlphaValue] = parsedColor;
-        const colorVariable = `--${prefix}-${onColorName}`;
+        const colorVariable = `--${onColorName}`;
 
         themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
 
@@ -194,11 +190,15 @@ function resolveThemes(
     for (const [key, value] of Object.entries(flatLayout)) {
       if (!value) continue;
 
-      const layoutVariablePrefix = `--${prefix}-${key}`;
+      const layoutVariablePrefix = `--${key}`;
 
       if (typeof value === 'object') {
         for (const [nestedKey, nestedValue] of Object.entries(value)) {
-          const nestedLayoutVariable: string = `${layoutVariablePrefix}-${nestedKey}`;
+          // Handle DEFAULT key - use base variable name without suffix
+          const nestedLayoutVariable: string =
+            nestedKey === 'DEFAULT'
+              ? layoutVariablePrefix
+              : `${layoutVariablePrefix}-${nestedKey}`;
 
           themeRules = {
             ...themeRules,
@@ -266,13 +266,11 @@ export const isBaseTheme = (theme: string): boolean =>
 function resolveConfig(userConfig: PluginConfig = {}): {
   themes: ConfigThemes;
   defaultTheme: DefaultThemeType;
-  prefix: string;
 } {
   const {
     themes: userThemes = {},
     defaultTheme = 'light',
-    layout: userLayout,
-    prefix = defaultConfig.prefix
+    layout: userLayout
   } = userConfig;
   const themes: ConfigThemes & { dark: ConfigTheme; light: ConfigTheme } =
     defaultConfig.themes;
@@ -300,7 +298,7 @@ function resolveConfig(userConfig: PluginConfig = {}): {
     themes[name] = deepMerge(themes[extendFrom], userThemes[name] || {});
   });
 
-  return { themes, defaultTheme, prefix };
+  return { themes, defaultTheme };
 }
 
 export { resolveThemes, resolveConfig };

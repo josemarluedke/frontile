@@ -13,7 +13,7 @@ export { safelist } from './plugin/safelist';
 
 function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
   const c = resolveConfig(config);
-  const resolved = resolveThemes(c.themes, c.defaultTheme, c.prefix);
+  const resolved = resolveThemes(c.themes, c.defaultTheme);
 
   return plugin(
     ({ addComponents, theme, addVariant, addBase, addUtilities }) => {
@@ -29,12 +29,6 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
         addVariant(variant.name, variant.definition);
       });
 
-      addVariant('data-is-active', '&[data-active=true]');
-      addVariant(
-        'group-data-is-active',
-        ':merge(.group)[data-active="true"] &'
-      );
-
       addTransitions(
         addComponents,
         '.notification-transition',
@@ -43,31 +37,9 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
 
       addTransitions(addComponents, '.overlay-transition', overlayTransitions);
 
-      // drawer sizes
-      drawerSizes(
-        addComponents,
-        {
-          xs: '20rem',
-          sm: '24rem',
-          md: '28rem',
-          lg: '32rem',
-          xl: '36rem',
-          full: '100%'
-        },
-        theme('spacing.8')
-      );
-      modalSizes(
-        addComponents,
-        {
-          xs: '20rem',
-          sm: '24rem',
-          md: '28rem',
-          lg: '32rem',
-          xl: '36rem',
-          full: '100%'
-        },
-        theme('spacing.8')
-      );
+      // drawer and modal sizes (using CSS variables)
+      drawerSizes(addComponents, theme('spacing.8'));
+      modalSizes(addComponents, theme('spacing.8'));
 
       addComponents({
         '.checked-bg-checkbox:checked': {
@@ -81,43 +53,13 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
         }
       });
 
-      registerPowerSelectComponents(addComponents, c.prefix);
+      registerPowerSelectComponents(addComponents);
     },
     {
       theme: {
         extend: {
           colors: {
             ...(resolved?.colors as Record<string, never>)
-          },
-          opacity: {
-            hover: `var(--${c.prefix}-hover-opacity)`,
-            disabled: `var(--${c.prefix}-disabled-opacity)`
-          },
-          aria: {
-            invalid: 'invalid="true"'
-          },
-          animation: {
-            loading: 'loading 1.5s linear infinite',
-            swing: 'swing 2s ease-in-out infinite'
-          },
-          keyframes: {
-            loading: {
-              from: {
-                transform: 'translateX(-100%) scaleX(0)'
-              },
-              to: {
-                transform: 'translateX(200%) scaleX(3)'
-              }
-            },
-            swing: {
-              '0%, 100%': {
-                width: '50%',
-                transform: 'translateX(-25%)'
-              },
-              '50%': {
-                transform: 'translateX(125%)'
-              }
-            }
           }
         }
       }
