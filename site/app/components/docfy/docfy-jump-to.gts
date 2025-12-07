@@ -187,11 +187,11 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
       @backdrop="blur"
     >
       <div
-        class="p-4 mx-auto text-white mt-20 max-w-md w-full dark"
+        class="p-4 mx-auto mt-20 max-w-md w-full"
         {{this.registerContainerElement}}
       >
         <div
-          class="bg-neutral-subtle backdrop-blur bg-opacity-80 rounded overflow-hidden border border-neutral-subtle"
+          class="bg-neutral-subtle backdrop-blur bg-opacity-80 rounded overflow-hidden border border-neutral-soft"
         >
           {{!  template-lint-disable self-closing-void-elements  }}
           <VisuallyHidden>
@@ -203,7 +203,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
             id="docfy-jump-to-input"
             autocomplete="off"
             placeholder="Search..."
-            class="p-4 bg-transparent w-full focus:outline-none placeholder-neutral-soft
+            class="p-4 bg-transparent w-full focus:outline-none placeholder:text-neutral
               {{if this.results.length 'border-b border-neutral-soft'}}
               "
             {{on "input" this.search}}
