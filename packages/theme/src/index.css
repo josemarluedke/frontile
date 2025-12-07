@@ -1,4 +1,5 @@
 @source './';
+@import './styles/typography.css';
 
 /* Theme variants */
 @custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));

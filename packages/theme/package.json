@@ -37,7 +37,8 @@
     "declarations",
     "dist",
     "tailwind",
-    "src/index.css"
+    "src/index.css",
+    "src/styles"
   ],
   "scripts": {
     "build": "rollup --config",
