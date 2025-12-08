@@ -83,7 +83,7 @@ export default class SidebarNav extends Component<Signature> {
     <Content
       @node={{@node}}
       @onSidebarClick={{this.handleSidebarClick}}
-      class="overflow-y-auto sticky top-16 max-h-screen-16 pt-4 pt-8 pb-4 lg:block hidden"
+      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 lg:block hidden"
     />
   </template>
 }

@@ -5,6 +5,11 @@ import { DocfyOutput } from '@docfy/ember';
 
 const docfyEq = (a: string, b?: string): boolean => a === b;
 
+const stripHtml = (html: string): string => {
+  // Use regex to strip HTML tags - safer than innerHTML
+  return html.replace(/<[^>]*>/g, '');
+};
+
 // http://goo.gl/5HLl8
 const easeInOutQuad = (t: number, b: number, c: number, d: number): number => {
   t /= d / 2;
@@ -74,7 +79,7 @@ export default class PageHeadings extends Component<Signature> {
   }
   <template>
     <div
-      class="overflow-y-auto sticky top-16 max-h-screen-16 pt-12 pb-4 -mt-12 text-sm"
+      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm"
     >
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         {{#if page.headings.length}}
@@ -91,7 +96,7 @@ export default class PageHeadings extends Component<Signature> {
                     }}"
                   {{on "click" this.onClick}}
                 >
-                  {{heading.title}}
+                  {{stripHtml heading.title}}
                 </a>
 
                 {{#if heading.headings.length}}
@@ -108,7 +113,7 @@ export default class PageHeadings extends Component<Signature> {
                             }}"
                           {{on "click" this.onClick}}
                         >
-                          {{subHeading.title}}
+                          {{stripHtml subHeading.title}}
                         </a>
                       </li>
                     {{/each}}
