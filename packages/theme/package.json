@@ -38,7 +38,8 @@
     "dist",
     "tailwind",
     "src/index.css",
-    "src/styles"
+    "src/styles",
+    "public"
   ],
   "scripts": {
     "build": "rollup --config",
@@ -113,6 +114,10 @@
     "version": 2,
     "type": "addon",
     "main": "addon-main.js",
-    "app-js": {}
+    "app-js": {},
+    "public-assets": {
+      "./public/fonts/stix-two-text-italic-variable.woff2": "/@frontile/theme/fonts/stix-two-text-italic-variable.woff2",
+      "./public/fonts/stix-two-text-variable.woff2": "/@frontile/theme/fonts/stix-two-text-variable.woff2"
+    }
   }
 }

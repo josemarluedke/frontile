@@ -1,4 +1,5 @@
 @source './';
+@import './styles/font-faces.css';
 @import './styles/theme.css';
 
 /* Theme variants */

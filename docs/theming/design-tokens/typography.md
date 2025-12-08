@@ -7,7 +7,7 @@ subcategory: design-tokens
 
 # Typography System
 
-Frontile's typography system provides a comprehensive, scalable type system built on semantic text styles and a modular scale. It uses Tailwind v4's `@theme` directive to automatically generate utility classes.
+Frontile's typography system provides a comprehensive, scalable type system built on semantic text styles and a modular scale. It uses Tailwind v4's `@theme` directive for base tokens and `@layer utilities` for explicit utility classes.
 
 ## Overview
 
@@ -16,7 +16,7 @@ The typography system includes:
 - **6 text style categories**: Marquee, Header, Body, Code, Caption, and Label
 - **Multiple size variants** for each category
 - **Modular scale** based on a mathematical ratio for harmonic sizing
-- **Automatic utility generation** via Tailwind's `@theme` block
+- **Composite utility classes** that bundle all typography properties together
 - **Full customization** through CSS variables
 
 ## Text Style Categories
@@ -220,20 +220,36 @@ Typography utilities work seamlessly with other Tailwind utilities:
 
 ## How It Works
 
-The typography system uses Tailwind v4's `@theme` directive with CSS variables. Each text style is defined with multiple properties that get automatically applied:
+The typography system uses a two-part approach:
+
+1. **Base tokens** defined in `@theme` provide the foundation (font families, weights, sizes, etc.)
+2. **Composite utilities** defined in `@layer utilities` bundle these tokens into semantic text styles
+
+Each text utility is explicitly defined to combine all typography properties:
 
 ```css
 @theme {
-  /* Example: header-md style */
-  --text-header-md: var(--font-size-14);
-  --text-header-md--font-family: var(--font-family-header);
-  --text-header-md--font-weight: var(--font-weight-bold);
-  --text-header-md--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-md--line-height: var(--line-height-comfy);
+  /* Base typography tokens */
+  --font-family-header: "Open Sans";
+  --font-size-14: 1.14rem;
+  --font-weight-bold: 700;
+  --letter-spacing-condensed: -0.0625rem;
+  --line-height-comfy: 1.4;
+}
+
+@layer utilities {
+  /* Composite utility that references base tokens */
+  .text-header-md {
+    font-size: var(--font-size-14);
+    font-family: var(--font-family-header);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-condensed);
+    line-height: var(--line-height-comfy);
+  }
 }
 ```
 
-When you use `.text-header-md`, Tailwind automatically applies all these properties. The system uses a modular scale to ensure harmonious sizing relationships across all text styles.
+When you use `.text-header-md`, all five typography properties are applied together as a cohesive style. The system uses a modular scale (ratio: 1.067) to ensure harmonious sizing relationships across all text styles.
 
 ## Customization
 

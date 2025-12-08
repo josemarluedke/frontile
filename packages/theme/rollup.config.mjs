@@ -74,6 +74,9 @@ export default {
     // to leave alone and keep in the published output.
     addon.keepAssets(['**/*.css']),
 
+    // Expose public assets (fonts) to consuming apps
+    addon.publicAssets('public'),
+
     // Remove leftover build artifacts when starting a new build.
     addon.clean(),
 
