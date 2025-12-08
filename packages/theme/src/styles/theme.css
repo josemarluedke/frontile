@@ -1,0 +1,47 @@
+@import './typography.css';
+
+/**
+ * Tailwind CSS v4 Theme Configuration
+ * Combined: Icon Sizes, Border, Radius, Elevation
+ */
+@theme {
+  /* ==================== Icon Sizes ==================== */
+  --size-icon-pico: var(--font-size-6); /* Icon size for pico scale. */
+  --size-icon-nano: var(--font-size-7); /* Icon size for nano scale. */
+  --size-icon-micro: var(--font-size-8); /* Icon size for micro scale. */
+  --size-icon-3xs: var(--font-size-7); /* Icon size for 3xs scale. */
+  --size-icon-2xs: var(--font-size-10); /* Icon size for 2xs scale. */
+  --size-icon-xs: var(--font-size-12); /* Icon size for xs scale. */
+  --size-icon-sm: var(--font-size-14); /* Icon size for sm scale. */
+  --size-icon-md: var(--font-size-16); /* Icon size for md scale. */
+  --size-icon-lg: var(--font-size-18); /* Icon size for lg scale. */
+  --size-icon-xl: var(--font-size-21); /* Icon size for xl scale. */
+  --size-icon-2xl: var(--font-size-23); /* Icon size for 2xl scale. */
+  --size-icon-3xl: var(--font-size-26); /* Icon size for 3xl scale. */
+  --size-icon-kilo: var(--font-size-29); /* Icon size for kilo scale. */
+  --size-icon-mega: var(--font-size-31); /* Icon size for mega scale. */
+
+  /* ==================== Border Thickness ==================== */
+  --border-width-thin: 0.5px; /* Thin, subtle border style. */
+  --border-width-default: 1px; /* Default border width. */
+  --border-width-heavy: 2px; /* Default border width. */
+  --border-width-aggressive: 4px; /* Default border width. */
+
+  /* ==================== Border Radius ==================== */
+  --radius-none: 0px; /* No border radius (sharp corners). */
+  --radius-sm: 2px; /* Small border radius for subtle rounding. */
+  --radius-md: 4px; /* Medium border radius for standard elements. */
+  --radius-xl: 12px; /* Extra large border radius for emphasized elements. */
+  --radius-2xl: 16px; /* Double extra large border radius for very soft corners. */
+  --radius-rounded: 20px; /* Very rounded corners for friendly, approachable UI elements. */
+  --radius-pill: 9999px; /* Pill-shaped border radius (fully rounded sides) for buttons and tags. */
+  --radius: 8px; /* Large border radius for more prominent rounding. - DEFAULT */
+
+  /* ==================== Elevation Shadows ==================== */
+  --shadow-elevation-0: 0px 0px 0px 0px rgb(0 0 0 / 0.01);
+  --shadow-elevation-1: -8px 56px 80px 0px rgb(0 0 0 / 0.04);
+  --shadow-elevation-2: 1px 4px 14px 0px rgb(0 0 0 / 0.01), 5px 14px 55px 0px rgb(0 0 0 / 0.03), 12px 32px 124px 0px rgb(0 0 0 / 0.04);
+  --shadow-elevation-3: 0px 2px 5px 0px rgb(0 0 0 / 0.01), 0px 7px 21px 0px rgb(0 0 0 / 0.02), -1px 15px 47px 0px rgb(0 0 0 / 0.04), -1px 27px 83px 0px rgb(0 0 0 / 0.05), -2px 42px 130px 0px rgb(0 0 0 / 0.06);
+  --shadow-elevation-4: 0px 1px 4px 0px rgb(0 0 0 / 0.01), 0px 3px 15px 0px rgb(0 0 0 / 0.02), 0px 8px 33px 0px rgb(0 0 0 / 0.03), 1px 14px 59px 0px rgb(0 0 0 / 0.05), 1px 21px 92px 0px rgb(0 0 0 / 0.06), 1px 31px 132px 0px rgb(0 0 0 / 0.07), 2px 42px 180px 0px rgb(0 0 0 / 0.08);
+  --shadow-elevation-5: 0px 1px 4px 0px rgb(0 0 0 / 0.02), 1px 3px 16px 0px rgb(0 0 0 / 0.03), 1px 8px 35px 0px rgb(0 0 0 / 0.05), 3px 14px 62px 0px rgb(0 0 0 / 0.07), 4px 21px 97px 0px rgb(0 0 0 / 0.09), 6px 31px 140px 0px rgb(0 0 0 / 0.10), 8px 42px 190px 0px rgb(0 0 0 / 0.12);
+}
