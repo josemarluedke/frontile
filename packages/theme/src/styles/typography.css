@@ -76,7 +76,7 @@
   --font-size-32: calc(var(--font-size-31) * var(--typescale-ratio)); /* typescale-32 */
   --font-size-33: calc(var(--font-size-32) * var(--typescale-ratio)); /* typescale-33 */
   --font-size-34: calc(var(--font-size-33) * var(--typescale-ratio)); /* typescale-34 */
-  
+
   /* ==================== Text Style Definitions ==================== */
   /* Using --text-* namespace pattern for automatic utility generation */
 
