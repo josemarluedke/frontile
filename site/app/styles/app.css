@@ -24,6 +24,7 @@
   --color-brand: theme(colors.brand.medium);
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
+  --max-height-screen-28: calc(100vh - 7rem);
 }
 
 @layer components {
