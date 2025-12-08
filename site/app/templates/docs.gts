@@ -1,9 +1,10 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import DocfyPage from '../components/docfy/docfy-page';
+import type RouterService from '@ember/routing/router-service';
 
 class Docs extends Component {
-  @service declare router: any;
+  @service declare router: RouterService;
 
   get scope() {
     const url = this.router.currentURL;
