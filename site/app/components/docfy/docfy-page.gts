@@ -3,7 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import SidebarNav from './docfy-sidebar-nav';
 import PageHeadings from './docfy-page-headings';
-import DocsSectionNav from './docs-section-nav';
+import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
 import { DocfyLink, DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
 
@@ -32,7 +32,7 @@ export default class DocfyPage extends Component<Signature> {
       </DocfyOutput>
 
       {{#if @showSectionNav}}
-        <DocsSectionNav />
+        <DocfySectionNav />
       {{/if}}
 
       <div class="relative lg:flex">
