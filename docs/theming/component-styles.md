@@ -1,6 +1,7 @@
 ---
-order: 5
-category: theme
+title: Component Styles
+order: 20
+category: theming
 ---
 
 # Customizing Component Styles

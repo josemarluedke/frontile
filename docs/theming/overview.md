@@ -1,7 +1,7 @@
 ---
+title: Theme System
 order: 1
-category: theme
-label: New
+category: theming
 imports:
   - import ColorPaletteGrid from 'site/components/theme-docs/color-palette-grid';
   - import SurfaceShowcase from 'site/components/theme-docs/surface-showcase';
@@ -137,7 +137,7 @@ import { Button } from 'frontile';
 </template>
 ```
 
-[Learn more about theme-inverse →](/docs/theme/theme-inverse)
+[Learn more about theme-inverse →](configuration/theme-switching.md)
 
 ## Color System
 
@@ -223,7 +223,7 @@ module.exports = frontile({
 });
 ```
 
-[Learn more about semantic colors →](/docs/theme/colors)
+[Learn more about semantic colors →](design-tokens/colors.md)
 
 ## Surface System
 
@@ -234,7 +234,7 @@ The Surface system provides two types of backgrounds:
 
 <SurfaceShowcase @type="overlay" />
 
-[Learn more about the surface system →](/docs/theme/surface)
+[Learn more about the surface system →](design-tokens/surfaces.md)
 
 ## Basic Customization
 

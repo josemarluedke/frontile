@@ -46,6 +46,10 @@ module.exports = function (defaults) {
                   }
                 }
               ]
+            },
+            {
+              test: /\.(woff|woff2|ttf|eot|otf)$/i,
+              type: 'asset/resource'
             }
           ]
         }

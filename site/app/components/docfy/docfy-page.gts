@@ -3,12 +3,14 @@ import { tracked } from '@glimmer/tracking';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import SidebarNav from './docfy-sidebar-nav';
 import PageHeadings from './docfy-page-headings';
+import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
 import { DocfyLink, DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
 
 interface Signature {
   Args: {
     scope: string;
+    showSectionNav?: boolean;
   };
   Blocks: {
     default: [];
@@ -28,6 +30,10 @@ export default class DocfyPage extends Component<Signature> {
         {{pageTitle "Documentation"}}
         {{pageTitle page.title}}
       </DocfyOutput>
+
+      {{#if @showSectionNav}}
+        <DocfySectionNav />
+      {{/if}}
 
       <div class="relative lg:flex">
         <div class="flex-none pr-4 lg:w-64">

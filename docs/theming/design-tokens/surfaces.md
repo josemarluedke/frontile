@@ -1,7 +1,8 @@
 ---
-order: 3
-category: theme
-label: New
+title: Surfaces
+order: 6
+category: theming
+subcategory: design-tokens
 imports:
   - import SurfaceShowcase from 'site/components/theme-docs/surface-showcase';
 ---

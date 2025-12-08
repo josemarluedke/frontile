@@ -1,5 +1,6 @@
 @source './';
-@import './styles/typography.css';
+@import './styles/font-faces.css';
+@import './styles/theme.css';
 
 /* Theme variants */
 @custom-variant dark (&:is(.dark *, .light .theme-inverse *):not(.dark .theme-inverse *));
@@ -52,18 +53,7 @@
   --modal-full: 100%;
 }
 
-/* Tailwind theme - auto-generates utilities */
 @theme {
-  /* Border Radius */
-  --radius-xs: 0.125rem;  /* 2px */
-  --radius-sm: 0.25rem;   /* 4px */
-  --radius-md: 0.375rem;  /* 6px */
-  --radius: 0.5rem;       /* 8px - DEFAULT */
-  --radius-lg: 0.75rem;   /* 12px */
-  --radius-xl: 0.75rem;   /* 12px */
-  --radius-2xl: 1rem;     /* 16px */
-  --radius-pill: 9999px;
-
   /* Opacity */
   --opacity-hover: .8;
   --opacity-disabled: .5;

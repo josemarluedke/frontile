@@ -1,0 +1,26 @@
+/**
+ * STIX Two Text Font (Variable Font)
+ * Used for: marquee text styles (text-marquee-*)
+ * Primary weight: 600 (SemiBold) - used by all marquee styles
+ * Variable font supports weights: 400-700
+ *
+ * Sourced from: https://fonts.google.com/specimen/STIX+Two+Text
+ */
+
+/* Variable Font - Normal */
+@font-face {
+  font-family: 'STIX Two Text';
+  src: url('/@frontile/theme/fonts/stix-two-text-variable.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Variable Font - Italic (optional) */
+@font-face {
+  font-family: 'STIX Two Text';
+  src: url('/@frontile/theme/fonts/stix-two-text-italic-variable.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}

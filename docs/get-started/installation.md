@@ -1,5 +1,7 @@
 ---
 title: Installation
+order: 2
+category: get-started
 ---
 
 # Installation
@@ -66,4 +68,4 @@ Then update your `app/styles/app.css` to use the custom configuration:
 @import "@frontile/theme";
 ```
 
-For more advanced configuration options, see the [Theme documentation](theming/overview.md).
+For more advanced configuration options, see the [Theme documentation](../theming/overview.md).

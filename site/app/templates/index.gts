@@ -121,7 +121,7 @@ class IndexPage extends Component {
               support
             </p>
             <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <LinkTo @route="docs">
+              <LinkTo @route="docs.get-started">
                 <Button @intent="primary" @size="lg" @class="flex items-center">
                   Get Started
                   <svg
@@ -958,7 +958,7 @@ module.exports = frontile({
                 for consistent theming across your application.
               </p>
               <div class="flex justify-center">
-                <DocfyLink @to="/docs/theme/overview">
+                <DocfyLink @to="/docs/theming/overview">
                   <Button
                     @intent="primary"
                     @size="md"
@@ -1002,7 +1002,7 @@ module.exports = frontile({
           <div
             class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
-            <LinkTo @route="docs">
+            <LinkTo @route="docs.get-started">
               <Button
                 @intent="default"
                 @size="lg"
