@@ -1,3 +1,10 @@
+---
+title: Semantic Colors Migration
+order: 2
+category: migrations
+subcategory: v0.18
+---
+
 # Semantic Colors v2 Migration Guide
 
 This guide helps you migrate from the old numbered color system to the new semantic color levels in Frontile v0.18+.
