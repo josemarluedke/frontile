@@ -52,23 +52,27 @@ export default {
       };
     })
   ],
-  labels: {
-    'get-started': 'Get Started',
-    'theming': 'Theming & Styles',
-    'design-tokens': 'Design Tokens',
-    'configuration': 'Configuration',
-    'accessibility': 'Accessibility',
-    'migration': 'Migration',
-    'components': 'Components',
-    'docs': 'Documentation',
-    'utilities': 'Utilities',
-    'collections': 'Collections',
-    'status': 'Status',
-    'buttons': 'Buttons',
-    'overlays': 'Overlays',
-    'notifications': 'Notifications',
-    'forms': 'Forms',
-    'forms-legacy': 'Forms (Legacy)',
-    'changeset-form': 'Changeset Form'
+  sections: {
+    // Top-level sections
+    'get-started': { label: 'Get Started', order: 1 },
+    'theming': { label: 'Theming & Styles', order: 2 },
+    'components': { label: 'Components', order: 3 },
+    'accessibility': { label: 'Accessibility', order: 4 },
+    'migrations': { label: 'Migrations', order: 5 },
+
+    // Theming subsections
+    'design-tokens': { label: 'Design Tokens', order: 1 },
+    'configuration': { label: 'Configuration', order: 2 },
+
+    // Component packages
+    'buttons': { label: 'Buttons', order: 1 },
+    'utilities': { label: 'Utilities', order: 2 },
+    'status': { label: 'Status', order: 3 },
+    'collections': { label: 'Collections', order: 4 },
+    'forms': { label: 'Forms', order: 5 },
+    'forms-legacy': { label: 'Forms (Legacy)', order: 6 },
+    'notifications': { label: 'Notifications', order: 7 },
+    'overlays': { label: 'Overlays', order: 8 },
+    'changeset-form': { label: 'Changeset Form', order: 9 }
   }
 };
