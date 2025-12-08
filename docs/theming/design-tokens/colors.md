@@ -220,4 +220,4 @@ Frontile automatically generates optimal contrasting text colors for every backg
 
 ## Migrating from Old Colors
 
-If you're upgrading from an older version of Frontile, see the [Semantic Colors v2 Migration Guide](/docs/migration/semantic-colors-v2) for detailed instructions on updating your code.
+If you're upgrading from an older version of Frontile, see the [Semantic Colors v2 Migration Guide](../../migrations/semantic-colors-v2.md) for detailed instructions on updating your code.
