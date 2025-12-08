@@ -47,24 +47,27 @@ export default {
       return {
         root: path.resolve(__dirname, `../packages/${pkgName}`),
         pattern: '(docs|src)/**/**/*.md',
-        urlPrefix: `docs/${pkgName}`,
+        urlPrefix: `docs/components/${pkgName}`,
         urlSchema: 'manual'
       };
     })
   ],
   labels: {
-    accessibility: 'Accessibility',
-    theme: 'Theme',
-    migration: 'Migration',
-    components: 'Components',
-    docs: 'Documentation',
-    utilities: 'Utilities',
-    collections: 'Collections',
-    status: 'Status',
-    buttons: 'Buttons',
-    overlays: 'Overlays',
-    notifications: 'Notifications',
-    forms: 'Forms',
+    'get-started': 'Get Started',
+    'theming': 'Theming & Styles',
+    'design-tokens': 'Design Tokens',
+    'configuration': 'Configuration',
+    'accessibility': 'Accessibility',
+    'migration': 'Migration',
+    'components': 'Components',
+    'docs': 'Documentation',
+    'utilities': 'Utilities',
+    'collections': 'Collections',
+    'status': 'Status',
+    'buttons': 'Buttons',
+    'overlays': 'Overlays',
+    'notifications': 'Notifications',
+    'forms': 'Forms',
     'forms-legacy': 'Forms (Legacy)',
     'changeset-form': 'Changeset Form'
   }
