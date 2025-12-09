@@ -99,8 +99,8 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
     <div class='rounded-2xl bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>2XL</span>
     </div>
-    <div class='rounded-rounded bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
-      <span class='text-label-sm'>Rounded</span>
+    <div class='rounded-default bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+      <span class='text-label-sm'>Default (Custom)</span>
     </div>
     <div class='rounded-pill bg-brand-subtle px-6 py-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Pill</span>
@@ -117,7 +117,7 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
 | Default | `rounded` | Standard UI elements, buttons, inputs |
 | XL | `rounded-xl` | Large cards, prominent panels |
 | 2XL | `rounded-2xl` | Hero sections, feature cards |
-| Rounded | `rounded-rounded` | Soft, friendly corners |
+| Default (Custom) | `rounded-default` | Custom default radius value, soft friendly corners |
 | Pill | `rounded-pill` | Pills, badges, fully rounded buttons |
 
 ### Border Radius Examples
@@ -290,6 +290,7 @@ Override border widths and radius using CSS variables:
   /* Customize border radius */
   --radius: 6px;
   --radius-xl: 16px;
+  --radius-default: 8px;
   --radius-pill: 9999px;
 }
 ```

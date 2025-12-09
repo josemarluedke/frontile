@@ -92,12 +92,12 @@ See [Typography documentation](../design-tokens/typography.md) for detailed info
   --radius: 8px;          /* Default */
   --radius-xl: 12px;
   --radius-2xl: 16px;
-  --radius-rounded: 20px;
+  --radius-default: 20px;
   --radius-pill: 9999px;
 }
 ```
 
-**Generated utilities:** `rounded-none`, `rounded-sm`, `rounded-md`, `rounded`, `rounded-xl`, `rounded-2xl`, `rounded-rounded`, `rounded-pill`
+**Generated utilities:** `rounded-none`, `rounded-sm`, `rounded-md`, `rounded`, `rounded-xl`, `rounded-2xl`, `rounded-default`, `rounded-pill`
 
 ### Icon Sizes
 
