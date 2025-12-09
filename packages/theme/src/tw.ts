@@ -1,6 +1,6 @@
 import { extendTailwindMerge } from 'tailwind-merge';
+import { createTV } from 'tailwind-variants';
 import type { ClassValue } from 'tailwind-variants';
-export { tv } from 'tailwind-variants';
 export type { VariantProps } from 'tailwind-variants';
 
 function flat(arr: ClassValue[], target: ClassValue[]): void {
@@ -39,45 +39,43 @@ const COMMON_UNITS = [
   '3xl',
   'kilo',
   'mega'
-];
+] as const;
 
 const ELEVATION_LEVELS = ['0', '1', '2', '3', '4', '5'];
 
-const twMergeConfig = {
-  classGroups: {
-    // Icon sizes
-    'icon-size': [{ 'size-icon': COMMON_UNITS }],
+const twMergeBase = extendTailwindMerge<'icon-size'>({
+  extend: {
+    classGroups: {
+      // Icon sizes
+      'icon-size': [{ 'size-icon': COMMON_UNITS }],
 
-    // Border widths (directional variants handled automatically)
-    'border-w': [{ border: ['thin', 'heavy', 'aggressive'] }],
+      // Border widths (directional variants handled automatically)
+      'border-w': [{ border: ['thin', 'heavy', 'aggressive'] }],
 
-    // Border radius (extend existing rounded utilities)
-    rounded: [{ rounded: ['default', 'pill'] }],
+      // Border radius (extend existing rounded utilities)
+      rounded: [{ rounded: ['default', 'pill'] }],
 
-    // Elevation shadows
-    shadow: [{ 'shadow-elevation': ELEVATION_LEVELS }],
+      // Elevation shadows
+      shadow: [{ 'shadow-elevation': ELEVATION_LEVELS }],
 
-    // Opacity
-    opacity: [{ opacity: ['hover', 'disabled'] }],
+      // Opacity
+      opacity: [{ opacity: ['hover', 'disabled'] }],
 
-    // Typography composite text styles (extend font-size class group)
-    // These set font-size + other properties, so they should conflict with text-* utilities
-    'font-size': [
-      { 'text-marquee': COMMON_UNITS },
-      { 'text-header': COMMON_UNITS },
-      { 'text-body': COMMON_UNITS },
-      { 'text-code': COMMON_UNITS },
-      { 'text-caption': COMMON_UNITS },
-      { 'text-label': COMMON_UNITS }
-    ]
-  },
-  conflictingClassGroups: {
-    'icon-size': ['w', 'h', 'size']
+      // Typography composite text styles (extend font-size class group)
+      // These set font-size + other properties, so they should conflict with text-* utilities
+      'font-size': [
+        { 'text-marquee': [...COMMON_UNITS] },
+        { 'text-header': [...COMMON_UNITS] },
+        { 'text-body': [...COMMON_UNITS] },
+        { 'text-code': [...COMMON_UNITS] },
+        { 'text-caption': [...COMMON_UNITS] },
+        { 'text-label': [...COMMON_UNITS] }
+      ]
+    },
+    conflictingClassGroups: {
+      'icon-size': ['w', 'h', 'size']
+    }
   }
-};
-
-const twMergeBase = extendTailwindMerge({
-  extend: twMergeConfig as any
 });
 
 export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
@@ -86,3 +84,41 @@ export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
   }
   return clsx(defaultClass);
 }
+
+export const tv = createTV({
+  twMerge: true,
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        // Icon sizes
+        'icon-size': [{ 'size-icon': COMMON_UNITS }],
+
+        // Border widths (directional variants handled automatically)
+        'border-w': [{ border: ['thin', 'heavy', 'aggressive'] }],
+
+        // Border radius (extend existing rounded utilities)
+        rounded: [{ rounded: ['default', 'pill'] }],
+
+        // Elevation shadows
+        shadow: [{ 'shadow-elevation': ELEVATION_LEVELS }],
+
+        // Opacity
+        opacity: [{ opacity: ['hover', 'disabled'] }],
+
+        // Typography composite text styles (extend font-size class group)
+        // These set font-size + other properties, so they should conflict with text-* utilities
+        'font-size': [
+          { 'text-marquee': [...COMMON_UNITS] },
+          { 'text-header': [...COMMON_UNITS] },
+          { 'text-body': [...COMMON_UNITS] },
+          { 'text-code': [...COMMON_UNITS] },
+          { 'text-caption': [...COMMON_UNITS] },
+          { 'text-label': [...COMMON_UNITS] }
+        ]
+      },
+      conflictingClassGroups: {
+        'icon-size': ['w', 'h', 'size']
+      }
+    }
+  }
+});
