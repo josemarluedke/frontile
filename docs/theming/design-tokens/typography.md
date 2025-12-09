@@ -28,10 +28,10 @@ Large, bold display text for hero sections and prominent headings.
 ```gts preview
 <template>
   <div class='flex flex-col gap-6'>
-    <div class='text-marquee-xl'>Marquee XL: Hero Heading</div>
-    <div class='text-marquee-lg'>Marquee LG: Large Display</div>
-    <div class='text-marquee-md'>Marquee MD: Medium Display</div>
-    <div class='text-marquee-sm'>Marquee SM: Small Display</div>
+    <div class='font-marquee text-marquee-xl'>Marquee XL: Hero Heading</div>
+    <div class='font-marquee text-marquee-lg'>Marquee LG: Large Display</div>
+    <div class='font-marquee text-marquee-md'>Marquee MD: Medium Display</div>
+    <div class='font-marquee text-marquee-sm'>Marquee SM: Small Display</div>
   </div>
 </template>
 ```
@@ -46,16 +46,16 @@ Semantic headings for content hierarchy with bold weight and condensed letter sp
 ```gts preview
 <template>
   <div class='flex flex-col gap-4'>
-    <h1 class='text-header-3xl'>Header 3XL: Page Title</h1>
-    <h2 class='text-header-2xl'>Header 2XL: Major Section</h2>
-    <h3 class='text-header-xl'>Header XL: Section Title</h3>
-    <h4 class='text-header-lg'>Header LG: Subsection</h4>
-    <h5 class='text-header-md'>Header MD: Subheading</h5>
-    <h6 class='text-header-sm'>Header SM: Minor Heading</h6>
-    <div class='text-header-xs'>Header XS: Small Heading</div>
-    <div class='text-header-2xs'>Header 2XS: Tiny Heading</div>
-    <div class='text-header-micro'>Header Micro: Micro Heading</div>
-    <div class='text-header-nano'>Header Nano: Nano Heading</div>
+    <h1 class='font-header text-header-3xl'>Header 3XL: Page Title</h1>
+    <h2 class='font-header text-header-2xl'>Header 2XL: Major Section</h2>
+    <h3 class='font-header text-header-xl'>Header XL: Section Title</h3>
+    <h4 class='font-header text-header-lg'>Header LG: Subsection</h4>
+    <h5 class='font-header text-header-md'>Header MD: Subheading</h5>
+    <h6 class='font-header text-header-sm'>Header SM: Minor Heading</h6>
+    <div class='font-header text-header-xs'>Header XS: Small Heading</div>
+    <div class='font-header text-header-2xs'>Header 2XS: Tiny Heading</div>
+    <div class='font-header text-header-micro'>Header Micro: Micro Heading</div>
+    <div class='font-header text-header-nano'>Header Nano: Nano Heading</div>
   </div>
 </template>
 ```
@@ -70,34 +70,34 @@ Standard body text with spacious line height optimized for readability.
 ```gts preview
 <template>
   <div class='flex flex-col gap-6'>
-    <p class='text-body-xl'>
+    <p class='font-body text-body-xl'>
       Body XL: The quick brown fox jumps over the lazy dog. This is extra large body text with spacious line height for comfortable reading.
     </p>
-    <p class='text-body-lg'>
+    <p class='font-body text-body-lg'>
       Body LG: The quick brown fox jumps over the lazy dog. This is large body text with spacious line height for comfortable reading.
     </p>
-    <p class='text-body-md'>
+    <p class='font-body text-body-md'>
       Body MD: The quick brown fox jumps over the lazy dog. This is default body text with spacious line height for comfortable reading.
     </p>
-    <p class='text-body-sm'>
+    <p class='font-body text-body-sm'>
       Body SM: The quick brown fox jumps over the lazy dog. This is small body text with spacious line height for comfortable reading.
     </p>
-    <p class='text-body-xs'>
+    <p class='font-body text-body-xs'>
       Body XS: The quick brown fox jumps over the lazy dog. This is extra small body text.
     </p>
-    <p class='text-body-2xs'>
+    <p class='font-body text-body-2xs'>
       Body 2XS: The quick brown fox jumps over the lazy dog. This is 2XS body text.
     </p>
-    <p class='text-body-3xs'>
+    <p class='font-body text-body-3xs'>
       Body 3XS: The quick brown fox jumps over the lazy dog. This is 3XS body text.
     </p>
-    <p class='text-body-micro'>
+    <p class='font-body text-body-micro'>
       Body Micro: The quick brown fox jumps over the lazy dog. This is micro body text.
     </p>
-    <p class='text-body-nano'>
+    <p class='font-body text-body-nano'>
       Body Nano: The quick brown fox jumps over the lazy dog. This is nano body text.
     </p>
-    <p class='text-body-pico'>
+    <p class='font-body text-body-pico'>
       Body Pico: The quick brown fox jumps over the lazy dog. This is pico body text.
     </p>
   </div>
@@ -114,10 +114,10 @@ Monospace text for code snippets and technical content.
 ```gts preview
 <template>
   <div class='flex flex-col gap-3'>
-    <code class='text-code-md bg-neutral-subtle px-2 py-1 rounded'>
+    <code class='font-code text-code-md bg-neutral-subtle px-2 py-1 rounded'>
       const greeting = "Hello, World!";
     </code>
-    <code class='text-code-sm bg-neutral-subtle px-2 py-1 rounded'>
+    <code class='font-code text-code-sm bg-neutral-subtle px-2 py-1 rounded'>
       npm install frontile
     </code>
   </div>
@@ -138,10 +138,10 @@ Secondary descriptive text with relaxed letter spacing.
       <div class='bg-neutral-subtle rounded mb-2 h-32 flex items-center justify-center text-neutral-soft'>
         Example Image
       </div>
-      <span class='text-caption-md text-neutral-soft'>Caption MD: Figure 1 - Example image caption with medium size</span>
+      <span class='font-caption text-caption-md text-neutral-soft'>Caption MD: Figure 1 - Example image caption with medium size</span>
     </div>
     <div>
-      <span class='text-caption-sm text-neutral-soft'>Caption SM: Small caption text for supplementary information</span>
+      <span class='font-caption text-caption-sm text-neutral-soft'>Caption SM: Small caption text for supplementary information</span>
     </div>
   </div>
 </template>
@@ -157,16 +157,16 @@ UI labels and form labels with bold weight and tight letter spacing.
 ```gts preview
 <template>
   <div class='flex flex-col gap-3'>
-    <div class='text-label-3xl'>Label 3XL: Extra Large Label</div>
-    <div class='text-label-2xl'>Label 2XL: Double Extra Large Label</div>
-    <div class='text-label-xl'>Label XL: Extra Large Label</div>
-    <div class='text-label-lg'>Label LG: Large Label</div>
-    <div class='text-label-md'>Label MD: Medium Label</div>
-    <div class='text-label-sm'>Label SM: Small Label</div>
-    <div class='text-label-xs'>Label XS: Extra Small Label</div>
-    <div class='text-label-2xs'>Label 2XS: Double Extra Small Label</div>
-    <div class='text-label-micro'>Label Micro: Micro Label</div>
-    <div class='text-label-nano'>Label Nano: Nano Label</div>
+    <div class='font-label text-label-3xl'>Label 3XL: Extra Large Label</div>
+    <div class='font-label text-label-2xl'>Label 2XL: Double Extra Large Label</div>
+    <div class='font-label text-label-xl'>Label XL: Extra Large Label</div>
+    <div class='font-label text-label-lg'>Label LG: Large Label</div>
+    <div class='font-label text-label-md'>Label MD: Medium Label</div>
+    <div class='font-label text-label-sm'>Label SM: Small Label</div>
+    <div class='font-label text-label-xs'>Label XS: Extra Small Label</div>
+    <div class='font-label text-label-2xs'>Label 2XS: Double Extra Small Label</div>
+    <div class='font-label text-label-micro'>Label Micro: Micro Label</div>
+    <div class='font-label text-label-nano'>Label Nano: Nano Label</div>
   </div>
 </template>
 ```
@@ -174,20 +174,18 @@ UI labels and form labels with bold weight and tight letter spacing.
 **Available sizes:** `nano`, `micro`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
 **Best for:** Form labels, UI labels, buttons, navigation items, badges
 
-## Default Sizes
+## Available Utilities
 
-Each text style category has a default size that can be used without specifying the size modifier:
+All text style utilities require both a font-family utility and a sized text style utility:
 
 ```html
-<!-- These are equivalent -->
-<h1 class="text-marquee">...</h1>
-<h1 class="text-marquee-md">...</h1>
-
-<h2 class="text-header">...</h2>
-<h2 class="text-header-md">...</h2>
-
-<p class="text-body">...</p>
-<p class="text-body-md">...</p>
+<!-- Complete typography requires both font-family and sized text style -->
+<h1 class="font-marquee text-marquee-xl">...</h1>
+<h2 class="font-header text-header-md">...</h2>
+<p class="font-body text-body-md">...</p>
+<code class="font-code text-code-sm">...</code>
+<span class="font-caption text-caption-md">...</span>
+<label class="font-label text-label-sm">...</label>
 ```
 
 ## Combining with Other Utilities
@@ -198,20 +196,20 @@ Typography utilities work seamlessly with other Tailwind utilities:
 <template>
   <div class='flex flex-col gap-4'>
     {{! Colored header }}
-    <h2 class='text-header-xl text-brand-strong'>Colored Header</h2>
+    <h2 class='font-header text-header-xl text-brand-strong'>Colored Header</h2>
 
     {{! Truncated body text }}
-    <p class='text-body-md truncate max-w-md'>
+    <p class='font-body text-body-md truncate max-w-md'>
       This is a very long paragraph that will be truncated with an ellipsis when it exceeds the maximum width.
     </p>
 
     {{! Centered caption }}
-    <span class='text-caption-md text-center block text-neutral-soft'>
+    <span class='font-caption text-caption-md text-center block text-neutral-soft'>
       Centered caption text
     </span>
 
     {{! Responsive header }}
-    <h1 class='text-header-lg md:text-header-xl lg:text-header-2xl'>
+    <h1 class='font-header text-header-lg md:text-header-xl lg:text-header-2xl'>
       Responsive Heading
     </h1>
   </div>
@@ -220,36 +218,32 @@ Typography utilities work seamlessly with other Tailwind utilities:
 
 ## How It Works
 
-The typography system uses a two-part approach:
+The typography system uses Tailwind v4's `@theme` directive to automatically generate utilities from CSS variables:
 
-1. **Base tokens** defined in `@theme` provide the foundation (font families, weights, sizes, etc.)
-2. **Composite utilities** defined in `@layer utilities` bundle these tokens into semantic text styles
+1. **Base tokens** defined in `@theme` automatically generate individual utilities:
+   - `--font-header` → `font-header` utility
+   - `--font-size-14` → `text-14` utility
+   - `--font-weight-bold` → `font-bold` utility
+   - `--letter-spacing-condensed` → `tracking-condensed` utility
+   - `--line-height-comfy` → `leading-comfy` utility
 
-Each text utility is explicitly defined to combine all typography properties:
+2. **Composite text style tokens** generate size/weight/spacing utilities (but NOT font-family):
+   - `--text-header-md` → `text-header-md` utility (sets size, weight, spacing, line-height)
+   - `--text-body-lg` → `text-body-lg` utility (sets size, weight, spacing, line-height)
 
-```css
-@theme {
-  /* Base typography tokens */
-  --font-family-header: "Open Sans";
-  --font-size-14: 1.14rem;
-  --font-weight-bold: 700;
-  --letter-spacing-condensed: -0.0625rem;
-  --line-height-comfy: 1.4;
-}
+**Usage pattern:** Combine font-family with text style for complete typography:
 
-@layer utilities {
-  /* Composite utility that references base tokens */
-  .text-header-md {
-    font-size: var(--font-size-14);
-    font-family: var(--font-family-header);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: var(--letter-spacing-condensed);
-    line-height: var(--line-height-comfy);
-  }
-}
+```html
+<!-- ✓ Correct: Combine font-family with text style -->
+<h2 class="font-header text-header-md">Heading Text</h2>
+<p class="font-body text-body-lg">Body text with larger size</p>
+<span class="font-label text-label-sm">Small label</span>
+
+<!-- ✗ Incomplete: Missing font-family -->
+<h2 class="text-header-md">Heading Text</h2>
 ```
 
-When you use `.text-header-md`, all five typography properties are applied together as a cohesive style. The system uses a modular scale (ratio: 1.067) to ensure harmonious sizing relationships across all text styles.
+The separation of font-family from text styles provides flexibility to mix font families with different text styles while maintaining consistent sizing, weight, spacing, and line-height.
 
 ## Customization
 
@@ -262,9 +256,9 @@ Customize typography by overriding CSS variables in your app's CSS file:
 
 /* Override font families */
 @theme {
-  --font-family-header: "Inter", system-ui, sans-serif;
-  --font-family-body: "Inter", system-ui, sans-serif;
-  --font-family-code: "JetBrains Mono", monospace;
+  --font-header: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-code: "JetBrains Mono", monospace;
 }
 ```
 
@@ -276,13 +270,13 @@ Customize for light and dark themes using theme selectors:
 /* Light theme customization */
 .light,
 .dark .theme-inverse {
-  --font-family-body: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
 }
 
 /* Dark theme customization */
 .dark,
 .light .theme-inverse {
-  --font-family-body: "Geist", system-ui, sans-serif;
+  --font-body: "Geist", system-ui, sans-serif;
 }
 ```
 
@@ -299,9 +293,9 @@ Add custom fonts by declaring them with `@font-face` and overriding the font fam
 }
 
 @theme {
-  --font-family-header: 'Inter', system-ui, sans-serif;
-  --font-family-body: 'Inter', system-ui, sans-serif;
-  --font-family-label: 'Inter', system-ui, sans-serif;
+  --font-header: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-label: 'Inter', system-ui, sans-serif;
 }
 ```
 
@@ -315,7 +309,7 @@ Always prefer semantic text style utilities over combining individual properties
 <template>
   <div class='flex flex-col gap-4'>
     {{! Good - semantic text style }}
-    <h2 class='text-header-lg text-brand-strong'>
+    <h2 class='font-header text-header-lg text-brand-strong'>
       ✓ Semantic: Easy to maintain
     </h2>
 
@@ -334,21 +328,21 @@ Use size variants to create clear content hierarchy:
 ```gts preview
 <template>
   <article class='space-y-4'>
-    <h1 class='text-header-3xl text-neutral-strong'>Article Title</h1>
-    <p class='text-body-md text-neutral-soft'>Published on December 7, 2024</p>
+    <h1 class='font-header text-header-3xl text-neutral-strong'>Article Title</h1>
+    <p class='font-body text-body-md text-neutral-soft'>Published on December 7, 2024</p>
 
     <div class='space-y-3'>
-      <h2 class='text-header-xl text-neutral-strong'>Major Section</h2>
-      <p class='text-body-md text-neutral-medium'>
+      <h2 class='font-header text-header-xl text-neutral-strong'>Major Section</h2>
+      <p class='font-body text-body-md text-neutral-medium'>
         This is the main body content with comfortable line height for easy reading. The text flows naturally and maintains good readability.
       </p>
 
-      <h3 class='text-header-lg text-neutral-strong'>Subsection</h3>
-      <p class='text-body-md text-neutral-medium'>
+      <h3 class='font-header text-header-lg text-neutral-strong'>Subsection</h3>
+      <p class='font-body text-body-md text-neutral-medium'>
         Subsection content continues the hierarchy with appropriately sized headers.
       </p>
 
-      <span class='text-caption-sm text-neutral-soft block'>
+      <span class='font-caption text-caption-sm text-neutral-soft block'>
         Figure 1: Caption providing additional context
       </span>
     </div>
@@ -363,10 +357,10 @@ Scale typography for different screen sizes:
 ```gts preview
 <template>
   <div class='space-y-4'>
-    <h1 class='text-header-lg md:text-header-xl lg:text-header-2xl text-neutral-strong'>
+    <h1 class='font-header text-header-lg md:text-header-xl lg:text-header-2xl text-neutral-strong'>
       Responsive Heading
     </h1>
-    <p class='text-body-sm md:text-body-md lg:text-body-lg text-neutral-medium'>
+    <p class='font-body text-body-sm md:text-body-md lg:text-body-lg text-neutral-medium'>
       Body text that scales up on larger screens for better readability across all devices.
     </p>
   </div>

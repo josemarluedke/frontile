@@ -21,34 +21,34 @@ Higher elevations indicate elements that are more prominent or interactive, such
 <template>
   <div class='grid grid-cols-2 md:grid-cols-3 gap-8 bg-surface-solid-1 p-8'>
     <div class='shadow-elevation-0 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 0</h3>
-      <p class='text-body-sm text-neutral-soft'>No shadow</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Flat surface</p>
+      <h3 class='mb-2'>Level 0</h3>
+      <p class='text-neutral-soft'>No shadow</p>
+      <p class='text-neutral-soft text-sm mt-2'>Flat surface</p>
     </div>
     <div class='shadow-elevation-1 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 1</h3>
-      <p class='text-body-sm text-neutral-soft'>Subtle lift</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Hover states</p>
+      <h3 class='mb-2'>Level 1</h3>
+      <p class='text-neutral-soft'>Subtle lift</p>
+      <p class='text-neutral-soft text-sm mt-2'>Hover states</p>
     </div>
     <div class='shadow-elevation-2 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 2</h3>
-      <p class='text-body-sm text-neutral-soft'>Raised surface</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Cards, panels</p>
+      <h3 class='mb-2'>Level 2</h3>
+      <p class='text-neutral-soft'>Raised surface</p>
+      <p class='text-neutral-soft text-sm mt-2'>Cards, panels</p>
     </div>
     <div class='shadow-elevation-3 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 3</h3>
-      <p class='text-body-sm text-neutral-soft'>Floating element</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Dropdowns</p>
+      <h3 class='mb-2'>Level 3</h3>
+      <p class='text-neutral-soft'>Floating element</p>
+      <p class='text-neutral-soft text-sm mt-2'>Dropdowns</p>
     </div>
     <div class='shadow-elevation-4 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 4</h3>
-      <p class='text-body-sm text-neutral-soft'>Elevated overlay</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Modals, dialogs</p>
+      <h3 class='mb-2'>Level 4</h3>
+      <p class='text-neutral-soft'>Elevated overlay</p>
+      <p class='text-neutral-soft text-sm mt-2'>Modals, dialogs</p>
     </div>
     <div class='shadow-elevation-5 bg-background p-6 rounded'>
-      <h3 class='text-header-sm mb-2'>Level 5</h3>
-      <p class='text-body-sm text-neutral-soft'>Maximum depth</p>
-      <p class='text-caption-sm text-neutral-soft mt-2'>Top layer</p>
+      <h3 class='mb-2'>Level 5</h3>
+      <p class='text-neutral-soft'>Maximum depth</p>
+      <p class='text-neutral-soft text-sm mt-2'>Top layer</p>
     </div>
   </div>
 </template>
@@ -74,8 +74,8 @@ Higher elevations indicate elements that are more prominent or interactive, such
   <div class='grid md:grid-cols-2 gap-6'>
     {{! Basic card with level 2 elevation }}
     <div class='shadow-elevation-2 bg-background rounded-xl p-6'>
-      <h3 class='text-header-md mb-3'>Product Card</h3>
-      <p class='text-body-sm text-neutral-soft mb-4'>
+      <h3 class='mb-3'>Product Card</h3>
+      <p class='text-neutral-soft mb-4'>
         Standard card with level 2 elevation provides subtle depth.
       </p>
       <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'>
@@ -85,8 +85,8 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
     {{! Feature card with no shadow }}
     <div class='shadow-elevation-0 border border-neutral-medium bg-background rounded-xl p-6'>
-      <h3 class='text-header-md mb-3'>Flat Card</h3>
-      <p class='text-body-sm text-neutral-soft mb-4'>
+      <h3 class='mb-3'>Flat Card</h3>
+      <p class='text-neutral-soft mb-4'>
         Uses border instead of shadow for a flatter appearance.
       </p>
       <button class='border border-brand-medium text-brand-medium px-4 py-2 rounded hover:bg-brand-subtle'>
@@ -113,116 +113,8 @@ Higher elevations indicate elements that are more prominent or interactive, such
     <div
       class='bg-background rounded-xl p-6 shadow-elevation-1 hover:shadow-elevation-2 transition-shadow cursor-pointer'
     >
-      <h4 class='text-header-sm mb-2'>Interactive Card</h4>
-      <p class='text-body-sm text-neutral-soft'>Elevation increases on hover</p>
-    </div>
-  </div>
-</template>
-```
-
-### Dropdown Menus
-
-```gts preview
-<template>
-  <div class='relative inline-block'>
-    <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded'>
-      Open Menu
-    </button>
-    {{! Dropdown with level 3 elevation }}
-    <div
-      class='absolute mt-2 w-56 shadow-elevation-3 bg-background rounded-lg overflow-hidden'
-    >
-      <a href='#' class='block px-4 py-3 hover:bg-neutral-subtle text-body-sm'>Menu Item 1</a>
-      <a href='#' class='block px-4 py-3 hover:bg-neutral-subtle text-body-sm'>Menu Item 2</a>
-      <a href='#' class='block px-4 py-3 hover:bg-neutral-subtle text-body-sm'>Menu Item 3</a>
-    </div>
-  </div>
-</template>
-```
-
-### Modal Dialog
-
-```gts preview
-<template>
-  <div class='relative h-64 flex items-center justify-center bg-surface-solid-1 rounded-lg'>
-    {{! Modal with level 4 elevation }}
-    <div class='shadow-elevation-4 bg-background rounded-xl p-8 max-w-md'>
-      <h3 class='text-header-lg mb-4'>Confirm Action</h3>
-      <p class='text-body-md text-neutral-soft mb-6'>
-        Are you sure you want to proceed with this action?
-      </p>
-      <div class='flex gap-3 justify-end'>
-        <button class='border border-neutral-medium px-4 py-2 rounded hover:bg-neutral-subtle'>
-          Cancel
-        </button>
-        <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'>
-          Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-```
-
-### Alert Notifications
-
-```gts preview
-<template>
-  <div class='space-y-4'>
-    {{! Standard alert with level 2 elevation }}
-    <div class='shadow-elevation-2 bg-background border-l-aggressive border-brand-medium rounded p-4'>
-      <h4 class='text-label-md mb-1'>Information</h4>
-      <p class='text-body-sm text-neutral-soft'>Standard notification with moderate elevation.</p>
-    </div>
-
-    {{! Critical alert with level 5 elevation }}
-    <div class='shadow-elevation-5 bg-danger-medium text-on-danger-medium rounded p-4'>
-      <h4 class='text-label-md mb-1'>Critical Alert</h4>
-      <p class='text-body-sm'>Maximum elevation draws immediate attention.</p>
-    </div>
-  </div>
-</template>
-```
-
-## Combining with Other Tokens
-
-### Elevation with Border Radius
-
-Pair elevation with border radius for polished UI:
-
-```gts preview
-<template>
-  <div class='grid md:grid-cols-3 gap-4'>
-    <div class='shadow-elevation-2 rounded-sm bg-background p-4'>
-      <p class='text-body-sm'>Sharp corners</p>
-      <code class='text-code-sm'>rounded-sm</code>
-    </div>
-    <div class='shadow-elevation-2 rounded-xl bg-background p-4'>
-      <p class='text-body-sm'>Soft corners</p>
-      <code class='text-code-sm'>rounded-xl</code>
-    </div>
-    <div class='shadow-elevation-2 rounded-2xl bg-background p-4'>
-      <p class='text-body-sm'>Very soft</p>
-      <code class='text-code-sm'>rounded-2xl</code>
-    </div>
-  </div>
-</template>
-```
-
-### Elevation with Colors
-
-Use semantic colors with elevation:
-
-```gts preview
-<template>
-  <div class='grid md:grid-cols-2 gap-4'>
-    <div class='shadow-elevation-2 bg-success-subtle border border-success-soft rounded-xl p-4'>
-      <h4 class='text-label-md text-success-strong mb-2'>Success</h4>
-      <p class='text-body-sm text-success-strong'>Elevated success message</p>
-    </div>
-    <div class='shadow-elevation-3 bg-warning-medium text-on-warning-medium rounded-xl p-4'>
-      <h4 class='text-label-md mb-2'>Warning</h4>
-      <p class='text-body-sm'>High-elevation warning</p>
+      <h4 class='mb-2'>Interactive Card</h4>
+      <p class='text-neutral-soft'>Elevation increases on hover</p>
     </div>
   </div>
 </template>

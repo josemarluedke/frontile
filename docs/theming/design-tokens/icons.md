@@ -77,59 +77,148 @@ Apply icon sizes using the `size-icon-*` utilities, which set both width and hei
 | Kilo | `size-icon-kilo` | Very large decorative icons |
 | Mega | `size-icon-mega` | Largest decorative icons |
 
+## All Icon Sizes
+
+Here are all available icon sizes with visual examples:
+
+```gts preview
+import { CheckIcon } from 'site/components/icons';
+
+<template>
+  <div class='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-pico text-brand-medium' />
+      <div>
+        <div class='font-medium'>Pico</div>
+        <code class='text-xs'>size-icon-pico</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-nano text-brand-medium' />
+      <div>
+        <div class='font-medium'>Nano</div>
+        <code class='text-xs'>size-icon-nano</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-micro text-brand-medium' />
+      <div>
+        <div class='font-medium'>Micro</div>
+        <code class='text-xs'>size-icon-micro</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-3xs text-brand-medium' />
+      <div>
+        <div class='font-medium'>3XS</div>
+        <code class='text-xs'>size-icon-3xs</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-2xs text-brand-medium' />
+      <div>
+        <div class='font-medium'>2XS</div>
+        <code class='text-xs'>size-icon-2xs</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-xs text-brand-medium' />
+      <div>
+        <div class='font-medium'>XS</div>
+        <code class='text-xs'>size-icon-xs</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-sm text-brand-medium' />
+      <div>
+        <div class='font-medium'>SM</div>
+        <code class='text-xs'>size-icon-sm</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-md text-brand-medium' />
+      <div>
+        <div class='font-medium'>MD</div>
+        <code class='text-xs'>size-icon-md</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-lg text-brand-medium' />
+      <div>
+        <div class='font-medium'>LG</div>
+        <code class='text-xs'>size-icon-lg</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-xl text-brand-medium' />
+      <div>
+        <div class='font-medium'>XL</div>
+        <code class='text-xs'>size-icon-xl</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-2xl text-brand-medium' />
+      <div>
+        <div class='font-medium'>2XL</div>
+        <code class='text-xs'>size-icon-2xl</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-3xl text-brand-medium' />
+      <div>
+        <div class='font-medium'>3XL</div>
+        <code class='text-xs'>size-icon-3xl</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-kilo text-brand-medium' />
+      <div>
+        <div class='font-medium'>Kilo</div>
+        <code class='text-xs'>size-icon-kilo</code>
+      </div>
+    </div>
+    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
+      <CheckIcon class='size-icon-mega text-brand-medium' />
+      <div>
+        <div class='font-medium'>Mega</div>
+        <code class='text-xs'>size-icon-mega</code>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
 ## Pairing with Typography
 
 Icon sizes are designed to pair harmoniously with text styles. Use these recommended pairings for visual alignment:
 
 ```gts preview
+import { CheckIcon, ViewIcon, StarIcon } from 'site/components/icons';
+
 <template>
   <div class='flex flex-col gap-4'>
-    {{! Small text with small icon }}
+    {{! Small icon pairing }}
     <div class='flex items-center gap-2'>
-      <svg class='size-icon-xs text-success-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-sm'>Small body text with size-icon-xs</span>
+      <CheckIcon class='size-icon-xs text-success-medium' />
+      <span>Small text with size-icon-xs</span>
     </div>
 
-    {{! Medium text with medium icon }}
+    {{! Medium icon pairing }}
     <div class='flex items-center gap-2'>
-      <svg class='size-icon-md text-brand-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-md'>Default body text with size-icon-md</span>
+      <ViewIcon class='size-icon-md text-brand-medium' />
+      <span>Default text with size-icon-md</span>
     </div>
 
-    {{! Large text with large icon }}
+    {{! Large icon pairing }}
     <div class='flex items-center gap-2'>
-      <svg class='size-icon-lg text-warning-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-lg'>Large body text with size-icon-lg</span>
+      <StarIcon class='size-icon-lg text-warning-medium' />
+      <span>Larger text with size-icon-lg</span>
     </div>
 
-    {{! Header with large icon }}
+    {{! Extra large icon pairing }}
     <div class='flex items-center gap-3'>
-      <svg class='size-icon-xl text-danger-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <h2 class='text-header-lg'>Header text with size-icon-xl</h2>
+      <CheckIcon class='size-icon-xl text-danger-medium' />
+      <h2>Header with size-icon-xl</h2>
     </div>
   </div>
 </template>
@@ -146,100 +235,6 @@ Icon sizes are designed to pair harmoniously with text styles. Use these recomme
 | `text-header-md` | `size-icon-md` or `size-icon-lg` |
 | `text-header-lg` | `size-icon-lg` or `size-icon-xl` |
 | `text-header-xl` | `size-icon-xl` or `size-icon-2xl` |
-
-## Common Use Cases
-
-### Buttons with Icons
-
-```gts preview
-<template>
-  <div class='flex gap-4 flex-wrap'>
-    <button class='flex items-center gap-2 bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'>
-      <svg class='size-icon-sm' fill='currentColor' viewBox='0 0 20 20'>
-        <path d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'></path>
-      </svg>
-      <span class='text-label-sm'>Add Item</span>
-    </button>
-
-    <button class='flex items-center gap-2 border border-neutral-medium px-4 py-2 rounded hover:bg-neutral-subtle'>
-      <svg class='size-icon-sm text-neutral-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-label-sm text-neutral-strong'>Download</span>
-    </button>
-  </div>
-</template>
-```
-
-### List Items with Icons
-
-```gts preview
-<template>
-  <ul class='space-y-2'>
-    <li class='flex items-center gap-2'>
-      <svg class='size-icon-sm text-success-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-md'>Task completed successfully</span>
-    </li>
-    <li class='flex items-center gap-2'>
-      <svg class='size-icon-sm text-warning-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M10 18a8 8 0 100-16 8 8 0 000 16zM9 7a1 1 0 112 0v4a1 1 0 11-2 0V7zm1 8a1 1 0 100-2 1 1 0 000 2z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-md'>Warning: Review required</span>
-    </li>
-    <li class='flex items-center gap-2'>
-      <svg class='size-icon-sm text-danger-medium' fill='currentColor' viewBox='0 0 20 20'>
-        <path
-          fill-rule='evenodd'
-          d='M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <span class='text-body-md'>Error: Action failed</span>
-    </li>
-  </ul>
-</template>
-```
-
-### Input Fields with Icons
-
-```gts preview
-<template>
-  <div class='space-y-3'>
-    <div class='relative'>
-      <svg
-        class='size-icon-sm text-neutral-soft absolute left-3 top-1/2 -translate-y-1/2'
-        fill='currentColor'
-        viewBox='0 0 20 20'
-      >
-        <path
-          fill-rule='evenodd'
-          d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
-          clip-rule='evenodd'
-        ></path>
-      </svg>
-      <input
-        type='text'
-        placeholder='Search...'
-        class='w-full pl-10 pr-4 py-2 border border-neutral-medium rounded focus:outline-none focus:ring-2 focus:ring-brand-medium'
-      />
-    </div>
-  </div>
-</template>
-```
 
 ## Customization
 

@@ -1,6 +1,6 @@
 import { extendTailwindMerge } from 'tailwind-merge';
+import { createTV } from 'tailwind-variants';
 import type { ClassValue } from 'tailwind-variants';
-export { tv } from 'tailwind-variants';
 export type { VariantProps } from 'tailwind-variants';
 
 function flat(arr: ClassValue[], target: ClassValue[]): void {
@@ -23,9 +23,62 @@ const clsx = (...classes: ClassValue[]): string | undefined => {
   return voidEmpty(flatArray(classes).filter(Boolean).join(' '));
 };
 
-// This is empty for now as we don't have any configuration
-const twMergeConfig = {};
-const twMergeBase = extendTailwindMerge({ extend: twMergeConfig });
+// Common size units used across all design tokens (icons, typography, etc.)
+const COMMON_UNITS = [
+  'pico',
+  'nano',
+  'micro',
+  '3xs',
+  '2xs',
+  'xs',
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  '2xl',
+  '3xl',
+  'kilo',
+  'mega'
+] as const;
+
+const ELEVATION_LEVELS = ['0', '1', '2', '3', '4', '5'];
+
+const twMergeConfig = {
+  extend: {
+    classGroups: {
+      // Icon sizes
+      'icon-size': [{ 'size-icon': COMMON_UNITS }],
+
+      // Border widths (directional variants handled automatically)
+      'border-w': [{ border: ['thin', 'heavy', 'aggressive'] }],
+
+      // Border radius (extend existing rounded utilities)
+      rounded: [{ rounded: ['default', 'pill'] }],
+
+      // Elevation shadows
+      shadow: [{ 'shadow-elevation': ELEVATION_LEVELS }],
+
+      // Opacity
+      opacity: [{ opacity: ['hover', 'disabled'] }],
+
+      // Typography composite text styles (extend font-size class group)
+      // These set font-size + other properties, so they should conflict with text-* utilities
+      'font-size': [
+        { 'text-marquee': [...COMMON_UNITS] },
+        { 'text-header': [...COMMON_UNITS] },
+        { 'text-body': [...COMMON_UNITS] },
+        { 'text-code': [...COMMON_UNITS] },
+        { 'text-caption': [...COMMON_UNITS] },
+        { 'text-label': [...COMMON_UNITS] }
+      ]
+    },
+    conflictingClassGroups: {
+      'icon-size': ['w', 'h', 'size']
+    }
+  }
+} as const;
+
+const twMergeBase = extendTailwindMerge<'icon-size'>(twMergeConfig);
 
 export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
   if (overwrites) {
@@ -33,3 +86,8 @@ export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
   }
   return clsx(defaultClass);
 }
+
+export const tv = createTV({
+  twMerge: true,
+  twMergeConfig
+});

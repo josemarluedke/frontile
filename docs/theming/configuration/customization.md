@@ -116,10 +116,10 @@ Override font families for different text categories:
 }
 
 @theme {
-  --font-family-header: 'Inter', system-ui, sans-serif;
-  --font-family-body: 'Inter', system-ui, sans-serif;
-  --font-family-label: 'Inter', system-ui, sans-serif;
-  --font-family-code: 'JetBrains Mono', monospace;
+  --font-header: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-label: 'Inter', system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
 }
 ```
 
@@ -130,12 +130,12 @@ Use different fonts for light and dark themes:
 ```css
 .light,
 .dark .theme-inverse {
-  --font-family-body: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
 .dark,
 .light .theme-inverse {
-  --font-family-body: 'Geist', system-ui, sans-serif;
+  --font-body: 'Geist', system-ui, sans-serif;
 }
 ```
 
@@ -368,9 +368,9 @@ module.exports = frontile({
 
 @theme {
   /* Typography */
-  --font-family-header: 'Poppins', system-ui, sans-serif;
-  --font-family-body: 'Poppins', system-ui, sans-serif;
-  --font-family-label: 'Poppins', system-ui, sans-serif;
+  --font-header: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-label: 'Poppins', system-ui, sans-serif;
 
   /* Rounded design */
   --radius: 12px;
