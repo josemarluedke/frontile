@@ -29,11 +29,12 @@
 
   /* ==================== Border Radius ==================== */
   --radius-none: 0px; /* No border radius (sharp corners). */
+  --radius-xs: 1px; /* Extra small border radius for minimal rounding. */
   --radius-sm: 2px; /* Small border radius for subtle rounding. */
   --radius-md: 4px; /* Medium border radius for standard elements. */
   --radius-xl: 12px; /* Extra large border radius for emphasized elements. */
   --radius-2xl: 16px; /* Double extra large border radius for very soft corners. */
-  --radius-rounded: 20px; /* Very rounded corners for friendly, approachable UI elements. */
+  --radius-default: 20px; /* Default border radius for friendly, approachable UI elements. Aligns with TailwindCSS &#x27;rounded&#x27; class. */
   --radius-pill: 9999px; /* Pill-shaped border radius (fully rounded sides) for buttons and tags. */
   --radius: 8px; /* Large border radius for more prominent rounding. - DEFAULT */
 
