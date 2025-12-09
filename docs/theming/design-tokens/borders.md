@@ -120,55 +120,6 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
 | Default (Custom) | `rounded-default` | Custom default radius value, soft friendly corners |
 | Pill | `rounded-pill` | Pills, badges, fully rounded buttons |
 
-### Border Radius Examples
-
-```gts preview
-<template>
-  <div class='space-y-6'>
-    {{! Button group with different radii }}
-    <div class='flex gap-3 flex-wrap'>
-      <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded-sm hover:bg-brand-soft'>
-        Sharp (SM)
-      </button>
-      <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'>
-        Default
-      </button>
-      <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded-xl hover:bg-brand-soft'>
-        Soft (XL)
-      </button>
-      <button class='bg-brand-medium text-on-brand-medium px-6 py-2 rounded-pill hover:bg-brand-soft'>
-        Pill
-      </button>
-    </div>
-
-    {{! Cards with different radii }}
-    <div class='grid md:grid-cols-2 gap-4'>
-      <div class='border border-neutral-medium rounded-md p-6'>
-        <h3 class='text-header-sm mb-2'>Standard Card</h3>
-        <p class='text-body-sm text-neutral-soft'>Uses rounded-md for subtle corners</p>
-      </div>
-      <div class='border border-neutral-medium rounded-2xl p-6'>
-        <h3 class='text-header-sm mb-2'>Feature Card</h3>
-        <p class='text-body-sm text-neutral-soft'>Uses rounded-2xl for prominent display</p>
-      </div>
-    </div>
-
-    {{! Badges and pills }}
-    <div class='flex gap-3 flex-wrap items-center'>
-      <span class='bg-neutral-subtle text-neutral-strong px-3 py-1 rounded text-label-xs'>
-        Rounded Badge
-      </span>
-      <span class='bg-success-subtle text-success-strong px-3 py-1 rounded-pill text-label-xs'>
-        Pill Badge
-      </span>
-      <span class='bg-brand-medium text-on-brand-medium px-3 py-1 rounded-xl text-label-xs'>
-        Soft Badge
-      </span>
-    </div>
-  </div>
-</template>
-```
-
 ## Combining Borders and Radius
 
 Use border widths and radius together to create various UI patterns:
@@ -192,54 +143,6 @@ Use border widths and radius together to create various UI patterns:
     <div class='border-aggressive border-danger-medium bg-danger-subtle rounded-sm p-4'>
       <h4 class='text-label-md text-danger-strong mb-1'>Error</h4>
       <p class='text-body-sm text-danger-strong'>Failed to save changes. Please try again.</p>
-    </div>
-  </div>
-</template>
-```
-
-## Directional Border Utilities
-
-Tailwind's directional utilities work with Frontile's border width tokens:
-
-```gts preview
-<template>
-  <div class='space-y-4'>
-    {{! Top border only }}
-    <div class='border-t-heavy border-brand-medium p-4 bg-background'>
-      <p class='text-body-sm'>Top border (heavy)</p>
-    </div>
-
-    {{! Left border accent }}
-    <div class='border-l-aggressive border-success-medium p-4 bg-background'>
-      <p class='text-body-sm'>Left border accent (aggressive)</p>
-    </div>
-
-    {{! Bottom divider }}
-    <div class='border-b-thin border-neutral-medium p-4 bg-background'>
-      <p class='text-body-sm'>Bottom divider (thin)</p>
-    </div>
-  </div>
-</template>
-```
-
-## Directional Border Radius
-
-Apply radius to specific corners:
-
-```gts preview
-<template>
-  <div class='grid md:grid-cols-3 gap-4'>
-    <div class='bg-brand-subtle p-6 rounded-t-xl'>
-      <p class='text-body-sm'>Top rounded</p>
-      <code class='text-code-sm'>rounded-t-xl</code>
-    </div>
-    <div class='bg-brand-subtle p-6 rounded-b-xl'>
-      <p class='text-body-sm'>Bottom rounded</p>
-      <code class='text-code-sm'>rounded-b-xl</code>
-    </div>
-    <div class='bg-brand-subtle p-6 rounded-l-xl'>
-      <p class='text-body-sm'>Left rounded</p>
-      <code class='text-code-sm'>rounded-l-xl</code>
     </div>
   </div>
 </template>

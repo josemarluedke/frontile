@@ -9,7 +9,7 @@ export const ViewIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -32,7 +32,7 @@ export const EditIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -50,7 +50,7 @@ export const DuplicateIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -68,7 +68,7 @@ export const ShareIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -86,7 +86,7 @@ export const DownloadIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -104,7 +104,7 @@ export const ArchiveIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -122,7 +122,7 @@ export const DeleteIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -140,7 +140,7 @@ export const ChevronDownIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-5 h-5"
+    class="size-icon-md"
     ...attributes
   >
     <path
@@ -158,7 +158,7 @@ export const StarIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -176,7 +176,7 @@ export const SearchIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="size-5"
+    class="size-icon-md"
     ...attributes
   >
     <path
@@ -192,7 +192,7 @@ export const SunIcon = <template>
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    class="size-4"
+    class="size-icon-sm"
     ...attributes
   >
     <path
@@ -206,7 +206,7 @@ export const MoonIcon = <template>
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     fill="currentColor"
-    class="size-4"
+    class="size-icon-sm"
     ...attributes
   >
     <path
@@ -218,7 +218,7 @@ export const MoonIcon = <template>
 </template>;
 
 export const UserIcon = <template>
-  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" ...attributes>
+  <svg fill="currentColor" viewBox="0 0 20 20" class="size-icon-sm" ...attributes>
     <path
       fill-rule="evenodd"
       d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
@@ -234,7 +234,7 @@ export const CheckIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="2"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -252,7 +252,7 @@ export const CodeIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -270,7 +270,7 @@ export const PaletteIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -288,7 +288,7 @@ export const BookIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -306,7 +306,7 @@ export const TargetIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -329,7 +329,7 @@ export const AccessibilityIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -347,7 +347,7 @@ export const SparklesIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -365,7 +365,7 @@ export const ComponentIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -383,7 +383,7 @@ export const PackageIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -401,7 +401,7 @@ export const RocketIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-6 h-6"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -419,7 +419,7 @@ export const SettingsIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path
@@ -442,7 +442,7 @@ export const LogoutIcon = <template>
     viewBox="0 0 24 24"
     stroke-width="1.5"
     stroke="currentColor"
-    class="w-4 h-4"
+    class="size-icon-lg"
     ...attributes
   >
     <path

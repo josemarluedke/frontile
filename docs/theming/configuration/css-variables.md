@@ -43,12 +43,12 @@ Variables defined in `:root` or theme-specific selectors are for component-speci
 
 ```css
 @theme {
-  --font-family-header: system-ui, sans-serif;
-  --font-family-body: system-ui, sans-serif;
-  --font-family-code: 'Courier New', monospace;
-  --font-family-label: system-ui, sans-serif;
-  --font-family-caption: system-ui, sans-serif;
-  --font-family-marquee: system-ui, sans-serif;
+  --font-header: system-ui, sans-serif;
+  --font-body: system-ui, sans-serif;
+  --font-code: 'Courier New', monospace;
+  --font-label: system-ui, sans-serif;
+  --font-caption: system-ui, sans-serif;
+  --font-marquee: system-ui, sans-serif;
 }
 ```
 
@@ -303,9 +303,9 @@ Or per-theme:
 }
 
 @theme {
-  --font-family-header: 'Inter', system-ui, sans-serif;
-  --font-family-body: 'Inter', system-ui, sans-serif;
-  --font-family-label: 'Inter', system-ui, sans-serif;
+  --font-header: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-label: 'Inter', system-ui, sans-serif;
 }
 ```
 
