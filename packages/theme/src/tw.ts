@@ -43,7 +43,7 @@ const COMMON_UNITS = [
 
 const ELEVATION_LEVELS = ['0', '1', '2', '3', '4', '5'];
 
-const twMergeBase = extendTailwindMerge<'icon-size'>({
+const twMergeConfig = {
   extend: {
     classGroups: {
       // Icon sizes
@@ -76,7 +76,9 @@ const twMergeBase = extendTailwindMerge<'icon-size'>({
       'icon-size': ['w', 'h', 'size']
     }
   }
-});
+} as const;
+
+const twMergeBase = extendTailwindMerge<'icon-size'>(twMergeConfig);
 
 export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
   if (overwrites) {
@@ -87,38 +89,5 @@ export function twMerge(defaultClass: ClassValue, overwrites: ClassValue) {
 
 export const tv = createTV({
   twMerge: true,
-  twMergeConfig: {
-    extend: {
-      classGroups: {
-        // Icon sizes
-        'icon-size': [{ 'size-icon': COMMON_UNITS }],
-
-        // Border widths (directional variants handled automatically)
-        'border-w': [{ border: ['thin', 'heavy', 'aggressive'] }],
-
-        // Border radius (extend existing rounded utilities)
-        rounded: [{ rounded: ['default', 'pill'] }],
-
-        // Elevation shadows
-        shadow: [{ 'shadow-elevation': ELEVATION_LEVELS }],
-
-        // Opacity
-        opacity: [{ opacity: ['hover', 'disabled'] }],
-
-        // Typography composite text styles (extend font-size class group)
-        // These set font-size + other properties, so they should conflict with text-* utilities
-        'font-size': [
-          { 'text-marquee': [...COMMON_UNITS] },
-          { 'text-header': [...COMMON_UNITS] },
-          { 'text-body': [...COMMON_UNITS] },
-          { 'text-code': [...COMMON_UNITS] },
-          { 'text-caption': [...COMMON_UNITS] },
-          { 'text-label': [...COMMON_UNITS] }
-        ]
-      },
-      conflictingClassGroups: {
-        'icon-size': ['w', 'h', 'size']
-      }
-    }
-  }
+  twMergeConfig
 });
