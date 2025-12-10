@@ -19,7 +19,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
 ```gts preview
 <template>
-  <div class='grid grid-cols-2 md:grid-cols-3 gap-8 bg-surface-solid-1 p-8'>
+  <div class='grid grid-cols-2 md:grid-cols-3 gap-8 p-8'>
     <div class='shadow-elevation-0 bg-background p-6 rounded'>
       <h3 class='mb-2'>Level 0</h3>
       <p class='text-neutral-soft'>No shadow</p>
@@ -56,14 +56,14 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
 ## When to Use Each Level
 
-| Level | Utility | Use Cases | Examples |
-|-------|---------|-----------|----------|
-| 0 | `shadow-elevation-0` | Flat elements, no depth needed | Inline content, flat buttons, embedded content |
-| 1 | `shadow-elevation-1` | Subtle separation from background | Hover states, subtle cards, list items |
-| 2 | `shadow-elevation-2` | Standard raised surfaces | Cards, panels, tiles, navigation bars |
-| 3 | `shadow-elevation-3` | Floating elements above content | Dropdowns, tooltips, popovers, date pickers |
-| 4 | `shadow-elevation-4` | Modal overlays | Modals, dialogs, drawers, sheets |
-| 5 | `shadow-elevation-5` | Maximum emphasis | Critical alerts, system notifications, top-layer elements |
+| Level | Utility              | Use Cases                         | Examples                                                  |
+| ----- | -------------------- | --------------------------------- | --------------------------------------------------------- |
+| 0     | `shadow-elevation-0` | Flat elements, no depth needed    | Inline content, flat buttons, embedded content            |
+| 1     | `shadow-elevation-1` | Subtle separation from background | Hover states, subtle cards, list items                    |
+| 2     | `shadow-elevation-2` | Standard raised surfaces          | Cards, panels, tiles, navigation bars                     |
+| 3     | `shadow-elevation-3` | Floating elements above content   | Dropdowns, tooltips, popovers, date pickers               |
+| 4     | `shadow-elevation-4` | Modal overlays                    | Modals, dialogs, drawers, sheets                          |
+| 5     | `shadow-elevation-5` | Maximum emphasis                  | Critical alerts, system notifications, top-layer elements |
 
 ## Common Use Cases
 
@@ -78,18 +78,24 @@ Higher elevations indicate elements that are more prominent or interactive, such
       <p class='text-neutral-soft mb-4'>
         Standard card with level 2 elevation provides subtle depth.
       </p>
-      <button class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'>
+      <button
+        class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'
+      >
         View Details
       </button>
     </div>
 
     {{! Feature card with no shadow }}
-    <div class='shadow-elevation-0 border border-neutral-medium bg-background rounded-xl p-6'>
+    <div
+      class='shadow-elevation-0 border border-neutral-medium bg-background rounded-xl p-6'
+    >
       <h3 class='mb-3'>Flat Card</h3>
       <p class='text-neutral-soft mb-4'>
         Uses border instead of shadow for a flatter appearance.
       </p>
-      <button class='border border-brand-medium text-brand-medium px-4 py-2 rounded hover:bg-brand-subtle'>
+      <button
+        class='border border-brand-medium text-brand-medium px-4 py-2 rounded hover:bg-brand-subtle'
+      >
         Learn More
       </button>
     </div>
@@ -181,7 +187,7 @@ Always provide alternative visual cues beyond elevation.
 Override elevation shadows using CSS variables:
 
 ```css
-@import "@frontile/theme";
+@import '@frontile/theme';
 
 @theme {
   /* Customize specific elevation levels */
