@@ -1,7 +1,7 @@
 import { flatten } from 'flat';
 import kebabCase from 'lodash.kebabcase';
 import mapKeys from 'lodash.mapkeys';
-import Color from 'color';
+import { parse, oklch } from 'culori';
 import deepMerge from 'deepmerge';
 
 import type {
@@ -12,9 +12,14 @@ import type {
 } from '../types';
 import type { CSSRuleObject } from 'tailwindcss/types/config';
 import { defaultConfig } from './default-config';
-import { getContrastingColor } from '../colors/contrast';
+import { getContrastingColor } from '../colors/util';
 
-const parsedColorsCache: Record<string, number[]> = {};
+interface ParsedColor {
+  formatted: string;
+  alpha: number;
+}
+
+const parsedColorsCache: Record<string, ParsedColor> = {};
 
 interface ResolvedConfig {
   variants: { name: string; definition: string[] }[];
@@ -24,44 +29,62 @@ interface ResolvedConfig {
 }
 
 /**
- * Determine if a color should have an "on-" variant generated
- *
- * Includes: semantic colors (neutral, brand, success, danger, warning) and surface-solid-*
- * Excludes: surface-overlay-*, background, focus, divider
+ * Parse a color value and convert it to OKLCH format.
+ */
+function parseAndFormatColor(colorValue: string): ParsedColor {
+  const parsed = parse(colorValue);
+  if (!parsed) {
+    throw new Error(`Failed to parse color: ${colorValue}`);
+  }
+
+  const color = oklch(parsed);
+  const l = ((color.l ?? 0) * 100).toFixed(2);
+  const c = (color.c ?? 0).toFixed(4);
+  const h = (color.h ?? 0).toFixed(2);
+  const alpha = color.alpha ?? 1;
+
+  const formatted =
+    alpha < 1 ? `oklch(${l}% ${c} ${h} / ${alpha})` : `oklch(${l}% ${c} ${h})`;
+
+  return { formatted, alpha };
+}
+
+/**
+ * Get parsed color from cache or parse and cache it.
+ */
+function getCachedColor(colorValue: string): ParsedColor {
+  if (!parsedColorsCache[colorValue]) {
+    parsedColorsCache[colorValue] = parseAndFormatColor(colorValue);
+  }
+  return parsedColorsCache[colorValue];
+}
+
+const SEMANTIC_COLOR_PREFIXES = [
+  'neutral',
+  'brand',
+  'success',
+  'danger',
+  'warning',
+  'surface-solid'
+];
+
+const EXCLUDED_COLORS = ['background', 'focus', 'divider'];
+
+/**
+ * Determine if a color should have an "on-" variant generated.
+ * Includes semantic colors and surface-solid-*.
+ * Excludes utility colors and transparent overlays.
  */
 function shouldGenerateOnColor(colorName: string): boolean {
-  // Exclude utility colors
-  if (
-    colorName === 'background' ||
-    colorName === 'focus' ||
-    colorName === 'divider'
-  ) {
+  if (EXCLUDED_COLORS.includes(colorName)) {
     return false;
   }
 
-  // Exclude surface overlays (they're transparent layers)
   if (colorName.startsWith('surface-overlay')) {
     return false;
   }
 
-  // Include semantic colors (neutral, brand, success, danger, warning)
-  const semanticColorPrefixes = [
-    'neutral',
-    'brand',
-    'success',
-    'danger',
-    'warning'
-  ];
-  if (semanticColorPrefixes.some((prefix) => colorName.startsWith(prefix))) {
-    return true;
-  }
-
-  // Include surface solid colors
-  if (colorName.startsWith('surface-solid')) {
-    return true;
-  }
-
-  return false;
+  return SEMANTIC_COLOR_PREFIXES.some((prefix) => colorName.startsWith(prefix));
 }
 
 function resolveThemes(
@@ -85,9 +108,9 @@ function resolveThemes(
       themeName === 'light' || themeName === 'dark' ? themeName : extend;
 
     // Add theme-inverse selectors
-    if (themeName == 'light') {
+    if (themeName === 'light') {
       cssSelector = `${cssSelector}, .dark .theme-inverse`;
-    } else if (themeName == 'dark') {
+    } else if (themeName === 'dark') {
       cssSelector = `${cssSelector}, .light .theme-inverse`;
     }
 
@@ -96,11 +119,7 @@ function resolveThemes(
       baseSelector = `:root, ${cssSelector}`;
     }
 
-    let themeRules: CSSRuleObject = scheme
-      ? {
-          'color-scheme': scheme
-        }
-      : {};
+    const themeRules: CSSRuleObject = scheme ? { 'color-scheme': scheme } : {};
 
     const flatColors = flattenThemeObject(colors) as Record<string, string>;
 
@@ -113,109 +132,59 @@ function resolveThemes(
       definition: [`&.${themeName}`]
     });
 
-    /**
-     * Colors
-     */
+    // Process colors and generate CSS variables
     for (const [colorName, colorValue] of Object.entries(flatColors)) {
       if (!colorValue) continue;
 
       try {
-        const parsedColor =
-          parsedColorsCache[colorValue] ||
-          Color(colorValue).hsl().round().array();
+        const { formatted } = getCachedColor(colorValue);
+        const cssVar = `--color-${colorName}`;
 
-        parsedColorsCache[colorValue] = parsedColor;
-
-        const [h, s, l, defaultAlphaValue] = parsedColor;
-        const colorVariable = `--${colorName}`;
-
-        themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
-
-        // set the dynamic color in tailwind config theme.colors
-        // If color has alpha < 1, use it as fixed alpha; otherwise use dynamic alpha-value
-        const alpha =
-          defaultAlphaValue !== undefined && defaultAlphaValue < 1
-            ? defaultAlphaValue.toString()
-            : '<alpha-value>';
-        resolved.colors[colorName] = `hsl(var(${colorVariable}) / ${alpha})`;
+        themeRules[cssVar] = formatted;
+        resolved.colors[colorName] = `var(${cssVar})`;
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log('error', error);
+        console.warn(`Failed to parse color "${colorName}":`, error);
       }
     }
 
-    /**
-     * Generate "on-" colors for optimal contrast
-     */
-    const onColors: Record<string, string> = {};
-
+    // Generate "on-" colors for optimal contrast on semantic backgrounds
     for (const [colorName, colorValue] of Object.entries(flatColors)) {
-      if (!shouldGenerateOnColor(colorName)) {
-        continue;
-      }
+      if (!shouldGenerateOnColor(colorName)) continue;
 
       try {
         const contrastColor = getContrastingColor(colorValue);
-
-        // Generate the "on-" color name
+        const { formatted } = getCachedColor(contrastColor);
         const onColorName = `on-${colorName}`;
-        onColors[onColorName] = contrastColor;
+        const cssVar = `--color-${onColorName}`;
 
-        // Process the on- color and add to theme
-        const parsedColor =
-          parsedColorsCache[contrastColor] ||
-          Color(contrastColor).hsl().round().array();
-
-        parsedColorsCache[contrastColor] = parsedColor;
-
-        const [h, s, l, defaultAlphaValue] = parsedColor;
-        const colorVariable = `--${onColorName}`;
-
-        themeRules = { ...themeRules, [colorVariable]: `${h} ${s}% ${l}%` };
-
-        const alpha =
-          defaultAlphaValue !== undefined && defaultAlphaValue < 1
-            ? defaultAlphaValue.toString()
-            : '<alpha-value>';
-        resolved.colors[onColorName] = `hsl(var(${colorVariable}) / ${alpha})`;
+        themeRules[cssVar] = formatted;
+        resolved.colors[onColorName] = `var(${cssVar})`;
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log('error generating on-color for', colorName, error);
+        console.warn(`Failed to generate on-color for "${colorName}":`, error);
       }
     }
 
-    /**
-     * Layout
-     */
+    // Process layout variables
     for (const [key, value] of Object.entries(flatLayout)) {
       if (!value) continue;
 
-      const layoutVariablePrefix = `--${key}`;
+      const varPrefix = `--${key}`;
 
       if (typeof value === 'object') {
         for (const [nestedKey, nestedValue] of Object.entries(value)) {
-          // Handle DEFAULT key - use base variable name without suffix
-          const nestedLayoutVariable: string =
-            nestedKey === 'DEFAULT'
-              ? layoutVariablePrefix
-              : `${layoutVariablePrefix}-${nestedKey}`;
-
-          themeRules = {
-            ...themeRules,
-            [nestedLayoutVariable]: nestedValue as string
-          };
+          const cssVar =
+            nestedKey === 'DEFAULT' ? varPrefix : `${varPrefix}-${nestedKey}`;
+          themeRules[cssVar] = nestedValue as string;
         }
       } else {
-        // Handle opacity values and other singular layout values
+        // Format opacity values (e.g., 0.5 -> .5)
         const formattedValue =
-          layoutVariablePrefix.includes('opacity') && typeof value === 'number'
-            ? (value as number).toString().replace(/^0\./, '.')
+          varPrefix.includes('opacity') && typeof value === 'number'
+            ? String(value).replace(/^0\./, '.')
             : value;
-
-        themeRules = {
-          ...themeRules,
-          [layoutVariablePrefix]: formattedValue as string
-        };
+        themeRules[varPrefix] = formattedValue as string;
       }
     }
 

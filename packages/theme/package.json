@@ -58,8 +58,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "color": "^4.2.3",
-    "color2k": "^2.0.3",
+    "culori": "^4.0.2",
     "deepmerge": "4.3.1",
     "flat": "^6.0.1",
     "lodash.kebabcase": "^4.1.1",
@@ -83,7 +82,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@tsconfig/ember": "^3.0.9",
-    "@types/color": "^4.2.0",
+    "@types/culori": "^4.0.1",
     "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.mapkeys": "^4.6.9",

@@ -1,3 +1,6 @@
+import { parse, wcagContrast } from 'culori';
+import { black, white } from './palette-absolute';
+
 function swapColorValues<T extends Record<string, unknown>>(
   colors: T
 ): Record<string, unknown> {
@@ -21,4 +24,27 @@ function swapColorValues<T extends Record<string, unknown>>(
   return swappedColors;
 }
 
-export { swapColorValues };
+// Pre-parse absolute colors once (these are known-valid hex colors)
+const parsedBlack = parse(black);
+const parsedWhite = parse(white);
+
+/**
+ * Get optimal contrasting color (black or white) for text on a given background.
+ * Uses WCAG contrast ratios to determine which provides better readability.
+ */
+function getContrastingColor(backgroundColor: string): string {
+  const bgColor = parse(backgroundColor);
+  if (!bgColor || !parsedBlack || !parsedWhite) {
+    console.warn(
+      `Failed to parse color: ${backgroundColor}, defaulting to white`
+    );
+    return white;
+  }
+
+  const contrastWithBlack = wcagContrast(bgColor, parsedBlack);
+  const contrastWithWhite = wcagContrast(bgColor, parsedWhite);
+
+  return contrastWithBlack > contrastWithWhite ? black : white;
+}
+
+export { swapColorValues, getContrastingColor };
