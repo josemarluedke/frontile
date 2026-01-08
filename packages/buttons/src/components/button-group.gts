@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
-import Button from './button';
+import Button, { type ButtonSignature } from './button';
 import type { ButtonArgs } from './button';
-import ToggleButton from './toggle-button';
-import type { WithBoundArgs } from '@glint/template';
+import ToggleButton, { type ToggleButtonSignature } from './toggle-button';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface ButtonGroupArgs
   extends Pick<ButtonArgs, 'appearance' | 'intent' | 'size' | 'class'> {}
@@ -14,8 +14,8 @@ interface ButtonGroupSignature {
   Blocks: {
     default: [
       {
-        Button: WithBoundArgs<typeof Button, 'isInGroup'>;
-        ToggleButton: WithBoundArgs<typeof ToggleButton, 'isInGroup'>;
+        Button: WithBoundArgs<ComponentLike<ButtonSignature>, 'isInGroup'>;
+        ToggleButton: WithBoundArgs<ComponentLike<ToggleButtonSignature>, 'isInGroup'>;
       }
     ];
   };

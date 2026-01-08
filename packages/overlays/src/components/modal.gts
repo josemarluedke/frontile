@@ -2,17 +2,17 @@ import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import Overlay, { type OverlaySignature } from './overlay';
-import ModalFooter from './modal/footer';
-import ModalBody from './modal/body';
-import ModalHeader from './modal/header';
-import { CloseButton } from '@frontile/buttons';
+import ModalFooter, { type ModalFooterSignature } from './modal/footer';
+import ModalBody, { type ModalBodySignature } from './modal/body';
+import ModalHeader, { type ModalHeaderSignature } from './modal/header';
+import { CloseButton, type CloseButtonSignature } from '@frontile/buttons';
 import {
   useStyles,
   type SlotsToClasses,
   type ModalSlots,
   type ModalVariants
 } from '@frontile/theme';
-import type { WithBoundArgs } from '@glint/template';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 export interface ModalArgs
   extends Pick<
@@ -82,13 +82,22 @@ export interface ModalSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onPress' | 'class'>;
+        CloseButton: WithBoundArgs<
+          ComponentLike<CloseButtonSignature>,
+          'onPress' | 'class'
+        >;
         Header: WithBoundArgs<
-          typeof ModalHeader,
+          ComponentLike<ModalHeaderSignature>,
           'labelledById' | 'classFromParent'
         >;
-        Body: WithBoundArgs<typeof ModalBody, 'classFromParent'>;
-        Footer: WithBoundArgs<typeof ModalFooter, 'classFromParent'>;
+        Body: WithBoundArgs<
+          ComponentLike<ModalBodySignature>,
+          'classFromParent'
+        >;
+        Footer: WithBoundArgs<
+          ComponentLike<ModalFooterSignature>,
+          'classFromParent'
+        >;
         headerId: string;
       }
     ];
