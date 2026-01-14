@@ -1,4 +1,4 @@
-@import "tailwindcss" source("../");
+@import "tailwindcss" source("../../");
 @plugin "@frontile/theme/plugin/default";
 @plugin "@tailwindcss/typography";
 @source '../templates/docs/';
@@ -75,10 +75,6 @@
     --tw-prose-td-borders: theme(colors.neutral.strong);
   }
 
-  /* Apply softer text colors globally */
-  body {
-    @apply text-neutral-medium;
-  }
 
   /* Headers with appropriate contrast */
   h1, h2, h3, h4, h5, h6 {
@@ -92,7 +88,7 @@
 
   /* Even softer for secondary content */
   .text-muted, .caption, blockquote {
-    @apply text-neutral-soft;
+    @apply text-neutral-medium;
   }
 }
 

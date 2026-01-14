@@ -127,7 +127,7 @@ import { Button } from 'frontile';
       <Button @intent='primary'>Primary Button</Button>
     </div>
 
-    <div class='theme-inverse p-6 bg-background rounded-lg'>
+    <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
         <h3 class='text-lg font-bold text-neutral-strong mb-4'>Inverted Theme</h3>
         <Button @intent='primary'>Primary Button</Button>

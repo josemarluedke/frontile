@@ -150,7 +150,7 @@ import { Button } from 'frontile';
     </div>
 
     {{! Inverted theme section }}
-    <div class='theme-inverse p-6 bg-background rounded-lg'>
+    <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
         <h3 class='text-header-md text-neutral-strong mb-4'>Inverted Theme</h3>
         <p class='text-body-md text-neutral-medium mb-4'>
@@ -182,7 +182,7 @@ import { Button, Chip, ProgressBar } from 'frontile';
 <template>
   <div class='space-y-6'>
     {{! Cards with status chips }}
-    <div class='theme-inverse p-6 bg-background rounded-lg'>
+    <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <h4 class='text-header-sm text-neutral-strong mb-3'>Project Status</h4>
       <div class='flex flex-wrap gap-2 mb-4'>
         <Chip @intent='success'>Active</Chip>
@@ -207,7 +207,7 @@ import { Modal, Button, toggleState } from 'frontile';
 const state = toggleState(false);
 
 <template>
-  <div class='theme-inverse p-6 bg-background rounded-lg'>
+  <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
     <p class='text-neutral-medium mb-4'>
       This section uses inverted theme, but the modal uses root theme.
     </p>
@@ -234,7 +234,7 @@ import { Modal, Button, toggleState } from 'frontile';
 const state = toggleState(false);
 
 <template>
-  <div class='theme-inverse p-6 bg-background rounded-lg'>
+  <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
     <Button @onPress={{state.toggle}}>Open Modal</Button>
 
     {{! Modal renders in place - inherits theme-inverse }}
@@ -261,7 +261,7 @@ Surface overlay colors are semi-transparent. Always provide a solid base backgro
 
 ```html
 <!-- ✓ Good - has base background -->
-<div class="theme-inverse bg-background">
+<div class="theme-inverse bg-surface-canvas">
   <div class="bg-surface-overlay-subtle p-4">
     Content
   </div>
@@ -280,7 +280,7 @@ Surface overlay colors are semi-transparent. Always provide a solid base backgro
 Theme-inverse works automatically with semantic colors:
 
 ```html
-<div class="theme-inverse p-6 bg-background">
+<div class="theme-inverse p-6 bg-surface-canvas">
   <h3 class="text-neutral-strong">Heading</h3>
   <p class="text-neutral-medium">Body text</p>
   <button class="bg-brand-medium text-on-brand-medium">
@@ -316,7 +316,7 @@ Don't use hard-coded Tailwind colors that don't adapt to themes:
 </div>
 
 <!-- ✓ Good - adapts automatically -->
-<div class="bg-background text-neutral-strong">
+<div class="bg-surface-canvas text-neutral-strong">
   Content
 </div>
 ```
@@ -326,7 +326,7 @@ Don't use hard-coded Tailwind colors that don't adapt to themes:
 Tailwind's `dark:` and `light:` variants work correctly with `theme-inverse`:
 
 ```html
-<div class="theme-inverse p-6 bg-background">
+<div class="theme-inverse p-6 bg-surface-canvas">
   <div class="bg-white dark:bg-gray-900">
     <!-- In light mode with theme-inverse: shows gray-900 (dark theme) -->
     <!-- In dark mode with theme-inverse: shows white (light theme) -->

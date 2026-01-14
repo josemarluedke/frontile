@@ -485,7 +485,7 @@ Test your theme in different scenarios:
 </html>
 
 <!-- Test theme-inverse -->
-<div class="theme-inverse bg-background">
+<div class="theme-inverse bg-surface-canvas">
   <!-- Your components -->
 </div>
 ```
