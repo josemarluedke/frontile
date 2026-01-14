@@ -96,9 +96,9 @@ const themeColorsLight: ThemeColors = {
 const themeColorsDark: ThemeColors = {
   neutral: {
     subtle: 'oklch(1.0000000000000002 0 none / 0.10)', // absolute.white
-    soft: palette.gray['700'],
-    medium: palette.gray['600'],
-    DEFAULT: palette.gray['600'],
+    soft: 'oklch(0.5760991529940905 0 none / 0.90)', // palette.gray['500']
+    medium: palette.gray['400'],
+    DEFAULT: palette.gray['400'],
     strong: absolute.white
   },
   success: {
