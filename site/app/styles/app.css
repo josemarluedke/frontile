@@ -88,7 +88,7 @@
 
   /* Even softer for secondary content */
   .text-muted, .caption, blockquote {
-    @apply text-neutral-medium;
+    @apply text-neutral-soft;
   }
 }
 

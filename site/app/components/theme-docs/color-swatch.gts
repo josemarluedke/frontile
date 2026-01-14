@@ -134,7 +134,7 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
           {{this.className}}
         </div>
         {{#if @showDescription}}
-          <div class="text-xs text-neutral-medium truncate">
+          <div class="text-xs text-neutral-soft truncate">
             {{this.description}}
           </div>
         {{/if}}

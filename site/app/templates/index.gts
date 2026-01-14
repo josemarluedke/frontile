@@ -954,7 +954,7 @@ module.exports = frontile({
                 >text-danger-strong</code>, and
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
-                >text-neutral-medium</code>
+                >text-neutral-soft</code>
                 for consistent theming across your application.
               </p>
               <div class="flex justify-center">

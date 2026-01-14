@@ -97,7 +97,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
         >
           <span>{{this.getVersionLabel this.currentVersion}}</span>
           <svg
-            class="w-4 h-4 text-neutral-medium"
+            class="w-4 h-4 text-neutral-soft"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
