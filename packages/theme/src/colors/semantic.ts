@@ -4,141 +4,176 @@
  * Semantic color mappings for light and dark themes.
  */
 
-import * as lightPalette from './palette-light';
-import * as darkPalette from './palette-dark';
+import * as palette from './palette';
 import * as absolute from './palette-absolute';
 
 import type { ThemeColors } from './types';
 
 const themeColorsLight: ThemeColors = {
   neutral: {
-    subtle: `${absolute.black}0f`,
-    soft: `${absolute.black}73`,
-    medium: `${absolute.black}c9`,
-    DEFAULT: `${absolute.black}c9`,
+    subtle: 'oklch(0.9249395393966913 0 none / 0.40)', // palette.gray['200']
+    soft: palette.gray['300'],
+    medium: palette.gray['600'],
+    DEFAULT: palette.gray['600'],
     strong: absolute.black
   },
   success: {
-    subtle: `${lightPalette.green['400']}80`,
-    soft: lightPalette.green['600'],
-    medium: lightPalette.green['800'],
-    DEFAULT: lightPalette.green['800'],
-    strong: lightPalette.green['900']
+    subtle:
+      'oklch(0.6701782338799871 0.1660193399912415 137.91471894298314 / 0.50)', // palette.green['400']
+    soft: palette.green['400'],
+    medium: palette.green['700'],
+    DEFAULT: palette.green['700'],
+    strong: palette.green['900']
   },
   brand: {
-    subtle: `${lightPalette.blue['400']}80`,
-    soft: lightPalette.blue['600'],
-    medium: lightPalette.blue['800'],
-    DEFAULT: lightPalette.blue['800'],
-    strong: lightPalette.blue['900']
+    subtle:
+      'oklch(0.8334804533340187 0.08227285341373448 265.6191364888125 / 0.40)', // palette.blue['400']
+    soft: palette.blue['600'],
+    medium: palette.blue['800'],
+    DEFAULT: palette.blue['800'],
+    strong: palette.blue['900']
   },
   danger: {
-    subtle: `${lightPalette.red['800']}59`,
-    soft: lightPalette.red['800'],
-    medium: lightPalette.red['900'],
-    DEFAULT: lightPalette.red['900'],
-    strong: lightPalette.red['950']
+    subtle:
+      'oklch(0.5160127267768225 0.20199443805857392 25.160626829693395 / 0.48)', // palette.red['700']
+    soft: palette.red['500'],
+    medium: palette.red['600'],
+    DEFAULT: palette.red['600'],
+    strong: palette.red['800']
   },
   warning: {
-    subtle: `${lightPalette.red['500']}59`,
-    soft: lightPalette.red['500'],
-    medium: lightPalette.red['700'],
-    DEFAULT: lightPalette.red['700'],
-    strong: lightPalette.red['800']
+    subtle:
+      'oklch(0.7994650092129404 0.11472572871410483 25.784374346748162 / 0.40)', // palette.red['200']
+    soft: palette.red['100'],
+    medium: palette.red['300'],
+    DEFAULT: palette.red['300'],
+    strong: palette.red['400']
+  },
+  accent: {
+    subtle:
+      'oklch(0.436200827023848 0.14666713062553813 308.08046229842176 / 0.48)', // palette.violet['800']
+    soft: palette.violet['300'],
+    medium: palette.violet['800'],
+    DEFAULT: palette.violet['800'],
+    strong: palette.violet['900']
   },
   surface: {
     overlay: {
-      subtle: '#00000005',
-      soft: '#0000000a',
-      medium: '#00000012',
-      strong: '#0000001C',
+      subtle: 'oklch(0 0 none / 0.0196078431372549)',
+      soft: 'oklch(0 0 none / 0.0392156862745098)',
+      medium: 'oklch(0 0 none / 0.07058823529411765)',
+      strong: 'oklch(0 0 none / 0.10980392156862745)',
       inverse: {
-        subtle: '#ffffff4d',
-        soft: '#ffffff80',
-        medium: '#ffffffb3',
-        strong: '#ffffffe6'
+        subtle: 'oklch(1.0000000000000002 0 none / 0.30196078431372547)',
+        soft: 'oklch(1.0000000000000002 0 none / 0.5019607843137255)',
+        medium: 'oklch(1.0000000000000002 0 none / 0.7019607843137254)',
+        strong: 'oklch(1.0000000000000002 0 none / 0.9019607843137255)'
       }
     },
     solid: {
       '0': absolute.white,
-      '1': lightPalette.gray['100'],
-      '2': lightPalette.gray['200'],
-      '3': lightPalette.gray['300'],
-      '4': lightPalette.gray['400'],
-      '5': lightPalette.gray['500'],
-      '6': lightPalette.gray['600'],
-      '7': lightPalette.gray['700'],
-      '8': lightPalette.gray['800'],
-      '9': lightPalette.gray['900'],
-      '10': lightPalette.gray['950'],
+      '1': palette.gray['100'],
+      '2': palette.gray['200'],
+      '3': palette.gray['300'],
+      '4': palette.gray['400'],
+      '5': palette.gray['500'],
+      '6': palette.gray['600'],
+      '7': palette.gray['700'],
+      '8': palette.gray['800'],
+      '9': palette.gray['900'],
+      '10': palette.gray['950'],
       '11': absolute.black
-    }
+    },
+    canvas: 'var(--color-surface-solid-1)',
+    card: 'var(--color-surface-solid-0)',
+    panel: 'var(--color-surface-solid-0)',
+    popover: 'var(--color-surface-solid-0)',
+    inset: 'var(--color-surface-solid-2)',
+    overlayContent: 'var(--color-surface-solid-0)'
   }
 };
 
 const themeColorsDark: ThemeColors = {
   neutral: {
-    subtle: `${absolute.white}24`,
-    soft: `${absolute.white}4f`,
-    medium: `${absolute.white}c4`,
-    DEFAULT: `${absolute.white}c4`,
+    subtle: 'oklch(1.0000000000000002 0 none / 0.10)', // absolute.white
+    soft: palette.gray['700'],
+    medium: palette.gray['600'],
+    DEFAULT: palette.gray['600'],
     strong: absolute.white
   },
   success: {
-    subtle: `${darkPalette.green['200']}33`,
-    soft: darkPalette.green['700'],
-    medium: darkPalette.green['900'],
-    DEFAULT: darkPalette.green['900'],
-    strong: darkPalette.green['950']
+    subtle:
+      'oklch(0.4875663445983234 0.14082662498103163 137.93529361897015 / 0.25)', // palette.green['700']
+    soft: palette.green['950'],
+    medium: palette.green['700'],
+    DEFAULT: palette.green['700'],
+    strong: palette.green['900']
   },
   brand: {
-    subtle: `${darkPalette.blue['200']}33`,
-    soft: darkPalette.blue['700'],
-    medium: darkPalette.blue['900'],
-    DEFAULT: darkPalette.blue['900'],
-    strong: darkPalette.blue['950']
+    subtle:
+      'oklch(0.5891390171822783 0.2183146361066054 270.27610610400785 / 0.40)', // palette.blue['700']
+    soft: palette.blue['700'],
+    medium: palette.blue['900'],
+    DEFAULT: palette.blue['900'],
+    strong: palette.blue['950']
   },
   danger: {
-    subtle: `${darkPalette.red['700']}59`,
-    soft: darkPalette.red['800'],
-    medium: darkPalette.red['900'],
-    DEFAULT: darkPalette.red['900'],
-    strong: darkPalette.red['950']
+    subtle:
+      'oklch(0.5160127267768225 0.20199443805857392 25.160626829693395 / 0.35)', // palette.red['700']
+    soft: palette.red['900'],
+    medium: palette.red['800'],
+    DEFAULT: palette.red['800'],
+    strong: palette.red['700']
   },
   warning: {
-    subtle: `${darkPalette.red['200']}59`,
-    soft: darkPalette.red['400'],
-    medium: darkPalette.red['500'],
-    DEFAULT: darkPalette.red['500'],
-    strong: darkPalette.red['600']
+    subtle:
+      'oklch(0.5675786223079923 0.21108128310001628 25.1133132141515 / 0.48)', // palette.red['600']
+    soft: palette.red['400'],
+    medium: palette.red['700'],
+    DEFAULT: palette.red['700'],
+    strong: palette.red['200']
+  },
+  accent: {
+    subtle:
+      'oklch(0.436200827023848 0.14666713062553813 308.08046229842176 / 0.35)', // palette.violet['800']
+    soft: palette.violet['800'],
+    medium: palette.violet['900'],
+    DEFAULT: palette.violet['900'],
+    strong: palette.violet['950']
   },
   surface: {
     overlay: {
-      subtle: '#ffffff08',
-      soft: '#ffffff0f',
-      medium: '#ffffff26',
-      strong: '#ffffff3d',
+      subtle: 'oklch(1.0000000000000002 0 none / 0.03137254901960784)',
+      soft: 'oklch(1.0000000000000002 0 none / 0.058823529411764705)',
+      medium: 'oklch(1.0000000000000002 0 none / 0.14901960784313725)',
+      strong: 'oklch(1.0000000000000002 0 none / 0.23921568627450981)',
       inverse: {
-        subtle: '#00000026',
-        soft: '#00000033',
-        medium: '#0000004d',
-        strong: '#00000073'
+        subtle: 'oklch(0 0 none / 0.14901960784313725)',
+        soft: 'oklch(0 0 none / 0.2)',
+        medium: 'oklch(0 0 none / 0.30196078431372547)',
+        strong: 'oklch(0 0 none / 0.45098039215686275)'
       }
     },
     solid: {
-      '0': absolute.black,
-      '1': darkPalette.gray['100'],
-      '2': darkPalette.gray['200'],
-      '3': darkPalette.gray['300'],
-      '4': darkPalette.gray['400'],
-      '5': darkPalette.gray['500'],
-      '6': darkPalette.gray['600'],
-      '7': darkPalette.gray['700'],
-      '8': darkPalette.gray['800'],
-      '9': darkPalette.gray['900'],
-      '10': darkPalette.gray['950'],
+      '0': palette.gray['950'],
+      '1': palette.gray['900'],
+      '2': palette.gray['800'],
+      '3': palette.gray['700'],
+      '4': palette.gray['600'],
+      '5': palette.gray['500'],
+      '6': palette.gray['400'],
+      '7': palette.gray['300'],
+      '8': palette.gray['200'],
+      '9': palette.gray['100'],
+      '10': palette.gray['50'],
       '11': absolute.white
-    }
+    },
+    canvas: 'var(--color-surface-solid-1)',
+    card: 'var(--color-surface-solid-2)',
+    panel: 'var(--color-surface-solid-2)',
+    popover: 'var(--color-surface-solid-3)',
+    inset: 'var(--color-surface-solid-0)',
+    overlayContent: 'var(--color-surface-solid-3)'
   }
 };
 
