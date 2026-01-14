@@ -107,6 +107,84 @@ module.exports = frontile({
 
 Use any color format (hex, rgb, hsl, oklch, etc.). The plugin automatically generates "on-" colors for optimal text contrast.
 
+**CSS Variable References:** You can also reference other CSS variables in your configuration:
+
+```js
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        brand: {
+          subtle: 'var(--color-surface-solid-6)',
+        }
+      }
+    }
+  }
+});
+```
+
+**Note:** When using CSS variable references, automatic "on-" color generation is skipped since the actual color value isn't known at build time. You'll need to manually define the corresponding "on-" colors if needed.
+
+### Customizing On-Colors
+
+The theme system automatically generates "on-color" variants (e.g., `on-brand`, `on-success`) for semantic colors to ensure optimal text contrast. These colors are used as text/foreground colors on semantic backgrounds.
+
+By default, on-colors are calculated using WCAG contrast guidelines and will be either pure white or pure black. However, you can override these auto-generated colors to match your brand or design requirements:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        // Define background colors as usual
+        brand: {
+          subtle: '#3b82f6',
+          soft: '#2563eb',
+          medium: '#1e40af',
+          strong: '#1e3a8a',
+          DEFAULT: '#1e40af'
+        },
+        // Override on-colors to use custom values
+        'on-brand': {
+          subtle: '#ffffff',      // Pure white
+          soft: '#e0f2ff',        // Light blue tint instead of pure white
+          medium: '#ffffff',      // Pure white
+          strong: '#bfdbfe',      // Lighter blue
+          DEFAULT: '#ffffff'      // Pure white
+        }
+      }
+    }
+  }
+});
+```
+
+**Partial overrides are supported** - any variants you don't define will still be auto-generated:
+
+```js
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        brand: {
+          subtle: '#3b82f6',
+          medium: '#1e40af',
+          strong: '#1e3a8a',
+        },
+        'on-brand': {
+          medium: '#e0f2ff',  // Only override medium, others auto-generate
+        }
+      }
+    }
+  }
+});
+```
+
+You can override on-colors for any semantic color category:
+- `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`
+- `on-surface-solid` (with numeric keys 0-11)
+
 #### Option 2: Via CSS Variables
 
 Override colors directly in your CSS:
