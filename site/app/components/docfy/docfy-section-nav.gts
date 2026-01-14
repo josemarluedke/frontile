@@ -37,7 +37,7 @@ export default class DocfySectionNav extends Component {
     <DocfyOutput @scope="docs" as |node|>
       <nav class="sticky top-16 z-10 -mx-4 lg:-mx-6 mb-6 lg:mb-8">
         <div
-          class="border-b border-neutral-subtle/50 bg-surface-canvas/95 backdrop-blur-xl backdrop-saturate-150 px-4 lg:px-6 pt-3 lg:pt-4"
+          class="border-b border-neutral-subtle bg-surface-canvas/95 backdrop-blur-xl backdrop-saturate-150 px-4 lg:px-6 pt-3 lg:pt-4"
         >
           <div class="flex gap-4 lg:gap-8 overflow-x-auto scrollbar-hide">
             {{#each node.children as |child|}}
@@ -45,10 +45,10 @@ export default class DocfySectionNav extends Component {
                 {{#if url}}
                   <DocfyLink
                     @to={{url}}
-                    class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-soft hover:text-neutral-strong hover:border-b-2 hover:border-brand-soft hover:-mb-px whitespace-nowrap
+                    class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-medium hover:text-neutral-strong hover:border-b-2 hover:border-brand-medium hover:-mb-px whitespace-nowrap
                       {{if
                         (this.isActive child)
-                        'text-neutral-strong border-b-2 border-brand-strong -mb-px'
+                        'text-neutral-strong border-b-2 border-brand-medium -mb-px'
                       }}"
                   >
                     {{child.label}}

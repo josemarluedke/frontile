@@ -153,8 +153,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-medium hover:text-neutral-strong hover:bg-neutral-subtle outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                    @activeClass="bg-primary-50 dark:bg-brand-soft/10 text-brand-medium dark:text-brand-strong font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-medium hover:text-neutral-strong hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                    @activeClass="bg-brand-soft/20 text-neutral-strong font-medium"
                   >
                     {{page.title}}
                   </DocfyLink>
@@ -175,8 +175,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-medium hover:text-neutral-strong hover:bg-neutral-subtle outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                    @activeClass="bg-primary-50 dark:bg-brand-soft/10 text-brand-medium dark:text-brand-strong font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-medium hover:text-neutral-strong hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                    @activeClass="bg-brand-soft/20 text-neutral-strong font-medium"
                   >
                     {{page.title}}
                     {{#if page.frontmatter.label}}
@@ -230,8 +230,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                         <li>
                           <DocfyLink
                             @to={{page.url}}
-                            class="transition flex items-center pl-12 pr-6 py-1.5 text-sm text-neutral-soft hover:text-neutral-strong hover:bg-neutral-subtle outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                            @activeClass="bg-primary-50 dark:bg-brand-soft/10 text-brand-medium dark:text-brand-strong font-medium"
+                            class="transition flex items-center px-6 py-1.5 text-sm text-neutral-medium hover:text-neutral-strong hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                            @activeClass="bg-brand-soft/20 text-neutral-strong font-medium"
                           >
                             {{page.title}}
                           </DocfyLink>
