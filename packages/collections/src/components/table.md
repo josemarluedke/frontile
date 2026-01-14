@@ -462,7 +462,7 @@ export default class DemoComponent extends Component {
         >
           <:loading>
             <div
-              class='absolute inset-0 z-10 bg-background/80 backdrop-blur-sm flex items-center justify-center'
+              class='absolute inset-0 z-10 bg-surface-canvas/80 backdrop-blur-sm flex items-center justify-center'
             >
               <Spinner @size='lg' />
             </div>

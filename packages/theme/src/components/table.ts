@@ -161,7 +161,7 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        thead: ['sticky', 'top-0', 'z-2', 'bg-background']
+        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-canvas']
       }
     },
     // Sticky footer
@@ -169,7 +169,7 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-background']
+        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-surface-canvas']
       }
     },
     // Sticky columns - medium priority, header cells get higher z-index
@@ -177,16 +177,16 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'left',
       class: {
-        th: ['sticky', 'left-0', 'z-3', 'bg-background'], // Higher for header intersection
-        td: ['sticky', 'left-0', 'z-1', 'bg-background']
+        th: ['sticky', 'left-0', 'z-3', 'bg-surface-canvas'], // Higher for header intersection
+        td: ['sticky', 'left-0', 'z-1', 'bg-surface-canvas']
       }
     },
     {
       isSticky: true,
       stickyPosition: 'right',
       class: {
-        th: ['sticky', 'right-0', 'z-3', 'bg-background'], // Higher for header intersection
-        td: ['sticky', 'right-0', 'z-1', 'bg-background']
+        th: ['sticky', 'right-0', 'z-3', 'bg-surface-canvas'], // Higher for header intersection
+        td: ['sticky', 'right-0', 'z-1', 'bg-surface-canvas']
       }
     },
     // Sticky rows - base layer
@@ -194,14 +194,14 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        tr: ['sticky', 'top-0', 'z-1', 'bg-background']
+        tr: ['sticky', 'top-0', 'z-1', 'bg-surface-canvas']
       }
     },
     {
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tr: ['sticky', 'bottom-0', 'z-1', 'bg-background']
+        tr: ['sticky', 'bottom-0', 'z-1', 'bg-surface-canvas']
       }
     },
     // Sticky rows with sticky header - position after header
@@ -213,7 +213,7 @@ const table = tv({
         tr: [
           'sticky',
           'z-2',
-          'bg-background',
+          'bg-surface-canvas',
           '[&.sticky]:[top:var(--table-header-height,48px)]'
         ]
       }
@@ -224,7 +224,7 @@ const table = tv({
       stickyPosition: 'left',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'left-0', 'z-2', 'bg-background']
+        td: ['sticky', 'left-0', 'z-2', 'bg-surface-canvas']
       }
     },
     {
@@ -232,7 +232,7 @@ const table = tv({
       stickyPosition: 'right',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'right-0', 'z-2', 'bg-background']
+        td: ['sticky', 'right-0', 'z-2', 'bg-surface-canvas']
       }
     },
     // Loading states with color variants
