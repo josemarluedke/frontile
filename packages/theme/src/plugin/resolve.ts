@@ -62,6 +62,7 @@ function getCachedColor(colorValue: string): ParsedColor {
 const SEMANTIC_COLOR_PREFIXES = [
   'neutral',
   'brand',
+  'accent',
   'success',
   'danger',
   'warning',
@@ -136,10 +137,17 @@ function resolveThemes(
     for (const [colorName, colorValue] of Object.entries(flatColors)) {
       if (!colorValue) continue;
 
+      const cssVar = `--color-${colorName}`;
+
+      // Handle CSS variable references (e.g., var(--color-name))
+      if (colorValue.startsWith('var(')) {
+        themeRules[cssVar] = colorValue;
+        resolved.colors[colorName] = `var(${cssVar})`;
+        continue;
+      }
+
       try {
         const { formatted } = getCachedColor(colorValue);
-        const cssVar = `--color-${colorName}`;
-
         themeRules[cssVar] = formatted;
         resolved.colors[colorName] = `var(${cssVar})`;
       } catch (error) {
@@ -152,10 +160,21 @@ function resolveThemes(
     for (const [colorName, colorValue] of Object.entries(flatColors)) {
       if (!shouldGenerateOnColor(colorName)) continue;
 
+      // Check if user has already defined this on-color
+      const onColorName = `on-${colorName}`;
+      if (flatColors[onColorName]) {
+        // User provided custom on-color, skip auto-generation
+        continue;
+      }
+
+      // Skip CSS variable references - can't calculate contrast for them
+      if (colorValue.startsWith('var(')) {
+        continue;
+      }
+
       try {
         const contrastColor = getContrastingColor(colorValue);
         const { formatted } = getCachedColor(contrastColor);
-        const onColorName = `on-${colorName}`;
         const cssVar = `--color-${onColorName}`;
 
         themeRules[cssVar] = formatted;

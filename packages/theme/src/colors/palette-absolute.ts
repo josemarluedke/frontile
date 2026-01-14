@@ -1,11 +1,11 @@
 /**
  * Frontile Absolute Color Palette
  *
- * Absolute colors that remain constant across light/dark themes.
+ * Absolute OKLCH colors that remain constant across light/dark themes.
  */
 
-const black = '#000000';
+const black = 'oklch(0 0 none)';
 
-const white = '#ffffff';
+const white = 'oklch(1.0000000000000002 0 none)';
 
 export { black, white };
