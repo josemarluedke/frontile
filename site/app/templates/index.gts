@@ -114,7 +114,7 @@ class IndexPage extends Component {
                 Ember.js</span>
             </h1>
             <p
-              class="mt-6 text-xl sm:text-2xl text-neutral-medium max-w-4xl mx-auto leading-relaxed"
+              class="mt-6 text-xl sm:text-2xl text-neutral-bolder max-w-4xl mx-auto leading-relaxed"
             >
               Build accessible, beautiful applications with 30+ TypeScript-typed
               components, Tailwind Variants theming, and built-in dark mode
@@ -151,10 +151,10 @@ class IndexPage extends Component {
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
-              class="text-sm font-semibold text-neutral-medium uppercase tracking-wide mb-4"
+              class="text-sm font-semibold text-neutral-bolder uppercase tracking-wide mb-4"
             >Quick Install</p>
             <CodeBlock @code="pnpm install frontile @frontile/theme" />
-            <p class="mt-4 text-sm text-neutral-medium">
+            <p class="mt-4 text-sm text-neutral-bolder">
               Also available via npm and yarn
             </p>
           </div>
@@ -348,7 +348,7 @@ class IndexPage extends Component {
             <ComponentDemoCard @title="Status Indicators">
               <div class="space-y-4">
                 <div>
-                  <p class="text-sm text-neutral-medium mb-2">Progress Bar</p>
+                  <p class="text-sm text-neutral-bolder mb-2">Progress Bar</p>
                   <ProgressBar
                     @intent="primary"
                     @progress={{75}}
@@ -356,7 +356,7 @@ class IndexPage extends Component {
                   />
                 </div>
                 <div>
-                  <p class="text-sm text-neutral-medium mb-2">Loading States</p>
+                  <p class="text-sm text-neutral-bolder mb-2">Loading States</p>
                   <div class="flex gap-3 items-center">
                     <Spinner @size="sm" />
                     <Spinner @size="md" />
@@ -364,7 +364,7 @@ class IndexPage extends Component {
                   </div>
                 </div>
                 <Divider />
-                <p class="text-sm text-neutral-medium">
+                <p class="text-sm text-neutral-bolder">
                   Visual feedback for user actions and system processes
                 </p>
               </div>
@@ -468,12 +468,12 @@ class IndexPage extends Component {
                   Welcome to Frontile
                 </modal.Header>
                 <modal.Body>
-                  <p class="text-neutral-medium">
+                  <p class="text-neutral-bolder">
                     This is a fully accessible modal dialog with keyboard
                     navigation, focus trapping, and backdrop click-to-close
                     functionality.
                   </p>
-                  <p class="text-neutral-medium mt-4">
+                  <p class="text-neutral-bolder mt-4">
                     Try pressing
                     <kbd
                       class="px-2 py-1 bg-surface-overlay-subtle rounded text-sm font-mono"
@@ -518,21 +518,21 @@ class IndexPage extends Component {
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Components</h4>
-                      <p class="text-sm text-neutral-medium">Browse all 30+
+                      <p class="text-sm text-neutral-bolder">Browse all 30+
                         components</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Documentation</h4>
-                      <p class="text-sm text-neutral-medium">Learn how to use
+                      <p class="text-sm text-neutral-bolder">Learn how to use
                         Frontile</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
                         class="font-semibold text-neutral-strong mb-2"
                       >Examples</h4>
-                      <p class="text-sm text-neutral-medium">See components in
+                      <p class="text-sm text-neutral-bolder">See components in
                         action</p>
                     </div>
                   </div>
@@ -654,7 +654,7 @@ class IndexPage extends Component {
               @countColor="text-gray-600 dark:text-gray-400"
             >
               <:icon>
-                <ComponentIcon class="w-5 h-5 text-neutral-medium mr-2" />
+                <ComponentIcon class="w-5 h-5 text-neutral-bolder mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -704,7 +704,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Keyboard Navigation</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Full keyboard support for all interactive components
                 </p>
               </div>
@@ -720,7 +720,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Screen Reader Support</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Proper ARIA labels and live regions
                 </p>
               </div>
@@ -736,7 +736,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Focus Management</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Visible focus indicators and logical tab order
                 </p>
               </div>
@@ -752,7 +752,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >WAI-ARIA Compliant</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Follows authoring practices guidelines
                 </p>
               </div>
@@ -768,7 +768,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >High Contrast</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Works with OS high contrast modes
                 </p>
               </div>
@@ -784,7 +784,7 @@ class IndexPage extends Component {
                 <h3
                   class="font-bold text-neutral-strong dark:text-white mb-2"
                 >Motion Preferences</h3>
-                <p class="text-neutral-medium text-sm">
+                <p class="text-neutral-bolder text-sm">
                   Respects prefers-reduced-motion
                 </p>
               </div>
@@ -858,25 +858,25 @@ Listbox<Country>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >100%</div>
-              <div class="text-sm text-neutral-medium">TypeScript Coverage</div>
+              <div class="text-sm text-neutral-bolder">TypeScript Coverage</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >Glint</div>
-              <div class="text-sm text-neutral-medium">Template Types</div>
+              <div class="text-sm text-neutral-bolder">Template Types</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >30+</div>
-              <div class="text-sm text-neutral-medium">Typed Components</div>
+              <div class="text-sm text-neutral-bolder">Typed Components</div>
             </div>
             <div>
               <div
                 class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
               >Full</div>
-              <div class="text-sm text-neutral-medium">IDE IntelliSense</div>
+              <div class="text-sm text-neutral-bolder">IDE IntelliSense</div>
             </div>
           </div>
         </div>
@@ -943,7 +943,7 @@ module.exports = frontile({
 // Note: on-{color}-{level} classes are automatically generated"
                 @language="javascript"
               />
-              <p class="text-neutral-medium mt-6 mb-6">
+              <p class="text-neutral-bolder mt-6 mb-6">
                 Customize light and dark themes with semantic colors that adapt
                 automatically. Use tokens like
                 <code

@@ -17,7 +17,7 @@ The Surface system provides a flexible way to create depth and hierarchy in your
 
 The Surface system consists of four types:
 
-- **Surface Roles** - Semantic surface tokens for specific UI contexts (canvas, card, panel, popover, overlayContent, inset)
+- **Surface Roles** - Semantic surface tokens for specific UI contexts (app, canvas, card, panel, popover, overlayContent, inset)
 - **Surface Solid (0-11)** - Opaque base layers with a 12-step scale
 - **Surface Overlay (subtle, soft, medium, strong)** - Translucent layers that stack on top
 - **Surface Overlay Inverse (subtle, soft, medium, strong)** - High-contrast overlays for backdrops
@@ -30,19 +30,42 @@ Surface roles provide semantic meaning to your surfaces based on their context i
 
 ### Available Roles
 
-#### Canvas (`bg-surface-canvas`)
-Primary application/page background (hierarchy level 0).
+#### App (`bg-surface-app`)
+Root application background layer (hierarchy level 0).
 
 **When to use:**
-- App shell backgrounds
-- Page containers
-- Root layout surfaces
+- App shell root
+- Full-viewport base layer
+- Root layout behind navigation
 
 ```gts preview
 <template>
-  <div class="bg-surface-canvas min-h-screen p-6">
-    <h1 class="text-neutral-strong text-2xl">App Shell</h1>
-    <p class="text-neutral-soft">This is the main application background</p>
+  <div class="bg-surface-app min-h-screen">
+    <nav class="p-4 border-b border-neutral-subtle">
+      <h1 class="text-neutral-strong text-xl">App Navigation</h1>
+    </nav>
+    <main class="bg-surface-canvas p-6">
+      <p class="text-neutral-soft">Content area with canvas background</p>
+    </main>
+  </div>
+</template>
+```
+
+#### Canvas (`bg-surface-canvas`)
+Component contrast baseline (hierarchy level 1).
+
+**When to use:**
+- Main content areas
+- Page containers that need contrast from app background
+- Component baseline surfaces
+
+```gts preview
+<template>
+  <div class="bg-surface-app min-h-screen">
+    <div class="bg-surface-canvas p-6">
+      <h1 class="text-neutral-strong text-2xl">Content Area</h1>
+      <p class="text-neutral-soft">Canvas provides contrast against the app background</p>
+    </div>
   </div>
 </template>
 ```
@@ -174,13 +197,13 @@ Surface roles are designed to create visual depth through a hierarchy system:
 | Level | Role | Purpose |
 |-------|------|---------|
 | -1 | Inset | Recessed below canvas |
-| 0 | Canvas | Base application background |
-| 1 | Card, Panel | First level of elevation |
+| 0 | App | Root application background |
+| 1 | Canvas, Card, Panel | Component contrast baseline and first level of elevation |
 | 2 | Popover | Second level of elevation |
-| 3 | Overlay Content | Highest elevation |
+| 3 | Overlay Content | Highest elevation (modals, drawers) |
 
-In **light mode**, elevated surfaces appear brighter (white) against a gray canvas.
-In **dark mode**, elevated surfaces appear progressively lighter against a near-black canvas.
+In **light mode**, elevated surfaces appear brighter (white) against gray backgrounds following the elevation-luminance principle.
+In **dark mode**, elevated surfaces appear progressively lighter against near-black backgrounds.
 
 ## Surface Solid (0-11)
 

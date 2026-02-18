@@ -39,7 +39,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   }
 
   get surfaceRoles() {
-    return ['canvas', 'card', 'panel', 'popover', 'overlayContent', 'inset'];
+    return ['app', 'canvas', 'card', 'panel', 'popover', 'overlayContent', 'inset'];
   }
 
   // Complete class strings for Tailwind detection
@@ -88,6 +88,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   };
 
   private surfaceRoleClasses: Record<string, string> = {
+    app: 'bg-surface-app',
     canvas: 'bg-surface-canvas',
     card: 'bg-surface-card',
     panel: 'bg-surface-panel',
@@ -97,6 +98,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   };
 
   private surfaceRoleLabels: Record<string, string> = {
+    app: 'App',
     canvas: 'Canvas',
     card: 'Card',
     panel: 'Panel',
@@ -106,7 +108,8 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   };
 
   private surfaceRoleDescriptions: Record<string, string> = {
-    canvas: 'App background, furthest back layer',
+    app: 'Root application background, base layer',
+    canvas: 'Component contrast baseline, may cover app',
     card: 'Elevated content containers, article cards',
     panel: 'Sidebars, navigation, grouped sections',
     popover: 'Tooltips, dropdowns, floating UI',

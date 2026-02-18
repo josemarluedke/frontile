@@ -35,23 +35,23 @@
 
   /* Global typography color hierarchy */
   .prose, .dark .theme-inverse {
-    /* Headers with softer contrast */
+    /* Headers with better contrast in dark mode */
     --tw-prose-headings: theme(colors.neutral.strong);
-    /* Body text is softer for better readability */
-    --tw-prose-body: theme(colors.neutral.medium);
-    /* Even softer for captions and quotes */
-    --tw-prose-quote-borders: theme(colors.neutral.soft);
+    /* Body text is softer for comfort */
+    --tw-prose-body: theme(colors.neutral.bolder);
+    /* Even softer for secondary content */
+    --tw-prose-quote-borders: theme(colors.neutral.medium);
     --tw-prose-quotes: theme(colors.neutral.soft);
     --tw-prose-captions: theme(colors.neutral.soft);
     /* Code blocks */
-    --tw-prose-code: theme(colors.neutral.strong);
-    --tw-prose-pre-code: theme(colors.neutral.subtle);
+    --tw-prose-code: theme(colors.neutral.soft);
+    --tw-prose-pre-code: theme(colors.neutral.medium);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
-    --tw-prose-links: theme(colors.brand.soft);
+    --tw-prose-links: theme(colors.brand.strong);
     /* Tables */
-    --tw-prose-th-borders: theme(colors.neutral.soft);
-    --tw-prose-td-borders: theme(colors.neutral.subtle);
+    --tw-prose-th-borders: theme(colors.neutral.strong);
+    --tw-prose-td-borders: theme(colors.neutral.firm);
   }
 
   /* Dark mode typography */
@@ -59,20 +59,20 @@
     /* Headers with better contrast in dark mode */
     --tw-prose-headings: theme(colors.neutral.strong);
     /* Body text is softer for comfort */
-    --tw-prose-body: theme(colors.neutral.soft);
+    --tw-prose-body: theme(colors.neutral.bolder);
     /* Even softer for secondary content */
     --tw-prose-quote-borders: theme(colors.neutral.medium);
     --tw-prose-quotes: theme(colors.neutral.soft);
     --tw-prose-captions: theme(colors.neutral.soft);
     /* Code blocks */
-    --tw-prose-code: theme(colors.neutral.subtle);
-    --tw-prose-pre-code: theme(colors.neutral.soft);
+    --tw-prose-code: theme(colors.neutral.soft);
+    --tw-prose-pre-code: theme(colors.neutral.medium);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
     --tw-prose-links: theme(colors.brand.strong);
     /* Tables */
-    --tw-prose-th-borders: theme(colors.neutral.medium);
-    --tw-prose-td-borders: theme(colors.neutral.strong);
+    --tw-prose-th-borders: theme(colors.neutral.strong);
+    --tw-prose-td-borders: theme(colors.neutral.firm);
   }
 
 
@@ -83,7 +83,7 @@
 
   /* Paragraphs and general text content */
   p, li, td, th {
-    @apply text-neutral-medium;
+    @apply text-neutral-firm;
   }
 
   /* Even softer for secondary content */

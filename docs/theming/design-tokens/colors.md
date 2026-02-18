@@ -90,6 +90,31 @@ Banners:
 </template>
 ```
 
+### Accent
+
+<ColorPaletteGrid @category="accent" @showDescription={{true}} />
+
+**Usage Examples:**
+
+```gts preview
+<template>
+  <div class='flex gap-4 flex-col'>
+    {{! Accent Alert }}
+    <div class='bg-accent-subtle border border-accent-soft p-4 rounded'>
+      <div class='text-accent-strong'>
+        <div class='font-semibold'>New Feature!</div>
+        <div class='text-sm'>Check out our latest updates and improvements.</div>
+      </div>
+    </div>
+
+    {{! Accent Button }}
+    <button class='bg-accent-medium text-on-accent-medium hover:bg-accent-soft px-4 py-2 rounded'>
+      Explore Features
+    </button>
+  </div>
+</template>
+```
+
 ### Success
 
 <ColorPaletteGrid @category="success" @showDescription={{true}} />

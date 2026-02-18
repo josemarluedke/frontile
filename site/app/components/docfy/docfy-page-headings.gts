@@ -79,19 +79,19 @@ export default class PageHeadings extends Component<Signature> {
   }
   <template>
     <div
-      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm"
+      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm text-neutral-soft"
     >
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         {{#if page.headings.length}}
           <ul>
             {{#each page.headings as |heading|}}
-              <li class="pb-2 border-l border-gray-400 dark:border-gray-700">
+              <li class="pb-2 border-l border-neutral-subtle">
                 <a
                   href="#{{heading.id}}"
-                  class="transition block px-2 py-1 border-l-2 hover:text-brand-medium dark:hover:text-primary-300
+                  class="transition block px-2 py-1 border-l-2 hover:text-brand-medium
                     {{if
                       (docfyEq heading.id @currentHeadingId)
-                      'border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400'
+                      'border-brand-medium text-brand-medium'
                       'border-transparent'
                     }}"
                   {{on "click" this.onClick}}
@@ -105,10 +105,10 @@ export default class PageHeadings extends Component<Signature> {
                       <li>
                         <a
                           href="#{{subHeading.id}}"
-                          class="transition block pl-6 py-1 border-l-2 hover:text-brand-medium dark:hover:text-primary-300
+                          class="transition block pl-6 py-1 border-l-2 hover:text-brand-medium
                             {{if
                               (docfyEq subHeading.id @currentHeadingId)
-                              'border-brand-medium text-brand-medium dark:border-primary-400 dark:text-primary-400'
+                              'border-brand-medium text-brand-medium'
                               'border-transparent'
                             }}"
                           {{on "click" this.onClick}}

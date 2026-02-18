@@ -27,20 +27,20 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
           <div class="flex items-center mr-4">
             <LinkTo
               @route={{if @indexRoute @indexRoute "index"}}
-              class="text-neutral-strong text-lg font-bold outline-none focus-visible:ring"
+              class="text-neutral-firm text-lg font-bold outline-none focus-visible:ring"
             >
               {{yield to="title"}}
             </LinkTo>
           </div>
           <div
-            class="flex items-center justify-between flex-grow px-2 md:px-6 text-neutral-medium"
+            class="flex items-center justify-between flex-grow px-2 md:px-6 text-neutral-strong"
           >
             {{#let
-              "transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-brand-soft outline-none focus-visible:ring hover:text-neutral-strong"
-              "border-brand-soft text-neutral-strong"
+              "text-neutral-strong transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-brand-soft outline-none focus-visible:ring hover:text-neutral-firm"
+              "border-brand-soft text-neutral-firm"
               as |linkClass linkClassActive|
             }}
-              <div class="flex items-center gap-4">
+              <div class="flex items-center gap-4 text-neutr">
                 {{yield linkClass linkClassActive to="left"}}
               </div>
 
@@ -51,7 +51,7 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
                   href={{@githubUrl}}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="transition text-neutral-medium outline-none focus-visible:ring hover:text-neutral-strong"
+                  class="transition text-neutral-strong outline-none focus-visible:ring hover:text-neutral-firm"
                 >
                   <svg viewBox="0 0 20 20" class="w-6 h-6 fill-current">
                     <title>

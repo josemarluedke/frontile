@@ -72,7 +72,7 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
   <template>
     <button
       type="button"
-      class="transition hover:text-gray-800 dark:hover:text-gray-400 outline-none focus-visible:ring"
+      class="transition text-neutral-strong hover:text-neutral-firm outline-none focus-visible:ring"
       ...attributes
       {{on "click" this.toggleMode}}
     >

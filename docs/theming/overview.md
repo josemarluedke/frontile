@@ -145,11 +145,12 @@ Frontile provides six semantic color categories:
 
 - **Neutral** - Default interface colors
 - **Brand** - Primary brand colors (blue)
+- **Accent** - Visual emphasis and highlights (violet)
 - **Success** - Positive states and actions (green)
 - **Danger** - Errors and destructive actions (red)
 - **Warning** - Warnings and cautions (orange)
 
-Each category has intuitive levels: `subtle`, `soft`, `medium`, and `strong`. The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
+Each category has multiple intensity levels from subtle to boldest. The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
 
 <ColorPaletteGrid @category="brand" @showDescription={{false}} />
 <ColorPaletteGrid @category="success" @showDescription={{false}} />

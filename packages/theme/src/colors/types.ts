@@ -27,10 +27,14 @@ export type SemanticBaseColors = {
 
 export interface SemanticColorCategory {
   subtle: string;
+  muted: string;
   soft: string;
   medium: string;
-  strong: string;
   DEFAULT: string;
+  firm: string;
+  strong: string;
+  bolder: string;
+  boldest: string;
 }
 
 /**
@@ -106,43 +110,79 @@ export interface SurfaceColors {
   /**
    * Translucent overlay system for elevation and depth.
    *
-   * Standard overlays use black translucent on light backgrounds.
-   * Inverse overlays use white translucent on dark backgrounds.
+   * Provides translucent layers that stack on surface roles to convey elevation,
+   * interaction states, or visual depth without introducing chromatic tint.
+   *
+   * Standard overlays: Black translucent for darkening effect
+   * Inverse overlays: White translucent for lightening effect
+   *
+   * Use overlays to create hover states, elevated containers, or glass morphism
+   * effects while maintaining the base surface color.
    *
    * @example
-   * // Standard overlay on card
-   * bg-surface-card hover:bg-surface-overlay-subtle
+   * // Hover state on card
+   * <div className="bg-surface-card hover:bg-surface-overlay-subtle" />
    *
-   * // Stacking overlays
-   * bg-surface-solid-1 bg-surface-overlay-soft
+   * // Stacking overlays for depth
+   * <div className="bg-surface-solid-1 bg-surface-overlay-soft" />
    */
   overlay: SurfaceOverlay;
 
   /**
    * Base 12-step achromatic scale (0-11) for surface backgrounds.
    *
-   * Light theme: 0 (white) → 11 (black)
-   * Dark theme: 0 (black) → 11 (white)
+   * Foundation for all surface roles, providing a consistent grayscale progression
+   * that inverts between themes to support the elevation-luminance principle.
    *
-   * The scale is bidirectional and theme-agnostic, inverting between themes.
-   * Most surface roles reference 0-3 only.
+   * Light theme: 0 (white) → 11 (black) - darkening progression
+   * Dark theme: 0 (black) → 11 (white) - lightening progression
+   *
+   * The scale is bidirectional and theme-agnostic. Surface roles typically
+   * reference steps 0-3, while higher steps (4-11) are available for custom
+   * surface needs and direct usage.
    *
    * @example
    * // Using solid scale directly
-   * bg-surface-solid-0  // Pure white (light) or black (dark)
-   * bg-surface-solid-1  // Canvas level
-   * bg-surface-solid-11 // Pure black (light) or white (dark)
+   * bg-surface-solid-0  // Extreme anchor: white (light) or black (dark)
+   * bg-surface-solid-1  // Near-white (light) or near-black (dark)
+   * bg-surface-solid-11 // Opposite extreme: black (light) or white (dark)
    */
   solid: SurfaceSolid;
 
   /**
-   * Primary application/page background (hierarchy level 0).
+   * Root application background layer (hierarchy level 0).
    *
-   * Light: gray.50 (near-white canvas)
-   * Dark: solid.1 (near-black canvas)
+   * The foundational surface for the entire application. Navigation and other
+   * UI elements float transparently over this layer.
+   *
+   * Both themes: Near-white (light) or near-black (dark)
    *
    * @example
-   * // App shell background
+   * // App shell root
+   * <div className="bg-surface-app min-h-screen">
+   *   <TransparentNav />
+   *   <main className="bg-surface-canvas">
+   *     <AppContent />
+   *   </main>
+   * </div>
+   *
+   * @example
+   * // Full-viewport base layer
+   * <body className="bg-surface-app">
+   */
+  app: string;
+
+  /**
+   * Primary application/page background (hierarchy level 1).
+   *
+   * Component contrast baseline that provides visual separation from the app layer.
+   * Main content area where components and UI elements are placed.
+   *
+   * Light: Near-white gray canvas
+   * Dark: Dark gray canvas
+   *
+   * @example
+   * // Main content area
    * <div className="bg-surface-canvas">
    *   <AppContent />
    * </div>
@@ -156,8 +196,12 @@ export interface SurfaceColors {
   /**
    * Elevated card container surface (hierarchy level 1).
    *
-   * Light: solid.0 (pure white, elevated off canvas)
-   * Dark: solid.2 (dark gray, slight elevation)
+   * Creates visual elevation for content containers like product cards,
+   * article previews, and content blocks. Appears lifted off the canvas
+   * through the elevation-luminance principle.
+   *
+   * Light: Pure white, creating lifted appearance against gray canvas
+   * Dark: Medium gray, lighter than canvas for elevation
    *
    * @example
    * // Product card
@@ -175,8 +219,11 @@ export interface SurfaceColors {
   /**
    * Sidebar and panel container surface (hierarchy level 1).
    *
-   * Light: solid.0 (pure white, elevated)
-   * Dark: solid.2 (dark gray, slight elevation)
+   * Used for navigation sidebars, inspector panels, and tool palettes.
+   * Provides consistent container background for grouped sections.
+   *
+   * Light: Pure white, elevated appearance
+   * Dark: Dark gray, slight elevation above canvas
    *
    * @example
    * // Navigation sidebar
@@ -195,8 +242,11 @@ export interface SurfaceColors {
   /**
    * Popover and tooltip container surface (hierarchy level 2).
    *
-   * Light: solid.0 (pure white, high elevation)
-   * Dark: solid.3 (medium gray, high elevation)
+   * Used for dropdown menus, tooltips, context menus, and toast notifications.
+   * Provides higher elevation than cards for floating UI elements.
+   *
+   * Light: Pure white, high elevation
+   * Dark: Medium gray, lighter than card for higher elevation
    *
    * @example
    * // Dropdown menu
@@ -215,10 +265,12 @@ export interface SurfaceColors {
   /**
    * Recessed surface for inputs, wells, and embedded content (hierarchy level -1).
    *
-   * Light: solid.2 (darker gray, recessed below canvas)
-   * Dark: solid.0 (pure black, deepest recess)
+   * Context-adaptive overlay that always darkens relative to its parent surface
+   * via alpha compositing. Used for text inputs, search fields, code blocks,
+   * and embedded content that should appear recessed.
    *
-   * Appears recessed: darker than canvas in light mode, lighter in dark mode.
+   * Works on any surface: Translucent black overlay that darkens the parent
+   * surface, creating a consistent recessed appearance across all contexts.
    *
    * @example
    * // Text input
@@ -241,8 +293,11 @@ export interface SurfaceColors {
   /**
    * Modal and drawer container surface, highest elevation (hierarchy level 3).
    *
-   * Light: solid.0 (pure white, highest elevation)
-   * Dark: solid.3 (medium gray, highest elevation)
+   * Used for modal dialogs, drawers, and other overlay content that floats
+   * above all other surfaces. Appears with a scrim backdrop to focus attention.
+   *
+   * Light: Pure white, highest elevation
+   * Dark: Medium gray, lightest surface for maximum elevation
    *
    * @example
    * // Modal dialog
