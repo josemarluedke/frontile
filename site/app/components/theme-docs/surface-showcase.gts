@@ -39,7 +39,15 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   }
 
   get surfaceRoles() {
-    return ['app', 'canvas', 'card', 'panel', 'popover', 'overlayContent', 'inset'];
+    return [
+      'app',
+      'canvas',
+      'card',
+      'panel',
+      'popover',
+      'overlayContent',
+      'inset',
+    ];
   }
 
   // Complete class strings for Tailwind detection
