@@ -89,11 +89,42 @@ import { Button } from 'frontile';
 import { Button } from 'frontile';
 
 <template>
-  <Button @size='xs'>Button</Button>
-  <Button @size='sm'>Button</Button>
-  <Button>Button</Button>
-  <Button @size='lg'>Button</Button>
-  <Button @size='xl'>Button</Button>
+  <Button @size='xs'>Button xs</Button>
+  <Button @size='sm'>Button sm</Button>
+  <Button>Button md</Button>
+  <Button @size='lg'>Button lg</Button>
+  <Button @size='xl'>Button xl</Button>
+</template>
+```
+
+## With Icons
+
+```gjs preview
+import { Button } from 'frontile';
+import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
+
+<template>
+  <Button @size='xs' @intent='primary'><DownloadIcon /> Download</Button>
+  <Button @size='sm' @intent='primary'><DownloadIcon /> Download</Button>
+  <Button @intent='primary'><DownloadIcon /> Download</Button>
+  <Button @size='lg' @intent='primary'><DownloadIcon /> Download</Button>
+  <Button @size='xl' @intent='primary'><DownloadIcon /> Download</Button>
+</template>
+```
+
+Icons can be placed before or after text. They inherit the button's text color via `currentColor`.
+
+```gjs preview
+import { Button } from 'frontile';
+import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
+
+<template>
+  <div class='flex gap-4'>
+    <Button @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @appearance='outlined' @intent='default'>Share
+      <ShareIcon /></Button>
+    <Button @appearance='tonal' @intent='success'><CheckIcon /> Confirm</Button>
+  </div>
 </template>
 ```
 
