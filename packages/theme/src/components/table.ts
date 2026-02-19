@@ -3,12 +3,18 @@ import { tv, type VariantProps } from '../tw';
 const table = tv({
   slots: {
     base: ['w-full', 'caption-bottom', 'text-sm'],
-    wrapper: ['relative', 'isolate', 'overflow-auto'],
+    wrapper: [
+      'relative',
+      'isolate',
+      'overflow-auto',
+      'rounded-default',
+      'bg-surface-card'
+    ],
     table: ['w-full', 'table-auto'],
-    thead: ['relative'],
+    thead: ['relative', 'bg-surface-overlay-subtle'],
     tbody: [
       'divide-y',
-      'divide-neutral-subtle',
+      'divide-surface-overlay-subtle',
       '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-neutral-subtle',
       '[&>tr]:data-[selectable=true]:transition-colors'
     ],
@@ -31,15 +37,15 @@ const table = tv({
       'left-0',
       'w-full',
       'h-px',
-      'bg-neutral-subtle'
+      'bg-surface-overlay-medium'
     ],
     th: [
       'h-12',
       'px-4',
       'text-left',
       'align-middle',
-      'font-medium',
-      'text-neutral-strong',
+      'font-semibold',
+      'text-neutral-boldest',
       '[&:has([role=checkbox])]:pr-0',
       'data-[sortable=true]:cursor-pointer'
     ],
@@ -50,8 +56,8 @@ const table = tv({
       'gap-1',
       'w-full',
       'text-left',
-      'font-medium',
-      'text-neutral-strong',
+      'font-semibold',
+      'text-neutral-boldest',
       'outline-hidden',
       'focus-visible:z-10',
       'focus-visible:ring-3',
@@ -130,8 +136,7 @@ const table = tv({
     },
     striped: {
       true: {
-        tbody:
-          '[&_tr:nth-child(odd)]:bg-neutral-subtle/50 dark:[&_tr:nth-child(odd)]:bg-neutral-subtle/10'
+        tbody: '[&_tr:nth-child(odd)]:bg-surface-overlay-subtle'
       }
     },
     isSticky: {
@@ -161,7 +166,7 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-canvas']
+        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-card']
       }
     },
     // Sticky footer
@@ -169,7 +174,7 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-surface-canvas']
+        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-surface-card']
       }
     },
     // Sticky columns - medium priority, header cells get higher z-index
@@ -177,16 +182,28 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'left',
       class: {
-        th: ['sticky', 'left-0', 'z-3', 'bg-surface-canvas'], // Higher for header intersection
-        td: ['sticky', 'left-0', 'z-1', 'bg-surface-canvas']
+        th: [
+          'sticky',
+          'left-0',
+          'z-3',
+          'bg-surface-card',
+          '[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
+        ],
+        td: ['sticky', 'left-0', 'z-1', 'bg-surface-card']
       }
     },
     {
       isSticky: true,
       stickyPosition: 'right',
       class: {
-        th: ['sticky', 'right-0', 'z-3', 'bg-surface-canvas'], // Higher for header intersection
-        td: ['sticky', 'right-0', 'z-1', 'bg-surface-canvas']
+        th: [
+          'sticky',
+          'right-0',
+          'z-3',
+          'bg-surface-card',
+          '[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
+        ],
+        td: ['sticky', 'right-0', 'z-1', 'bg-surface-card']
       }
     },
     // Sticky rows - base layer
@@ -194,14 +211,14 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        tr: ['sticky', 'top-0', 'z-1', 'bg-surface-canvas']
+        tr: ['sticky', 'top-0', 'z-1', 'bg-surface-card']
       }
     },
     {
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tr: ['sticky', 'bottom-0', 'z-1', 'bg-surface-canvas']
+        tr: ['sticky', 'bottom-0', 'z-1', 'bg-surface-card']
       }
     },
     // Sticky rows with sticky header - position after header
@@ -213,7 +230,7 @@ const table = tv({
         tr: [
           'sticky',
           'z-2',
-          'bg-surface-canvas',
+          'bg-surface-card',
           '[&.sticky]:[top:var(--table-header-height,48px)]'
         ]
       }
@@ -224,7 +241,7 @@ const table = tv({
       stickyPosition: 'left',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'left-0', 'z-2', 'bg-surface-canvas']
+        td: ['sticky', 'left-0', 'z-2', 'bg-surface-card']
       }
     },
     {
@@ -232,7 +249,7 @@ const table = tv({
       stickyPosition: 'right',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'right-0', 'z-2', 'bg-surface-canvas']
+        td: ['sticky', 'right-0', 'z-2', 'bg-surface-card']
       }
     },
     // Loading states with color variants

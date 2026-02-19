@@ -629,7 +629,7 @@ class Table<
       data-component="table-wrapper"
     >
       {{#if (has-block "toolbar")}}
-        <div class="table-toolbar" data-component="table-toolbar">
+        <div class="table-toolbar px-4 pt-3" data-component="table-toolbar">
           {{yield
             (hash
               ColumnVisibility=(component
