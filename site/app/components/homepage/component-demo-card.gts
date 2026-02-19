@@ -12,11 +12,11 @@ export interface Signature {
 
 const ComponentDemoCard: TOC<Signature> = <template>
   <div
-    class="p-8 bg-white dark:bg-black/20 rounded-xl shadow-lg border border-neutral-subtle"
+    class="p-8 bg-surface-card rounded-xl shadow-lg border border-neutral-subtle"
   >
     <h3 class="text-xl font-bold text-neutral-strong mb-6">{{@title}}</h3>
     {{#if @description}}
-      <p class="text-neutral-medium mb-6">{{@description}}</p>
+      <p class="text-neutral-firm mb-6">{{@description}}</p>
     {{/if}}
     <div>
       {{yield}}

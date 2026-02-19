@@ -99,19 +99,18 @@ class IndexPage extends Component {
   }
 
   <template>
-    <div class="min-h-screen bg-white dark:bg-black">
+    <div class="min-h-screen bg-surface-app">
       {{! Hero Section }}
       <section
-        class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-950 dark:to-black pt-20 pb-24 sm:pt-24 sm:pb-32"
+        class="relative overflow-hidden bg-surface-canvas pt-20 pb-24 sm:pt-24 sm:pb-32"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1
-              class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-strong dark:text-white mb-6"
+              class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-bolder mb-6"
             >
               Production-Ready UI Components
-              <span class="block text-blue-600 dark:text-blue-400 mt-2">for
-                Ember.js</span>
+              <span class="block text-brand-strong mt-2">for Ember.js</span>
             </h1>
             <p
               class="mt-6 text-xl sm:text-2xl text-neutral-bolder max-w-4xl mx-auto leading-relaxed"
@@ -145,9 +144,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Quick Install Section }}
-      <section
-        class="py-12 bg-gray-50 dark:bg-gray-950 border-y border-gray-200 dark:border-gray-800"
-      >
+      <section class="py-12 bg-surface-canvas border-y border-neutral-soft">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
@@ -162,7 +159,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Key Features Grid }}
-      <section class="py-24 bg-white dark:bg-black">
+      <section class="py-24 bg-surface-app">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Built for Modern Ember Development"
@@ -173,70 +170,60 @@ class IndexPage extends Component {
             <FeatureCard
               @title="Modern Ember"
               @description="Built with modern Ember standards. Full v2 addon format with template tags (GTS/GJS), Glimmer components, and type-safe templates powered by Glint."
-              @iconBg="bg-blue-100 dark:bg-blue-900/30"
+              @iconBg="bg-brand-subtle"
             >
               <:icon>
-                <SparklesIcon
-                  class="w-6 h-6 text-blue-600 dark:text-blue-400"
-                />
+                <SparklesIcon class="w-6 h-6 text-brand-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="Accessibility First"
               @description="WAI-ARIA compliant components with full keyboard navigation, screen reader optimization, and built-in focus management."
-              @iconBg="bg-green-100 dark:bg-green-900/30"
+              @iconBg="bg-success-subtle"
             >
               <:icon>
-                <AccessibilityIcon
-                  class="w-6 h-6 text-green-600 dark:text-green-400"
-                />
+                <AccessibilityIcon class="w-6 h-6 text-success-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="Tailwind Variants Theming"
               @description="Highly customizable styling system with class conflict resolution included. Replace default styles with your own styling without CSS-in-JS overhead."
-              @iconBg="bg-purple-100 dark:bg-purple-900/30"
+              @iconBg="bg-accent-subtle"
             >
               <:icon>
-                <PaletteIcon
-                  class="w-6 h-6 text-purple-600 dark:text-purple-400"
-                />
+                <PaletteIcon class="w-6 h-6 text-accent-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="Dark Mode Ready"
               @description="Built-in theme switching with all components supporting dark mode. Semantic color tokens with zero configuration needed."
-              @iconBg="bg-indigo-100 dark:bg-indigo-900/30"
+              @iconBg="bg-brand-subtle"
             >
               <:icon>
-                <MoonIcon
-                  class="w-6 h-6 text-indigo-600 dark:text-indigo-400"
-                />
+                <MoonIcon class="w-6 h-6 text-brand-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="TypeScript + Glint"
               @description="Fully typed component signatures with type-safe templates. Generic type support for data structures with full IDE IntelliSense."
-              @iconBg="bg-blue-100 dark:bg-blue-900/30"
+              @iconBg="bg-brand-subtle"
             >
               <:icon>
-                <BookIcon class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <BookIcon class="w-6 h-6 text-brand-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="Production Ready"
               @description="30+ battle-tested components including an advanced data table with sorting/selection, comprehensive form system, and overlay management."
-              @iconBg="bg-green-100 dark:bg-green-900/30"
+              @iconBg="bg-success-subtle"
             >
               <:icon>
-                <RocketIcon
-                  class="w-6 h-6 text-green-600 dark:text-green-400"
-                />
+                <RocketIcon class="w-6 h-6 text-success-strong" />
               </:icon>
             </FeatureCard>
           </div>
@@ -244,9 +231,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Showcase with Live Demos }}
-      <section
-        class="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-black"
-      >
+      <section class="py-24 bg-surface-canvas">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Components That Work Together"
@@ -296,7 +281,6 @@ class IndexPage extends Component {
                     @placeholder="Enter your email"
                     @value={{this.email}}
                     @onInput={{this.handleEmailChange}}
-                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <Field @name="fullName" as |field|>
@@ -305,7 +289,6 @@ class IndexPage extends Component {
                     @placeholder="John Doe"
                     @value={{this.fullName}}
                     @onInput={{this.handleNameChange}}
-                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <Field @name="country" as |field|>
@@ -315,7 +298,6 @@ class IndexPage extends Component {
                     @items={{this.countries}}
                     @selectedKey={{this.selectedCountry}}
                     @onSelectionChange={{this.handleCountryChange}}
-                    @class="bg-white dark:bg-gray-900"
                   />
                 </Field>
                 <div class="flex items-center gap-6 pt-2">
@@ -516,21 +498,21 @@ class IndexPage extends Component {
                   <div class="space-y-4">
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-strong mb-2"
+                        class="font-semibold text-neutral-bolder mb-2"
                       >Components</h4>
                       <p class="text-sm text-neutral-bolder">Browse all 30+
                         components</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-strong mb-2"
+                        class="font-semibold text-neutral-bolder mb-2"
                       >Documentation</h4>
                       <p class="text-sm text-neutral-bolder">Learn how to use
                         Frontile</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-strong mb-2"
+                        class="font-semibold text-neutral-bolder mb-2"
                       >Examples</h4>
                       <p class="text-sm text-neutral-bolder">See components in
                         action</p>
@@ -550,7 +532,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Inventory }}
-      <section class="py-24 bg-white dark:bg-black">
+      <section class="py-24 bg-surface-app">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader @title="30+ Components, Organized by Purpose" />
 
@@ -559,14 +541,12 @@ class IndexPage extends Component {
               @name="Buttons"
               @count={{5}}
               @description="Button, ButtonGroup, Chip, CloseButton, ToggleButton"
-              @gradient="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20"
-              @borderColor="border-blue-200 dark:border-blue-800"
-              @countColor="text-blue-600 dark:text-blue-400"
+              @gradient="bg-brand-subtle"
+              @borderColor="border-brand-soft"
+              @countColor="text-brand-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-brand-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -574,14 +554,12 @@ class IndexPage extends Component {
               @name="Forms"
               @count={{10}}
               @description="Input, Select, Textarea, Checkbox, Radio, Switch, Field, Label & more"
-              @gradient="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20"
-              @borderColor="border-green-200 dark:border-green-800"
-              @countColor="text-green-600 dark:text-green-400"
+              @gradient="bg-success-subtle"
+              @borderColor="border-success-soft"
+              @countColor="text-success-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-green-600 dark:text-green-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-success-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -589,14 +567,12 @@ class IndexPage extends Component {
               @name="Collections"
               @count={{3}}
               @description="Table, Listbox, Dropdown"
-              @gradient="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20"
-              @borderColor="border-purple-200 dark:border-purple-800"
-              @countColor="text-purple-600 dark:text-purple-400"
+              @gradient="bg-accent-subtle"
+              @borderColor="border-accent-soft"
+              @countColor="text-accent-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-purple-600 dark:text-purple-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-accent-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -604,14 +580,12 @@ class IndexPage extends Component {
               @name="Overlays"
               @count={{5}}
               @description="Modal, Drawer, Popover, Overlay, Portal"
-              @gradient="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20"
-              @borderColor="border-orange-200 dark:border-orange-800"
-              @countColor="text-orange-600 dark:text-orange-400"
+              @gradient="bg-warning-subtle"
+              @borderColor="border-warning-soft"
+              @countColor="text-warning-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-warning-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -619,14 +593,12 @@ class IndexPage extends Component {
               @name="Notifications"
               @count={{1}}
               @description="NotificationCard + Container"
-              @gradient="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20"
-              @borderColor="border-yellow-200 dark:border-yellow-800"
-              @countColor="text-yellow-600 dark:text-yellow-400"
+              @gradient="bg-warning-subtle"
+              @borderColor="border-warning-soft"
+              @countColor="text-warning-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-warning-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -634,14 +606,12 @@ class IndexPage extends Component {
               @name="Status"
               @count={{1}}
               @description="ProgressBar"
-              @gradient="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20"
-              @borderColor="border-teal-200 dark:border-teal-800"
-              @countColor="text-teal-600 dark:text-teal-400"
+              @gradient="bg-success-subtle"
+              @borderColor="border-success-soft"
+              @countColor="text-success-strong"
             >
               <:icon>
-                <ComponentIcon
-                  class="w-5 h-5 text-teal-600 dark:text-teal-400 mr-2"
-                />
+                <ComponentIcon class="w-5 h-5 text-success-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -649,12 +619,12 @@ class IndexPage extends Component {
               @name="Utilities"
               @count={{5}}
               @description="Avatar, Collapsible, Divider, Spinner, VisuallyHidden"
-              @gradient="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20"
-              @borderColor="border-gray-200 dark:border-gray-800"
-              @countColor="text-gray-600 dark:text-gray-400"
+              @gradient="bg-neutral-subtle"
+              @borderColor="border-neutral-soft"
+              @countColor="text-neutral-firm"
             >
               <:icon>
-                <ComponentIcon class="w-5 h-5 text-neutral-bolder mr-2" />
+                <ComponentIcon class="w-5 h-5 text-neutral-firm mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -662,14 +632,12 @@ class IndexPage extends Component {
               @name="Theme"
               @count={{16}}
               @description="Styling system with Tailwind Variants"
-              @gradient="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20"
-              @borderColor="border-indigo-200 dark:border-indigo-800"
-              @countColor="text-indigo-600 dark:text-indigo-400"
+              @gradient="bg-accent-subtle"
+              @borderColor="border-accent-soft"
+              @countColor="text-accent-strong"
             >
               <:icon>
-                <PaletteIcon
-                  class="w-5 h-5 text-indigo-600 dark:text-indigo-400 mr-2"
-                />
+                <PaletteIcon class="w-5 h-5 text-accent-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
           </div>
@@ -677,33 +645,28 @@ class IndexPage extends Component {
       </section>
 
       {{! Accessibility Section }}
-      <section
-        class="py-24 bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10"
-      >
+      <section class="py-24 bg-success-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Accessible by Default"
             @subtitle="Not as an afterthought, but built into every component from the ground up"
-            @iconBg="bg-green-100 dark:bg-green-900/30"
+            @iconBg="bg-success-subtle"
           >
             <:icon>
-              <AccessibilityIcon
-                class="w-8 h-8 text-green-600 dark:text-green-400"
-              />
+              <AccessibilityIcon class="w-8 h-8 text-success-strong" />
             </:icon>
           </SectionHeader>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >Keyboard Navigation</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">Keyboard
+                  Navigation</h3>
                 <p class="text-neutral-bolder text-sm">
                   Full keyboard support for all interactive components
                 </p>
@@ -711,15 +674,14 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >Screen Reader Support</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">Screen Reader
+                  Support</h3>
                 <p class="text-neutral-bolder text-sm">
                   Proper ARIA labels and live regions
                 </p>
@@ -727,15 +689,13 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >Focus Management</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">Focus Management</h3>
                 <p class="text-neutral-bolder text-sm">
                   Visible focus indicators and logical tab order
                 </p>
@@ -743,15 +703,14 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >WAI-ARIA Compliant</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">WAI-ARIA
+                  Compliant</h3>
                 <p class="text-neutral-bolder text-sm">
                   Follows authoring practices guidelines
                 </p>
@@ -759,15 +718,13 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >High Contrast</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">High Contrast</h3>
                 <p class="text-neutral-bolder text-sm">
                   Works with OS high contrast modes
                 </p>
@@ -775,15 +732,14 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-green-200 dark:border-green-800"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
             >
               <CheckIcon
-                class="w-6 h-6 text-green-600 dark:text-green-400 mr-3 mt-1 flex-shrink-0"
+                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3
-                  class="font-bold text-neutral-strong dark:text-white mb-2"
-                >Motion Preferences</h3>
+                <h3 class="font-bold text-neutral-bolder mb-2">Motion
+                  Preferences</h3>
                 <p class="text-neutral-bolder text-sm">
                   Respects prefers-reduced-motion
                 </p>
@@ -794,23 +750,23 @@ class IndexPage extends Component {
       </section>
 
       {{! TypeScript Excellence }}
-      <section class="py-24 bg-gray-50 dark:bg-gray-950">
+      <section class="py-24 bg-surface-canvas">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Type Safety from Components to Templates"
             @subtitle="Catch errors at compile-time, not runtime"
-            @iconBg="bg-blue-100 dark:bg-blue-900/30"
+            @iconBg="bg-brand-subtle"
           >
             <:icon>
-              <BookIcon class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              <BookIcon class="w-8 h-8 text-brand-strong" />
             </:icon>
           </SectionHeader>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-strong mb-4">Component
+              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Component
                 Signatures</h3>
               <CodeBlock
                 @code="interface Signature {
@@ -824,9 +780,9 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-strong mb-4">Template
+              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Template
                 Type Checking</h3>
               <CodeBlock
                 @code="<Table
@@ -839,9 +795,9 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-blue-200 dark:border-blue-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-strong mb-4">Generic
+              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Generic
                 Support</h3>
               <CodeBlock
                 @code="Table<User>
@@ -855,27 +811,19 @@ Listbox<Country>
 
           <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div
-                class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-              >100%</div>
+              <div class="text-3xl font-bold text-brand-strong mb-2">100%</div>
               <div class="text-sm text-neutral-bolder">TypeScript Coverage</div>
             </div>
             <div>
-              <div
-                class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-              >Glint</div>
+              <div class="text-3xl font-bold text-brand-strong mb-2">Glint</div>
               <div class="text-sm text-neutral-bolder">Template Types</div>
             </div>
             <div>
-              <div
-                class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-              >30+</div>
+              <div class="text-3xl font-bold text-brand-strong mb-2">30+</div>
               <div class="text-sm text-neutral-bolder">Typed Components</div>
             </div>
             <div>
-              <div
-                class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-              >Full</div>
+              <div class="text-3xl font-bold text-brand-strong mb-2">Full</div>
               <div class="text-sm text-neutral-bolder">IDE IntelliSense</div>
             </div>
           </div>
@@ -883,27 +831,23 @@ Listbox<Country>
       </section>
 
       {{! Theming Section }}
-      <section
-        class="py-24 bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10"
-      >
+      <section class="py-24 bg-accent-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Flexible Theming System"
             @subtitle="Semantic color tokens with built-in light and dark mode support"
-            @iconBg="bg-purple-100 dark:bg-purple-900/30"
+            @iconBg="bg-accent-subtle"
           >
             <:icon>
-              <PaletteIcon
-                class="w-8 h-8 text-purple-600 dark:text-purple-400"
-              />
+              <PaletteIcon class="w-8 h-8 text-accent-strong" />
             </:icon>
           </SectionHeader>
 
           <div class="max-w-4xl mx-auto">
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-purple-200 dark:border-purple-800"
+              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-accent-soft"
             >
-              <h3 class="text-xl font-bold text-neutral-strong mb-6">Semantic
+              <h3 class="text-xl font-bold text-neutral-bolder mb-6">Semantic
                 Theme System</h3>
               <CodeBlock
                 @code="const { frontile } = require('@frontile/theme/plugin');
@@ -954,7 +898,7 @@ module.exports = frontile({
                 >text-danger-strong</code>, and
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
-                >text-neutral-soft</code>
+                >text-neutral-strong</code>
                 for consistent theming across your application.
               </p>
               <div class="flex justify-center">
@@ -987,14 +931,14 @@ module.exports = frontile({
       </section>
 
       {{! Get Started / CTA Section }}
-      <section
-        class="py-24 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700"
-      >
+      <section class="py-24 bg-brand-medium">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
+          <h2 class="text-4xl sm:text-5xl font-bold text-on-brand-medium mb-6">
             Ready to Build?
           </h2>
-          <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+          <p
+            class="text-xl text-on-brand-medium opacity-80 mb-10 max-w-2xl mx-auto"
+          >
             Join the growing community of developers building accessible,
             beautiful Ember.js applications with Frontile
           </p>
@@ -1003,11 +947,7 @@ module.exports = frontile({
             class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
             <LinkTo @route="docs.get-started">
-              <Button
-                @intent="default"
-                @size="lg"
-                @class="bg-white text-blue-600 flex items-center"
-              >
+              <Button @intent="default" @size="lg" @class="flex items-center">
                 Get Started
                 <svg
                   class="ml-2 w-5 h-5"
@@ -1029,11 +969,7 @@ module.exports = frontile({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button
-                @intent="primary"
-                @size="lg"
-                @class="bg-blue-700 hover:bg-blue-800 dark:bg-blue-800 dark:hover:bg-blue-900 border border-blue-500 flex items-center"
-              >
+              <Button @intent="primary" @size="lg" @class="flex items-center">
                 <svg
                   class="mr-2 w-6 h-6"
                   fill="currentColor"
@@ -1050,28 +986,30 @@ module.exports = frontile({
             </a>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-8 text-on-brand-medium"
+          >
             <div
-              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
             >
-              <h3 class="font-bold mb-2 text-white">Quick Start</h3>
-              <p class="text-blue-100 text-sm">
+              <h3 class="font-bold mb-2 text-on-brand-medium">Quick Start</h3>
+              <p class="text-on-brand-medium opacity-80 text-sm">
                 Installation, setup, and your first component in minutes
               </p>
             </div>
             <div
-              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
             >
-              <h3 class="font-bold mb-2 text-white">Browse Components</h3>
-              <p class="text-blue-100 text-sm">
+              <h3 class="font-bold mb-2 text-on-brand-medium">Browse Components</h3>
+              <p class="text-on-brand-medium opacity-80 text-sm">
                 Interactive examples and API documentation
               </p>
             </div>
             <div
-              class="p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
             >
-              <h3 class="font-bold mb-2 text-white">Join Community</h3>
-              <p class="text-blue-100 text-sm">
+              <h3 class="font-bold mb-2 text-on-brand-medium">Join Community</h3>
+              <p class="text-on-brand-medium opacity-80 text-sm">
                 GitHub discussions and issue tracker
               </p>
             </div>

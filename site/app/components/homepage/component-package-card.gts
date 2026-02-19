@@ -23,7 +23,7 @@ const ComponentPackageCard: TOC<Signature> = <template>
         class="ml-auto text-sm font-semibold {{@countColor}}"
       >{{@count}}</span>
     </div>
-    <p class="text-sm text-neutral-medium">
+    <p class="text-sm text-neutral-firm">
       {{@description}}
     </p>
   </div>
