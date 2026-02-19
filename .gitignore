@@ -42,3 +42,4 @@ packages/docs/tmp/
 .claude/settings.local.json
 
 .playwright-mcp/
+.playwright-cli/

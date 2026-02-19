@@ -24,48 +24,56 @@ const chip = tv({
     },
     intent: {
       default: {
-        dot: 'bg-neutral-strong dark:bg-neutral-medium',
+        dot: 'bg-neutral-strong',
         closeButton: [
-          'bg-neutral-soft',
-          'text-on-neutral-soft dark:text-background',
-          'dark:bg-neutral-medium',
-          'hover:bg-neutral-soft/60 dark:hover:bg-neutral-medium/60'
+          'bg-neutral-muted',
+          'text-on-neutral-medium',
+          'hover:bg-neutral-medium'
         ]
       },
       primary: {
-        dot: 'bg-brand',
+        dot: 'bg-brand-soft',
         closeButton: [
-          'bg-brand-medium',
-          'text-background',
-          'hover:bg-brand-medium/60',
-          'focus-visible:ring-brand-medium'
+          'bg-brand-muted',
+          'text-on-brand-soft',
+          'hover:bg-brand-medium',
+          'focus-visible:ring-brand-soft'
+        ]
+      },
+      accent: {
+        dot: 'bg-accent-soft',
+        closeButton: [
+          'bg-accent-muted',
+          'text-on-accent-soft',
+          'hover:bg-accent-medium',
+          'focus-visible:ring-accent-soft'
         ]
       },
       success: {
-        dot: 'bg-success',
+        dot: 'bg-success-soft',
         closeButton: [
-          'bg-success',
-          'text-background',
-          'hover:bg-success/60',
-          'focus-visible:ring-success'
+          'bg-success-muted',
+          'text-on-success-soft',
+          'hover:bg-success-medium',
+          'focus-visible:ring-success-soft'
         ]
       },
       warning: {
-        dot: 'bg-warning',
+        dot: 'bg-warning-soft',
         closeButton: [
-          'bg-warning',
-          'text-background',
-          'hover:bg-warning/60',
-          'focus-visible:ring-warning'
+          'bg-warning-muted',
+          'text-on-warning-soft',
+          'hover:bg-warning-medium',
+          'focus-visible:ring-warning-soft'
         ]
       },
       danger: {
-        dot: 'bg-danger',
+        dot: 'bg-danger-soft',
         closeButton: [
-          'bg-danger',
-          'text-background',
-          'hover:bg-danger/60',
-          'focus-visible:ring-danger'
+          'bg-danger-muted',
+          'text-on-danger-soft',
+          'hover:bg-danger-medium',
+          'focus-visible:ring-danger-soft'
         ]
       }
     },
@@ -94,77 +102,91 @@ const chip = tv({
     }
   },
   compoundVariants: [
-    // APPEARANCE: default
+    // APPEARANCE: default (filled)
     {
       appearance: 'default',
       intent: 'default',
       class: {
-        base: 'bg-neutral-strong text-on-neutral-strong dark:bg-neutral dark:text-neutral-strong'
+        base: 'bg-neutral-firm text-on-neutral-firm'
       }
     },
     {
       appearance: 'default',
       intent: 'primary',
       class: {
-        base: 'bg-brand text-on-brand'
+        base: 'bg-brand-soft text-on-brand-soft'
+      }
+    },
+    {
+      appearance: 'default',
+      intent: 'accent',
+      class: {
+        base: 'bg-accent-soft text-on-accent-soft'
       }
     },
     {
       appearance: 'default',
       intent: 'success',
       class: {
-        base: 'bg-success text-on-success'
+        base: 'bg-success-soft text-on-success-soft'
       }
     },
     {
       appearance: 'default',
       intent: 'warning',
       class: {
-        base: 'bg-warning text-on-warning'
+        base: 'bg-warning-soft text-on-warning-soft'
       }
     },
     {
       appearance: 'default',
       intent: 'danger',
       class: {
-        base: 'bg-danger text-on-danger'
+        base: 'bg-danger-soft text-on-danger-soft'
       }
     },
 
-    // APPEARANCE: faded
+    // APPEARANCE: faded (tonal)
     {
       appearance: 'faded',
       intent: 'default',
       class: {
-        base: 'text-neutral-medium border border-neutral-medium bg-neutral-soft/20'
+        base: 'text-neutral-strong bg-neutral-subtle'
       }
     },
     {
       appearance: 'faded',
       intent: 'primary',
       class: {
-        base: 'text-brand border border-brand-medium bg-brand-soft/20'
+        base: 'text-brand-strong bg-brand-subtle'
+      }
+    },
+    {
+      appearance: 'faded',
+      intent: 'accent',
+      class: {
+        base: 'text-accent-strong bg-accent-subtle'
       }
     },
     {
       appearance: 'faded',
       intent: 'success',
       class: {
-        base: 'text-success border border-success bg-success-soft/20'
+        base: 'text-success-strong bg-success-subtle'
       }
     },
     {
       appearance: 'faded',
       intent: 'warning',
       class: {
-        base: 'text-warning border border-warning bg-warning-soft/20'
+        base: 'text-warning-strong bg-warning-subtle'
       }
     },
     {
       appearance: 'faded',
       intent: 'danger',
       class: {
-        base: 'text-danger border border-danger bg-danger-soft/20'
+        base: 'text-danger-strong bg-danger-subtle'
       }
     },
 
@@ -173,35 +195,42 @@ const chip = tv({
       appearance: 'outlined',
       intent: 'default',
       class: {
-        base: 'text-neutral-medium border border-neutral-medium'
+        base: 'text-neutral-strong border border-neutral-medium'
       }
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       class: {
-        base: 'text-brand border border-brand-medium'
+        base: 'text-brand-strong border border-brand-medium'
+      }
+    },
+    {
+      appearance: 'outlined',
+      intent: 'accent',
+      class: {
+        base: 'text-accent-strong border border-accent-medium'
       }
     },
     {
       appearance: 'outlined',
       intent: 'success',
       class: {
-        base: 'text-success border border-success'
+        base: 'text-success-strong border border-success-medium'
       }
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class: {
-        base: 'text-warning border border-warning'
+        base: 'text-warning-strong border border-warning-medium'
       }
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       class: {
-        base: 'text-danger border border-danger'
+        base: 'text-danger-strong border border-danger-medium'
       }
     }
   ],

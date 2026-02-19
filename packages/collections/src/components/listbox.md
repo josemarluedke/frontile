@@ -67,7 +67,7 @@ export default class BasicListbox extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-neutral-soft'>
+      <div class='text-sm text-neutral-firm'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -118,7 +118,7 @@ export default class MultipleSelection extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-neutral-soft'>
+      <div class='text-sm text-neutral-firm'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -365,7 +365,7 @@ export default class DisabledItems extends Component {
           @intent='primary'
         />
       </div>
-      <div class='text-sm text-neutral-soft'>
+      <div class='text-sm text-neutral-firm'>
         Items "feature3" and "feature4" are disabled
       </div>
     </div>
@@ -434,14 +434,14 @@ export default class CustomItems extends Component {
               <:default>
                 {{o.item.name}}
                 <span
-                  class='text-xs text-neutral-soft ml-2'
+                  class='text-xs text-neutral-firm ml-2'
                 >({{o.item.role}})</span>
               </:default>
             </o.Item>
           </:item>
         </Listbox>
       </div>
-      <div class='text-sm text-neutral-soft'>
+      <div class='text-sm text-neutral-firm'>
         Selected:
         {{this.selectedKeys}}
       </div>
@@ -533,7 +533,7 @@ export default class EmptySelection extends Component {
         />
       </div>
 
-      <div class='text-sm text-neutral-soft'>
+      <div class='text-sm text-neutral-firm'>
         {{#if this.allowEmpty}}
           You can deselect all items by clicking the selected item.
         {{else}}

@@ -29,7 +29,7 @@ const listboxItem = tv({
     description: [
       'w-full',
       'text-xs',
-      'text-neutral-medium',
+      'text-neutral-firm',
       'group-hover:text-current'
     ],
     selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0'],
@@ -94,7 +94,10 @@ const listboxItem = tv({
       appearance: 'default',
       intent: 'default',
       class: {
-        base: ['data-is-active:bg-neutral', 'data-is-active:text-on-neutral']
+        base: [
+          'data-is-active:bg-neutral-subtle',
+          'data-is-active:text-neutral-strong'
+        ]
       }
     },
     {
@@ -185,7 +188,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:border-neutral-medium',
-          'data-is-active:text-neutral-medium'
+          'data-is-active:text-neutral-strong'
         ]
       }
     },
@@ -195,7 +198,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:border-brand-medium',
-          'data-is-active:text-brand'
+          'data-is-active:text-brand-strong'
         ]
       }
     },
@@ -203,21 +206,30 @@ const listboxItem = tv({
       appearance: 'outlined',
       intent: 'success',
       class: {
-        base: ['data-is-active:border-success', 'data-is-active:text-success']
+        base: [
+          'data-is-active:border-success',
+          'data-is-active:text-success-strong'
+        ]
       }
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class: {
-        base: ['data-is-active:border-warning', 'data-is-active:text-warning']
+        base: [
+          'data-is-active:border-warning',
+          'data-is-active:text-warning-strong'
+        ]
       }
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       class: {
-        base: ['data-is-active:border-danger', 'data-is-active:text-danger']
+        base: [
+          'data-is-active:border-danger',
+          'data-is-active:text-danger-strong'
+        ]
       }
     },
 
@@ -229,7 +241,7 @@ const listboxItem = tv({
         base: [
           'data-is-active:bg-neutral-soft/20',
           'data-is-active:border-neutral-medium',
-          'data-is-active:text-neutral-medium'
+          'data-is-active:text-neutral-strong'
         ]
       }
     },
@@ -240,7 +252,7 @@ const listboxItem = tv({
         base: [
           'data-is-active:bg-brand-soft/20',
           'data-is-active:border-brand-medium',
-          'data-is-active:text-brand'
+          'data-is-active:text-brand-strong'
         ]
       }
     },
@@ -251,7 +263,7 @@ const listboxItem = tv({
         base: [
           'data-is-active:bg-success-soft/20',
           'data-is-active:border-success',
-          'data-is-active:text-success'
+          'data-is-active:text-success-strong'
         ]
       }
     },
@@ -262,7 +274,7 @@ const listboxItem = tv({
         base: [
           'data-is-active:bg-warning-soft/20',
           'data-is-active:border-warning',
-          'data-is-active:text-warning'
+          'data-is-active:text-warning-strong'
         ]
       }
     },
@@ -273,7 +285,7 @@ const listboxItem = tv({
         base: [
           'data-is-active:bg-danger-soft/20',
           'data-is-active:border-danger',
-          'data-is-active:text-danger'
+          'data-is-active:text-danger-strong'
         ]
       }
     }

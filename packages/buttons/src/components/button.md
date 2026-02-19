@@ -2,11 +2,12 @@
 imports:
   - import Signature from 'site/components/signature';
 ---
+
 # Button
 
 The Button component can be used to trigger an action, such as submitting a form, opening a modal, and more.
 
-## Import 
+## Import
 
 ```js
 import { Button } from 'frontile';
@@ -31,14 +32,9 @@ import { Button } from 'frontile';
   <div>
     <Button>Default</Button>
     <Button @appearance='outlined'>Outlined</Button>
+    <Button @appearance='tonal'>Tonal</Button>
     <Button @appearance='minimal'>Minimal</Button>
     <Button @appearance='custom'>Custom</Button>
-  </div>
-  <div class='mt-4'>
-    <Button disabled>Default</Button>
-    <Button @appearance='outlined' disabled>Outlined</Button>
-    <Button @appearance='minimal' disabled>Minimal</Button>
-    <Button @appearance='custom' disabled>Custom</Button>
   </div>
 </template>
 ```
@@ -53,16 +49,36 @@ import { Button } from 'frontile';
 
 <template>
   <div>
-    <Button @intent='primary'>Button</Button>
-    <Button @intent='success'>Button</Button>
-    <Button @intent='warning'>Button</Button>
-    <Button @intent='danger'>Button</Button>
+    <Button @intent='default'>Default</Button>
+    <Button @intent='primary'>Primary</Button>
+    <Button @intent='accent'>Accent</Button>
+    <Button @intent='success'>Success</Button>
+    <Button @intent='warning'>Warning</Button>
+    <Button @intent='danger'>Danger</Button>
   </div>
   <div class='mt-4'>
-    <Button @intent='primary' disabled>Button</Button>
-    <Button @intent='success' disabled>Button</Button>
-    <Button @intent='warning' disabled>Button</Button>
-    <Button @intent='danger' disabled>Button</Button>
+    <Button @appearance='outlined' @intent='default'>Default</Button>
+    <Button @appearance='outlined' @intent='primary'>Primary</Button>
+    <Button @appearance='outlined' @intent='accent'>Accent</Button>
+    <Button @appearance='outlined' @intent='success'>Success</Button>
+    <Button @appearance='outlined' @intent='warning'>Warning</Button>
+    <Button @appearance='outlined' @intent='danger'>Danger</Button>
+  </div>
+  <div class='mt-4'>
+    <Button @appearance='minimal' @intent='default'>Default</Button>
+    <Button @appearance='minimal' @intent='primary'>Primary</Button>
+    <Button @appearance='minimal' @intent='accent'>Accent</Button>
+    <Button @appearance='minimal' @intent='success'>Success</Button>
+    <Button @appearance='minimal' @intent='warning'>Warning</Button>
+    <Button @appearance='minimal' @intent='danger'>Danger</Button>
+  </div>
+  <div class='mt-4'>
+    <Button @appearance='tonal' @intent='default'>Default</Button>
+    <Button @appearance='tonal' @intent='primary'>Primary</Button>
+    <Button @appearance='tonal' @intent='accent'>Accent</Button>
+    <Button @appearance='tonal' @intent='success'>Success</Button>
+    <Button @appearance='tonal' @intent='warning'>Warning</Button>
+    <Button @appearance='tonal' @intent='danger'>Danger</Button>
   </div>
 </template>
 ```
@@ -78,6 +94,23 @@ import { Button } from 'frontile';
   <Button>Button</Button>
   <Button @size='lg'>Button</Button>
   <Button @size='xl'>Button</Button>
+</template>
+```
+
+## Disabled
+
+```gjs preview
+import { Button } from 'frontile';
+
+<template>
+  <div>
+    <Button @intent='default' disabled>Default</Button>
+    <Button @intent='primary' disabled>Primary</Button>
+    <Button @intent='accent' disabled>Accent</Button>
+    <Button @intent='success' disabled>Success</Button>
+    <Button @intent='warning' disabled>Warning</Button>
+    <Button @intent='danger' disabled>Danger</Button>
+  </div>
 </template>
 ```
 
@@ -111,7 +144,9 @@ import { Button } from 'frontile';
 </template>
 ```
 
-You can also use TailwindCSS classes to customize even further.
+## Customization
+
+You can use TailwindCSS classes to customize even further.
 
 ```gjs preview
 import { Button } from 'frontile';
@@ -159,7 +194,7 @@ export default class ButtonPressExample extends Component {
   };
 
   <template>
-    <div class="flex items-center space-x-4">
+    <div class='flex items-center space-x-4'>
       <Button @onPress={{this.handlePress}}>
         Press me! ({{this.pressCount}})
       </Button>
@@ -174,7 +209,7 @@ export default class ButtonPressExample extends Component {
 Buttons automatically track their pressed state and add a `data-pressed` attribute when being pressed, which can be used for styling:
 
 ```css
-button[data-pressed="true"] {
+button[data-pressed='true'] {
   transform: scale(0.95);
   transition: transform 0.1s ease;
 }

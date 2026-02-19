@@ -5,7 +5,7 @@ const progressBar = tv({
     base: ['overflow-hidden w-full bg-surface-overlay-soft'],
     label: ['flex justify-between pb-1 gap-2 leading-tight'],
     progress: [''],
-    description: ['text-neutral-soft text-xs pb-1']
+    description: ['text-neutral-medium text-xs pb-1']
   },
   variants: {
     isIndeterminate: {
@@ -15,7 +15,7 @@ const progressBar = tv({
     },
     intent: {
       default: {
-        progress: 'bg-neutral-strong dark:bg-neutral'
+        progress: 'bg-neutral-strong'
       },
       primary: {
         progress: 'bg-brand-soft'

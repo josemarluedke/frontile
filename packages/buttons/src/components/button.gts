@@ -17,12 +17,12 @@ export interface ButtonArgs {
    *
    * @defaultValue 'default'
    */
-  appearance?: 'default' | 'outlined' | 'minimal' | 'custom';
+  appearance?: 'default' | 'outlined' | 'minimal' | 'tonal' | 'custom';
 
   /**
    * The intent of the button
    */
-  intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+  intent?: 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
   /**
    * The size of the button
