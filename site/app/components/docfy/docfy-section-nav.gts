@@ -48,7 +48,7 @@ export default class DocfySectionNav extends Component {
                     class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-strong hover:text-neutral-firm hover:border-b-2 hover:border-brand-medium hover:-mb-px whitespace-nowrap
                       {{if
                         (this.isActive child)
-                        "text-neutral-firm border-b-2 border-brand-medium -mb-px"
+                        'text-neutral-firm border-b-2 border-brand-medium -mb-px'
                       }}"
                   >
                     {{child.label}}

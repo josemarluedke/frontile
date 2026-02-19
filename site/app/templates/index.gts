@@ -162,7 +162,9 @@ class IndexPage extends Component {
             >Quick Install</p>
             <div class="install-terminal max-w-lg mx-auto">
               <div class="install-terminal__dots" aria-hidden="true">
-                <span class="install-terminal__dot install-terminal__dot--red"></span>
+                <span
+                  class="install-terminal__dot install-terminal__dot--red"
+                ></span>
                 <span
                   class="install-terminal__dot install-terminal__dot--yellow"
                 ></span>
