@@ -40,3 +40,5 @@ packages/**/.eslintcache
 packages/deploy-docs/
 packages/docs/tmp/
 .claude/settings.local.json
+
+.playwright-mcp/

@@ -15,7 +15,7 @@ export interface Signature {
 }
 
 const ComponentPackageCard: TOC<Signature> = <template>
-  <div class="p-6 {{@gradient}} rounded-lg border {{@borderColor}}">
+  <div class="p-6 {{@gradient}} rounded-lg border {{@borderColor}} hover:shadow-md transition-all duration-200">
     <div class="flex items-center mb-3">
       {{yield to="icon"}}
       <h3 class="font-bold text-neutral-strong">{{@name}}</h3>
@@ -23,7 +23,7 @@ const ComponentPackageCard: TOC<Signature> = <template>
         class="ml-auto text-sm font-semibold {{@countColor}}"
       >{{@count}}</span>
     </div>
-    <p class="text-sm text-neutral-firm">
+    <p class="text-sm text-neutral-bolder">
       {{@description}}
     </p>
   </div>

@@ -104,13 +104,23 @@ class IndexPage extends Component {
       <section
         class="relative overflow-hidden bg-surface-canvas pt-20 pb-24 sm:pt-24 sm:pb-32"
       >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="hero-glow-orb hero-glow-orb--brand hidden sm:block"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="hero-glow-orb hero-glow-orb--accent hidden sm:block"
+          aria-hidden="true"
+        ></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1
               class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-bolder mb-6"
             >
               Production-Ready UI Components
-              <span class="block text-brand-strong mt-2">for Ember.js</span>
+              <span
+                class="block mt-2 bg-gradient-to-r from-brand-strong to-accent-strong bg-clip-text text-transparent"
+              >for Ember.js</span>
             </h1>
             <p
               class="mt-6 text-xl sm:text-2xl text-neutral-bolder max-w-4xl mx-auto leading-relaxed"
@@ -144,13 +154,27 @@ class IndexPage extends Component {
       </section>
 
       {{! Quick Install Section }}
-      <section class="py-12 bg-surface-canvas border-y border-neutral-soft">
+      <section class="py-16 bg-surface-canvas section-divider-gradient">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
               class="text-sm font-semibold text-neutral-bolder uppercase tracking-wide mb-4"
             >Quick Install</p>
-            <CodeBlock @code="pnpm install frontile @frontile/theme" />
+            <div class="install-terminal max-w-lg mx-auto">
+              <div class="install-terminal__dots" aria-hidden="true">
+                <span class="install-terminal__dot install-terminal__dot--red"></span>
+                <span
+                  class="install-terminal__dot install-terminal__dot--yellow"
+                ></span>
+                <span
+                  class="install-terminal__dot install-terminal__dot--green"
+                ></span>
+              </div>
+              <div class="install-terminal__command">
+                <span class="install-terminal__prompt">$</span>
+                pnpm install frontile @frontile/theme
+              </div>
+            </div>
             <p class="mt-4 text-sm text-neutral-bolder">
               Also available via npm and yarn
             </p>
@@ -159,7 +183,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Key Features Grid }}
-      <section class="py-24 bg-surface-app">
+      <section class="py-24 bg-surface-app section-divider-gradient">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Built for Modern Ember Development"
@@ -231,7 +255,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Showcase with Live Demos }}
-      <section class="py-24 bg-surface-canvas">
+      <section class="py-24 bg-surface-canvas section-divider-gradient">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Components That Work Together"
@@ -532,7 +556,7 @@ class IndexPage extends Component {
       </section>
 
       {{! Component Inventory }}
-      <section class="py-24 bg-surface-app">
+      <section class="py-24 bg-surface-app section-divider-gradient">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader @title="30+ Components, Organized by Purpose" />
 
@@ -659,7 +683,7 @@ class IndexPage extends Component {
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -674,7 +698,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -689,7 +713,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -703,7 +727,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -718,7 +742,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -732,7 +756,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -811,19 +835,27 @@ Listbox<Country>
 
           <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div class="text-3xl font-bold text-brand-strong mb-2">100%</div>
+              <div
+                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+              >100%</div>
               <div class="text-sm text-neutral-bolder">TypeScript Coverage</div>
             </div>
             <div>
-              <div class="text-3xl font-bold text-brand-strong mb-2">Glint</div>
+              <div
+                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+              >Glint</div>
               <div class="text-sm text-neutral-bolder">Template Types</div>
             </div>
             <div>
-              <div class="text-3xl font-bold text-brand-strong mb-2">30+</div>
+              <div
+                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+              >30+</div>
               <div class="text-sm text-neutral-bolder">Typed Components</div>
             </div>
             <div>
-              <div class="text-3xl font-bold text-brand-strong mb-2">Full</div>
+              <div
+                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+              >Full</div>
               <div class="text-sm text-neutral-bolder">IDE IntelliSense</div>
             </div>
           </div>
@@ -931,14 +963,12 @@ module.exports = frontile({
       </section>
 
       {{! Get Started / CTA Section }}
-      <section class="py-24 bg-brand-medium">
+      <section class="py-24 cta-gradient-bg">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-4xl sm:text-5xl font-bold text-on-brand-medium mb-6">
+          <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
             Ready to Build?
           </h2>
-          <p
-            class="text-xl text-on-brand-medium opacity-80 mb-10 max-w-2xl mx-auto"
-          >
+          <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
             Join the growing community of developers building accessible,
             beautiful Ember.js applications with Frontile
           </p>
@@ -986,30 +1016,22 @@ module.exports = frontile({
             </a>
           </div>
 
-          <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-8 text-on-brand-medium"
-          >
-            <div
-              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
-            >
-              <h3 class="font-bold mb-2 text-on-brand-medium">Quick Start</h3>
-              <p class="text-on-brand-medium opacity-80 text-sm">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="cta-card">
+              <h3 class="font-bold mb-2 text-white">Quick Start</h3>
+              <p class="text-white/80 text-sm">
                 Installation, setup, and your first component in minutes
               </p>
             </div>
-            <div
-              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
-            >
-              <h3 class="font-bold mb-2 text-on-brand-medium">Browse Components</h3>
-              <p class="text-on-brand-medium opacity-80 text-sm">
+            <div class="cta-card">
+              <h3 class="font-bold mb-2 text-white">Browse Components</h3>
+              <p class="text-white/80 text-sm">
                 Interactive examples and API documentation
               </p>
             </div>
-            <div
-              class="p-6 bg-surface-overlay-subtle backdrop-blur-sm rounded-lg border border-neutral-subtle"
-            >
-              <h3 class="font-bold mb-2 text-on-brand-medium">Join Community</h3>
-              <p class="text-on-brand-medium opacity-80 text-sm">
+            <div class="cta-card">
+              <h3 class="font-bold mb-2 text-white">Join Community</h3>
+              <p class="text-white/80 text-sm">
                 GitHub discussions and issue tracker
               </p>
             </div>

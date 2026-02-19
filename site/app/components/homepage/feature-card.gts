@@ -15,7 +15,7 @@ export interface Signature {
 
 const FeatureCard: TOC<Signature> = <template>
   <div
-    class="p-8 bg-surface-card rounded-xl shadow-lg border border-neutral-subtle hover:shadow-xl transition-shadow duration-200"
+    class="feature-card-glow p-8 bg-surface-card rounded-xl shadow-lg border border-neutral-subtle"
   >
     <div
       class="w-12 h-12

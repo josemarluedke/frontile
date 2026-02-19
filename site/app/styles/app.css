@@ -25,6 +25,19 @@
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
+
+  --animate-hero-glow: hero-glow 8s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes hero-glow {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 @layer components {
@@ -89,6 +102,165 @@
   /* Even softer for secondary content */
   .text-muted, .caption, blockquote {
     @apply text-neutral-soft;
+  }
+
+  /* Hero glow orbs */
+  .hero-glow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    filter: blur(80px);
+    animation: var(--animate-hero-glow);
+  }
+
+  .hero-glow-orb--brand {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, oklch(0.55 0.2 250 / 0.35) 0%, transparent 70%);
+    top: -100px;
+    left: 50%;
+    transform: translateX(-70%);
+  }
+
+  .hero-glow-orb--accent {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, oklch(0.55 0.2 290 / 0.3) 0%, transparent 70%);
+    top: -50px;
+    left: 50%;
+    transform: translateX(-20%);
+    animation-delay: -4s;
+  }
+
+  /* Install terminal */
+  .install-terminal {
+    position: relative;
+    background: oklch(0.15 0.005 270);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    overflow: hidden;
+    border: 1px solid oklch(0.3 0.02 270);
+  }
+
+  .install-terminal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    padding: 1px;
+    background: linear-gradient(135deg, oklch(0.6 0.2 250 / 0.5), oklch(0.6 0.2 290 / 0.5));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .install-terminal::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 40px;
+    background: oklch(0.55 0.2 250 / 0.15);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+
+  .install-terminal__dots {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  .install-terminal__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+  }
+
+  .install-terminal__dot--red { background: oklch(0.63 0.2 25); }
+  .install-terminal__dot--yellow { background: oklch(0.8 0.15 85); }
+  .install-terminal__dot--green { background: oklch(0.72 0.19 145); }
+
+  .install-terminal__command {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9375rem;
+    color: oklch(0.85 0 none);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .install-terminal__prompt {
+    color: oklch(0.7 0.15 145);
+    user-select: none;
+  }
+
+  /* Code block - always dark background */
+  .code-block-glow {
+    position: relative;
+    background: oklch(0.15 0.005 270) !important;
+    border: 1px solid oklch(0.25 0.01 270 / 0.5);
+    box-shadow: inset 0 1px 0 oklch(1 0 none / 0.03);
+  }
+
+  /* Feature card glow hover */
+  .feature-card-glow {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .feature-card-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px -10px oklch(0.55 0.2 250 / 0.15), 0 4px 6px -4px oklch(0 0 none / 0.1);
+    border-color: oklch(0.7 0.1 250 / 0.3);
+  }
+
+  /* Section divider gradient */
+  .section-divider-gradient {
+    position: relative;
+  }
+
+  .section-divider-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(80%, 600px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.6 0.2 250 / 0.4), oklch(0.6 0.2 290 / 0.4), transparent);
+  }
+
+  /* CTA gradient background */
+  .cta-gradient-bg {
+    background: linear-gradient(135deg, oklch(0.45 0.2 250), oklch(0.4 0.18 280), oklch(0.42 0.2 290));
+  }
+
+  /* CTA frosted glass cards */
+  .cta-card {
+    padding: 1.5rem;
+    background: oklch(1 0 none / 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 0.75rem;
+    border: 1px solid oklch(1 0 none / 0.15);
+    transition: border-color 0.2s ease;
+  }
+
+  .cta-card:hover {
+    border-color: oklch(1 0 none / 0.3);
+  }
+
+  /* Stat number glow */
+  .stat-glow {
+    text-shadow: 0 0 20px oklch(0.6 0.2 250 / 0.3);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-glow-orb {
+      animation: none;
+    }
   }
 }
 
