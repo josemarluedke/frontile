@@ -25,9 +25,9 @@ Instead of using arbitrary gray scales like `bg-gray-300`, Frontile's semantic c
 
 Text colors:
 
-- `text-neutral-soft` - Muted text for hints and placeholders
-- `text-neutral-medium` - Default text color for body content
-- `text-neutral-strong` - Strong emphasis for headings
+- `text-neutral-firm` - Secondary text for descriptions and metadata
+- `text-neutral-strong` - Default text color for body content
+- `text-neutral-boldest` - Maximum emphasis for headings
 
 Background colors with automatic text colors:
 
@@ -204,9 +204,11 @@ Banners:
 ### For Text
 
 - **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-brand-medium`)
-- **soft**: Muted text, hints, placeholders
-- **medium**: Links, interactive text
-- **strong**: Headings, important text
+- **firm**: Secondary text, descriptions, metadata
+- **strong**: Default body text, readable content
+- **bolder/boldest**: Headings, important text
+
+> **Note:** Lower levels like `soft` and `medium` are designed for backgrounds and borders, not for text. In dark mode, these levels map to very dark values that are illegible on dark surfaces. Always use `firm` or higher for visible text.
 
 ### For Borders
 

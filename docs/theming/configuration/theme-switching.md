@@ -143,7 +143,7 @@ import { Button } from 'frontile';
     {{! Regular theme section }}
     <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
       <h3 class='text-header-md text-neutral-strong mb-4'>Regular Theme</h3>
-      <p class='text-body-md text-neutral-medium mb-4'>
+      <p class='text-body-md text-neutral-firm mb-4'>
         This section uses the current theme colors.
       </p>
       <Button @intent='primary'>Primary Button</Button>
@@ -153,7 +153,7 @@ import { Button } from 'frontile';
     <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
         <h3 class='text-header-md text-neutral-strong mb-4'>Inverted Theme</h3>
-        <p class='text-body-md text-neutral-medium mb-4'>
+        <p class='text-body-md text-neutral-firm mb-4'>
           This section uses the opposite theme colors automatically.
         </p>
         <Button @intent='primary'>Primary Button</Button>
@@ -208,7 +208,7 @@ const state = toggleState(false);
 
 <template>
   <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
-    <p class='text-neutral-medium mb-4'>
+    <p class='text-neutral-firm mb-4'>
       This section uses inverted theme, but the modal uses root theme.
     </p>
     <Button @onPress={{state.toggle}}>Open Modal</Button>
@@ -282,7 +282,7 @@ Theme-inverse works automatically with semantic colors:
 ```html
 <div class="theme-inverse p-6 bg-surface-canvas">
   <h3 class="text-neutral-strong">Heading</h3>
-  <p class="text-neutral-medium">Body text</p>
+  <p class="text-neutral-firm">Body text</p>
   <button class="bg-brand-medium text-on-brand-medium">
     Action
   </button>

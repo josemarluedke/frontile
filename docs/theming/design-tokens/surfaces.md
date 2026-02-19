@@ -40,12 +40,12 @@ Root application background layer (hierarchy level 0).
 
 ```gts preview
 <template>
-  <div class="bg-surface-app min-h-screen">
+  <div class="bg-surface-app p-4">
     <nav class="p-4 border-b border-neutral-subtle">
       <h1 class="text-neutral-strong text-xl">App Navigation</h1>
     </nav>
     <main class="bg-surface-canvas p-6">
-      <p class="text-neutral-soft">Content area with canvas background</p>
+      <p class="text-neutral-strong">Content area with canvas background</p>
     </main>
   </div>
 </template>
@@ -61,10 +61,10 @@ Component contrast baseline (hierarchy level 1).
 
 ```gts preview
 <template>
-  <div class="bg-surface-app min-h-screen">
+  <div class="bg-surface-app p-4">
     <div class="bg-surface-canvas p-6">
       <h1 class="text-neutral-strong text-2xl">Content Area</h1>
-      <p class="text-neutral-soft">Canvas provides contrast against the app background</p>
+      <p class="text-neutral-strong">Canvas provides contrast against the app background</p>
     </div>
   </div>
 </template>
@@ -83,7 +83,7 @@ Elevated card container surface (hierarchy level 1).
   <div class="bg-surface-canvas p-6">
     <article class="bg-surface-card rounded-lg border border-neutral-subtle p-6">
       <h2 class="text-neutral-strong text-xl mb-2">Product Title</h2>
-      <p class="text-neutral-soft">This card is elevated off the canvas background</p>
+      <p class="text-neutral-strong">This card is elevated off the canvas background</p>
     </article>
   </div>
 </template>
@@ -103,12 +103,12 @@ Sidebar and panel container surface (hierarchy level 1).
     <aside class="bg-surface-panel border-r border-neutral-subtle p-4 w-48">
       <h3 class="text-neutral-strong font-semibold mb-2">Navigation</h3>
       <nav class="space-y-1">
-        <a href="#" class="block text-neutral-soft hover:text-neutral-strong">Dashboard</a>
-        <a href="#" class="block text-neutral-soft hover:text-neutral-strong">Settings</a>
+        <a href="#" class="block text-neutral-strong hover:text-neutral-bolder">Dashboard</a>
+        <a href="#" class="block text-neutral-strong hover:text-neutral-bolder">Settings</a>
       </nav>
     </aside>
     <main class="bg-surface-canvas flex-1 p-4">
-      <p class="text-neutral-soft">Main content area</p>
+      <p class="text-neutral-strong">Main content area</p>
     </main>
   </div>
 </template>
@@ -152,7 +152,7 @@ Modal and drawer container surface, highest elevation (hierarchy level 3).
   <div class="bg-surface-canvas p-6">
     <div class="bg-surface-overlay-content rounded-lg shadow-2xl p-6 max-w-md">
       <h2 class="text-neutral-strong text-xl mb-2">Confirm Action</h2>
-      <p class="text-neutral-soft mb-4">Are you sure you want to continue?</p>
+      <p class="text-neutral-strong mb-4">Are you sure you want to continue?</p>
       <div class="flex gap-2">
         <button class="bg-brand-medium text-on-brand-medium px-4 py-2 rounded">Confirm</button>
         <button class="bg-neutral-subtle text-neutral-strong px-4 py-2 rounded">Cancel</button>
@@ -221,7 +221,7 @@ A 12-step opaque scale for base backgrounds. In light mode, 0 is white (#FFFFFF)
 ### Example: Page Layout
 
 ```hbs
-<div class='bg-surface-solid-1 text-surface-solid-11 min-h-screen'>
+<div class='bg-surface-solid-1 text-surface-solid-11'>
   <header class='bg-surface-solid-0 border-b border-neutral-subtle'>
     <h1 class='text-surface-solid-11'>Page Title</h1>
   </header>
@@ -350,15 +350,15 @@ Follow this decision flow:
 
 ```gts preview
 <template>
-  <div class="bg-surface-canvas min-h-screen p-6">
+  <div class="bg-surface-canvas p-6">
     <div class="max-w-4xl mx-auto space-y-4">
       <div class="bg-surface-card rounded-lg border border-neutral-subtle p-6">
-        <h2 class="text-neutral-strong text-lg font-semibold mb-2">Card 1</h2>
-        <p class="text-neutral-soft">Content on elevated card surface</p>
+        <h2 class="text-neutral-bolder text-lg font-semibold mb-2">Card 1</h2>
+        <p class="text-neutral-strong">Content on elevated card surface</p>
       </div>
       <div class="bg-surface-card rounded-lg border border-neutral-subtle p-6">
-        <h2 class="text-neutral-strong text-lg font-semibold mb-2">Card 2</h2>
-        <p class="text-neutral-soft">Another elevated card</p>
+        <h2 class="text-neutral-bolder text-lg font-semibold mb-2">Card 2</h2>
+        <p class="text-neutral-strong">Another elevated card</p>
       </div>
     </div>
   </div>
@@ -373,13 +373,13 @@ Follow this decision flow:
     <aside class="bg-surface-panel w-48 border-r border-neutral-subtle p-4">
       <h3 class="text-neutral-strong font-semibold mb-4">Sidebar</h3>
       <nav class="space-y-2">
-        <a href="#" class="block text-neutral-soft hover:text-neutral-strong text-sm">Link 1</a>
-        <a href="#" class="block text-neutral-soft hover:text-neutral-strong text-sm">Link 2</a>
+        <a href="#" class="block text-neutral-strong hover:text-neutral-bolder text-sm">Link 1</a>
+        <a href="#" class="block text-neutral-strong hover:text-neutral-bolder text-sm">Link 2</a>
       </nav>
     </aside>
     <main class="bg-surface-canvas flex-1 p-6">
-      <h1 class="text-neutral-strong text-xl mb-2">Main Content</h1>
-      <p class="text-neutral-soft">Content area on canvas</p>
+      <h1 class="text-neutral-bolder text-xl mb-2">Main Content</h1>
+      <p class="text-neutral-strong">Content area on canvas</p>
     </main>
   </div>
 </template>

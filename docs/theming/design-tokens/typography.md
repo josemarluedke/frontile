@@ -135,13 +135,13 @@ Secondary descriptive text with relaxed letter spacing.
 <template>
   <div class='flex flex-col gap-3'>
     <div>
-      <div class='bg-neutral-subtle rounded mb-2 h-32 flex items-center justify-center text-neutral-soft'>
+      <div class='bg-neutral-subtle rounded mb-2 h-32 flex items-center justify-center text-neutral-strong'>
         Example Image
       </div>
-      <span class='font-caption text-caption-md text-neutral-soft'>Caption MD: Figure 1 - Example image caption with medium size</span>
+      <span class='font-caption text-caption-md text-neutral-strong'>Caption MD: Figure 1 - Example image caption with medium size</span>
     </div>
     <div>
-      <span class='font-caption text-caption-sm text-neutral-soft'>Caption SM: Small caption text for supplementary information</span>
+      <span class='font-caption text-caption-sm text-neutral-strong'>Caption SM: Small caption text for supplementary information</span>
     </div>
   </div>
 </template>
@@ -204,7 +204,7 @@ Typography utilities work seamlessly with other Tailwind utilities:
     </p>
 
     {{! Centered caption }}
-    <span class='font-caption text-caption-md text-center block text-neutral-soft'>
+    <span class='font-caption text-caption-md text-center block text-neutral-strong'>
       Centered caption text
     </span>
 
@@ -329,20 +329,20 @@ Use size variants to create clear content hierarchy:
 <template>
   <article class='space-y-4'>
     <h1 class='font-header text-header-3xl text-neutral-strong'>Article Title</h1>
-    <p class='font-body text-body-md text-neutral-soft'>Published on December 7, 2024</p>
+    <p class='font-body text-body-md text-neutral-strong'>Published on December 7, 2024</p>
 
     <div class='space-y-3'>
       <h2 class='font-header text-header-xl text-neutral-strong'>Major Section</h2>
-      <p class='font-body text-body-md text-neutral-medium'>
+      <p class='font-body text-body-md text-neutral-firm'>
         This is the main body content with comfortable line height for easy reading. The text flows naturally and maintains good readability.
       </p>
 
       <h3 class='font-header text-header-lg text-neutral-strong'>Subsection</h3>
-      <p class='font-body text-body-md text-neutral-medium'>
+      <p class='font-body text-body-md text-neutral-firm'>
         Subsection content continues the hierarchy with appropriately sized headers.
       </p>
 
-      <span class='font-caption text-caption-sm text-neutral-soft block'>
+      <span class='font-caption text-caption-sm text-neutral-strong block'>
         Figure 1: Caption providing additional context
       </span>
     </div>
@@ -360,7 +360,7 @@ Scale typography for different screen sizes:
     <h1 class='font-header text-header-lg md:text-header-xl lg:text-header-2xl text-neutral-strong'>
       Responsive Heading
     </h1>
-    <p class='font-body text-body-sm md:text-body-md lg:text-body-lg text-neutral-medium'>
+    <p class='font-body text-body-sm md:text-body-md lg:text-body-lg text-neutral-firm'>
       Body text that scales up on larger screens for better readability across all devices.
     </p>
   </div>
