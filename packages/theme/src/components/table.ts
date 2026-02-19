@@ -3,7 +3,13 @@ import { tv, type VariantProps } from '../tw';
 const table = tv({
   slots: {
     base: ['w-full', 'caption-bottom', 'text-sm'],
-    wrapper: ['relative', 'isolate', 'overflow-auto', 'rounded-default', 'bg-surface-card'],
+    wrapper: [
+      'relative',
+      'isolate',
+      'overflow-auto',
+      'rounded-default',
+      'bg-surface-card'
+    ],
     table: ['w-full', 'table-auto'],
     thead: ['relative', 'bg-surface-overlay-subtle'],
     tbody: [
@@ -130,8 +136,7 @@ const table = tv({
     },
     striped: {
       true: {
-        tbody:
-          '[&_tr:nth-child(odd)]:bg-surface-overlay-subtle'
+        tbody: '[&_tr:nth-child(odd)]:bg-surface-overlay-subtle'
       }
     },
     isSticky: {
