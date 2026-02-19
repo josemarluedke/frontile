@@ -26,53 +26,53 @@ const chip = tv({
       default: {
         dot: 'bg-neutral-strong',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-neutral-muted',
           'text-on-neutral-medium',
-          'hover:bg-surface-overlay-strong'
+          'hover:bg-neutral-medium'
         ]
       },
       primary: {
         dot: 'bg-brand-soft',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-brand-muted',
           'text-on-brand-soft',
-          'hover:bg-surface-overlay-strong',
+          'hover:bg-brand-medium',
           'focus-visible:ring-brand-soft'
         ]
       },
       accent: {
         dot: 'bg-accent-soft',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-accent-muted',
           'text-on-accent-soft',
-          'hover:bg-surface-overlay-strong',
+          'hover:bg-accent-medium',
           'focus-visible:ring-accent-soft'
         ]
       },
       success: {
         dot: 'bg-success-soft',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-success-muted',
           'text-on-success-soft',
-          'hover:bg-surface-overlay-strong',
+          'hover:bg-success-medium',
           'focus-visible:ring-success-soft'
         ]
       },
       warning: {
         dot: 'bg-warning-soft',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-warning-muted',
           'text-on-warning-soft',
-          'hover:bg-surface-overlay-strong',
+          'hover:bg-warning-medium',
           'focus-visible:ring-warning-soft'
         ]
       },
       danger: {
         dot: 'bg-danger-soft',
         closeButton: [
-          'bg-surface-overlay-medium',
+          'bg-danger-muted',
           'text-on-danger-soft',
-          'hover:bg-surface-overlay-strong',
+          'hover:bg-danger-medium',
           'focus-visible:ring-danger-soft'
         ]
       }
