@@ -153,8 +153,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                    @activeClass="bg-brand-soft/20 text-neutral-firm font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                    @activeClass="bg-brand-soft/30 text-neutral-firm font-medium"
                   >
                     {{page.title}}
                   </DocfyLink>
@@ -175,8 +175,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <DocfyLink
                     @to={{page.url}}
-                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                    @activeClass="bg-brand-soft/20 text-neutral-firm font-medium"
+                    class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                    @activeClass="bg-brand-soft/30 text-neutral-firm font-medium"
                   >
                     {{page.title}}
                     {{#if page.frontmatter.label}}
@@ -190,7 +190,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                 <li>
                   <button
                     type="button"
-                    class="flex w-full items-center justify-between px-6 py-1.5 text-left text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-subtle outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                    class="flex w-full items-center justify-between px-6 py-1.5 text-left text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
                     {{on
                       "click"
                       (fn
@@ -230,8 +230,8 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                         <li>
                           <DocfyLink
                             @to={{page.url}}
-                            class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-brand-subtle/20 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
-                            @activeClass="bg-brand-soft/20 text-neutral-firm font-medium"
+                            class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-brand-soft rounded"
+                            @activeClass="bg-brand-soft/30 text-neutral-firm font-medium"
                           >
                             {{page.title}}
                           </DocfyLink>
