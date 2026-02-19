@@ -15,6 +15,8 @@ v0.18 introduces the following breaking changes:
 
 1. **[Semantic Colors v2](./semantic-colors.md)** - Complete redesign of the color system
 2. **[Theme Configuration](./theme-configuration.md)** - Updated configuration structure and CSS imports
+3. **OKLCH Color Format** - Colors now use OKLCH instead of HSL for better perceptual uniformity
+4. **Surface Colors** - `bg-background` renamed to `bg-surface-canvas`
 
 ## Migration Priority
 
@@ -52,6 +54,59 @@ The semantic color system has been completely redesigned with named levels inste
 
 **See:** [Semantic Colors Migration Guide](./semantic-colors.md)
 
+### 3. OKLCH Color Format (Automatic)
+
+Colors now use the OKLCH color format instead of HSL for improved perceptual uniformity and consistency across color scales.
+
+**Impact:** Low - colors are converted automatically, may see minor visual differences
+
+**Time Required:** No action required (automatic)
+
+**Key Changes:**
+- CSS variables now contain complete OKLCH values: `--color-brand-subtle: oklch(65.27% 0.1234 240.50)`
+- Color variable names now use `--color-` prefix: `--color-brand-subtle` instead of `--brand-subtle`
+- Tailwind v4 with Lightning CSS automatically generates RGB fallbacks for older browsers
+- Minor perceptual differences in colors (OKLCH is perceptually uniform, HSL is not)
+
+**No Manual Migration Required:** The color system automatically converts colors to OKLCH format. If you're overriding colors via CSS, update variable names to include the `--color-` prefix.
+
+### 4. Surface Colors Rename (Find & Replace)
+
+The `background` color token has been renamed to `surface-canvas` for better semantic clarity.
+
+**Impact:** Low - simple find and replace
+
+**Time Required:** 5-10 minutes
+
+**Migration:**
+
+```bash
+# Find all instances
+grep -r "bg-background" .
+
+# Replace in your codebase
+find . -type f \( -name "*.hbs" -o -name "*.gts" -o -name "*.gjs" -o -name "*.html" \) \
+  -exec sed -i '' 's/bg-background/bg-surface-canvas/g' {} +
+```
+
+**Examples:**
+
+```html
+<!-- Before -->
+<body class="bg-background text-neutral-strong">
+
+<!-- After -->
+<body class="bg-surface-canvas text-neutral-strong">
+```
+
+```html
+<!-- Before -->
+<div class="theme-inverse p-6 bg-background rounded-lg">
+
+<!-- After -->
+<div class="theme-inverse p-6 bg-surface-canvas rounded-lg">
+```
+
 ## Migration Strategy
 
 ### For Existing Projects
@@ -71,6 +126,8 @@ Use this checklist to track your migration progress:
 
 - [ ] Theme Configuration - Update CSS imports and variable names
 - [ ] Semantic Colors v2 - Replace numbered color scales with named levels
+- [ ] OKLCH Color Format - Update CSS variable overrides to use `--color-` prefix (if applicable)
+- [ ] Surface Colors - Replace `bg-background` with `bg-surface-canvas`
 
 ## Need Help?
 

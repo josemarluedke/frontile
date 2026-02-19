@@ -127,7 +127,7 @@ import { Button } from 'frontile';
       <Button @intent='primary'>Primary Button</Button>
     </div>
 
-    <div class='theme-inverse p-6 bg-background rounded-lg'>
+    <div class='theme-inverse p-6 bg-surface-canvas rounded-lg'>
       <div class='p-6 bg-surface-overlay-subtle rounded-lg'>
         <h3 class='text-lg font-bold text-neutral-strong mb-4'>Inverted Theme</h3>
         <Button @intent='primary'>Primary Button</Button>
@@ -145,11 +145,12 @@ Frontile provides six semantic color categories:
 
 - **Neutral** - Default interface colors
 - **Brand** - Primary brand colors (blue)
+- **Accent** - Visual emphasis and highlights (violet)
 - **Success** - Positive states and actions (green)
 - **Danger** - Errors and destructive actions (red)
 - **Warning** - Warnings and cautions (orange)
 
-Each category has intuitive levels: `subtle`, `soft`, `medium`, and `strong`. The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
+Each category has multiple intensity levels from subtle to boldest. The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
 
 <ColorPaletteGrid @category="brand" @showDescription={{false}} />
 <ColorPaletteGrid @category="success" @showDescription={{false}} />
@@ -162,11 +163,11 @@ Colors automatically adapt based on the current theme (`.dark`, `.light`, or `.t
 ```css
 /* Example: brand-medium adapts to the theme */
 .light {
-  --brand-medium: 220 90% 50%;  /* Bright blue in light mode */
+  --color-brand-medium: oklch(55.86% 0.2094 263.84);  /* Vivid blue in light mode */
 }
 
 .dark {
-  --brand-medium: 220 90% 60%;  /* Lighter blue in dark mode */
+  --color-brand-medium: oklch(69.83% 0.1526 252.37);  /* Lighter blue in dark mode */
 }
 ```
 
@@ -185,8 +186,8 @@ You can use semantic colors in custom CSS using the Tailwind `theme()` function 
 
 /* Using CSS variables directly */
 .my-component {
-  background-color: hsl(var(--brand-medium));
-  color: hsl(var(--on-brand-medium));
+  background-color: var(--color-brand-medium);
+  color: var(--color-on-brand-medium);
 }
 ```
 

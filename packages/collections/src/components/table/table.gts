@@ -661,7 +661,7 @@ class Table<
               @isSticky={{columnIsSticky column}}
               @stickyPosition={{columnStickyPosition column}}
               data-key={{column.key}}
-              data-sortable="{{(isColumnSortable column)}}"
+              data-sortable="{{isColumnSortable column}}"
             >
               {{#if (isSelectionColumn column)}}
                 {{! Selection column header - render select all checkbox if enabled (default true) }}

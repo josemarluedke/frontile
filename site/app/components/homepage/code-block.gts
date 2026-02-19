@@ -9,7 +9,7 @@ export interface Signature {
 }
 
 const CodeBlock: TOC<Signature> = <template>
-  <div class="bg-neutral-strong dark:bg-black rounded-lg p-4 sm:p-6">
+  <div class="code-block-glow bg-neutral-boldest rounded-xl p-4 sm:p-6">
     <pre class="text-sm font-mono overflow-x-auto">{{highlightCode
         @code
         @language

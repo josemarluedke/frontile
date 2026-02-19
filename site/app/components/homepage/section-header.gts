@@ -26,7 +26,7 @@ const SectionHeader: TOC<Signature> = <template>
       {{@title}}
     </h2>
     {{#if @subtitle}}
-      <p class="text-xl text-neutral-medium max-w-3xl mx-auto">
+      <p class="text-xl text-neutral-firm max-w-3xl mx-auto">
         {{@subtitle}}
       </p>
     {{/if}}

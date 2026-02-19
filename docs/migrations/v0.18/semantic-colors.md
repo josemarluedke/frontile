@@ -36,7 +36,7 @@ A new `inverse` category has been added for elements on inverted surfaces (dark 
 
 ```gts
 // Dark card in light mode
-<div class="bg-neutral-strong text-inverse-medium">
+<div class="bg-neutral-strong text-inverse-strong">
   Content with good contrast
 </div>
 ```
@@ -79,7 +79,7 @@ Each semantic color now has these levels:
 | `bg-default-800`          | `bg-neutral-strong`                            | Maximum emphasis, buttons  |
 | `bg-default-900`          | `bg-neutral-strong`                            | Darkest backgrounds        |
 | `bg-default-950`          | `bg-neutral-strong`                            | Maximum contrast           |
-| `text-default`            | `text-neutral-medium` or `text-neutral-strong` | Body text                  |
+| `text-default`            | `text-neutral-strong` or `text-neutral-bolder` | Body text                  |
 | `text-default-foreground` | `text-on-neutral-medium`                       | Contrasting text on bg     |
 | `border-default`          | `border-neutral-soft`                          | Standard borders           |
 
@@ -234,9 +234,9 @@ Each semantic color now has these levels:
 <span class="text-default-500">Caption</span>
 
 // After
-<h1 class="text-neutral-strong">Heading</h1>
-<p class="text-neutral-medium">Body text</p>
-<span class="text-neutral-soft">Caption</span>
+<h1 class="text-neutral-bolder">Heading</h1>
+<p class="text-neutral-strong">Body text</p>
+<span class="text-neutral-firm">Caption</span>
 ```
 
 ### Badges
@@ -354,7 +354,7 @@ When choosing between levels, ask:
 ### Text Colors
 
 - **On colored background?** → `on-{color}-{level}` (automatically white or black based on WCAG contrast)
-- **On neutral background?** → `neutral-strong` (heading), `neutral-medium` (body), `neutral-soft` (caption)
+- **On neutral background?** → `neutral-bolder` (heading), `neutral-strong` (body), `neutral-firm` (caption)
 
 ### Borders
 

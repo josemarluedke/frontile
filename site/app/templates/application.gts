@@ -23,7 +23,7 @@ import { PortalTarget } from 'frontile';
 
     <:right as |linkClass linkClassActive|>
       <LinkTo
-        @route="docs"
+        @route="docs.get-started"
         class="{{linkClass}} hidden sm:block"
         @activeClass={{linkClassActive}}
       >

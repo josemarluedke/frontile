@@ -18,21 +18,21 @@ Control border thickness with semantic width tokens. These tokens provide meanin
 ```gts preview
 <template>
   <div class='flex gap-6 flex-wrap items-center'>
-    <div class='border-thin border-neutral-medium bg-background p-6 rounded'>
+    <div class='border-thin border-neutral-medium bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Thin</div>
-      <div class='text-body-xs text-neutral-soft'>Subtle borders</div>
+      <div class='text-body-xs text-neutral-strong'>Subtle borders</div>
     </div>
-    <div class='border border-neutral-medium bg-background p-6 rounded'>
+    <div class='border border-neutral-medium bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Default</div>
-      <div class='text-body-xs text-neutral-soft'>Standard borders</div>
+      <div class='text-body-xs text-neutral-strong'>Standard borders</div>
     </div>
-    <div class='border-heavy border-neutral-medium bg-background p-6 rounded'>
+    <div class='border-heavy border-neutral-medium bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Heavy</div>
-      <div class='text-body-xs text-neutral-soft'>Emphasized borders</div>
+      <div class='text-body-xs text-neutral-strong'>Emphasized borders</div>
     </div>
-    <div class='border-aggressive border-neutral-medium bg-background p-6 rounded'>
+    <div class='border-aggressive border-neutral-medium bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Aggressive</div>
-      <div class='text-body-xs text-neutral-soft'>Strong emphasis</div>
+      <div class='text-body-xs text-neutral-strong'>Strong emphasis</div>
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ Control border thickness with semantic width tokens. These tokens provide meanin
     {{! Subtle card }}
     <div class='border-thin border-neutral-medium rounded p-4'>
       <h3 class='text-header-sm mb-2'>Subtle Card</h3>
-      <p class='text-body-sm text-neutral-soft'>Uses thin border for minimal visual weight</p>
+      <p class='text-body-sm text-neutral-strong'>Uses thin border for minimal visual weight</p>
     </div>
 
     {{! Standard input }}

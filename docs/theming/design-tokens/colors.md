@@ -25,9 +25,9 @@ Instead of using arbitrary gray scales like `bg-gray-300`, Frontile's semantic c
 
 Text colors:
 
-- `text-neutral-soft` - Muted text for hints and placeholders
-- `text-neutral-medium` - Default text color for body content
-- `text-neutral-strong` - Strong emphasis for headings
+- `text-neutral-firm` - Secondary text for descriptions and metadata
+- `text-neutral-strong` - Default text color for body content
+- `text-neutral-boldest` - Maximum emphasis for headings
 
 Background colors with automatic text colors:
 
@@ -86,6 +86,31 @@ Banners:
       <div class='text-brand-strong font-semibold'>Tonal Banner</div>
       <div class='text-brand-strong text-sm'>Subtle notification with brand colors</div>
     </div>
+  </div>
+</template>
+```
+
+### Accent
+
+<ColorPaletteGrid @category="accent" @showDescription={{true}} />
+
+**Usage Examples:**
+
+```gts preview
+<template>
+  <div class='flex gap-4 flex-col'>
+    {{! Accent Alert }}
+    <div class='bg-accent-subtle border border-accent-soft p-4 rounded'>
+      <div class='text-accent-strong'>
+        <div class='font-semibold'>New Feature!</div>
+        <div class='text-sm'>Check out our latest updates and improvements.</div>
+      </div>
+    </div>
+
+    {{! Accent Button }}
+    <button class='bg-accent-medium text-on-accent-medium hover:bg-accent-soft px-4 py-2 rounded'>
+      Explore Features
+    </button>
   </div>
 </template>
 ```
@@ -179,9 +204,11 @@ Banners:
 ### For Text
 
 - **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-brand-medium`)
-- **soft**: Muted text, hints, placeholders
-- **medium**: Links, interactive text
-- **strong**: Headings, important text
+- **firm**: Secondary text, descriptions, metadata
+- **strong**: Default body text, readable content
+- **bolder/boldest**: Headings, important text
+
+> **Note:** Lower levels like `soft` and `medium` are designed for backgrounds and borders, not for text. In dark mode, these levels map to very dark values that are illegible on dark surfaces. Always use `firm` or higher for visible text.
 
 ### For Borders
 
@@ -217,6 +244,39 @@ Frontile automatically generates optimal contrasting text colors for every backg
 - Always meets WCAG AA standards
 - Automatically adapts to theme changes (light/dark mode)
 - Works with custom theme colors
+
+### Customizing On-Colors
+
+While auto-generated on-colors work for most cases, you can override them for brand consistency or specific design requirements:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        brand: {
+          subtle: '#eff6ff',
+          soft: '#93c5fd',
+          medium: '#3b82f6',
+          strong: '#1e40af'
+        },
+        // Override specific on-colors
+        'on-brand': {
+          medium: '#ffffff',  // Force white text on brand-medium
+          strong: '#e0f2fe'   // Use light blue instead of auto-generated white
+        }
+        // on-brand-subtle and on-brand-soft are still auto-generated
+      }
+    }
+  }
+});
+```
+
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-solid`.
+
+> **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
 
 ## Migrating from Old Colors
 

@@ -91,9 +91,44 @@ Then reference it in your CSS:
 
 Frontile automatically:
 - Generates contrasting text colors (`on-{color}-{level}`)
-- Converts your hex colors to HSL format
+- Converts your colors to OKLCH format for perceptual uniformity
+- Accepts any color format as input (hex, rgb, hsl, oklch, CSS variables)
 - Creates theme-aware CSS variables
 - Ensures proper contrast ratios
+
+### Customizing On-Colors
+
+By default, Frontile auto-generates optimal `on-{color}-{level}` text colors (black or white) based on WCAG contrast calculations. If you need specific on-colors for brand consistency, you can override them in your theme configuration:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        brand: {
+          subtle: '#eff6ff',
+          soft: '#93c5fd',
+          medium: '#3b82f6',
+          strong: '#1e40af'
+        },
+        // Override specific on-colors
+        'on-brand': {
+          medium: '#ffffff',  // Force white text on brand-medium
+          strong: '#e0f2fe'   // Use light blue instead of white
+        }
+        // on-brand-subtle and on-brand-soft will still be auto-generated
+      }
+    }
+  }
+});
+```
+
+**Key behavior:**
+- Partial overrides work — define only the levels you want to customize, and the rest will be auto-generated
+- Works for: `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`, `on-surface-solid`
+- CSS variable references (e.g., `var(--my-color)`) are passed through as-is — auto-generation is skipped since contrast can't be calculated
 
 ## Customizing Typography
 
@@ -485,7 +520,7 @@ Test your theme in different scenarios:
 </html>
 
 <!-- Test theme-inverse -->
-<div class="theme-inverse bg-background">
+<div class="theme-inverse bg-surface-canvas">
   <!-- Your components -->
 </div>
 ```
