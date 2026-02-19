@@ -39,7 +39,6 @@ export const colorCategories = [
   'success',
   'danger',
   'warning',
-  'inverse',
 ] as const;
 
 export type ColorCategory = (typeof colorCategories)[number];
@@ -84,7 +83,6 @@ export function getCategoryDisplayName(category: ColorCategory): string {
     success: 'Success',
     danger: 'Danger',
     warning: 'Warning',
-    inverse: 'Inverse',
   };
   return names[category];
 }
@@ -101,7 +99,6 @@ export function getCategoryDescription(category: ColorCategory): string {
       'Colors for positive states, confirmations, and successful actions',
     danger: 'Colors for errors, warnings, and destructive actions',
     warning: 'Colors for cautions and important notices',
-    inverse: 'High-contrast colors for overlays and backdrops',
   };
   return descriptions[category];
 }

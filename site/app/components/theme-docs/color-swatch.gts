@@ -77,14 +77,6 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
     'warning-strong': 'bg-warning-strong',
     'warning-bolder': 'bg-warning-bolder',
     'warning-boldest': 'bg-warning-boldest',
-    'inverse-subtle': 'bg-inverse-subtle',
-    'inverse-muted': 'bg-inverse-muted',
-    'inverse-soft': 'bg-inverse-soft',
-    'inverse-medium': 'bg-inverse-medium',
-    'inverse-firm': 'bg-inverse-firm',
-    'inverse-strong': 'bg-inverse-strong',
-    'inverse-bolder': 'bg-inverse-bolder',
-    'inverse-boldest': 'bg-inverse-boldest',
   };
 
   // Corresponding "on-" text colors for each background
@@ -137,14 +129,6 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
     'warning-strong': 'text-on-warning-strong',
     'warning-bolder': 'text-on-warning-bolder',
     'warning-boldest': 'text-on-warning-boldest',
-    'inverse-subtle': 'text-on-inverse-subtle',
-    'inverse-muted': 'text-on-inverse-muted',
-    'inverse-soft': 'text-on-inverse-soft',
-    'inverse-medium': 'text-on-inverse-medium',
-    'inverse-firm': 'text-on-inverse-firm',
-    'inverse-strong': 'text-on-inverse-strong',
-    'inverse-bolder': 'text-on-inverse-bolder',
-    'inverse-boldest': 'text-on-inverse-boldest',
   };
 
   get bgClass() {
@@ -198,7 +182,7 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
           {{this.className}}
         </div>
         {{#if @showDescription}}
-          <div class="text-xs text-neutral truncate">
+          <div class="text-xs text-neutral-firm truncate">
             {{this.description}}
           </div>
         {{/if}}
