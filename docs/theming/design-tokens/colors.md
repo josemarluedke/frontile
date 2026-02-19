@@ -245,6 +245,39 @@ Frontile automatically generates optimal contrasting text colors for every backg
 - Automatically adapts to theme changes (light/dark mode)
 - Works with custom theme colors
 
+### Customizing On-Colors
+
+While auto-generated on-colors work for most cases, you can override them for brand consistency or specific design requirements:
+
+```js
+const { frontile } = require('@frontile/theme/plugin');
+
+module.exports = frontile({
+  themes: {
+    light: {
+      colors: {
+        brand: {
+          subtle: '#eff6ff',
+          soft: '#93c5fd',
+          medium: '#3b82f6',
+          strong: '#1e40af'
+        },
+        // Override specific on-colors
+        'on-brand': {
+          medium: '#ffffff',  // Force white text on brand-medium
+          strong: '#e0f2fe'   // Use light blue instead of auto-generated white
+        }
+        // on-brand-subtle and on-brand-soft are still auto-generated
+      }
+    }
+  }
+});
+```
+
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-solid`.
+
+> **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
+
 ## Migrating from Old Colors
 
 If you're upgrading from an older version of Frontile, see the [Semantic Colors v2 Migration Guide](../../migrations/v0.18/semantic-colors.md) for detailed instructions on updating your code.

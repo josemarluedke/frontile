@@ -163,11 +163,11 @@ Colors automatically adapt based on the current theme (`.dark`, `.light`, or `.t
 ```css
 /* Example: brand-medium adapts to the theme */
 .light {
-  --brand-medium: 220 90% 50%;  /* Bright blue in light mode */
+  --color-brand-medium: oklch(55.86% 0.2094 263.84);  /* Vivid blue in light mode */
 }
 
 .dark {
-  --brand-medium: 220 90% 60%;  /* Lighter blue in dark mode */
+  --color-brand-medium: oklch(69.83% 0.1526 252.37);  /* Lighter blue in dark mode */
 }
 ```
 
@@ -186,8 +186,8 @@ You can use semantic colors in custom CSS using the Tailwind `theme()` function 
 
 /* Using CSS variables directly */
 .my-component {
-  background-color: hsl(var(--brand-medium));
-  color: hsl(var(--on-brand-medium));
+  background-color: var(--color-brand-medium);
+  color: var(--color-on-brand-medium);
 }
 ```
 

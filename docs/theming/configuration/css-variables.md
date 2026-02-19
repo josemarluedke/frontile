@@ -189,7 +189,7 @@ These variables are used by specific Frontile components and should be defined i
 Frontile's semantic colors use a sophisticated system that automatically calculates:
 - Light and dark theme variations
 - Contrasting text colors (`on-{color}` classes)
-- Proper HSL values for theme compatibility
+- Colors in OKLCH format for perceptual uniformity
 
 ## Overriding Variables
 
