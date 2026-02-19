@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from '../tw';
 const spinner = tv({
-  base: 'text-neutral-subtle animate-spin dark:text-neutral-soft',
+  base: 'text-neutral-muted animate-spin',
   variants: {
     size: {
       xs: 'w-4 h-4',
@@ -10,8 +10,8 @@ const spinner = tv({
       xl: 'w-12 h-12'
     },
     intent: {
-      default: 'fill-neutral-strong dark:fill-neutral-subtle',
-      primary: 'fill-primary',
+      default: 'fill-neutral-strong',
+      primary: 'fill-brand',
       success: 'fill-success',
       warning: 'fill-warning',
       danger: 'fill-danger'

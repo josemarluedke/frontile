@@ -46,6 +46,7 @@ import { Chip } from 'frontile';
   <div>
     <Chip @intent='default'>Chip</Chip>
     <Chip @intent='primary'>Primary</Chip>
+    <Chip @intent='accent'>Accent</Chip>
     <Chip @intent='success'>Success</Chip>
     <Chip @intent='warning'>Warning</Chip>
     <Chip @intent='danger'>Danger</Chip>
@@ -53,6 +54,7 @@ import { Chip } from 'frontile';
   <div class="mt-6">
     <Chip @appearance="outlined" @intent='default'>Chip</Chip>
     <Chip @appearance="outlined" @intent='primary'>Primary</Chip>
+    <Chip @appearance="outlined" @intent='accent'>Accent</Chip>
     <Chip @appearance="outlined" @intent='success'>Success</Chip>
     <Chip @appearance="outlined" @intent='warning'>Warning</Chip>
     <Chip @appearance="outlined" @intent='danger'>Danger</Chip>
@@ -60,6 +62,7 @@ import { Chip } from 'frontile';
   <div class="mt-6">
     <Chip @appearance="faded" @intent='default'>Chip</Chip>
     <Chip @appearance="faded" @intent='primary'>Primary</Chip>
+    <Chip @appearance="faded" @intent='accent'>Accent</Chip>
     <Chip @appearance="faded" @intent='success'>Success</Chip>
     <Chip @appearance="faded" @intent='warning'>Warning</Chip>
     <Chip @appearance="faded" @intent='danger'>Danger</Chip>

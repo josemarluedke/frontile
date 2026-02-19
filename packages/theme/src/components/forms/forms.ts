@@ -23,7 +23,7 @@ const label = tv({
 });
 
 const formDescription = tv({
-  base: 'text-neutral-soft text-xs pb-1 last:pb-0',
+  base: 'text-neutral-medium text-xs pb-1 last:pb-0',
   variants: {
     size: {
       sm: 'text-xs',
@@ -66,9 +66,9 @@ const input = tv({
       'appearance-none',
       'flex-1',
       'w-full',
-      'bg-white dark:bg-neutral-subtle',
+      'bg-surface-solid-0',
       'text-neutral-strong',
-      'placeholder-neutral-soft',
+      'placeholder-neutral-medium',
       'text-base text-left',
       'border',
       'border-neutral-soft',
@@ -136,7 +136,7 @@ const checkboxRadioBase = tv({
       'text-base',
       'text-brand',
       'border border-neutral-soft',
-      'bg-white dark:bg-neutral-subtle',
+      'bg-surface-solid-0',
       'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-neutral-soft',
       ...focusVisibleRing
     ],
@@ -229,7 +229,7 @@ const select = tv({
   extend: input,
   slots: {
     base: [],
-    placeholder: 'text-neutral-soft',
+    placeholder: 'text-neutral-medium',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
@@ -360,32 +360,38 @@ const switchInput = tv({
     intent: {
       default: {
         wrapper: [
-          'group-data-[selected=true]:bg-neutral-soft',
-          'group-data-[selected=true]:text-on-neutral-soft'
+          'group-data-[selected=true]:bg-neutral-firm',
+          'group-data-[selected=true]:text-on-neutral-firm'
         ]
       },
       primary: {
         wrapper: [
-          'group-data-[selected=true]:bg-brand',
-          'group-data-[selected=true]:text-on-brand'
+          'group-data-[selected=true]:bg-brand-medium',
+          'group-data-[selected=true]:text-on-brand-medium'
+        ]
+      },
+      accent: {
+        wrapper: [
+          'group-data-[selected=true]:bg-accent-medium',
+          'group-data-[selected=true]:text-on-accent-medium'
         ]
       },
       success: {
         wrapper: [
-          'group-data-[selected=true]:bg-success',
-          'group-data-[selected=true]:text-on-success'
+          'group-data-[selected=true]:bg-success-medium',
+          'group-data-[selected=true]:text-on-success-medium'
         ]
       },
       warning: {
         wrapper: [
-          'group-data-[selected=true]:bg-warning',
-          'group-data-[selected=true]:text-on-warning'
+          'group-data-[selected=true]:bg-warning-medium',
+          'group-data-[selected=true]:text-on-warning-medium'
         ]
       },
       danger: {
         wrapper: [
-          'group-data-[selected=true]:bg-danger',
-          'data-[selected=true]:text-on-danger'
+          'group-data-[selected=true]:bg-danger-medium',
+          'group-data-[selected=true]:text-on-danger-medium'
         ]
       }
     }

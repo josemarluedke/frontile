@@ -25,7 +25,7 @@ const closeButton = tv({
       subtle: {
         base: [
           'bg-neutral-subtle',
-          'text-on-neutral-subtle dark:text-default-background',
+          'text-on-neutral-subtle',
           'hover:bg-surface-overlay-subtle'
         ]
       }
