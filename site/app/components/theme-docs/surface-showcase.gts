@@ -224,7 +224,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
           <h4 class="text-sm font-semibold mb-4 text-neutral-strong">
             Surface Overlay (on solid-1 base)
           </h4>
-          <p class="text-sm text-neutral-soft mb-4">
+          <p class="text-sm text-neutral-firm mb-4">
             These overlays are translucent and stack on top of the solid base
             background.
           </p>
@@ -237,7 +237,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
                   <span class="font-mono text-sm text-surface-solid-11">
                     surface-overlay-{{level}}
                   </span>
-                  <span class="text-xs text-neutral-soft">
+                  <span class="text-xs text-neutral-firm">
                     Translucent layer
                   </span>
                 </div>
@@ -250,7 +250,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
             <h5 class="text-sm font-semibold mb-2 text-neutral-strong">
               Stacking Example
             </h5>
-            <p class="text-sm text-neutral-medium mb-4">
+            <p class="text-sm text-neutral-firm mb-4">
               Overlays can stack on top of each other:
             </p>
             <div class="bg-surface-overlay-soft p-4 rounded">
@@ -258,7 +258,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
               <div class="bg-surface-overlay-medium p-4 rounded">
                 <div class="text-sm text-neutral-strong mb-2">Layer 2 (medium)</div>
                 <div class="bg-surface-overlay-strong p-4 rounded">
-                  <div class="text-sm text-surface-solid-0">Layer 3 (strong)</div>
+                  <div class="text-sm text-surface-solid-11">Layer 3 (strong)</div>
                 </div>
               </div>
             </div>
@@ -276,7 +276,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
               <h4 class="text-sm font-semibold mb-2 text-neutral-strong">
                 Inverse Overlay in Light Mode
               </h4>
-              <p class="text-xs text-neutral-soft mb-4">
+              <p class="text-xs text-neutral-firm mb-4">
                 Creates dark overlays on light backgrounds for high contrast.
               </p>
               <div class="space-y-2">
@@ -299,7 +299,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
               <h4 class="text-sm font-semibold mb-2 text-neutral-strong">
                 Inverse Overlay in Dark Mode
               </h4>
-              <p class="text-xs text-neutral-soft mb-4">
+              <p class="text-xs text-neutral-firm mb-4">
                 Creates light overlays on dark backgrounds for high contrast.
               </p>
               <div class="space-y-2">
@@ -342,7 +342,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
                       <span class="text-xs font-semibold text-neutral-strong">
                         {{this.getSurfaceRoleLabel role}}
                       </span>
-                      <span class="text-xs text-neutral-soft">
+                      <span class="text-xs text-neutral-firm">
                         {{this.getSurfaceRoleDescription role}}
                       </span>
                     </div>
@@ -360,7 +360,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
               <h4 class="text-sm font-semibold mb-2 text-neutral-strong">
                 Surface Roles in Dark Mode
               </h4>
-              <p class="text-xs text-neutral-soft mb-4">
+              <p class="text-xs text-neutral-firm mb-4">
                 Semantic surface tokens for different UI contexts
               </p>
               <div class="space-y-2">
@@ -376,7 +376,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
                       <span class="text-xs font-semibold text-neutral-strong">
                         {{this.getSurfaceRoleLabel role}}
                       </span>
-                      <span class="text-xs text-neutral-soft">
+                      <span class="text-xs text-neutral-firm">
                         {{this.getSurfaceRoleDescription role}}
                       </span>
                     </div>

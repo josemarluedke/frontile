@@ -204,7 +204,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
             autocomplete="off"
             placeholder="Search..."
             class="p-4 bg-transparent w-full focus:outline-none placeholder:text-neutral
-              {{if this.results.length 'border-b border-neutral-soft'}}
+              {{if this.results.length "border-b border-neutral-soft"}}
               "
             {{on "input" this.search}}
             {{on "keydown" this.onInputKeyDown}}
@@ -218,7 +218,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
                     (eq this.selected index)
-                    'bg-brand-soft text-on-brand-soft'
+                    "bg-brand-soft text-on-brand-soft"
                   }}"
                 data-result={{index}}
                 {{on "click" this.onItemClick}}

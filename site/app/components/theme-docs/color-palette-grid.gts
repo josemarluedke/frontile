@@ -59,7 +59,7 @@ export default class ColorPaletteGrid extends Component<ColorPaletteGridSignatur
     <div class="color-palette-grid">
       {{! Header }}
       <div class="mb-6">
-        <p class="text-neutral-medium">
+        <p class="text-neutral-firm">
           {{this.categoryDescription}}
         </p>
       </div>

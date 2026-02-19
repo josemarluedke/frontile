@@ -40,7 +40,7 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
               "border-brand-soft text-neutral-firm"
               as |linkClass linkClassActive|
             }}
-              <div class="flex items-center gap-4 text-neutr">
+              <div class="flex items-center gap-4">
                 {{yield linkClass linkClassActive to="left"}}
               </div>
 

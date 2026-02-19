@@ -61,7 +61,7 @@ export default class DocfyPage extends Component<Signature> {
                   href={{page.editUrl}}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex items-center text-xs text-neutral-soft hover:text-brand-medium"
+                  class="flex items-center text-xs text-neutral-firm hover:text-brand-medium"
                 >
                   <svg class="w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path

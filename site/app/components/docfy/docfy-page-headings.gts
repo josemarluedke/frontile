@@ -79,7 +79,7 @@ export default class PageHeadings extends Component<Signature> {
   }
   <template>
     <div
-      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm text-neutral-soft"
+      class="overflow-y-auto sticky top-28 max-h-screen-28 pt-12 pb-4 -mt-12 text-sm text-neutral-firm"
     >
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         {{#if page.headings.length}}
@@ -91,8 +91,8 @@ export default class PageHeadings extends Component<Signature> {
                   class="transition block px-2 py-1 border-l-2 hover:text-brand-medium
                     {{if
                       (docfyEq heading.id @currentHeadingId)
-                      'border-brand-medium text-brand-medium'
-                      'border-transparent'
+                      "border-brand-medium text-brand-medium"
+                      "border-transparent"
                     }}"
                   {{on "click" this.onClick}}
                 >
@@ -108,8 +108,8 @@ export default class PageHeadings extends Component<Signature> {
                           class="transition block pl-6 py-1 border-l-2 hover:text-brand-medium
                             {{if
                               (docfyEq subHeading.id @currentHeadingId)
-                              'border-brand-medium text-brand-medium'
-                              'border-transparent'
+                              "border-brand-medium text-brand-medium"
+                              "border-transparent"
                             }}"
                           {{on "click" this.onClick}}
                         >
