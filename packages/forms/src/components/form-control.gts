@@ -33,8 +33,14 @@ interface FormControlSignature {
           hasDescription?: string | boolean,
           hasFeedback?: string | boolean
         ) => string | undefined;
-        Label: WithBoundArgs<ComponentLike<LabelSignature>, 'for' | 'size' | 'isRequired'>;
-        Description: WithBoundArgs<ComponentLike<FormDescriptionSignature>, 'id' | 'size'>;
+        Label: WithBoundArgs<
+          ComponentLike<LabelSignature>,
+          'for' | 'size' | 'isRequired'
+        >;
+        Description: WithBoundArgs<
+          ComponentLike<FormDescriptionSignature>,
+          'id' | 'size'
+        >;
         Feedback: WithBoundArgs<
           ComponentLike<FormFeedbackSignature>,
           'id' | 'size' | 'messages' | 'intent'

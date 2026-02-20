@@ -38,12 +38,30 @@ interface SimpleTableSignature {
   Blocks: {
     default: [
       {
-        Header: WithBoundArgs<ComponentLike<SimpleTableHeaderSignature>, 'styleFns' | 'classes'>;
-        Body: WithBoundArgs<ComponentLike<SimpleTableBodySignature>, 'styleFns' | 'classes'>;
-        Footer: WithBoundArgs<ComponentLike<SimpleTableFooterSignature>, 'styleFns' | 'classes'>;
-        Column: WithBoundArgs<ComponentLike<SimpleTableColumnSignature>, 'styleFns'>;
-        Row: WithBoundArgs<ComponentLike<SimpleTableRowSignature>, 'styleFns' | 'classes'>;
-        Cell: WithBoundArgs<ComponentLike<SimpleTableCellSignature>, 'styleFns' | 'classes'>;
+        Header: WithBoundArgs<
+          ComponentLike<SimpleTableHeaderSignature>,
+          'styleFns' | 'classes'
+        >;
+        Body: WithBoundArgs<
+          ComponentLike<SimpleTableBodySignature>,
+          'styleFns' | 'classes'
+        >;
+        Footer: WithBoundArgs<
+          ComponentLike<SimpleTableFooterSignature>,
+          'styleFns' | 'classes'
+        >;
+        Column: WithBoundArgs<
+          ComponentLike<SimpleTableColumnSignature>,
+          'styleFns'
+        >;
+        Row: WithBoundArgs<
+          ComponentLike<SimpleTableRowSignature>,
+          'styleFns' | 'classes'
+        >;
+        Cell: WithBoundArgs<
+          ComponentLike<SimpleTableCellSignature>,
+          'styleFns' | 'classes'
+        >;
       }
     ];
   };

@@ -15,7 +15,10 @@ interface ButtonGroupSignature {
     default: [
       {
         Button: WithBoundArgs<ComponentLike<ButtonSignature>, 'isInGroup'>;
-        ToggleButton: WithBoundArgs<ComponentLike<ToggleButtonSignature>, 'isInGroup'>;
+        ToggleButton: WithBoundArgs<
+          ComponentLike<ToggleButtonSignature>,
+          'isInGroup'
+        >;
       }
     ];
   };

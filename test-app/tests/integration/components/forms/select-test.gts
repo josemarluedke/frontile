@@ -138,10 +138,10 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     assert
       .dom('[data-component="listbox"] [data-key="item-3"]')
-      .hasAttribute('disabled');
+      .hasAttribute('aria-disabled', 'true');
     assert
       .dom('[data-component="listbox"] [data-key="item-4"]')
-      .hasAttribute('disabled');
+      .hasAttribute('aria-disabled', 'true');
 
     assert
       .dom('[data-component="listbox"] [data-key="item-1"]')

@@ -54,7 +54,7 @@
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
     "@frontile/theme": "workspace:0.18.0-alpha.1",
-    "@glint/template": "1.5.2",
+    "@glint/template": "^1.7.4",
     "ember-basic-dropdown": "^8.4.0",
     "ember-power-select": "^8.6.2"
   },

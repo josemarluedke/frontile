@@ -142,7 +142,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       data-test-id="listbox-item"
       data-component="listbox-item"
       data-key={{this.key}}
-      disabled={{this.listItem.isDisabled}}
+      aria-disabled={{if this.listItem.isDisabled "true"}}
       class={{this.classNames.base}}
       ...attributes
     >

@@ -59,7 +59,7 @@
     "@glint/core": "^1.5.2",
     "@glint/environment-ember-loose": "^1.5.2",
     "@glint/environment-ember-template-imports": "^1.5.2",
-    "@glint/template": "^1.5.2",
+    "@glint/template": "^1.7.4",
     "@rollup/plugin-babel": "^6.0.4",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
