@@ -407,7 +407,7 @@ export default class ConfirmationDialog extends Component {
             {{/if}}
           </div>
         </m.Body>
-        <m.Footer @class='flex gap-2'>
+        <m.Footer @class='flex gap-4 [&>*]:flex-1'>
           <Button @onPress={{this.cancel}} disabled={{this.isDeleting}}>
             Cancel
           </Button>

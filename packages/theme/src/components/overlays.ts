@@ -31,11 +31,11 @@ const backdrop = tv({
 
 const modal = tv({
   slots: {
-    base: 'flex flex-col shrink-0 relative text-surface-solid-11 bg-surface-solid-1 rounded-sm my-24 w-full outline-hidden overflow-hidden',
-    closeButton: 'absolute top-2 right-2',
-    header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
-    body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-surface-overlay-subtle p-4`
+    base: 'flex flex-col shrink-0 relative text-surface-solid-11 bg-surface-solid-1 border border-surface-overlay-medium rounded-2xl my-24 w-full outline-hidden overflow-clip',
+    closeButton: 'absolute top-3 right-3',
+    header: 'font-bold text-xl px-6 pt-8 pb-2',
+    body: 'px-6 py-2 grow overflow-y-auto',
+    footer: 'flex justify-end items-center px-6 pt-6 pb-8 gap-4'
   },
   variants: {
     size: {
@@ -54,11 +54,11 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-surface-solid-11 bg-surface-solid-1 w-full h-full shadow-sm outline-hidden',
-    closeButton: 'absolute top-2 right-2',
-    header: 'font-bold text-xl p-4 rounded-tl rounded-tr',
-    body: 'p-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-neutral-subtle bg-surface-overlay-subtle p-4`
+    base: 'flex flex-col absolute text-surface-solid-11 bg-surface-solid-1 border border-surface-overlay-medium rounded-2xl w-full h-full outline-hidden overflow-clip',
+    closeButton: 'absolute top-3 right-3',
+    header: 'font-bold text-xl text-center px-8 pt-10 pb-2',
+    body: 'px-8 py-4 grow overflow-y-auto',
+    footer: `${obscurer} flex justify-end items-center relative border-t border-surface-overlay-medium bg-surface-solid-0 p-8 gap-4`
   },
   variants: {
     size: {
