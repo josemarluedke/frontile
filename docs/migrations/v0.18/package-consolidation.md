@@ -1,3 +1,10 @@
+---
+title: Package Consolidation
+order: 4
+category: migrations
+subcategory: v0.18
+---
+
 # Package Consolidation Migration Guide
 
 ## Overview
