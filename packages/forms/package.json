@@ -52,16 +52,8 @@
     "test": "echo 'A v2 addon does not have tests, run tests in test-app'"
   },
   "dependencies": {
-    "@ember/test-waiters": "^4.0.0",
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/buttons": "workspace:0.18.0-alpha.4",
-    "@frontile/collections": "workspace:0.18.0-alpha.4",
-    "@frontile/overlays": "workspace:0.18.0-alpha.4",
-    "@frontile/theme": "workspace:0.18.0-alpha.4",
-    "@frontile/utilities": "workspace:0.18.0-alpha.4",
-    "@glint/template": "^1.7.4",
-    "ember-modifier": "^4.1.0",
-    "form-data-utils": "^0.6.0"
+    "frontile": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -103,24 +95,6 @@
     "version": 2,
     "type": "addon",
     "main": "addon-main.js",
-    "app-js": {
-      "./components/checkbox-group.js": "./dist/_app_/components/checkbox-group.js",
-      "./components/checkbox.js": "./dist/_app_/components/checkbox.js",
-      "./components/field-types.js": "./dist/_app_/components/field-types.js",
-      "./components/field.js": "./dist/_app_/components/field.js",
-      "./components/form-control.js": "./dist/_app_/components/form-control.js",
-      "./components/form-description.js": "./dist/_app_/components/form-description.js",
-      "./components/form-feedback.js": "./dist/_app_/components/form-feedback.js",
-      "./components/form.js": "./dist/_app_/components/form.js",
-      "./components/icons.js": "./dist/_app_/components/icons.js",
-      "./components/input.js": "./dist/_app_/components/input.js",
-      "./components/label.js": "./dist/_app_/components/label.js",
-      "./components/native-select.js": "./dist/_app_/components/native-select.js",
-      "./components/radio-group.js": "./dist/_app_/components/radio-group.js",
-      "./components/radio.js": "./dist/_app_/components/radio.js",
-      "./components/select.js": "./dist/_app_/components/select.js",
-      "./components/switch.js": "./dist/_app_/components/switch.js",
-      "./components/textarea.js": "./dist/_app_/components/textarea.js"
-    }
+    "app-js": {}
   }
 }

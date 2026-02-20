@@ -53,11 +53,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/buttons": "workspace:0.18.0-alpha.4",
-    "@frontile/theme": "workspace:0.18.0-alpha.4",
-    "ember-auto-import": "^2.7.2",
-    "ember-css-transitions": "^4.4.0",
-    "ember-modifier": "^4.1.0"
+    "frontile": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -99,8 +95,6 @@
     "type": "addon",
     "main": "addon-main.js",
     "app-js": {
-      "./components/notification-card.js": "./dist/_app_/components/notification-card.js",
-      "./components/notifications-container.js": "./dist/_app_/components/notifications-container.js",
       "./services/notifications.js": "./dist/_app_/services/notifications.js"
     }
   }

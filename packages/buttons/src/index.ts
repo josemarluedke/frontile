@@ -1,5 +1,17 @@
-export * from './components/button';
-export * from './components/close-button';
-export * from './components/toggle-button';
-export * from './components/button-group';
-export * from './components/chip';
+import { deprecate } from '@ember/debug';
+
+deprecate(
+  'Importing from "@frontile/buttons" is deprecated. ' +
+  'Import from "frontile" or "frontile/buttons" instead. ' +
+  'See https://frontile.dev/docs/migrations/package-consolidation',
+  false,
+  {
+    id: 'frontile.import-from-buttons',
+    until: '0.19.0',
+    for: 'frontile',
+    since: { available: '0.18.0', enabled: '0.18.0' },
+    url: 'https://frontile.dev/docs/migrations/package-consolidation'
+  }
+);
+
+export * from 'frontile/buttons';

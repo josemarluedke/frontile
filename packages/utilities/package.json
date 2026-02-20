@@ -52,13 +52,8 @@
     "test": "echo 'A v2 addon does not have tests, run tests in test-app'"
   },
   "dependencies": {
-    "@ember/test-waiters": "^4.0.0",
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.18.0-alpha.4",
-    "ember-auto-import": "^2.7.2",
-    "ember-element-helper": "^0.8.5",
-    "ember-modifier": "^4.1.0",
-    "focus-visible": "^5.2.0"
+    "frontile": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -99,13 +94,6 @@
     "version": 2,
     "type": "addon",
     "main": "addon-main.js",
-    "app-js": {
-      "./components/avatar.js": "./dist/_app_/components/avatar.js",
-      "./components/collapsible.js": "./dist/_app_/components/collapsible.js",
-      "./components/divider.js": "./dist/_app_/components/divider.js",
-      "./components/spinner.js": "./dist/_app_/components/spinner.js",
-      "./components/visually-hidden.js": "./dist/_app_/components/visually-hidden.js",
-      "./modifiers/press.js": "./dist/_app_/modifiers/press.js"
-    }
+    "app-js": {}
   }
 }

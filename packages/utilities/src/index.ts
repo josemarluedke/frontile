@@ -1,10 +1,17 @@
-import 'focus-visible/dist/focus-visible.js';
+import { deprecate } from '@ember/debug';
 
-export * from './components/avatar';
-export * from './components/visually-hidden';
-export * from './components/collapsible';
-export * from './components/divider';
-export * from './components/spinner';
-export * from './utils/ref';
-export * from './utils/toggle';
-export * from './modifiers/press';
+deprecate(
+  'Importing from "@frontile/utilities" is deprecated. ' +
+  'Import from "frontile" or "frontile/utilities" instead. ' +
+  'See https://frontile.dev/docs/migrations/package-consolidation',
+  false,
+  {
+    id: 'frontile.import-from-utilities',
+    until: '0.19.0',
+    for: 'frontile',
+    since: { available: '0.18.0', enabled: '0.18.0' },
+    url: 'https://frontile.dev/docs/migrations/package-consolidation'
+  }
+);
+
+export * from 'frontile/utilities';
