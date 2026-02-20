@@ -1,6 +1,6 @@
 {
   "name": "@frontile/theme",
-  "version": "0.18.0-alpha.3",
+  "version": "0.18.0-alpha.4",
   "description": "Component Library for Ember Octane apps: Theme",
   "keywords": [
     "ember-addon",
