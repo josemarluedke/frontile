@@ -74,7 +74,7 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -147,10 +147,10 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../utilities
     devDependencies:
       '@babel/core':
@@ -226,7 +226,7 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/forms-legacy':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../forms-legacy
       '@glint/template':
         specifier: 1.5.2
@@ -308,16 +308,16 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/buttons':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../buttons
       '@frontile/overlays':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../utilities
       '@universal-ember/table':
         specifier: ^3.1.1
@@ -402,19 +402,19 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/buttons':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../buttons
       '@frontile/collections':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../collections
       '@frontile/overlays':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../overlays
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       '@frontile/utilities':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../utilities
       '@glint/template':
         specifier: 1.5.2
@@ -499,7 +499,7 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       '@glint/template':
         specifier: 1.5.2
@@ -666,10 +666,10 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/buttons':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -754,10 +754,10 @@ importers:
         specifier: ^1.16.10
         version: 1.18.1(@glint/template@1.5.2)
       '@frontile/buttons':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../buttons
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       '@glint/template':
         specifier: 1.5.2
@@ -845,7 +845,7 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
     devDependencies:
       '@babel/core':
@@ -1030,7 +1030,7 @@ importers:
         specifier: ^1.9.0
         version: 1.10.0
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../theme
       ember-auto-import:
         specifier: ^2.7.2
@@ -1374,34 +1374,34 @@ importers:
         specifier: ^4.1.0
         version: 4.1.1(@embroider/core@3.5.7(@glint/template@1.5.2))(webpack@5.101.0)
       '@frontile/buttons':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/buttons
       '@frontile/changeset-form':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/changeset-form
       '@frontile/collections':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/collections
       '@frontile/forms':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/forms
       '@frontile/forms-legacy':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/forms-legacy
       '@frontile/notifications':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/notifications
       '@frontile/overlays':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/overlays
       '@frontile/status':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/status
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/theme
       '@frontile/utilities':
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/utilities
       '@glimmer/component':
         specifier: ^2.0.0
@@ -1500,7 +1500,7 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(encoding@0.1.13)
       frontile:
-        specifier: workspace:0.18.0-alpha.0
+        specifier: workspace:0.18.0-alpha.1
         version: link:../packages/frontile
       globals:
         specifier: ^15.14.0
@@ -16802,6 +16802,7 @@ packages:
         integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==
       }
     engines: { node: '>=18' }
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-fetch@3.6.20:
     resolution:
