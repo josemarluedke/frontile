@@ -229,6 +229,78 @@ export default class DisabledCheckbox extends Component {
 }
 ```
 
+### Indeterminate State
+
+The indeterminate state represents a "partially checked" state, commonly used for "select all" checkboxes when only some child items are selected. Since HTML doesn't support setting indeterminate via an attribute, you need to use a modifier to set it via JavaScript.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { modifier } from 'ember-modifier';
+import { Checkbox } from 'frontile';
+
+export default class IndeterminateCheckbox extends Component {
+  @tracked items = [
+    { label: 'Email notifications', checked: true },
+    { label: 'SMS notifications', checked: false },
+    { label: 'Push notifications', checked: true }
+  ];
+
+  get allChecked() {
+    return this.items.every((item) => item.checked);
+  }
+
+  get noneChecked() {
+    return this.items.every((item) => !item.checked);
+  }
+
+  get isIndeterminate() {
+    return !this.allChecked && !this.noneChecked;
+  }
+
+  setIndeterminate = modifier(
+    (element: HTMLInputElement, [indeterminate]: [boolean]) => {
+      element.indeterminate = indeterminate;
+    }
+  );
+
+  toggleAll = (checked: boolean) => {
+    this.items = this.items.map((item) => ({ ...item, checked }));
+  };
+
+  toggleItem = (index: number) => (checked: boolean) => {
+    this.items = this.items.map((item, i) =>
+      i === index ? { ...item, checked } : item
+    );
+  };
+
+  <template>
+    <div class='flex flex-col gap-2'>
+      <Checkbox
+        @name='select-all'
+        @label='Select All'
+        @checked={{this.allChecked}}
+        @onChange={{this.toggleAll}}
+        {{this.setIndeterminate this.isIndeterminate}}
+      />
+
+      <div class='ml-6 flex flex-col gap-2'>
+        {{#each this.items as |item index|}}
+          <Checkbox
+            @name='item-{{index}}'
+            @label={{item.label}}
+            @checked={{item.checked}}
+            @onChange={{this.toggleItem index}}
+          />
+        {{/each}}
+      </div>
+    </div>
+  </template>
+}
+```
+
+> **Note:** The `indeterminate` property can only be set via JavaScript — there is no HTML attribute for it. Use the `ember-modifier` package to create a modifier that sets `element.indeterminate` on the checkbox input.
+
 ### Checkbox with Description
 
 Add helpful description text that appears below the checkbox label.
