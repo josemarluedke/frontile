@@ -1,6 +1,6 @@
 {
   "name": "frontile",
-  "version": "0.18.0-alpha.1",
+  "version": "0.18.0-alpha.2",
   "description": "Component Library for Ember Octane apps",
   "keywords": [
     "ember-addon",
