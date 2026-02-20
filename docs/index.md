@@ -60,8 +60,8 @@ export default class Example extends Component {
 
 > **Note:** The following packages are deprecated and will be removed before v1 release:
 >
-> - `@frontile/changeset-form` - Use `@frontile/forms` instead for form handling
-> - `@frontile/forms-legacy` - Migrate to the new `@frontile/forms` package
+> - `@frontile/changeset-form` - Use `frontile` forms instead
+> - `@frontile/forms-legacy` - Migrate to the new `frontile` forms
 
 ## Architecture Philosophy
 

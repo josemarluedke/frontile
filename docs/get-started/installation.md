@@ -26,8 +26,8 @@ With modern build tools and explicit imports (`.gts`/`.gjs`), only the component
 
 > **Note:** The following packages are deprecated and will be removed before v1 release:
 >
-> - `@frontile/changeset-form` - Use `@frontile/forms` instead for form handling
-> - `@frontile/forms-legacy` - Migrate to the new `@frontile/forms` package
+> - `@frontile/changeset-form` - Use `frontile` forms instead
+> - `@frontile/forms-legacy` - Migrate to the new `frontile` forms
 >
 > If you're currently using the separate scoped packages (`@frontile/buttons`, `@frontile/forms`, etc.), you can migrate to the consolidated `frontile` package. Simply update your imports:
 >
