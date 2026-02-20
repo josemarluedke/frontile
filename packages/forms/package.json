@@ -59,7 +59,7 @@
     "@frontile/overlays": "workspace:0.18.0-alpha.1",
     "@frontile/theme": "workspace:0.18.0-alpha.1",
     "@frontile/utilities": "workspace:0.18.0-alpha.1",
-    "@glint/template": "1.5.2",
+    "@glint/template": "^1.7.4",
     "ember-modifier": "^4.1.0",
     "form-data-utils": "^0.6.0"
   },

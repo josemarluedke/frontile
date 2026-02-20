@@ -72,8 +72,8 @@ module(
         .exists('divider should be sibling of item 4');
       assert.dom('[data-key="item-5"]').exists();
 
-      assert.dom('[data-key="item-3"]').hasAttribute('disabled');
-      assert.dom('[data-key="item-4"]').hasAttribute('disabled');
+      assert.dom('[data-key="item-3"]').hasAttribute('aria-disabled', 'true');
+      assert.dom('[data-key="item-4"]').hasAttribute('aria-disabled', 'true');
 
       assert.dom('[data-key="item-1"]').containsText('Item 1');
       assert.dom('[data-key="item-2"]').containsText('Item 2');
