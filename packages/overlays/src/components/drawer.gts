@@ -2,11 +2,11 @@ import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import Overlay, { type OverlaySignature } from './overlay';
-import DrawerBody from './drawer/body';
-import DrawerFooter from './drawer/footer';
-import DrawerHeader from './drawer/header';
-import { CloseButton } from '@frontile/buttons';
-import type { WithBoundArgs } from '@glint/template';
+import DrawerBody, { type DrawerBodySignature } from './drawer/body';
+import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
+import DrawerHeader, { type DrawerHeaderSignature } from './drawer/header';
+import { CloseButton, type CloseButtonSignature } from '@frontile/buttons';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 import {
   useStyles,
   type SlotsToClasses,
@@ -83,13 +83,22 @@ export interface DrawerSignature {
   Blocks: {
     default: [
       {
-        CloseButton: WithBoundArgs<typeof CloseButton, 'onPress' | 'class'>;
+        CloseButton: WithBoundArgs<
+          ComponentLike<CloseButtonSignature>,
+          'onPress' | 'class'
+        >;
         Header: WithBoundArgs<
-          typeof DrawerHeader,
+          ComponentLike<DrawerHeaderSignature>,
           'labelledById' | 'classFromParent'
         >;
-        Body: WithBoundArgs<typeof DrawerBody, 'classFromParent'>;
-        Footer: WithBoundArgs<typeof DrawerFooter, 'classFromParent'>;
+        Body: WithBoundArgs<
+          ComponentLike<DrawerBodySignature>,
+          'classFromParent'
+        >;
+        Footer: WithBoundArgs<
+          ComponentLike<DrawerFooterSignature>,
+          'classFromParent'
+        >;
         headerId: string;
       }
     ];

@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import Feedback from './form-feedback';
-import Description from './form-description';
-import Label from './label';
-import type { WithBoundArgs } from '@glint/template';
+import Feedback, { type FormFeedbackSignature } from './form-feedback';
+import Description, { type FormDescriptionSignature } from './form-description';
+import Label, { type LabelSignature } from './label';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface FormControlSharedArgs {
   label?: string;
@@ -33,10 +33,10 @@ interface FormControlSignature {
           hasDescription?: string | boolean,
           hasFeedback?: string | boolean
         ) => string | undefined;
-        Label: WithBoundArgs<typeof Label, 'for' | 'size' | 'isRequired'>;
-        Description: WithBoundArgs<typeof Description, 'id' | 'size'>;
+        Label: WithBoundArgs<ComponentLike<LabelSignature>, 'for' | 'size' | 'isRequired'>;
+        Description: WithBoundArgs<ComponentLike<FormDescriptionSignature>, 'id' | 'size'>;
         Feedback: WithBoundArgs<
-          typeof Feedback,
+          ComponentLike<FormFeedbackSignature>,
           'id' | 'size' | 'messages' | 'intent'
         >;
       }

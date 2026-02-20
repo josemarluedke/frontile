@@ -1,15 +1,15 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
-import { SimpleTableHeader } from './header';
-import { SimpleTableBody } from './body';
-import { SimpleTableFooter } from './footer';
-import { SimpleTableColumn } from './column';
-import { SimpleTableRow } from './row';
-import { SimpleTableCell } from './cell';
+import { SimpleTableHeader, type SimpleTableHeaderSignature } from './header';
+import { SimpleTableBody, type SimpleTableBodySignature } from './body';
+import { SimpleTableFooter, type SimpleTableFooterSignature } from './footer';
+import { SimpleTableColumn, type SimpleTableColumnSignature } from './column';
+import { SimpleTableRow, type SimpleTableRowSignature } from './row';
+import { SimpleTableCell, type SimpleTableCellSignature } from './cell';
 
 import type { TableVariants, TableSlots, SlotsToClasses } from '../table/types';
-import type { WithBoundArgs } from '@glint/template';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface SimpleTableSignature {
   Args: {
@@ -38,12 +38,12 @@ interface SimpleTableSignature {
   Blocks: {
     default: [
       {
-        Header: WithBoundArgs<typeof SimpleTableHeader, 'styleFns' | 'classes'>;
-        Body: WithBoundArgs<typeof SimpleTableBody, 'styleFns' | 'classes'>;
-        Footer: WithBoundArgs<typeof SimpleTableFooter, 'styleFns' | 'classes'>;
-        Column: WithBoundArgs<typeof SimpleTableColumn, 'styleFns'>;
-        Row: WithBoundArgs<typeof SimpleTableRow, 'styleFns' | 'classes'>;
-        Cell: WithBoundArgs<typeof SimpleTableCell, 'styleFns' | 'classes'>;
+        Header: WithBoundArgs<ComponentLike<SimpleTableHeaderSignature>, 'styleFns' | 'classes'>;
+        Body: WithBoundArgs<ComponentLike<SimpleTableBodySignature>, 'styleFns' | 'classes'>;
+        Footer: WithBoundArgs<ComponentLike<SimpleTableFooterSignature>, 'styleFns' | 'classes'>;
+        Column: WithBoundArgs<ComponentLike<SimpleTableColumnSignature>, 'styleFns'>;
+        Row: WithBoundArgs<ComponentLike<SimpleTableRowSignature>, 'styleFns' | 'classes'>;
+        Cell: WithBoundArgs<ComponentLike<SimpleTableCellSignature>, 'styleFns' | 'classes'>;
       }
     ];
   };
