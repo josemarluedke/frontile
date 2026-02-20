@@ -132,12 +132,12 @@ const checkboxRadioBase = tv({
       'align-middle',
       'select-none',
       'shrink-0',
-      'h-[1em] w-[1em]',
       'text-base',
-      'text-brand',
-      'border border-neutral-soft',
+      'border-2 border-neutral-medium',
       'bg-surface-solid-0',
-      'checked:bg-origin-border checked:border-transparent dark:checked:bg-current checked:bg-current checked:bg-center checked:bg-no-repeat checked:disabled:bg-neutral-soft',
+      'transition-colors',
+      'checked:bg-origin-border checked:bg-center checked:bg-no-repeat',
+      'checked:disabled:bg-neutral-soft checked:disabled:border-neutral-soft',
       ...focusVisibleRing
     ],
     labelContainer: ['flex flex-col ml-2'],
@@ -145,9 +145,9 @@ const checkboxRadioBase = tv({
   },
   variants: {
     size: {
-      sm: { input: '' },
-      md: { input: '' },
-      lg: { input: '' }
+      sm: { input: 'h-4 w-4' },
+      md: { input: 'h-5 w-5' },
+      lg: { input: 'h-6 w-6' }
     }
   },
   defaultVariants: {
@@ -178,21 +178,21 @@ const checkbox = tv({
     input: [
       'checked-bg-checkbox',
       'indeterminate-bg-checkbox',
-      'rounded-xs',
+      'rounded-sm',
+      'checked:bg-brand-medium checked:border-brand-medium',
       // Indeterminate state styles - show minus/dash icon
-      'indeterminate:bg-brand',
+      'indeterminate:bg-brand-medium',
       'indeterminate:border-brand-medium',
       'indeterminate:bg-origin-border',
       'indeterminate:bg-center',
-      'indeterminate:bg-no-repeat',
-      'dark:indeterminate:bg-current'
+      'indeterminate:bg-no-repeat'
     ]
   },
   variants: {
     size: {
-      sm: { input: '' },
-      md: { input: '' },
-      lg: { input: '' }
+      sm: {},
+      md: {},
+      lg: {}
     }
   },
   defaultVariants: {
@@ -203,13 +203,17 @@ const checkbox = tv({
 const radio = tv({
   extend: checkboxRadioBase,
   slots: {
-    input: ['checked-bg-radio', 'rounded-full']
+    input: [
+      'checked-bg-radio',
+      'rounded-full',
+      'checked:bg-brand-medium checked:border-brand-medium'
+    ]
   },
   variants: {
     size: {
-      sm: { input: '' },
-      md: { input: '' },
-      lg: { input: '' }
+      sm: {},
+      md: {},
+      lg: {}
     }
   },
   defaultVariants: {
