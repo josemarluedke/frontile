@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import {
   selectOptionByKey,
   toggleOptionByKey
-} from '@frontile/forms/test-support';
+} from 'frontile/test-support';
 import { cell } from 'ember-resources';
 import { NativeSelect } from 'frontile';
 import { array } from '@ember/helper';

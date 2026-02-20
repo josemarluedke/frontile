@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import Header from '@frontile/overlays/components/modal/header';
+import Header from 'frontile/components/overlays/modal/header';
 
 module(
   'Integration | Component | @frontile/overlays/Modal::Header',

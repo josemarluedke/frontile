@@ -9,7 +9,7 @@ import {
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import Modal from '@frontile/overlays/components/modal';
+import Modal from 'frontile/components/overlays/modal';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/overlays/modal', function (hooks) {

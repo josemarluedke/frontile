@@ -11,7 +11,7 @@ import {
 import { cell } from 'ember-resources';
 import { Select } from 'frontile';
 import { array } from '@ember/helper';
-import { selectOptionByKey } from '@frontile/forms/test-support';
+import { selectOptionByKey } from 'frontile/test-support';
 
 // Simple equality helper
 const eq = (a: unknown, b: unknown) => a === b;

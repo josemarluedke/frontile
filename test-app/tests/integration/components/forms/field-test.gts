@@ -7,7 +7,7 @@ import {
   settled,
   triggerEvent
 } from '@ember/test-helpers';
-import { selectOptionByKey } from '@frontile/forms/test-support';
+import { selectOptionByKey } from 'frontile/test-support';
 import { tracked } from '@glimmer/tracking';
 import { Field, Form } from 'frontile';
 import { cell } from 'ember-resources';

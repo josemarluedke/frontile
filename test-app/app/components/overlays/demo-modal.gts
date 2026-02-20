@@ -6,7 +6,7 @@ import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { RadioGroup } from 'frontile';
-import type { ModalSignature } from '@frontile/overlays/components/modal';
+import type { ModalSignature } from 'frontile/components/overlays/modal';
 
 interface DemoModalArgs {}
 

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import Footer from '@frontile/overlays/components/drawer/footer';
+import Footer from 'frontile/components/overlays/drawer/footer';
 
 module(
   'Integration | Component | @frontile/overlays/Drawer::Footer',

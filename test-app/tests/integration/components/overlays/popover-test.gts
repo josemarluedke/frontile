@@ -9,7 +9,7 @@ import {
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import Popover from '@frontile/overlays/components/popover';
+import Popover from 'frontile/components/overlays/popover';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 
