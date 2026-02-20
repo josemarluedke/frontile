@@ -3,12 +3,12 @@ import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
   base: [
-    'leading-tight',
-    'inline-block',
-    'font-semibold',
+    'leading-none',
+    'inline-flex items-center justify-center',
+    '[&_svg]:size-[1em]',
+    'font-bold',
     'border',
     'border-transparent',
-    'rounded-sm',
     'disabled:cursor-not-allowed',
     'disabled:bg-surface-overlay-soft',
     'disabled:text-neutral-medium',
@@ -19,13 +19,6 @@ const baseButton = tv({
     appearance: {
       outlined: ''
     },
-    isInGroup: {
-      true: [
-        'rounded-none first:rounded-l last:rounded-r',
-        '[&:not(:first-child):not(:last-child)]:rounded-none',
-        'not-last-of-type:-me-px'
-      ]
-    },
     intent: {
       default: '',
       primary: 'focus-visible:ring-brand-soft',
@@ -35,11 +28,18 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-sm px-2 py-1',
-      sm: 'text-sm px-3 py-2',
-      md: 'text-base px-4 py-2',
-      lg: 'text-base px-5 py-4',
-      xl: 'text-xl px-6 py-5'
+      xs: 'text-xs leading-none px-2.5 py-0.5 gap-1 rounded',
+      sm: 'text-sm leading-none px-3 py-1 gap-1.5 rounded-lg',
+      md: 'text-lg leading-none px-4 py-2 gap-1.5 rounded-xl',
+      lg: 'text-xl leading-none px-6 py-3 gap-1.5 rounded-xl',
+      xl: 'text-3xl leading-none px-8 py-4 gap-2.5 rounded-2xl'
+    },
+    isInGroup: {
+      true: [
+        'rounded-none first:rounded-l last:rounded-r',
+        '[&:not(:first-child):not(:last-child)]:rounded-none',
+        'not-last-of-type:-me-px'
+      ]
     }
   },
   compoundVariants: [
@@ -92,10 +92,10 @@ const button = tv({
   base: [''],
   variants: {
     appearance: {
-      default: '',
+      default: 'shadow-elevation-2',
       outlined: '',
       minimal: '',
-      tonal: '',
+      tonal: 'shadow-elevation-2',
       custom: ''
     }
   },
