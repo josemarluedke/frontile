@@ -1,6 +1,6 @@
 {
   "name": "@frontile/utilities",
-  "version": "0.18.0-alpha.4",
+  "version": "0.18.0-alpha.5",
   "description": "Component Library for Ember Octane apps: Utilities",
   "keywords": [
     "ember-addon",

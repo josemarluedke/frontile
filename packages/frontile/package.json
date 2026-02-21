@@ -1,6 +1,6 @@
 {
   "name": "frontile",
-  "version": "0.18.0-alpha.4",
+  "version": "0.18.0-alpha.5",
   "description": "Component Library for Ember Octane apps",
   "keywords": [
     "ember-addon",
@@ -87,6 +87,7 @@
     "@embroider/macros": "^1.16.10",
     "@frontile/theme": "workspace:*",
     "@glint/template": "^1.7.4",
+    "@universal-ember/table": "^3.1.1",
     "ember-auto-import": "^2.7.2",
     "ember-click-outside": "^6.1.0",
     "ember-css-transitions": "^4.4.0",
@@ -95,8 +96,7 @@
     "ember-modifier": "^4.1.0",
     "ember-velcro": "^2.1.3",
     "focus-visible": "^5.2.0",
-    "form-data-utils": "^0.6.0",
-    "@universal-ember/table": "^3.1.1"
+    "form-data-utils": "^0.6.0"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
