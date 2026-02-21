@@ -1,5 +1,9 @@
 import Component from '@glimmer/component';
-import { getDOM, getElementById, getElementByAttribute } from '../../-private/dom';
+import {
+  getDOM,
+  getElementById,
+  getElementByAttribute
+} from '../../-private/dom';
 import type { TOC } from '@ember/component/template-only';
 import { guidFor } from '@ember/object/internals';
 import { isTesting, macroCondition } from '@embroider/macros';

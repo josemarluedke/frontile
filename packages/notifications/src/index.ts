@@ -2,8 +2,8 @@ import { deprecate } from '@ember/debug';
 
 deprecate(
   'Importing from "@frontile/notifications" is deprecated. ' +
-  'Import from "frontile" or "frontile/notifications" instead. ' +
-  'See https://frontile.dev/docs/migrations/v0.18/package-consolidation',
+    'Import from "frontile" or "frontile/notifications" instead. ' +
+    'See https://frontile.dev/docs/migrations/v0.18/package-consolidation',
   false,
   {
     id: 'frontile.import-from-notifications',

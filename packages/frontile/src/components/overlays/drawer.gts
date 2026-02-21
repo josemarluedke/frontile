@@ -5,7 +5,10 @@ import Overlay, { type OverlaySignature } from './overlay';
 import DrawerBody, { type DrawerBodySignature } from './drawer/body';
 import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
 import DrawerHeader, { type DrawerHeaderSignature } from './drawer/header';
-import { CloseButton, type CloseButtonSignature } from '../buttons/close-button';
+import {
+  CloseButton,
+  type CloseButtonSignature
+} from '../buttons/close-button';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 import {
   useStyles,

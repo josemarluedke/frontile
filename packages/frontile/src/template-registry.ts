@@ -21,15 +21,28 @@ import type {
   CheckboxGroup
 } from './components/forms';
 
-import type { Listbox, Dropdown, Table, SimpleTable } from './components/collections';
+import type {
+  Listbox,
+  Dropdown,
+  Table,
+  SimpleTable
+} from './components/collections';
 
 import type { Overlay, Modal, Drawer, Popover } from './components/overlays';
 
-import type { NotificationCard, NotificationsContainer } from './components/notifications';
+import type {
+  NotificationCard,
+  NotificationsContainer
+} from './components/notifications';
 
 import type { ProgressBar } from './components/status';
 
-import type { VisuallyHidden, Collapsible, Spinner, Divider } from './components/utilities';
+import type {
+  VisuallyHidden,
+  Collapsible,
+  Spinner,
+  Divider
+} from './components/utilities';
 
 export default interface Registry {
   // Buttons

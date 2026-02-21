@@ -1,10 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import {
-  selectOptionByKey,
-  toggleOptionByKey
-} from 'frontile/test-support';
+import { selectOptionByKey, toggleOptionByKey } from 'frontile/test-support';
 import { cell } from 'ember-resources';
 import { NativeSelect } from 'frontile';
 import { array } from '@ember/helper';

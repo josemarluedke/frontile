@@ -2,8 +2,8 @@ import { deprecate } from '@ember/debug';
 
 deprecate(
   'Importing from "@frontile/overlays" is deprecated. ' +
-  'Import from "frontile" or "frontile/overlays" instead. ' +
-  'See https://frontile.dev/docs/migrations/v0.18/package-consolidation',
+    'Import from "frontile" or "frontile/overlays" instead. ' +
+    'See https://frontile.dev/docs/migrations/v0.18/package-consolidation',
   false,
   {
     id: 'frontile.import-from-overlays',

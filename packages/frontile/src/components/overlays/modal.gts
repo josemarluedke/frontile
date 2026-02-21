@@ -5,7 +5,10 @@ import Overlay, { type OverlaySignature } from './overlay';
 import ModalFooter, { type ModalFooterSignature } from './modal/footer';
 import ModalBody, { type ModalBodySignature } from './modal/body';
 import ModalHeader, { type ModalHeaderSignature } from './modal/header';
-import { CloseButton, type CloseButtonSignature } from '../buttons/close-button';
+import {
+  CloseButton,
+  type CloseButtonSignature
+} from '../buttons/close-button';
 import {
   useStyles,
   type SlotsToClasses,
