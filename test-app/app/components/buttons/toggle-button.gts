@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
-import ToggleButton from 'frontile/components/buttons/toggle-button';
+import { ToggleButton } from 'frontile/buttons';
 
 interface ExampleArgs {}
 

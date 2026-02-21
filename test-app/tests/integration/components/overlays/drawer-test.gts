@@ -9,7 +9,7 @@ import {
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
-import Drawer from 'frontile/components/overlays/drawer';
+import { Drawer } from 'frontile/overlays';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
