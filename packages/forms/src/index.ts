@@ -1,17 +1,17 @@
-export * from './components/form';
-export * from './components/field';
-export * from './components/checkbox';
-export * from './components/checkbox-group';
-export * from './components/form-description';
-export * from './components/form-feedback';
-export * from './components/input';
-export * from './components/label';
-export * from './components/native-select';
-export * from './components/select';
-export * from './components/textarea';
-export * from './components/radio';
-export * from './components/radio-group';
-export * from './components/form-control';
-export * from './components/switch';
-export * from './utils/standard-validator';
-export * from './utils/nested-data';
+import { deprecate } from '@ember/debug';
+
+deprecate(
+  'Importing from "@frontile/forms" is deprecated. ' +
+    'Import from "frontile" or "frontile/forms" instead. ' +
+    'See https://frontile.dev/docs/migrations/v0.18/package-consolidation',
+  false,
+  {
+    id: 'frontile.import-from-forms',
+    until: '0.19.0',
+    for: 'frontile',
+    since: { available: '0.18.0', enabled: '0.18.0' },
+    url: 'https://frontile.dev/docs/migrations/v0.18/package-consolidation'
+  }
+);
+
+export * from 'frontile/forms';

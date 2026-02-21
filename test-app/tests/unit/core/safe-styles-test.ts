@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import safeStyles from '@frontile/utilities/utils/safe-styles';
+import safeStyles from 'frontile/utils/safe-styles';
 
 module('Unit | @frontile/utilities/utils/safeStyles', function () {
   test('it works', function (assert) {

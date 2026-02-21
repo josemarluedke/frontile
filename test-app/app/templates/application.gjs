@@ -1,5 +1,5 @@
 import ThemeSwitcher from '../components/theme-switcher';
-import Button from '@frontile/buttons/components/button';
+import { Button } from 'frontile/buttons';
 import Navigation from '../components/navigation';
 <template>
   <div class="container p-4 mx-auto">

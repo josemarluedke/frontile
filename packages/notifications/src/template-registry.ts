@@ -1,6 +1,1 @@
-import type { NotificationCard, NotificationsContainer } from './index';
-
-export default interface Registry {
-  NotificationCard: typeof NotificationCard;
-  NotificationsContainer: typeof NotificationsContainer;
-}
+export type { default } from 'frontile/template-registry';

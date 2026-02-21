@@ -9,7 +9,7 @@ import { Drawer } from 'frontile';
 import Popover from './popover';
 import DemoModal from './demo-modal';
 import FormExample from '../forms/form-example';
-import type { DrawerSignature } from '@frontile/overlays/components/drawer';
+import type { DrawerSignature } from 'frontile/overlays';
 
 export default class DemoDrawer extends Component {
   @tracked isOpen = false;

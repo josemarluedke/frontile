@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { Timer } from '@frontile/notifications';
+import { Timer } from 'frontile/notifications';
 import { waitUntil } from '@ember/test-helpers';
 
 module('Unit | @frontile/notifications/Timer', function (hooks) {

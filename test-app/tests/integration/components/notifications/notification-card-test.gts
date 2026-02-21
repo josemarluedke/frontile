@@ -5,7 +5,7 @@ import { NotificationCard } from 'frontile';
 import {
   Notification,
   type NotificationsService
-} from '@frontile/notifications';
+} from 'frontile/notifications';
 import sinon from 'sinon';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';

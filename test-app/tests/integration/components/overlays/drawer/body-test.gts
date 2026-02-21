@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import Body from '@frontile/overlays/components/drawer/body';
+import { DrawerBody as Body } from 'frontile/overlays';
 
 module(
   'Integration | Component | @frontile/overlays/Drawer::Body',

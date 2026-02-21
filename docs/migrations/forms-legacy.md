@@ -1,10 +1,10 @@
 # Migrating from Forms Legacy
 
-This guide will help you migrate from the legacy `@frontile/forms-legacy` package to the modern `@frontile/forms` package. The new forms package provides improved developer experience, better accessibility, enhanced customization options, and reduced external dependencies.
+This guide will help you migrate from the legacy `@frontile/forms-legacy` package to the modern `frontile` forms. The new forms package provides improved developer experience, better accessibility, enhanced customization options, and reduced external dependencies.
 
 ## Overview
 
-### What's New in @frontile/forms
+### What's New in Frontile Forms
 
 - **Modern Component Architecture**: Clean API with improved TypeScript support
 - **Enhanced Accessibility**: Better ARIA support and keyboard navigation
@@ -26,7 +26,7 @@ This guide will help you migrate from the legacy `@frontile/forms-legacy` packag
 npm uninstall @frontile/forms-legacy
 
 # Install the new package
-npm install @frontile/forms
+npm install frontile @frontile/theme
 ```
 
 Update your imports:
@@ -42,7 +42,7 @@ import { Input, Checkbox } from 'frontile';
 
 ## Recommended Approach: Form + Field Pattern
 
-The modern `@frontile/forms` package introduces a powerful **Form + Field pattern** that simplifies data binding and validation. This is the recommended approach for new forms and migrations.
+The modern `frontile` package introduces a powerful **Form + Field pattern** that simplifies data binding and validation. This is the recommended approach for new forms and migrations.
 
 ### Why Use Form + Field?
 
@@ -834,7 +834,7 @@ For form validation patterns, see the [Migrating Validation](#migrating-validati
 ### 1. Package Setup
 
 - [ ] Uninstall `@frontile/forms-legacy`
-- [ ] Install `@frontile/forms`
+- [ ] Install `frontile` and `@frontile/theme`
 - [ ] Update `@frontile/theme` to compatible version
 - [ ] Update imports to use named imports
 
@@ -874,4 +874,4 @@ For form validation patterns, see the [Migrating Validation](#migrating-validati
 
 ---
 
-This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `@frontile/forms`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/forms/form).
+This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `frontile`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/forms/form).

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import Body from '@frontile/overlays/components/modal/body';
+import { ModalBody as Body } from 'frontile/overlays';
 
 module(
   'Integration | Component | @frontile/overlays/Modal::Body',

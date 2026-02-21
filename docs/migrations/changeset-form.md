@@ -1,6 +1,6 @@
 # Migrating from Changeset Form
 
-This guide will help you migrate from the deprecated `@frontile/changeset-form` package to the modern `@frontile/forms` package. We recommend migrating to the modern Form + Field pattern with Valibot validation for the best experience, but also provide paths for teams that need to keep ember-changeset validation.
+This guide will help you migrate from the deprecated `@frontile/changeset-form` package to the modern `frontile` forms. We recommend migrating to the modern Form + Field pattern with Valibot validation for the best experience, but also provide paths for teams that need to keep ember-changeset validation.
 
 ## Overview
 
@@ -52,10 +52,7 @@ npm uninstall @frontile/changeset-form @frontile/forms-legacy
 npm uninstall ember-changeset ember-changeset-validations
 
 # Install new packages
-npm install @frontile/forms valibot
-
-# Build the package
-pnpm --filter forms build
+npm install frontile @frontile/theme valibot
 ```
 
 ### Step 2: Migrate to Form + Field Pattern
@@ -177,7 +174,7 @@ For advanced features like dirty tracking, loading states, and validation timing
 
 ## Approach 2: Keep Changeset, Use Modern Components
 
-This approach keeps ember-changeset validation while using modern `@frontile/forms` components in **standalone mode** (without Form/Field wrappers).
+This approach keeps ember-changeset validation while using modern `frontile` form components in **standalone mode** (without Form/Field wrappers).
 
 **Important:** This approach uses modern form components (Input, Select, Switch, etc.) directly, NOT the Form or Field components. You maintain manual control over data binding and validation.
 
@@ -193,11 +190,8 @@ This approach keeps ember-changeset validation while using modern `@frontile/for
 
 ```bash
 npm uninstall @frontile/changeset-form
-npm install @frontile/forms
+npm install frontile @frontile/theme
 # Keep: ember-changeset ember-changeset-validations
-
-# Build the package
-pnpm --filter forms build
 ```
 
 ### Step 2: Standalone Components with Changeset

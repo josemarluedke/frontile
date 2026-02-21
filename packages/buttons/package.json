@@ -53,8 +53,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.18.0-alpha.4",
-    "@frontile/utilities": "workspace:0.18.0-alpha.4"
+    "frontile": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -96,12 +95,6 @@
     "version": 2,
     "type": "addon",
     "main": "addon-main.js",
-    "app-js": {
-      "./components/button-group.js": "./dist/_app_/components/button-group.js",
-      "./components/button.js": "./dist/_app_/components/button.js",
-      "./components/chip.js": "./dist/_app_/components/chip.js",
-      "./components/close-button.js": "./dist/_app_/components/close-button.js",
-      "./components/toggle-button.js": "./dist/_app_/components/toggle-button.js"
-    }
+    "app-js": {}
   }
 }

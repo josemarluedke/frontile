@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "@frontile/theme": "workspace:0.18.0-alpha.4"
+    "frontile": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -94,8 +94,6 @@
     "version": 2,
     "type": "addon",
     "main": "addon-main.js",
-    "app-js": {
-      "./components/progress-bar.js": "./dist/_app_/components/progress-bar.js"
-    }
+    "app-js": {}
   }
 }

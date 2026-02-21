@@ -7,7 +7,7 @@ import {
   triggerKeyEvent,
   find
 } from '@ember/test-helpers';
-import Overlay from '@frontile/overlays/components/overlay';
+import { Overlay } from 'frontile/overlays';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';

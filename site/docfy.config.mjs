@@ -33,24 +33,31 @@ export default {
       pattern: '**/*.md',
       urlPrefix: 'docs'
     },
-    ...[
-      'buttons',
-      // 'changeset-form',
-      'utilities',
-      'status',
-      'collections',
-      'forms',
-      'forms-legacy',
-      'notifications',
-      'overlays'
-    ].map((pkgName) => {
-      return {
-        root: path.resolve(__dirname, `../packages/${pkgName}`),
-        pattern: '(docs|src)/**/**/*.md',
-        urlPrefix: `docs/components/${pkgName}`,
-        urlSchema: 'manual'
-      };
-    })
+    ...['buttons', 'utilities', 'status', 'collections', 'forms',
+        'notifications', 'overlays'].map((scope) => ({
+      root: path.resolve(__dirname, '../packages/frontile'),
+      pattern: `src/components/${scope}/**/*.md`,
+      urlPrefix: `docs/components/${scope}`,
+      urlSchema: 'manual'
+    })),
+    {
+      root: path.resolve(__dirname, '../packages/frontile'),
+      pattern: 'src/{modifiers,utils}/**/*.md',
+      urlPrefix: 'docs/components/utilities',
+      urlSchema: 'manual'
+    },
+    {
+      root: path.resolve(__dirname, '../packages/frontile'),
+      pattern: 'docs/**/*.md',
+      urlPrefix: 'docs/components/notifications',
+      urlSchema: 'manual'
+    },
+    {
+      root: path.resolve(__dirname, '../packages/forms-legacy'),
+      pattern: '(docs|src)/**/**/*.md',
+      urlPrefix: 'docs/components/forms-legacy',
+      urlSchema: 'manual'
+    }
   ],
   sections: {
     // Top-level sections

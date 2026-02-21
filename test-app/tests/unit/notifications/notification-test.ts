@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { Notification, Timer } from '@frontile/notifications';
+import { Notification, Timer } from 'frontile/notifications';
 
 module('Unit | @frontile/notifications/Notification', function (hooks) {
   setupTest(hooks);
