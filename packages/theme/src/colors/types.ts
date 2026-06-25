@@ -48,14 +48,14 @@ export interface SemanticColorCategory {
  * that match your brand or design requirements.
  *
  * @example
- * // Override on-colors for brand
+ * // Override on-colors for primary
  * const colors: Partial<ThemeColors> = {
- *   brand: {
+ *   primary: {
  *     subtle: '#3b82f6',
  *     medium: '#1e40af',
  *     DEFAULT: '#1e40af'
  *   },
- *   'on-brand': {
+ *   'on-primary': {
  *     subtle: '#ffffff',
  *     medium: '#e0f2ff',  // Light blue tint instead of pure white
  *     DEFAULT: '#ffffff'
@@ -319,7 +319,7 @@ export interface SurfaceColors {
 
 export interface ThemeColors {
   neutral: SemanticColorCategory;
-  brand: SemanticColorCategory;
+  primary: SemanticColorCategory;
   accent: SemanticColorCategory;
   success: SemanticColorCategory;
   warning: SemanticColorCategory;
@@ -329,7 +329,7 @@ export interface ThemeColors {
   // Optional on-color overrides
   // If not provided, these will be auto-generated for optimal contrast
   'on-neutral'?: OnColorCategory;
-  'on-brand'?: OnColorCategory;
+  'on-primary'?: OnColorCategory;
   'on-accent'?: OnColorCategory;
   'on-success'?: OnColorCategory;
   'on-warning'?: OnColorCategory;

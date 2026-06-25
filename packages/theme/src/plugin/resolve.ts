@@ -61,7 +61,7 @@ function getCachedColor(colorValue: string): ParsedColor {
 
 const SEMANTIC_COLOR_PREFIXES = [
   'neutral',
-  'brand',
+  'primary',
   'accent',
   'success',
   'danger',

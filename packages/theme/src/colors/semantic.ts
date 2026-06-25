@@ -21,7 +21,7 @@ const themeColorsLight: ThemeColors = {
     bolder: palette.gray['800'],
     boldest: absolute.black
   },
-  brand: {
+  primary: {
     subtle:
       'oklch(0.5891390171822783 0.2183146361066054 270.27610610400785 / 0.07)', // palette.blue['700']
     muted:
@@ -197,7 +197,7 @@ const themeColorsDark: ThemeColors = {
     bolder: palette.gray['200'],
     boldest: absolute.white
   },
-  brand: {
+  primary: {
     subtle:
       'oklch(0.5891390171822783 0.2183146361066054 270.27610610400785 / 0.07)', // palette.blue['700']
     muted:
