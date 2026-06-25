@@ -480,12 +480,12 @@ export default class DemoComponent extends Component {
   <template>
     <SimpleTable
       @classes={{hash
-        wrapper='border-2 border-primary-200 rounded-lg overflow-hidden'
+        wrapper='border-2 border-primary-soft rounded-lg overflow-hidden'
         table='border-separate border-spacing-0'
-        thead='bg-gradient-to-r from-primary-50 to-primary-100'
-        th='font-bold text-primary-strong border-b border-primary-200'
-        tr='hover:bg-primary-25 transition-colors'
-        td='border-b border-primary-100'
+        thead='bg-gradient-to-r from-primary-subtle to-primary-soft'
+        th='font-bold text-primary-strong border-b border-primary-soft'
+        tr='hover:bg-primary-subtle transition-colors'
+        td='border-b border-primary-subtle'
       }}
       as |t|
     >
