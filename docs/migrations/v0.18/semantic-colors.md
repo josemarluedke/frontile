@@ -25,7 +25,7 @@ The semantic color system has been redesigned to use named levels instead of num
 | Old Name    | New Name    | Notes                                                    |
 | ----------- | ----------- | -------------------------------------------------------- |
 | `default-*` | `neutral-*` | Renamed to better indicate non-semantic UI elements      |
-| `primary-*` | `primary-*` | ✓ Name unchanged — only the numbered scale moved to named levels |
+| `primary-*` | `primary-*` | ✓ Name unchanged; scale → named levels                   |
 | `success-*` | `success-*` | ✓ No change                                              |
 | `warning-*` | `warning-*` | ✓ No change                                              |
 | `danger-*`  | `danger-*`  | ✓ No change                                              |
@@ -335,10 +335,11 @@ find . -type f \( -name "*.ts" -o -name "*.gts" \) -exec sed -i '' \
   -e 's/bg-primary-[0-9]\{2,3\}/bg-primary-medium/g' \
   -e 's/text-primary-[0-9]\{2,3\}/text-primary-medium/g' \
   -e 's/border-primary-[0-9]\{2,3\}/border-primary-medium/g' \
+  -e 's/ring-primary-[0-9]\{2,3\}/ring-primary-soft/g' \
   {} +
 ```
 
-**Note**: Automated replacements won't handle the numbered scale correctly. Manual review is required for proper level mapping.
+**Note**: This script collapses every numbered `primary` class to a single level (`primary-medium`, and `ring-primary-soft` for rings). That loses the distinction between hover (`soft`), default (`medium`), and active/pressed (`strong`) states, so manual review is required to pick the right level for each usage.
 
 ## Decision Guide
 
