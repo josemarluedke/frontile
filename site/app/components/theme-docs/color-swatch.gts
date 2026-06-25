@@ -37,14 +37,14 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
     'neutral-strong': 'bg-neutral-strong',
     'neutral-bolder': 'bg-neutral-bolder',
     'neutral-boldest': 'bg-neutral-boldest',
-    'brand-subtle': 'bg-brand-subtle',
-    'brand-muted': 'bg-brand-muted',
-    'brand-soft': 'bg-brand-soft',
-    'brand-medium': 'bg-brand-medium',
-    'brand-firm': 'bg-brand-firm',
-    'brand-strong': 'bg-brand-strong',
-    'brand-bolder': 'bg-brand-bolder',
-    'brand-boldest': 'bg-brand-boldest',
+    'brand-subtle': 'bg-primary-subtle',
+    'brand-muted': 'bg-primary-muted',
+    'brand-soft': 'bg-primary-soft',
+    'brand-medium': 'bg-primary-medium',
+    'brand-firm': 'bg-primary-firm',
+    'brand-strong': 'bg-primary-strong',
+    'brand-bolder': 'bg-primary-bolder',
+    'brand-boldest': 'bg-primary-boldest',
     'accent-subtle': 'bg-accent-subtle',
     'accent-muted': 'bg-accent-muted',
     'accent-soft': 'bg-accent-soft',
@@ -89,14 +89,14 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
     'neutral-strong': 'text-on-neutral-strong',
     'neutral-bolder': 'text-on-neutral-bolder',
     'neutral-boldest': 'text-on-neutral-boldest',
-    'brand-subtle': 'text-on-brand-subtle',
-    'brand-muted': 'text-on-brand-muted',
-    'brand-soft': 'text-on-brand-soft',
-    'brand-medium': 'text-on-brand-medium',
-    'brand-firm': 'text-on-brand-firm',
-    'brand-strong': 'text-on-brand-strong',
-    'brand-bolder': 'text-on-brand-bolder',
-    'brand-boldest': 'text-on-brand-boldest',
+    'brand-subtle': 'text-on-primary-subtle',
+    'brand-muted': 'text-on-primary-muted',
+    'brand-soft': 'text-on-primary-soft',
+    'brand-medium': 'text-on-primary-medium',
+    'brand-firm': 'text-on-primary-firm',
+    'brand-strong': 'text-on-primary-strong',
+    'brand-bolder': 'text-on-primary-bolder',
+    'brand-boldest': 'text-on-primary-boldest',
     'accent-subtle': 'text-on-accent-subtle',
     'accent-muted': 'text-on-accent-muted',
     'accent-soft': 'text-on-accent-soft',
@@ -165,7 +165,7 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
   <template>
     <button
       type="button"
-      class="color-swatch-button group relative flex items-center gap-4 rounded p-3 transition-all hover:ring-2 hover:ring-brand bg-surface-overlay-subtle hover:bg-surface-overlay-soft"
+      class="color-swatch-button group relative flex items-center gap-4 rounded p-3 transition-all hover:ring-2 hover:ring-primary bg-surface-overlay-subtle hover:bg-surface-overlay-soft"
       {{on "click" this.handleClick}}
       {{on "mouseenter" this.handleMouseEnter}}
       {{on "mouseleave" this.handleMouseLeave}}
@@ -193,7 +193,7 @@ export default class ColorSwatch extends Component<ColorSwatchSignature> {
 
       {{! Copy indicator }}
       {{#if this.isHovered}}
-        <div class="text-xs text-brand whitespace-nowrap">
+        <div class="text-xs text-primary whitespace-nowrap">
           Click to copy
         </div>
       {{/if}}

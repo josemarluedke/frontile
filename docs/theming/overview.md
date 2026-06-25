@@ -72,14 +72,14 @@ Here's how easy it is to create a themed button with Frontile:
 ```gts preview
 <template>
   <button
-    class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft px-4 py-2 rounded'
+    class='bg-primary-medium text-on-primary-medium hover:bg-primary-soft px-4 py-2 rounded'
   >
     Click me
   </button>
 </template>
 ```
 
-This button automatically adapts to light and dark themes without additional code. The `brand-medium` color provides the right emphasis, while `on-brand-medium` automatically calculates the optimal contrasting text color (black or white) for accessibility.
+This button automatically adapts to light and dark themes without additional code. The `brand-medium` color provides the right emphasis, while `on-primary-medium` automatically calculates the optimal contrasting text color (black or white) for accessibility.
 
 ## Theme Switching
 
@@ -163,15 +163,15 @@ Colors automatically adapt based on the current theme (`.dark`, `.light`, or `.t
 ```css
 /* Example: brand-medium adapts to the theme */
 .light {
-  --color-brand-medium: oklch(55.86% 0.2094 263.84);  /* Vivid blue in light mode */
+  --color-primary-medium: oklch(55.86% 0.2094 263.84);  /* Vivid blue in light mode */
 }
 
 .dark {
-  --color-brand-medium: oklch(69.83% 0.1526 252.37);  /* Lighter blue in dark mode */
+  --color-primary-medium: oklch(69.83% 0.1526 252.37);  /* Lighter blue in dark mode */
 }
 ```
 
-When you use `bg-brand-medium`, the actual color value comes from the CSS variable, which automatically switches based on whether the element is in a `.light` or `.dark` context.
+When you use `bg-primary-medium`, the actual color value comes from the CSS variable, which automatically switches based on whether the element is in a `.light` or `.dark` context.
 
 ### Using Colors in Your CSS
 
@@ -180,14 +180,14 @@ You can use semantic colors in custom CSS using the Tailwind `theme()` function 
 ```css
 /* Using Tailwind theme function */
 .my-component {
-  background-color: theme(colors.brand.medium);
-  color: theme(colors.on-brand.medium);
+  background-color: theme(colors.primary.medium);
+  color: theme(colors.on-primary.medium);
 }
 
 /* Using CSS variables directly */
 .my-component {
-  background-color: var(--color-brand-medium);
-  color: var(--color-on-brand-medium);
+  background-color: var(--color-primary-medium);
+  color: var(--color-on-primary-medium);
 }
 ```
 
@@ -416,7 +416,7 @@ Always prefer semantic color classes over generic Tailwind utilities:
 
 ```hbs
 {{! Good - uses semantic colors }}
-<button class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft'>
+<button class='bg-primary-medium text-on-primary-medium hover:bg-primary-soft'>
   Submit
 </button>
 

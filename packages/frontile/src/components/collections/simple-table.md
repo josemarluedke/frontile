@@ -483,7 +483,7 @@ export default class DemoComponent extends Component {
         wrapper='border-2 border-primary-200 rounded-lg overflow-hidden'
         table='border-separate border-spacing-0'
         thead='bg-gradient-to-r from-primary-50 to-primary-100'
-        th='font-bold text-brand-strong border-b border-primary-200'
+        th='font-bold text-primary-strong border-b border-primary-200'
         tr='hover:bg-primary-25 transition-colors'
         td='border-b border-primary-100'
       }}

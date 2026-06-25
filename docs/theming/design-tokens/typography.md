@@ -196,7 +196,7 @@ Typography utilities work seamlessly with other Tailwind utilities:
 <template>
   <div class='flex flex-col gap-4'>
     {{! Colored header }}
-    <h2 class='font-header text-header-xl text-brand-strong'>Colored Header</h2>
+    <h2 class='font-header text-header-xl text-primary-strong'>Colored Header</h2>
 
     {{! Truncated body text }}
     <p class='font-body text-body-md truncate max-w-md'>
@@ -309,12 +309,12 @@ Always prefer semantic text style utilities over combining individual properties
 <template>
   <div class='flex flex-col gap-4'>
     {{! Good - semantic text style }}
-    <h2 class='font-header text-header-lg text-brand-strong'>
+    <h2 class='font-header text-header-lg text-primary-strong'>
       ✓ Semantic: Easy to maintain
     </h2>
 
     {{! Avoid - manual combination }}
-    <h2 class='text-2xl font-bold leading-tight tracking-tight text-brand-strong'>
+    <h2 class='text-2xl font-bold leading-tight tracking-tight text-primary-strong'>
       ✗ Manual: Harder to maintain
     </h2>
   </div>

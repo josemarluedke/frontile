@@ -207,7 +207,7 @@ export default class ExpandableCard extends Component {
           <div
             class='w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center'
           >
-            <span class='text-brand-medium font-semibold text-lg'>JD</span>
+            <span class='text-primary-medium font-semibold text-lg'>JD</span>
           </div>
           <div class='flex-1'>
             <h3 class='font-semibold text-lg'>John Doe</h3>

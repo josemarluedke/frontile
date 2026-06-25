@@ -154,7 +154,7 @@ Modal and drawer container surface, highest elevation (hierarchy level 3).
       <h2 class="text-neutral-strong text-xl mb-2">Confirm Action</h2>
       <p class="text-neutral-strong mb-4">Are you sure you want to continue?</p>
       <div class="flex gap-2">
-        <button class="bg-brand-medium text-on-brand-medium px-4 py-2 rounded">Confirm</button>
+        <button class="bg-primary-medium text-on-primary-medium px-4 py-2 rounded">Confirm</button>
         <button class="bg-neutral-subtle text-neutral-strong px-4 py-2 rounded">Cancel</button>
       </div>
     </div>
@@ -407,7 +407,7 @@ Follow this decision flow:
             placeholder="Enter email"
           />
         </div>
-        <button class="bg-brand-medium text-on-brand-medium w-full py-2 rounded">
+        <button class="bg-primary-medium text-on-primary-medium w-full py-2 rounded">
           Submit
         </button>
       </div>

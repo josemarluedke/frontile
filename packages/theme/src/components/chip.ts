@@ -32,12 +32,12 @@ const chip = tv({
         ]
       },
       primary: {
-        dot: 'bg-brand-soft',
+        dot: 'bg-primary-soft',
         closeButton: [
-          'bg-brand-muted',
-          'text-on-brand-soft',
-          'hover:bg-brand-medium',
-          'focus-visible:ring-brand-soft'
+          'bg-primary-muted',
+          'text-on-primary-soft',
+          'hover:bg-primary-medium',
+          'focus-visible:ring-primary-soft'
         ]
       },
       accent: {
@@ -114,7 +114,7 @@ const chip = tv({
       appearance: 'default',
       intent: 'primary',
       class: {
-        base: 'bg-brand-soft text-on-brand-soft'
+        base: 'bg-primary-soft text-on-primary-soft'
       }
     },
     {
@@ -158,7 +158,7 @@ const chip = tv({
       appearance: 'faded',
       intent: 'primary',
       class: {
-        base: 'text-brand-strong bg-brand-subtle'
+        base: 'text-primary-strong bg-primary-subtle'
       }
     },
     {
@@ -202,7 +202,7 @@ const chip = tv({
       appearance: 'outlined',
       intent: 'primary',
       class: {
-        base: 'text-brand-strong border border-brand-medium'
+        base: 'text-primary-strong border border-primary-medium'
       }
     },
     {

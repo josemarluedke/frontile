@@ -26,7 +26,7 @@
 }
 
 .docfy-demo__description__header__edit-url:hover {
-  @apply text-brand-medium;
+  @apply text-primary-medium;
 }
 
 .docfy-demo__snippets__tabs {
@@ -39,7 +39,7 @@
 
 .docfy-demo__snippets__tabs__button--active,
 .docfy-demo__snippets__tabs__button:hover {
-  @apply border-brand-medium;
+  @apply border-primary-medium;
 }
 
 .docfy-demo__snippet {
@@ -76,7 +76,7 @@
 }
 
 .dark .docfy-demo__description__header__title {
-  @apply text-brand-strong;
+  @apply text-primary-strong;
 }
 
 .prose h2 > a,
@@ -91,7 +91,7 @@
 .prose h4 > a::before,
 .docfy-demo__description__header__title > a::before {
   content: '#';
-  @apply text-brand-strong -ml-6 pr-2 absolute opacity-100;
+  @apply text-primary-strong -ml-6 pr-2 absolute opacity-100;
 }
 
 @screen lg {

@@ -80,8 +80,8 @@ Colors now use the OKLCH color format instead of HSL for improved perceptual uni
 **Time Required:** No action required (automatic)
 
 **Key Changes:**
-- CSS variables now contain complete OKLCH values: `--color-brand-subtle: oklch(65.27% 0.1234 240.50)`
-- Color variable names now use `--color-` prefix: `--color-brand-subtle` instead of `--brand-subtle`
+- CSS variables now contain complete OKLCH values: `--color-primary-subtle: oklch(65.27% 0.1234 240.50)`
+- Color variable names now use `--color-` prefix: `--color-primary-subtle` instead of `--primary-subtle`
 - Tailwind v4 with Lightning CSS automatically generates RGB fallbacks for older browsers
 - Minor perceptual differences in colors (OKLCH is perceptually uniform, HSL is not)
 

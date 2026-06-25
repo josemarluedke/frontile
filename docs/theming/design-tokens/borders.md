@@ -60,13 +60,13 @@ Control border thickness with semantic width tokens. These tokens provide meanin
     <input
       type='text'
       placeholder='Standard input field'
-      class='w-full border border-neutral-medium rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-medium'
+      class='w-full border border-neutral-medium rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-medium'
     />
 
     {{! Selected item with heavy border }}
-    <div class='border-heavy border-brand-medium rounded p-4 bg-brand-subtle'>
-      <h3 class='text-header-sm mb-2 text-brand-strong'>Selected Item</h3>
-      <p class='text-body-sm text-brand-strong'>Uses heavy border to show selection</p>
+    <div class='border-heavy border-primary-medium rounded p-4 bg-primary-subtle'>
+      <h3 class='text-header-sm mb-2 text-primary-strong'>Selected Item</h3>
+      <p class='text-body-sm text-primary-strong'>Uses heavy border to show selection</p>
     </div>
   </div>
 </template>
@@ -81,28 +81,28 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
 ```gts preview
 <template>
   <div class='grid grid-cols-2 md:grid-cols-4 gap-4'>
-    <div class='rounded-none bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-none bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>None</span>
     </div>
-    <div class='rounded-sm bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-sm bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>SM</span>
     </div>
-    <div class='rounded-md bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-md bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>MD</span>
     </div>
-    <div class='rounded bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Default</span>
     </div>
-    <div class='rounded-xl bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>XL</span>
     </div>
-    <div class='rounded-2xl bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-2xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>2XL</span>
     </div>
-    <div class='rounded-default bg-brand-subtle p-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-default bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Default (Custom)</span>
     </div>
-    <div class='rounded-pill bg-brand-subtle px-6 py-4 flex items-center justify-center min-h-24'>
+    <div class='rounded-pill bg-primary-subtle px-6 py-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Pill</span>
     </div>
   </div>

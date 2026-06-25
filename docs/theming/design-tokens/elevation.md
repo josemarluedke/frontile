@@ -79,7 +79,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
         Standard card with level 2 elevation provides subtle depth.
       </p>
       <button
-        class='bg-brand-medium text-on-brand-medium px-4 py-2 rounded hover:bg-brand-soft'
+        class='bg-primary-medium text-on-primary-medium px-4 py-2 rounded hover:bg-primary-soft'
       >
         View Details
       </button>
@@ -94,7 +94,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
         Uses border instead of shadow for a flatter appearance.
       </p>
       <button
-        class='border border-brand-medium text-brand-medium px-4 py-2 rounded hover:bg-brand-subtle'
+        class='border border-primary-medium text-primary-medium px-4 py-2 rounded hover:bg-primary-subtle'
       >
         Learn More
       </button>
@@ -110,7 +110,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
   <div class='flex gap-4 flex-wrap'>
     {{! Button that lifts on hover }}
     <button
-      class='bg-brand-medium text-on-brand-medium px-6 py-3 rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow'
+      class='bg-primary-medium text-on-primary-medium px-6 py-3 rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow'
     >
       Hover to Lift
     </button>

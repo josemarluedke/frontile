@@ -11,7 +11,7 @@ const spinner = tv({
     },
     intent: {
       default: 'fill-neutral-strong',
-      primary: 'fill-brand',
+      primary: 'fill-primary',
       success: 'fill-success',
       warning: 'fill-warning',
       danger: 'fill-danger'

@@ -36,8 +36,8 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
             class="flex items-center justify-between flex-grow px-2 md:px-6 text-neutral-strong"
           >
             {{#let
-              "text-neutral-strong transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-brand-soft outline-none focus-visible:ring hover:text-neutral-firm"
-              "border-brand-soft text-neutral-firm"
+              "text-neutral-strong transition pb-1.5 pt-1.5 border-b-2 border-transparent hover:border-primary-soft outline-none focus-visible:ring hover:text-neutral-firm"
+              "border-primary-soft text-neutral-firm"
               as |linkClass linkClassActive|
             }}
               <div class="flex items-center gap-4">

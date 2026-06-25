@@ -18,7 +18,7 @@ const progressBar = tv({
         progress: 'bg-neutral-strong'
       },
       primary: {
-        progress: 'bg-brand-soft'
+        progress: 'bg-primary-soft'
       },
       success: {
         progress: 'bg-success-soft'

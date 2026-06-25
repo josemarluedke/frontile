@@ -49,7 +49,7 @@ All CSS variables have been unprefixed. The `--frontile-` prefix has been remove
 
 ```css
 .my-component {
-  background: var(--frontile-brand-500);
+  background: var(--frontile-primary-500);
   opacity: var(--frontile-hover-opacity);
 }
 ```
@@ -58,7 +58,7 @@ All CSS variables have been unprefixed. The `--frontile-` prefix has been remove
 
 ```css
 .my-component {
-  background: var(--brand-500);
+  background: var(--primary-500);
   opacity: var(--opacity-hover);
 }
 ```
@@ -135,8 +135,8 @@ grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
 2. **Remove the prefix:**
 
 ```diff
-- background: var(--frontile-brand-medium);
-+ background: var(--brand-medium);
+- background: var(--frontile-primary-medium);
++ background: var(--primary-medium);
 
 - opacity: var(--frontile-hover-opacity);
 + opacity: var(--opacity-hover);
@@ -145,8 +145,8 @@ grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
 3. **Update computed styles in JavaScript:**
 
 ```diff
-- const color = getComputedStyle(el).getPropertyValue('--frontile-brand-500');
-+ const color = getComputedStyle(el).getPropertyValue('--brand-500');
+- const color = getComputedStyle(el).getPropertyValue('--frontile-primary-500');
++ const color = getComputedStyle(el).getPropertyValue('--primary-500');
 ```
 
 ### Step 3: Update Theme Configuration (If Customized)

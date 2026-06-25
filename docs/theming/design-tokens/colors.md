@@ -46,24 +46,24 @@ Background colors with automatic text colors:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Button }}
-    <button class='bg-brand-medium text-on-brand-medium hover:bg-brand-soft px-4 py-2 rounded'>
+    <button class='bg-primary-medium text-on-primary-medium hover:bg-primary-soft px-4 py-2 rounded'>
       Filled Button
     </button>
 
     {{! Outlined Button }}
     <button
-      class='border border-brand-medium text-brand-medium hover:bg-brand-subtle bg-transparent px-4 py-2 rounded'
+      class='border border-primary-medium text-primary-medium hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'
     >
       Outlined Button
     </button>
 
     {{! Tonal Button }}
-    <button class='bg-brand-subtle text-brand-strong hover:bg-brand-soft/20 px-4 py-2 rounded'>
+    <button class='bg-primary-subtle text-primary-strong hover:bg-primary-soft/20 px-4 py-2 rounded'>
       Tonal Button
     </button>
 
     {{! Text Button }}
-    <button class='text-brand-medium hover:bg-brand-subtle bg-transparent px-4 py-2 rounded'>
+    <button class='text-primary-medium hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'>
       Text Button
     </button>
   </div>
@@ -76,15 +76,15 @@ Banners:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Banner }}
-    <div class='bg-brand-medium text-on-brand-medium p-4 rounded'>
+    <div class='bg-primary-medium text-on-primary-medium p-4 rounded'>
       <div class='font-semibold'>Filled Banner</div>
       <div class='text-sm opacity-90'>High emphasis notification with brand colors</div>
     </div>
 
     {{! Tonal Banner }}
-    <div class='bg-brand-subtle border border-brand-soft p-4 rounded'>
-      <div class='text-brand-strong font-semibold'>Tonal Banner</div>
-      <div class='text-brand-strong text-sm'>Subtle notification with brand colors</div>
+    <div class='bg-primary-subtle border border-primary-soft p-4 rounded'>
+      <div class='text-primary-strong font-semibold'>Tonal Banner</div>
+      <div class='text-primary-strong text-sm'>Subtle notification with brand colors</div>
     </div>
   </div>
 </template>
@@ -203,7 +203,7 @@ Banners:
 
 ### For Text
 
-- **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-brand-medium`)
+- **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-primary-medium`)
 - **firm**: Secondary text, descriptions, metadata
 - **strong**: Default body text, readable content
 - **bolder/boldest**: Headings, important text
@@ -226,7 +226,7 @@ Frontile automatically generates optimal contrasting text colors for every backg
 
 ```html
 <!-- Automatically generates optimal text color (black or white) -->
-<button class="bg-brand text-on-brand">
+<button class="bg-primary text-on-primary">
 <div class="bg-success-soft text-on-success-soft">
 <div class="bg-neutral-strong text-on-neutral-strong">
 ```
@@ -263,18 +263,18 @@ module.exports = frontile({
           strong: '#1e40af'
         },
         // Override specific on-colors
-        'on-brand': {
+        'on-primary': {
           medium: '#ffffff',  // Force white text on brand-medium
           strong: '#e0f2fe'   // Use light blue instead of auto-generated white
         }
-        // on-brand-subtle and on-brand-soft are still auto-generated
+        // on-primary-subtle and on-primary-soft are still auto-generated
       }
     }
   }
 });
 ```
 
-Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-solid`.
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-solid`.
 
 > **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
 

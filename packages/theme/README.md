@@ -127,7 +127,7 @@ module.exports = frontile({
 
 ### Customizing On-Colors
 
-The theme system automatically generates "on-color" variants (e.g., `on-brand`, `on-success`) for semantic colors to ensure optimal text contrast. These colors are used as text/foreground colors on semantic backgrounds.
+The theme system automatically generates "on-color" variants (e.g., `on-primary`, `on-success`) for semantic colors to ensure optimal text contrast. These colors are used as text/foreground colors on semantic backgrounds.
 
 By default, on-colors are calculated using WCAG contrast guidelines and will be either pure white or pure black. However, you can override these auto-generated colors to match your brand or design requirements:
 
@@ -147,7 +147,7 @@ module.exports = frontile({
           DEFAULT: '#1e40af'
         },
         // Override on-colors to use custom values
-        'on-brand': {
+        'on-primary': {
           subtle: '#ffffff',      // Pure white
           soft: '#e0f2ff',        // Light blue tint instead of pure white
           medium: '#ffffff',      // Pure white
@@ -172,7 +172,7 @@ module.exports = frontile({
           medium: '#1e40af',
           strong: '#1e3a8a',
         },
-        'on-brand': {
+        'on-primary': {
           medium: '#e0f2ff',  // Only override medium, others auto-generate
         }
       }
@@ -182,7 +182,7 @@ module.exports = frontile({
 ```
 
 You can override on-colors for any semantic color category:
-- `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`
+- `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`
 - `on-surface-solid` (with numeric keys 0-11)
 
 #### Option 2: Via CSS Variables
@@ -196,14 +196,14 @@ Override colors directly in your CSS:
 
 @theme {
   /* Override brand colors */
-  --color-brand-subtle: #3b82f6;
-  --color-brand-medium: #2563eb;
-  --color-brand-strong: #1d4ed8;
+  --color-primary-subtle: #3b82f6;
+  --color-primary-medium: #2563eb;
+  --color-primary-strong: #1d4ed8;
 
   /* Manually define "on-" colors for text contrast */
-  --color-on-brand-subtle: #ffffff;
-  --color-on-brand-medium: #ffffff;
-  --color-on-brand-strong: #ffffff;
+  --color-on-primary-subtle: #ffffff;
+  --color-on-primary-medium: #ffffff;
+  --color-on-primary-strong: #ffffff;
 }
 ```
 
