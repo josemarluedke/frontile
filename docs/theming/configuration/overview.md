@@ -82,7 +82,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -92,7 +92,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
@@ -116,7 +116,7 @@ Then reference it in your CSS:
 
 Use JavaScript configuration for:
 
-- **Semantic colors** - Brand, success, danger, warning, neutral
+- **Semantic colors** - Primary, success, danger, warning, neutral
 - **Default theme** - Which theme loads by default
 - **Theme variants** - Create multiple theme variations
 - **Complex configurations** - Programmatic theme generation
@@ -125,7 +125,7 @@ Use JavaScript configuration for:
 
 Choose JavaScript configuration when you need to:
 
-- Customize semantic colors (brand, success, danger, etc.)
+- Customize semantic colors (primary, success, danger, etc.)
 - Set the default theme (light or dark)
 - Create multiple theme variants
 - Generate themes programmatically
@@ -157,16 +157,16 @@ For minor adjustments to existing tokens, use CSS variables:
 }
 ```
 
-### Pattern 2: Custom Brand Colors
+### Pattern 2: Custom Primary Colors
 
-For brand color customization, use JavaScript:
+For primary color customization, use JavaScript:
 
 ```js
 module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#f0f9ff',
           soft: '#7dd3fc',
           medium: '#0ea5e9',

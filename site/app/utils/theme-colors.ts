@@ -34,7 +34,7 @@ export const surfaceOverlayLevels = [
  */
 export const colorCategories = [
   'neutral',
-  'brand',
+  'primary',
   'accent',
   'success',
   'danger',
@@ -78,7 +78,7 @@ export function getColorLevelDescription(level: ColorLevel): string {
 export function getCategoryDisplayName(category: ColorCategory): string {
   const names: Record<ColorCategory, string> = {
     neutral: 'Neutral',
-    brand: 'Brand',
+    primary: 'Primary',
     accent: 'Accent',
     success: 'Success',
     danger: 'Danger',
@@ -93,7 +93,7 @@ export function getCategoryDisplayName(category: ColorCategory): string {
 export function getCategoryDescription(category: ColorCategory): string {
   const descriptions: Record<ColorCategory, string> = {
     neutral: 'Default interface colors for text, backgrounds, and borders',
-    brand: 'Primary brand colors for important actions and brand elements',
+    primary: 'Primary brand colors for important actions and brand elements',
     accent: 'Secondary brand colors for highlights and special features',
     success:
       'Colors for positive states, confirmations, and successful actions',

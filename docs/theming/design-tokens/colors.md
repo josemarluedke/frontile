@@ -36,9 +36,9 @@ Background colors with automatic text colors:
 - `bg-neutral-medium` with `text-on-neutral-medium` - Medium emphasis background
 - `bg-neutral-strong` with `text-on-neutral-strong` - Strong emphasis background
 
-### Brand
+### Primary
 
-<ColorPaletteGrid @category="brand" @showDescription={{true}} />
+<ColorPaletteGrid @category="primary" @showDescription={{true}} />
 
 **Usage Examples:**
 
@@ -256,7 +256,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -264,7 +264,7 @@ module.exports = frontile({
         },
         // Override specific on-colors
         'on-primary': {
-          medium: '#ffffff',  // Force white text on brand-medium
+          medium: '#ffffff',  // Force white text on primary-medium
           strong: '#e0f2fe'   // Use light blue instead of auto-generated white
         }
         // on-primary-subtle and on-primary-soft are still auto-generated

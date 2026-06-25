@@ -891,7 +891,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -907,7 +907,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',

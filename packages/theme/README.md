@@ -85,7 +85,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#3b82f6',
           medium: '#2563eb',
           strong: '#1d4ed8',
@@ -94,7 +94,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#60a5fa',
           medium: '#3b82f6',
           strong: '#2563eb',
@@ -114,7 +114,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: 'var(--color-surface-solid-6)',
         }
       }
@@ -139,7 +139,7 @@ module.exports = frontile({
     light: {
       colors: {
         // Define background colors as usual
-        brand: {
+        primary: {
           subtle: '#3b82f6',
           soft: '#2563eb',
           medium: '#1e40af',
@@ -167,7 +167,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#3b82f6',
           medium: '#1e40af',
           strong: '#1e3a8a',
@@ -195,7 +195,7 @@ Override colors directly in your CSS:
 @source '../../node_modules/@frontile';
 
 @theme {
-  /* Override brand colors */
+  /* Override primary colors */
   --color-primary-subtle: #3b82f6;
   --color-primary-medium: #2563eb;
   --color-primary-strong: #1d4ed8;

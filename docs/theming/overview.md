@@ -55,7 +55,7 @@ Then update `app/styles/app.css`:
 
 ### Semantic Colors
 
-Meaningful color categories (neutral, brand, success, danger, warning) with intuitive levels (subtle, soft, medium, strong) that adapt between light and dark themes.
+Meaningful color categories (neutral, primary, success, danger, warning) with intuitive levels (subtle, soft, medium, strong) that adapt between light and dark themes.
 
 ### Surface System
 
@@ -79,7 +79,7 @@ Here's how easy it is to create a themed button with Frontile:
 </template>
 ```
 
-This button automatically adapts to light and dark themes without additional code. The `brand-medium` color provides the right emphasis, while `on-primary-medium` automatically calculates the optimal contrasting text color (black or white) for accessibility.
+This button automatically adapts to light and dark themes without additional code. The `primary-medium` color provides the right emphasis, while `on-primary-medium` automatically calculates the optimal contrasting text color (black or white) for accessibility.
 
 ## Theme Switching
 
@@ -144,7 +144,7 @@ import { Button } from 'frontile';
 Frontile provides six semantic color categories:
 
 - **Neutral** - Default interface colors
-- **Brand** - Primary brand colors (blue)
+- **Primary** - Primary brand colors (blue)
 - **Accent** - Visual emphasis and highlights (violet)
 - **Success** - Positive states and actions (green)
 - **Danger** - Errors and destructive actions (red)
@@ -152,7 +152,7 @@ Frontile provides six semantic color categories:
 
 Each category has multiple intensity levels from subtle to boldest. The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
 
-<ColorPaletteGrid @category="brand" @showDescription={{false}} />
+<ColorPaletteGrid @category="primary" @showDescription={{false}} />
 <ColorPaletteGrid @category="success" @showDescription={{false}} />
 <ColorPaletteGrid @category="danger" @showDescription={{false}} />
 
@@ -161,7 +161,7 @@ Each category has multiple intensity levels from subtle to boldest. The `on-{col
 Colors automatically adapt based on the current theme (`.dark`, `.light`, or `.theme-inverse`). Frontile uses CSS variables that change their values based on the theme context:
 
 ```css
-/* Example: brand-medium adapts to the theme */
+/* Example: primary-medium adapts to the theme */
 .light {
   --color-primary-medium: oklch(55.86% 0.2094 263.84);  /* Vivid blue in light mode */
 }
@@ -202,7 +202,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -212,7 +212,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
@@ -250,7 +250,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -260,7 +260,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
@@ -367,7 +367,7 @@ module.exports = frontile({
     light: {
       colors: {
         // Customize semantic colors
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -388,7 +388,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',

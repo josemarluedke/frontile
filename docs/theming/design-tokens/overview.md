@@ -21,7 +21,7 @@ Frontile adds these design token categories to Tailwind:
 
 ### [Colors](colors.md)
 
-Semantic color system with five categories (neutral, brand, success, danger, warning) that automatically adapt between light and dark themes.
+Semantic color system with five categories (neutral, primary, success, danger, warning) that automatically adapt between light and dark themes.
 
 **Generated utilities:** `bg-primary-medium`, `text-danger-strong`, `border-success-soft`
 

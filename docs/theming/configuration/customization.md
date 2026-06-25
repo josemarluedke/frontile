@@ -38,7 +38,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#f0f9ff',
           soft: '#7dd3fc',
           medium: '#0ea5e9',
@@ -66,7 +66,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#0c4a6e',
           soft: '#0ea5e9',
           medium: '#38bdf8',
@@ -107,7 +107,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -115,7 +115,7 @@ module.exports = frontile({
         },
         // Override specific on-colors
         'on-primary': {
-          medium: '#ffffff',  // Force white text on brand-medium
+          medium: '#ffffff',  // Force white text on primary-medium
           strong: '#e0f2fe'   // Use light blue instead of white
         }
         // on-primary-subtle and on-primary-soft will still be auto-generated
@@ -349,7 +349,7 @@ module.exports = frontile({
     light: {
       colors: {
         // Purple brand color
-        brand: {
+        primary: {
           subtle: '#faf5ff',
           soft: '#c084fc',
           medium: '#9333ea',
@@ -373,7 +373,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#581c87',
           soft: '#9333ea',
           medium: '#a855f7',
@@ -612,7 +612,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: { /* ... */ }
+        primary: { /* ... */ }
       }
     }
   }
