@@ -206,11 +206,21 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ---
 
-### Task 3: Rename remaining object/map keys
+### Task 3: Rename remaining object/map keys, category references, and token-name references
 
-After Task 2, several files still contain the literal category **key** `brand` (in config objects, label maps, and the swatch key list). These are not token-shaped, so the sweep skipped them.
+After Task 2, several files still contain non-token-shaped references the sweep deliberately skipped. **Scope expanded after Task 2 code review** to comprehensively complete the rename in docs/site:
 
-**Files:**
+1. **Config object keys** `brand: {` (config examples) → `primary: {`
+2. **Category source** key/array/label in `theme-colors.ts` and swatch map keys in `color-swatch.gts`
+3. **`<ColorPaletteGrid @category="brand">` args** → `@category="primary"` (FUNCTIONAL — breaks the swatch lookup once the category source key is `primary`)
+4. **Category-name references** in headings and category lists where "brand" names the color category alongside neutral/success/danger/warning → "primary"/"Primary"
+5. **Token-name references** in comments/backticks/prose (e.g. `` `brand-medium` ``, `// Force white text on brand-medium`) → `primary-*`
+
+**LEAVE genuine English-word "brand" prose:** "your brand", "brand guidelines", "brand consistency", "comprehensive brand theming", "customizing Frontile for a brand", "Complete Brand Example", "// Purple brand color", "...with brand colors" (descriptive demo text), "match your brand or design requirements", and the two `theme-colors.ts` swatch descriptions.
+
+**Files (with exact per-line edits in the implementer instructions):** `site/app/utils/theme-colors.ts`, `site/app/components/theme-docs/color-swatch.gts`, `site/app/templates/index.gts`, `packages/theme/README.md`, `docs/theming/configuration/customization.md`, `docs/theming/configuration/overview.md`, `docs/theming/design-tokens/colors.md`, `docs/theming/design-tokens/overview.md`, `docs/theming/overview.md`.
+
+**Original sub-files (still applies):**
 - Modify: `site/app/utils/theme-colors.ts` (lines 37, 81, 96)
 - Modify: `site/app/components/theme-docs/color-swatch.gts` (lines 40-47, 92-99)
 - Modify: `site/app/templates/index.gts` (lines 894, 910 — CodeBlock config sample)
