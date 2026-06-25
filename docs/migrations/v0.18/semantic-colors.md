@@ -25,7 +25,7 @@ The semantic color system has been redesigned to use named levels instead of num
 | Old Name    | New Name    | Notes                                                    |
 | ----------- | ----------- | -------------------------------------------------------- |
 | `default-*` | `neutral-*` | Renamed to better indicate non-semantic UI elements      |
-| `primary-*` | `brand-*`   | Renamed to distinguish brand colors from semantic intent |
+| `primary-*` | `primary-*` | ✓ Name unchanged — only the numbered scale moved to named levels |
 | `success-*` | `success-*` | ✓ No change                                              |
 | `warning-*` | `warning-*` | ✓ No change                                              |
 | `danger-*`  | `danger-*`  | ✓ No change                                              |
@@ -83,19 +83,19 @@ Each semantic color now has these levels:
 | `text-default-foreground` | `text-on-neutral-medium`                       | Contrasting text on bg     |
 | `border-default`          | `border-neutral-soft`                          | Standard borders           |
 
-#### Brand (formerly Primary)
+#### Primary
 
-| Old Class                 | New Class                              | Context                |
-| ------------------------- | -------------------------------------- | ---------------------- |
-| `bg-primary`              | `bg-brand-medium` or `bg-brand`        | Standard brand color   |
-| `bg-primary-500`          | `bg-brand-soft` or `bg-brand-medium`   | Hover states           |
-| `bg-primary-600`          | `bg-brand-medium`                      | Default buttons        |
-| `bg-primary-700`          | `bg-brand-medium` or `bg-brand-strong` | Strong emphasis        |
-| `bg-primary-800`          | `bg-brand-strong`                      | Active/pressed states  |
-| `text-primary`            | `text-brand-medium` or `text-brand`    | Brand text             |
-| `text-primary-foreground` | `text-on-brand-medium`                 | Contrasting text on bg |
-| `border-primary`          | `border-brand-medium`                  | Brand borders          |
-| `ring-primary-500`        | `ring-brand-soft`                      | Focus rings            |
+| Old Class                 | New Class                                  | Context                |
+| ------------------------- | ------------------------------------------ | ---------------------- |
+| `bg-primary`              | `bg-primary-medium` or `bg-primary`        | Standard primary color |
+| `bg-primary-500`          | `bg-primary-soft` or `bg-primary-medium`   | Hover states           |
+| `bg-primary-600`          | `bg-primary-medium`                        | Default buttons        |
+| `bg-primary-700`          | `bg-primary-medium` or `bg-primary-strong` | Strong emphasis        |
+| `bg-primary-800`          | `bg-primary-strong`                        | Active/pressed states  |
+| `text-primary`            | `text-primary-medium` or `text-primary`    | Primary text           |
+| `text-primary-foreground` | `text-on-primary-medium`                   | Contrasting text on bg |
+| `border-primary`          | `border-primary-medium`                    | Primary borders        |
+| `ring-primary-500`        | `ring-primary-soft`                        | Focus rings            |
 
 #### Success
 
@@ -155,7 +155,7 @@ Each semantic color now has these levels:
 </button>
 ```
 
-#### Primary/Brand Button
+#### Primary Button
 
 ```gts
 // Before
@@ -164,7 +164,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="bg-brand text-on-brand hover:bg-brand-soft">
+<button class="bg-primary text-on-primary hover:bg-primary-soft">
   Submit
 </button>
 ```
@@ -178,7 +178,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="border-brand text-brand hover:bg-brand hover:text-on-brand">
+<button class="border-primary text-primary hover:bg-primary hover:text-on-primary">
   Cancel
 </button>
 ```
@@ -222,7 +222,7 @@ Each semantic color now has these levels:
 <input class="border-default-700 focus:border-primary text-default-900" />
 
 // After
-<input class="border-neutral-soft focus:border-brand text-neutral-strong" />
+<input class="border-neutral-soft focus:border-primary text-neutral-strong" />
 ```
 
 ### Text Hierarchy
@@ -303,7 +303,7 @@ import semanticColors from '@frontile/theme/colors/semantic';
 
 colors: {
   neutral: semanticColors.light.neutral,
-  brand: semanticColors.light.brand,
+  primary: semanticColors.light.primary,
 }
 ```
 
@@ -332,9 +332,9 @@ find . -type f \( -name "*.ts" -o -name "*.gts" \) -exec sed -i '' \
   -e 's/bg-default-/bg-neutral-/g' \
   -e 's/text-default-/text-neutral-/g' \
   -e 's/border-default-/border-neutral-/g' \
-  -e 's/bg-primary/bg-brand/g' \
-  -e 's/text-primary/text-brand/g' \
-  -e 's/border-primary/border-brand/g' \
+  -e 's/bg-primary-[0-9]\{2,3\}/bg-primary-medium/g' \
+  -e 's/text-primary-[0-9]\{2,3\}/text-primary-medium/g' \
+  -e 's/border-primary-[0-9]\{2,3\}/border-primary-medium/g' \
   {} +
 ```
 

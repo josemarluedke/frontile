@@ -63,7 +63,7 @@ The semantic color system has been completely redesigned with named levels inste
 **Time Required:** Varies based on codebase size (1-4 hours for small apps, 1-2 days for large apps)
 
 **Key Changes:**
-- Renamed `default-*` to `neutral-*` and `primary-*` to `brand-*`
+- Renamed `default-*` to `neutral-*` (the `primary-*` category name is unchanged; only its numbered scale moved to named levels)
 - Replaced numbered scales (50, 100, 200...) with named levels (subtle, soft, medium, strong)
 - Removed legacy `text-foreground` classes
 - Removed `inverse` color category (use `neutral` instead)
