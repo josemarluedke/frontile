@@ -38,7 +38,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#f0f9ff',
           soft: '#7dd3fc',
           medium: '#0ea5e9',
@@ -66,7 +66,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#0c4a6e',
           soft: '#0ea5e9',
           medium: '#38bdf8',
@@ -107,18 +107,18 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
           strong: '#1e40af'
         },
         // Override specific on-colors
-        'on-brand': {
-          medium: '#ffffff',  // Force white text on brand-medium
+        'on-primary': {
+          medium: '#ffffff',  // Force white text on primary-medium
           strong: '#e0f2fe'   // Use light blue instead of white
         }
-        // on-brand-subtle and on-brand-soft will still be auto-generated
+        // on-primary-subtle and on-primary-soft will still be auto-generated
       }
     }
   }
@@ -127,7 +127,7 @@ module.exports = frontile({
 
 **Key behavior:**
 - Partial overrides work — define only the levels you want to customize, and the rest will be auto-generated
-- Works for: `on-neutral`, `on-brand`, `on-accent`, `on-success`, `on-warning`, `on-danger`, `on-surface-solid`
+- Works for: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, `on-surface-solid`
 - CSS variable references (e.g., `var(--my-color)`) are passed through as-is — auto-generation is skipped since contrast can't be calculated
 
 ## Customizing Typography
@@ -349,7 +349,7 @@ module.exports = frontile({
     light: {
       colors: {
         // Purple brand color
-        brand: {
+        primary: {
           subtle: '#faf5ff',
           soft: '#c084fc',
           medium: '#9333ea',
@@ -373,7 +373,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#581c87',
           soft: '#9333ea',
           medium: '#a855f7',
@@ -612,7 +612,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: { /* ... */ }
+        primary: { /* ... */ }
       }
     }
   }

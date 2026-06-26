@@ -218,7 +218,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
                     (eq this.selected index)
-                    'bg-brand-soft text-on-brand-soft'
+                    'bg-primary-soft text-on-primary-soft'
                   }}"
                 data-result={{index}}
                 {{on "click" this.onItemClick}}

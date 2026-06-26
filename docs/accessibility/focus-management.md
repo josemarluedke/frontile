@@ -26,7 +26,7 @@ import { Input } from 'frontile';
     <Input @placeholder='Focus me with Tab or mouse' />
 
     <a
-      class='inline-block px-4 py-2 bg-brand-soft text-white rounded hover:bg-brand-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft focus-visible:ring-offset-2'
+      class='inline-block px-4 py-2 bg-primary-soft text-white rounded hover:bg-primary-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-soft focus-visible:ring-offset-2'
       href='javascript:void(0)'
     >
       Focus me with Tab or mouse

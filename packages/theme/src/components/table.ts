@@ -264,7 +264,7 @@ const table = tv({
       isLoading: true,
       loadingColor: 'primary',
       class: {
-        thead: `after:bg-brand`
+        thead: `after:bg-primary`
       }
     },
     {
@@ -299,8 +299,8 @@ const table = tv({
     {
       selectionColor: 'primary',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-brand-subtle',
-        tr: ['data-[selectable=true]:focus-visible:ring-brand-soft']
+        tbody: '[&>tr]:data-[selected=true]:bg-primary-subtle',
+        tr: ['data-[selectable=true]:focus-visible:ring-primary-soft']
       }
     },
     {

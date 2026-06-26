@@ -21,7 +21,7 @@
 
 @theme {
   --font-family-sans: Inter, system-ui, sans-serif;
-  --color-brand: theme(colors.brand.medium);
+  --color-primary: theme(colors.primary.medium);
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
@@ -61,7 +61,7 @@
     --tw-prose-pre-code: theme(colors.neutral.medium);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
-    --tw-prose-links: theme(colors.brand.strong);
+    --tw-prose-links: theme(colors.primary.strong);
     /* Tables */
     --tw-prose-th-borders: theme(colors.neutral.strong);
     --tw-prose-td-borders: theme(colors.neutral.firm);
@@ -82,7 +82,7 @@
     --tw-prose-pre-code: theme(colors.neutral.medium);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
-    --tw-prose-links: theme(colors.brand.strong);
+    --tw-prose-links: theme(colors.primary.strong);
     /* Tables */
     --tw-prose-th-borders: theme(colors.neutral.strong);
     --tw-prose-td-borders: theme(colors.neutral.firm);
@@ -113,7 +113,7 @@
     animation: var(--animate-hero-glow);
   }
 
-  .hero-glow-orb--brand {
+  .hero-glow-orb--primary {
     width: 500px;
     height: 500px;
     background: radial-gradient(circle, oklch(0.55 0.2 250 / 0.35) 0%, transparent 70%);

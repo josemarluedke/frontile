@@ -40,7 +40,7 @@ const formFeedback = tv({
   base: 'text-xs pt-1',
   variants: {
     intent: {
-      primary: 'text-brand',
+      primary: 'text-primary',
       success: 'text-success',
       danger: 'text-danger',
       warning: 'text-warning'
@@ -77,7 +77,7 @@ const input = tv({
       'focus:ring-3',
       'focus:ring-focus',
       'focus:outline-hidden',
-      'focus:border-brand-soft',
+      'focus:border-primary-soft',
       'selection:bg-surface-overlay-soft',
       'disabled:border-neutral-subtle disabled:text-neutral-soft',
       'aria-invalid:border-danger-soft',
@@ -179,10 +179,10 @@ const checkbox = tv({
       'checked-bg-checkbox',
       'indeterminate-bg-checkbox',
       'rounded-sm',
-      'checked:bg-brand-medium checked:border-brand-medium',
+      'checked:bg-primary-medium checked:border-primary-medium',
       // Indeterminate state styles - show minus/dash icon
-      'indeterminate:bg-brand-medium',
-      'indeterminate:border-brand-medium',
+      'indeterminate:bg-primary-medium',
+      'indeterminate:border-primary-medium',
       'indeterminate:bg-origin-border',
       'indeterminate:bg-center',
       'indeterminate:bg-no-repeat'
@@ -206,7 +206,7 @@ const radio = tv({
     input: [
       'checked-bg-radio',
       'rounded-full',
-      'checked:bg-brand-medium checked:border-brand-medium'
+      'checked:bg-primary-medium checked:border-primary-medium'
     ]
   },
   variants: {
@@ -370,8 +370,8 @@ const switchInput = tv({
       },
       primary: {
         wrapper: [
-          'group-data-[selected=true]:bg-brand-medium',
-          'group-data-[selected=true]:text-on-brand-medium'
+          'group-data-[selected=true]:bg-primary-medium',
+          'group-data-[selected=true]:text-on-primary-medium'
         ]
       },
       accent: {

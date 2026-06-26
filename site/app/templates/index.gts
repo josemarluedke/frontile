@@ -105,7 +105,7 @@ class IndexPage extends Component {
         class="relative overflow-hidden bg-surface-canvas pt-20 pb-24 sm:pt-24 sm:pb-32"
       >
         <div
-          class="hero-glow-orb hero-glow-orb--brand hidden sm:block"
+          class="hero-glow-orb hero-glow-orb--primary hidden sm:block"
           aria-hidden="true"
         ></div>
         <div
@@ -119,7 +119,7 @@ class IndexPage extends Component {
             >
               Production-Ready UI Components
               <span
-                class="block mt-2 bg-gradient-to-r from-brand-strong to-accent-strong bg-clip-text text-transparent"
+                class="block mt-2 bg-gradient-to-r from-primary-strong to-accent-strong bg-clip-text text-transparent"
               >for Ember.js</span>
             </h1>
             <p
@@ -196,10 +196,10 @@ class IndexPage extends Component {
             <FeatureCard
               @title="Modern Ember"
               @description="Built with modern Ember standards. Full v2 addon format with template tags (GTS/GJS), Glimmer components, and type-safe templates powered by Glint."
-              @iconBg="bg-brand-subtle"
+              @iconBg="bg-primary-subtle"
             >
               <:icon>
-                <SparklesIcon class="w-6 h-6 text-brand-strong" />
+                <SparklesIcon class="w-6 h-6 text-primary-strong" />
               </:icon>
             </FeatureCard>
 
@@ -226,20 +226,20 @@ class IndexPage extends Component {
             <FeatureCard
               @title="Dark Mode Ready"
               @description="Built-in theme switching with all components supporting dark mode. Semantic color tokens with zero configuration needed."
-              @iconBg="bg-brand-subtle"
+              @iconBg="bg-primary-subtle"
             >
               <:icon>
-                <MoonIcon class="w-6 h-6 text-brand-strong" />
+                <MoonIcon class="w-6 h-6 text-primary-strong" />
               </:icon>
             </FeatureCard>
 
             <FeatureCard
               @title="TypeScript + Glint"
               @description="Fully typed component signatures with type-safe templates. Generic type support for data structures with full IDE IntelliSense."
-              @iconBg="bg-brand-subtle"
+              @iconBg="bg-primary-subtle"
             >
               <:icon>
-                <BookIcon class="w-6 h-6 text-brand-strong" />
+                <BookIcon class="w-6 h-6 text-primary-strong" />
               </:icon>
             </FeatureCard>
 
@@ -567,12 +567,12 @@ class IndexPage extends Component {
               @name="Buttons"
               @count={{5}}
               @description="Button, ButtonGroup, Chip, CloseButton, ToggleButton"
-              @gradient="bg-brand-subtle"
-              @borderColor="border-brand-soft"
-              @countColor="text-brand-strong"
+              @gradient="bg-primary-subtle"
+              @borderColor="border-primary-soft"
+              @countColor="text-primary-strong"
             >
               <:icon>
-                <ComponentIcon class="w-5 h-5 text-brand-strong mr-2" />
+                <ComponentIcon class="w-5 h-5 text-primary-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -781,16 +781,16 @@ class IndexPage extends Component {
           <SectionHeader
             @title="Type Safety from Components to Templates"
             @subtitle="Catch errors at compile-time, not runtime"
-            @iconBg="bg-brand-subtle"
+            @iconBg="bg-primary-subtle"
           >
             <:icon>
-              <BookIcon class="w-8 h-8 text-brand-strong" />
+              <BookIcon class="w-8 h-8 text-primary-strong" />
             </:icon>
           </SectionHeader>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
               <h3 class="text-lg font-bold text-neutral-bolder mb-4">Component
                 Signatures</h3>
@@ -806,7 +806,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
               <h3 class="text-lg font-bold text-neutral-bolder mb-4">Template
                 Type Checking</h3>
@@ -821,7 +821,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-brand-soft"
+              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
               <h3 class="text-lg font-bold text-neutral-bolder mb-4">Generic
                 Support</h3>
@@ -838,25 +838,25 @@ Listbox<Country>
           <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div
-                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
               >100%</div>
               <div class="text-sm text-neutral-bolder">TypeScript Coverage</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
               >Glint</div>
               <div class="text-sm text-neutral-bolder">Template Types</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
               >30+</div>
               <div class="text-sm text-neutral-bolder">Typed Components</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-brand-strong mb-2 stat-glow"
+                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
               >Full</div>
               <div class="text-sm text-neutral-bolder">IDE IntelliSense</div>
             </div>
@@ -891,7 +891,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
           medium: '#3b82f6',
@@ -907,7 +907,7 @@ module.exports = frontile({
     },
     dark: {
       colors: {
-        brand: {
+        primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
           medium: '#60a5fa',
@@ -926,7 +926,7 @@ module.exports = frontile({
                 automatically. Use tokens like
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
-                >bg-brand-medium</code>,
+                >bg-primary-medium</code>,
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
                 >text-danger-strong</code>, and

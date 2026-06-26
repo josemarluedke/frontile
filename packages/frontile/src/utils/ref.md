@@ -80,7 +80,7 @@ export default class ElementMeasureComponent extends Component {
   });
 
   <template>
-    <div {{this.myRef.setup}} class='bg-brand text-on-brand w-48'>
+    <div {{this.myRef.setup}} class='bg-primary text-on-primary w-48'>
       Measured Element
     </div>
     <p>

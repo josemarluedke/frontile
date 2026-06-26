@@ -53,7 +53,7 @@ import { Portal, PortalTarget } from 'frontile';
   >
     First portal (Outer)
     <Portal
-      class='absolute w-content bg-brand/50 border border-brand-medium left-12 rounded'
+      class='absolute w-content bg-primary/50 border border-primary-medium left-12 rounded'
     >
       Second portal (Inner)
       <Portal

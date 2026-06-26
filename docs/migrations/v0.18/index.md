@@ -63,7 +63,7 @@ The semantic color system has been completely redesigned with named levels inste
 **Time Required:** Varies based on codebase size (1-4 hours for small apps, 1-2 days for large apps)
 
 **Key Changes:**
-- Renamed `default-*` to `neutral-*` and `primary-*` to `brand-*`
+- Renamed `default-*` to `neutral-*` (the `primary-*` category name is unchanged; only its numbered scale moved to named levels)
 - Replaced numbered scales (50, 100, 200...) with named levels (subtle, soft, medium, strong)
 - Removed legacy `text-foreground` classes
 - Removed `inverse` color category (use `neutral` instead)
@@ -80,8 +80,8 @@ Colors now use the OKLCH color format instead of HSL for improved perceptual uni
 **Time Required:** No action required (automatic)
 
 **Key Changes:**
-- CSS variables now contain complete OKLCH values: `--color-brand-subtle: oklch(65.27% 0.1234 240.50)`
-- Color variable names now use `--color-` prefix: `--color-brand-subtle` instead of `--brand-subtle`
+- CSS variables now contain complete OKLCH values: `--color-primary-subtle: oklch(65.27% 0.1234 240.50)`
+- Color variable names now use `--color-` prefix: `--color-primary-subtle` instead of `--primary-subtle`
 - Tailwind v4 with Lightning CSS automatically generates RGB fallbacks for older browsers
 - Minor perceptual differences in colors (OKLCH is perceptually uniform, HSL is not)
 

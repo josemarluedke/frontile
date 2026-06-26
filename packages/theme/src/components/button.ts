@@ -21,7 +21,7 @@ const baseButton = tv({
     },
     intent: {
       default: '',
-      primary: 'focus-visible:ring-brand-soft',
+      primary: 'focus-visible:ring-primary-soft',
       accent: 'focus-visible:ring-accent-soft',
       success: 'focus-visible:ring-success-soft',
       warning: 'focus-visible:ring-warning-soft',
@@ -54,7 +54,7 @@ const baseButton = tv({
       appearance: 'outlined',
       intent: 'primary',
       class:
-        'text-brand-strong border-brand-medium hover:bg-brand-subtle hover:border-brand-firm active:bg-brand-muted active:text-brand-bolder'
+        'text-primary-strong border-primary-medium hover:bg-primary-subtle hover:border-primary-firm active:bg-primary-muted active:text-primary-bolder'
     },
     {
       appearance: 'outlined',
@@ -111,7 +111,7 @@ const button = tv({
       appearance: 'default',
       intent: 'primary',
       class:
-        'bg-brand-soft text-on-brand-soft hover:bg-brand-medium hover:text-on-brand-medium active:bg-brand-firm active:text-on-brand-firm'
+        'bg-primary-soft text-on-primary-soft hover:bg-primary-medium hover:text-on-primary-medium active:bg-primary-firm active:text-on-primary-firm'
     },
     {
       appearance: 'default',
@@ -149,7 +149,7 @@ const button = tv({
       appearance: 'minimal',
       intent: 'primary',
       class:
-        'text-brand-strong hover:bg-brand-subtle active:bg-brand-muted active:text-brand-bolder'
+        'text-primary-strong hover:bg-primary-subtle active:bg-primary-muted active:text-primary-bolder'
     },
     {
       appearance: 'minimal',
@@ -187,7 +187,7 @@ const button = tv({
       appearance: 'tonal',
       intent: 'primary',
       class:
-        'bg-brand-subtle text-brand-strong hover:bg-brand-muted active:bg-brand-soft active:text-on-brand-soft'
+        'bg-primary-subtle text-primary-strong hover:bg-primary-muted active:bg-primary-soft active:text-on-primary-soft'
     },
     {
       appearance: 'tonal',
@@ -223,7 +223,7 @@ const button = tv({
     {
       appearance: 'custom',
       intent: 'primary',
-      class: 'text-brand-strong'
+      class: 'text-primary-strong'
     },
     {
       appearance: 'custom',
@@ -273,7 +273,7 @@ const toggleButton = tv({
       intent: 'primary',
       isSelected: true,
       class:
-        'bg-brand-soft text-on-brand-soft hover:bg-brand-medium hover:text-on-brand-medium'
+        'bg-primary-soft text-on-primary-soft hover:bg-primary-medium hover:text-on-primary-medium'
     },
     {
       appearance: 'outlined',

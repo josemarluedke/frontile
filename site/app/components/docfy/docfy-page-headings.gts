@@ -88,10 +88,10 @@ export default class PageHeadings extends Component<Signature> {
               <li class="pb-2 border-l border-neutral-subtle">
                 <a
                   href="#{{heading.id}}"
-                  class="transition block px-2 py-1 border-l-2 hover:text-brand-medium
+                  class="transition block px-2 py-1 border-l-2 hover:text-primary-medium
                     {{if
                       (docfyEq heading.id @currentHeadingId)
-                      'border-brand-medium text-brand-medium'
+                      'border-primary-medium text-primary-medium'
                       'border-transparent'
                     }}"
                   {{on "click" this.onClick}}
@@ -105,10 +105,10 @@ export default class PageHeadings extends Component<Signature> {
                       <li>
                         <a
                           href="#{{subHeading.id}}"
-                          class="transition block pl-6 py-1 border-l-2 hover:text-brand-medium
+                          class="transition block pl-6 py-1 border-l-2 hover:text-primary-medium
                             {{if
                               (docfyEq subHeading.id @currentHeadingId)
-                              'border-brand-medium text-brand-medium'
+                              'border-primary-medium text-primary-medium'
                               'border-transparent'
                             }}"
                           {{on "click" this.onClick}}

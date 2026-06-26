@@ -50,7 +50,7 @@ export default class BasicCollapsible extends Component {
 
       <Collapsible @isOpen={{this.isOpen}}>
         <div
-          class='p-8 mt-4 bg-primary-100 rounded-lg border border-primary-200'
+          class='p-8 mt-4 bg-primary-subtle rounded-lg border border-primary-soft'
         >
           <p class='text-neutral-strong'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
@@ -205,9 +205,9 @@ export default class ExpandableCard extends Component {
       <div class='p-6'>
         <div class='flex items-start gap-4'>
           <div
-            class='w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center'
+            class='w-12 h-12 rounded-full bg-primary-subtle flex items-center justify-center'
           >
-            <span class='text-brand-medium font-semibold text-lg'>JD</span>
+            <span class='text-primary-medium font-semibold text-lg'>JD</span>
           </div>
           <div class='flex-1'>
             <h3 class='font-semibold text-lg'>John Doe</h3>
@@ -275,7 +275,7 @@ export default class MultiplePanels extends Component {
   <template>
     <div class='max-w-md space-y-4'>
       <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-primary-50 border-b border-neutral-subtle'>
+        <div class='p-4 bg-primary-subtle border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -363,8 +363,8 @@ export default class InitiallyOpen extends Component {
 
   <template>
     <div class='max-w-md'>
-      <div class='border border-primary-200 rounded-lg overflow-hidden'>
-        <div class='p-4 bg-primary-50 border-b border-primary-200'>
+      <div class='border border-primary-soft rounded-lg overflow-hidden'>
+        <div class='p-4 bg-primary-subtle border-b border-primary-soft'>
           <h3 class='font-semibold'>Welcome Message</h3>
         </div>
 

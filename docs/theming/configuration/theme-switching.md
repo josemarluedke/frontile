@@ -283,7 +283,7 @@ Theme-inverse works automatically with semantic colors:
 <div class="theme-inverse p-6 bg-surface-canvas">
   <h3 class="text-neutral-strong">Heading</h3>
   <p class="text-neutral-firm">Body text</p>
-  <button class="bg-brand-medium text-on-brand-medium">
+  <button class="bg-primary-medium text-on-primary-medium">
     Action
   </button>
 </div>
