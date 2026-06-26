@@ -14,25 +14,44 @@ Frontile is a modern, accessible component library for Ember.js built with:
 
 ## Project Structure
 
-```
-frontile/
-├── packages/              # Component library packages
-│   ├── buttons/          # Button, ButtonGroup, Chip, CloseButton, ToggleButton
-│   ├── collections/      # Table, Listbox, Dropdown
-│   ├── forms/            # Input, Select, Checkbox, Radio, Switch, Textarea
-│   ├── forms-legacy/     # Legacy form components
-│   ├── overlays/         # Modal, Drawer, Popover, Overlay, Portal
-│   ├── notifications/    # NotificationCard, NotificationsContainer
-│   ├── status/           # ProgressBar
-│   ├── utilities/        # Avatar, Collapsible, Divider, Spinner, VisuallyHidden
-│   ├── theme/            # Styling system with Tailwind Variants
-│   ├── changeset-form/   # Form components integrated with ember-changeset
-│   └── frontile/         # Meta package that exports all packages
-├── test-app/             # Test application for all packages
-├── site/                 # Documentation site (frontile.dev)
-└── docs/                 # Additional documentation
+**Important — source is consolidated.** All component source now lives in the single
+`packages/frontile` package, grouped by category under `packages/frontile/src/components/`.
+The old per-feature packages (`buttons`, `collections`, `forms`, `overlays`, `notifications`,
+`status`, `utilities`) are now thin **deprecation/re-export wrappers** — their `src/` contains
+only `index.ts` + `template-registry.ts` and re-exports from `frontile`. **Do not add or edit
+component source in those wrapper packages**; work in `packages/frontile/src/`.
 
 ```
+frontile/
+├── packages/
+│   ├── frontile/                    # PRIMARY package — all component source lives here
+│   │   └── src/
+│   │       ├── components/          # Source grouped by category:
+│   │       │   ├── buttons/         #   Button, ButtonGroup, Chip, CloseButton, ToggleButton
+│   │       │   ├── collections/     #   Table, Listbox, Dropdown
+│   │       │   ├── forms/           #   Input, Select, Checkbox, Radio, Switch, Textarea
+│   │       │   ├── overlays/        #   Modal, Drawer, Popover, Overlay, Portal
+│   │       │   ├── notifications/   #   NotificationCard, NotificationsContainer
+│   │       │   ├── status/          #   ProgressBar
+│   │       │   └── utilities/       #   Avatar, Collapsible, Divider, Spinner, VisuallyHidden
+│   │       ├── modifiers/  services/  utils/
+│   │       └── buttons.ts, collections.ts, …  # category barrel entry points
+│   ├── theme/                       # Styling system (Tailwind Variants + semantic colors)
+│   ├── core/                        # Shared low-level primitives
+│   ├── tailwindcss-plugin-helpers/  # Helpers for the Tailwind plugin
+│   ├── changeset-form/              # Form components integrated with ember-changeset
+│   ├── forms-legacy/                # Legacy form components (still maintained)
+│   └── buttons/ collections/ forms/ overlays/ notifications/ status/ utilities/
+│                                    # Deprecation wrappers re-exporting from `frontile`
+├── test-app/             # Test application (integration/unit tests for all components)
+├── site/                 # Documentation site (frontile.dev), built with Docfy
+└── docs/                 # Markdown docs (theming, migrations) rendered by the site
+
+```
+
+**Component docs are co-located:** each component has a sibling `.md` file next to its `.gts`
+(e.g. `packages/frontile/src/components/buttons/button.gts` + `button.md`). See the
+Documentation section below — these `.md` files are rendered as **live demos** by Docfy.
 
 ## Development Workflow
 
@@ -58,10 +77,16 @@ pnpm test
 
 ### Building Packages
 
-**Build specific package:**
+**Build the main package (most component work):**
 
 ```bash
-pnpm --filter collections build
+pnpm --filter frontile build
+```
+
+**Build the theme package (after any style/color change):**
+
+```bash
+pnpm --filter @frontile/theme build
 ```
 
 **Build all packages:**
@@ -70,7 +95,10 @@ pnpm --filter collections build
 pnpm build
 ```
 
-**Important:** When working on a package, build it before running tests. If you modify styles in `@frontile/theme`, build that package too.
+**Important:** When working on a component, build `frontile` before running tests. If you
+modify styles or colors in `@frontile/theme`, build `@frontile/theme` too (the theme feeds
+generated Tailwind classes/CSS variables consumed everywhere). The legacy per-feature
+packages (`collections`, `buttons`, …) are wrappers — you rarely build them directly.
 
 ### Linting
 
@@ -88,10 +116,11 @@ pnpm lint:js --fix
 
 ### Type Checking
 
-**Check types for specific package:**
+**Check types for a specific package:**
 
 ```bash
-pnpm --filter collections lint:types
+pnpm --filter frontile lint:types
+pnpm --filter @frontile/theme lint:types
 ```
 
 **Check types for test-app:**
@@ -162,14 +191,41 @@ import { on } from '@ember/modifier';
 - Components accept `@classes` argument for customization
 - Follow existing patterns in theme package
 
+### Semantic Color System
+
+Colors are **semantic categories with named levels** — not a numbered scale. Use these
+generated Tailwind utilities; there is no `primary-500`-style numbered class.
+
+- **Categories:** `neutral` (default UI), `primary` (brand/important actions), `accent`,
+  `success`, `warning`, `danger`, plus `inverse` (for inverted surfaces) and `surface-*`.
+- **Levels** (low → high emphasis): `subtle`, `muted`, `soft`, `medium` (= `DEFAULT`),
+  `firm`, `strong`, `bolder`, `boldest`. Because `medium` is `DEFAULT`, the bare class works
+  too — `bg-primary` == `bg-primary-medium`.
+- **Contrast text:** `on-{category}-{level}` (e.g. `text-on-primary-medium`) is
+  auto-generated (black/white) for WCAG contrast on that background. The bare `text-on-primary`
+  also resolves via DEFAULT. Users may override these in their theme config.
+- Light/dark adapt automatically via CSS variables (`--color-{category}-{level}`); `strong`
+  inverts to the lightest shade in dark mode.
+
+**Source of truth (edit these to change colors):**
+- `packages/theme/src/colors/semantic.ts` — the values for each category/level (light + dark).
+- `packages/theme/src/colors/types.ts` — the `ThemeColors` type (category keys + `on-*`).
+- `packages/theme/src/plugin/resolve.ts` — `SEMANTIC_COLOR_PREFIXES` drives class + CSS-var
+  generation, including the `on-*` contrast colors.
+
+> Note: the category was briefly named `brand` during v0.18-alpha and reverted to `primary`.
+> Use `primary`. The v0.18 migration guide (`docs/migrations/v0.18/`) documents the move from
+> the old numbered scale to named levels.
+
 ### Package Dependencies
 
-Common dependency order (build these in order if modifying multiple):
+Common dependency/build order (build in this order if modifying multiple):
 
-1. `@frontile/theme` - Base styling system
-2. `@frontile/utilities` - Utility components
-3. Other packages (buttons, forms, overlays, etc.)
-4. `frontile` - Meta package
+1. `@frontile/theme` - Base styling system (colors, Tailwind Variants)
+2. `frontile` - The main package containing all component source
+3. Legacy wrapper packages (`buttons`, `collections`, …) only if you specifically need them
+
+In practice, most work is just: build `@frontile/theme` (if styles changed), then `frontile`.
 
 ## Testing Guidelines
 
@@ -181,32 +237,39 @@ Common dependency order (build these in order if modifying multiple):
 
 ## Documentation
 
-When adding features or making changes that impact usage:
+Frontile docs come in two co-located/rendered forms — both matter:
 
-1. Update relevant documentation in `site/` directory
-2. Document new component props and arguments
-3. Add usage examples
-4. Update type signatures
+1. **Component docs** — the `.md` file beside each component (e.g.
+   `packages/frontile/src/components/buttons/button.md`). **Docfy renders the GJS/HTML code
+   fences in these files as live, interactive demos.** A class in a code block is real output,
+   not just sample text — so any class change (e.g. color tokens) must be applied there too,
+   or the rendered demo breaks. Document new props/args and add usage examples here.
+2. **Guide docs** — `docs/` (theming, migrations) and the `site/` app, also Docfy-rendered.
+
+When changing public API or styling, update the affected `.md` files, type signatures, and
+examples. After doc/style changes, it's worth running the site (`cd site && pnpm build` or
+`pnpm start`) to confirm the rendered demos still look right.
 
 ## Common Tasks
 
 ### Adding a New Component
 
-1. Create component file in appropriate package (e.g., `packages/buttons/src/components/new-component.gts`)
-2. Add styles to `@frontile/theme` if needed
-3. Export from package index
-4. Add tests in `test-app/tests/integration/components/`
-5. Build package: `pnpm --filter buttons build`
-6. Run tests: `cd test-app && pnpm ember test --filter="new-component"`
-7. Update documentation in `site/`
+1. Create the component under the right category, e.g.
+   `packages/frontile/src/components/buttons/new-component.gts`
+2. Add styles to `@frontile/theme` if needed (build it after)
+3. Export it from the category barrel (e.g. `packages/frontile/src/buttons.ts`) / `index.ts`
+4. Add a co-located `new-component.md` with usage + demos
+5. Add tests in `test-app/tests/integration/components/`
+6. Build: `pnpm --filter frontile build`
+7. Run tests: `cd test-app && pnpm ember test --filter="new-component"`
 
 ### Modifying Existing Component
 
-1. Edit component in its package
-2. If styles changed, build `@frontile/theme` first
-3. Build the component's package
+1. Edit the component in `packages/frontile/src/components/<category>/`
+2. If styles/colors changed, build `@frontile/theme` first
+3. Build `frontile`
 4. Run relevant tests
-5. Update documentation if public API changed
+5. Update the co-located `.md` (and any guide docs) if public API or styling changed
 6. Run type checking and linting
 
 ### Bug Fixes
