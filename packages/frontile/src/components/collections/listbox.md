@@ -321,6 +321,7 @@ export default class IntentColors extends Component {
       <Listbox @isKeyboardEventsEnabled={{true}} @appearance='faded' as |l|>
         <l.Item @key='default'>Default Color</l.Item>
         <l.Item @key='primary' @intent='primary'>Primary Color</l.Item>
+        <l.Item @key='accent' @intent='accent'>Accent Color</l.Item>
         <l.Item @key='success' @intent='success'>Success Color</l.Item>
         <l.Item @key='warning' @intent='warning'>Warning Color</l.Item>
         <l.Item @key='danger' @intent='danger'>Danger Color</l.Item>

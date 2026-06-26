@@ -54,6 +54,7 @@ import { Spinner } from 'frontile';
   <div class="flex items-center space-x-2">
     <Spinner @intent="default" />
     <Spinner @intent="primary" />
+    <Spinner @intent="accent" />
     <Spinner @intent="success" />
     <Spinner @intent="warning" />
     <Spinner @intent="danger" />

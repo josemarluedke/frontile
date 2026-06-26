@@ -23,6 +23,7 @@ registerCustomStyles({
       intent: {
         default: 'intent-default',
         primary: 'intent-primary',
+        accent: 'intent-accent',
         success: 'intent-success',
         warning: 'intent-warning',
         danger: 'intent-danger'
@@ -73,6 +74,18 @@ module(
           assert
             .dom('[data-test-id="progress-bar"] > div.pb-base')
             .hasClass('intent-primary');
+        });
+
+        test('it adds class for the accent intent', async function (assert) {
+          await render(
+            <template>
+              <ProgressBar @intent="accent" data-test-id="progress-bar" />
+            </template>
+          );
+
+          assert
+            .dom('[data-test-id="progress-bar"] > div.pb-base')
+            .hasClass('intent-accent');
         });
 
         test('it adds class for the default intent', async function (assert) {

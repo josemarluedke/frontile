@@ -41,6 +41,7 @@ const formFeedback = tv({
   variants: {
     intent: {
       primary: 'text-primary',
+      accent: 'text-accent',
       success: 'text-success',
       danger: 'text-danger',
       warning: 'text-warning'

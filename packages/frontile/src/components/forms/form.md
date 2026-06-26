@@ -1783,6 +1783,31 @@ When you call `form.reset()`:
 **With no initial data**:
 - Simply calls the native form reset, clearing all fields to empty values
 
+## Feedback Messages
+
+When a field fails validation, `Form`/`Field` automatically render a `FormFeedback`
+element with the `danger` intent and the appropriate `aria-live` announcement — you don't
+need to wire this up yourself (see the [Form Validation](#form-validation-integration)
+examples above).
+
+For feedback outside of validation errors — hints, confirmations, or warnings — render the
+standalone `FormFeedback` component and choose an `@intent`. Available intents are
+`primary`, `accent`, `success`, `warning`, and `danger`.
+
+```gts preview
+import { FormFeedback } from 'frontile';
+
+<template>
+  <div class='flex flex-col gap-2'>
+    <FormFeedback @intent='primary' @messages='Your changes are being saved.' />
+    <FormFeedback @intent='accent' @messages='This field supports Markdown.' />
+    <FormFeedback @intent='success' @messages='Looks good!' />
+    <FormFeedback @intent='warning' @messages='This username is close to the limit.' />
+    <FormFeedback @intent='danger' @messages='This field is required.' />
+  </div>
+</template>
+```
+
 ## Accessibility
 
 The Form component maintains all standard HTML form accessibility features:
