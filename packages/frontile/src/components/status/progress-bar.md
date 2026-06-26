@@ -28,12 +28,18 @@ import { ProgressBar } from 'frontile';
 import { ProgressBar } from 'frontile';
 
 <template>
-  <div class='grid grid-cols-5 gap-4'>
+  <div class='grid grid-cols-6 gap-4'>
     <ProgressBar @progress={{50}} @label='Default' @showValueLabel={{false}} />
     <ProgressBar
       @progress={{50}}
       @label='Primary'
       @intent='primary'
+      @showValueLabel={{false}}
+    />
+    <ProgressBar
+      @progress={{50}}
+      @label='Accent'
+      @intent='accent'
       @showValueLabel={{false}}
     />
     <ProgressBar

@@ -54,7 +54,13 @@ interface ListboxSignature<T> {
     /**
      * The intent of each item
      */
-    intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+    intent?:
+      | 'default'
+      | 'primary'
+      | 'accent'
+      | 'success'
+      | 'warning'
+      | 'danger';
   };
   Element: HTMLUListElement;
   Blocks: {

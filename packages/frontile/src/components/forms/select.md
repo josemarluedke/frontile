@@ -35,6 +35,29 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 
 > **Modern Usage:** For forms with data binding and validation, use the Form and Field components as shown in the examples below. Form/Field provides automatic state management, validation, and error handling without manual `@onChange` handlers.
 
+### Intent Colors
+
+Use `@intent` to color the highlighted and selected options in the dropdown. Open each
+Select to see how the active option adopts the intent color. Available intents are
+`default`, `primary`, `accent`, `success`, `warning`, and `danger`.
+
+```gts preview
+import { Select } from 'frontile';
+
+const options = ['Option 1', 'Option 2', 'Option 3'];
+
+<template>
+  <div class='grid grid-cols-2 gap-4'>
+    <Select @intent='default' @placeholder='Default' @items={{options}} />
+    <Select @intent='primary' @placeholder='Primary' @items={{options}} />
+    <Select @intent='accent' @placeholder='Accent' @items={{options}} />
+    <Select @intent='success' @placeholder='Success' @items={{options}} />
+    <Select @intent='warning' @placeholder='Warning' @items={{options}} />
+    <Select @intent='danger' @placeholder='Danger' @items={{options}} />
+  </div>
+</template>
+```
+
 ### Data Binding with Form/Field
 
 When working with forms, the Form component automatically manages the selected value and provides data binding:

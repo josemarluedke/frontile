@@ -79,6 +79,7 @@ import { Chip } from 'frontile';
   <div>
     <Chip @appearance="outlined" @intent='default' @withDot={{true}}>Chip</Chip>
     <Chip @appearance="outlined" @intent='primary' @withDot={{true}}>Primary</Chip>
+    <Chip @appearance="outlined" @intent='accent' @withDot={{true}}>Accent</Chip>
     <Chip @appearance="outlined" @intent='success' @withDot={{true}}>Success</Chip>
     <Chip @appearance="outlined" @intent='warning' @withDot={{true}}>Warning</Chip>
     <Chip @appearance="outlined" @intent='danger' @withDot={{true}}>Danger</Chip>
@@ -103,6 +104,7 @@ export default class DemoComponent extends Component {
   <template>
     <Chip @appearance="faded" @onClose={{this.onClose}}>My Chip</Chip>
     <Chip @appearance="faded" @intent="primary" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance="faded" @intent="accent" @onClose={{this.onClose}}>My Chip</Chip>
     <Chip @appearance="faded" @intent="success" @onClose={{this.onClose}}>My Chip</Chip>
     <Chip @appearance="faded" @intent="warning" @onClose={{this.onClose}}>My Chip</Chip>
     <Chip @appearance="faded" @intent="danger" @onClose={{this.onClose}}>My Chip</Chip>
@@ -133,6 +135,7 @@ import { Chip } from 'frontile';
   <div>
     <Chip @intent='default' @isDisabled={{true}}>Chip</Chip>
     <Chip @intent='primary' @isDisabled={{true}}>Primary</Chip>
+    <Chip @intent='accent' @isDisabled={{true}}>Accent</Chip>
     <Chip @intent='success' @isDisabled={{true}}>Success</Chip>
     <Chip @intent='warning' @isDisabled={{true}}>Warning</Chip>
     <Chip @intent='danger' @isDisabled={{true}}>Danger</Chip>

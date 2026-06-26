@@ -247,6 +247,7 @@ import { hash } from '@ember/helper';
       <div class='flex gap-4'>
         <Switch @intent='default' @label='Default' @defaultSelected={{true}} />
         <Switch @intent='primary' @label='Primary' @defaultSelected={{true}} />
+        <Switch @intent='accent' @label='Accent' @defaultSelected={{true}} />
         <Switch @intent='success' @label='Success' @defaultSelected={{true}} />
         <Switch @intent='warning' @label='Warning' @defaultSelected={{true}} />
         <Switch @intent='danger' @label='Danger' @defaultSelected={{true}} />

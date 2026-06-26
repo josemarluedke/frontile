@@ -58,6 +58,7 @@ export default class Example extends Component {
   isSelected = {
     default: false,
     primary: false,
+    accent: false,
     success: false,
     warning: false,
     danger: false
@@ -108,6 +109,7 @@ import { ToggleButton } from 'frontile';
   <div>
     <ToggleButton @intent='default' disabled="true">ToggleButton</ToggleButton>
     <ToggleButton @intent='primary' disabled="true">Primary</ToggleButton>
+    <ToggleButton @intent='accent' disabled="true">Accent</ToggleButton>
     <ToggleButton @intent='success' disabled="true">Success</ToggleButton>
     <ToggleButton @intent='warning' disabled="true">Warning</ToggleButton>
     <ToggleButton @intent='danger' disabled="true">Danger</ToggleButton>

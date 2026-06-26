@@ -61,6 +61,7 @@ const listboxItem = tv({
       default: {},
       primary: {},
       secondary: {},
+      accent: {},
       success: {},
       warning: {},
       danger: {}
@@ -112,6 +113,16 @@ const listboxItem = tv({
     },
     {
       appearance: 'default',
+      intent: 'accent',
+      class: {
+        base: [
+          'data-is-active:bg-accent-soft',
+          'data-is-active:text-on-accent-soft'
+        ]
+      }
+    },
+    {
+      appearance: 'default',
       intent: 'success',
       class: {
         base: [
@@ -158,6 +169,14 @@ const listboxItem = tv({
     },
     {
       appearance: 'default',
+      intent: 'accent',
+      isActive: true,
+      class: {
+        shortcut: ['text-on-accent-soft', 'border-on-accent-soft/20']
+      }
+    },
+    {
+      appearance: 'default',
       intent: 'success',
       isActive: true,
       class: {
@@ -199,6 +218,16 @@ const listboxItem = tv({
         base: [
           'data-is-active:border-primary-medium',
           'data-is-active:text-primary-strong'
+        ]
+      }
+    },
+    {
+      appearance: 'outlined',
+      intent: 'accent',
+      class: {
+        base: [
+          'data-is-active:border-accent-medium',
+          'data-is-active:text-accent-strong'
         ]
       }
     },
@@ -253,6 +282,17 @@ const listboxItem = tv({
           'data-is-active:bg-primary-soft/20',
           'data-is-active:border-primary-medium',
           'data-is-active:text-primary-strong'
+        ]
+      }
+    },
+    {
+      appearance: 'faded',
+      intent: 'accent',
+      class: {
+        base: [
+          'data-is-active:bg-accent-soft/20',
+          'data-is-active:border-accent-medium',
+          'data-is-active:text-accent-strong'
         ]
       }
     },

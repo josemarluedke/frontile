@@ -1,9 +1,34 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
 
 import { FormFeedback, type FormFeedbackSignature } from 'frontile';
 import { cell } from 'ember-resources';
+
+registerCustomStyles({
+  formFeedback: tv({
+    base: 'form-field-feedback' as never,
+    variants: {
+      intent: {
+        primary: 'intent-primary',
+        accent: 'intent-accent',
+        success: 'intent-success',
+        warning: 'intent-warning',
+        danger: 'form-field-feedback--error'
+      },
+      size: {
+        sm: 'form-field-feedback--sm',
+        md: '',
+        lg: 'form-field-feedback--lg'
+      }
+    },
+    defaultVariants: {
+      size: 'sm'
+    }
+  }) as never
+});
 
 module(
   'Integration | Component | @frontile/forms/FormFeedback',
@@ -43,6 +68,14 @@ module(
       assert
         .dom('[data-component="form-feedback"]')
         .hasAttribute('id', 'feedback');
+    });
+
+    test('it adds the class for the accent intent', async function (assert) {
+      messages.current = 'My message';
+      intent.current = 'accent';
+      await settled();
+
+      assert.dom('[data-component="form-feedback"]').hasClass('intent-accent');
     });
 
     test('it renders aria-live', async function (assert) {
