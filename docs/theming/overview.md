@@ -431,8 +431,8 @@ Always prefer semantic color classes over generic Tailwind utilities:
 Use the surface system for component backgrounds:
 
 ```hbs
-{{! Good - uses surface solid for base }}
-<div class='bg-surface-solid-1'>
+{{! Good - uses a surface role for the base }}
+<div class='bg-surface-app'>
   {{! Good - uses overlay for elevated surface }}
   <div class='bg-surface-overlay-soft rounded-lg p-4'>
     Card content

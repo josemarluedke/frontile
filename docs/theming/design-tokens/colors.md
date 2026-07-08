@@ -274,7 +274,7 @@ module.exports = frontile({
 });
 ```
 
-Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-solid`.
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-modal`.
 
 > **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
 

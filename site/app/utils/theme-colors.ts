@@ -47,12 +47,8 @@ export type ColorLevel = (typeof colorLevels)[number];
 /**
  * Get Tailwind class name for surface overlay
  */
-export function getSurfaceOverlayClass(
-  level: string,
-  inverse: boolean = false
-): string {
-  const prefix = inverse ? 'bg-surface-overlay-inverse' : 'bg-surface-overlay';
-  return `${prefix}-${level}`;
+export function getSurfaceOverlayClass(level: string): string {
+  return `bg-surface-overlay-${level}`;
 }
 
 /**

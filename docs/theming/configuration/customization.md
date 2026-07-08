@@ -127,7 +127,7 @@ module.exports = frontile({
 
 **Key behavior:**
 - Partial overrides work — define only the levels you want to customize, and the rest will be auto-generated
-- Works for: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, `on-surface-solid`
+- Works for: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, `on-surface-modal`
 - CSS variable references (e.g., `var(--my-color)`) are passed through as-is — auto-generation is skipped since contrast can't be calculated
 
 ## Customizing Typography
@@ -498,7 +498,7 @@ Override styles for specific components using Tailwind variants:
 
 /* Custom modal backdrop */
 .modal-backdrop {
-  @apply bg-surface-overlay-inverse-strong backdrop-blur-md;
+  @apply bg-surface-overlay-scrim backdrop-blur-md;
 }
 ```
 

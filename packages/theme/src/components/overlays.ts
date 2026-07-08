@@ -1,6 +1,6 @@
 import { tv, type VariantProps } from '../tw';
 
-const obscurer = `before:bg-linear-to-b before:to-surface-solid-1 before:from-surface-solid-1/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
+const obscurer = `before:bg-linear-to-b before:to-surface-modal before:from-surface-modal/75 before:absolute before:left-0 before:w-full before:h-4 before:-top-4 before:content-['_']`;
 
 const overlay = tv({
   base: 'will-change-transform overflow-auto',
@@ -20,8 +20,8 @@ const backdrop = tv({
     type: {
       none: '',
       transparent: '',
-      blur: 'bg-surface-overlay-inverse-strong backdrop-blur-sm',
-      faded: 'bg-surface-overlay-inverse-strong'
+      blur: 'bg-surface-overlay-scrim backdrop-blur-sm',
+      faded: 'bg-surface-overlay-scrim'
     },
     inPlace: {
       true: 'absolute'
@@ -31,7 +31,7 @@ const backdrop = tv({
 
 const modal = tv({
   slots: {
-    base: 'flex flex-col shrink-0 relative text-surface-solid-11 bg-surface-solid-1 border border-surface-overlay-medium rounded-2xl my-24 w-full outline-hidden overflow-clip',
+    base: 'flex flex-col shrink-0 relative text-on-surface-modal bg-surface-modal border border-surface-overlay-medium rounded-2xl my-24 w-full outline-hidden overflow-clip',
     closeButton: 'absolute top-3 right-3',
     header: 'font-bold text-xl px-6 pt-8 pb-2',
     body: 'px-6 py-2 grow overflow-y-auto',
@@ -54,11 +54,11 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-surface-solid-11 bg-surface-solid-1 border border-surface-overlay-medium rounded-2xl w-full h-full outline-hidden overflow-clip',
+    base: 'flex flex-col absolute text-on-surface-modal bg-surface-modal border border-surface-overlay-medium rounded-2xl w-full h-full outline-hidden overflow-clip',
     closeButton: 'absolute top-3 right-3',
     header: 'font-bold text-xl text-center px-8 pt-10 pb-2',
     body: 'px-8 py-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-surface-overlay-medium bg-surface-solid-0 p-8 gap-4`
+    footer: `${obscurer} flex justify-end items-center relative border-t border-surface-overlay-medium bg-surface-modal p-8 gap-4`
   },
   variants: {
     size: {
