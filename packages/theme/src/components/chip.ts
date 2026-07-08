@@ -107,7 +107,7 @@ const chip = tv({
       appearance: 'default',
       intent: 'default',
       class: {
-        base: 'bg-neutral-firm text-on-neutral-firm'
+        base: 'bg-neutral-boldest text-on-neutral-boldest'
       }
     },
     {

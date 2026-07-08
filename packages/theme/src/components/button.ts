@@ -28,15 +28,17 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-xs leading-none px-2.5 py-0.5 gap-1 rounded',
-      sm: 'text-sm leading-none px-3 py-1 gap-1.5 rounded-lg',
-      md: 'text-lg leading-none px-4 py-2 gap-1.5 rounded-xl',
-      lg: 'text-xl leading-none px-6 py-3 gap-1.5 rounded-xl',
-      xl: 'text-3xl leading-none px-8 py-4 gap-2.5 rounded-2xl'
+      xs: 'text-sm leading-none px-4 py-1 gap-1 rounded-full',
+      sm: 'text-base leading-none px-5 py-1.5 gap-1.5 rounded-full',
+      md: 'text-lg leading-none px-6 py-2 gap-1.5 rounded-full',
+      lg: 'text-2xl leading-none px-8 py-2.5 gap-2 rounded-full',
+      xl: 'text-3xl leading-none px-10 py-3 gap-2.5 rounded-full',
+      '2xl': 'text-4xl leading-none px-12 py-3.5 gap-3 rounded-full',
+      '3xl': 'text-5xl leading-none px-12 py-4 gap-3 rounded-full'
     },
     isInGroup: {
       true: [
-        'rounded-none first:rounded-l last:rounded-r',
+        'rounded-none first:rounded-s-full last:rounded-e-full',
         '[&:not(:first-child):not(:last-child)]:rounded-none',
         'not-last-of-type:-me-px'
       ]
@@ -93,6 +95,7 @@ const button = tv({
   variants: {
     appearance: {
       default: 'shadow-elevation-2',
+      soft: '',
       outlined: '',
       minimal: '',
       tonal: 'shadow-elevation-2',
@@ -105,7 +108,7 @@ const button = tv({
       appearance: 'default',
       intent: 'default',
       class:
-        'bg-neutral-firm text-on-neutral-firm hover:bg-neutral-strong hover:text-on-neutral-strong active:bg-neutral-bolder active:text-on-neutral-bolder'
+        'bg-neutral-boldest text-on-neutral-boldest hover:bg-neutral-bolder hover:text-on-neutral-bolder active:bg-neutral-strong active:text-on-neutral-strong'
     },
     {
       appearance: 'default',
@@ -136,6 +139,44 @@ const button = tv({
       intent: 'danger',
       class:
         'bg-danger-soft text-on-danger-soft hover:bg-danger-medium hover:text-on-danger-medium active:bg-danger-firm active:text-on-danger-firm'
+    },
+
+    // APPEARANCE: soft (tint fill + colored stroke)
+    {
+      appearance: 'soft',
+      intent: 'default',
+      class:
+        'bg-neutral-subtle border-neutral-medium text-neutral-strong hover:bg-neutral-muted hover:border-neutral-firm active:bg-neutral-soft active:border-neutral-strong active:text-on-neutral-soft'
+    },
+    {
+      appearance: 'soft',
+      intent: 'primary',
+      class:
+        'bg-primary-subtle border-primary-medium text-primary-strong hover:bg-primary-muted hover:border-primary-firm active:bg-primary-soft active:border-primary-strong active:text-on-primary-soft'
+    },
+    {
+      appearance: 'soft',
+      intent: 'accent',
+      class:
+        'bg-accent-subtle border-accent-medium text-accent-strong hover:bg-accent-muted hover:border-accent-firm active:bg-accent-soft active:border-accent-strong active:text-on-accent-soft'
+    },
+    {
+      appearance: 'soft',
+      intent: 'success',
+      class:
+        'bg-success-subtle border-success-medium text-success-strong hover:bg-success-muted hover:border-success-firm active:bg-success-soft active:border-success-strong active:text-on-success-soft'
+    },
+    {
+      appearance: 'soft',
+      intent: 'warning',
+      class:
+        'bg-warning-subtle border-warning-medium text-warning-strong hover:bg-warning-muted hover:border-warning-firm active:bg-warning-soft active:border-warning-strong active:text-on-warning-soft'
+    },
+    {
+      appearance: 'soft',
+      intent: 'danger',
+      class:
+        'bg-danger-subtle border-danger-medium text-danger-strong hover:bg-danger-muted hover:border-danger-firm active:bg-danger-soft active:border-danger-strong active:text-on-danger-soft'
     },
 
     // APPEARANCE: minimal (ghost)

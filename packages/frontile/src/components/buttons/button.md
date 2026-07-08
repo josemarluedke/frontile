@@ -31,6 +31,7 @@ import { Button } from 'frontile';
 <template>
   <div>
     <Button>Default</Button>
+    <Button @appearance='soft'>Soft</Button>
     <Button @appearance='outlined'>Outlined</Button>
     <Button @appearance='tonal'>Tonal</Button>
     <Button @appearance='minimal'>Minimal</Button>
@@ -55,6 +56,14 @@ import { Button } from 'frontile';
     <Button @intent='success'>Success</Button>
     <Button @intent='warning'>Warning</Button>
     <Button @intent='danger'>Danger</Button>
+  </div>
+  <div class='mt-4'>
+    <Button @appearance='soft' @intent='default'>Default</Button>
+    <Button @appearance='soft' @intent='primary'>Primary</Button>
+    <Button @appearance='soft' @intent='accent'>Accent</Button>
+    <Button @appearance='soft' @intent='success'>Success</Button>
+    <Button @appearance='soft' @intent='warning'>Warning</Button>
+    <Button @appearance='soft' @intent='danger'>Danger</Button>
   </div>
   <div class='mt-4'>
     <Button @appearance='outlined' @intent='default'>Default</Button>
@@ -94,6 +103,8 @@ import { Button } from 'frontile';
   <Button>Button md</Button>
   <Button @size='lg'>Button lg</Button>
   <Button @size='xl'>Button xl</Button>
+  <Button @size='2xl'>Button 2xl</Button>
+  <Button @size='3xl'>Button 3xl</Button>
 </template>
 ```
 

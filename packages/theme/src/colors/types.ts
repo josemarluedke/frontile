@@ -16,6 +16,7 @@ export type ColorScale =
   | string;
 
 export type BaseColors = {
+  background: ColorScale;
   divider: ColorScale;
   focus: ColorScale;
 };

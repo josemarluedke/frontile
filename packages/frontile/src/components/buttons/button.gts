@@ -17,7 +17,7 @@ export interface ButtonArgs {
    *
    * @defaultValue 'default'
    */
-  appearance?: 'default' | 'outlined' | 'minimal' | 'tonal' | 'custom';
+  appearance?: 'default' | 'soft' | 'outlined' | 'minimal' | 'tonal' | 'custom';
 
   /**
    * The intent of the button
@@ -27,7 +27,7 @@ export interface ButtonArgs {
   /**
    * The size of the button
    */
-  size?: 'xs' | 'sm' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
   /**
    * Disable rendering the button element. It yields an object with classNames instead.
