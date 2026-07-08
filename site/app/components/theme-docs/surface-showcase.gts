@@ -77,9 +77,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     <div class="surface-showcase">
       {{#if this.isOverlay}}
         {{! Overlay Demonstration }}
-        <div
-          class="p-6 rounded-lg bg-surface-app border border-neutral-subtle"
-        >
+        <div class="p-6 rounded-lg bg-surface-app border border-neutral-subtle">
           <h4 class="text-sm font-semibold mb-4 text-neutral-strong">
             Surface Overlay (on an app base)
           </h4>
