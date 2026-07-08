@@ -41,6 +41,37 @@ A new `inverse` category has been added for elements on inverted surfaces (dark 
 </div>
 ```
 
+### Surface Roles Simplified
+
+The surface system (introduced during the v0.18 alpha cycle) has been simplified before its first stable release:
+
+| Removed                       | Replacement          | Notes                                                                                   |
+| ------------------------------ | --------------------- | ---------------------------------------------------------------------------------------- |
+| `surface-solid-0` … `surface-solid-11` | *(removed)*    | The 12-step scale is gone. Use a surface role (`app`, `canvas`, `card`, `modal`, `input`) instead |
+| `text-surface-solid-*`         | `text-neutral-*` or `text-on-surface-modal` | Use the neutral text scale for body copy, or the auto-generated on-color for content on `surface-modal` |
+| `surface-popover`              | `surface-modal`       | Popovers, dropdowns, modals, and drawers now share one "highest elevation" surface        |
+| `surface-overlay-content`      | `surface-modal`       | Same merge as above — this was already identical in value to `surface-popover`            |
+| `surface-panel`                | *(removed)*           | Had no real consumer; use `surface-card` for elevated sidebar/panel containers            |
+| `surface-inset`                | *(removed)*           | Had no real consumer; use `surface-overlay-subtle`/`soft` for recessed translucent wells   |
+| `surface-overlay-inverse-*`    | `surface-overlay-scrim` (for backdrops) | Had no real consumer. If you need a heavy, scheme-invariant tint, use `scrim`; for a normal darken/lighten step, use `subtle`/`soft`/`medium`/`strong` |
+| *(new)* `surface-input`        | —                     | Dedicated surface for text inputs, checkboxes, and radios (previously `surface-solid-0`)   |
+
+`surface-card` also changed value: it's now translucent (`white @ 90%` in light mode) instead of fully opaque, and resolves to `base-800` in dark mode instead of `base-700`.
+
+```gts
+// Before
+<div class="bg-surface-popover rounded-md shadow-lg">Menu</div>
+<div class="bg-surface-overlay-content rounded-lg">Modal</div>
+<input class="bg-surface-solid-0" />
+
+// After
+<div class="bg-surface-modal rounded-md shadow-lg">Menu</div>
+<div class="bg-surface-modal rounded-lg">Modal</div>
+<input class="bg-surface-input" />
+```
+
+See the [Surfaces](../../theming/design-tokens/surfaces.md) guide for the full, current token set.
+
 ### Color Scale Changed
 
 The numbered scale (50, 100, 200, ..., 950) has been replaced with named levels:

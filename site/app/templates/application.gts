@@ -15,7 +15,7 @@ import { PortalTarget } from 'frontile';
   >
     <:title>
       <VisuallyHidden>Frontile</VisuallyHidden>
-      <Logo class="h-7" @color="#4B65F7" />
+      <Logo class="h-7" @color="#076873" />
     </:title>
     <:left>
       <DocfyJumpTo />

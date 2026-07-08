@@ -75,36 +75,28 @@ export interface SurfaceOverlay {
   soft: string;
   medium: string;
   strong: string;
-  inverse: {
-    subtle: string;
-    soft: string;
-    medium: string;
-    strong: string;
-  };
-}
-
-export interface SurfaceSolid {
-  0: string;
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
-  7: string;
-  8: string;
-  9: string;
-  10: string;
-  11: string;
+  /**
+   * Heavy backdrop tint for modal/drawer scrims, one step past `strong`.
+   *
+   * Follows the same darken-in-light / lighten-in-dark direction as
+   * `subtle`/`soft`/`medium`/`strong`, just at much higher opacity (75%) so it
+   * reads as a deliberate backdrop rather than a hover/elevation hint. A black
+   * tint is used in light mode; a black scrim in dark mode would barely
+   * register against an already near-black page, so dark mode lightens
+   * (white tint) instead — same visual weight, opposite direction.
+   *
+   * @example
+   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   */
+  scrim: string;
 }
 
 /**
  * Surface color system defining background colors for UI containers.
  *
- * Surface tokens organize backgrounds into three categories:
+ * Surface tokens organize backgrounds into two categories:
  * 1. **Roles**: Component context tokens (where in layout hierarchy)
- * 2. **Solid**: Base 12-step gray scale (0-11) for surfaces
- * 3. **Overlay**: Translucent layers for elevation and depth
+ * 2. **Overlay**: Translucent layers for elevation and depth
  */
 export interface SurfaceColors {
   /**
@@ -124,30 +116,9 @@ export interface SurfaceColors {
    * <div className="bg-surface-card hover:bg-surface-overlay-subtle" />
    *
    * // Stacking overlays for depth
-   * <div className="bg-surface-solid-1 bg-surface-overlay-soft" />
+   * <div className="bg-surface-app bg-surface-overlay-soft" />
    */
   overlay: SurfaceOverlay;
-
-  /**
-   * Base 12-step achromatic scale (0-11) for surface backgrounds.
-   *
-   * Foundation for all surface roles, providing a consistent grayscale progression
-   * that inverts between themes to support the elevation-luminance principle.
-   *
-   * Light theme: 0 (white) → 11 (black) - darkening progression
-   * Dark theme: 0 (black) → 11 (white) - lightening progression
-   *
-   * The scale is bidirectional and theme-agnostic. Surface roles typically
-   * reference steps 0-3, while higher steps (4-11) are available for custom
-   * surface needs and direct usage.
-   *
-   * @example
-   * // Using solid scale directly
-   * bg-surface-solid-0  // Extreme anchor: white (light) or black (dark)
-   * bg-surface-solid-1  // Near-white (light) or near-black (dark)
-   * bg-surface-solid-11 // Opposite extreme: black (light) or white (dark)
-   */
-  solid: SurfaceSolid;
 
   /**
    * Root application background layer (hierarchy level 0).
@@ -217,104 +188,51 @@ export interface SurfaceColors {
   card: string;
 
   /**
-   * Sidebar and panel container surface (hierarchy level 1).
+   * Form control surface for inputs, checkboxes, radios, and similar controls
+   * (hierarchy level -1).
    *
-   * Used for navigation sidebars, inspector panels, and tool palettes.
-   * Provides consistent container background for grouped sections.
-   *
-   * Light: Pure white, elevated appearance
-   * Dark: Dark gray, slight elevation above canvas
-   *
-   * @example
-   * // Navigation sidebar
-   * <aside className="bg-surface-panel border-r border-neutral-subtle">
-   *   <nav>...</nav>
-   * </aside>
-   *
-   * @example
-   * // Inspector panel
-   * <div className="bg-surface-panel p-4">
-   *   <h3>Properties</h3>
-   * </div>
-   */
-  panel: string;
-
-  /**
-   * Popover and tooltip container surface (hierarchy level 2).
-   *
-   * Used for dropdown menus, tooltips, context menus, and toast notifications.
-   * Provides higher elevation than cards for floating UI elements.
-   *
-   * Light: Pure white, high elevation
-   * Dark: Medium gray, lighter than card for higher elevation
-   *
-   * @example
-   * // Dropdown menu
-   * <div className="bg-surface-popover rounded-md shadow-lg border border-neutral-subtle">
-   *   <MenuItem />
-   * </div>
-   *
-   * @example
-   * // Tooltip
-   * <div className="bg-surface-popover px-2 py-1 rounded text-sm">
-   *   Helpful tip
-   * </div>
-   */
-  popover: string;
-
-  /**
-   * Recessed surface for inputs, wells, and embedded content (hierarchy level -1).
-   *
-   * Context-adaptive overlay that always darkens relative to its parent surface
-   * via alpha compositing. Used for text inputs, search fields, code blocks,
-   * and embedded content that should appear recessed.
-   *
-   * Works on any surface: Translucent black overlay that darkens the parent
-   * surface, creating a consistent recessed appearance across all contexts.
+   * Light: Pure white
+   * Dark: Near-black, the darkest step in the neutral scale
    *
    * @example
    * // Text input
-   * <input className="bg-surface-inset border border-neutral-medium rounded px-3 py-2" />
-   *
-   * @example
-   * // Code block
-   * <pre className="bg-surface-inset rounded-md p-4">
-   *   <code>const example = true;</code>
-   * </pre>
-   *
-   * @example
-   * // Search field
-   * <div className="bg-surface-inset rounded-full px-4 py-2">
-   *   <input type="search" />
-   * </div>
+   * <input className="bg-surface-input border border-neutral-medium rounded px-3 py-2" />
    */
-  inset: string;
+  input: string;
 
   /**
-   * Modal and drawer container surface, highest elevation (hierarchy level 3).
+   * Modal, drawer, and popover container surface, highest elevation
+   * (hierarchy level 3).
    *
-   * Used for modal dialogs, drawers, and other overlay content that floats
-   * above all other surfaces. Appears with a scrim backdrop to focus attention.
+   * Used for modal dialogs, drawers, dropdown menus, and other floating
+   * content that appears above all other surfaces. Modals and drawers pair it
+   * with a scrim backdrop to focus attention.
    *
    * Light: Pure white, highest elevation
    * Dark: Medium gray, lightest surface for maximum elevation
    *
    * @example
    * // Modal dialog
-   * <div className="bg-surface-overlay-content rounded-lg shadow-2xl p-6">
+   * <div className="bg-surface-modal rounded-lg shadow-2xl p-6">
    *   <h2>Confirm Action</h2>
    *   <p>Are you sure?</p>
    * </div>
    *
    * @example
    * // Drawer with backdrop
-   * <div className="fixed inset-0 bg-surface-overlay-strong">
-   *   <aside className="bg-surface-overlay-content h-full w-80">
+   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   *   <aside className="bg-surface-modal h-full w-80">
    *     <DrawerContent />
    *   </aside>
    * </div>
+   *
+   * @example
+   * // Dropdown menu
+   * <div className="bg-surface-modal rounded-md shadow-lg border border-neutral-subtle">
+   *   <MenuItem />
+   * </div>
    */
-  overlayContent: string;
+  modal: string;
 }
 
 export interface ThemeColors {
@@ -336,30 +254,13 @@ export interface ThemeColors {
   'on-danger'?: OnColorCategory;
 
   /**
-   * Optional on-color overrides for surface-solid colors.
+   * Optional on-color override for the `surface-modal` background.
    *
-   * Surface-solid has numeric keys (0-11), so on-colors follow the same pattern.
+   * By default, auto-generated for optimal WCAG contrast, same as the other
+   * semantic categories.
    *
    * @example
-   * // Override specific surface-solid on-colors
-   * 'on-surface-solid': {
-   *   0: '#000000',  // Text color on surface-solid-0
-   *   5: '#ffffff',  // Text color on surface-solid-5
-   *   11: '#ffffff'  // Text color on surface-solid-11
-   * }
+   * 'on-surface-modal': '#111111'
    */
-  'on-surface-solid'?: {
-    0?: string;
-    1?: string;
-    2?: string;
-    3?: string;
-    4?: string;
-    5?: string;
-    6?: string;
-    7?: string;
-    8?: string;
-    9?: string;
-    10?: string;
-    11?: string;
-  };
+  'on-surface-modal'?: string;
 }

@@ -66,14 +66,14 @@ const SEMANTIC_COLOR_PREFIXES = [
   'success',
   'danger',
   'warning',
-  'surface-solid'
+  'surface-modal'
 ];
 
 const EXCLUDED_COLORS = ['background', 'focus', 'divider'];
 
 /**
  * Determine if a color should have an "on-" variant generated.
- * Includes semantic colors and surface-solid-*.
+ * Includes semantic colors and surface-modal.
  * Excludes utility colors and transparent overlays.
  */
 function shouldGenerateOnColor(colorName: string): boolean {
