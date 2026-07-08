@@ -6,10 +6,12 @@ import tokens from './semantic';
 
 const base: SemanticBaseColors = {
   light: {
+    background: 'var(--color-surface-app)',
     focus: 'var(--color-primary-muted)',
     divider: 'rgba(17, 17, 17, 0.15)'
   },
   dark: {
+    background: 'var(--color-surface-app)',
     focus: 'var(--color-primary-muted)',
     divider: 'rgba(255, 255, 255, 0.15)'
   }
