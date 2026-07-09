@@ -15,6 +15,44 @@ Frontile's semantic color system provides meaningful, accessible colors that ada
 
 Instead of using arbitrary gray scales like `bg-gray-300`, Frontile's semantic colors use meaningful names that describe their purpose and visual weight. Each color automatically adapts between light and dark themes, ensuring consistent contrast and accessibility.
 
+## Color Levels
+
+Every category exposes the same set of levels, organized into **two bands**.
+The bands share one emphasis vocabulary but are consumed by different CSS
+properties — the band a level belongs to tells you what it's for.
+
+| Band        | Levels (low → high emphasis)                     | Use for                                          |
+| ----------- | ------------------------------------------------ | ------------------------------------------------ |
+| **Surface** | `subtle` · `muted` · `soft` · `DEFAULT` · `firm` | Fills — `bg-*` and decorative `border-*`         |
+| **Ink**     | `strong` · `bolder`                              | Legible foregrounds — `text-*`, outlined borders |
+
+- **`DEFAULT`** is the resting fill. It has no suffix, so the bare class works:
+  `bg-primary` is the DEFAULT fill, `text-primary` the DEFAULT-level text.
+- **`firm`** is the most emphatic _fill_ (e.g. a pressed background). It sits at
+  the top of the surface band, below the ink band it never competes with —
+  `firm` is a background, `strong`/`bolder` are text, so they live in different
+  property slots even though they share the ladder.
+- **`on-{category}-{level}`** is the auto-generated black/white text that meets
+  WCAG contrast on that fill (e.g. `text-on-primary` on `bg-primary`).
+
+### Names are ranks, not brightness
+
+A level name describes **emphasis rank**, never a specific lightness. The same
+token can be dark in light mode and light in dark mode, because interaction
+direction inverts between schemes (light mode lightens on hover and darkens on
+press; dark mode does the reverse). A brightness word like "deep" or "light"
+would be correct in one theme and wrong in the other, so the vocabulary stays
+abstract.
+
+### Why two bands instead of one numbered scale
+
+Tailwind maps one token name to exactly one color value, reused across every
+property (`bg-primary`, `text-primary`, and `border-primary` are always the
+same color). A fill and the text that must stay legible on top of it are
+different colors, so they can't share a single rung — they need two names. The
+band split makes that boundary explicit instead of hiding it inside a flat
+`50…900`-style scale.
+
 ## Color Categories
 
 ### Neutral
@@ -27,13 +65,13 @@ Text colors:
 
 - `text-neutral-firm` - Secondary text for descriptions and metadata
 - `text-neutral-strong` - Default text color for body content
-- `text-neutral-boldest` - Maximum emphasis for headings
+- `text-neutral-bolder` - Maximum emphasis for headings
 
 Background colors with automatic text colors:
 
 - `bg-neutral-subtle` with `text-on-neutral-subtle` - Subtle background for hover states
 - `bg-neutral-soft` with `text-on-neutral-soft` - Soft background for cards
-- `bg-neutral-medium` with `text-on-neutral-medium` - Medium emphasis background
+- `bg-neutral` with `text-on-neutral` - Medium emphasis background
 - `bg-neutral-strong` with `text-on-neutral-strong` - Strong emphasis background
 
 ### Primary
@@ -46,13 +84,13 @@ Background colors with automatic text colors:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Button }}
-    <button class='bg-primary-medium text-on-primary-medium hover:bg-primary-soft px-4 py-2 rounded'>
+    <button class='bg-primary text-on-primary hover:bg-primary-soft px-4 py-2 rounded'>
       Filled Button
     </button>
 
     {{! Outlined Button }}
     <button
-      class='border border-primary-medium text-primary-medium hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'
+      class='border border-primary text-primary hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'
     >
       Outlined Button
     </button>
@@ -63,7 +101,7 @@ Background colors with automatic text colors:
     </button>
 
     {{! Text Button }}
-    <button class='text-primary-medium hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'>
+    <button class='text-primary hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'>
       Text Button
     </button>
   </div>
@@ -76,7 +114,7 @@ Banners:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Banner }}
-    <div class='bg-primary-medium text-on-primary-medium p-4 rounded'>
+    <div class='bg-primary text-on-primary p-4 rounded'>
       <div class='font-semibold'>Filled Banner</div>
       <div class='text-sm opacity-90'>High emphasis notification with brand colors</div>
     </div>
@@ -108,7 +146,7 @@ Banners:
     </div>
 
     {{! Accent Button }}
-    <button class='bg-accent-medium text-on-accent-medium hover:bg-accent-soft px-4 py-2 rounded'>
+    <button class='bg-accent text-on-accent hover:bg-accent-soft px-4 py-2 rounded'>
       Explore Features
     </button>
   </div>
@@ -133,7 +171,7 @@ Banners:
     </div>
 
     {{! Success Button }}
-    <button class='bg-success-medium text-on-success-medium hover:bg-success-soft px-4 py-2 rounded'>
+    <button class='bg-success text-on-success hover:bg-success-soft px-4 py-2 rounded'>
       Confirm Action
     </button>
   </div>
@@ -158,7 +196,7 @@ Banners:
     </div>
 
     {{! Destructive Button }}
-    <button class='bg-danger-medium text-on-danger-medium hover:bg-danger-soft px-4 py-2 rounded'>
+    <button class='bg-danger text-on-danger hover:bg-danger-soft px-4 py-2 rounded'>
       Delete Item
     </button>
   </div>
@@ -184,7 +222,7 @@ Banners:
 
     {{! Warning Button }}
     <button
-      class='bg-warning-medium text-on-warning-medium hover:bg-warning-soft rounded'
+      class='bg-warning text-on-warning hover:bg-warning-soft rounded'
     >
       Proceed with Caution
     </button>
@@ -194,27 +232,26 @@ Banners:
 
 ## Choosing the Right Color Level
 
-### For Backgrounds
+Pick from the band that matches the property you're setting.
 
-- **subtle**: Hover states, selected rows, minimal backgrounds
-- **soft**: Card backgrounds, secondary surfaces
-- **medium**: Primary buttons, badges, tags
-- **strong**: High-emphasis buttons, active states
+### Backgrounds & decorative borders (surface band)
 
-### For Text
+- **`subtle`**: Hover states, selected rows, tonal/hairline backgrounds
+- **`muted`**: Hover on tonal fills, chip and close-button backgrounds
+- **`soft`**: Card backgrounds, secondary surfaces, the hover step for solid fills
+- **`DEFAULT`** (bare `bg-{color}`): Primary buttons, badges, tags, resting borders
+- **`firm`**: Pressed/active backgrounds
 
-- **on-{color}-{level}**: Automatic contrasting text on colored backgrounds (e.g., `text-on-primary-medium`)
-- **firm**: Secondary text, descriptions, metadata
-- **strong**: Default body text, readable content
-- **bolder/boldest**: Headings, important text
+### Text & outlined borders (ink band)
 
-> **Note:** Lower levels like `soft` and `medium` are designed for backgrounds and borders, not for text. In dark mode, these levels map to very dark values that are illegible on dark surfaces. Always use `firm` or higher for visible text.
+- **`strong`**: Default body text, readable content, outlined-control text and borders
+- **`bolder`**: Headings, hover/active text, highest-emphasis foregrounds
+- **`on-{color}-{level}`**: Automatic contrasting text on a colored fill (e.g., `text-on-primary` on `bg-primary`)
 
-### For Borders
-
-- **subtle**: Dividers, minimal borders
-- **soft**: Default borders, card outlines
-- **medium**: Focus rings, emphasized borders
+> **Note:** Surface-band levels (`subtle` … `firm`) are fills, not text colors.
+> In dark mode they map to values that are illegible as text on dark surfaces.
+> For visible text use an ink-band level (`strong`/`bolder`) or the matching
+> `on-{color}` token.
 
 ## Accessibility
 
@@ -259,13 +296,13 @@ module.exports = frontile({
         primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
-          medium: '#3b82f6',
+          DEFAULT: '#3b82f6',
           strong: '#1e40af'
         },
         // Override specific on-colors
         'on-primary': {
-          medium: '#ffffff',  // Force white text on primary-medium
-          strong: '#e0f2fe'   // Use light blue instead of auto-generated white
+          DEFAULT: '#ffffff',  // Force white text on the bare primary fill
+          strong: '#e0f2fe'    // Use light blue instead of auto-generated white
         }
         // on-primary-subtle and on-primary-soft are still auto-generated
       }

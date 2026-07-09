@@ -18,19 +18,19 @@ Control border thickness with semantic width tokens. These tokens provide meanin
 ```gts preview
 <template>
   <div class='flex gap-6 flex-wrap items-center'>
-    <div class='border-thin border-neutral-medium bg-surface-canvas p-6 rounded'>
+    <div class='border-thin border-neutral bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Thin</div>
       <div class='text-body-xs text-neutral-strong'>Subtle borders</div>
     </div>
-    <div class='border border-neutral-medium bg-surface-canvas p-6 rounded'>
+    <div class='border border-neutral bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Default</div>
       <div class='text-body-xs text-neutral-strong'>Standard borders</div>
     </div>
-    <div class='border-heavy border-neutral-medium bg-surface-canvas p-6 rounded'>
+    <div class='border-heavy border-neutral bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Heavy</div>
       <div class='text-body-xs text-neutral-strong'>Emphasized borders</div>
     </div>
-    <div class='border-aggressive border-neutral-medium bg-surface-canvas p-6 rounded'>
+    <div class='border-aggressive border-neutral bg-surface-canvas p-6 rounded'>
       <div class='text-label-sm mb-1'>Aggressive</div>
       <div class='text-body-xs text-neutral-strong'>Strong emphasis</div>
     </div>
@@ -51,7 +51,7 @@ Control border thickness with semantic width tokens. These tokens provide meanin
 <template>
   <div class='space-y-4'>
     {{! Subtle card }}
-    <div class='border-thin border-neutral-medium rounded p-4'>
+    <div class='border-thin border-neutral rounded p-4'>
       <h3 class='text-header-sm mb-2'>Subtle Card</h3>
       <p class='text-body-sm text-neutral-strong'>Uses thin border for minimal visual weight</p>
     </div>
@@ -60,11 +60,11 @@ Control border thickness with semantic width tokens. These tokens provide meanin
     <input
       type='text'
       placeholder='Standard input field'
-      class='w-full border border-neutral-medium rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-medium'
+      class='w-full border border-neutral rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary'
     />
 
     {{! Selected item with heavy border }}
-    <div class='border-heavy border-primary-medium rounded p-4 bg-primary-subtle'>
+    <div class='border-heavy border-primary rounded p-4 bg-primary-subtle'>
       <h3 class='text-header-sm mb-2 text-primary-strong'>Selected Item</h3>
       <p class='text-body-sm text-primary-strong'>Uses heavy border to show selection</p>
     </div>
@@ -134,13 +134,13 @@ Use border widths and radius together to create various UI patterns:
     </div>
 
     {{! Warning with heavy border and default corners }}
-    <div class='border-heavy border-warning-medium bg-warning-subtle rounded p-4'>
+    <div class='border-heavy border-warning bg-warning-subtle rounded p-4'>
       <h4 class='text-label-md text-warning-strong mb-1'>Warning</h4>
       <p class='text-body-sm text-warning-strong'>This action cannot be undone.</p>
     </div>
 
     {{! Error with aggressive border and sharp corners }}
-    <div class='border-aggressive border-danger-medium bg-danger-subtle rounded-sm p-4'>
+    <div class='border-aggressive border-danger bg-danger-subtle rounded-sm p-4'>
       <h4 class='text-label-md text-danger-strong mb-1'>Error</h4>
       <p class='text-body-sm text-danger-strong'>Failed to save changes. Please try again.</p>
     </div>

@@ -21,7 +21,6 @@
 
 @theme {
   --font-family-sans: Inter, system-ui, sans-serif;
-  --color-primary: theme(colors.primary.medium);
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
@@ -53,12 +52,12 @@
     /* Body text is softer for comfort */
     --tw-prose-body: theme(colors.neutral.bolder);
     /* Even softer for secondary content */
-    --tw-prose-quote-borders: theme(colors.neutral.medium);
+    --tw-prose-quote-borders: theme(colors.neutral.DEFAULT);
     --tw-prose-quotes: theme(colors.neutral.soft);
     --tw-prose-captions: theme(colors.neutral.soft);
     /* Code blocks */
     --tw-prose-code: theme(colors.neutral.soft);
-    --tw-prose-pre-code: theme(colors.neutral.medium);
+    --tw-prose-pre-code: theme(colors.neutral.DEFAULT);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
     --tw-prose-links: theme(colors.primary.strong);
@@ -74,12 +73,12 @@
     /* Body text is softer for comfort */
     --tw-prose-body: theme(colors.neutral.bolder);
     /* Even softer for secondary content */
-    --tw-prose-quote-borders: theme(colors.neutral.medium);
+    --tw-prose-quote-borders: theme(colors.neutral.DEFAULT);
     --tw-prose-quotes: theme(colors.neutral.soft);
     --tw-prose-captions: theme(colors.neutral.soft);
     /* Code blocks */
     --tw-prose-code: theme(colors.neutral.soft);
-    --tw-prose-pre-code: theme(colors.neutral.medium);
+    --tw-prose-pre-code: theme(colors.neutral.DEFAULT);
     --tw-prose-pre-bg: theme(colors.neutral.strong);
     /* Links */
     --tw-prose-links: theme(colors.primary.strong);

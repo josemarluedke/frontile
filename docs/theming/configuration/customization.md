@@ -41,25 +41,25 @@ module.exports = frontile({
         primary: {
           subtle: '#f0f9ff',
           soft: '#7dd3fc',
-          medium: '#0ea5e9',
+          DEFAULT: '#0ea5e9',
           strong: '#0c4a6e'
         },
         success: {
           subtle: '#f0fdf4',
           soft: '#86efac',
-          medium: '#22c55e',
+          DEFAULT: '#22c55e',
           strong: '#14532d'
         },
         danger: {
           subtle: '#fef2f2',
           soft: '#fca5a5',
-          medium: '#ef4444',
+          DEFAULT: '#ef4444',
           strong: '#7f1d1d'
         },
         warning: {
           subtle: '#fffbeb',
           soft: '#fde68a',
-          medium: '#f59e0b',
+          DEFAULT: '#f59e0b',
           strong: '#78350f'
         }
       }
@@ -69,7 +69,7 @@ module.exports = frontile({
         primary: {
           subtle: '#0c4a6e',
           soft: '#0ea5e9',
-          medium: '#38bdf8',
+          DEFAULT: '#38bdf8',
           strong: '#e0f2fe'
         }
         // ... other colors
@@ -110,13 +110,13 @@ module.exports = frontile({
         primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
-          medium: '#3b82f6',
+          DEFAULT: '#3b82f6',
           strong: '#1e40af'
         },
         // Override specific on-colors
         'on-primary': {
-          medium: '#ffffff',  // Force white text on primary-medium
-          strong: '#e0f2fe'   // Use light blue instead of white
+          DEFAULT: '#ffffff',  // Force white text on the bare primary fill
+          strong: '#e0f2fe'    // Use light blue instead of white
         }
         // on-primary-subtle and on-primary-soft will still be auto-generated
       }
@@ -352,21 +352,21 @@ module.exports = frontile({
         primary: {
           subtle: '#faf5ff',
           soft: '#c084fc',
-          medium: '#9333ea',
+          DEFAULT: '#9333ea',
           strong: '#581c87'
         },
         // Success remains green
         success: {
           subtle: '#f0fdf4',
           soft: '#86efac',
-          medium: '#22c55e',
+          DEFAULT: '#22c55e',
           strong: '#14532d'
         },
         // Custom orange warning
         warning: {
           subtle: '#fff7ed',
           soft: '#fdba74',
-          medium: '#f97316',
+          DEFAULT: '#f97316',
           strong: '#7c2d12'
         }
       }
@@ -376,7 +376,7 @@ module.exports = frontile({
         primary: {
           subtle: '#581c87',
           soft: '#9333ea',
-          medium: '#a855f7',
+          DEFAULT: '#a855f7',
           strong: '#f3e8ff'
         }
         // ... other colors

@@ -85,7 +85,7 @@ module.exports = frontile({
         primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
-          medium: '#3b82f6',
+          DEFAULT: '#3b82f6',
           strong: '#1e40af'
         }
       }
@@ -95,7 +95,7 @@ module.exports = frontile({
         primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
-          medium: '#60a5fa',
+          DEFAULT: '#60a5fa',
           strong: '#dbeafe'
         }
       }
@@ -169,7 +169,7 @@ module.exports = frontile({
         primary: {
           subtle: '#f0f9ff',
           soft: '#7dd3fc',
-          medium: '#0ea5e9',
+          DEFAULT: '#0ea5e9',
           strong: '#0c4a6e'
         }
       }

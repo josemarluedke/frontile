@@ -330,7 +330,7 @@ export default class ComprehensiveForm extends Component {
       <div class='p-4 bg-neutral-subtle rounded'>
         <div class='flex justify-between items-center mb-2'>
           <h4 class='font-medium'>Form Data</h4>
-          <span class='text-sm text-neutral-medium'>
+          <span class='text-sm text-neutral'>
             Last event:
             <strong>{{this.lastEventType}}</strong>
           </span>
@@ -626,7 +626,7 @@ export default class DirtyTrackingForm extends Component {
             {{/each}}
           </p>
         {{else}}
-          <p class='text-neutral-medium'>No unsaved changes</p>
+          <p class='text-neutral'>No unsaved changes</p>
         {{/if}}
       </div>
       </Form>

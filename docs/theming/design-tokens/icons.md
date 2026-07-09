@@ -22,7 +22,7 @@ Apply icon sizes using the `size-icon-*` utilities, which set both width and hei
 ```gts preview
 <template>
   <div class='flex items-center gap-6'>
-    <svg class='size-icon-sm text-primary-medium' fill='currentColor' viewBox='0 0 20 20'>
+    <svg class='size-icon-sm text-primary' fill='currentColor' viewBox='0 0 20 20'>
       <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
       <path
         fill-rule='evenodd'
@@ -30,7 +30,7 @@ Apply icon sizes using the `size-icon-*` utilities, which set both width and hei
         clip-rule='evenodd'
       ></path>
     </svg>
-    <svg class='size-icon-md text-primary-medium' fill='currentColor' viewBox='0 0 20 20'>
+    <svg class='size-icon-md text-primary' fill='currentColor' viewBox='0 0 20 20'>
       <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
       <path
         fill-rule='evenodd'
@@ -38,7 +38,7 @@ Apply icon sizes using the `size-icon-*` utilities, which set both width and hei
         clip-rule='evenodd'
       ></path>
     </svg>
-    <svg class='size-icon-lg text-primary-medium' fill='currentColor' viewBox='0 0 20 20'>
+    <svg class='size-icon-lg text-primary' fill='currentColor' viewBox='0 0 20 20'>
       <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
       <path
         fill-rule='evenodd'
@@ -46,7 +46,7 @@ Apply icon sizes using the `size-icon-*` utilities, which set both width and hei
         clip-rule='evenodd'
       ></path>
     </svg>
-    <svg class='size-icon-xl text-primary-medium' fill='currentColor' viewBox='0 0 20 20'>
+    <svg class='size-icon-xl text-primary' fill='currentColor' viewBox='0 0 20 20'>
       <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
       <path
         fill-rule='evenodd'
@@ -86,99 +86,99 @@ import { CheckIcon } from 'site/components/icons';
 
 <template>
   <div class='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-pico text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-pico text-primary' />
       <div>
         <div class='font-medium'>Pico</div>
         <code class='text-xs'>size-icon-pico</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-nano text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-nano text-primary' />
       <div>
         <div class='font-medium'>Nano</div>
         <code class='text-xs'>size-icon-nano</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-micro text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-micro text-primary' />
       <div>
         <div class='font-medium'>Micro</div>
         <code class='text-xs'>size-icon-micro</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-3xs text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-3xs text-primary' />
       <div>
         <div class='font-medium'>3XS</div>
         <code class='text-xs'>size-icon-3xs</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-2xs text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-2xs text-primary' />
       <div>
         <div class='font-medium'>2XS</div>
         <code class='text-xs'>size-icon-2xs</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-xs text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-xs text-primary' />
       <div>
         <div class='font-medium'>XS</div>
         <code class='text-xs'>size-icon-xs</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-sm text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-sm text-primary' />
       <div>
         <div class='font-medium'>SM</div>
         <code class='text-xs'>size-icon-sm</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-md text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-md text-primary' />
       <div>
         <div class='font-medium'>MD</div>
         <code class='text-xs'>size-icon-md</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-lg text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-lg text-primary' />
       <div>
         <div class='font-medium'>LG</div>
         <code class='text-xs'>size-icon-lg</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-xl text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-xl text-primary' />
       <div>
         <div class='font-medium'>XL</div>
         <code class='text-xs'>size-icon-xl</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-2xl text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-2xl text-primary' />
       <div>
         <div class='font-medium'>2XL</div>
         <code class='text-xs'>size-icon-2xl</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-3xl text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-3xl text-primary' />
       <div>
         <div class='font-medium'>3XL</div>
         <code class='text-xs'>size-icon-3xl</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-kilo text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-kilo text-primary' />
       <div>
         <div class='font-medium'>Kilo</div>
         <code class='text-xs'>size-icon-kilo</code>
       </div>
     </div>
-    <div class='flex items-center gap-3 p-3 border border-neutral-medium rounded'>
-      <CheckIcon class='size-icon-mega text-primary-medium' />
+    <div class='flex items-center gap-3 p-3 border border-neutral rounded'>
+      <CheckIcon class='size-icon-mega text-primary' />
       <div>
         <div class='font-medium'>Mega</div>
         <code class='text-xs'>size-icon-mega</code>
@@ -199,25 +199,25 @@ import { CheckIcon, ViewIcon, StarIcon } from 'site/components/icons';
   <div class='flex flex-col gap-4'>
     {{! Small icon pairing }}
     <div class='flex items-center gap-2'>
-      <CheckIcon class='size-icon-xs text-success-medium' />
+      <CheckIcon class='size-icon-xs text-success' />
       <span>Small text with size-icon-xs</span>
     </div>
 
     {{! Medium icon pairing }}
     <div class='flex items-center gap-2'>
-      <ViewIcon class='size-icon-md text-primary-medium' />
+      <ViewIcon class='size-icon-md text-primary' />
       <span>Default text with size-icon-md</span>
     </div>
 
     {{! Large icon pairing }}
     <div class='flex items-center gap-2'>
-      <StarIcon class='size-icon-lg text-warning-medium' />
+      <StarIcon class='size-icon-lg text-warning' />
       <span>Larger text with size-icon-lg</span>
     </div>
 
     {{! Extra large icon pairing }}
     <div class='flex items-center gap-3'>
-      <CheckIcon class='size-icon-xl text-danger-medium' />
+      <CheckIcon class='size-icon-xl text-danger' />
       <h2>Header with size-icon-xl</h2>
     </div>
   </div>

@@ -38,7 +38,7 @@ const listboxItem = tv({
       'py-0.5',
       'rounded-sm',
       'font-sans',
-      'text-neutral-medium',
+      'text-neutral',
       'text-xs',
       'border',
       'border-neutral-soft',
@@ -206,7 +206,7 @@ const listboxItem = tv({
       intent: 'default',
       class: {
         base: [
-          'data-is-active:border-neutral-medium',
+          'data-is-active:border-neutral',
           'data-is-active:text-neutral-strong'
         ]
       }
@@ -216,7 +216,7 @@ const listboxItem = tv({
       intent: 'primary',
       class: {
         base: [
-          'data-is-active:border-primary-medium',
+          'data-is-active:border-primary',
           'data-is-active:text-primary-strong'
         ]
       }
@@ -226,7 +226,7 @@ const listboxItem = tv({
       intent: 'accent',
       class: {
         base: [
-          'data-is-active:border-accent-medium',
+          'data-is-active:border-accent',
           'data-is-active:text-accent-strong'
         ]
       }
@@ -269,7 +269,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-neutral-soft/20',
-          'data-is-active:border-neutral-medium',
+          'data-is-active:border-neutral',
           'data-is-active:text-neutral-strong'
         ]
       }
@@ -280,7 +280,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-primary-soft/20',
-          'data-is-active:border-primary-medium',
+          'data-is-active:border-primary',
           'data-is-active:text-primary-strong'
         ]
       }
@@ -291,7 +291,7 @@ const listboxItem = tv({
       class: {
         base: [
           'data-is-active:bg-accent-soft/20',
-          'data-is-active:border-accent-medium',
+          'data-is-active:border-accent',
           'data-is-active:text-accent-strong'
         ]
       }

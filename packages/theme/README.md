@@ -87,7 +87,7 @@ module.exports = frontile({
       colors: {
         primary: {
           subtle: '#3b82f6',
-          medium: '#2563eb',
+          DEFAULT: '#2563eb',
           strong: '#1d4ed8',
         }
       }
@@ -96,7 +96,7 @@ module.exports = frontile({
       colors: {
         primary: {
           subtle: '#60a5fa',
-          medium: '#3b82f6',
+          DEFAULT: '#3b82f6',
           strong: '#2563eb',
         }
       }
@@ -142,7 +142,6 @@ module.exports = frontile({
         primary: {
           subtle: '#3b82f6',
           soft: '#2563eb',
-          medium: '#1e40af',
           strong: '#1e3a8a',
           DEFAULT: '#1e40af'
         },
@@ -150,7 +149,6 @@ module.exports = frontile({
         'on-primary': {
           subtle: '#ffffff',      // Pure white
           soft: '#e0f2ff',        // Light blue tint instead of pure white
-          medium: '#ffffff',      // Pure white
           strong: '#bfdbfe',      // Lighter blue
           DEFAULT: '#ffffff'      // Pure white
         }
@@ -169,11 +167,11 @@ module.exports = frontile({
       colors: {
         primary: {
           subtle: '#3b82f6',
-          medium: '#1e40af',
+          DEFAULT: '#1e40af',
           strong: '#1e3a8a',
         },
         'on-primary': {
-          medium: '#e0f2ff',  // Only override medium, others auto-generate
+          DEFAULT: '#e0f2ff',  // Only override the DEFAULT level, others auto-generate
         }
       }
     }
@@ -197,12 +195,12 @@ Override colors directly in your CSS:
 @theme {
   /* Override primary colors */
   --color-primary-subtle: #3b82f6;
-  --color-primary-medium: #2563eb;
+  --color-primary: #2563eb;
   --color-primary-strong: #1d4ed8;
 
   /* Manually define "on-" colors for text contrast */
   --color-on-primary-subtle: #ffffff;
-  --color-on-primary-medium: #ffffff;
+  --color-on-primary: #ffffff;
   --color-on-primary-strong: #ffffff;
 }
 ```

@@ -26,17 +26,64 @@ export type SemanticBaseColors = {
   dark: BaseColors;
 };
 
-export interface SemanticColorCategory {
+/**
+ * Semantic color levels are split into two bands that share one emphasis
+ * vocabulary but are consumed by different CSS properties. In Tailwind's
+ * shared-palette model a token name maps to exactly one color value, so the
+ * band a level belongs to is what tells you which property it is meant for:
+ * surface-band levels are fills, ink-band levels are legible foregrounds.
+ *
+ * Every name describes emphasis RANK, never brightness. A level can be dark in
+ * light mode and light in dark mode — interaction direction inverts between
+ * schemes (light lightens on hover / darkens on press; dark does the reverse)
+ * — so a brightness word like "deep" or "light" would be a lie in one theme.
+ */
+
+/**
+ * Surface band — fills. Backgrounds and decorative borders for filled/tinted
+ * surfaces, ordered low → high emphasis:
+ *
+ *   subtle → muted → soft → DEFAULT → firm
+ *
+ * `DEFAULT` is the resting fill (the bare `bg-{category}` class); `firm` is the
+ * most emphatic fill, e.g. a pressed/active background.
+ */
+export interface SurfaceBand {
+  /** Faintest tint — hairline fills, tonal resting backgrounds. */
   subtle: string;
+  /** Light tint — hover on tonal fills, chip/close-button backgrounds. */
   muted: string;
+  /** Soft fill — the hover step for solid fills. */
   soft: string;
-  medium: string;
+  /** Resting fill — the bare `bg-{category}` / `border-{category}` token. */
   DEFAULT: string;
+  /** Most emphatic fill — pressed/active backgrounds. */
   firm: string;
-  strong: string;
-  bolder: string;
-  boldest: string;
 }
+
+/**
+ * Ink band — legible foregrounds. Text, and the borders of outlined controls,
+ * that must stay readable on the page and on surface-band fills, ordered
+ * low → high emphasis:
+ *
+ *   strong → bolder
+ *
+ * `strong` is the default legible foreground; `bolder` is the highest-emphasis
+ * foreground (headings, hover/active text).
+ */
+export interface InkBand {
+  /** Default legible foreground — body text, outlined-control text/border. */
+  strong: string;
+  /** Highest-emphasis foreground — headings, hover/active text. */
+  bolder: string;
+}
+
+/**
+ * A semantic color category is the union of both bands: fills (surface band)
+ * plus legible foregrounds (ink band). See {@link SurfaceBand} and
+ * {@link InkBand} for how each level is intended to be consumed.
+ */
+export interface SemanticColorCategory extends SurfaceBand, InkBand {}
 
 /**
  * Optional on-color overrides for semantic color categories.
@@ -53,22 +100,22 @@ export interface SemanticColorCategory {
  * const colors: Partial<ThemeColors> = {
  *   primary: {
  *     subtle: '#3b82f6',
- *     medium: '#1e40af',
  *     DEFAULT: '#1e40af'
  *   },
  *   'on-primary': {
  *     subtle: '#ffffff',
- *     medium: '#e0f2ff',  // Light blue tint instead of pure white
- *     DEFAULT: '#ffffff'
+ *     DEFAULT: '#e0f2ff'  // Light blue tint instead of pure white
  *   }
  * };
  */
 export interface OnColorCategory {
   subtle?: string;
+  muted?: string;
   soft?: string;
-  medium?: string;
-  strong?: string;
   DEFAULT?: string;
+  firm?: string;
+  strong?: string;
+  bolder?: string;
 }
 
 export interface SurfaceOverlay {
@@ -197,7 +244,7 @@ export interface SurfaceColors {
    *
    * @example
    * // Text input
-   * <input className="bg-surface-input border border-neutral-medium rounded px-3 py-2" />
+   * <input className="bg-surface-input border border-neutral rounded px-3 py-2" />
    */
   input: string;
 

@@ -48,7 +48,7 @@ export default class SidebarNav extends Component<Signature> {
   <template>
     <button
       type="button"
-      class="fixed z-1 bottom-4 right-4 flex items-center p-4 border rounded-full lg:hidden bg-primary-medium backdrop-filter backdrop-blur bg-opacity-90 text-on-primary-medium border-primary-firm focus-visible:ring outline-none"
+      class="fixed z-1 bottom-4 right-4 flex items-center p-4 border rounded-full lg:hidden bg-primary backdrop-filter backdrop-blur bg-opacity-90 text-on-primary border-primary-firm focus-visible:ring outline-none"
       {{on "click" this.toggle}}
     >
       <VisuallyHidden>Contents</VisuallyHidden>

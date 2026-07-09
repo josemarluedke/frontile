@@ -5,11 +5,10 @@ export const colorLevels = [
   'subtle',
   'muted',
   'soft',
-  'medium',
+  'DEFAULT',
   'firm',
   'strong',
   'bolder',
-  'boldest',
 ] as const;
 
 /**
@@ -56,14 +55,15 @@ export function getSurfaceOverlayClass(level: string): string {
  */
 export function getColorLevelDescription(level: ColorLevel): string {
   const descriptions: Record<ColorLevel, string> = {
-    subtle: 'Subtle color for minimal emphasis and backgrounds',
-    muted: 'Muted color for subdued elements and hover states',
-    soft: 'Soft color for moderate emphasis and secondary elements',
-    medium: 'Medium color for standard emphasis and interactive elements',
-    firm: 'Firm color for increased emphasis and active states',
-    strong: 'Strong color for maximum emphasis and primary elements',
-    bolder: 'Bolder color for high contrast and important elements',
-    boldest: 'Boldest color for maximum contrast and critical elements',
+    // Surface band — fills for backgrounds and decorative borders
+    subtle: 'Surface · faintest fill for hairline backgrounds and tonal rests',
+    muted: 'Surface · light fill for hover on tonal surfaces',
+    soft: 'Surface · soft fill, the hover step for solid fills',
+    DEFAULT: 'Surface · resting fill, the bare bg-{category} token',
+    firm: 'Surface · most emphatic fill for pressed and active backgrounds',
+    // Ink band — legible foregrounds for text and outlined borders
+    strong: 'Ink · default legible foreground for text and outlined borders',
+    bolder: 'Ink · highest-emphasis foreground for headings and hover text',
   };
   return descriptions[level];
 }

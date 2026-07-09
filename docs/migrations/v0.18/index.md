@@ -64,7 +64,7 @@ The semantic color system has been completely redesigned with named levels inste
 
 **Key Changes:**
 - Renamed `default-*` to `neutral-*` (the `primary-*` category name is unchanged; only its numbered scale moved to named levels)
-- Replaced numbered scales (50, 100, 200...) with named levels (subtle, soft, medium, strong)
+- Replaced numbered scales (50, 100, 200...) with named levels (subtle, soft, firm, strong)
 - Removed legacy `text-foreground` classes
 - Added `inverse` color category for elements on inverted surfaces (e.g. `text-inverse-strong`)
 - Replaced `contrast-1`/`contrast-2` with automatic `on-{color}-{level}` classes

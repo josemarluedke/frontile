@@ -6,14 +6,14 @@ const Navigation: TOC<{ Element: HTMLDivElement }> = <template>
     <div class="flex overflow-x-auto whitespace-nowrap">
       <LinkTo
         @route="forms.index"
-        @activeClass="border-primary-medium"
+        @activeClass="border-primary"
         class="px-2 py-2 border-b-4 border-transparent"
       >
         Forms
       </LinkTo>
       <LinkTo
         @route="forms.style-variants"
-        @activeClass="border-primary-medium"
+        @activeClass="border-primary"
         class="px-2 py-2 border-b-4 border-transparent"
       >
         Style Variants

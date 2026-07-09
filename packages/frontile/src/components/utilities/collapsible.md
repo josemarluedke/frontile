@@ -89,7 +89,7 @@ export default class PreviewCollapsible extends Component {
         <Collapsible @isOpen={{this.isOpen}} @initialHeight='80px'>
           <div class='p-6 bg-neutral-subtle'>
             <h3 class='text-lg font-semibold mb-2'>Article Title</h3>
-            <p class='text-neutral-medium'>
+            <p class='text-neutral'>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
               eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -172,7 +172,7 @@ export default class FaqAccordion extends Component {
           </Button>
 
           <Collapsible @isOpen={{this.isOpen faq.id}}>
-            <div class='px-6 pb-4 text-neutral-medium'>
+            <div class='px-6 pb-4 text-neutral'>
               {{faq.answer}}
             </div>
           </Collapsible>
@@ -207,7 +207,7 @@ export default class ExpandableCard extends Component {
           <div
             class='w-12 h-12 rounded-full bg-primary-subtle flex items-center justify-center'
           >
-            <span class='text-primary-medium font-semibold text-lg'>JD</span>
+            <span class='text-primary font-semibold text-lg'>JD</span>
           </div>
           <div class='flex-1'>
             <h3 class='font-semibold text-lg'>John Doe</h3>
@@ -220,15 +220,15 @@ export default class ExpandableCard extends Component {
             <dl class='space-y-2 text-sm'>
               <div class='flex'>
                 <dt class='font-medium w-24'>Email:</dt>
-                <dd class='text-neutral-medium'>john.doe@example.com</dd>
+                <dd class='text-neutral'>john.doe@example.com</dd>
               </div>
               <div class='flex'>
                 <dt class='font-medium w-24'>Phone:</dt>
-                <dd class='text-neutral-medium'>+1 (555) 123-4567</dd>
+                <dd class='text-neutral'>+1 (555) 123-4567</dd>
               </div>
               <div class='flex'>
                 <dt class='font-medium w-24'>Location:</dt>
-                <dd class='text-neutral-medium'>San Francisco, CA</dd>
+                <dd class='text-neutral'>San Francisco, CA</dd>
               </div>
             </dl>
           </div>
@@ -287,7 +287,7 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelOneOpen}}>
           <div class='p-4'>
-            <ul class='space-y-2 text-neutral-medium'>
+            <ul class='space-y-2 text-neutral'>
               <li>✓ Smooth animations</li>
               <li>✓ Fully customizable</li>
               <li>✓ Accessible by default</li>
@@ -309,7 +309,7 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelTwoOpen}}>
           <div class='p-4'>
-            <p class='text-neutral-medium'>
+            <p class='text-neutral'>
               Starting at $9.99/month with a 14-day free trial.
             </p>
           </div>
@@ -333,7 +333,7 @@ export default class MultiplePanels extends Component {
         </div>
         <Collapsible @isOpen={{this.isPanelThreeOpen}}>
           <div class='p-4'>
-            <p class='text-neutral-medium'>
+            <p class='text-neutral'>
               24/7 email support with average response time of 2 hours.
             </p>
           </div>
@@ -370,11 +370,11 @@ export default class InitiallyOpen extends Component {
 
         <Collapsible @isOpen={{this.isOpen}}>
           <div class='p-4'>
-            <p class='text-neutral-medium mb-4'>
+            <p class='text-neutral mb-4'>
               Thank you for signing up! Here are some quick tips to get started
               with our platform.
             </p>
-            <ul class='space-y-2 text-neutral-medium'>
+            <ul class='space-y-2 text-neutral'>
               <li>→ Complete your profile</li>
               <li>→ Connect your accounts</li>
               <li>→ Explore the dashboard</li>
@@ -453,7 +453,7 @@ export default class NestedCollapsibles extends Component {
                 </Button>
               </div>
               <Collapsible @isOpen={{this.isChildOneOpen}}>
-                <div class='p-3 text-sm text-neutral-medium'>
+                <div class='p-3 text-sm text-neutral'>
                   Details for subcategory 1
                 </div>
               </Collapsible>
@@ -476,7 +476,7 @@ export default class NestedCollapsibles extends Component {
                 </Button>
               </div>
               <Collapsible @isOpen={{this.isChildTwoOpen}}>
-                <div class='p-3 text-sm text-neutral-medium'>
+                <div class='p-3 text-sm text-neutral'>
                   Details for subcategory 2
                 </div>
               </Collapsible>

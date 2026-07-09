@@ -11,7 +11,7 @@ const baseButton = tv({
     'border-transparent',
     'disabled:cursor-not-allowed',
     'disabled:bg-surface-overlay-soft',
-    'disabled:text-neutral-medium',
+    'disabled:text-neutral',
     'disabled:border-neutral-soft',
     ...focusVisibleRing
   ],
@@ -50,37 +50,37 @@ const baseButton = tv({
       appearance: 'outlined',
       intent: 'default',
       class:
-        'text-neutral-boldest border-neutral-boldest hover:bg-neutral-subtle hover:border-neutral-bolder hover:text-neutral-bolder active:bg-neutral-muted active:border-neutral-strong active:text-neutral-strong'
+        'text-neutral-bolder border-neutral-bolder hover:bg-neutral-subtle hover:border-neutral-bolder hover:text-neutral-bolder active:bg-neutral-muted active:border-neutral-strong active:text-neutral-strong'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       class:
-        'text-primary-strong border-primary-medium hover:bg-primary-subtle hover:border-primary-soft hover:text-primary-bolder active:bg-primary-muted active:border-primary-firm active:text-primary-bolder'
+        'text-primary-strong border-primary hover:bg-primary-subtle hover:border-primary-soft hover:text-primary-bolder active:bg-primary-muted active:border-primary-firm active:text-primary-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'accent',
       class:
-        'text-accent-strong border-accent-medium hover:bg-accent-subtle hover:border-accent-soft hover:text-accent-bolder active:bg-accent-muted active:border-accent-firm active:text-accent-bolder'
+        'text-accent-strong border-accent hover:bg-accent-subtle hover:border-accent-soft hover:text-accent-bolder active:bg-accent-muted active:border-accent-firm active:text-accent-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       class:
-        'text-success-strong border-success-medium hover:bg-success-subtle hover:border-success-soft hover:text-success-bolder active:bg-success-muted active:border-success-firm active:text-success-bolder'
+        'text-success-strong border-success hover:bg-success-subtle hover:border-success-soft hover:text-success-bolder active:bg-success-muted active:border-success-firm active:text-success-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class:
-        'text-warning-strong border-warning-medium hover:bg-warning-subtle hover:border-warning-soft hover:text-warning-bolder active:bg-warning-muted active:border-warning-firm active:text-warning-bolder'
+        'text-warning-strong border-warning hover:bg-warning-subtle hover:border-warning-soft hover:text-warning-bolder active:bg-warning-muted active:border-warning-firm active:text-warning-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       class:
-        'text-danger-strong border-danger-medium hover:bg-danger-subtle hover:border-danger-soft hover:text-danger-bolder active:bg-danger-muted active:border-danger-firm active:text-danger-bolder'
+        'text-danger-strong border-danger hover:bg-danger-subtle hover:border-danger-soft hover:text-danger-bolder active:bg-danger-muted active:border-danger-firm active:text-danger-bolder'
     }
   ],
   defaultVariants: {
@@ -113,37 +113,37 @@ const button = tv({
       appearance: 'default',
       intent: 'default',
       class:
-        'bg-neutral-boldest text-on-neutral-boldest hover:bg-neutral-bolder active:bg-neutral-strong'
+        'bg-neutral-bolder text-on-neutral-bolder hover:bg-neutral-bolder active:bg-neutral-strong'
     },
     {
       appearance: 'default',
       intent: 'primary',
       class:
-        'bg-primary-medium text-on-primary-medium hover:bg-primary-soft active:bg-primary-firm'
+        'bg-primary text-on-primary hover:bg-primary-soft active:bg-primary-firm'
     },
     {
       appearance: 'default',
       intent: 'accent',
       class:
-        'bg-accent-medium text-on-accent-medium hover:bg-accent-soft active:bg-accent-firm'
+        'bg-accent text-on-accent hover:bg-accent-soft active:bg-accent-firm'
     },
     {
       appearance: 'default',
       intent: 'success',
       class:
-        'bg-success-medium text-on-success-medium hover:bg-success-soft active:bg-success-firm'
+        'bg-success text-on-success hover:bg-success-soft active:bg-success-firm'
     },
     {
       appearance: 'default',
       intent: 'warning',
       class:
-        'bg-warning-medium text-on-warning-medium hover:bg-warning-soft active:bg-warning-firm'
+        'bg-warning text-on-warning hover:bg-warning-soft active:bg-warning-firm'
     },
     {
       appearance: 'default',
       intent: 'danger',
       class:
-        'bg-danger-medium text-on-danger-medium hover:bg-danger-soft active:bg-danger-firm'
+        'bg-danger text-on-danger hover:bg-danger-soft active:bg-danger-firm'
     },
 
     // APPEARANCE: soft (tint fill + colored stroke)
@@ -151,37 +151,37 @@ const button = tv({
       appearance: 'soft',
       intent: 'default',
       class:
-        'bg-neutral-subtle border-neutral-boldest text-neutral-boldest hover:bg-neutral-muted hover:border-neutral-bolder hover:text-neutral-bolder active:bg-neutral-soft active:border-neutral-strong active:text-neutral-strong'
+        'bg-neutral-subtle border-neutral-bolder text-neutral-bolder hover:bg-neutral-muted hover:border-neutral-bolder hover:text-neutral-bolder active:bg-neutral-soft active:border-neutral-strong active:text-neutral-strong'
     },
     {
       appearance: 'soft',
       intent: 'primary',
       class:
-        'bg-primary-subtle border-primary-medium text-primary-strong hover:bg-primary-muted hover:border-primary-soft hover:text-primary-bolder active:bg-primary-soft active:border-primary-firm active:text-primary-bolder'
+        'bg-primary-subtle border-primary text-primary-strong hover:bg-primary-muted hover:border-primary-soft hover:text-primary-bolder active:bg-primary-soft active:border-primary-firm active:text-primary-bolder'
     },
     {
       appearance: 'soft',
       intent: 'accent',
       class:
-        'bg-accent-subtle border-accent-medium text-accent-strong hover:bg-accent-muted hover:border-accent-soft hover:text-accent-bolder active:bg-accent-soft active:border-accent-firm active:text-accent-bolder'
+        'bg-accent-subtle border-accent text-accent-strong hover:bg-accent-muted hover:border-accent-soft hover:text-accent-bolder active:bg-accent-soft active:border-accent-firm active:text-accent-bolder'
     },
     {
       appearance: 'soft',
       intent: 'success',
       class:
-        'bg-success-subtle border-success-medium text-success-strong hover:bg-success-muted hover:border-success-soft hover:text-success-bolder active:bg-success-soft active:border-success-firm active:text-success-bolder'
+        'bg-success-subtle border-success text-success-strong hover:bg-success-muted hover:border-success-soft hover:text-success-bolder active:bg-success-soft active:border-success-firm active:text-success-bolder'
     },
     {
       appearance: 'soft',
       intent: 'warning',
       class:
-        'bg-warning-subtle border-warning-medium text-warning-strong hover:bg-warning-muted hover:border-warning-soft hover:text-warning-bolder active:bg-warning-soft active:border-warning-firm active:text-warning-bolder'
+        'bg-warning-subtle border-warning text-warning-strong hover:bg-warning-muted hover:border-warning-soft hover:text-warning-bolder active:bg-warning-soft active:border-warning-firm active:text-warning-bolder'
     },
     {
       appearance: 'soft',
       intent: 'danger',
       class:
-        'bg-danger-subtle border-danger-medium text-danger-strong hover:bg-danger-muted hover:border-danger-soft hover:text-danger-bolder active:bg-danger-soft active:border-danger-firm active:text-danger-bolder'
+        'bg-danger-subtle border-danger text-danger-strong hover:bg-danger-muted hover:border-danger-soft hover:text-danger-bolder active:bg-danger-soft active:border-danger-firm active:text-danger-bolder'
     },
 
     // APPEARANCE: minimal (ghost)
@@ -189,7 +189,7 @@ const button = tv({
       appearance: 'minimal',
       intent: 'default',
       class:
-        'text-neutral-boldest hover:bg-neutral-subtle hover:text-neutral-bolder active:bg-neutral-muted active:text-neutral-strong'
+        'text-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-bolder active:bg-neutral-muted active:text-neutral-strong'
     },
     {
       appearance: 'minimal',
@@ -228,7 +228,7 @@ const button = tv({
       appearance: 'tonal',
       intent: 'default',
       class:
-        'bg-neutral-subtle text-neutral-boldest hover:bg-neutral-muted active:bg-neutral-soft'
+        'bg-neutral-subtle text-neutral-bolder hover:bg-neutral-muted active:bg-neutral-soft'
     },
     {
       appearance: 'tonal',
@@ -312,38 +312,37 @@ const toggleButton = tv({
       appearance: 'outlined',
       intent: 'default',
       isSelected: true,
-      class:
-        'bg-neutral-boldest text-on-neutral-boldest hover:bg-neutral-bolder'
+      class: 'bg-neutral-bolder text-on-neutral-bolder hover:bg-neutral-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       isSelected: true,
-      class: 'bg-primary-medium text-on-primary-medium hover:bg-primary-soft'
+      class: 'bg-primary text-on-primary hover:bg-primary-soft'
     },
     {
       appearance: 'outlined',
       intent: 'accent',
       isSelected: true,
-      class: 'bg-accent-medium text-on-accent-medium hover:bg-accent-soft'
+      class: 'bg-accent text-on-accent hover:bg-accent-soft'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       isSelected: true,
-      class: 'bg-success-medium text-on-success-medium hover:bg-success-soft'
+      class: 'bg-success text-on-success hover:bg-success-soft'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       isSelected: true,
-      class: 'bg-warning-medium text-on-warning-medium hover:bg-warning-soft'
+      class: 'bg-warning text-on-warning hover:bg-warning-soft'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       isSelected: true,
-      class: 'bg-danger-medium text-on-danger-medium hover:bg-danger-soft'
+      class: 'bg-danger text-on-danger hover:bg-danger-soft'
     }
   ]
 });

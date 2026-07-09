@@ -691,7 +691,7 @@ export default class NavigationDrawer extends Component {
             <Divider />
             <button
               {{on 'click' (fn this.navigateTo 'logout')}}
-              class='w-full text-left px-3 py-2 rounded hover:bg-danger-subtle text-danger-medium transition-colors'
+              class='w-full text-left px-3 py-2 rounded hover:bg-danger-subtle text-danger transition-colors'
             >
               🚪 Logout
             </button>

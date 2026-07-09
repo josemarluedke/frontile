@@ -13,7 +13,7 @@ This guide helps you migrate from the old numbered color system to the new seman
 
 The semantic color system has been redesigned to use named levels instead of numbered scales. This provides:
 
-- **Better semantic meaning**: Names describe the emphasis level (subtle, soft, medium, strong)
+- **Better semantic meaning**: Names describe the emphasis rank (subtle, soft, firm, strong), not a numbered scale
 - **Improved accessibility**: Contrast colors are explicitly defined
 - **Theme consistency**: Colors adapt better to light/dark modes
 - **Clearer usage patterns**: Names indicate intended use cases
@@ -85,13 +85,26 @@ The numbered scale (50, 100, 200, ..., 950) has been replaced with named levels:
 
 ### Understanding the New Levels
 
-Each semantic color now has these levels:
+Each semantic color is organized into two bands that share one emphasis
+vocabulary but are consumed by different CSS properties. Names describe emphasis
+**rank**, never brightness — a level may be dark in light mode and light in dark
+mode, since interaction direction inverts between the two schemes.
 
-- **`on-{color}-{level}`** — Automatic contrasting color (black or white) calculated for optimal WCAG contrast on the specified background level
-- **`strong`** — Maximum emphasis, darkest/boldest color
-- **`medium`** (DEFAULT) — Standard emphasis, the primary color
-- **`soft`** — Moderate emphasis, lighter than medium
-- **`subtle`** — Minimal emphasis, very light with transparency
+**Surface band** — fills for backgrounds and decorative borders (low → high emphasis):
+
+- **`subtle`** — Faintest tint, for hairline backgrounds and tonal rests
+- **`muted`** — Light tint, for hover on tonal surfaces
+- **`soft`** — Soft fill, the hover step for solid fills
+- **`DEFAULT`** — Resting fill, the bare `bg-{color}` token
+- **`firm`** — Most emphatic fill, for pressed/active backgrounds
+
+**Ink band** — legible foregrounds for text and outlined borders (low → high emphasis):
+
+- **`strong`** — Default legible foreground, for body text and outlined-control text/borders
+- **`bolder`** — Highest-emphasis foreground, for headings and hover/active text
+
+**`on-{color}-{level}`** — Automatic contrasting color (black or white)
+calculated for optimal WCAG contrast on the specified background level.
 
 ### Migration Mapping Table
 
@@ -104,69 +117,69 @@ Each semantic color now has these levels:
 | `bg-default-200`          | `bg-neutral-subtle`                            | Light surfaces             |
 | `bg-default-300`          | `bg-neutral-soft`                              | Moderate backgrounds       |
 | `bg-default-400`          | `bg-neutral-soft`                              | Borders, dividers          |
-| `bg-default-500`          | `bg-neutral-soft` or `bg-neutral-medium`       | Medium emphasis            |
-| `bg-default-600`          | `bg-neutral-medium`                            | Standard emphasis          |
-| `bg-default-700`          | `bg-neutral-medium` or `bg-neutral-strong`     | Strong emphasis            |
+| `bg-default-500`          | `bg-neutral-soft` or `bg-neutral`       | Medium emphasis            |
+| `bg-default-600`          | `bg-neutral`                            | Standard emphasis          |
+| `bg-default-700`          | `bg-neutral` or `bg-neutral-strong`     | Strong emphasis            |
 | `bg-default-800`          | `bg-neutral-strong`                            | Maximum emphasis, buttons  |
 | `bg-default-900`          | `bg-neutral-strong`                            | Darkest backgrounds        |
 | `bg-default-950`          | `bg-neutral-strong`                            | Maximum contrast           |
 | `text-default`            | `text-neutral-strong` or `text-neutral-bolder` | Body text                  |
-| `text-default-foreground` | `text-on-neutral-medium`                       | Contrasting text on bg     |
+| `text-default-foreground` | `text-on-neutral`                       | Contrasting text on bg     |
 | `border-default`          | `border-neutral-soft`                          | Standard borders           |
 
 #### Primary
 
 | Old Class                 | New Class                                  | Context                |
 | ------------------------- | ------------------------------------------ | ---------------------- |
-| `bg-primary`              | `bg-primary-medium` or `bg-primary`        | Standard primary color |
-| `bg-primary-500`          | `bg-primary-soft` or `bg-primary-medium`   | Hover states           |
-| `bg-primary-600`          | `bg-primary-medium`                        | Default buttons        |
-| `bg-primary-700`          | `bg-primary-medium` or `bg-primary-strong` | Strong emphasis        |
+| `bg-primary`              | `bg-primary`        | Standard primary color |
+| `bg-primary-500`          | `bg-primary-soft` or `bg-primary`   | Hover states           |
+| `bg-primary-600`          | `bg-primary`                        | Default buttons        |
+| `bg-primary-700`          | `bg-primary` or `bg-primary-strong` | Strong emphasis        |
 | `bg-primary-800`          | `bg-primary-strong`                        | Active/pressed states  |
-| `text-primary`            | `text-primary-medium` or `text-primary`    | Primary text           |
-| `text-primary-foreground` | `text-on-primary-medium`                   | Contrasting text on bg |
-| `border-primary`          | `border-primary-medium`                    | Primary borders        |
+| `text-primary`            | `text-primary`    | Primary text           |
+| `text-primary-foreground` | `text-on-primary`                   | Contrasting text on bg |
+| `border-primary`          | `border-primary`                    | Primary borders        |
 | `ring-primary-500`        | `ring-primary-soft`                        | Focus rings            |
 
 #### Success
 
 | Old Class                 | New Class                                  | Context                  |
 | ------------------------- | ------------------------------------------ | ------------------------ |
-| `bg-success`              | `bg-success-medium` or `bg-success`        | Standard success color   |
+| `bg-success`              | `bg-success`        | Standard success color   |
 | `bg-success-100`          | `bg-success-subtle`                        | Alert backgrounds        |
-| `bg-success-500`          | `bg-success-soft` or `bg-success-medium`   | Moderate emphasis        |
-| `bg-success-600`          | `bg-success-medium` or `bg-success-strong` | Buttons, hover           |
+| `bg-success-500`          | `bg-success-soft` or `bg-success`   | Moderate emphasis        |
+| `bg-success-600`          | `bg-success` or `bg-success-strong` | Buttons, hover           |
 | `bg-success-800`          | `bg-success-strong`                        | Active states            |
-| `text-success`            | `text-success-medium` or `text-success`    | Success text             |
-| `text-success-foreground` | `text-on-success-medium`                   | Contrasting text on bg   |
-| `border-success`          | `border-success-medium`                    | Success borders          |
+| `text-success`            | `text-success`    | Success text             |
+| `text-success-foreground` | `text-on-success`                   | Contrasting text on bg   |
+| `border-success`          | `border-success`                    | Success borders          |
 | `ring-success-500`        | `ring-success-soft`                        | Focus rings              |
 
 #### Warning
 
 | Old Class                 | New Class                                  | Context                  |
 | ------------------------- | ------------------------------------------ | ------------------------ |
-| `bg-warning`              | `bg-warning-medium` or `bg-warning`        | Standard warning color   |
+| `bg-warning`              | `bg-warning`        | Standard warning color   |
 | `bg-warning-100`          | `bg-warning-subtle`                        | Alert backgrounds        |
-| `bg-warning-500`          | `bg-warning-soft` or `bg-warning-medium`   | Moderate emphasis        |
-| `bg-warning-600`          | `bg-warning-medium` or `bg-warning-strong` | Buttons, hover           |
+| `bg-warning-500`          | `bg-warning-soft` or `bg-warning`   | Moderate emphasis        |
+| `bg-warning-600`          | `bg-warning` or `bg-warning-strong` | Buttons, hover           |
 | `bg-warning-800`          | `bg-warning-strong`                        | Active states            |
-| `text-warning`            | `text-warning-medium` or `text-warning`    | Warning text             |
-| `text-warning-foreground` | `text-on-warning-medium`                   | Contrasting text on bg   |
-| `border-warning`          | `border-warning-medium`                    | Warning borders          |
+| `text-warning`            | `text-warning`    | Warning text             |
+| `text-warning-foreground` | `text-on-warning`                   | Contrasting text on bg   |
+| `border-warning`          | `border-warning`                    | Warning borders          |
 
 #### Danger
 
 | Old Class                | New Class                                | Context                 |
 | ------------------------ | ---------------------------------------- | ----------------------- |
-| `bg-danger`              | `bg-danger-medium` or `bg-danger`        | Standard danger color   |
+| `bg-danger`              | `bg-danger`        | Standard danger color   |
 | `bg-danger-100`          | `bg-danger-subtle`                       | Alert backgrounds       |
-| `bg-danger-500`          | `bg-danger-soft` or `bg-danger-medium`   | Moderate emphasis       |
-| `bg-danger-600`          | `bg-danger-medium` or `bg-danger-strong` | Buttons, hover          |
+| `bg-danger-500`          | `bg-danger-soft` or `bg-danger`   | Moderate emphasis       |
+| `bg-danger-600`          | `bg-danger` or `bg-danger-strong` | Buttons, hover          |
 | `bg-danger-800`          | `bg-danger-strong`                       | Active states           |
-| `text-danger`            | `text-danger-medium` or `text-danger`    | Danger text             |
-| `text-danger-foreground` | `text-on-danger-medium`                  | Contrasting text on bg  |
-| `border-danger`          | `border-danger-medium`                   | Danger borders          |
+| `text-danger`            | `text-danger`    | Danger text             |
+| `text-danger-foreground` | `text-on-danger`                  | Contrasting text on bg  |
+| `border-danger`          | `border-danger`                   | Danger borders          |
 
 ## Common UI Pattern Migrations
 
@@ -181,7 +194,7 @@ Each semantic color now has these levels:
 </button>
 
 // After
-<button class="bg-neutral-strong text-on-neutral-strong hover:bg-neutral-medium">
+<button class="bg-neutral-strong text-on-neutral-strong hover:bg-neutral">
   Click me
 </button>
 ```
@@ -227,7 +240,7 @@ Each semantic color now has these levels:
 
 // After
 <div class="bg-success-subtle border-success-soft text-on-success-subtle">
-  <Icon class="text-success-medium" />
+  <Icon class="text-success" />
   <p>Success message</p>
 </div>
 ```
@@ -241,7 +254,7 @@ Each semantic color now has these levels:
 </div>
 
 // After
-<div class="bg-danger-subtle border-danger-medium text-on-danger-subtle">
+<div class="bg-danger-subtle border-danger text-on-danger-subtle">
   Error occurred
 </div>
 ```
@@ -363,14 +376,14 @@ find . -type f \( -name "*.ts" -o -name "*.gts" \) -exec sed -i '' \
   -e 's/bg-default-/bg-neutral-/g' \
   -e 's/text-default-/text-neutral-/g' \
   -e 's/border-default-/border-neutral-/g' \
-  -e 's/bg-primary-[0-9]\{2,3\}/bg-primary-medium/g' \
-  -e 's/text-primary-[0-9]\{2,3\}/text-primary-medium/g' \
-  -e 's/border-primary-[0-9]\{2,3\}/border-primary-medium/g' \
+  -e 's/bg-primary-[0-9]\{2,3\}/bg-primary/g' \
+  -e 's/text-primary-[0-9]\{2,3\}/text-primary/g' \
+  -e 's/border-primary-[0-9]\{2,3\}/border-primary/g' \
   -e 's/ring-primary-[0-9]\{2,3\}/ring-primary-soft/g' \
   {} +
 ```
 
-**Note**: This script collapses every numbered `primary` class to a single level (`primary-medium`, and `ring-primary-soft` for rings). That loses the distinction between hover (`soft`), default (`medium`), and active/pressed (`strong`) states, so manual review is required to pick the right level for each usage.
+**Note**: This script collapses every numbered `primary` class to a single level (the bare `primary` DEFAULT, and `ring-primary-soft` for rings). That loses the distinction between hover (`soft`), default (`DEFAULT`), and active/pressed (`firm`) states, so manual review is required to pick the right level for each usage.
 
 ## Decision Guide
 
@@ -379,7 +392,7 @@ When choosing between levels, ask:
 ### Background Colors
 
 - **Maximum emphasis button?** → `{color}-strong`
-- **Standard button/element?** → `{color}-medium` or `{color}` (DEFAULT)
+- **Standard button/element?** → `{color}` (DEFAULT)
 - **Hover state?** → `{color}-soft`
 - **Light alert background?** → `{color}-subtle`
 
@@ -390,5 +403,5 @@ When choosing between levels, ask:
 
 ### Borders
 
-- **Colored semantic borders?** → `{color}-medium` or `{color}-soft`
+- **Colored semantic borders?** → `{color}` or `{color}-soft`
 - **Neutral dividers?** → `neutral-soft` or `neutral-subtle`

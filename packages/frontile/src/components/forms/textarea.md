@@ -60,7 +60,7 @@ export default class ControlledTextarea extends Component {
       </Form>
 
       <div class='p-3 border border-neutral-soft rounded'>
-        <p class='text-sm text-neutral-medium'>Character count:
+        <p class='text-sm text-neutral'>Character count:
           {{this.formData.message.length}}</p>
         <p class='text-sm'>Current message: {{this.formData.message}}</p>
       </div>
@@ -139,7 +139,7 @@ export default class TextareaWithFormChange extends Component {
           <div>
             <strong>Form @onChange events:</strong>
             <span class='ml-2'>{{this.changeEventCount}}</span>
-            <p class='text-neutral-medium mt-1'>
+            <p class='text-neutral mt-1'>
               Fires on every keystroke, providing complete form data
             </p>
           </div>

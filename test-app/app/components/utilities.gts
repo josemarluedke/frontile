@@ -46,7 +46,7 @@ const Title: TOC<{
   };
 }> = <template>
   <h1
-    class="inline-block mb-6 text-2xl font-bold border-b-4 border-primary-medium"
+    class="inline-block mb-6 text-2xl font-bold border-b-4 border-primary"
     ...attributes
   >
     {{yield}}
