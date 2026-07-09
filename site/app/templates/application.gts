@@ -37,7 +37,7 @@ import { PortalTarget } from 'frontile';
   {{outlet}}
 
   <div
-    class="mb-20 sm:mb-0 border-t border-gray-300 dark:border-gray-700 p-4 text-center text-sm text-gray-700 dark:text-gray-300"
+    class="mb-20 sm:mb-0 border-t border-gray-300 dark:border-gray-700 p-4 text-center font-body text-body-2xs text-gray-700 dark:text-gray-300"
   >
     Released under MIT License - Created by
     <a
