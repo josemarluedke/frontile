@@ -32,47 +32,47 @@ const chip = tv({
         ]
       },
       primary: {
-        dot: 'bg-primary-soft',
+        dot: 'bg-primary-medium',
         closeButton: [
           'bg-primary-muted',
-          'text-on-primary-soft',
-          'hover:bg-primary-medium',
+          'text-on-primary-medium',
+          'hover:bg-primary-firm',
           'focus-visible:ring-primary-soft'
         ]
       },
       accent: {
-        dot: 'bg-accent-soft',
+        dot: 'bg-accent-medium',
         closeButton: [
           'bg-accent-muted',
-          'text-on-accent-soft',
-          'hover:bg-accent-medium',
+          'text-on-accent-medium',
+          'hover:bg-accent-firm',
           'focus-visible:ring-accent-soft'
         ]
       },
       success: {
-        dot: 'bg-success-soft',
+        dot: 'bg-success-medium',
         closeButton: [
           'bg-success-muted',
-          'text-on-success-soft',
-          'hover:bg-success-medium',
+          'text-on-success-medium',
+          'hover:bg-success-firm',
           'focus-visible:ring-success-soft'
         ]
       },
       warning: {
-        dot: 'bg-warning-soft',
+        dot: 'bg-warning-medium',
         closeButton: [
           'bg-warning-muted',
-          'text-on-warning-soft',
-          'hover:bg-warning-medium',
+          'text-on-warning-medium',
+          'hover:bg-warning-firm',
           'focus-visible:ring-warning-soft'
         ]
       },
       danger: {
-        dot: 'bg-danger-soft',
+        dot: 'bg-danger-medium',
         closeButton: [
           'bg-danger-muted',
-          'text-on-danger-soft',
-          'hover:bg-danger-medium',
+          'text-on-danger-medium',
+          'hover:bg-danger-firm',
           'focus-visible:ring-danger-soft'
         ]
       }
@@ -114,35 +114,35 @@ const chip = tv({
       appearance: 'default',
       intent: 'primary',
       class: {
-        base: 'bg-primary-soft text-on-primary-soft'
+        base: 'bg-primary-medium text-on-primary-medium'
       }
     },
     {
       appearance: 'default',
       intent: 'accent',
       class: {
-        base: 'bg-accent-soft text-on-accent-soft'
+        base: 'bg-accent-medium text-on-accent-medium'
       }
     },
     {
       appearance: 'default',
       intent: 'success',
       class: {
-        base: 'bg-success-soft text-on-success-soft'
+        base: 'bg-success-medium text-on-success-medium'
       }
     },
     {
       appearance: 'default',
       intent: 'warning',
       class: {
-        base: 'bg-warning-soft text-on-warning-soft'
+        base: 'bg-warning-medium text-on-warning-medium'
       }
     },
     {
       appearance: 'default',
       intent: 'danger',
       class: {
-        base: 'bg-danger-soft text-on-danger-soft'
+        base: 'bg-danger-medium text-on-danger-medium'
       }
     },
 
