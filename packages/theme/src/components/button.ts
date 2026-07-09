@@ -312,8 +312,7 @@ const toggleButton = tv({
       appearance: 'outlined',
       intent: 'default',
       isSelected: true,
-      class:
-        'bg-neutral-bolder text-on-neutral-bolder hover:bg-neutral-bolder'
+      class: 'bg-neutral-bolder text-on-neutral-bolder hover:bg-neutral-bolder'
     },
     {
       appearance: 'outlined',

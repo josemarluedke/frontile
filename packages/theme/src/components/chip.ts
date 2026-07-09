@@ -25,11 +25,7 @@ const chip = tv({
     intent: {
       default: {
         dot: 'bg-neutral-strong',
-        closeButton: [
-          'bg-neutral-muted',
-          'text-on-neutral',
-          'hover:bg-neutral'
-        ]
+        closeButton: ['bg-neutral-muted', 'text-on-neutral', 'hover:bg-neutral']
       },
       primary: {
         dot: 'bg-primary',

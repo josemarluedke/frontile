@@ -17,7 +17,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.gray['500'],
     firm: palette.gray['600'],
     strong: palette.gray['700'],
-    bolder: palette.gray['800'],
+    bolder: palette.gray['800']
   },
   primary: {
     subtle: `${palette.teal['600']}1a`, // palette.teal['600'] @ 10% — bg-tonal
@@ -26,7 +26,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.teal['600'],
     firm: palette.teal['900'], // bg-pressed (darkens)
     strong: palette.teal['600'], // text (= bg-rest for primary)
-    bolder: palette.teal['900'], // text-strong (= bg-pressed for primary)
+    bolder: palette.teal['900'] // text-strong (= bg-pressed for primary)
   },
   accent: {
     subtle: `${palette.violet['600']}1a`, // palette.violet['600'] @ 10%
@@ -35,7 +35,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.violet['600'],
     firm: palette.violet['800'], // bg-pressed
     strong: palette.violet['700'], // text
-    bolder: palette.violet['900'], // text-strong
+    bolder: palette.violet['900'] // text-strong
   },
   success: {
     subtle: `${palette.green['400']}1a`, // palette.green['400'] @ 10%
@@ -44,7 +44,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.green['400'],
     firm: palette.green['500'], // bg-pressed
     strong: palette.green['800'], // text (darker than bg-rest for legibility)
-    bolder: palette.green['900'], // text-strong
+    bolder: palette.green['900'] // text-strong
   },
   warning: {
     subtle: `${palette.orange['300']}1a`, // palette.orange['300'] @ 10%
@@ -53,7 +53,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.orange['300'],
     firm: palette.orange['400'], // bg-pressed
     strong: palette.orange['600'], // text (darker than bg-rest for legibility)
-    bolder: palette.orange['900'], // text-strong
+    bolder: palette.orange['900'] // text-strong
   },
   danger: {
     subtle: `${palette.red['600']}1a`, // palette.red['600'] @ 10%
@@ -62,7 +62,7 @@ const themeColorsLight: ThemeColors = {
     DEFAULT: palette.red['600'],
     firm: palette.red['700'], // bg-pressed
     strong: palette.red['600'], // text (= bg-rest for danger)
-    bolder: palette.red['900'], // text-strong
+    bolder: palette.red['900'] // text-strong
   },
   surface: {
     overlay: {
@@ -88,7 +88,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.gray['600'],
     firm: palette.gray['500'],
     strong: palette.gray['300'],
-    bolder: palette.gray['200'],
+    bolder: palette.gray['200']
   },
   primary: {
     subtle: `${palette.teal['300']}29`, // palette.teal['300'] @ 16% — bg-tonal
@@ -97,7 +97,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.teal['300'],
     firm: palette.teal['100'], // bg-pressed (flashes light)
     strong: palette.teal['300'], // text (= bg-rest for primary)
-    bolder: palette.teal['100'], // text-strong (= bg-pressed for primary)
+    bolder: palette.teal['100'] // text-strong (= bg-pressed for primary)
   },
   accent: {
     subtle: `${palette.violet['300']}29`, // palette.violet['300'] @ 16%
@@ -106,7 +106,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.violet['300'],
     firm: palette.violet['800'], // bg-pressed (presses deep, unlike primary's flash)
     strong: palette.violet['300'], // text
-    bolder: palette.violet['100'], // text-strong
+    bolder: palette.violet['100'] // text-strong
   },
   success: {
     subtle: `${palette.green['400']}29`, // palette.green['400'] @ 16%
@@ -115,7 +115,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.green['400'],
     firm: palette.green['900'], // bg-pressed
     strong: palette.green['300'], // text
-    bolder: palette.green['100'], // text-strong
+    bolder: palette.green['100'] // text-strong
   },
   warning: {
     subtle: `${palette.orange['300']}29`, // palette.orange['300'] @ 16%
@@ -124,7 +124,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.orange['300'],
     firm: palette.orange['700'], // bg-pressed
     strong: palette.orange['300'], // text (= bg-rest)
-    bolder: palette.orange['100'], // text-strong
+    bolder: palette.orange['100'] // text-strong
   },
   danger: {
     subtle: `${palette.red['400']}29`, // palette.red['400'] @ 16%
@@ -133,7 +133,7 @@ const themeColorsDark: ThemeColors = {
     DEFAULT: palette.red['400'],
     firm: palette.red['700'], // bg-pressed
     strong: palette.red['300'], // text
-    bolder: palette.red['100'], // text-strong
+    bolder: palette.red['100'] // text-strong
   },
   surface: {
     overlay: {
