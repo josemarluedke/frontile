@@ -13,7 +13,7 @@ Frontile's typography system provides a comprehensive, scalable type system buil
 
 The typography system includes:
 
-- **6 text style categories**: Marquee, Header, Body, Code, Caption, and Label
+- **7 text style categories**: Marquee, Header, Strong, Body, Code, Caption, and Label
 - **Multiple size variants** for each category
 - **Modular scale** based on a mathematical ratio for harmonic sizing
 - **Composite utility classes** that bundle all typography properties together
@@ -23,25 +23,27 @@ The typography system includes:
 
 ### Marquee
 
-Large, bold display text for hero sections and prominent headings.
+Large, semibold serif display text (Domine) for hero sections and prominent headings.
 
 ```gts preview
 <template>
   <div class='flex flex-col gap-6'>
-    <div class='font-marquee text-marquee-xl'>Marquee XL: Hero Heading</div>
-    <div class='font-marquee text-marquee-lg'>Marquee LG: Large Display</div>
+    <div class='font-marquee text-marquee-3xl'>Marquee 3XL: Hero Heading</div>
+    <div class='font-marquee text-marquee-2xl'>Marquee 2XL: Large Display</div>
+    <div class='font-marquee text-marquee-xl'>Marquee XL: Display</div>
+    <div class='font-marquee text-marquee-lg'>Marquee LG: Section Display</div>
     <div class='font-marquee text-marquee-md'>Marquee MD: Medium Display</div>
     <div class='font-marquee text-marquee-sm'>Marquee SM: Small Display</div>
   </div>
 </template>
 ```
 
-**Available sizes:** `sm`, `md`, `lg`, `xl`
-**Best for:** Hero sections, landing page titles, major marketing headings
+**Available sizes:** `5xs`, `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
+**Font:** Domine (serif) · **Weight:** semibold · **Best for:** Hero sections, landing page titles, major marketing headings
 
 ### Header
 
-Semantic headings for content hierarchy with bold weight and condensed letter spacing.
+Semantic headings for content hierarchy with bold weight; larger sizes (`lg` and up) tighten tracking and leading.
 
 ```gts preview
 <template>
@@ -54,14 +56,32 @@ Semantic headings for content hierarchy with bold weight and condensed letter sp
     <h6 class='font-header text-header-sm'>Header SM: Minor Heading</h6>
     <div class='font-header text-header-xs'>Header XS: Small Heading</div>
     <div class='font-header text-header-2xs'>Header 2XS: Tiny Heading</div>
-    <div class='font-header text-header-micro'>Header Micro: Micro Heading</div>
-    <div class='font-header text-header-nano'>Header Nano: Nano Heading</div>
+    <div class='font-header text-header-3xs'>Header 3XS: Micro Heading</div>
+    <div class='font-header text-header-4xs'>Header 4XS: Nano Heading</div>
   </div>
 </template>
 ```
 
-**Available sizes:** `nano`, `micro`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
+**Available sizes:** `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
 **Best for:** Content headings (h1-h6), section titles, hierarchical structure
+
+### Strong
+
+Emphasis text for numerics, prices, and metrics. Shares the Header size, tracking, and leading scale but is a distinct role so it can be styled independently.
+
+```gts preview
+<template>
+  <div class='flex flex-col gap-4'>
+    <div class='font-header text-strong-3xl'>$1,299</div>
+    <div class='font-header text-strong-xl'>2 Gbps</div>
+    <div class='font-header text-strong-md'>99.99% uptime</div>
+    <div class='font-header text-strong-sm'>12 included</div>
+  </div>
+</template>
+```
+
+**Available sizes:** `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
+**Font:** Open Sans · **Weight:** bold · **Best for:** Prices, counts, metrics, any numeric emphasis
 
 ### Body
 
@@ -152,7 +172,7 @@ Secondary descriptive text with relaxed letter spacing.
 
 ### Label
 
-UI labels and form labels with bold weight and tight letter spacing.
+UI labels and form labels with semibold weight and tight (100%) leading.
 
 ```gts preview
 <template>
@@ -224,8 +244,8 @@ The typography system uses Tailwind v4's `@theme` directive to automatically gen
    - `--font-header` → `font-header` utility
    - `--font-size-14` → `text-14` utility
    - `--font-weight-bold` → `font-bold` utility
-   - `--letter-spacing-condensed` → `tracking-condensed` utility
-   - `--line-height-comfy` → `leading-comfy` utility
+   - `--letter-spacing-tight` → `tracking-tight` utility
+   - `--font-weight-semibold` → `font-semibold` utility
 
 2. **Composite text style tokens** generate size/weight/spacing utilities (but NOT font-family):
    - `--text-header-md` → `text-header-md` utility (sets size, weight, spacing, line-height)

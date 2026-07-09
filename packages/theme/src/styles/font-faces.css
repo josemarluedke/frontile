@@ -1,26 +1,70 @@
 /**
- * STIX Two Text Font (Variable Font)
+ * Domine (Variable Font)
  * Used for: marquee text styles (text-marquee-*)
  * Primary weight: 600 (SemiBold) - used by all marquee styles
  * Variable font supports weights: 400-700
  *
- * Sourced from: https://fonts.google.com/specimen/STIX+Two+Text
+ * Sourced from: https://fonts.google.com/specimen/Domine
  */
 
 /* Variable Font - Normal */
 @font-face {
-  font-family: 'STIX Two Text';
-  src: url('/@frontile/theme/fonts/stix-two-text-variable.woff2') format('woff2-variations');
+  font-family: 'Domine';
+  src: url('/@frontile/theme/fonts/domine-variable.woff2') format('woff2-variations');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Variable Font - Italic (optional) */
+/**
+ * Open Sans (Variable Font)
+ * Used for: header, body, caption, and label text styles
+ * Weights used: 400 (regular), 600 (semibold), 700 (bold)
+ * Variable font supports weights: 300-800
+ *
+ * Sourced from: https://fonts.google.com/specimen/Open+Sans
+ */
+
+/* Variable Font - Normal */
 @font-face {
-  font-family: 'STIX Two Text';
-  src: url('/@frontile/theme/fonts/stix-two-text-italic-variable.woff2') format('woff2-variations');
-  font-weight: 400 700;
+  font-family: 'Open Sans';
+  src: url('/@frontile/theme/fonts/open-sans-variable.woff2') format('woff2-variations');
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Variable Font - Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/@frontile/theme/fonts/open-sans-italic-variable.woff2') format('woff2-variations');
+  font-weight: 300 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/**
+ * Source Code Pro (Variable Font)
+ * Used for: code text styles (text-code-*)
+ * Variable font supports weights: 200-900
+ *
+ * Sourced from: https://fonts.google.com/specimen/Source+Code+Pro
+ */
+
+/* Variable Font - Normal */
+@font-face {
+  font-family: 'Source Code Pro';
+  src: url('/@frontile/theme/fonts/source-code-pro-variable.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Variable Font - Italic */
+@font-face {
+  font-family: 'Source Code Pro';
+  src: url('/@frontile/theme/fonts/source-code-pro-italic-variable.woff2') format('woff2-variations');
+  font-weight: 200 900;
   font-style: italic;
   font-display: swap;
 }

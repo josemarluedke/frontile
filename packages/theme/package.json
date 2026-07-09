@@ -115,8 +115,11 @@
     "main": "addon-main.js",
     "app-js": {},
     "public-assets": {
-      "./public/fonts/stix-two-text-italic-variable.woff2": "/@frontile/theme/fonts/stix-two-text-italic-variable.woff2",
-      "./public/fonts/stix-two-text-variable.woff2": "/@frontile/theme/fonts/stix-two-text-variable.woff2"
+      "./public/fonts/domine-variable.woff2": "/@frontile/theme/fonts/domine-variable.woff2",
+      "./public/fonts/open-sans-italic-variable.woff2": "/@frontile/theme/fonts/open-sans-italic-variable.woff2",
+      "./public/fonts/open-sans-variable.woff2": "/@frontile/theme/fonts/open-sans-variable.woff2",
+      "./public/fonts/source-code-pro-italic-variable.woff2": "/@frontile/theme/fonts/source-code-pro-italic-variable.woff2",
+      "./public/fonts/source-code-pro-variable.woff2": "/@frontile/theme/fonts/source-code-pro-variable.woff2"
     }
   }
 }
