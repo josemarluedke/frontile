@@ -21,8 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: volta-cli/action@v4
-        with:
-          node-version: 21.x
       - name: Install dependencies
         run: pnpm install
       - name: Lint JS

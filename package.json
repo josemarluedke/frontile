@@ -19,11 +19,6 @@
     "clean": "concurrently 'npm:clean:*'",
     "generate-signature-data": "pnpm --filter site generate-signature-data"
   },
-  "resolutions": {
-    "@ember/test-waiters": "^4.0.0",
-    "ember-concurrency": "^4.0.2",
-    "browserslist-generator": "3.0.0"
-  },
   "dependencies": {
     "@ember/test-waiters": "^4.0.0",
     "@embroider/test-setup": "^4.0.0"
@@ -49,7 +44,8 @@
     "node": ">= 10.*"
   },
   "volta": {
-    "node": "22.11.0",
-    "pnpm": "9.14.2"
-  }
+    "node": "26.1.0",
+    "pnpm": "11.1.2"
+  },
+  "packageManager": "pnpm@11.1.2"
 }

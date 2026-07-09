@@ -3,8 +3,17 @@ packages:
   - site
   - site/lib/docfy-theme
   - test-app
+allowBuilds:
+  '@tailwindcss/oxide': true
+  core-js: true
+  esbuild: true
+  nx: true
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - core-js
   - esbuild
   - nx
+overrides:
+  '@ember/test-waiters': ^4.0.0
+  ember-concurrency: ^4.0.2
+  browserslist-generator: 3.0.0
