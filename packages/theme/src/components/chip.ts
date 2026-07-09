@@ -3,13 +3,13 @@ import { tv } from '../tw';
 const chip = tv({
   slots: {
     base: [
-      'leading-tight',
       'disabled:cursor-not-allowed',
       'disabled:opacity-40',
       'whitespace-nowrap',
       'inline-flex items-center justify-between box-border'
     ],
-    content: ['flex-1 text-inherit font-normal'],
+    // label text role (size set per size variant)
+    content: ['flex-1 text-inherit font-label'],
     dot: ['w-2', 'h-2', 'ml-1', 'rounded-full'],
     closeButton: ['p-0.5']
   },
@@ -75,19 +75,19 @@ const chip = tv({
     },
     size: {
       sm: {
-        base: 'text-xs px-1 h-6',
+        base: 'text-label-2xs px-1 h-6',
         content: 'px-1',
-        closeButton: 'text-xs'
+        closeButton: 'text-label-2xs'
       },
       md: {
-        base: 'text-sm px-1 h-7',
+        base: 'text-label-xs px-1 h-7',
         content: 'px-2',
-        closeButton: 'text-sm'
+        closeButton: 'text-label-xs'
       },
       lg: {
-        base: 'text-lg px-2 h-8',
+        base: 'text-label-md px-2 h-8',
         content: 'px-2',
-        closeButton: 'text-lg'
+        closeButton: 'text-label-md'
       }
     },
     radius: {

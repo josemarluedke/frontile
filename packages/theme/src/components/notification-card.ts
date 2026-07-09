@@ -5,12 +5,12 @@ const btn = ['transition transition-200', ...focusVisibleRing];
 
 const notificationCard = tv({
   slots: {
-    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 text-sm rounded-sm shadow-sm transition-all transition-200 ease-in-out',
+    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 font-body text-body-2xs rounded-sm shadow-sm transition-all transition-200 ease-in-out',
     message: 'grow',
     customActions: 'flex flex-nowrap',
     customActionButton: [
       ...btn,
-      'first:ml-4 last:-mr-2 font-semibold py-1 px-2 rounded-sm hover:bg-surface-overlay-soft'
+      'first:ml-4 last:-mr-2 font-label text-label-xs py-1 px-2 rounded-sm hover:bg-surface-overlay-soft'
     ],
     closeButton: [
       ...btn,

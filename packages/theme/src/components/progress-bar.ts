@@ -3,9 +3,9 @@ import { tv } from '../tw';
 const progressBar = tv({
   slots: {
     base: ['overflow-hidden w-full bg-surface-overlay-soft'],
-    label: ['flex justify-between pb-1 gap-2 leading-tight'],
+    label: ['flex justify-between pb-1 gap-2 font-label text-label-sm'],
     progress: [''],
-    description: ['text-neutral text-xs pb-1']
+    description: ['text-neutral font-body text-body-micro pb-1']
   },
   variants: {
     isIndeterminate: {
@@ -37,14 +37,14 @@ const progressBar = tv({
       xs: {
         base: 'h-1',
         progress: 'h-1',
-        label: 'text-xs',
-        description: 'text-xs'
+        label: 'text-label-2xs',
+        description: 'text-body-micro'
       },
       sm: {
         base: 'h-2',
         progress: 'h-2',
-        label: 'text-sm',
-        description: 'text-sm'
+        label: 'text-label-xs',
+        description: 'text-body-2xs'
       },
       md: {
         base: 'h-4',
@@ -53,8 +53,8 @@ const progressBar = tv({
       lg: {
         base: 'h-8',
         progress: 'h-8',
-        label: 'text-lg',
-        description: 'text-lg'
+        label: 'text-label-md',
+        description: 'text-body-sm'
       }
     },
     radius: {

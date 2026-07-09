@@ -2,7 +2,7 @@ import { tv, type VariantProps } from '../tw';
 
 const table = tv({
   slots: {
-    base: ['w-full', 'caption-bottom', 'text-sm'],
+    base: ['w-full', 'caption-bottom', 'font-body text-body-2xs'],
     wrapper: [
       'relative',
       'isolate',
@@ -44,7 +44,7 @@ const table = tv({
       'px-4',
       'text-left',
       'align-middle',
-      'font-semibold',
+      'font-label',
       'text-neutral-bolder',
       '[&:has([role=checkbox])]:pr-0',
       'data-[sortable=true]:cursor-pointer'
@@ -56,7 +56,7 @@ const table = tv({
       'gap-1',
       'w-full',
       'text-left',
-      'font-semibold',
+      'font-label',
       'text-neutral-bolder',
       'outline-hidden',
       'focus-visible:z-10',
@@ -87,16 +87,16 @@ const table = tv({
   variants: {
     size: {
       sm: {
-        th: 'h-10 px-3 py-2 text-xs',
-        td: 'px-3 py-2 text-xs'
+        th: 'h-10 px-3 py-2 text-label-2xs',
+        td: 'px-3 py-2 text-body-micro'
       },
       md: {
-        th: 'h-12 px-4 text-sm',
-        td: 'p-4 text-sm'
+        th: 'h-12 px-4 text-label-xs',
+        td: 'p-4 text-body-2xs'
       },
       lg: {
-        th: 'h-14 px-6 text-base',
-        td: 'p-6 text-base'
+        th: 'h-14 px-6 text-label-sm',
+        td: 'p-6 text-body-xs'
       }
     },
     isLoading: {

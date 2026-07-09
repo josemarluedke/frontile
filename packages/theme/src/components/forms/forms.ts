@@ -3,17 +3,18 @@ import { focusVisibleRing, focusVisibleWithinRing } from '../shared';
 
 const label = tv({
   slots: {
-    base: 'text-neutral-strong inline-block font-semibold leading-tight pb-1',
+    // label text role (Open Sans semibold, tight leading)
+    base: 'text-neutral-strong inline-block font-label text-label-sm pb-1',
     asterisk: 'text-danger'
   },
   variants: {
     size: {
       sm: {
-        base: 'text-xs'
+        base: 'text-label-2xs'
       },
       md: {},
       lg: {
-        base: 'text-lg'
+        base: 'text-label-md'
       }
     }
   },
@@ -23,12 +24,13 @@ const label = tv({
 });
 
 const formDescription = tv({
-  base: 'text-neutral text-xs pb-1 last:pb-0',
+  // help/description text — body role
+  base: 'text-neutral font-body text-body-micro pb-1 last:pb-0',
   variants: {
     size: {
-      sm: 'text-xs',
+      sm: 'text-body-micro',
       md: '',
-      lg: 'text-lg'
+      lg: 'text-body-sm'
     }
   },
   defaultVariants: {
@@ -37,7 +39,8 @@ const formDescription = tv({
 });
 
 const formFeedback = tv({
-  base: 'text-xs pt-1',
+  // validation/feedback text — body role
+  base: 'font-body text-body-micro pt-1',
   variants: {
     intent: {
       primary: 'text-primary',
@@ -47,9 +50,9 @@ const formFeedback = tv({
       warning: 'text-warning'
     },
     size: {
-      sm: 'text-xs',
+      sm: 'text-body-micro',
       md: '',
-      lg: 'text-lg'
+      lg: 'text-body-sm'
     }
   },
   defaultVariants: {
@@ -70,7 +73,8 @@ const input = tv({
       'bg-surface-input',
       'text-neutral-strong',
       'placeholder-neutral',
-      'text-base text-left',
+      // body role family; single-line controls keep tight leading (not the body relaxed leading)
+      'font-body text-base text-left',
       'border',
       'border-neutral-soft',
       'rounded-sm',
@@ -142,7 +146,7 @@ const checkboxRadioBase = tv({
       ...focusVisibleRing
     ],
     labelContainer: ['flex flex-col ml-2'],
-    label: 'font-normal pb-0'
+    label: 'font-body text-body-xs pb-0'
   },
   variants: {
     size: {
@@ -272,7 +276,7 @@ const switchInput = tv({
   slots: {
     base: 'group relative max-w-fit inline-flex items-center justify-start',
     labelContainer: 'flex flex-col ml-2',
-    label: 'font-normal pb-0',
+    label: 'font-body text-body-xs pb-0',
     wrapper: [
       'px-1',
       'relative',

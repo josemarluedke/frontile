@@ -3,10 +3,11 @@ import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
   base: [
+    // label text role (Open Sans semibold); buttons stay single-line so keep tight leading
     'leading-none',
     'inline-flex items-center justify-center',
     '[&_svg]:size-[1em]',
-    'font-bold',
+    'font-label',
     'border',
     'border-transparent',
     'disabled:cursor-not-allowed',
@@ -28,13 +29,14 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-sm leading-none px-4 py-1 gap-1 rounded-full',
-      sm: 'text-base leading-none px-5 py-1.5 gap-1.5 rounded-full',
-      md: 'text-lg leading-none px-6 py-2 gap-1.5 rounded-full',
-      lg: 'text-2xl leading-none px-8 py-2.5 gap-2 rounded-full',
-      xl: 'text-3xl leading-none px-10 py-3 gap-2.5 rounded-full',
-      '2xl': 'text-4xl leading-none px-12 py-3.5 gap-3 rounded-full',
-      '3xl': 'text-5xl leading-none px-12 py-4 gap-3 rounded-full'
+      xs: 'text-label-xs px-4 py-1 gap-1 rounded-full',
+      sm: 'text-label-sm px-5 py-1.5 gap-1.5 rounded-full',
+      md: 'text-label-md px-6 py-2 gap-1.5 rounded-full',
+      lg: 'text-label-xl px-8 py-2.5 gap-2 rounded-full',
+      xl: 'text-label-2xl px-10 py-3 gap-2.5 rounded-full',
+      '2xl': 'text-label-3xl px-12 py-3.5 gap-3 rounded-full',
+      // exceeds the label text scale (max 3xl); keep raw size with the label font
+      '3xl': 'text-5xl px-12 py-4 gap-3 rounded-full'
     },
     isInGroup: {
       true: [
