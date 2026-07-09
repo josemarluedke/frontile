@@ -14,67 +14,55 @@ const themeColorsLight: ThemeColors = {
     subtle: `${palette.gray['500']}1a`, // palette.gray['500'] @ 10%
     muted: `${palette.gray['400']}33`, // palette.gray['400'] @ 20%
     soft: palette.gray['200'],
-    medium: palette.gray['500'],
     DEFAULT: palette.gray['500'],
     firm: palette.gray['600'],
     strong: palette.gray['700'],
     bolder: palette.gray['800'],
-    boldest: absolute.black
   },
   primary: {
     subtle: `${palette.teal['600']}1a`, // palette.teal['600'] @ 10% — bg-tonal
     muted: `${palette.teal['600']}33`, // palette.teal['600'] @ 20%
     soft: palette.teal['400'], // bg-hover (lightens)
-    medium: palette.teal['600'], // bg-rest / text
     DEFAULT: palette.teal['600'],
     firm: palette.teal['900'], // bg-pressed (darkens)
     strong: palette.teal['600'], // text (= bg-rest for primary)
     bolder: palette.teal['900'], // text-strong (= bg-pressed for primary)
-    boldest: palette.teal['900']
   },
   accent: {
     subtle: `${palette.violet['600']}1a`, // palette.violet['600'] @ 10%
     muted: `${palette.violet['600']}33`, // palette.violet['600'] @ 20%
     soft: palette.violet['500'], // bg-hover
-    medium: palette.violet['600'], // bg-rest
     DEFAULT: palette.violet['600'],
     firm: palette.violet['800'], // bg-pressed
     strong: palette.violet['700'], // text
     bolder: palette.violet['900'], // text-strong
-    boldest: palette.violet['900']
   },
   success: {
     subtle: `${palette.green['400']}1a`, // palette.green['400'] @ 10%
     muted: `${palette.green['400']}33`, // palette.green['400'] @ 20%
     soft: palette.green['300'], // bg-hover
-    medium: palette.green['400'], // bg-rest — brand-locked lime
     DEFAULT: palette.green['400'],
     firm: palette.green['500'], // bg-pressed
     strong: palette.green['800'], // text (darker than bg-rest for legibility)
     bolder: palette.green['900'], // text-strong
-    boldest: palette.green['900']
   },
   warning: {
     subtle: `${palette.orange['300']}1a`, // palette.orange['300'] @ 10%
     muted: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
     soft: palette.orange['200'], // bg-hover
-    medium: palette.orange['300'], // bg-rest — light solid, black label
     DEFAULT: palette.orange['300'],
     firm: palette.orange['400'], // bg-pressed
     strong: palette.orange['600'], // text (darker than bg-rest for legibility)
     bolder: palette.orange['900'], // text-strong
-    boldest: palette.orange['900']
   },
   danger: {
     subtle: `${palette.red['600']}1a`, // palette.red['600'] @ 10%
     muted: `${palette.red['600']}33`, // palette.red['600'] @ 20%
     soft: palette.red['500'], // bg-hover (lightens too)
-    medium: palette.red['600'], // bg-rest / text
     DEFAULT: palette.red['600'],
     firm: palette.red['700'], // bg-pressed
     strong: palette.red['600'], // text (= bg-rest for danger)
     bolder: palette.red['900'], // text-strong
-    boldest: palette.red['900']
   },
   surface: {
     overlay: {
@@ -97,67 +85,55 @@ const themeColorsDark: ThemeColors = {
     subtle: palette.gray['900'],
     muted: palette.gray['800'],
     soft: palette.gray['700'],
-    medium: palette.gray['600'],
     DEFAULT: palette.gray['600'],
     firm: palette.gray['500'],
     strong: palette.gray['300'],
     bolder: palette.gray['200'],
-    boldest: absolute.white
   },
   primary: {
     subtle: `${palette.teal['300']}29`, // palette.teal['300'] @ 16% — bg-tonal
     muted: `${palette.teal['300']}59`, // palette.teal['300'] @ 35%
     soft: palette.teal['500'], // bg-hover (darkens)
-    medium: palette.teal['300'], // bg-rest / text
     DEFAULT: palette.teal['300'],
     firm: palette.teal['100'], // bg-pressed (flashes light)
     strong: palette.teal['300'], // text (= bg-rest for primary)
     bolder: palette.teal['100'], // text-strong (= bg-pressed for primary)
-    boldest: palette.teal['100']
   },
   accent: {
     subtle: `${palette.violet['300']}29`, // palette.violet['300'] @ 16%
     muted: `${palette.violet['300']}59`, // palette.violet['300'] @ 35%
     soft: palette.violet['500'], // bg-hover
-    medium: palette.violet['300'], // bg-rest
     DEFAULT: palette.violet['300'],
     firm: palette.violet['800'], // bg-pressed (presses deep, unlike primary's flash)
     strong: palette.violet['300'], // text
     bolder: palette.violet['100'], // text-strong
-    boldest: palette.violet['100']
   },
   success: {
     subtle: `${palette.green['400']}29`, // palette.green['400'] @ 16%
     muted: `${palette.green['400']}59`, // palette.green['400'] @ 35%
     soft: palette.green['700'], // bg-hover (darkens)
-    medium: palette.green['400'], // bg-rest — lime holds in both schemes
     DEFAULT: palette.green['400'],
     firm: palette.green['900'], // bg-pressed
     strong: palette.green['300'], // text
     bolder: palette.green['100'], // text-strong
-    boldest: palette.green['100']
   },
   warning: {
     subtle: `${palette.orange['300']}29`, // palette.orange['300'] @ 16%
     muted: `${palette.orange['300']}59`, // palette.orange['300'] @ 35%
     soft: palette.orange['500'], // bg-hover (darkens)
-    medium: palette.orange['300'], // bg-rest — holds
     DEFAULT: palette.orange['300'],
     firm: palette.orange['700'], // bg-pressed
     strong: palette.orange['300'], // text (= bg-rest)
     bolder: palette.orange['100'], // text-strong
-    boldest: palette.orange['100']
   },
   danger: {
     subtle: `${palette.red['400']}29`, // palette.red['400'] @ 16%
     muted: `${palette.red['400']}59`, // palette.red['400'] @ 35%
     soft: palette.red['500'], // bg-hover
-    medium: palette.red['400'], // bg-rest — lifts from light's 600
     DEFAULT: palette.red['400'],
     firm: palette.red['700'], // bg-pressed
     strong: palette.red['300'], // text
     bolder: palette.red['100'], // text-strong
-    boldest: palette.red['100']
   },
   surface: {
     overlay: {

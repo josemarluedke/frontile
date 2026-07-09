@@ -103,7 +103,7 @@ Pair it with `bg-surface-overlay-scrim` for the backdrop behind modals and drawe
       <h2 class="text-on-surface-modal text-xl mb-2">Confirm Action</h2>
       <p class="text-on-surface-modal mb-4">Are you sure you want to continue?</p>
       <div class="flex gap-2">
-        <button class="bg-primary-medium text-on-primary-medium px-4 py-2 rounded">Confirm</button>
+        <button class="bg-primary text-on-primary px-4 py-2 rounded">Confirm</button>
         <button class="bg-neutral-subtle text-neutral-strong px-4 py-2 rounded">Cancel</button>
       </div>
     </div>
@@ -125,7 +125,7 @@ Form control surface for inputs, checkboxes, radios, and similar controls (hiera
     <div>
       <label class="block text-neutral-strong text-sm mb-1">Email</label>
       <input
-        class="bg-surface-input border border-neutral-medium rounded px-3 py-2 w-full text-neutral-strong"
+        class="bg-surface-input border border-neutral rounded px-3 py-2 w-full text-neutral-strong"
         placeholder="Enter your email"
       />
     </div>
@@ -296,18 +296,18 @@ Follow this decision flow:
         <div>
           <label class="block text-neutral-strong text-sm mb-1">Username</label>
           <input
-            class="bg-surface-input border border-neutral-medium rounded px-3 py-2 w-full text-neutral-strong"
+            class="bg-surface-input border border-neutral rounded px-3 py-2 w-full text-neutral-strong"
             placeholder="Enter username"
           />
         </div>
         <div>
           <label class="block text-neutral-strong text-sm mb-1">Email</label>
           <input
-            class="bg-surface-input border border-neutral-medium rounded px-3 py-2 w-full text-neutral-strong"
+            class="bg-surface-input border border-neutral rounded px-3 py-2 w-full text-neutral-strong"
             placeholder="Enter email"
           />
         </div>
-        <button class="bg-primary-medium text-on-primary-medium w-full py-2 rounded">
+        <button class="bg-primary text-on-primary w-full py-2 rounded">
           Submit
         </button>
       </div>

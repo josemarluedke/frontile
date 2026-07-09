@@ -45,10 +45,10 @@ export default class DocfySectionNav extends Component {
                 {{#if url}}
                   <DocfyLink
                     @to={{url}}
-                    class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-strong hover:text-neutral-firm hover:border-b-2 hover:border-primary-medium hover:-mb-px whitespace-nowrap
+                    class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-strong hover:text-neutral-firm hover:border-b-2 hover:border-primary hover:-mb-px whitespace-nowrap
                       {{if
                         (this.isActive child)
-                        'text-neutral-firm border-b-2 border-primary-medium -mb-px'
+                        'text-neutral-firm border-b-2 border-primary -mb-px'
                       }}"
                   >
                     {{child.label}}

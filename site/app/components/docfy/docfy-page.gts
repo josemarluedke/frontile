@@ -61,7 +61,7 @@ export default class DocfyPage extends Component<Signature> {
                   href={{page.editUrl}}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex items-center text-xs text-neutral-firm hover:text-primary-medium"
+                  class="flex items-center text-xs text-neutral-firm hover:text-primary"
                 >
                   <svg class="w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -90,7 +90,7 @@ export default class DocfyPage extends Component<Signature> {
 
                   <DocfyLink
                     @to={{previous.url}}
-                    class="text-lg text-primary-medium hover:text-primary-strong"
+                    class="text-lg text-primary hover:text-primary-strong"
                   >
                     {{previous.title}}
                   </DocfyLink>
@@ -100,7 +100,7 @@ export default class DocfyPage extends Component<Signature> {
                 {{#if next}}
                   <DocfyLink
                     @to={{next.url}}
-                    class="text-lg text-primary-medium hover:text-primary-strong"
+                    class="text-lg text-primary hover:text-primary-strong"
                   >
                     {{next.title}}
                   </DocfyLink>

@@ -45,7 +45,7 @@ const table = tv({
       'text-left',
       'align-middle',
       'font-semibold',
-      'text-neutral-boldest',
+      'text-neutral-bolder',
       '[&:has([role=checkbox])]:pr-0',
       'data-[sortable=true]:cursor-pointer'
     ],
@@ -57,7 +57,7 @@ const table = tv({
       'w-full',
       'text-left',
       'font-semibold',
-      'text-neutral-boldest',
+      'text-neutral-bolder',
       'outline-hidden',
       'focus-visible:z-10',
       'focus-visible:ring-3',

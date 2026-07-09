@@ -254,7 +254,7 @@ export default class ActionsExample extends Component {
       </div>
 
       {{#if this.result}}
-        <div class='p-3 rounded border bg-success-50 text-success-medium'>
+        <div class='p-3 rounded border bg-success-50 text-success'>
           {{this.result}}
         </div>
       {{/if}}

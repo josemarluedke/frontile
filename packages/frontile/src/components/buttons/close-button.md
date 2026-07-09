@@ -53,7 +53,7 @@ export default class CloseButtonExample extends Component {
     <div class='flex items-center space-x-4'>
       {{#if this.isVisible}}
         <div
-          class='bg-primary-soft border border-primary-medium rounded p-4 flex items-center justify-between'
+          class='bg-primary-soft border border-primary rounded p-4 flex items-center justify-between'
         >
           <span>This is a dismissible message</span>
           <CloseButton @onPress={{this.handleClose}} />

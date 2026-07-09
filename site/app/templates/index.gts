@@ -685,7 +685,7 @@ class IndexPage extends Component {
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -700,7 +700,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -715,7 +715,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -729,7 +729,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -744,7 +744,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -758,7 +758,7 @@ class IndexPage extends Component {
             </div>
 
             <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success-medium transition-colors duration-200"
+              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
             >
               <CheckIcon
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
@@ -926,7 +926,7 @@ module.exports = frontile({
                 automatically. Use tokens like
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
-                >bg-primary-medium</code>,
+                >bg-primary</code>,
                 <code
                   class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
                 >text-danger-strong</code>, and

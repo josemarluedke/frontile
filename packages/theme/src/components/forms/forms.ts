@@ -23,7 +23,7 @@ const label = tv({
 });
 
 const formDescription = tv({
-  base: 'text-neutral-medium text-xs pb-1 last:pb-0',
+  base: 'text-neutral text-xs pb-1 last:pb-0',
   variants: {
     size: {
       sm: 'text-xs',
@@ -69,7 +69,7 @@ const input = tv({
       'w-full',
       'bg-surface-input',
       'text-neutral-strong',
-      'placeholder-neutral-medium',
+      'placeholder-neutral',
       'text-base text-left',
       'border',
       'border-neutral-soft',
@@ -134,7 +134,7 @@ const checkboxRadioBase = tv({
       'select-none',
       'shrink-0',
       'text-base',
-      'border-2 border-neutral-medium',
+      'border-2 border-neutral',
       'bg-surface-input',
       'transition-colors',
       'checked:bg-origin-border checked:bg-center checked:bg-no-repeat',
@@ -180,10 +180,10 @@ const checkbox = tv({
       'checked-bg-checkbox',
       'indeterminate-bg-checkbox',
       'rounded-sm',
-      'checked:bg-primary-medium checked:border-primary-medium',
+      'checked:bg-primary checked:border-primary',
       // Indeterminate state styles - show minus/dash icon
-      'indeterminate:bg-primary-medium',
-      'indeterminate:border-primary-medium',
+      'indeterminate:bg-primary',
+      'indeterminate:border-primary',
       'indeterminate:bg-origin-border',
       'indeterminate:bg-center',
       'indeterminate:bg-no-repeat'
@@ -207,7 +207,7 @@ const radio = tv({
     input: [
       'checked-bg-radio',
       'rounded-full',
-      'checked:bg-primary-medium checked:border-primary-medium'
+      'checked:bg-primary checked:border-primary'
     ]
   },
   variants: {
@@ -234,7 +234,7 @@ const select = tv({
   extend: input,
   slots: {
     base: [],
-    placeholder: 'text-neutral-medium',
+    placeholder: 'text-neutral',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
@@ -326,7 +326,7 @@ const switchInput = tv({
       'group-data-[selected=true]:opacity-100'
     ],
     endContent: [
-      'z-0 absolute end-1.5 text-neutral-medium',
+      'z-0 absolute end-1.5 text-neutral',
       'opacity-100',
       'transition-transform-opacity',
       'group-data-[selected=true]:translate-x-3',
@@ -371,32 +371,32 @@ const switchInput = tv({
       },
       primary: {
         wrapper: [
-          'group-data-[selected=true]:bg-primary-medium',
-          'group-data-[selected=true]:text-on-primary-medium'
+          'group-data-[selected=true]:bg-primary',
+          'group-data-[selected=true]:text-on-primary'
         ]
       },
       accent: {
         wrapper: [
-          'group-data-[selected=true]:bg-accent-medium',
-          'group-data-[selected=true]:text-on-accent-medium'
+          'group-data-[selected=true]:bg-accent',
+          'group-data-[selected=true]:text-on-accent'
         ]
       },
       success: {
         wrapper: [
-          'group-data-[selected=true]:bg-success-medium',
-          'group-data-[selected=true]:text-on-success-medium'
+          'group-data-[selected=true]:bg-success',
+          'group-data-[selected=true]:text-on-success'
         ]
       },
       warning: {
         wrapper: [
-          'group-data-[selected=true]:bg-warning-medium',
-          'group-data-[selected=true]:text-on-warning-medium'
+          'group-data-[selected=true]:bg-warning',
+          'group-data-[selected=true]:text-on-warning'
         ]
       },
       danger: {
         wrapper: [
-          'group-data-[selected=true]:bg-danger-medium',
-          'group-data-[selected=true]:text-on-danger-medium'
+          'group-data-[selected=true]:bg-danger',
+          'group-data-[selected=true]:text-on-danger'
         ]
       }
     }

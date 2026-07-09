@@ -395,7 +395,7 @@ export default class ConfirmationDialog extends Component {
         <m.Body>
           <div class='space-y-3'>
             <p>Are you sure you want to delete this item?</p>
-            <p class='text-sm text-neutral-medium'>This action cannot be undone.</p>
+            <p class='text-sm text-neutral'>This action cannot be undone.</p>
 
             {{#if this.isDeleting}}
               <div class='flex items-center space-x-2'>
@@ -741,7 +741,7 @@ export default class NestedModals extends Component {
         <m.Body>
           <p class='mb-4'>This is the first modal. You can open another modal
             from here.</p>
-          <p class='text-sm text-neutral-medium'>Notice how the backdrop becomes
+          <p class='text-sm text-neutral'>Notice how the backdrop becomes
             darker with each modal layer.</p>
 
           <!-- Second Modal -->
@@ -755,7 +755,7 @@ export default class NestedModals extends Component {
             <m.Body>
               <p class='mb-4'>This is the second modal, opened from the first
                 one.</p>
-              <p class='text-sm text-neutral-medium'>You can continue nesting
+              <p class='text-sm text-neutral'>You can continue nesting
                 modals as needed.</p>
 
               <!-- Third Modal -->
@@ -769,7 +769,7 @@ export default class NestedModals extends Component {
                 <m.Body>
                   <p class='mb-4'>This is the third and final modal in this
                     example.</p>
-                  <p class='text-sm text-neutral-medium'>Each modal maintains its
+                  <p class='text-sm text-neutral'>Each modal maintains its
                     own focus trap and can be closed independently.</p>
                 </m.Body>
                 <m.Footer @class='flex gap-2'>

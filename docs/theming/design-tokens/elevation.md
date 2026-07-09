@@ -79,7 +79,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
         Standard card with level 2 elevation provides subtle depth.
       </p>
       <button
-        class='bg-primary-medium text-on-primary-medium px-4 py-2 rounded hover:bg-primary-soft'
+        class='bg-primary text-on-primary px-4 py-2 rounded hover:bg-primary-soft'
       >
         View Details
       </button>
@@ -87,14 +87,14 @@ Higher elevations indicate elements that are more prominent or interactive, such
 
     {{! Feature card with no shadow }}
     <div
-      class='shadow-elevation-0 border border-neutral-medium bg-surface-canvas rounded-xl p-6'
+      class='shadow-elevation-0 border border-neutral bg-surface-canvas rounded-xl p-6'
     >
       <h3 class='mb-3'>Flat Card</h3>
       <p class='text-neutral-strong mb-4'>
         Uses border instead of shadow for a flatter appearance.
       </p>
       <button
-        class='border border-primary-medium text-primary-medium px-4 py-2 rounded hover:bg-primary-subtle'
+        class='border border-primary text-primary px-4 py-2 rounded hover:bg-primary-subtle'
       >
         Learn More
       </button>
@@ -110,7 +110,7 @@ Higher elevations indicate elements that are more prominent or interactive, such
   <div class='flex gap-4 flex-wrap'>
     {{! Button that lifts on hover }}
     <button
-      class='bg-primary-medium text-on-primary-medium px-6 py-3 rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow'
+      class='bg-primary text-on-primary px-6 py-3 rounded shadow-elevation-1 hover:shadow-elevation-3 transition-shadow'
     >
       Hover to Lift
     </button>
@@ -156,7 +156,7 @@ Animate elevation changes for smooth interactions:
 Shadows may be less visible in dark mode. Consider combining elevation with subtle borders:
 
 ```html
-<div class="shadow-elevation-2 border border-neutral-medium/20">
+<div class="shadow-elevation-2 border border-neutral/20">
   Enhanced depth with border
 </div>
 ```

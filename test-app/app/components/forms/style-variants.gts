@@ -34,7 +34,7 @@ interface StyleVariantsArgs {}
 
 const Title: TOC<{ Blocks: { default: [] } }> = <template>
   <h1
-    class="mb-4 text-2xl font-bold inline-block border-b-4 border-primary-medium"
+    class="mb-4 text-2xl font-bold inline-block border-b-4 border-primary"
   >
     {{yield}}
   </h1>

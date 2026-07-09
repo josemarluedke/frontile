@@ -135,8 +135,8 @@ grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
 2. **Remove the prefix:**
 
 ```diff
-- background: var(--frontile-primary-medium);
-+ background: var(--primary-medium);
+- background: var(--frontile-primary);
++ background: var(--primary);
 
 - opacity: var(--frontile-hover-opacity);
 + opacity: var(--opacity-hover);
