@@ -56,8 +56,9 @@ Variables defined in `:root` or theme-specific selectors are for component-speci
 
 Frontile provides comprehensive text style variables. Each text style category has multiple size variants:
 
-- **Marquee**: `--text-marquee-sm` through `--text-marquee-xl`
-- **Header**: `--text-header-nano` through `--text-header-3xl`
+- **Marquee**: `--text-marquee-5xs` through `--text-marquee-3xl`
+- **Header**: `--text-header-4xs` through `--text-header-3xl`
+- **Strong**: `--text-strong-4xs` through `--text-strong-3xl`
 - **Body**: `--text-body-pico` through `--text-body-xl`
 - **Code**: `--text-code-sm`, `--text-code-md`
 - **Caption**: `--text-caption-sm`, `--text-caption-md`

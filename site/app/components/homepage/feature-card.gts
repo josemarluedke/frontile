@@ -24,8 +24,10 @@ const FeatureCard: TOC<Signature> = <template>
     >
       {{yield to="icon"}}
     </div>
-    <h3 class="text-xl font-bold text-neutral-strong mb-3">{{@title}}</h3>
-    <p class="text-neutral-firm leading-relaxed">
+    <h3
+      class="font-header text-header-lg text-neutral-strong mb-3"
+    >{{@title}}</h3>
+    <p class="font-body text-body-sm text-neutral-firm">
       {{@description}}
     </p>
   </div>

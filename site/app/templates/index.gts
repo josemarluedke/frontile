@@ -115,7 +115,7 @@ class IndexPage extends Component {
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1
-              class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-bolder mb-6"
+              class="font-marquee text-marquee-xl sm:text-marquee-2xl lg:text-marquee-3xl text-neutral-bolder mb-6"
             >
               Production-Ready UI Components
               <span
@@ -123,7 +123,7 @@ class IndexPage extends Component {
               >for Ember.js</span>
             </h1>
             <p
-              class="mt-6 text-xl sm:text-2xl text-neutral-bolder max-w-4xl mx-auto leading-relaxed"
+              class="mt-6 font-body text-body-md sm:text-body-lg text-neutral-bolder max-w-4xl mx-auto"
             >
               Build accessible, beautiful applications with 30+ TypeScript-typed
               components, Tailwind Variants theming, and built-in dark mode
@@ -158,7 +158,7 @@ class IndexPage extends Component {
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center">
             <p
-              class="text-sm font-semibold text-neutral-bolder uppercase tracking-wide mb-4"
+              class="font-label text-label-2xs text-neutral-bolder uppercase tracking-wide mb-4"
             >Quick Install</p>
             <div class="install-terminal max-w-lg mx-auto">
               <div class="install-terminal__dots" aria-hidden="true">
@@ -177,7 +177,7 @@ class IndexPage extends Component {
                 pnpm install frontile @frontile/theme
               </div>
             </div>
-            <p class="mt-4 text-sm text-neutral-bolder">
+            <p class="mt-4 font-body text-body-2xs text-neutral-bolder">
               Also available via npm and yarn
             </p>
           </div>
@@ -356,7 +356,9 @@ class IndexPage extends Component {
             <ComponentDemoCard @title="Status Indicators">
               <div class="space-y-4">
                 <div>
-                  <p class="text-sm text-neutral-bolder mb-2">Progress Bar</p>
+                  <p
+                    class="font-body text-body-2xs text-neutral-bolder mb-2"
+                  >Progress Bar</p>
                   <ProgressBar
                     @intent="primary"
                     @progress={{75}}
@@ -364,7 +366,9 @@ class IndexPage extends Component {
                   />
                 </div>
                 <div>
-                  <p class="text-sm text-neutral-bolder mb-2">Loading States</p>
+                  <p
+                    class="font-body text-body-2xs text-neutral-bolder mb-2"
+                  >Loading States</p>
                   <div class="flex gap-3 items-center">
                     <Spinner @size="sm" />
                     <Spinner @size="md" />
@@ -372,7 +376,7 @@ class IndexPage extends Component {
                   </div>
                 </div>
                 <Divider />
-                <p class="text-sm text-neutral-bolder">
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Visual feedback for user actions and system processes
                 </p>
               </div>
@@ -484,7 +488,7 @@ class IndexPage extends Component {
                   <p class="text-neutral-bolder mt-4">
                     Try pressing
                     <kbd
-                      class="px-2 py-1 bg-surface-overlay-subtle rounded text-sm font-mono"
+                      class="px-2 py-1 bg-surface-overlay-subtle rounded font-code text-code-sm"
                     >Escape</kbd>
                     to close!
                   </p>
@@ -524,24 +528,26 @@ class IndexPage extends Component {
                   <div class="space-y-4">
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-bolder mb-2"
+                        class="font-header text-header-sm text-neutral-bolder mb-2"
                       >Components</h4>
-                      <p class="text-sm text-neutral-bolder">Browse all 30+
-                        components</p>
+                      <p
+                        class="font-body text-body-2xs text-neutral-bolder"
+                      >Browse all 30+ components</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-bolder mb-2"
+                        class="font-header text-header-sm text-neutral-bolder mb-2"
                       >Documentation</h4>
-                      <p class="text-sm text-neutral-bolder">Learn how to use
-                        Frontile</p>
+                      <p
+                        class="font-body text-body-2xs text-neutral-bolder"
+                      >Learn how to use Frontile</p>
                     </div>
                     <div class="p-4 bg-surface-overlay-subtle rounded-lg">
                       <h4
-                        class="font-semibold text-neutral-bolder mb-2"
+                        class="font-header text-header-sm text-neutral-bolder mb-2"
                       >Examples</h4>
-                      <p class="text-sm text-neutral-bolder">See components in
-                        action</p>
+                      <p class="font-body text-body-2xs text-neutral-bolder">See
+                        components in action</p>
                     </div>
                   </div>
                 </drawer.Body>
@@ -691,9 +697,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">Keyboard
-                  Navigation</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >Keyboard Navigation</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Full keyboard support for all interactive components
                 </p>
               </div>
@@ -706,9 +713,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">Screen Reader
-                  Support</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >Screen Reader Support</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Proper ARIA labels and live regions
                 </p>
               </div>
@@ -721,8 +729,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">Focus Management</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >Focus Management</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Visible focus indicators and logical tab order
                 </p>
               </div>
@@ -735,9 +745,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">WAI-ARIA
-                  Compliant</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >WAI-ARIA Compliant</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Follows authoring practices guidelines
                 </p>
               </div>
@@ -750,8 +761,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">High Contrast</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >High Contrast</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Works with OS high contrast modes
                 </p>
               </div>
@@ -764,9 +777,10 @@ class IndexPage extends Component {
                 class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
               />
               <div>
-                <h3 class="font-bold text-neutral-bolder mb-2">Motion
-                  Preferences</h3>
-                <p class="text-neutral-bolder text-sm">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-2"
+                >Motion Preferences</h3>
+                <p class="font-body text-body-2xs text-neutral-bolder">
                   Respects prefers-reduced-motion
                 </p>
               </div>
@@ -792,8 +806,9 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Component
-                Signatures</h3>
+              <h3
+                class="font-header text-header-md text-neutral-bolder mb-4"
+              >Component Signatures</h3>
               <CodeBlock
                 @code="interface Signature {
   Args: {
@@ -808,8 +823,9 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Template
-                Type Checking</h3>
+              <h3
+                class="font-header text-header-md text-neutral-bolder mb-4"
+              >Template Type Checking</h3>
               <CodeBlock
                 @code="<Table
   @rows={{this.users}}
@@ -823,8 +839,9 @@ class IndexPage extends Component {
             <div
               class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
             >
-              <h3 class="text-lg font-bold text-neutral-bolder mb-4">Generic
-                Support</h3>
+              <h3
+                class="font-header text-header-md text-neutral-bolder mb-4"
+              >Generic Support</h3>
               <CodeBlock
                 @code="Table<User>
 Listbox<Country>
@@ -838,27 +855,32 @@ Listbox<Country>
           <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div
-                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
+                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
               >100%</div>
-              <div class="text-sm text-neutral-bolder">TypeScript Coverage</div>
+              <div
+                class="font-body text-body-2xs text-neutral-bolder"
+              >TypeScript Coverage</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
+                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
               >Glint</div>
-              <div class="text-sm text-neutral-bolder">Template Types</div>
+              <div class="font-body text-body-2xs text-neutral-bolder">Template
+                Types</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
+                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
               >30+</div>
-              <div class="text-sm text-neutral-bolder">Typed Components</div>
+              <div class="font-body text-body-2xs text-neutral-bolder">Typed
+                Components</div>
             </div>
             <div>
               <div
-                class="text-3xl font-bold text-primary-strong mb-2 stat-glow"
+                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
               >Full</div>
-              <div class="text-sm text-neutral-bolder">IDE IntelliSense</div>
+              <div class="font-body text-body-2xs text-neutral-bolder">IDE
+                IntelliSense</div>
             </div>
           </div>
         </div>
@@ -881,8 +903,9 @@ Listbox<Country>
             <div
               class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-accent-soft"
             >
-              <h3 class="text-xl font-bold text-neutral-bolder mb-6">Semantic
-                Theme System</h3>
+              <h3
+                class="font-header text-header-lg text-neutral-bolder mb-6"
+              >Semantic Theme System</h3>
               <CodeBlock
                 @code="const { frontile } = require('@frontile/theme/plugin');
 
@@ -894,13 +917,13 @@ module.exports = frontile({
         primary: {
           subtle: '#eff6ff',
           soft: '#93c5fd',
-          medium: '#3b82f6',
+          DEFAULT: '#3b82f6',
           strong: '#1e40af'
         },
         neutral: {
           subtle: '#f5f5f5',
           soft: '#a3a3a3',
-          medium: '#525252',
+          DEFAULT: '#525252',
           strong: '#171717'
         }
       }
@@ -910,7 +933,7 @@ module.exports = frontile({
         primary: {
           subtle: '#1e3a8a',
           soft: '#3b82f6',
-          medium: '#60a5fa',
+          DEFAULT: '#60a5fa',
           strong: '#dbeafe'
         }
       }
@@ -925,13 +948,13 @@ module.exports = frontile({
                 Customize light and dark themes with semantic colors that adapt
                 automatically. Use tokens like
                 <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
                 >bg-primary</code>,
                 <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
                 >text-danger-strong</code>, and
                 <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded text-sm font-mono"
+                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
                 >text-neutral-strong</code>
                 for consistent theming across your application.
               </p>
@@ -967,10 +990,12 @@ module.exports = frontile({
       {{! Get Started / CTA Section }}
       <section class="py-24 cta-gradient-bg">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6">
+          <h2 class="font-header text-header-3xl text-white mb-6">
             Ready to Build?
           </h2>
-          <p class="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+          <p
+            class="font-body text-body-md text-white/80 mb-10 max-w-2xl mx-auto"
+          >
             Join the growing community of developers building accessible,
             beautiful Ember.js applications with Frontile
           </p>
@@ -1020,20 +1045,22 @@ module.exports = frontile({
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="cta-card">
-              <h3 class="font-bold mb-2 text-white">Quick Start</h3>
-              <p class="text-white/80 text-sm">
+              <h3 class="font-header text-header-md mb-2 text-white">Quick Start</h3>
+              <p class="font-body text-body-2xs text-white/80">
                 Installation, setup, and your first component in minutes
               </p>
             </div>
             <div class="cta-card">
-              <h3 class="font-bold mb-2 text-white">Browse Components</h3>
-              <p class="text-white/80 text-sm">
+              <h3 class="font-header text-header-md mb-2 text-white">Browse
+                Components</h3>
+              <p class="font-body text-body-2xs text-white/80">
                 Interactive examples and API documentation
               </p>
             </div>
             <div class="cta-card">
-              <h3 class="font-bold mb-2 text-white">Join Community</h3>
-              <p class="text-white/80 text-sm">
+              <h3 class="font-header text-header-md mb-2 text-white">Join
+                Community</h3>
+              <p class="font-body text-body-2xs text-white/80">
                 GitHub discussions and issue tracker
               </p>
             </div>

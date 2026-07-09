@@ -14,9 +14,13 @@ const ComponentDemoCard: TOC<Signature> = <template>
   <div
     class="p-8 bg-surface-card rounded-xl shadow-lg border border-neutral-subtle hover:border-primary-subtle transition-colors duration-300"
   >
-    <h3 class="text-xl font-bold text-neutral-strong mb-6">{{@title}}</h3>
+    <h3
+      class="font-header text-header-lg text-neutral-strong mb-6"
+    >{{@title}}</h3>
     {{#if @description}}
-      <p class="text-neutral-firm mb-6">{{@description}}</p>
+      <p
+        class="font-body text-body-sm text-neutral-firm mb-6"
+      >{{@description}}</p>
     {{/if}}
     <div>
       {{yield}}

@@ -5,13 +5,13 @@ const base = tv({
     base: 'flex flex-wrap	flex-row items-center',
     labelContainer: 'leading-tight flex items-start',
     inputContainer: 'flex items-center',
-    label: 'font-normal pl-2 pb-0',
+    label: 'font-body text-body-xs pl-2 pb-0',
     hint: 'pl-2 flex basis-full	before:content-["_"] before:inline-block before:w-[1em] before:h-[1em] shrink-0'
   },
   variants: {
     size: {
       sm: {
-        label: 'text-sm'
+        label: 'text-body-2xs'
       },
       md: '',
       lg: ''

@@ -25,10 +25,10 @@ const listboxItem = tv({
       'tap-highlight-transparent'
     ],
     descriptionWrapper: 'w-full flex flex-col items-start justify-center',
-    label: 'flex-1 text-sm font-normal truncate',
+    label: 'flex-1 font-body text-body-2xs truncate',
     description: [
       'w-full',
-      'text-xs',
+      'font-body text-body-micro',
       'text-neutral-firm',
       'group-hover:text-current'
     ],
@@ -37,9 +37,9 @@ const listboxItem = tv({
       'px-1',
       'py-0.5',
       'rounded-sm',
-      'font-sans',
+      'font-label',
       'text-neutral',
-      'text-xs',
+      'text-label-2xs',
       'border',
       'border-neutral-soft',
       'group-data-is-active:border-current'

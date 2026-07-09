@@ -24,12 +24,12 @@ const ComponentPackageCard: TOC<Signature> = <template>
   >
     <div class="flex items-center mb-3">
       {{yield to="icon"}}
-      <h3 class="font-bold text-neutral-strong">{{@name}}</h3>
+      <h3 class="font-header text-header-md text-neutral-strong">{{@name}}</h3>
       <span
-        class="ml-auto text-sm font-semibold {{@countColor}}"
+        class="ml-auto font-header text-strong-sm {{@countColor}}"
       >{{@count}}</span>
     </div>
-    <p class="text-sm text-neutral-bolder">
+    <p class="font-body text-body-2xs text-neutral-bolder">
       {{@description}}
     </p>
   </div>

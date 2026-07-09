@@ -17,7 +17,7 @@ const avatar = tv({
     img: 'size-full',
     name: [
       'w-full',
-      'font-normal',
+      'font-label',
       'text-center',
       'text-inherit',
       'absolute',
@@ -34,11 +34,11 @@ const avatar = tv({
       circle: 'rounded-full'
     },
     size: {
-      xs: { base: 'size-5 text-xs' },
-      sm: { base: 'size-6 text-sm' },
-      md: { base: 'size-8 text-base' },
-      lg: { base: 'size-10 text-lg' },
-      xl: { base: 'size-12 text-xl' }
+      xs: { base: 'size-5 text-label-2xs' },
+      sm: { base: 'size-6 text-label-xs' },
+      md: { base: 'size-8 text-label-sm' },
+      lg: { base: 'size-10 text-label-md' },
+      xl: { base: 'size-12 text-label-lg' }
     }
   },
   defaultVariants: {

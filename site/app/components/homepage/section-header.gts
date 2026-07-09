@@ -22,11 +22,13 @@ const SectionHeader: TOC<Signature> = <template>
         {{yield to="icon"}}
       </div>
     {{/if}}
-    <h2 class="text-4xl sm:text-5xl font-bold text-neutral-strong mb-4">
+    <h2
+      class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong mb-4"
+    >
       {{@title}}
     </h2>
     {{#if @subtitle}}
-      <p class="text-xl text-neutral-firm max-w-3xl mx-auto">
+      <p class="font-body text-body-md text-neutral-firm max-w-3xl mx-auto">
         {{@subtitle}}
       </p>
     {{/if}}

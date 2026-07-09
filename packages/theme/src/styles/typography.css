@@ -6,19 +6,25 @@
  * - text-{size}        → font-size utilities (e.g., text-12, text-16)
  * - font-{weight}      → font-weight utilities (e.g., font-regular, font-bold)
  * - tracking-{spacing} → letter-spacing utilities (e.g., tracking-default, tracking-tight)
- * - leading-{height}   → line-height utilities (e.g., leading-spacious, leading-tight)
+ *
+ * Role text styles (text-<role>-<size>) mirror the Beacon typography set:
+ * seven roles (marquee, header, strong, body, code, caption, label), each
+ * anchored to its own steps on the shared 1.067 typescale.
  */
 
 @theme {
   /* ==================== Base Typography Tokens ==================== */
 
-  /* Font Families */
-  --font-marquee: "STIX Two Text";
-  --font-header: "Open Sans";
-  --font-body: "Open Sans";
-  --font-code: "Source Code Pro";
-  --font-caption: "Open Sans";
-  --font-label: "Open Sans";
+  /* Font Families — each token ships a generic fallback chain so roles
+     stay legible before/without the bundled web font. Domine and Open Sans
+     are bundled (see font-faces.css); Source Code Pro is expected from the
+     consuming app and falls back to the platform monospace face. */
+  --font-marquee: "Domine", Georgia, "Times New Roman", serif;
+  --font-header: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-code: "Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-caption: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-label: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Font Weights */
   --font-weight-regular: 400;
@@ -31,12 +37,13 @@
   --letter-spacing-default: 0rem; /* 0px */
   --letter-spacing-relaxed: 0.0625rem; /* 1px */
 
-  /* Line Heights (Leading) */
-  --line-height-default: var(--line-height-spacious);
-  --line-height-spacious: 1.5; /* 150% */
-  --line-height-comfy: 1.4; /* 140% */
-  --line-height-tight: 1.2; /* 120% */
-  --line-height-single: 1; /* 100% */
+  /* Line Heights (Leading) — Beacon vocabulary.
+     These feed the --text-<role>-<size>--line-height composites below;
+     standalone leading-* utilities use Tailwind's own --leading-* namespace. */
+  --line-height-tight: 1; /* 100% */
+  --line-height-default: 1.2; /* 120% */
+  --line-height-easy: 1.4; /* 140% */
+  --line-height-relaxed: 1.5; /* 150% */
 
   /* ==================== Typography Scale ==================== */
   /* Base: 1rem (16px) at index 12 */
@@ -84,208 +91,297 @@
   --font-size-34: calc(var(--font-size-33) * var(--typescale-ratio)); /* typescale-34 */
 
   /* ==================== Text Style Tokens ==================== */
-  /* Composite text styles (without font-family for flexibility) */
-  /* Usage: Apply font-family separately, then use text style tokens */
+  /* Composite text styles (without font-family for flexibility).
+     Usage: apply the role's font-family separately, then the text style token.
+     Sizes, weights, tracking, and leading follow the Beacon type role matrix. */
 
-  /* marquee text styles */
-  --text-marquee-sm: var(--font-size-23);
+  /* marquee text styles — Domine, semibold; lg+ tightens leading */
+  --text-marquee-5xs: var(--font-size-5);
+  --text-marquee-5xs--font-weight: var(--font-weight-semibold);
+  --text-marquee-5xs--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-5xs--line-height: var(--line-height-relaxed);
+
+  --text-marquee-4xs: var(--font-size-8);
+  --text-marquee-4xs--font-weight: var(--font-weight-semibold);
+  --text-marquee-4xs--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-4xs--line-height: var(--line-height-relaxed);
+
+  --text-marquee-3xs: var(--font-size-10);
+  --text-marquee-3xs--font-weight: var(--font-weight-semibold);
+  --text-marquee-3xs--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-3xs--line-height: var(--line-height-relaxed);
+
+  --text-marquee-2xs: var(--font-size-12);
+  --text-marquee-2xs--font-weight: var(--font-weight-semibold);
+  --text-marquee-2xs--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-2xs--line-height: var(--line-height-relaxed);
+
+  --text-marquee-xs: var(--font-size-14);
+  --text-marquee-xs--font-weight: var(--font-weight-semibold);
+  --text-marquee-xs--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-xs--line-height: var(--line-height-easy);
+
+  --text-marquee-sm: var(--font-size-17);
   --text-marquee-sm--font-weight: var(--font-weight-semibold);
   --text-marquee-sm--letter-spacing: var(--letter-spacing-default);
-  --text-marquee-sm--line-height: var(--line-height-tight);
+  --text-marquee-sm--line-height: var(--line-height-easy);
 
-  --text-marquee-md: var(--font-size-26);
+  --text-marquee-md: var(--font-size-19);
   --text-marquee-md--font-weight: var(--font-weight-semibold);
   --text-marquee-md--letter-spacing: var(--letter-spacing-default);
-  --text-marquee-md--line-height: var(--line-height-tight);
+  --text-marquee-md--line-height: var(--line-height-easy);
 
-  --text-marquee-lg: var(--font-size-29);
+  --text-marquee-lg: var(--font-size-23);
   --text-marquee-lg--font-weight: var(--font-weight-semibold);
   --text-marquee-lg--letter-spacing: var(--letter-spacing-default);
-  --text-marquee-lg--line-height: var(--line-height-tight);
+  --text-marquee-lg--line-height: var(--line-height-default);
 
-  --text-marquee-xl: var(--font-size-31);
+  --text-marquee-xl: var(--font-size-26);
   --text-marquee-xl--font-weight: var(--font-weight-semibold);
   --text-marquee-xl--letter-spacing: var(--letter-spacing-default);
-  --text-marquee-xl--line-height: var(--line-height-tight);
+  --text-marquee-xl--line-height: var(--line-height-default);
+
+  --text-marquee-2xl: var(--font-size-29);
+  --text-marquee-2xl--font-weight: var(--font-weight-semibold);
+  --text-marquee-2xl--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-2xl--line-height: var(--line-height-default);
+
+  --text-marquee-3xl: var(--font-size-31);
+  --text-marquee-3xl--font-weight: var(--font-weight-semibold);
+  --text-marquee-3xl--letter-spacing: var(--letter-spacing-default);
+  --text-marquee-3xl--line-height: var(--line-height-default);
 
 
-  /* header text styles */
+  /* header text styles — Open Sans bold; lg+ tightens tracking & leading */
+  --text-header-4xs: var(--font-size-3);
+  --text-header-4xs--font-weight: var(--font-weight-bold);
+  --text-header-4xs--letter-spacing: var(--letter-spacing-default);
+  --text-header-4xs--line-height: var(--line-height-easy);
+
+  --text-header-3xs: var(--font-size-5);
+  --text-header-3xs--font-weight: var(--font-weight-bold);
+  --text-header-3xs--letter-spacing: var(--letter-spacing-default);
+  --text-header-3xs--line-height: var(--line-height-easy);
+
   --text-header-2xs: var(--font-size-8);
   --text-header-2xs--font-weight: var(--font-weight-bold);
-  --text-header-2xs--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-2xs--line-height: var(--line-height-comfy);
-
-  --text-header-micro: var(--font-size-5);
-  --text-header-micro--font-weight: var(--font-weight-bold);
-  --text-header-micro--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-micro--line-height: var(--line-height-comfy);
-
-  --text-header-nano: var(--font-size-3);
-  --text-header-nano--font-weight: var(--font-weight-bold);
-  --text-header-nano--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-nano--line-height: var(--line-height-comfy);
+  --text-header-2xs--letter-spacing: var(--letter-spacing-default);
+  --text-header-2xs--line-height: var(--line-height-easy);
 
   --text-header-xs: var(--font-size-10);
   --text-header-xs--font-weight: var(--font-weight-bold);
-  --text-header-xs--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-xs--line-height: var(--line-height-comfy);
+  --text-header-xs--letter-spacing: var(--letter-spacing-default);
+  --text-header-xs--line-height: var(--line-height-easy);
 
   --text-header-sm: var(--font-size-12);
   --text-header-sm--font-weight: var(--font-weight-bold);
-  --text-header-sm--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-sm--line-height: var(--line-height-comfy);
+  --text-header-sm--letter-spacing: var(--letter-spacing-default);
+  --text-header-sm--line-height: var(--line-height-easy);
 
   --text-header-md: var(--font-size-14);
   --text-header-md--font-weight: var(--font-weight-bold);
-  --text-header-md--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-md--line-height: var(--line-height-comfy);
+  --text-header-md--letter-spacing: var(--letter-spacing-tight);
+  --text-header-md--line-height: var(--line-height-easy);
 
   --text-header-lg: var(--font-size-17);
   --text-header-lg--font-weight: var(--font-weight-bold);
-  --text-header-lg--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-lg--line-height: var(--line-height-tight);
+  --text-header-lg--letter-spacing: var(--letter-spacing-tight);
+  --text-header-lg--line-height: var(--line-height-default);
 
   --text-header-xl: var(--font-size-19);
   --text-header-xl--font-weight: var(--font-weight-bold);
-  --text-header-xl--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-xl--line-height: var(--line-height-tight);
+  --text-header-xl--letter-spacing: var(--letter-spacing-tight);
+  --text-header-xl--line-height: var(--line-height-default);
 
   --text-header-2xl: var(--font-size-23);
   --text-header-2xl--font-weight: var(--font-weight-bold);
-  --text-header-2xl--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-2xl--line-height: var(--line-height-tight);
+  --text-header-2xl--letter-spacing: var(--letter-spacing-tight);
+  --text-header-2xl--line-height: var(--line-height-default);
 
   --text-header-3xl: var(--font-size-26);
   --text-header-3xl--font-weight: var(--font-weight-bold);
-  --text-header-3xl--letter-spacing: var(--letter-spacing-condensed);
-  --text-header-3xl--line-height: var(--line-height-tight);
+  --text-header-3xl--letter-spacing: var(--letter-spacing-tight);
+  --text-header-3xl--line-height: var(--line-height-default);
 
 
-  /* body text styles */
-  --text-body-2xs: var(--font-size-10);
-  --text-body-2xs--font-weight: var(--font-weight-regular);
-  --text-body-2xs--letter-spacing: var(--letter-spacing-default);
-  --text-body-2xs--line-height: var(--line-height-spacious);
+  /* strong text styles — Open Sans bold, emphasis for numerics/prices.
+     Shares the header size/tracking/leading matrix. */
+  --text-strong-4xs: var(--font-size-3);
+  --text-strong-4xs--font-weight: var(--font-weight-bold);
+  --text-strong-4xs--letter-spacing: var(--letter-spacing-default);
+  --text-strong-4xs--line-height: var(--line-height-easy);
 
-  --text-body-3xs: var(--font-size-9);
-  --text-body-3xs--font-weight: var(--font-weight-regular);
-  --text-body-3xs--letter-spacing: var(--letter-spacing-default);
-  --text-body-3xs--line-height: var(--line-height-spacious);
+  --text-strong-3xs: var(--font-size-5);
+  --text-strong-3xs--font-weight: var(--font-weight-bold);
+  --text-strong-3xs--letter-spacing: var(--letter-spacing-default);
+  --text-strong-3xs--line-height: var(--line-height-easy);
 
-  --text-body-micro: var(--font-size-8);
-  --text-body-micro--font-weight: var(--font-weight-regular);
-  --text-body-micro--letter-spacing: var(--letter-spacing-default);
-  --text-body-micro--line-height: var(--line-height-spacious);
+  --text-strong-2xs: var(--font-size-8);
+  --text-strong-2xs--font-weight: var(--font-weight-bold);
+  --text-strong-2xs--letter-spacing: var(--letter-spacing-default);
+  --text-strong-2xs--line-height: var(--line-height-easy);
+
+  --text-strong-xs: var(--font-size-10);
+  --text-strong-xs--font-weight: var(--font-weight-bold);
+  --text-strong-xs--letter-spacing: var(--letter-spacing-default);
+  --text-strong-xs--line-height: var(--line-height-easy);
+
+  --text-strong-sm: var(--font-size-12);
+  --text-strong-sm--font-weight: var(--font-weight-bold);
+  --text-strong-sm--letter-spacing: var(--letter-spacing-default);
+  --text-strong-sm--line-height: var(--line-height-easy);
+
+  --text-strong-md: var(--font-size-14);
+  --text-strong-md--font-weight: var(--font-weight-bold);
+  --text-strong-md--letter-spacing: var(--letter-spacing-tight);
+  --text-strong-md--line-height: var(--line-height-easy);
+
+  --text-strong-lg: var(--font-size-17);
+  --text-strong-lg--font-weight: var(--font-weight-bold);
+  --text-strong-lg--letter-spacing: var(--letter-spacing-tight);
+  --text-strong-lg--line-height: var(--line-height-default);
+
+  --text-strong-xl: var(--font-size-19);
+  --text-strong-xl--font-weight: var(--font-weight-bold);
+  --text-strong-xl--letter-spacing: var(--letter-spacing-tight);
+  --text-strong-xl--line-height: var(--line-height-default);
+
+  --text-strong-2xl: var(--font-size-23);
+  --text-strong-2xl--font-weight: var(--font-weight-bold);
+  --text-strong-2xl--letter-spacing: var(--letter-spacing-tight);
+  --text-strong-2xl--line-height: var(--line-height-default);
+
+  --text-strong-3xl: var(--font-size-26);
+  --text-strong-3xl--font-weight: var(--font-weight-bold);
+  --text-strong-3xl--letter-spacing: var(--letter-spacing-tight);
+  --text-strong-3xl--line-height: var(--line-height-default);
+
+
+  /* body text styles — Open Sans regular, relaxed leading */
+  --text-body-pico: var(--font-size-6);
+  --text-body-pico--font-weight: var(--font-weight-regular);
+  --text-body-pico--letter-spacing: var(--letter-spacing-default);
+  --text-body-pico--line-height: var(--line-height-relaxed);
 
   --text-body-nano: var(--font-size-7);
   --text-body-nano--font-weight: var(--font-weight-regular);
   --text-body-nano--letter-spacing: var(--letter-spacing-default);
-  --text-body-nano--line-height: var(--line-height-spacious);
+  --text-body-nano--line-height: var(--line-height-relaxed);
 
-  --text-body-pico: var(--font-size-6);
-  --text-body-pico--font-weight: var(--font-weight-regular);
-  --text-body-pico--letter-spacing: var(--letter-spacing-default);
-  --text-body-pico--line-height: var(--line-height-spacious);
+  --text-body-micro: var(--font-size-8);
+  --text-body-micro--font-weight: var(--font-weight-regular);
+  --text-body-micro--letter-spacing: var(--letter-spacing-default);
+  --text-body-micro--line-height: var(--line-height-relaxed);
+
+  --text-body-3xs: var(--font-size-9);
+  --text-body-3xs--font-weight: var(--font-weight-regular);
+  --text-body-3xs--letter-spacing: var(--letter-spacing-default);
+  --text-body-3xs--line-height: var(--line-height-relaxed);
+
+  --text-body-2xs: var(--font-size-10);
+  --text-body-2xs--font-weight: var(--font-weight-regular);
+  --text-body-2xs--letter-spacing: var(--letter-spacing-default);
+  --text-body-2xs--line-height: var(--line-height-relaxed);
 
   --text-body-xs: var(--font-size-12);
   --text-body-xs--font-weight: var(--font-weight-regular);
   --text-body-xs--letter-spacing: var(--letter-spacing-default);
-  --text-body-xs--line-height: var(--line-height-spacious);
+  --text-body-xs--line-height: var(--line-height-relaxed);
 
   --text-body-sm: var(--font-size-14);
   --text-body-sm--font-weight: var(--font-weight-regular);
   --text-body-sm--letter-spacing: var(--letter-spacing-default);
-  --text-body-sm--line-height: var(--line-height-spacious);
+  --text-body-sm--line-height: var(--line-height-relaxed);
 
   --text-body-md: var(--font-size-16);
   --text-body-md--font-weight: var(--font-weight-regular);
   --text-body-md--letter-spacing: var(--letter-spacing-default);
-  --text-body-md--line-height: var(--line-height-spacious);
+  --text-body-md--line-height: var(--line-height-relaxed);
 
   --text-body-lg: var(--font-size-18);
   --text-body-lg--font-weight: var(--font-weight-regular);
   --text-body-lg--letter-spacing: var(--letter-spacing-default);
-  --text-body-lg--line-height: var(--line-height-spacious);
+  --text-body-lg--line-height: var(--line-height-relaxed);
 
   --text-body-xl: var(--font-size-21);
   --text-body-xl--font-weight: var(--font-weight-regular);
   --text-body-xl--letter-spacing: var(--letter-spacing-default);
-  --text-body-xl--line-height: var(--line-height-spacious);
+  --text-body-xl--line-height: var(--line-height-relaxed);
 
 
-  /* code text styles */
+  /* code text styles — Source Code Pro, relaxed leading */
   --text-code-sm: var(--font-size-10);
   --text-code-sm--font-weight: var(--font-weight-regular);
   --text-code-sm--letter-spacing: var(--letter-spacing-default);
-  --text-code-sm--line-height: var(--line-height-spacious);
+  --text-code-sm--line-height: var(--line-height-relaxed);
 
   --text-code-md: var(--font-size-12);
   --text-code-md--font-weight: var(--font-weight-regular);
   --text-code-md--letter-spacing: var(--letter-spacing-default);
-  --text-code-md--line-height: var(--line-height-spacious);
+  --text-code-md--line-height: var(--line-height-relaxed);
 
 
-  /* caption text styles */
+  /* caption text styles — Open Sans regular, relaxed tracking & leading */
   --text-caption-sm: var(--font-size-8);
   --text-caption-sm--font-weight: var(--font-weight-regular);
   --text-caption-sm--letter-spacing: var(--letter-spacing-relaxed);
-  --text-caption-sm--line-height: var(--line-height-spacious);
+  --text-caption-sm--line-height: var(--line-height-relaxed);
 
   --text-caption-md: var(--font-size-10);
   --text-caption-md--font-weight: var(--font-weight-regular);
   --text-caption-md--letter-spacing: var(--letter-spacing-relaxed);
-  --text-caption-md--line-height: var(--line-height-spacious);
+  --text-caption-md--line-height: var(--line-height-relaxed);
 
 
-  /* label text styles */
-  --text-label-2xs: var(--font-size-8);
-  --text-label-2xs--font-weight: var(--font-weight-bold);
-  --text-label-2xs--letter-spacing: var(--letter-spacing-tight);
-  --text-label-2xs--line-height: var(--line-height-single);
+  /* label text styles — Open Sans semibold, tight leading */
+  --text-label-nano: var(--font-size-3);
+  --text-label-nano--font-weight: var(--font-weight-semibold);
+  --text-label-nano--letter-spacing: var(--letter-spacing-default);
+  --text-label-nano--line-height: var(--line-height-tight);
 
   --text-label-micro: var(--font-size-5);
-  --text-label-micro--font-weight: var(--font-weight-bold);
-  --text-label-micro--letter-spacing: var(--letter-spacing-tight);
-  --text-label-micro--line-height: var(--line-height-single);
+  --text-label-micro--font-weight: var(--font-weight-semibold);
+  --text-label-micro--letter-spacing: var(--letter-spacing-default);
+  --text-label-micro--line-height: var(--line-height-tight);
 
-  --text-label-nano: var(--font-size-3);
-  --text-label-nano--font-weight: var(--font-weight-bold);
-  --text-label-nano--letter-spacing: var(--letter-spacing-condensed);
-  --text-label-nano--line-height: var(--line-height-comfy);
+  --text-label-2xs: var(--font-size-8);
+  --text-label-2xs--font-weight: var(--font-weight-semibold);
+  --text-label-2xs--letter-spacing: var(--letter-spacing-default);
+  --text-label-2xs--line-height: var(--line-height-tight);
 
   --text-label-xs: var(--font-size-10);
-  --text-label-xs--font-weight: var(--font-weight-bold);
-  --text-label-xs--letter-spacing: var(--letter-spacing-tight);
-  --text-label-xs--line-height: var(--line-height-single);
+  --text-label-xs--font-weight: var(--font-weight-semibold);
+  --text-label-xs--letter-spacing: var(--letter-spacing-default);
+  --text-label-xs--line-height: var(--line-height-tight);
 
   --text-label-sm: var(--font-size-12);
-  --text-label-sm--font-weight: var(--font-weight-bold);
-  --text-label-sm--letter-spacing: var(--letter-spacing-tight);
-  --text-label-sm--line-height: var(--line-height-single);
+  --text-label-sm--font-weight: var(--font-weight-semibold);
+  --text-label-sm--letter-spacing: var(--letter-spacing-default);
+  --text-label-sm--line-height: var(--line-height-tight);
 
   --text-label-md: var(--font-size-14);
-  --text-label-md--font-weight: var(--font-weight-bold);
-  --text-label-md--letter-spacing: var(--letter-spacing-tight);
-  --text-label-md--line-height: var(--line-height-single);
+  --text-label-md--font-weight: var(--font-weight-semibold);
+  --text-label-md--letter-spacing: var(--letter-spacing-default);
+  --text-label-md--line-height: var(--line-height-tight);
 
   --text-label-lg: var(--font-size-17);
-  --text-label-lg--font-weight: var(--font-weight-bold);
-  --text-label-lg--letter-spacing: var(--letter-spacing-tight);
-  --text-label-lg--line-height: var(--line-height-single);
+  --text-label-lg--font-weight: var(--font-weight-semibold);
+  --text-label-lg--letter-spacing: var(--letter-spacing-default);
+  --text-label-lg--line-height: var(--line-height-tight);
 
   --text-label-xl: var(--font-size-19);
-  --text-label-xl--font-weight: var(--font-weight-bold);
-  --text-label-xl--letter-spacing: var(--letter-spacing-tight);
-  --text-label-xl--line-height: var(--line-height-single);
+  --text-label-xl--font-weight: var(--font-weight-semibold);
+  --text-label-xl--letter-spacing: var(--letter-spacing-default);
+  --text-label-xl--line-height: var(--line-height-tight);
 
   --text-label-2xl: var(--font-size-23);
-  --text-label-2xl--font-weight: var(--font-weight-bold);
-  --text-label-2xl--letter-spacing: var(--letter-spacing-tight);
-  --text-label-2xl--line-height: var(--line-height-single);
+  --text-label-2xl--font-weight: var(--font-weight-semibold);
+  --text-label-2xl--letter-spacing: var(--letter-spacing-default);
+  --text-label-2xl--line-height: var(--line-height-tight);
 
   --text-label-3xl: var(--font-size-26);
-  --text-label-3xl--font-weight: var(--font-weight-bold);
-  --text-label-3xl--letter-spacing: var(--letter-spacing-tight);
-  --text-label-3xl--line-height: var(--line-height-single);
+  --text-label-3xl--font-weight: var(--font-weight-semibold);
+  --text-label-3xl--letter-spacing: var(--letter-spacing-default);
+  --text-label-3xl--line-height: var(--line-height-tight);
 
 }
