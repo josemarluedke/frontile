@@ -4,7 +4,7 @@ import { focusVisibleRing, focusVisibleWithinRing } from '../shared';
 const label = tv({
   slots: {
     // label text role (Open Sans semibold, tight leading)
-    base: 'text-neutral-strong inline-block font-label text-label-sm pb-1',
+    base: 'text-neutral-bolder inline-block font-label text-label-sm pb-2',
     asterisk: 'text-danger'
   },
   variants: {
@@ -77,7 +77,7 @@ const input = tv({
       'font-body text-base text-left',
       'border',
       'border-neutral-soft',
-      'rounded-sm',
+      'rounded-xl',
       'leading-tight',
       'focus:ring-3',
       'focus:ring-focus',
