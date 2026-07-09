@@ -3,11 +3,6 @@ packages:
   - site
   - site/lib/docfy-theme
   - test-app
-allowBuilds:
-  '@tailwindcss/oxide': true
-  core-js: false
-  esbuild: false
-  nx: false
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - core-js
