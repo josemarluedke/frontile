@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "site", "start", "--port", "4732", "--strictPort"],
+      "port": 4732
+    }
+  ]
+}
