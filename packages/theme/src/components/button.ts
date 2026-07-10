@@ -3,11 +3,11 @@ import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
   base: [
-    // label text role (Open Sans semibold); buttons stay single-line so keep tight leading
-    'leading-none',
+    // strong text role (Open Sans bold); size variants set text-strong-* which
+    // carries the label size, weight, tracking, and line-height per the Facet spec
     'inline-flex items-center justify-center',
     '[&_svg]:size-[1em]',
-    'font-label',
+    'font-header',
     'border',
     'border-transparent',
     'disabled:cursor-not-allowed',
@@ -29,14 +29,12 @@ const baseButton = tv({
       danger: 'focus-visible:ring-danger-soft'
     },
     size: {
-      xs: 'text-label-xs px-4 py-1 gap-1 rounded-full',
-      sm: 'text-label-sm px-5 py-1.5 gap-1.5 rounded-full',
-      md: 'text-label-md px-6 py-2 gap-1.5 rounded-full',
-      lg: 'text-label-xl px-8 py-2.5 gap-2 rounded-full',
-      xl: 'text-label-2xl px-10 py-3 gap-2.5 rounded-full',
-      '2xl': 'text-label-3xl px-12 py-3.5 gap-3 rounded-full',
-      // exceeds the label text scale (max 3xl); keep raw size with the label font
-      '3xl': 'text-5xl px-12 py-4 gap-3 rounded-full'
+      xs: 'text-strong-sm px-4 py-1 gap-1 rounded-full',
+      sm: 'text-strong-md px-5 py-1.5 gap-1 rounded-full',
+      md: 'text-strong-lg px-6 py-2 gap-1.5 rounded-full',
+      lg: 'text-strong-xl px-8 py-2.5 gap-1.5 rounded-full',
+      xl: 'text-strong-2xl px-10 py-3 gap-2 rounded-full',
+      '2xl': 'text-strong-3xl px-12 py-3.5 gap-2.5 rounded-full'
     },
     isInGroup: {
       true: [

@@ -27,7 +27,7 @@ export interface ButtonArgs {
   /**
    * The size of the button
    */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
   /**
    * Disable rendering the button element. It yields an object with classNames instead.

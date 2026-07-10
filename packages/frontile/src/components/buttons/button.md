@@ -104,7 +104,6 @@ import { Button } from 'frontile';
   <Button @size='lg'>Button lg</Button>
   <Button @size='xl'>Button xl</Button>
   <Button @size='2xl'>Button 2xl</Button>
-  <Button @size='3xl'>Button 3xl</Button>
 </template>
 ```
 

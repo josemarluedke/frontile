@@ -145,9 +145,9 @@ const themeColorsDark: ThemeColors = {
     },
     app: absolute.black,
     canvas: palette.gray['950'],
-    card: palette.gray['800'],
+    card: palette.gray['900'],
     input: absolute.black,
-    modal: palette.gray['700']
+    modal: absolute.black
   }
 };
 
