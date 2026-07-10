@@ -84,7 +84,9 @@ Background colors with automatic text colors:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Filled Button }}
-    <button class='bg-primary text-on-primary hover:bg-primary-soft px-4 py-2 rounded'>
+    <button
+      class='bg-primary text-on-primary hover:bg-primary-soft px-4 py-2 rounded'
+    >
       Filled Button
     </button>
 
@@ -96,12 +98,16 @@ Background colors with automatic text colors:
     </button>
 
     {{! Tonal Button }}
-    <button class='bg-primary-subtle text-primary-strong hover:bg-primary-soft/20 px-4 py-2 rounded'>
+    <button
+      class='bg-primary-subtle text-primary-strong hover:bg-primary-soft/20 px-4 py-2 rounded'
+    >
       Tonal Button
     </button>
 
     {{! Text Button }}
-    <button class='text-primary hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'>
+    <button
+      class='text-primary hover:bg-primary-subtle bg-transparent px-4 py-2 rounded'
+    >
       Text Button
     </button>
   </div>
@@ -116,13 +122,15 @@ Banners:
     {{! Filled Banner }}
     <div class='bg-primary text-on-primary p-4 rounded'>
       <div class='font-semibold'>Filled Banner</div>
-      <div class='text-sm opacity-90'>High emphasis notification with brand colors</div>
+      <div class='text-sm opacity-90'>High emphasis notification with brand
+        colors</div>
     </div>
 
     {{! Tonal Banner }}
     <div class='bg-primary-subtle border border-primary-soft p-4 rounded'>
       <div class='text-primary-strong font-semibold'>Tonal Banner</div>
-      <div class='text-primary-strong text-sm'>Subtle notification with brand colors</div>
+      <div class='text-primary-strong text-sm'>Subtle notification with brand
+        colors</div>
     </div>
   </div>
 </template>
@@ -146,7 +154,9 @@ Banners:
     </div>
 
     {{! Accent Button }}
-    <button class='bg-accent text-on-accent hover:bg-accent-soft px-4 py-2 rounded'>
+    <button
+      class='bg-accent text-on-accent hover:bg-accent-soft px-4 py-2 rounded'
+    >
       Explore Features
     </button>
   </div>
@@ -171,7 +181,9 @@ Banners:
     </div>
 
     {{! Success Button }}
-    <button class='bg-success text-on-success hover:bg-success-soft px-4 py-2 rounded'>
+    <button
+      class='bg-success text-on-success hover:bg-success-soft px-4 py-2 rounded'
+    >
       Confirm Action
     </button>
   </div>
@@ -196,7 +208,9 @@ Banners:
     </div>
 
     {{! Destructive Button }}
-    <button class='bg-danger text-on-danger hover:bg-danger-soft px-4 py-2 rounded'>
+    <button
+      class='bg-danger text-on-danger hover:bg-danger-soft px-4 py-2 rounded'
+    >
       Delete Item
     </button>
   </div>
@@ -221,9 +235,7 @@ Banners:
     </div>
 
     {{! Warning Button }}
-    <button
-      class='bg-warning text-on-warning hover:bg-warning-soft rounded'
-    >
+    <button class='bg-warning text-on-warning hover:bg-warning-soft rounded'>
       Proceed with Caution
     </button>
   </div>
@@ -264,8 +276,10 @@ Frontile automatically generates optimal contrasting text colors for every backg
 ```html
 <!-- Automatically generates optimal text color (black or white) -->
 <button class="bg-primary text-on-primary">
-<div class="bg-success-soft text-on-success-soft">
-<div class="bg-neutral-strong text-on-neutral-strong">
+  <div class="bg-success-soft text-on-success-soft">
+    <div class="bg-neutral-strong text-on-neutral-strong"></div>
+  </div>
+</button>
 ```
 
 **How it works:**
@@ -301,8 +315,8 @@ module.exports = frontile({
         },
         // Override specific on-colors
         'on-primary': {
-          DEFAULT: '#ffffff',  // Force white text on the bare primary fill
-          strong: '#e0f2fe'    // Use light blue instead of auto-generated white
+          DEFAULT: '#ffffff', // Force white text on the bare primary fill
+          strong: '#e0f2fe' // Use light blue instead of auto-generated white
         }
         // on-primary-subtle and on-primary-soft are still auto-generated
       }
