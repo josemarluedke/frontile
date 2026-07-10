@@ -1,6 +1,6 @@
 {
   "name": "@frontile/status",
-  "version": "0.18.0-alpha.5",
+  "version": "0.18.0-alpha.6",
   "description": "Component Library for Ember Octane apps: Status",
   "keywords": [
     "ember-addon",
