@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.9.0",
-    "frontile": "workspace:*"
+    "frontile": "0.18.0-alpha.6"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",
@@ -108,5 +108,6 @@
       "./components/portal-target.js": "./dist/_app_/components/portal-target.js",
       "./components/portal.js": "./dist/_app_/components/portal.js"
     }
-  }
+  },
+  "gitHead": "b8b177161d94077c43a7179e1c3fa77530a266fb"
 }

@@ -85,7 +85,7 @@
     "@ember/test-waiters": "^4.0.0",
     "@embroider/addon-shim": "^1.9.0",
     "@embroider/macros": "^1.16.10",
-    "@frontile/theme": "workspace:*",
+    "@frontile/theme": "0.18.0-alpha.6",
     "@glint/template": "^1.7.4",
     "@universal-ember/table": "^3.1.1",
     "ember-auto-import": "^2.7.2",
@@ -141,5 +141,6 @@
     "app-js": {
       "./services/notifications.js": "./dist/_app_/services/notifications.js"
     }
-  }
+  },
+  "gitHead": "b8b177161d94077c43a7179e1c3fa77530a266fb"
 }

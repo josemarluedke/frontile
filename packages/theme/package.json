@@ -121,5 +121,6 @@
       "./public/fonts/source-code-pro-italic-variable.woff2": "/@frontile/theme/fonts/source-code-pro-italic-variable.woff2",
       "./public/fonts/source-code-pro-variable.woff2": "/@frontile/theme/fonts/source-code-pro-variable.woff2"
     }
-  }
+  },
+  "gitHead": "b8b177161d94077c43a7179e1c3fa77530a266fb"
 }
