@@ -257,6 +257,31 @@ const select = tv({
   }
 });
 
+// Note: extends `input` rather than `select` because tailwind-variants
+// loses inherited slot types across two levels of `extend`.
+const autocomplete = tv({
+  extend: input,
+  slots: {
+    base: [],
+    placeholder: 'text-neutral',
+    listbox: 'scroll-py-6 max-h-64',
+    icon: 'w-5 h-5',
+    clearButton: 'pointer-events-auto',
+    input: 'cursor-text',
+    emptyContent: 'p-2'
+  },
+  variants: {
+    size: {
+      sm: {},
+      md: {},
+      lg: {}
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
 const nativeSelect = tv({
   extend: input,
   slots: {
@@ -430,6 +455,8 @@ export type SelectVariants = VariantProps<typeof select>;
 export type SelectSlots = keyof ReturnType<typeof select>;
 export type NativeSelectVariants = VariantProps<typeof nativeSelect>;
 export type NativeSelectSlots = keyof ReturnType<typeof nativeSelect>;
+export type AutocompleteVariants = VariantProps<typeof autocomplete>;
+export type AutocompleteSlots = keyof ReturnType<typeof autocomplete>;
 export type CheckboxGroupVariants = VariantProps<typeof checkboxGroup>;
 export type CheckboxGroupSlots = keyof ReturnType<typeof checkboxGroup>;
 export type RadioGroupVariants = VariantProps<typeof radioGroup>;
@@ -446,6 +473,7 @@ export {
   checkbox,
   radio,
   select,
+  autocomplete,
   nativeSelect,
   checkboxGroup,
   radioGroup,

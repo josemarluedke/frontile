@@ -8,6 +8,7 @@ export * from './input';
 export * from './label';
 export * from './native-select';
 export * from './select';
+export * from './autocomplete';
 export * from './textarea';
 export * from './radio';
 export * from './radio-group';
