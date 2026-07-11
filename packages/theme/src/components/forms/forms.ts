@@ -263,7 +263,6 @@ const autocomplete = tv({
   extend: input,
   slots: {
     base: [],
-    placeholder: 'text-neutral',
     listbox: 'scroll-py-6 max-h-64',
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',

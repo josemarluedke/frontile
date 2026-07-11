@@ -22,7 +22,7 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { IconChevronUpDown } from './icons';
-import { keyAndLabelForItem } from '../../utils/listManager';
+import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 
@@ -660,10 +660,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       return this.args.items;
     }
 
-    let filter =
-      this.args.filter ||
-      ((itemValue: string, filterValue: string) =>
-        itemValue.toLowerCase().includes(filterValue.toLowerCase()));
+    let filter = this.args.filter || defaultFilter;
 
     return this.args.items?.filter((item) =>
       filter(keyAndLabelForItem(item).label, this.filterValue || '')

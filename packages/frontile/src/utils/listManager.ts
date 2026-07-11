@@ -46,7 +46,7 @@ interface ListManagerArgs {
   onAction?: (key: string) => void;
   onSelectionChange?: (key: string[]) => void;
   onListItemsChange?: (items: ListItem[], action: 'add' | 'remove') => void;
-  onActiveItemChange?: (key?: string) => void;
+  onActiveItemChange?: (key?: string, item?: ListItem) => void;
 }
 
 class ListManager {
@@ -69,15 +69,15 @@ class ListManager {
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
   ): void {
+    const newItem = new ListItem(el, args);
     if (
       this.args.autoActivateMode == 'first' &&
       this.#items.length === 0 &&
       !args.isDisabled
     ) {
-      args.isActive = true;
-      this.args.onActiveItemChange?.(args.key);
+      newItem.isActive = true;
+      this.args.onActiveItemChange?.(newItem.key, newItem);
     }
-    const newItem = new ListItem(el, args);
     this.#items.push(newItem);
     this.#syncItemsOrderWithDOM();
 
@@ -178,7 +178,7 @@ class ListManager {
     if (item && !item.isActive) {
       this.#clearActive();
       item.isActive = true;
-      this.args.onActiveItemChange?.(item.key);
+      this.args.onActiveItemChange?.(item.key, item);
 
       // Ensure the item is scrolled into view
       requestAnimationFrame(() => {
@@ -470,5 +470,13 @@ function keyAndLabelForItem(item: unknown): { key: string; label: string } {
   return { key: '', label: '' };
 }
 
+/**
+ * Default option-matching used by Select and Autocomplete:
+ * case-insensitive "contains".
+ */
+function defaultFilter(itemValue: string, filterValue: string): boolean {
+  return itemValue.toLowerCase().includes(filterValue.toLowerCase());
+}
+
 export type { ListItem, ListItemArgs, SelectionMode, AutoActivateMode };
-export { ListManager, keyAndLabelForItem };
+export { ListManager, keyAndLabelForItem, defaultFilter };

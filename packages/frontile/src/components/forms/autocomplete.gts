@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import type Owner from '@ember/owner';
 import { NativeSelect, type ListItem } from './native-select';
@@ -22,8 +22,7 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { IconChevronUpDown } from './icons';
-import { keyAndLabelForItem } from '../../utils/listManager';
-import { action } from '@ember/object';
+import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
 import { later, debounce, cancel } from '@ember/runloop';
 
 import { modifier } from 'ember-modifier';
@@ -276,8 +275,6 @@ interface AutocompleteSignature<T> {
   };
 }
 
-let optionIdCounter = 0;
-
 /**
  * Autocomplete Component - a text input combined with a listbox popover,
  * following the WAI-ARIA 1.2 combobox pattern.
@@ -319,15 +316,18 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
   #pendingSearch?: ReturnType<typeof debounce>;
 
-  /** Key of the currently active (highlighted) option, for aria-activedescendant. */
+  /** Element id of the currently active (highlighted) option, for aria-activedescendant. */
   @tracked activeDescendant?: string;
 
+  /** The currently active (highlighted) option. */
+  activeItem?: ListItem;
+
   /**
-   * Labels of previously selected keys, captured at selection time. Needed in
-   * async mode, where a selected item may no longer be present in the
-   * currently rendered items (e.g. after search results are reset on close).
+   * Label of the selected key, captured at selection time. Needed in async
+   * mode, where the selected item may no longer be present in the currently
+   * rendered items (e.g. after search results are reset on close).
    */
-  @tracked selectedLabels = new Map<string, string>();
+  @tracked selectedLabel?: string;
 
   containerRef = ref<HTMLDivElement>();
   triggerRef = ref<HTMLInputElement>();
@@ -344,42 +344,23 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     }
   }
 
-  captureSelectedLabels(keys: string[]) {
-    let changed = false;
-    for (const key of keys) {
-      const node = this.nodes.find((n) => n.key === key);
-      if (node && this.selectedLabels.get(key) !== node.textValue) {
-        this.selectedLabels.set(key, node.textValue);
-        changed = true;
-      }
-    }
-    if (changed) {
-      this.selectedLabels = new Map(this.selectedLabels);
-    }
-  }
-
   onSelectionChange = (keys: string[]) => {
-    this.captureSelectedLabels(keys);
-
-    const key: string | null = keys.length > 0 ? keys[0] || null : null;
-    this._selectedKey = key;
-    if (typeof this.args.onSelectionChange === 'function') {
-      this.args.onSelectionChange(key);
-    }
-    this.clearInputValue();
-
-    triggerFormInputEvent(this.containerRef.current);
+    this.applySelection(keys[0] ?? null);
   };
 
   onNativeSelectionChange = (key: string | null) => {
-    this._selectedKey = key;
-    if (typeof this.args.onSelectionChange === 'function') {
-      (this.args.onSelectionChange as (key: string | null) => void)(key);
-    }
+    this.applySelection(key);
+  };
 
+  applySelection(key: string | null) {
+    this.selectedLabel = key
+      ? this.nodes.find((n) => n.key === key)?.textValue
+      : undefined;
+    this._selectedKey = key;
+    this.args.onSelectionChange?.(key);
     this.clearInputValue();
     triggerFormInputEvent(this.containerRef.current);
-  };
+  }
 
   onOpenChange = (isOpen: boolean) => {
     this.isOpen = isOpen;
@@ -404,12 +385,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     if (typeof this.args.onSearch === 'function') {
       if (value === '') {
         // A blank query shows the default `@items` again instead of searching.
-        if (this.#pendingSearch) {
-          cancel(this.#pendingSearch);
-        }
-        this.#searchToken++;
-        this.asyncItems = undefined;
-        this.isSearchPending = false;
+        this.resetSearch();
         return;
       }
 
@@ -421,6 +397,16 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
         this.args.searchDebounce ?? 250
       );
     }
+  }
+
+  /** Cancels any in-flight search and restores the default `@items`. */
+  resetSearch() {
+    if (this.#pendingSearch) {
+      cancel(this.#pendingSearch);
+    }
+    this.#searchToken++;
+    this.asyncItems = undefined;
+    this.isSearchPending = false;
   }
 
   clearInputValue() {
@@ -452,34 +438,21 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       // so select the active option directly.
       event.preventDefault();
 
-      if (this.activeDescendant) {
-        document.getElementById(this.activeDescendant)?.click();
-      }
+      this.activeItem?.el.click();
     }
   };
 
   /** Current selection as an array, for the Listbox / NativeSelect API. */
   get selectedKeys(): string[] {
-    const key = this.getSelectedKey;
-    return key ? [key] : [];
-  }
-
-  get getSelectedKey(): string | null {
-    return this._selectedKey;
+    return this._selectedKey ? [this._selectedKey] : [];
   }
 
   get blockScroll() {
-    if (this.args.blockScroll === false) {
-      return false;
-    }
-    return true;
+    return this.args.blockScroll !== false;
   }
 
   get disableFocusTrap() {
-    if (this.args.disableFocusTrap === false) {
-      return false;
-    }
-    return true;
+    return this.args.disableFocusTrap !== false;
   }
 
   onAction = (key: string) => {
@@ -491,18 +464,17 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       this.isOpen = false;
     }
 
-    // wait a beat for any side effects to complete before calling onBlur
-    later(() => {
-      this.args.onBlur?.();
-    }, 150);
+    this.handleBlur();
   };
 
-  @action
-  handleBlur() {
-    later(() => {
-      this.args.onBlur?.();
-    }, 150);
-  }
+  // wait a beat for any side effects to complete before calling onBlur
+  handleBlur = () => {
+    if (typeof this.args.onBlur === 'function') {
+      later(() => {
+        this.args.onBlur?.();
+      }, 150);
+    }
+  };
 
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
@@ -519,56 +491,28 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       this._inputValue = undefined;
     }
     this.activeDescendant = undefined;
+    this.activeItem = undefined;
 
     // Reset async results so reopening shows the default `@items` again.
     if (typeof this.args.onSearch === 'function') {
-      if (this.#pendingSearch) {
-        cancel(this.#pendingSearch);
-      }
-      this.#searchToken++;
-      this.asyncItems = undefined;
-      this.isSearchPending = false;
+      this.resetSearch();
     }
 
-    if (typeof this.args.didClose === 'function') {
-      this.args.didClose();
-    }
+    this.args.didClose?.();
   };
 
-  onActiveItemChange = (key?: string) => {
-    if (typeof key === 'undefined') {
-      this.activeDescendant = undefined;
-      return;
-    }
-
-    // Assign an id to the active option's element so the input can point
-    // to it via aria-activedescendant.
-    const input = this.triggerRef.current;
-    const listboxId = input?.getAttribute('aria-controls');
-    const el = listboxId
-      ? document
-          .getElementById(listboxId)
-          ?.querySelector(`[data-key="${CSS.escape(key)}"]`)
-      : undefined;
-
-    if (el) {
-      if (!el.id) {
-        el.id = `frontile-option-${optionIdCounter++}`;
-      }
-      this.activeDescendant = el.id;
-    } else {
-      this.activeDescendant = undefined;
-    }
+  onActiveItemChange = (_key?: string, item?: ListItem) => {
+    this.activeItem = item;
+    this.activeDescendant = item?.el.id || undefined;
   };
 
   get selectedTextValue(): string {
-    const selectedTextValues: string[] = [];
-    for (const key of this.selectedKeys) {
-      const node = this.nodes.find((n) => n.key === key);
-      const label = node?.textValue ?? this.selectedLabels.get(key) ?? key;
-      selectedTextValues.push(label);
+    const key = this._selectedKey;
+    if (!key) {
+      return '';
     }
-    return selectedTextValues.join(', ');
+    const node = this.nodes.find((n) => n.key === key);
+    return node?.textValue ?? this.selectedLabel ?? key;
   }
 
   get inputValue(): string {
@@ -591,12 +535,10 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   }
 
   get backdrop() {
-    if (typeof this.args.backdrop === 'undefined') {
-      return 'transparent';
-    }
-    return this.args.backdrop;
+    return this.args.backdrop ?? 'transparent';
   }
 
+  @cached
   get classes() {
     const { autocomplete } = useStyles();
     return autocomplete({
@@ -615,6 +557,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     return this.args.isLoading || this.isSearchPending;
   }
 
+  @cached
   get filteredItems() {
     if (typeof this.args.onSearch === 'function') {
       return this.asyncItems ?? this.args.items;
@@ -624,13 +567,11 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       return this.args.items;
     }
 
-    const filter =
-      this.args.filter ||
-      ((itemValue: string, inputValue: string) =>
-        itemValue.toLowerCase().includes(inputValue.toLowerCase()));
+    const filter = this.args.filter || defaultFilter;
+    const query = this.inputValue;
 
     return this.args.items?.filter((item) =>
-      filter(keyAndLabelForItem(item).label, this.inputValue)
+      filter(keyAndLabelForItem(item).label, query)
     );
   }
 
@@ -696,7 +637,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               @allowEmpty={{@allowEmpty}}
               @disabledKeys={{@disabledKeys}}
               @onSelectionChange={{this.onNativeSelectionChange}}
-              @selectedKey={{this.getSelectedKey}}
+              @selectedKey={{this._selectedKey}}
               @selectionMode="single"
               @onItemsChange={{this.onItemsChange}}
               @placeholder={{@placeholder}}

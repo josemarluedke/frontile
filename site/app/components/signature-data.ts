@@ -11373,7 +11373,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -14478,7 +14478,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span> | <span class="hljs-string">\'placeholder\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -20987,7 +20987,7 @@ const data: ComponentDoc[] = [
         identifier: 'onActiveItemChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(key?: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+          raw: '(key?: <span class="hljs-built_in">string</span>, item?: ListItem) => <span class="hljs-built_in">void</span>',
         },
         isRequired: false,
         isInternal: false,

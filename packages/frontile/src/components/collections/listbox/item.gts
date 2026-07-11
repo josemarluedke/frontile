@@ -50,6 +50,9 @@ export interface ListboxItemSignature {
 }
 
 class ListboxItem extends Component<ListboxItemSignature> {
+  // Stable element id so consumers (e.g. Autocomplete) can reference the
+  // option via aria-activedescendant.
+  itemId = `${guidFor(this)}-option`;
   labelId = guidFor(this);
   @tracked listItem?: ListItem;
 
@@ -140,6 +143,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         onRegister=this.onRegister
       }}
       {{on "click" this.onClick}}
+      id={{this.itemId}}
       role={{this.role}}
       aria-labelledby={{this.labelId}}
       tabindex={{this.tabindex}}
