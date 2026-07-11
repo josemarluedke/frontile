@@ -8,7 +8,7 @@ imports:
 
 The `Autocomplete` component combines a text input with a listbox popover, letting users filter a list of options by typing. It follows the [WAI-ARIA combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) and supports static lists, custom filtering, and options loaded asynchronously from an API. Like [Select](https://frontile.dev/docs/components/forms/select), it is built on top of the [Listbox](https://frontile.dev/docs/components/collections/listbox) and [Popover](https://frontile.dev/docs/components/overlays/popover) components and renders a hidden native `<select>` for form submission.
 
-Use `Autocomplete` when the list is long enough that typing beats scrolling — assigning a country, a time zone, a teammate. Use `Select` when scanning a short list is faster than typing.
+Use `Autocomplete` when the list is long enough that typing beats scrolling — assigning a country, a time zone, a teammate. Use `Select` when scanning a short list is faster than typing, or when you need multiple selection (`Select` supports `@selectionMode="multiple"` together with `@isFilterable`); `Autocomplete` is single-selection only.
 
 ## Import
 
@@ -256,47 +256,6 @@ export default class AssigneePicker extends Component {
         </l.Item>
       </:item>
     </Autocomplete>
-  </template>
-}
-```
-
-### Multiple selection
-
-With `@selectionMode="multiple"` the dropdown stays open after each pick and the typed text is kept, so users can keep refining their search.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Autocomplete } from 'frontile';
-
-const labels = [
-  'accessibility',
-  'bug',
-  'dependencies',
-  'documentation',
-  'enhancement',
-  'good first issue',
-  'help wanted',
-  'performance'
-];
-
-export default class LabelPicker extends Component {
-  @tracked selectedKeys: string[] = [];
-
-  onSelectionChange = (keys: string[]) => {
-    this.selectedKeys = keys;
-  };
-
-  <template>
-    <Autocomplete
-      @label='Labels'
-      @placeholder='Search labels'
-      @items={{labels}}
-      @selectionMode='multiple'
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
   </template>
 }
 ```

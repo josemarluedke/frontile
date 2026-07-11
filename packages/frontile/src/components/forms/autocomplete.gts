@@ -28,8 +28,7 @@ import { later, debounce, cancel } from '@ember/runloop';
 
 import { modifier } from 'ember-modifier';
 
-// Base interface for shared properties
-interface BaseAutocompleteArgs<T>
+interface AutocompleteArgs<T>
   extends Pick<
       PopoverSignature['Args'],
       | 'placement'
@@ -62,12 +61,12 @@ interface BaseAutocompleteArgs<T>
       | 'backdropTransition'
       | 'transition'
     >,
-    FormControlSharedArgs {}
-
-// Base interface for single selection mode
-interface BaseSingleAutocompleteArgs<T> extends BaseAutocompleteArgs<T> {
+    FormControlSharedArgs {
   /**
-   * The currently selected key for single selection mode.
+   * The currently selected key.
+   *
+   * Autocomplete is single-selection only — for a searchable multi-select,
+   * use `Select` with `@isFilterable` and `@selectionMode="multiple"`.
    *
    * **Data Flow:**
    * - Pass this to set the initial selection
@@ -77,80 +76,13 @@ interface BaseSingleAutocompleteArgs<T> extends BaseAutocompleteArgs<T> {
   selectedKey?: string | null;
 
   /**
-   * Not supported in single selection mode. Use selectedKey instead.
-   */
-  selectedKeys?: never;
-
-  /**
-   * Callback fired when the selection changes in single mode.
+   * Callback fired when the selection changes.
    *
    * Update your `@selectedKey` state in this callback to maintain two-way binding.
    *
    * @param key - The newly selected key, or null if selection was cleared
    */
   onSelectionChange?: (key: string | null) => void;
-}
-
-// Single selection mode interface (when selectionMode is explicitly 'single')
-interface ExplicitSingleAutocompleteArgs<T>
-  extends BaseSingleAutocompleteArgs<T> {
-  /**
-   * Determines the selection mode of the autocomplete component.
-   * - 'single': Only one item can be selected at a time.
-   */
-  selectionMode: 'single';
-}
-
-// Single selection mode interface (when selectionMode is omitted - default behavior)
-interface DefaultSingleAutocompleteArgs<T>
-  extends BaseSingleAutocompleteArgs<T> {
-  /**
-   * Determines the selection mode of the autocomplete component.
-   * - 'single': Only one item can be selected at a time.
-   * @defaultValue 'single'
-   */
-  selectionMode?: undefined;
-}
-
-// Multiple selection mode interface
-interface MultipleAutocompleteArgs<T> extends BaseAutocompleteArgs<T> {
-  /**
-   * Determines the selection mode of the autocomplete component.
-   * - 'multiple': Allows multiple selections.
-   */
-  selectionMode: 'multiple';
-
-  /**
-   * Not supported in multiple selection mode. Use selectedKeys instead.
-   */
-  selectedKey?: never;
-
-  /**
-   * The currently selected keys for multiple selection mode.
-   *
-   * **Data Flow:**
-   * - Pass this to set the initial selection (array of keys)
-   * - Update this in your `onSelectionChange` handler to maintain two-way binding
-   * - The component calls `onSelectionChange` whenever the user changes the selection
-   */
-  selectedKeys?: string[];
-
-  /**
-   * Callback fired when the selection changes in multiple mode.
-   *
-   * Update your `@selectedKeys` state in this callback to maintain two-way binding.
-   *
-   * @param keys - The newly selected keys (empty array if all selections cleared)
-   */
-  onSelectionChange?: (keys: string[]) => void;
-}
-
-// Proper discriminated union type that handles all cases
-type AutocompleteArgs<T> = (
-  | ExplicitSingleAutocompleteArgs<T>
-  | DefaultSingleAutocompleteArgs<T>
-  | MultipleAutocompleteArgs<T>
-) & {
   /**
    * The unique identifier for the autocomplete component.
    */
@@ -318,7 +250,7 @@ type AutocompleteArgs<T> = (
    * Callback fired when the autocomplete component loses focus.
    */
   onBlur?: () => void;
-};
+}
 
 interface AutocompleteSignature<T> {
   Args: AutocompleteArgs<T>;
@@ -363,16 +295,10 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   @tracked isOpen = false;
 
   /**
-   * Internal tracked state for single selection mode.
-   * Synced with @selectedKey via the updateSingleSelectValue modifier.
+   * Internal tracked selection state.
+   * Synced with @selectedKey via the updateSelectedKey modifier.
    */
   @tracked _selectedKey: string | null = null;
-
-  /**
-   * Internal tracked state for multiple selection mode.
-   * Synced with @selectedKeys via the updateMultipleSelectValue modifier.
-   */
-  @tracked _selectedKeys: string[] = [];
 
   /**
    * The text the user has typed. `undefined` means the user is not editing,
@@ -408,17 +334,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
   constructor(owner: Owner, args: AutocompleteArgs<T>) {
     super(owner, args);
-
-    if (this.args.selectionMode === 'multiple') {
-      this._selectedKeys = this.args.selectedKeys || [];
-    } else {
-      this._selectedKey =
-        (
-          this.args as
-            | ExplicitSingleAutocompleteArgs<T>
-            | DefaultSingleAutocompleteArgs<T>
-        ).selectedKey || null;
-    }
+    this._selectedKey = this.args.selectedKey || null;
   }
 
   willDestroy(): void {
@@ -445,22 +361,12 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   onSelectionChange = (keys: string[]) => {
     this.captureSelectedLabels(keys);
 
-    if (this.args.selectionMode === 'multiple') {
-      this._selectedKeys = keys;
-      if (typeof this.args.onSelectionChange === 'function') {
-        (this.args.onSelectionChange as (keys: string[]) => void)(keys);
-      }
-      // Keep the typed text in multiple mode so users can keep refining.
-    } else {
-      const singleKey: string | null = keys.length > 0 ? keys[0] || null : null;
-      this._selectedKey = singleKey;
-      if (typeof this.args.onSelectionChange === 'function') {
-        (this.args.onSelectionChange as (key: string | null) => void)(
-          singleKey
-        );
-      }
-      this.clearInputValue();
+    const key: string | null = keys.length > 0 ? keys[0] || null : null;
+    this._selectedKey = key;
+    if (typeof this.args.onSelectionChange === 'function') {
+      this.args.onSelectionChange(key);
     }
+    this.clearInputValue();
 
     triggerFormInputEvent(this.containerRef.current);
   };
@@ -552,13 +458,10 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     }
   };
 
+  /** Current selection as an array, for the Listbox / NativeSelect API. */
   get selectedKeys(): string[] {
-    if (this.args.selectionMode === 'multiple') {
-      return this._selectedKeys;
-    } else {
-      const key = this.getSelectedKey;
-      return key ? [key] : [];
-    }
+    const key = this.getSelectedKey;
+    return key ? [key] : [];
   }
 
   get getSelectedKey(): string | null {
@@ -584,10 +487,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       this.args.onAction(key);
     }
 
-    if (
-      this.args.closeOnItemSelect !== false &&
-      this.args.selectionMode !== 'multiple'
-    ) {
+    if (this.args.closeOnItemSelect !== false) {
       this.isOpen = false;
     }
 
@@ -750,22 +650,9 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   }
 
   /**
-   * Syncs internal `_selectedKeys` with external `@selectedKeys` argument.
-   */
-  updateMultipleSelectValue = modifier(
-    (_: HTMLDivElement, [selectedKeys]: [string[] | null | undefined]) => {
-      if (selectedKeys !== undefined && selectedKeys !== null) {
-        this._selectedKeys = selectedKeys;
-      } else {
-        this._selectedKeys = [];
-      }
-    }
-  );
-
-  /**
    * Syncs internal `_selectedKey` with external `@selectedKey` argument.
    */
-  updateSingleSelectValue = modifier(
+  updateSelectedKey = modifier(
     (_: HTMLDivElement, [selectedKey]: [string | null | undefined]) => {
       if (selectedKey !== undefined) {
         this._selectedKey = selectedKey;
@@ -775,8 +662,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 
   <template>
     <div
-      {{this.updateMultipleSelectValue @selectedKeys}}
-      {{this.updateSingleSelectValue @selectedKey}}
+      {{this.updateSelectedKey @selectedKey}}
       {{this.containerRef.setup}}
       class={{this.classes.base class=@classes.base}}
       data-component="autocomplete"
@@ -805,57 +691,30 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
           as |p|
         >
           <VisuallyHidden>
-            {{#if (isMultiple @selectionMode)}}
-              <NativeSelect
-                @items={{this.filteredItems}}
-                @allowEmpty={{@allowEmpty}}
-                @disabledKeys={{@disabledKeys}}
-                @onSelectionChange={{this.onSelectionChange}}
-                @selectedKeys={{this.selectedKeys}}
-                @selectionMode="multiple"
-                @onItemsChange={{this.onItemsChange}}
-                @placeholder={{@placeholder}}
-                @id={{c.id}}
-                @name={{@name}}
-                tabindex="-1"
-                disabled={{@isDisabled}}
-              >
-                <:item as |l|>
-                  <l.Item @key={{l.key}}>
-                    {{l.label}}
-                  </l.Item>
-                </:item>
-                <:default as |l|>
-                  {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
-                  {{yield l to="default"}}
-                </:default>
-              </NativeSelect>
-            {{else}}
-              <NativeSelect
-                @items={{this.filteredItems}}
-                @allowEmpty={{@allowEmpty}}
-                @disabledKeys={{@disabledKeys}}
-                @onSelectionChange={{this.onNativeSelectionChange}}
-                @selectedKey={{this.getSelectedKey}}
-                @selectionMode="single"
-                @onItemsChange={{this.onItemsChange}}
-                @placeholder={{@placeholder}}
-                @id={{c.id}}
-                @name={{@name}}
-                tabindex="-1"
-                disabled={{@isDisabled}}
-              >
-                <:item as |l|>
-                  <l.Item @key={{l.key}}>
-                    {{l.label}}
-                  </l.Item>
-                </:item>
-                <:default as |l|>
-                  {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
-                  {{yield l to="default"}}
-                </:default>
-              </NativeSelect>
-            {{/if}}
+            <NativeSelect
+              @items={{this.filteredItems}}
+              @allowEmpty={{@allowEmpty}}
+              @disabledKeys={{@disabledKeys}}
+              @onSelectionChange={{this.onNativeSelectionChange}}
+              @selectedKey={{this.getSelectedKey}}
+              @selectionMode="single"
+              @onItemsChange={{this.onItemsChange}}
+              @placeholder={{@placeholder}}
+              @id={{c.id}}
+              @name={{@name}}
+              tabindex="-1"
+              disabled={{@isDisabled}}
+            >
+              <:item as |l|>
+                <l.Item @key={{l.key}}>
+                  {{l.label}}
+                </l.Item>
+              </:item>
+              <:default as |l|>
+                {{! @glint-expect-error: the signature of the native select is not the same as the listbox}}
+                {{yield l to="default"}}
+              </:default>
+            </NativeSelect>
           </VisuallyHidden>
 
           <div
@@ -964,7 +823,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               @onSelectionChange={{this.onSelectionChange}}
               @onActiveItemChange={{this.onActiveItemChange}}
               @selectedKeys={{this.selectedKeys}}
-              @selectionMode={{if @selectionMode @selectionMode "single"}}
+              @selectionMode="single"
               @type="listbox"
               @class={{this.classes.listbox class=@classes.listbox}}
               @elementToAddKeyboardEvents={{this.triggerRef.current}}
@@ -1007,7 +866,6 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 }
 
 const isSm = (size: AutocompleteVariants['size']) => size === 'sm';
-const isMultiple = (mode?: string) => mode === 'multiple';
 
 export { Autocomplete, type AutocompleteSignature };
 export default Autocomplete;

@@ -326,36 +326,6 @@ module(
       assert.dom('[data-key="Default 2"]').exists();
     });
 
-    test('multiple selection keeps the dropdown open and typed text', async function (assert) {
-      const items = ['Apple', 'Banana', 'Cherry', 'Blackberry'];
-      const selectedKeys = cell<string[]>([]);
-      const onSelectionChange = (keys: string[]) =>
-        (selectedKeys.current = keys);
-
-      await render(
-        <template>
-          <Autocomplete
-            @items={{items}}
-            @selectionMode="multiple"
-            @selectedKeys={{selectedKeys.current}}
-            @onSelectionChange={{onSelectionChange}}
-          />
-        </template>
-      );
-
-      await fillIn('[data-test-id="trigger"]', 'b');
-      await click('[data-component="listbox"] [data-key="Banana"]');
-
-      assert.dom('[data-component="listbox"]').exists('dropdown stays open');
-      assert.deepEqual(selectedKeys.current, ['Banana']);
-      assert
-        .dom('[data-test-id="trigger"]')
-        .hasValue('b', 'typed text is kept');
-
-      await click('[data-component="listbox"] [data-key="Blackberry"]');
-      assert.deepEqual(selectedKeys.current, ['Banana', 'Blackberry']);
-    });
-
     test('clear button clears selection and input text', async function (assert) {
       const items = ['Apple', 'Banana', 'Cherry'];
       const selectedKey = cell<string | null>('Apple');

@@ -11755,17 +11755,17 @@ const data: ComponentDoc[] = [
         identifier: 'onSelectionChange',
         type: {
           type: '<span class="hljs-function"><span class="hljs-keyword">function</span></span>',
-          raw: '(<span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =></span> <span class="hljs-built_in">void</span>) | (<span class="hljs-function">(<span class="hljs-params">keys: <span class="hljs-built_in">string</span>[]</span>) =></span> <span class="hljs-built_in">void</span>)',
+          raw: '(key: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
         },
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the selection changes in single mode.\n\nUpdate your `@selectedKey` state in this callback to maintain two-way binding.\nCallback fired when the selection changes in multiple mode.\n\nUpdate your `@selectedKeys` state in this callback to maintain two-way binding.',
+          'Callback fired when the selection changes.\n\nUpdate your `@selectedKey` state in this callback to maintain two-way binding.',
         tags: {
           param: {
             name: 'param',
             value:
-              'key   - The newly selected key, or null if selection was cleared\nkeys   - The newly selected keys (empty array if all selections cleared)',
+              'key   - The newly selected key, or null if selection was cleared',
           },
         },
       },
@@ -11845,34 +11845,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected key for single selection mode.\n\n**Data Flow:**\n- Pass this to set the initial selection\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection\nNot supported in multiple selection mode. Use selectedKeys instead.',
+          'The currently selected key.\n\nAutocomplete is single-selection only — for a searchable multi-select,\nuse `Select` with `@isFilterable` and `@selectionMode="multiple"`.\n\n**Data Flow:**\n- Pass this to set the initial selection\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection',
         tags: {},
-      },
-      {
-        identifier: 'selectedKeys',
-        type: {
-          type: '<span class="hljs-built_in">Array</span>',
-          raw: '<span class="hljs-built_in">string</span>[]',
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          'Not supported in single selection mode. Use selectedKey instead.\nThe currently selected keys for multiple selection mode.\n\n**Data Flow:**\n- Pass this to set the initial selection (array of keys)\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection',
-        tags: {},
-      },
-      {
-        identifier: 'selectionMode',
-        type: {
-          type: '<span class="hljs-built_in">enum</span>',
-          raw: '<span class="hljs-string">\'single\'</span> | <span class="hljs-string">\'multiple\'</span>',
-          items: ["'single'", "'multiple'"],
-        },
-        isRequired: false,
-        isInternal: false,
-        description:
-          "Determines the selection mode of the autocomplete component.\n- 'single': Only one item can be selected at a time.\nDetermines the selection mode of the autocomplete component.\n- 'multiple': Allows multiple selections.",
-        tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
-        defaultValue: '<span class="hljs-string">\'single\'</span>',
       },
       {
         identifier: 'shiftOptions',
