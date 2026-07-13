@@ -42,7 +42,7 @@ interface ListboxSignature<T> {
 
     onAction?: (key: string) => void;
     onSelectionChange?: (key: string[]) => void;
-    onActiveItemChange?: (key?: string) => void;
+    onActiveItemChange?: (key?: string, item?: ListItem) => void;
 
     /**
      * The appearance of each item

@@ -15,6 +15,7 @@ import type {
   Label,
   NativeSelect,
   Select,
+  Autocomplete,
   Textarea,
   FormControl,
   RadioGroup,
@@ -61,6 +62,7 @@ export default interface Registry {
   Label: typeof Label;
   NativeSelect: typeof NativeSelect;
   Select: typeof Select;
+  Autocomplete: typeof Autocomplete;
   Textarea: typeof Textarea;
   FormControl: typeof FormControl;
   CheckboxGroup: typeof CheckboxGroup;
