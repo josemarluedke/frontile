@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "site", "start", "--port", "4732", "--strictPort"],
       "port": 4732
+    },
+    {
+      "name": "test-app",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "test-app", "start", "--port", "4733"],
+      "port": 4733
     }
   ]
 }
