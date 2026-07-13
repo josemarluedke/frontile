@@ -11840,6 +11840,15 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-number">250</span>',
       },
       {
+        identifier: 'searchMessage',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Message shown in the dropdown of an async autocomplete (`onSearch`)\nwhile the query is blank — e.g. "Type to search for an address…".\nPrompts the user to start typing when they open the dropdown by\nclicking. Also customizable via the `searchMessage` block.',
+        tags: {},
+      },
+      {
         identifier: 'selectedKey',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
@@ -12149,6 +12158,19 @@ const data: ComponentDoc[] = [
         isInternal: false,
         description:
           'The content to display when there are no matching options.\nIf `hideEmptyContent` argument is true, this content will not be shown.',
+        tags: {},
+      },
+      {
+        identifier: 'searchMessage',
+        type: {
+          type: '<span class="hljs-built_in">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Message shown in the dropdown of an async autocomplete while the\nquery is blank, prompting the user to start typing. Takes priority\nover the `searchMessage` argument.',
         tags: {},
       },
     ],

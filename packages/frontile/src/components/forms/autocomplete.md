@@ -143,6 +143,7 @@ export default class CitySearch extends Component {
     <Autocomplete
       @label='Destination'
       @placeholder='Search cities'
+      @searchMessage='Type to search for a city...'
       @onSearch={{searchCities}}
       @selectedKey={{this.selectedKey}}
       @onSelectionChange={{this.onSelectionChange}}
@@ -152,6 +153,8 @@ export default class CitySearch extends Component {
   </template>
 }
 ```
+
+Pass `@searchMessage` (or a `:searchMessage` block for rich content) to prompt users who open the dropdown before typing — it shows while the query is blank and there are no options to display, as in the example above. Without it, an opened async autocomplete with no default `@items` shows the empty content instead.
 
 ### External filtering
 

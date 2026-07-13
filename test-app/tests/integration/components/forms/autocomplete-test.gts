@@ -297,6 +297,88 @@ module(
       assert.dom('[data-key="Stale"]').doesNotExist();
     });
 
+    test('searchMessage prompts on blank async query and hides while typing', async function (assert) {
+      const onSearch = (query: string) =>
+        ['Apple', 'Banana'].filter((f) =>
+          f.toLowerCase().includes(query.toLowerCase())
+        );
+
+      await render(
+        <template>
+          <Autocomplete
+            @onSearch={{onSearch}}
+            @searchDebounce={{0}}
+            @searchMessage="Type to search for a fruit..."
+          />
+        </template>
+      );
+
+      await click('[data-component="autocomplete-trigger"]');
+
+      assert
+        .dom('[data-test-id="search-message"]')
+        .hasText('Type to search for a fruit...');
+      assert.dom('[data-test-id="empty-content"]').doesNotExist();
+
+      await fillIn('[data-test-id="trigger"]', 'app');
+
+      assert.dom('[data-test-id="search-message"]').doesNotExist();
+      assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+
+      await fillIn('[data-test-id="trigger"]', '');
+
+      assert
+        .dom('[data-test-id="search-message"]')
+        .hasText('Type to search for a fruit...');
+    });
+
+    test('searchMessage block takes priority; no message renders nothing on blank query', async function (assert) {
+      const onSearch = () => ['Apple'];
+
+      await render(
+        <template>
+          <Autocomplete @onSearch={{onSearch}} @searchDebounce={{0}}>
+            <:searchMessage>Start typing to see suggestions</:searchMessage>
+          </Autocomplete>
+        </template>
+      );
+
+      await click('[data-component="autocomplete-trigger"]');
+      assert
+        .dom('[data-test-id="search-message"]')
+        .hasText('Start typing to see suggestions');
+
+      await render(
+        <template>
+          <Autocomplete @onSearch={{onSearch}} @searchDebounce={{0}} />
+        </template>
+      );
+
+      await click('[data-component="autocomplete-trigger"]');
+      assert.dom('[data-test-id="search-message"]').doesNotExist();
+    });
+
+    test('searchMessage is not shown when default items are displayed', async function (assert) {
+      const items = ['Apple', 'Banana'];
+      const onSearch = () => items;
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @onSearch={{onSearch}}
+            @searchDebounce={{0}}
+            @searchMessage="Type to search..."
+          />
+        </template>
+      );
+
+      await click('[data-component="autocomplete-trigger"]');
+
+      assert.dom('[data-test-id="search-message"]').doesNotExist();
+      assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+    });
+
     test('onSearch: blank query restores default items without searching', async function (assert) {
       const items = ['Default 1', 'Default 2'];
       const searches: string[] = [];

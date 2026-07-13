@@ -246,6 +246,14 @@ interface AutocompleteArgs<T>
   hideEmptyContent?: boolean;
 
   /**
+   * Message shown in the dropdown of an async autocomplete (`onSearch`)
+   * while the query is blank — e.g. "Type to search for an address…".
+   * Prompts the user to start typing when they open the dropdown by
+   * clicking. Also customizable via the `searchMessage` block.
+   */
+  searchMessage?: string;
+
+  /**
    * Callback fired when the autocomplete component loses focus.
    */
   onBlur?: () => void;
@@ -272,6 +280,13 @@ interface AutocompleteSignature<T> {
      * If `hideEmptyContent` argument is true, this content will not be shown.
      */
     emptyContent: [];
+
+    /**
+     * Message shown in the dropdown of an async autocomplete while the
+     * query is blank, prompting the user to start typing. Takes priority
+     * over the `searchMessage` argument.
+     */
+    searchMessage: [];
   };
 }
 
@@ -575,6 +590,19 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     );
   }
 
+  /**
+   * True when an async autocomplete is open with a blank query and nothing
+   * to show — the moment to prompt the user to start typing.
+   */
+  get isSearchPromptState(): boolean {
+    return (
+      typeof this.args.onSearch === 'function' &&
+      !this.isFiltering &&
+      !this.isLoading &&
+      (this.filteredItems?.length ?? 0) === 0
+    );
+  }
+
   get showEmptyContent() {
     return (
       this.filteredItems?.length === 0 &&
@@ -787,7 +815,23 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
                 {{yield l to="default"}}
               </:default>
             </Listbox>
-            {{#if this.showEmptyContent}}
+            {{#if
+              (and
+                this.isSearchPromptState
+                (or @searchMessage (has-block "searchMessage"))
+              )
+            }}
+              <div
+                class={{this.classes.emptyContent class=@classes.emptyContent}}
+                data-test-id="search-message"
+              >
+                {{#if (has-block "searchMessage")}}
+                  {{yield to="searchMessage"}}
+                {{else}}
+                  {{@searchMessage}}
+                {{/if}}
+              </div>
+            {{else if this.showEmptyContent}}
               <div
                 class={{this.classes.emptyContent class=@classes.emptyContent}}
                 data-test-id="empty-content"
@@ -807,6 +851,8 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
 }
 
 const isSm = (size: AutocompleteVariants['size']) => size === 'sm';
+const and = (a: unknown, b: unknown) => Boolean(a) && Boolean(b);
+const or = (a: unknown, b: unknown) => Boolean(a) || Boolean(b);
 
 export { Autocomplete, type AutocompleteSignature };
 export default Autocomplete;
