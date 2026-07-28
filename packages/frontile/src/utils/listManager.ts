@@ -88,6 +88,31 @@ class ListManager {
       });
   }
 
+  /** Whether any registered item is still in the document. */
+  get #hasVisibleItems(): boolean {
+    return this.#items.some((item) => item.el.isConnected);
+  }
+
+  /**
+   * The registered item that comes first in the document, found in a single
+   * pass so callers that need only one item do not pay to order the whole
+   * list.
+   */
+  get #firstVisibleItem(): ListItem | undefined {
+    let first: ListItem | undefined;
+    for (const item of this.#items) {
+      if (!item.el.isConnected) continue;
+      if (
+        !first ||
+        item.el.compareDocumentPosition(first.el) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ) {
+        first = item;
+      }
+    }
+    return first;
+  }
+
   register(
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
@@ -95,7 +120,7 @@ class ListManager {
     const newItem = new ListItem(el, args);
     if (
       this.args.autoActivateMode == 'first' &&
-      this.#orderedItems.length === 0 &&
+      !this.#hasVisibleItems &&
       !args.isDisabled
     ) {
       newItem.isActive = true;
@@ -121,13 +146,12 @@ class ListManager {
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    const items = this.#orderedItems;
-    if (this.args.autoActivateMode == 'first' && items.length >= 1) {
-      this.activateItem(items[0]);
+    if (this.args.autoActivateMode == 'first') {
+      this.activateItem(this.#firstVisibleItem);
     }
 
     if (typeof this.args.onListItemsChange === 'function') {
-      this.args.onListItemsChange(items, 'remove');
+      this.args.onListItemsChange(this.#orderedItems, 'remove');
     }
   }
 
