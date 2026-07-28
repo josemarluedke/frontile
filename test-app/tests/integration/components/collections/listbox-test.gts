@@ -324,6 +324,118 @@ module(
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
     });
 
+    test('keyboard navigation follows DOM order after items are inserted before a persisting item', async function (assert) {
+      // Mimics an async (e.g. address) search: the previous match is still in
+      // the new results, but closer matches are inserted before it. The
+      // persisting item keeps its object identity, so Glimmer moves its
+      // existing element instead of re-creating it.
+      const later = { key: 'later', label: 'Later' };
+      const first = { key: 'first', label: 'First' };
+      const second = { key: 'second', label: 'Second' };
+
+      const items = cell<{ key: string; label: string }[]>([later]);
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="single"
+            @items={{items.current}}
+            @autoActivateMode="none"
+          />
+        </template>
+      );
+
+      assert.dom('[data-key="later"]').exists();
+
+      items.current = [first, second, later];
+      await settled();
+
+      const domOrder = [
+        ...document.querySelectorAll('[data-component="listbox-item"]')
+      ].map((el) => (el as HTMLElement).dataset['key']);
+      assert.deepEqual(
+        domOrder,
+        ['first', 'second', 'later'],
+        'DOM renders the new items before the persisting one'
+      );
+
+      const visited: (string | undefined)[] = [];
+      for (let i = 0; i < 3; i++) {
+        await triggerKeyEvent(
+          '[data-test-id="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        visited.push(
+          (
+            document.querySelector(
+              '[data-component="listbox-item"][data-active="true"]'
+            ) as HTMLElement | null
+          )?.dataset['key']
+        );
+      }
+
+      assert.deepEqual(
+        visited,
+        ['first', 'second', 'later'],
+        'ArrowDown visits items in DOM order'
+      );
+    });
+
+    test('keyboard navigation follows DOM order when results are replaced around a persisting item', async function (assert) {
+      // Same scenario, but the previous results are also dropped — the shape of
+      // a real search where typing narrows the list.
+      const match = { key: 'match', label: 'Match' };
+      const oldA = { key: 'old-a', label: 'Old A' };
+      const oldB = { key: 'old-b', label: 'Old B' };
+      const newA = { key: 'new-a', label: 'New A' };
+      const newB = { key: 'new-b', label: 'New B' };
+
+      const items = cell<{ key: string; label: string }[]>([oldA, oldB, match]);
+
+      await render(
+        <template>
+          <Listbox
+            @isKeyboardEventsEnabled={{true}}
+            @selectionMode="single"
+            @items={{items.current}}
+            @autoActivateMode="none"
+          />
+        </template>
+      );
+
+      items.current = [newA, newB, match];
+      await settled();
+
+      const domOrder = [
+        ...document.querySelectorAll('[data-component="listbox-item"]')
+      ].map((el) => (el as HTMLElement).dataset['key']);
+      assert.deepEqual(domOrder, ['new-a', 'new-b', 'match'], 'DOM order');
+
+      const visited: (string | undefined)[] = [];
+      for (let i = 0; i < 3; i++) {
+        await triggerKeyEvent(
+          '[data-test-id="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        visited.push(
+          (
+            document.querySelector(
+              '[data-component="listbox-item"][data-active="true"]'
+            ) as HTMLElement | null
+          )?.dataset['key']
+        );
+      }
+
+      assert.deepEqual(
+        visited,
+        ['new-a', 'new-b', 'match'],
+        'ArrowDown visits items in DOM order'
+      );
+    });
+
     test('it render item with blocks', async function (assert) {
       const clickedOn: string[] = [];
       const onAction = (key: string) => {

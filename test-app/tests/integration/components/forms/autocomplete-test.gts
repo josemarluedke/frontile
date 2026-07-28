@@ -267,6 +267,66 @@ module(
       assert.verifySteps(['search:fr']);
     });
 
+    test('keyboard navigation follows DOM order after an async search replaces results', async function (assert) {
+      // Faithful shape of an address search: each response builds fresh
+      // objects, one previously-matching address is still present, and closer
+      // matches are returned before it.
+      const addresses = [
+        '120 Main St',
+        '121 Main St',
+        '122 Main St',
+        '123 Main St',
+        '124 Main St',
+        '125 Main St'
+      ];
+
+      // First response only has the later entry; the second has everything.
+      const onSearch = (query: string) =>
+        (query.length > 3 ? addresses : ['123 Main St']).map((label) => ({
+          key: label,
+          label
+        }));
+
+      await render(
+        <template>
+          <Autocomplete @onSearch={{onSearch}} @searchDebounce={{0}} />
+        </template>
+      );
+
+      await fillIn('[data-test-id="trigger"]', 'Main');
+
+      await fillIn('[data-test-id="trigger"]', 'Main St');
+
+      const domOrder = [
+        ...document.querySelectorAll(
+          '[data-component="listbox"] [data-component="listbox-item"]'
+        )
+      ].map((el) => (el as HTMLElement).dataset['key']);
+      assert.deepEqual(domOrder, addresses, 'DOM order matches the response');
+
+      const visited: (string | undefined)[] = [];
+      for (let i = 0; i < addresses.length - 1; i++) {
+        await triggerKeyEvent(
+          '[data-test-id="trigger"]',
+          'keydown',
+          'ArrowDown'
+        );
+        visited.push(
+          (
+            document.querySelector(
+              '[data-component="listbox"] [data-component="listbox-item"][data-active="true"]'
+            ) as HTMLElement | null
+          )?.dataset['key']
+        );
+      }
+
+      assert.deepEqual(
+        visited,
+        addresses.slice(1),
+        'ArrowDown walks down the list in DOM order'
+      );
+    });
+
     test('onSearch: stale responses are ignored (latest wins)', async function (assert) {
       const resolvers: { query: string; resolve: (i: string[]) => void }[] = [];
       const onSearch = (query: string) =>
