@@ -65,6 +65,29 @@ class ListManager {
     this.updateArgs(args);
   }
 
+  /**
+   * Registered items that are still in the document, in DOM order.
+   *
+   * The order cannot be maintained eagerly as items register: Glimmer moves
+   * the element of an item that persists across an update instead of
+   * re-creating it (no registration to react to), and it installs the
+   * modifiers of newly rendered items before tearing down the ones they
+   * replace — so a sort at registration time both misses later moves and
+   * compares against detached elements, which `compareDocumentPosition`
+   * orders arbitrarily. Deriving the order from the document when it is
+   * needed keeps navigation in step with what the user sees.
+   */
+  get #orderedItems(): ListItem[] {
+    return this.#items
+      .filter((item) => item.el.isConnected)
+      .sort((a, b) => {
+        const position = a.el.compareDocumentPosition(b.el);
+        if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+        if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+        return 0;
+      });
+  }
+
   register(
     el: HTMLLIElement | HTMLOptionElement,
     args: Required<ListItemArgs>
@@ -72,17 +95,16 @@ class ListManager {
     const newItem = new ListItem(el, args);
     if (
       this.args.autoActivateMode == 'first' &&
-      this.#items.length === 0 &&
+      this.#orderedItems.length === 0 &&
       !args.isDisabled
     ) {
       newItem.isActive = true;
       this.args.onActiveItemChange?.(newItem.key, newItem);
     }
     this.#items.push(newItem);
-    this.#syncItemsOrderWithDOM();
 
     if (typeof this.args.onListItemsChange === 'function') {
-      this.args.onListItemsChange(this.#items, 'add');
+      this.args.onListItemsChange(this.#orderedItems, 'add');
     }
 
     if (this.args.autoActivateMode != 'none' && this.#items.length > 1) {
@@ -99,12 +121,13 @@ class ListManager {
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (this.args.autoActivateMode == 'first' && this.#items.length >= 1) {
-      this.activateItem(this.#items[0]);
+    const items = this.#orderedItems;
+    if (this.args.autoActivateMode == 'first' && items.length >= 1) {
+      this.activateItem(items[0]);
     }
 
     if (typeof this.args.onListItemsChange === 'function') {
-      this.args.onListItemsChange(this.#items, 'remove');
+      this.args.onListItemsChange(items, 'remove');
     }
   }
 
@@ -188,8 +211,9 @@ class ListManager {
   }
 
   setNextOptionActive(): void {
-    for (let i = this.#indexofActiveItem + 1; i < this.#items.length; i++) {
-      const item = this.#items[i];
+    const items = this.#orderedItems;
+    for (let i = this.#indexOfActiveItem(items) + 1; i < items.length; i++) {
+      const item = items[i];
       if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
@@ -198,8 +222,9 @@ class ListManager {
   }
 
   setPreviousOptionActive(): void {
-    for (let i = this.#indexofActiveItem - 1; i >= 0; i--) {
-      const item = this.#items[i];
+    const items = this.#orderedItems;
+    for (let i = this.#indexOfActiveItem(items) - 1; i >= 0; i--) {
+      const item = items[i];
       if (item && !item.isDisabled && !item.isActive) {
         this.activateItem(item);
         break;
@@ -208,8 +233,9 @@ class ListManager {
   }
 
   setFirstOptionActive(): void {
-    for (let i = 0; i < this.#items.length; i++) {
-      const item = this.#items[i];
+    const items = this.#orderedItems;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
       if (item && !item.isDisabled) {
         this.activateItem(item);
         break;
@@ -218,10 +244,11 @@ class ListManager {
   }
 
   setSelectedOptionActive(): void {
+    const items = this.#orderedItems;
     let activated = false;
 
-    for (let i = 0; i < this.#items.length; i++) {
-      const item = this.#items[i];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
       if (item && !item.isDisabled && item.isSelected) {
         this.activateItem(item);
         activated = true;
@@ -235,8 +262,9 @@ class ListManager {
   }
 
   setLastOptionActive(): void {
-    for (let i = this.#items.length - 1; i >= 0; i--) {
-      const item = this.#items[i];
+    const items = this.#orderedItems;
+    for (let i = items.length - 1; i >= 0; i--) {
+      const item = items[i];
       if (item && !item.isDisabled) {
         this.activateItem(item);
         break;
@@ -248,8 +276,9 @@ class ListManager {
     debounce(this, this.#clearSeaerch, 500);
     this.searchKeys += key.toLowerCase();
 
-    for (let i = 0; i < this.#items.length; i++) {
-      const item = this.#items[i] as ListItem;
+    const items = this.#orderedItems;
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i] as ListItem;
 
       if (
         !item.isDisabled &&
@@ -270,42 +299,24 @@ class ListManager {
     return this.args.selectedKeys?.includes(key) || false;
   }
 
-  get #indexofActiveItem(): number {
-    let item = this.#activeItem;
+  #indexOfActiveItem(items: ListItem[]): number {
+    let item = items.find((i) => i.isActive);
 
     if (!item) {
-      for (let i = 0; i < this.#items.length; i++) {
-        const n = this.#items[i] as ListItem;
-        if (n.isSelected) {
-          item = n;
-          break;
-        }
-      }
+      item = items.find((i) => i.isSelected);
     }
     if (!item) {
       return -1;
     }
-    return this.#items.indexOf(item);
-  }
-
-  // Ensure #items is always in sync with DOM order
-  #syncItemsOrderWithDOM(): void {
-    if (!this.#items.length) return;
-
-    // Sort items based on their position in the DOM
-    this.#items.sort((a, b) => {
-      const position = a.el.compareDocumentPosition(b.el);
-      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
-      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
-      return 0;
-    });
+    return items.indexOf(item);
   }
 
   #toggleSelectedItem(item: ListItem): string[] {
     let selectedKeys: string[] = [];
 
-    for (let i = 0; i < this.#items.length; i++) {
-      const _item = this.#items[i] as ListItem;
+    const items = this.#orderedItems;
+    for (let i = 0; i < items.length; i++) {
+      const _item = items[i] as ListItem;
       if (_item.isSelected) {
         selectedKeys.push(_item.key);
       }
@@ -330,12 +341,7 @@ class ListManager {
   }
 
   get #activeItem(): ListItem | undefined {
-    for (let i = 0; i < this.#items.length; i++) {
-      const item = this.#items[i] as ListItem;
-      if (item.isActive) {
-        return item;
-      }
-    }
+    return this.#orderedItems.find((item) => item.isActive);
   }
 
   #clearSeaerch(): void {
