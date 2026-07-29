@@ -150,7 +150,7 @@ Frontile provides six semantic color categories:
 - **Danger** - Errors and destructive actions (red)
 - **Warning** - Warnings and cautions (orange)
 
-Each category spans two bands: a **surface band** of fills (`subtle`, `muted`, `soft`, `DEFAULT`, `firm`) and an **ink band** of legible foregrounds (`strong`, `bolder`). The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
+Each category spans two bands: a **surface band** of fills (`subtle`, `muted`, `soft`, `mild`, `DEFAULT`, `firm`) and an **ink band** of legible foregrounds (`strong`, `bolder`). The `on-{color}-{level}` prefix automatically provides optimal contrasting text colors (black or white) for accessibility.
 
 <ColorPaletteGrid @category="primary" @showDescription={{false}} />
 <ColorPaletteGrid @category="success" @showDescription={{false}} />

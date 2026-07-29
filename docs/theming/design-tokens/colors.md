@@ -21,13 +21,15 @@ Every category exposes the same set of levels, organized into **two bands**.
 The bands share one emphasis vocabulary but are consumed by different CSS
 properties — the band a level belongs to tells you what it's for.
 
-| Band        | Levels (low → high emphasis)                     | Use for                                          |
-| ----------- | ------------------------------------------------ | ------------------------------------------------ |
-| **Surface** | `subtle` · `muted` · `soft` · `DEFAULT` · `firm` | Fills — `bg-*` and decorative `border-*`         |
-| **Ink**     | `strong` · `bolder`                              | Legible foregrounds — `text-*`, outlined borders |
+| Band        | Levels (low → high emphasis)                              | Use for                                          |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------------ |
+| **Surface** | `subtle` · `muted` · `soft` · `mild` · `DEFAULT` · `firm` | Fills — `bg-*` and decorative `border-*`         |
+| **Ink**     | `strong` · `bolder`                                          | Legible foregrounds — `text-*`, outlined borders |
 
 - **`DEFAULT`** is the resting fill. It has no suffix, so the bare class works:
   `bg-primary` is the DEFAULT fill, `text-primary` the DEFAULT-level text.
+- **`mild`** sits between `soft` and `DEFAULT` — a lower-emphasis fill for
+  cases where `soft` reads too faint but the full resting fill is too strong.
 - **`firm`** is the most emphatic _fill_ (e.g. a pressed background). It sits at
   the top of the surface band, below the ink band it never competes with —
   `firm` is a background, `strong`/`bolder` are text, so they live in different

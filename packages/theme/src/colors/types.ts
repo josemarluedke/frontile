@@ -43,7 +43,7 @@ export type SemanticBaseColors = {
  * Surface band — fills. Backgrounds and decorative borders for filled/tinted
  * surfaces, ordered low → high emphasis:
  *
- *   subtle → muted → soft → DEFAULT → firm
+ *   subtle → muted → soft → mild → DEFAULT → firm
  *
  * `DEFAULT` is the resting fill (the bare `bg-{category}` class); `firm` is the
  * most emphatic fill, e.g. a pressed/active background.
@@ -55,6 +55,8 @@ export interface SurfaceBand {
   muted: string;
   /** Soft fill — the hover step for solid fills. */
   soft: string;
+  /** Between `soft` and `DEFAULT` — a lower-emphasis fill just short of resting. */
+  mild: string;
   /** Resting fill — the bare `bg-{category}` / `border-{category}` token. */
   DEFAULT: string;
   /** Most emphatic fill — pressed/active backgrounds. */
@@ -112,6 +114,7 @@ export interface OnColorCategory {
   subtle?: string;
   muted?: string;
   soft?: string;
+  mild?: string;
   DEFAULT?: string;
   firm?: string;
   strong?: string;

@@ -5,6 +5,7 @@ export const colorLevels = [
   'subtle',
   'muted',
   'soft',
+  'mild',
   'DEFAULT',
   'firm',
   'strong',
@@ -59,6 +60,7 @@ export function getColorLevelDescription(level: ColorLevel): string {
     subtle: 'Surface · faintest fill for hairline backgrounds and tonal rests',
     muted: 'Surface · light fill for hover on tonal surfaces',
     soft: 'Surface · soft fill, the hover step for solid fills',
+    mild: 'Surface · low-emphasis fill between soft and the resting fill',
     DEFAULT: 'Surface · resting fill, the bare bg-{category} token',
     firm: 'Surface · most emphatic fill for pressed and active backgrounds',
     // Ink band — legible foregrounds for text and outlined borders
