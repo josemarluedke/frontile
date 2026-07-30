@@ -43,3 +43,5 @@ packages/docs/tmp/
 
 .playwright-mcp/
 .playwright-cli/
+
+.superpowers/
