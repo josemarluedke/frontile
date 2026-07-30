@@ -28,7 +28,10 @@ function shouldIgnoreArg(tags) {
 }
 
 function escapeCell(text) {
-  return String(text).replace(/\|/g, '\\|').replace(/\s*\n\s*/g, ' ').trim();
+  return String(text)
+    .replace(/\|/g, '\\|')
+    .replace(/\s*\n\s*/g, ' ')
+    .trim();
 }
 
 function formatType(type) {
@@ -54,19 +57,22 @@ function buildPropertiesTable(items) {
     return '';
   }
 
-  const lines = ['| Name | Type | Default | Description |', '| --- | --- | --- | --- |'];
+  const lines = [
+    '| Name | Type | Default | Description |',
+    '| --- | --- | --- | --- |',
+  ];
 
   rows.forEach((item) => {
-    const name = item.isRequired
-      ? `${item.identifier} *`
-      : item.identifier;
+    const name = item.isRequired ? `${item.identifier} *` : item.identifier;
     const type = formatType(item.type);
     const defaultValue = item.defaultValue
       ? `\`${escapeCell(item.defaultValue)}\``
       : '-';
     const description = formatDescription(item);
 
-    lines.push(`| \`${escapeCell(name)}\` | ${type} | ${defaultValue} | ${description} |`);
+    lines.push(
+      `| \`${escapeCell(name)}\` | ${type} | ${defaultValue} | ${description} |`,
+    );
   });
 
   return lines.join('\n');
@@ -123,7 +129,7 @@ export function resolveSignatureTags(markdown, signatureData, pageUrl) {
 
     if (!entry) {
       console.warn(
-        `[docfy-plugin-signature-markdown] No component found for ${describeTag(tag)} on page ${pageUrl}`
+        `[docfy-plugin-signature-markdown] No component found for ${describeTag(tag)} on page ${pageUrl}`,
       );
 
       return match;
@@ -140,7 +146,7 @@ export function docfyPluginSignatureMarkdown(signatureData) {
         const resolved = resolveSignatureTags(
           page.markdown,
           signatureData,
-          page.meta.url
+          page.meta.url,
         );
 
         if (resolved !== page.markdown) {
