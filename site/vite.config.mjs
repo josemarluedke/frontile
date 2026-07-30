@@ -11,6 +11,12 @@ export default defineConfig({
       {
         root: process.cwd(),
         hmr: true,
+        staticExport: {
+          enabled: true,
+          projectName: 'Frontile',
+          projectDescription:
+            'A modern, accessible, and extensible component library for Ember.js applications, built with Tailwind CSS and Tailwind Variants.',
+        },
       },
     ),
 
