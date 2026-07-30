@@ -16,6 +16,8 @@ type CopyStatus = 'idle' | 'copying' | 'copied' | 'error';
 export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   @tracked status: CopyStatus = 'idle';
 
+  resetTimer?: ReturnType<typeof setTimeout>;
+
   get mdUrl(): string {
     return `${window.location.origin}${this.args.url}.md`;
   }
@@ -46,11 +48,22 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   }
 
   resetAfterDelay(): void {
-    setTimeout(() => {
+    this.resetTimer = setTimeout(() => {
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
       if (this.status === 'copied' || this.status === 'error') {
         this.status = 'idle';
       }
     }, 2000);
+  }
+
+  override willDestroy(): void {
+    super.willDestroy();
+    if (this.resetTimer) {
+      clearTimeout(this.resetTimer);
+      this.resetTimer = undefined;
+    }
   }
 
   @action
