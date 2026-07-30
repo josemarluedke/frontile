@@ -25,11 +25,20 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
     window.fetch = originalFetch;
     window.open = originalOpen;
     if (originalClipboardDescriptor) {
+      // clipboard had an own property on navigator (unusual, but possible in
+      // some environments) — restore it exactly as it was.
       Object.defineProperty(
         navigator,
         'clipboard',
         originalClipboardDescriptor
       );
+    } else if (
+      Object.prototype.hasOwnProperty.call(navigator, 'clipboard')
+    ) {
+      // clipboard normally lives on Navigator.prototype, so there was no own
+      // property to capture — remove the one a test may have defined, so it
+      // doesn't leak into later tests.
+      delete (navigator as unknown as Record<string, unknown>)['clipboard'];
     }
   });
 

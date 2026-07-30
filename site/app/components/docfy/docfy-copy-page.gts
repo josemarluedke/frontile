@@ -117,7 +117,15 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
       !event.shiftKey &&
       !event.altKey
     ) {
+      // Plain left-click: let handleMenuAction's viewAsMarkdown() open the
+      // tab instead, so it stays consistent with keyboard activation.
       event.preventDefault();
+    } else {
+      // Modifier-click (open in background tab/window, etc.): let the
+      // browser handle the anchor's real href natively, and stop this
+      // click from also bubbling to the menu item's onAction, which would
+      // otherwise open a second tab via viewAsMarkdown().
+      event.stopPropagation();
     }
   }
 
