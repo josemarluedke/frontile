@@ -29,6 +29,8 @@ jobs:
         run: pnpm build
       - name: Test
         run: pnpm test
+      - name: Test site (node:test)
+        run: pnpm --filter site test:node
 
   # try-scenarios:
   #   name: Compat ${{ matrix.ember-try-scenario }}
