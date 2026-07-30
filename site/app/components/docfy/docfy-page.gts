@@ -30,10 +30,6 @@ export default class DocfyPage extends Component<Signature> {
       <DocfyOutput @fromCurrentURL={{true}} as |page|>
         {{pageTitle "Documentation"}}
         {{pageTitle page.title}}
-
-        <div class="flex justify-end pt-4">
-          <DocfyCopyPage @url={{page.url}} @title={{page.title}} />
-        </div>
       </DocfyOutput>
 
       {{#if @showSectionNav}}
@@ -123,6 +119,11 @@ export default class DocfyPage extends Component<Signature> {
           </div>
         </div>
         <div class="flex-none hidden w-56 pl-4 lg:block">
+          <DocfyOutput @fromCurrentURL={{true}} as |page|>
+            <div class="pb-4">
+              <DocfyCopyPage @url={{page.url}} @title={{page.title}} />
+            </div>
+          </DocfyOutput>
           <PageHeadings @currentHeadingId={{this.currentHeadingId}} />
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { on } from '@ember/modifier';
 import { ButtonGroup, Dropdown } from 'frontile';
 
 export interface DocfyCopyPageSignature {
@@ -48,6 +49,9 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   }
 
   resetAfterDelay(): void {
+    if (this.resetTimer) {
+      clearTimeout(this.resetTimer);
+    }
     this.resetTimer = setTimeout(() => {
       if (this.isDestroying || this.isDestroyed) {
         return;
@@ -95,20 +99,44 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   }
 
   @action
+  viewAsMarkdown(): void {
+    window.open(this.mdUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  // The anchor keeps a real `href` so middle-click/ctrl-click/"copy link
+  // address" work natively. A plain left-click is instead routed through
+  // the Dropdown's onAction -> viewAsMarkdown (which also covers keyboard
+  // activation, since a menuitem's Enter/Space never reaches this anchor) —
+  // so a plain click must not navigate too, or it would open two tabs.
+  @action
+  guardAnchorClick(event: MouseEvent): void {
+    if (
+      event.button === 0 &&
+      !event.metaKey &&
+      !event.ctrlKey &&
+      !event.shiftKey &&
+      !event.altKey
+    ) {
+      event.preventDefault();
+    }
+  }
+
+  @action
   handleMenuAction(key: string): void {
-    if (key === 'copy-page') {
+    if (key === 'view-as-markdown') {
+      this.viewAsMarkdown();
+    } else if (key === 'copy-page') {
       this.copyPage();
     } else if (key === 'open-chatgpt') {
       this.openInChatGpt();
     } else if (key === 'open-claude') {
       this.openInClaude();
     }
-    // 'view-as-markdown' is a plain <a>; the browser handles it natively.
   }
 
   <template>
     <div class="inline-flex" data-test-id="docfy-copy-page" ...attributes>
-      <ButtonGroup @appearance="outlined" @size="sm" as |g|>
+      <ButtonGroup @appearance="outlined" @size="xs" as |g|>
         <g.Button @onPress={{this.copyPage}} data-test-id="copy-page-primary">
           {{this.primaryLabel}}
         </g.Button>
@@ -116,8 +144,9 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
         <Dropdown as |d|>
           <d.Trigger
             @appearance="outlined"
-            @size="sm"
+            @size="xs"
             @isInGroup={{true}}
+            aria-label="More page actions"
             data-test-id="copy-page-trigger"
           >
             <svg
@@ -125,6 +154,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -146,6 +176,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-test-id="copy-page-view-markdown"
+                {{on "click" this.guardAnchorClick}}
               >View as markdown</a>
             </Item>
             <Item @key="copy-page">Copy Page</Item>
