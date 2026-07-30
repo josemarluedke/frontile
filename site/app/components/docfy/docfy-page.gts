@@ -5,6 +5,7 @@ import SidebarNav from './docfy-sidebar-nav';
 import PageHeadings from './docfy-page-headings';
 import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
+import DocfyCopyPage from './docfy-copy-page';
 import { DocfyLink, DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
 
 interface Signature {
@@ -42,8 +43,11 @@ export default class DocfyPage extends Component<Signature> {
           </DocfyOutput>
         </div>
 
-        <div class="flex-1 w-full min-w-0 px-0 pt-12 lg:px-10">
+        <div class="flex-1 w-full min-w-0 px-0 pt-12 lg:px-10 relative">
           <DocfyOutput @fromCurrentURL={{true}} as |page|>
+            <div class="top-0 right-0 absolute lg:pr-10 pt-14">
+              <DocfyCopyPage @url={{page.url}} @title={{page.title}} />
+            </div>
             <div
               {{docfyIntersectHeadings
                 onIntersect=this.setCurrentHeadingId

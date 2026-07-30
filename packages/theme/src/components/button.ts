@@ -38,8 +38,13 @@ const baseButton = tv({
     },
     isInGroup: {
       true: [
-        'rounded-none first:rounded-s-full last:rounded-e-full',
-        '[&:not(:first-child):not(:last-child)]:rounded-none',
+        // :first-of-type/:last-of-type (not :first-child/:last-child): a
+        // grouped Dropdown's trigger can have a trailing portal-marker
+        // <script> element as a sibling inside the group, which would make
+        // the last button no longer :last-child. -of-type only counts
+        // siblings of the same tag (button), so it isn't thrown off by it.
+        'rounded-none first-of-type:rounded-s-full last-of-type:rounded-e-full',
+        '[&:not(:first-of-type):not(:last-of-type)]:rounded-none',
         'not-last-of-type:-me-px'
       ]
     }
@@ -348,7 +353,7 @@ const toggleButton = tv({
 });
 
 const buttonGroup = tv({
-  base: ['inline-flex items-center justify-center h-auto']
+  base: ['inline-flex items-stretch justify-center h-auto']
 });
 
 export { button, toggleButton, buttonGroup };
