@@ -1,12 +1,18 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import autolinkHeadings from 'remark-autolink-headings';
 import highlight from 'rehype-highlight';
 import codeImport from 'remark-code-import';
 import withProse from '@docfy/plugin-with-prose';
+import docfyPluginSignatureMarkdown from './lib/docfy-plugin-signature-markdown.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const signatureData = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'lib/signature-data.json'), 'utf-8')
+);
 
 /**
  * @type {import('@docfy/core/lib/types').DocfyConfig}
@@ -17,7 +23,10 @@ export default {
     editBranch: 'main'
   },
   tocMaxDepth: 3,
-  plugins: [withProse({ className: 'prose max-w-none dark:prose-invert' })],
+  plugins: [
+    withProse({ className: 'prose max-w-none dark:prose-invert' }),
+    docfyPluginSignatureMarkdown(signatureData)
+  ],
   remarkPlugins: [autolinkHeadings, codeImport],
   rehypePlugins: [
     [
