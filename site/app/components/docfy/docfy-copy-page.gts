@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { ButtonGroup, Dropdown } from 'frontile';
+import type { TOC } from '@ember/component/template-only';
 
 export interface DocfyCopyPageSignature {
   Args: {
@@ -35,6 +36,10 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
     return `https://claude.ai/new?q=${encodeURIComponent(this.buildPrompt())}`;
   }
 
+  get isCopied(): boolean {
+    return this.status === 'copied';
+  }
+
   get primaryLabel(): string {
     switch (this.status) {
       case 'copying':
@@ -44,7 +49,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
       case 'error':
         return 'Unavailable';
       default:
-        return 'Copy Page';
+        return 'Copy Markdown';
     }
   }
 
@@ -133,8 +138,6 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   handleMenuAction(key: string): void {
     if (key === 'view-as-markdown') {
       this.viewAsMarkdown();
-    } else if (key === 'copy-page') {
-      this.copyPage();
     } else if (key === 'open-chatgpt') {
       this.openInChatGpt();
     } else if (key === 'open-claude') {
@@ -146,6 +149,11 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
     <div class="inline-flex" data-test-id="docfy-copy-page" ...attributes>
       <ButtonGroup @appearance="outlined" @size="xs" as |g|>
         <g.Button @onPress={{this.copyPage}} data-test-id="copy-page-primary">
+          {{#if this.isCopied}}
+            <CheckIcon class="w-4 h-4" />
+          {{else}}
+            <CopyIcon class="w-4 h-4" />
+          {{/if}}
           {{this.primaryLabel}}
         </g.Button>
 
@@ -185,9 +193,8 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
                 rel="noopener noreferrer"
                 data-test-id="copy-page-view-markdown"
                 {{on "click" this.guardAnchorClick}}
-              >View as markdown</a>
+              >View as Markdown</a>
             </Item>
-            <Item @key="copy-page">Copy Page</Item>
             <Item @key="open-chatgpt">Open in ChatGPT</Item>
             <Item @key="open-claude">Open in Claude</Item>
           </d.Menu>
@@ -196,3 +203,34 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
     </div>
   </template>
 }
+
+const CopyIcon: TOC<{ Element: SVGElement }> = <template>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+    ...attributes
+  >
+    <rect x="8" y="8" width="14" height="14" rx="2" ry="2" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+    />
+  </svg>
+</template>;
+
+const CheckIcon: TOC<{ Element: SVGElement }> = <template>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+    ...attributes
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+</template>;

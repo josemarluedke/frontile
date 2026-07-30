@@ -43,8 +43,11 @@ export default class DocfyPage extends Component<Signature> {
           </DocfyOutput>
         </div>
 
-        <div class="flex-1 w-full min-w-0 px-0 pt-12 lg:px-10">
+        <div class="flex-1 w-full min-w-0 px-0 pt-12 lg:px-10 relative">
           <DocfyOutput @fromCurrentURL={{true}} as |page|>
+            <div class="top-0 right-0 absolute lg:pr-10 pt-14">
+              <DocfyCopyPage @url={{page.url}} @title={{page.title}} />
+            </div>
             <div
               {{docfyIntersectHeadings
                 onIntersect=this.setCurrentHeadingId
@@ -119,11 +122,6 @@ export default class DocfyPage extends Component<Signature> {
           </div>
         </div>
         <div class="flex-none hidden w-56 pl-4 lg:block">
-          <DocfyOutput @fromCurrentURL={{true}} as |page|>
-            <div class="pb-4">
-              <DocfyCopyPage @url={{page.url}} @title={{page.title}} />
-            </div>
-          </DocfyOutput>
           <PageHeadings @currentHeadingId={{this.currentHeadingId}} />
         </div>
       </div>

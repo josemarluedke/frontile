@@ -42,7 +42,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
     }
   });
 
-  test('it renders the primary Copy Page button', async function (assert) {
+  test('it renders the primary Copy Markdown button', async function (assert) {
     await render(
       <template>
         <DocfyCopyPage
@@ -52,7 +52,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
       </template>
     );
 
-    assert.dom('[data-test-id="copy-page-primary"]').hasText('Copy Page');
+    assert.dom('[data-test-id="copy-page-primary"]').hasText('Copy Markdown');
   });
 
   test('copyPage fetches the markdown URL and copies it to the clipboard', async function (assert) {
@@ -105,39 +105,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
     assert.dom('[data-test-id="copy-page-primary"]').hasText('Unavailable');
   });
 
-  test('the "Copy Page" menu item also triggers copyPage', async function (assert) {
-    let copiedText: string | undefined;
-
-    window.fetch = (async () =>
-      new Response('# ButtonGroup\n\nExample content.', {
-        status: 200
-      })) as typeof window.fetch;
-
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: {
-        writeText: async (text: string) => {
-          copiedText = text;
-        }
-      }
-    });
-
-    await render(
-      <template>
-        <DocfyCopyPage
-          @url="/docs/components/buttons/button-group"
-          @title="ButtonGroup"
-        />
-      </template>
-    );
-
-    await click('[data-test-id="copy-page-trigger"]');
-    await click('[data-key="copy-page"]');
-
-    assert.strictEqual(copiedText, '# ButtonGroup\n\nExample content.');
-  });
-
-  test('the dropdown lists all four actions', async function (assert) {
+  test('the dropdown lists the remaining three actions', async function (assert) {
     await render(
       <template>
         <DocfyCopyPage
@@ -149,8 +117,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
 
     await click('[data-test-id="copy-page-trigger"]');
 
-    assert.dom('[data-key="view-as-markdown"]').hasText('View as markdown');
-    assert.dom('[data-key="copy-page"]').hasText('Copy Page');
+    assert.dom('[data-key="view-as-markdown"]').hasText('View as Markdown');
     assert.dom('[data-key="open-chatgpt"]').hasText('Open in ChatGPT');
     assert.dom('[data-key="open-claude"]').hasText('Open in Claude');
   });
