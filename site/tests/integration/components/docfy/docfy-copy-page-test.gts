@@ -8,9 +8,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
 
   let originalFetch: typeof window.fetch;
   let originalOpen: typeof window.open;
-  let originalClipboardDescriptor:
-    | PropertyDescriptor
-    | undefined;
+  let originalClipboardDescriptor: PropertyDescriptor | undefined;
 
   hooks.beforeEach(function () {
     originalFetch = window.fetch;
@@ -32,9 +30,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
         'clipboard',
         originalClipboardDescriptor
       );
-    } else if (
-      Object.prototype.hasOwnProperty.call(navigator, 'clipboard')
-    ) {
+    } else if (Object.prototype.hasOwnProperty.call(navigator, 'clipboard')) {
       // clipboard normally lives on Navigator.prototype, so there was no own
       // property to capture — remove the one a test may have defined, so it
       // doesn't leak into later tests.
@@ -60,7 +56,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
 
     window.fetch = (async () =>
       new Response('# ButtonGroup\n\nExample content.', {
-        status: 200
+        status: 200,
       })) as typeof window.fetch;
 
     Object.defineProperty(navigator, 'clipboard', {
@@ -68,8 +64,8 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
       value: {
         writeText: async (text: string) => {
           copiedText = text;
-        }
-      }
+        },
+      },
     });
 
     await render(
