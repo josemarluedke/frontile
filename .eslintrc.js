@@ -67,6 +67,30 @@ module.exports = {
       ],
       extends: ['@underline/eslint-config-node'],
       rules: {}
+    },
+
+    // .mjs Node config/tooling files: these always run in Node, never a
+    // browser, so they need the Node global env (process, __dirname, etc.)
+    // and no-console relaxed - but unlike the .js files above, they aren't
+    // routed through @underline/eslint-config-node's `plugin:node/recommended`,
+    // since that reintroduces import-resolution rules (node/no-missing-import,
+    // node/no-unpublished-import) that the root config deliberately disables.
+    {
+      files: [
+        'site/lib/*.mjs',
+        'site/vite.config.mjs',
+        'site/docfy.config.mjs',
+        'site/eslint.config.mjs',
+        'test-app/eslint.config.mjs',
+        'packages/*/rollup.config.mjs',
+        'scripts/**/*.mjs'
+      ],
+      env: {
+        node: true
+      },
+      rules: {
+        'no-console': 'off'
+      }
     }
   ]
 };

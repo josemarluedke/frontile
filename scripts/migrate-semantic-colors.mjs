@@ -23,7 +23,7 @@ const ROOT = resolve(__dirname, '..');
 // Parse CLI arguments
 const args = process.argv.slice(2);
 const shouldWrite = args.includes('--write');
-const pathArg = args.find(arg => arg.startsWith('--path='));
+const pathArg = args.find((arg) => arg.startsWith('--path='));
 const targetPath = pathArg ? pathArg.split('=')[1] : '.';
 
 console.log(`\n🎨 Semantic Colors v2 Migration Script`);
@@ -105,7 +105,7 @@ const colorMigrations = {
   'text-primary': 'text-brand',
   'border-primary': 'border-brand-medium',
   'ring-primary': 'ring-brand-soft',
-  'focus-visible:ring-primary-500': 'focus-visible:ring-brand-soft',
+  'focus-visible:ring-primary-500': 'focus-visible:ring-brand-soft'
 };
 
 /**
@@ -117,7 +117,11 @@ const contextualPatterns = [
     pattern: /text-default(?!-)/g,
     check: (line) => {
       // If it's a heading or strong emphasis context, use strong
-      if (line.includes('font-bold') || line.includes('font-semibold') || line.includes('heading')) {
+      if (
+        line.includes('font-bold') ||
+        line.includes('font-semibold') ||
+        line.includes('heading')
+      ) {
         return 'text-neutral-strong';
       }
       // Default to medium for body text
@@ -136,8 +140,9 @@ const contextualPatterns = [
  * Sort by length (longest first) to match more specific patterns first
  */
 function buildMigrationPatterns() {
-  const entries = Object.entries(colorMigrations)
-    .sort((a, b) => b[0].length - a[0].length);
+  const entries = Object.entries(colorMigrations).sort(
+    (a, b) => b[0].length - a[0].length
+  );
 
   const patterns = [];
 
@@ -282,7 +287,9 @@ function main() {
 
   // Print results
   if (results.length === 0) {
-    console.log('✅ No migrations needed! All files already use semantic colors v2.\n');
+    console.log(
+      '✅ No migrations needed! All files already use semantic colors v2.\n'
+    );
     return;
   }
 
@@ -305,17 +312,22 @@ function main() {
   }
 
   console.log(`📝 Changes by type:\n`);
-  const sortedChanges = Object.entries(changesByType)
-    .sort((a, b) => b[1].count - a[1].count);
+  const sortedChanges = Object.entries(changesByType).sort(
+    (a, b) => b[1].count - a[1].count
+  );
 
   for (const [change, { count, files }] of sortedChanges) {
     console.log(`   ${change}`);
-    console.log(`      ${count} occurrence${count > 1 ? 's' : ''} in ${files.size} file${files.size > 1 ? 's' : ''}`);
+    console.log(
+      `      ${count} occurrence${count > 1 ? 's' : ''} in ${files.size} file${files.size > 1 ? 's' : ''}`
+    );
   }
 
   console.log(`\n📁 Modified files:\n`);
   for (const result of results.slice(0, 20)) {
-    console.log(`   ${result.filepath} (${result.changes.length} change${result.changes.length > 1 ? 's' : ''})`);
+    console.log(
+      `   ${result.filepath} (${result.changes.length} change${result.changes.length > 1 ? 's' : ''})`
+    );
   }
 
   if (results.length > 20) {
@@ -323,7 +335,9 @@ function main() {
   }
 
   if (!shouldWrite) {
-    console.log(`\n💡 This was a dry run. Run with --write to apply changes.\n`);
+    console.log(
+      `\n💡 This was a dry run. Run with --write to apply changes.\n`
+    );
   } else {
     console.log(`\n✅ Migration complete! Remember to:\n`);
     console.log(`   1. Review the changes with git diff`);

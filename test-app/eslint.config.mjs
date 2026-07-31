@@ -28,9 +28,9 @@ const esmParserOptions = {
   requireConfigFile: false,
   babelOptions: {
     plugins: [
-      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],
-    ],
-  },
+      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }]
+    ]
+  }
 };
 
 export default [
@@ -43,36 +43,36 @@ export default [
    * https://eslint.org/docs/latest/use/configure/ignore
    */
   {
-    ignores: ['dist/', 'node_modules/', 'coverage/', '!**/.*'],
+    ignores: ['dist/', 'node_modules/', 'coverage/', '!**/.*']
   },
   /**
    * https://eslint.org/docs/latest/use/configure/configuration-files#configuring-linter-options
    */
   {
     linterOptions: {
-      reportUnusedDisableDirectives: 'error',
-    },
+      reportUnusedDisableDirectives: 'error'
+    }
   },
   {
     files: ['**/*.js'],
     languageOptions: {
-      parser: babelParser,
-    },
+      parser: babelParser
+    }
   },
   {
     files: ['**/*.{js,gjs}'],
     languageOptions: {
       parserOptions: esmParserOptions,
       globals: {
-        ...globals.browser,
-      },
-    },
+        ...globals.browser
+      }
+    }
   },
   {
     files: ['tests/**/*-test.{js,gjs}'],
     plugins: {
-      qunit,
-    },
+      qunit
+    }
   },
   /**
    * CJS node files
@@ -91,16 +91,16 @@ export default [
       'postcss.config.js'
     ],
     plugins: {
-      n,
+      n
     },
 
     languageOptions: {
       sourceType: 'script',
       ecmaVersion: 'latest',
       globals: {
-        ...globals.node,
-      },
-    },
+        ...globals.node
+      }
+    }
   },
   /**
    * ESM node files
@@ -108,7 +108,7 @@ export default [
   {
     files: ['**/*.mjs'],
     plugins: {
-      n,
+      n
     },
 
     languageOptions: {
@@ -116,8 +116,8 @@ export default [
       ecmaVersion: 'latest',
       parserOptions: esmParserOptions,
       globals: {
-        ...globals.node,
-      },
-    },
-  },
+        ...globals.node
+      }
+    }
+  }
 ];

@@ -7,21 +7,16 @@ const extensions = ['.js', '.gjs', '.ts', '.gts'];
 
 const addon = new Addon({
   srcDir: 'src',
-  destDir: 'dist',
+  destDir: 'dist'
 });
 
 export default {
   output: addon.output(),
 
   plugins: [
-    addon.publicEntrypoints([
-      'index.js',
-      'template-registry.js'
-    ]),
+    addon.publicEntrypoints(['index.js', 'template-registry.js']),
 
-    addon.appReexports([
-      'components/**/*.js',
-    ]),
+    addon.appReexports(['components/**/*.js']),
 
     addon.dependencies(),
 
@@ -29,7 +24,7 @@ export default {
 
     babel({
       extensions,
-      babelHelpers: 'bundled',
+      babelHelpers: 'bundled'
     }),
 
     addon.hbs(),
@@ -41,8 +36,8 @@ export default {
     copy({
       targets: [
         { src: '../README.md', dest: '.' },
-        { src: '../LICENSE.md', dest: '.' },
-      ],
-    }),
-  ],
+        { src: '../LICENSE.md', dest: '.' }
+      ]
+    })
+  ]
 };
