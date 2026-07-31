@@ -102,7 +102,7 @@ export default ts.config(
       '.template-lintrc.js',
       'ember-cli-build.js',
       'frontile.js',
-      'postcss.config.js'
+      'postcss.config.js',
     ],
     plugins: {
       n,

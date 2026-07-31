@@ -7,7 +7,7 @@ const extensions = ['.js', '.gjs', '.ts', '.gts'];
 
 const addon = new Addon({
   srcDir: 'src',
-  destDir: 'dist',
+  destDir: 'dist'
 });
 
 export default {
@@ -37,14 +37,13 @@ export default {
       'components/**/*.js',
       'helpers/**/*.js',
       'modifiers/**/*.js',
-      'services/**/*.js',
+      'services/**/*.js'
     ]),
 
     // Follow the V2 Addon rules about dependencies. Your code can import from
     // `dependencies` and `peerDependencies` as well as standard Ember-provided
     // package names.
     addon.dependencies(),
-
 
     nodeResolve({ extensions }),
 
@@ -56,7 +55,7 @@ export default {
     // babel.config.json.
     babel({
       extensions,
-      babelHelpers: 'bundled',
+      babelHelpers: 'bundled'
     }),
 
     // Ensure that standalone .hbs files are properly integrated as Javascript.
@@ -79,8 +78,8 @@ export default {
     copy({
       targets: [
         { src: '../README.md', dest: '.' },
-        { src: '../LICENSE.md', dest: '.' },
-      ],
-    }),
-  ],
+        { src: '../LICENSE.md', dest: '.' }
+      ]
+    })
+  ]
 };
