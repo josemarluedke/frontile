@@ -1,17 +1,18 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 import autolinkHeadings from 'remark-autolink-headings';
 import highlight from 'rehype-highlight';
 import codeImport from 'remark-code-import';
 import withProse from '@docfy/plugin-with-prose';
-import docfyPluginSignatureMarkdown from './lib/docfy-plugin-signature-markdown.mjs';
+import docfyPluginSignatureMarkdown, {
+  loadSignatureData,
+} from './lib/docfy-plugin-signature-markdown.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const signatureData = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'lib/signature-data.json'), 'utf-8'),
+const signatureData = loadSignatureData(
+  path.resolve(__dirname, 'app/components/signature-data.ts'),
 );
 
 /**

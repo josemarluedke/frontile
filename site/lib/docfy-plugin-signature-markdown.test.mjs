@@ -1,8 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import {
   resolveSignatureTags,
   docfyPluginSignatureMarkdown,
+  loadSignatureData,
 } from './docfy-plugin-signature-markdown.mjs';
 
 const fixtureData = [
@@ -243,4 +247,119 @@ test('escapes a `|` in a union type.raw so it does not break the Markdown table 
 
   assert.ok(row, 'expected to find the row for the `size` argument');
   assert.strictEqual(row, "| `size` | `'sm' \\| 'lg'` | - | Size |");
+});
+
+test('loadSignatureData parses the generated .ts file and strips HTML highlighting', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'signature-data-'));
+  const filePath = path.join(dir, 'signature-data.ts');
+  const data = [
+    {
+      package: 'buttons',
+      module: 'button',
+      name: 'Button',
+      description: 'A button.',
+      Element: {
+        type: {
+          type: '<span class="hljs-built_in">HTMLButtonElement</span>',
+        },
+      },
+      Args: [
+        {
+          identifier: 'appearance',
+          type: {
+            type: '<span class="hljs-built_in">enum</span>',
+            raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span>',
+            // items are plain strings in the real generated data - they're
+            // never HTML-highlighted in the first place.
+            items: ["'default'", "'outlined'"],
+          },
+          isRequired: false,
+          isInternal: false,
+          description: 'The appearance',
+          tags: {},
+          defaultValue: '<span class="hljs-string">\'default\'</span>',
+        },
+      ],
+      Blocks: [],
+    },
+  ];
+
+  try {
+    writeFileSync(
+      filePath,
+      `import type { ComponentDoc } from 'glimmer-docgen-typescript';\nconst data: ComponentDoc[] = ${JSON.stringify(data)};\nexport type { ComponentDoc };\nexport default data;`,
+    );
+
+    const result = loadSignatureData(filePath);
+
+    assert.strictEqual(result[0].Element.type.type, 'HTMLButtonElement');
+    assert.strictEqual(result[0].Args[0].type.type, 'enum');
+    assert.strictEqual(result[0].Args[0].type.raw, "'default' | 'outlined'");
+    assert.deepStrictEqual(result[0].Args[0].type.items, [
+      "'default'",
+      "'outlined'",
+    ]);
+    assert.strictEqual(result[0].Args[0].defaultValue, "'default'");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('loadSignatureData parses the Prettier-reformatted single-quoted syntax the real script produces', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'signature-data-'));
+  const filePath = path.join(dir, 'signature-data.ts');
+
+  try {
+    // This is not valid JSON (single-quoted strings, unquoted keys, a
+    // trailing comma) - it's what Prettier actually turns the generator's
+    // JSON.stringify output into. JSON.parse would reject this.
+    writeFileSync(
+      filePath,
+      `import type { ComponentDoc } from 'glimmer-docgen-typescript';
+const data: ComponentDoc[] = [
+  {
+    package: 'buttons',
+    module: 'button',
+    name: 'Button',
+    description: 'A button.',
+    Args: [
+      {
+        identifier: 'appearance',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'The appearance',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+  },
+];
+export type { ComponentDoc };
+export default data;`,
+    );
+
+    const result = loadSignatureData(filePath);
+
+    assert.strictEqual(result[0].name, 'Button');
+    assert.strictEqual(result[0].Args[0].type.type, 'string');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('loadSignatureData throws a clear error when the file does not match the expected format', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'signature-data-'));
+  const filePath = path.join(dir, 'signature-data.ts');
+
+  try {
+    writeFileSync(filePath, 'export default [];');
+
+    assert.throws(
+      () => loadSignatureData(filePath),
+      /Could not find the generated data array/,
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

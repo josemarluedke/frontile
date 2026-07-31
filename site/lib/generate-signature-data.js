@@ -14,14 +14,6 @@ const components = docgen.parse([
   },
 ]);
 
-// Capture the plain (pre-highlight) data for the static-export Docfy plugin
-// (site/lib/docfy-plugin-signature-markdown.mjs), which needs real ComponentDoc[]
-// data, not HTML syntax-highlighting spans meant only for the browser.
-fs.writeFileSync(
-  path.join(__dirname, 'signature-data.json'),
-  JSON.stringify(components, null, 2)
-);
-
 function highlight(property) {
   if (!property) {
     return;
