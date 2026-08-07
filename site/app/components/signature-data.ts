@@ -18741,7 +18741,11 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'animation',
-        type: { type: 'SkeletonVariants' },
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'shimmer\'</span> | <span class="hljs-string">\'pulse\'</span>',
+          items: ["'none'", "'shimmer'", "'pulse'"],
+        },
         isRequired: false,
         isInternal: false,
         description: 'Animation style for the placeholder.',

@@ -692,7 +692,7 @@ column.
 
 ```gts preview
 import { array } from '@ember/helper';
-import { Table } from 'frontile';
+import { Table, Skeleton } from 'frontile';
 
 const columns = [
   { key: 'name', name: 'Name' },
@@ -705,7 +705,7 @@ const columns = [
       <b.Row>
         {{#each b.columns as |column|}}
           <b.Cell data-column={{column.key}}>
-            <div class='h-4 w-full rounded bg-surface-overlay-medium' />
+            <Skeleton />
           </b.Cell>
         {{/each}}
       </b.Row>

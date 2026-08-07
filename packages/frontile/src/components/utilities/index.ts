@@ -4,6 +4,7 @@ export * from './avatar';
 export * from './visually-hidden';
 export * from './collapsible';
 export * from './divider';
+export * from './skeleton';
 export * from './spinner';
 export * from '../../utils/ref';
 export * from '../../utils/toggle';
