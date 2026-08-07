@@ -18760,6 +18760,34 @@ const data: ComponentDoc[] = [
         description: '',
         tags: {},
       },
+      {
+        identifier: 'shape',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'rounded\'</span> | <span class="hljs-string">\'square\'</span> | <span class="hljs-string">\'circle\'</span> | <span class="hljs-string">\'text\'</span> | <span class="hljs-string">\'rect\'</span>',
+          items: ["'rounded'", "'square'", "'circle'", "'text'", "'rect'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Shape preset. `text` fills its container at text height; `circle` and\n`square` are equal-sided and match Avatar's radii; `rounded` and `rect`\nfill their container for image and card placeholders.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'text'" } },
+        defaultValue: '<span class="hljs-string">\'text\'</span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-built_in">enum</span>',
+          raw: '<span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>',
+          items: ["'xs'", "'sm'", "'lg'", "'xl'", "'md'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Size preset. For `circle` and `square` this sets both dimensions from\nAvatar's scale; for the other shapes it sets the height.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
     ],
     Blocks: [],
     Element: {
