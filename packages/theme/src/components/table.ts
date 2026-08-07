@@ -82,24 +82,25 @@ const table = tv({
       '[&:has([role=checkbox])]:pr-0'
     ],
     empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12'],
-    skeleton: ['w-full', 'max-w-[16ch]']
+    // Deliberately carries no width or height: these classes are merged onto
+    // Skeleton *after* its own shape and size variants, so any dimension set
+    // here would defeat a column's `skeleton: 'circle'` preset. The table
+    // passes its `size` through to Skeleton instead.
+    skeleton: ['max-w-[16ch]']
   },
   variants: {
     size: {
       sm: {
         th: 'h-10 px-3 py-2 text-label-2xs',
-        td: 'px-3 py-2 text-body-micro',
-        skeleton: 'h-3'
+        td: 'px-3 py-2 text-body-micro'
       },
       md: {
         th: 'h-12 px-4 text-label-xs',
-        td: 'p-4 text-body-2xs',
-        skeleton: 'h-4'
+        td: 'p-4 text-body-2xs'
       },
       lg: {
         th: 'h-14 px-6 text-label-sm',
-        td: 'p-6 text-body-xs',
-        skeleton: 'h-5'
+        td: 'p-6 text-body-xs'
       }
     },
     isLoading: {

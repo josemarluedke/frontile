@@ -460,10 +460,43 @@ so a refresh, a filter requery, or loading page two never throws away rows the
 user is already reading. `@emptyContent` and the `empty` block stay suppressed
 while they render, and a `loading` block takes precedence when present.
 
-Each placeholder cell is a [`Skeleton`](/docs/components/utilities/skeleton) component: one
-uniform bar per cell, aligned and padded to the table's `@size`. For richer
-shapes — stacked cells, per-column widths — use `bodyTop` with the yielded
-columns instead, rendering `Skeleton` yourself for each piece of content.
+Each placeholder cell is a [`Skeleton`](/docs/components/utilities/skeleton)
+component, sized from the table's `@size` so the bars match the row height.
+
+#### Shaping a column's placeholder
+
+A text bar is wrong for a column that holds an avatar. Set `skeleton` on the
+column to pick a shape — it accepts the same values as `Skeleton`'s `@shape`,
+and columns that omit it stay text bars.
+
+```gts preview
+import { array } from '@ember/helper';
+import { Table } from 'frontile';
+
+const columns = [
+  { key: 'avatar', name: '', skeleton: 'circle' },
+  { key: 'name', name: 'Name' },
+  { key: 'thumb', name: 'Preview', skeleton: 'square' },
+  { key: 'role', name: 'Role' }
+];
+
+<template>
+  <Table
+    @columns={{columns}}
+    @items={{(array)}}
+    @isLoading={{true}}
+    @skeletonRows={{4}}
+  />
+</template>
+```
+
+Because `circle` and `square` reuse Avatar's size scale, a placeholder in an
+`@size="md"` table is the same 32px as the `<Avatar @size="md">` it stands in
+for.
+
+This is deliberately only a shape. For anything richer — cells that stack an
+icon, a name and a chip, or per-column widths — use `bodyTop` with the yielded
+columns and render `Skeleton` yourself for each piece of content.
 
 If neither the built-in skeleton rows nor a custom `bodyTop` layout fit —
 for example, an overlay that needs to sit over content that is already on

@@ -37,6 +37,7 @@ import type {
   SelectionMode
 } from './types';
 import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
+import type { SkeletonVariants } from '@frontile/theme';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 import type Owner from '@ember/owner';
 import type { SimpleTableRow } from '../simple-table/row';
@@ -170,6 +171,13 @@ function columnStickyPosition<T>(
 ): 'left' | 'right' | undefined {
   const frontileOptions = extractFrontileOptions(column);
   return frontileOptions?.stickyPosition;
+}
+
+function columnSkeletonShape<T>(
+  column: Column<T>
+): SkeletonVariants['shape'] | undefined {
+  const frontileOptions = extractFrontileOptions(column);
+  return frontileOptions?.skeleton;
 }
 
 function createCellContext<T>(column: Column<T>, row: Row<T>) {
@@ -506,6 +514,7 @@ class Table<
         isVisible,
         isSortable,
         sortProperty,
+        skeleton,
         Cell,
         value,
         ...baseColumn
@@ -513,11 +522,15 @@ class Table<
 
       const pluginOptions: unknown[] = [];
 
-      // Add Frontile sticky options if present
-      if (isSticky !== undefined || stickyPosition !== undefined) {
+      // Add Frontile per-column options if any are present
+      if (
+        isSticky !== undefined ||
+        stickyPosition !== undefined ||
+        skeleton !== undefined
+      ) {
         const frontileOption: FrontilePluginOption = [
           'frontile',
-          () => ({ isSticky, stickyPosition })
+          () => ({ isSticky, stickyPosition, skeleton })
         ];
         pluginOptions.push(frontileOption);
       }
@@ -808,7 +821,11 @@ class Table<
                         @stickyPosition={{columnStickyPosition column}}
                         data-column={{column.key}}
                       >
-                        <Skeleton @class={{this.skeletonClassNames}} />
+                        <Skeleton
+                          @shape={{columnSkeletonShape column}}
+                          @size={{@size}}
+                          @class={{this.skeletonClassNames}}
+                        />
                       </t.Cell>
                     {{/each}}
                   </t.Row>

@@ -3656,6 +3656,88 @@ module(
           .exists();
       });
 
+      test('a column can declare its skeleton shape', async function (assert) {
+        const shapedColumns = [
+          { key: 'id', name: '', skeleton: 'circle' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{shapedColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="id"] [data-component="skeleton"]'
+          )
+          .hasClass('rounded-full', 'the shaped column renders a circle');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="name"] [data-component="skeleton"]'
+          )
+          .hasClass('rounded-default', 'unshaped columns stay text bars');
+      });
+
+      test('a shaped skeleton is not stretched by the table slot', async function (assert) {
+        // Regression guard: the table's `skeleton` slot classes are merged
+        // last, so any width/height it sets would defeat the shape preset.
+        const shapedColumns = [
+          { key: 'id', name: '', skeleton: 'circle' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{shapedColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        const el = this.element.querySelector(
+          '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+        ) as HTMLElement;
+        const rect = el.getBoundingClientRect();
+
+        assert.dom(el).doesNotHaveClass('w-full');
+        assert.strictEqual(
+          Math.round(rect.width),
+          Math.round(rect.height),
+          'a circle skeleton renders square'
+        );
+      });
+
+      test('skeleton height follows the table size', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @size="sm"
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"] [data-component="skeleton"]')
+          .hasClass('h-3', 'sm table yields an sm skeleton');
+      });
+
       test('skeleton cells include the selection column', async function (assert) {
         const items: TestItem[] = [];
 

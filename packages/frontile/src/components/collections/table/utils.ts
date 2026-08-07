@@ -1,12 +1,12 @@
 import type { Column } from '@universal-ember/table';
-import type { FrontileStickyOptions, FrontilePluginOption } from './types';
+import type { FrontileColumnOptions, FrontilePluginOption } from './types';
 
 /**
- * Helper to extract Frontile sticky options from a universal-ember column's pluginOptions
+ * Helper to extract Frontile per-column options from a universal-ember column's pluginOptions
  */
 export function extractFrontileOptions<T = unknown>(
   column?: Column<T>
-): FrontileStickyOptions | undefined {
+): FrontileColumnOptions | undefined {
   if (!column?.config?.pluginOptions) {
     return undefined;
   }
