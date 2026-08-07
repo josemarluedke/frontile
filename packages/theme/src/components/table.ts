@@ -86,7 +86,11 @@ const table = tv({
     // Skeleton *after* its own shape and size variants, so any dimension set
     // here would defeat a column's `skeleton: 'circle'` preset. The table
     // passes its `size` through to Skeleton instead.
-    skeleton: ['max-w-[16ch]']
+    skeleton: ['max-w-[16ch]'],
+    // Placeholder rows fade in one after another. The per-row `animation-delay`
+    // is set inline by the component, since a delay that scales with the row
+    // index cannot be a static utility class.
+    skeletonRow: ['animate-skeleton-enter', 'motion-reduce:animate-none']
   },
   variants: {
     size: {

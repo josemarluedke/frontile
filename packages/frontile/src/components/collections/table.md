@@ -84,11 +84,7 @@ Define reusable Cell components in your column configuration:
 
 ```gts preview
 import Component from '@glimmer/component';
-import {
-  Table,
-  type ColumnConfig,
-  type CellSignature
-} from 'frontile';
+import { Table, type ColumnConfig, type CellSignature } from 'frontile';
 import { Chip } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 import type { TOC } from '@ember/component/template-only';
@@ -435,25 +431,72 @@ items. It is opt-in, and the number is required rather than defaulted: the row
 count is the one thing the table cannot infer, and a wrong default promises ten
 rows and delivers three.
 
+Load the data below to watch the placeholders hand off to real rows.
+
 ```gts preview
-import { array } from '@ember/helper';
-import { Table } from 'frontile';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { Table, Button, type ColumnConfig } from 'frontile';
+import { users, type User } from 'site/components/table-demo-data';
 
-const columns = [
-  { key: 'name', name: 'Name' },
-  { key: 'email', name: 'Email' },
-  { key: 'role', name: 'Role' }
-];
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
 
-<template>
-  <Table
-    @columns={{columns}}
-    @items={{(array)}}
-    @isLoading={{true}}
-    @skeletonRows={{5}}
-  />
-</template>
+  @tracked isLoading = true;
+  @tracked items: User[] = [];
+
+  timer?: ReturnType<typeof setTimeout>;
+
+  load = () => {
+    this.reset();
+    this.timer = setTimeout(() => {
+      this.items = users;
+      this.isLoading = false;
+    }, 1600);
+  };
+
+  reset = () => {
+    clearTimeout(this.timer);
+    this.isLoading = true;
+    this.items = [];
+  };
+
+  willDestroy() {
+    super.willDestroy();
+    clearTimeout(this.timer);
+  }
+
+  <template>
+    <div class='w-full space-y-3'>
+      <div class='flex gap-2'>
+        <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
+          Load data
+        </Button>
+        <Button @size='sm' @appearance='outlined' {{on 'click' this.reset}}>
+          Back to loading
+        </Button>
+      </div>
+
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @isLoading={{this.isLoading}}
+        @skeletonRows={{5}}
+      />
+    </div>
+  </template>
+}
 ```
+
+Placeholder rows fade in one after another, 60ms apart, so they arrive the way
+the real rows will rather than appearing as one block. The stagger stops
+growing after ten rows — past that the last row would sit blank longer than
+many requests take — and `prefers-reduced-motion` turns it off entirely.
 
 Skeleton rows render only when `@isLoading` is true **and** there are no items,
 so a refresh, a filter requery, or loading page two never throws away rows the
@@ -809,11 +852,11 @@ rows that stand in for content that has not arrived yet.
 
 These are a supported contract, stable across minor versions:
 
-| Attribute     | Element | Value                                    |
-| ------------- | ------- | ---------------------------------------- |
-| `data-key`    | `<th>`  | the column's `key`                       |
-| `data-column` | `<td>`  | the column's `key`                       |
-| `data-key`    | `<tr>`  | the row's key, from `@getKey`            |
+| Attribute     | Element | Value                         |
+| ------------- | ------- | ----------------------------- |
+| `data-key`    | `<th>`  | the column's `key`            |
+| `data-column` | `<td>`  | the column's `key`            |
+| `data-key`    | `<tr>`  | the row's key, from `@getKey` |
 
 Use them for column-targeted styling and test selectors.
 
@@ -939,7 +982,9 @@ export default class DemoComponent extends Component {
   <template>
     <div>
       <p class='mb-4 text-sm'>
-        Selected: {{this.selectedKeys.size}} row(s)
+        Selected:
+        {{this.selectedKeys.size}}
+        row(s)
       </p>
       <Table
         @columns={{this.columns}}
@@ -990,7 +1035,8 @@ export default class DemoComponent extends Component {
   <template>
     <div>
       <p class='mb-4 text-sm'>
-        Selected: {{if this.selectedUser this.selectedUser.name 'None'}}
+        Selected:
+        {{if this.selectedUser this.selectedUser.name 'None'}}
       </p>
       <Table
         @columns={{this.columns}}

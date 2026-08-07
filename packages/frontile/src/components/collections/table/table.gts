@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { hash, fn } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 import { cached } from '@glimmer/tracking';
 import { SimpleTable } from '../simple-table';
@@ -178,6 +179,25 @@ function columnSkeletonShape<T>(
 ): SkeletonVariants['shape'] | undefined {
   const frontileOptions = extractFrontileOptions(column);
   return frontileOptions?.skeleton;
+}
+
+/** Gap between one placeholder row's entrance and the next. */
+const SKELETON_STAGGER_MS = 60;
+/**
+ * Cap on the accumulated delay. Without it a 30-row skeleton would leave its
+ * last row blank for nearly two seconds — longer than many requests take, so
+ * the stagger would outlive the wait it is describing.
+ */
+const SKELETON_STAGGER_MAX_MS = 540;
+
+/**
+ * Per-row entrance delay, as an inline style. It has to be inline rather than a
+ * utility class: the value scales with the row index, and Tailwind only emits
+ * classes it can read as literals in the theme package's source.
+ */
+function skeletonRowDelay(index: number) {
+  const delay = Math.min(index * SKELETON_STAGGER_MS, SKELETON_STAGGER_MAX_MS);
+  return htmlSafe(`animation-delay:${delay}ms`);
 }
 
 function createCellContext<T>(column: Column<T>, row: Row<T>) {
@@ -642,6 +662,10 @@ class Table<
     return this.styles.table({ class: this.args.classes?.table });
   }
 
+  get skeletonRowClassNames() {
+    return this.styles.skeletonRow({ class: this.args.classes?.skeletonRow });
+  }
+
   get skeletonClassNames() {
     return this.styles.skeleton({ class: this.args.classes?.skeleton });
   }
@@ -813,8 +837,13 @@ class Table<
           {{else}}
             {{#if (and @isLoading this.skeletonRowsArray.length)}}
               {{#unless (has-block "loading")}}
-                {{#each this.skeletonRowsArray}}
-                  <t.Row data-test-id="table-skeleton-row">
+                {{#each this.skeletonRowsArray as |rowIndex|}}
+                  <t.Row
+                    @class={{this.skeletonRowClassNames}}
+                    style={{skeletonRowDelay rowIndex}}
+                    aria-hidden="true"
+                    data-test-id="table-skeleton-row"
+                  >
                     {{#each this.headlessColumns as |column|}}
                       <t.Cell
                         @isSticky={{columnIsSticky column}}
@@ -824,6 +853,7 @@ class Table<
                         <Skeleton
                           @shape={{columnSkeletonShape column}}
                           @size={{@size}}
+                          @animation="pulse"
                           @class={{this.skeletonClassNames}}
                         />
                       </t.Cell>

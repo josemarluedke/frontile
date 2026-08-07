@@ -3718,6 +3718,108 @@ module(
         );
       });
 
+      test('skeleton bars pulse rather than shimmer', async function (assert) {
+        // Ten shimmering bars sweeping at once reads as busy; a synchronised
+        // pulse is calmer at table scale.
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('animate-pulse');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .doesNotHaveClass('animate-shimmer');
+      });
+
+      test('skeleton rows fade in staggered', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+            />
+          </template>
+        );
+
+        const rows = Array.from(
+          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+        ) as HTMLElement[];
+
+        assert.dom(rows[0]!).hasClass('animate-skeleton-enter');
+        assert.dom(rows[0]!).hasClass('motion-reduce:animate-none');
+        assert.strictEqual(
+          rows.map((r) => r.style.animationDelay).join(','),
+          '0ms,60ms,120ms',
+          'each row waits 60ms longer than the one above it'
+        );
+      });
+
+      test('the entrance stagger is capped', async function (assert) {
+        // Without a cap a long skeleton leaves its last rows blank for longer
+        // than many requests take.
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{20}}
+            />
+          </template>
+        );
+
+        const rows = Array.from(
+          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+        ) as HTMLElement[];
+
+        assert.strictEqual(rows.length, 20);
+        assert.strictEqual(
+          rows[rows.length - 1]!.style.animationDelay,
+          '540ms',
+          'the delay stops growing rather than running away'
+        );
+      });
+
+      test('skeleton rows are hidden from assistive technology', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"]')
+          .hasAttribute('aria-hidden', 'true');
+      });
+
       test('skeleton height follows the table size', async function (assert) {
         const items: TestItem[] = [];
 
@@ -3734,7 +3836,9 @@ module(
         );
 
         assert
-          .dom('[data-test-id="table-skeleton-row"] [data-component="skeleton"]')
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
           .hasClass('h-3', 'sm table yields an sm skeleton');
       });
 
