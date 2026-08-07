@@ -4,15 +4,40 @@ const path = require('path');
 const lowlight = require('lowlight');
 const unified = require('unified');
 const rehypeStringify = require('rehype-stringify');
+const { collectBoundArgs, applyBoundArgs } = require('./bound-args');
 
 const processor = unified().use(rehypeStringify);
 
-const components = docgen.parse([
-  {
-    root: path.resolve(path.join(__dirname, '../../')),
-    pattern: 'packages/*/declarations/components/**/*.ts',
+const root = path.resolve(path.join(__dirname, '../../'));
+const pattern = 'packages/*/declarations/components/**/*.ts';
+
+const components = docgen.parse([{ root, pattern }]);
+
+// `WithBoundArgs<…>` renders as `never` (or an unreadable `Invokable<…>` blob) through
+// the docgen type checker, so render it from the declaration source instead.
+// See ./bound-args.js.
+const boundArgs = collectBoundArgs(
+  [...new Set(components.map((c) => path.join(root, c.fileName)))],
+  root
+);
+const applyTally = components.reduce(
+  (total, component) => {
+    const { expected, applied } = applyBoundArgs(component, boundArgs);
+    return {
+      expected: total.expected + expected,
+      applied: total.applied + applied,
+    };
   },
-]);
+  { expected: 0, applied: 0 }
+);
+
+if (applyTally.applied !== applyTally.expected) {
+  throw new Error(
+    `bound-args: resolved ${applyTally.expected} bound components but only rewrote ` +
+      `${applyTally.applied}. glimmer-docgen-typescript's output shape likely changed — ` +
+      `the unrewritten entries are rendering as \`never\`.`
+  );
+}
 
 function highlight(property) {
   if (!property) {
