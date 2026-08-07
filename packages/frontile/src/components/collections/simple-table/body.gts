@@ -4,6 +4,7 @@ import { useStyles, twMerge } from '@frontile/theme';
 import { SimpleTableRow } from './row';
 import { SimpleTableCell } from './cell';
 import type { SlotsToClasses, TableSlots } from '../table/types';
+import type { WithBoundArgs } from '@glint/template';
 
 interface SimpleTableBodySignature {
   Args: {
@@ -24,8 +25,8 @@ interface SimpleTableBodySignature {
   Blocks: {
     default: [
       {
-        Row: typeof SimpleTableRow;
-        Cell: typeof SimpleTableCell;
+        Row: WithBoundArgs<typeof SimpleTableRow, 'styleFns' | 'classes'>;
+        Cell: WithBoundArgs<typeof SimpleTableCell, 'styleFns' | 'classes'>;
       }
     ];
   };
@@ -48,7 +49,12 @@ class SimpleTableBody extends Component<SimpleTableBodySignature> {
       data-component="table-body"
       ...attributes
     >
-      {{yield (hash Row=SimpleTableRow Cell=SimpleTableCell)}}
+      {{yield
+        (hash
+          Row=(component SimpleTableRow styleFns=this.styles classes=@classes)
+          Cell=(component SimpleTableCell styleFns=this.styles classes=@classes)
+        )
+      }}
     </tbody>
   </template>
 }

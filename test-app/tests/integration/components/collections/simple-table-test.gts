@@ -319,5 +319,76 @@ module(
 
       assert.dom('[data-test-id="nested-cell"]').hasClass('custom-td-class');
     });
+
+    test('a Row yielded from Body respects the table size', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @size="sm" as |t|>
+            <t.Body as |b|>
+              <b.Row as |r|>
+                <r.Cell data-test-id="nested-cell">Nested</r.Cell>
+              </b.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      // The `sm` size variant sets `px-3 py-2 text-body-micro` on td; the md
+      // default sets `text-body-2xs`. `text-body-micro` comes only from the
+      // `sm` variant (no shorthand/longhand ambiguity like `p-4` vs `px`/`py`).
+      assert.dom('[data-test-id="nested-cell"]').hasClass('px-3');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('py-2');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-micro');
+    });
+
+    test('a Row yielded from Body respects table classes.td', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @classes={{hash td="custom-td-class"}} as |t|>
+            <t.Body as |b|>
+              <b.Row as |r|>
+                <r.Cell data-test-id="nested-cell">Nested</r.Cell>
+              </b.Row>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="nested-cell"]').hasClass('custom-td-class');
+    });
+
+    test('a Cell yielded from Body respects the table size', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @size="sm" as |t|>
+            <t.Body as |b|>
+              <tr>
+                <b.Cell data-test-id="nested-cell">Nested</b.Cell>
+              </tr>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="nested-cell"]').hasClass('px-3');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('py-2');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-micro');
+    });
+
+    test('a Cell yielded from Body respects table classes.td', async function (assert) {
+      await render(
+        <template>
+          <SimpleTable @classes={{hash td="custom-td-class"}} as |t|>
+            <t.Body as |b|>
+              <tr>
+                <b.Cell data-test-id="nested-cell">Nested</b.Cell>
+              </tr>
+            </t.Body>
+          </SimpleTable>
+        </template>
+      );
+
+      assert.dom('[data-test-id="nested-cell"]').hasClass('custom-td-class');
+    });
   }
 );
