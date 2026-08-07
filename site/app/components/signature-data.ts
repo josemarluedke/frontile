@@ -71,7 +71,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Button</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">classNames</span>: <span class="hljs-built_in">string</span>; }]; }; }; }>, HTMLButtonElement>>; ToggleButton: Invokable&#x3C;...>; }]',
+          raw: '[{ <span class="hljs-attr">Button</span>: Button (isInGroup bound); ToggleButton: ToggleButton (isInGroup bound); }]',
           items: [
             {
               identifier: '0',
@@ -80,9 +80,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Button',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">classNames</span>: <span class="hljs-built_in">string</span>; }]; }; }; }>, HTMLButtonElement>>',
-                    },
+                    type: { type: 'Button (isInGroup bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -90,9 +88,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'ToggleButton',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ToggleButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLButtonElement>>',
-                    },
+                    type: { type: 'ToggleButton (isInGroup bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -677,7 +673,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Trigger</span>: <span class="hljs-built_in">never</span>; Menu: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Trigger</span>: Trigger (anchor, toggle, trigger bound); Menu: Menu (toggle, Content, closeOnItemSelect bound); }]',
           items: [
             {
               identifier: '0',
@@ -686,7 +682,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Trigger',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'Trigger (anchor, toggle, trigger bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -694,7 +690,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Menu',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Menu (toggle, Content, closeOnItemSelect bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -1065,11 +1063,11 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[item: <span class="hljs-built_in">never</span>]',
+          raw: '[item: ListboxItem (manager bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: { type: 'ListboxItem (manager bound)' },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -1203,13 +1201,11 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[Checkbox: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Checkbox, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span>>]',
+          raw: '[Checkbox: Checkbox (name, onChange, isDisabled bound)]',
           items: [
             {
               identifier: '0',
-              type: {
-                type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Checkbox, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span>>',
-              },
+              type: { type: 'Checkbox (name, onChange, isDisabled bound)' },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -1421,7 +1417,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Checkbox</span>: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Checkbox, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span> | <span class="hljs-string">\'checked\'</span>>; CheckboxGroup: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> CheckboxGroup, <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span>>; ... <span class="hljs-number">6</span> more ...; Textarea: WithBoundArgs&#x3C;...>; }]',
+          raw: '[{ <span class="hljs-attr">Checkbox</span>: Checkbox (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: CheckboxGroup (name, errors, isDisabled bound); Input: Input (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: Radio (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: RadioGroup (name, errors, value, onChange, isDisabled bound); SingleSelect: Select&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: Select&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); Switch: Switch (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: Textarea (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]',
           items: [
             {
               identifier: '0',
@@ -1431,7 +1427,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Checkbox',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Checkbox, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span> | <span class="hljs-string">\'checked\'</span>>',
+                      type: 'Checkbox (name, errors, checked, onChange, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1441,7 +1437,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'CheckboxGroup',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> CheckboxGroup, <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span>>',
+                      type: 'CheckboxGroup (name, errors, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1451,7 +1447,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Input',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Input, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span> | <span class="hljs-string">\'value\'</span> | <span class="hljs-string">\'onInput\'</span>>',
+                      type: 'Input (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1461,7 +1457,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Radio',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Radio, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span> | <span class="hljs-string">\'checkedValue\'</span>>',
+                      type: 'Radio (name, errors, checkedValue, onChange, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1471,7 +1467,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'RadioGroup',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> RadioGroup, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'value\'</span>>',
+                      type: 'RadioGroup (name, errors, value, onChange, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1481,7 +1477,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'SingleSelect',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">...args: MaybeNamed&#x3C;NamedArgs&#x3C;Omit&#x3C;Sig[<span class="hljs-string">\'Args\'</span>], BoundKeys> &#x26; Partial&#x3C;Pick&#x3C;Sig[<span class="hljs-string">\'Args\'</span>], BoundKeys>>>>[]</span>) =></span> ComponentReturn&#x3C;Sig <span class="hljs-keyword">extends</span> { ...; } ? B : {}, Sig <span class="hljs-keyword">extends</span> { ...; } ? E : unknown>>',
+                      type: 'Select&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1491,7 +1487,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'MultiSelect',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">...args: MaybeNamed&#x3C;NamedArgs&#x3C;Omit&#x3C;Sig[<span class="hljs-string">\'Args\'</span>], BoundKeys> &#x26; Partial&#x3C;Pick&#x3C;Sig[<span class="hljs-string">\'Args\'</span>], BoundKeys>>>>[]</span>) =></span> ComponentReturn&#x3C;Sig <span class="hljs-keyword">extends</span> { ...; } ? B : {}, Sig <span class="hljs-keyword">extends</span> { ...; } ? E : unknown>>',
+                      type: 'Select&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1501,7 +1497,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Switch',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Switch, <span class="hljs-string">\'isSelected\'</span> | <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span>>',
+                      type: 'Switch (name, errors, isSelected, onChange, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1511,7 +1507,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Textarea',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Textarea, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'onBlur\'</span> | <span class="hljs-string">\'value\'</span> | <span class="hljs-string">\'onInput\'</span>>',
+                      type: 'Textarea (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1643,7 +1639,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; isInvalid: <span class="hljs-built_in">boolean</span>; describedBy: <span class="hljs-function">(<span class="hljs-params">hasDescription?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span>, hasFeedback?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span></span>) =></span> <span class="hljs-built_in">string</span>; Label: WithBoundArgs&#x3C;ComponentLike&#x3C;LabelSignature>, <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'for\'</span> | <span class="hljs-string">\'isRequired\'</span>>; Description: WithBoundArgs&#x3C;...>; Feedback: WithBoundArgs&#x3C;...>; }]',
+          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; isInvalid: <span class="hljs-built_in">boolean</span>; describedBy: <span class="hljs-function">(<span class="hljs-params">hasDescription?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span>, hasFeedback?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span></span>) =></span> <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>; Label: Label (<span class="hljs-keyword">for</span>, size, isRequired bound); Description: FormDescription (id, size bound); Feedback: FormFeedback (id, size, messages, intent bound); }]',
           items: [
             {
               identifier: '0',
@@ -1682,7 +1678,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Label',
                     type: {
-                      type: 'WithBoundArgs&#x3C;ComponentLike&#x3C;LabelSignature>, <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'for\'</span> | <span class="hljs-string">\'isRequired\'</span>>',
+                      type: 'Label (<span class="hljs-keyword">for</span>, size, isRequired bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -1691,9 +1687,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Description',
-                    type: {
-                      type: 'WithBoundArgs&#x3C;ComponentLike&#x3C;FormDescriptionSignature>, <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'id\'</span>>',
-                    },
+                    type: { type: 'FormDescription (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -1702,7 +1696,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Feedback',
                     type: {
-                      type: 'WithBoundArgs&#x3C;ComponentLike&#x3C;FormFeedbackSignature>, <span class="hljs-string">\'intent\'</span> | <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'id\'</span> | <span class="hljs-string">\'messages\'</span>>',
+                      type: 'FormFeedback (id, size, messages, intent bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -2155,7 +2149,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Field',
                     type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Field, <span class="hljs-string">\'errors\'</span> | <span class="hljs-string">\'formData\'</span> | <span class="hljs-string">\'disabled\'</span> | <span class="hljs-string">\'validateOn\'</span> | <span class="hljs-string">\'validateField\'</span>>',
+                      type: 'Field (errors, formData, disabled, validateOn, validateField bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -2715,7 +2709,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> NativeSelectItem, <span class="hljs-string">\'manager\'</span>>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: NativeSelectItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -2748,9 +2742,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> NativeSelectItem, <span class="hljs-string">\'manager\'</span>>',
-                    },
+                    type: { type: 'NativeSelectItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -2774,7 +2766,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> NativeSelectItem, <span class="hljs-string">\'manager\'</span>>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: NativeSelectItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -2783,9 +2775,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: {
-                      type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> NativeSelectItem, <span class="hljs-string">\'manager\'</span>>',
-                    },
+                    type: { type: 'NativeSelectItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -3051,12 +3041,12 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[Radio: WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Radio, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'checkedValue\'</span>>]',
+          raw: '[Radio: Radio (name, onChange, checkedValue, isDisabled bound)]',
           items: [
             {
               identifier: '0',
               type: {
-                type: 'WithBoundArgs&#x3C;<span class="hljs-keyword">typeof</span> Radio, <span class="hljs-string">\'onChange\'</span> | <span class="hljs-string">\'name\'</span> | <span class="hljs-string">\'isDisabled\'</span> | <span class="hljs-string">\'checkedValue\'</span>>',
+                type: 'Radio (name, onChange, checkedValue, isDisabled bound)',
               },
               isRequired: false,
               isInternal: false,
@@ -4227,11 +4217,13 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[checkbox: <span class="hljs-built_in">never</span>, <span class="hljs-attr">api</span>: { <span class="hljs-attr">onChange</span>: <span class="hljs-function">(<span class="hljs-params">value: unknown, event: Event</span>) =></span> <span class="hljs-built_in">void</span>; }]',
+          raw: '[checkbox: FormCheckbox (privateContainerClass, _parentOnChange, size bound), <span class="hljs-attr">api</span>: { <span class="hljs-attr">onChange</span>: <span class="hljs-function">(<span class="hljs-params">value: unknown, event: Event</span>) =></span> <span class="hljs-built_in">void</span>; }]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: {
+                type: 'FormCheckbox (privateContainerClass, _parentOnChange, size bound)',
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -4415,7 +4407,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; hintId: <span class="hljs-built_in">string</span>; feedbackId: <span class="hljs-built_in">string</span>; Label: <span class="hljs-built_in">never</span>; Hint: <span class="hljs-built_in">never</span>; Feedback: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; Checkbox: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; hintId: <span class="hljs-built_in">string</span>; feedbackId: <span class="hljs-built_in">string</span>; Label: FormFieldLabel (<span class="hljs-keyword">for</span>, size bound); Hint: FormFieldHint (id, size bound); Feedback: FormFieldFeedback (id, size bound); Input: FormFieldInput (id, size bound); Textarea: FormFieldTextarea (id, size bound); Checkbox: FormFieldCheckbox (id, size bound); Radio: FormFieldRadio (id, size bound); }]',
           items: [
             {
               identifier: '0',
@@ -4448,7 +4440,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Label',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'FormFieldLabel (<span class="hljs-keyword">for</span>, size bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4456,7 +4450,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Hint',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldHint (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4464,7 +4458,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Feedback',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldFeedback (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4472,7 +4466,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Input',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldInput (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4480,7 +4474,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Textarea',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldTextarea (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4488,7 +4482,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Checkbox',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldCheckbox (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4496,7 +4490,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Radio',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'FormFieldRadio (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -4971,11 +4965,13 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[radio: <span class="hljs-built_in">never</span>]',
+          raw: '[radio: FormRadio (checked, privateContainerClass, _parentOnChange, size, name bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: {
+                type: 'FormRadio (checked, privateContainerClass, _parentOnChange, size, name bound)',
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -7085,7 +7081,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Input</span>: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; Select: <span class="hljs-built_in">never</span>; Checkbox: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; state: { <span class="hljs-attr">hasSubmitted</span>: <span class="hljs-built_in">boolean</span>; }; }]',
+          raw: '[{ <span class="hljs-attr">Input</span>: ChangesetFormFieldsInput (changeset, hasSubmitted, showError bound); Textarea: ChangesetFormFieldsTextarea (changeset, hasSubmitted, showError bound); Select: ChangesetFormFieldsSelect (changeset, hasSubmitted, showError bound); Checkbox: ChangesetFormFieldsCheckbox (changeset bound); CheckboxGroup: ChangesetFormFieldsCheckboxGroup (changeset, hasSubmitted, showError bound); Radio: ChangesetFormFieldsRadio (changeset bound); RadioGroup: ChangesetFormFieldsRadioGroup (changeset, hasSubmitted, showError bound); state: { <span class="hljs-attr">hasSubmitted</span>: <span class="hljs-built_in">boolean</span>; }; }]',
           items: [
             {
               identifier: '0',
@@ -7094,7 +7090,9 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Input',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsInput (changeset, hasSubmitted, showError bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7102,7 +7100,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Textarea',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsTextarea (changeset, hasSubmitted, showError bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7110,7 +7110,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Select',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsSelect (changeset, hasSubmitted, showError bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7118,7 +7120,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Checkbox',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsCheckbox (changeset bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7126,7 +7130,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'CheckboxGroup',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsCheckboxGroup (changeset, hasSubmitted, showError bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7134,7 +7140,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Radio',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsRadio (changeset bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7142,7 +7150,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'RadioGroup',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ChangesetFormFieldsRadioGroup (changeset, hasSubmitted, showError bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7550,7 +7560,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -7583,7 +7593,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -7607,7 +7617,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -7616,7 +7626,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8216,7 +8226,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Header</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">Column</span>: <span class="hljs-keyword">typeof</span> SimpleTableColumn; }]; }; }; }>, HTMLTableSectionElement>>; ... ...',
+          raw: '[{ <span class="hljs-attr">Header</span>: SimpleTableHeader (styleFns, classes bound); Body: SimpleTableBody (styleFns, classes bound); Footer: SimpleTableFooter (styleFns, classes bound); Column: SimpleTableColumn (styleFns bound); Row: SimpleTableRow (styleFns, classes bound); Cell: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -8226,7 +8236,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">Column</span>: <span class="hljs-keyword">typeof</span> SimpleTableColumn; }]; }; }; }>, HTMLTableSectionElement>>',
+                      type: 'SimpleTableHeader (styleFns, classes bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -8235,9 +8245,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">Row</span>: <span class="hljs-keyword">typeof</span> SimpleTableRow; Cell: <span class="hljs-keyword">typeof</span> SimpleTableCell; }]; }; }; }>, HTMLTableSectionElement>>',
-                    },
+                    type: { type: 'SimpleTableBody (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8246,7 +8254,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Footer',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">Column</span>: <span class="hljs-keyword">typeof</span> SimpleTableColumn; }]; }; }; }>, HTMLTableSectionElement>>',
+                      type: 'SimpleTableFooter (styleFns, classes bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -8255,9 +8263,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Column',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; styleFns?: <span class="hljs-built_in">any</span>; }, <span class="hljs-string">\'styleFns\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLTableCellElement>>',
-                    },
+                    type: { type: 'SimpleTableColumn (styleFns bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8265,9 +8271,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Row',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [...]; }; }; }>, HTMLTableRowElement>>',
-                    },
+                    type: { type: 'SimpleTableRow (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -8275,9 +8279,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; styleFns?: <span class="hljs-built_in">any</span>; classes?: SlotsToClasses&#x3C;TableSlots>; }, <span class="hljs-string">\'styleFns\'</span> | <span class="hljs-string">\'classes\'</span>></span>) =></span> ComponentReturn&#x3C;...>>',
-                    },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -9040,7 +9042,7 @@ const data: ComponentDoc[] = [
         identifier: 'toolbar',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">ColumnVisibility</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">ColumnVisibility</span>: ColumnVisibility&#x3C;T> (tableInstance bound); }]',
           items: [
             {
               identifier: '0',
@@ -9049,7 +9051,9 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'ColumnVisibility',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ColumnVisibility&#x3C;T> (tableInstance bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -9073,7 +9077,7 @@ const data: ComponentDoc[] = [
         identifier: 'cell',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">column</span>: Column&#x3C;T>; value: ContentValue; row: Row&#x3C;T>; For: <span class="hljs-built_in">never</span>; Default: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">column</span>: Column&#x3C;T>; value: ContentValue; row: Row&#x3C;T>; For: CellFor&#x3C;T, TColumns> (column, registry bound); Default: CellDefault&#x3C;T> (column, registry bound); }]',
           items: [
             {
               identifier: '0',
@@ -9119,7 +9123,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'For',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'CellFor&#x3C;T, TColumns> (column, registry bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -9127,7 +9133,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Default',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'CellDefault&#x3C;T> (column, registry bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -9869,7 +9877,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Button</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">classNames</span>: <span class="hljs-built_in">string</span>; }]; }; }; }>, HTMLButtonElement>>; ToggleButton: Invokable&#x3C;...>; }]',
+          raw: '[{ <span class="hljs-attr">Button</span>: Button (isInGroup bound); ToggleButton: ToggleButton (isInGroup bound); }]',
           items: [
             {
               identifier: '0',
@@ -9878,9 +9886,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Button',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: [{ <span class="hljs-attr">classNames</span>: <span class="hljs-built_in">string</span>; }]; }; }; }>, HTMLButtonElement>>',
-                    },
+                    type: { type: 'Button (isInGroup bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -9888,9 +9894,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'ToggleButton',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ToggleButtonArgs, <span class="hljs-string">\'isInGroup\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLButtonElement>>',
-                    },
+                    type: { type: 'ToggleButton (isInGroup bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10531,7 +10535,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Trigger</span>: <span class="hljs-built_in">never</span>; Menu: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Trigger</span>: Trigger (anchor, toggle, trigger bound); Menu: Menu (toggle, Content, closeOnItemSelect bound); }]',
           items: [
             {
               identifier: '0',
@@ -10540,7 +10544,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Trigger',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'Trigger (anchor, toggle, trigger bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10548,7 +10552,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Menu',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Menu (toggle, Content, closeOnItemSelect bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -10718,7 +10724,9 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'Content',
-        type: { type: '<span class="hljs-built_in">never</span>' },
+        type: {
+          type: 'Content (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound)',
+        },
         isRequired: true,
         isInternal: true,
         description: '',
@@ -11177,11 +11185,11 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[item: <span class="hljs-built_in">never</span>]',
+          raw: '[item: ListboxItem (manager bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: { type: 'ListboxItem (manager bound)' },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -12035,7 +12043,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -12068,7 +12076,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12092,7 +12100,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -12101,7 +12109,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12302,11 +12310,11 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[Checkbox: <span class="hljs-built_in">never</span>]',
+          raw: '[Checkbox: Checkbox (name, onChange, isDisabled bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: { type: 'Checkbox (name, onChange, isDisabled bound)' },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -12524,7 +12532,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Checkbox</span>: <span class="hljs-built_in">never</span>; CheckboxGroup: <span class="hljs-built_in">never</span>; Input: <span class="hljs-built_in">never</span>; Radio: <span class="hljs-built_in">never</span>; RadioGroup: <span class="hljs-built_in">never</span>; SingleSelect: BoundSingleSelect&#x3C;unknown>; MultiSelect: BoundMultiSelect&#x3C;unknown>; Switch: <span class="hljs-built_in">never</span>; Textarea: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Checkbox</span>: Checkbox (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: CheckboxGroup (name, errors, isDisabled bound); Input: Input (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: Radio (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: RadioGroup (name, errors, value, onChange, isDisabled bound); SingleSelect: Select&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: Select&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); Switch: Switch (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: Textarea (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]',
           items: [
             {
               identifier: '0',
@@ -12533,7 +12541,9 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Checkbox',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Checkbox (name, errors, checked, onChange, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12541,7 +12551,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'CheckboxGroup',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'CheckboxGroup (name, errors, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12549,7 +12561,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Input',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Input (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12557,7 +12571,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Radio',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Radio (name, errors, checkedValue, onChange, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12565,7 +12581,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'RadioGroup',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'RadioGroup (name, errors, value, onChange, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12573,7 +12591,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'SingleSelect',
-                    type: { type: 'BoundSingleSelect&#x3C;unknown>' },
+                    type: {
+                      type: 'Select&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12581,7 +12601,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'MultiSelect',
-                    type: { type: 'BoundMultiSelect&#x3C;unknown>' },
+                    type: {
+                      type: 'Select&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12589,7 +12611,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Switch',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Switch (name, errors, isSelected, onChange, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12597,7 +12621,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Textarea',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Textarea (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12729,7 +12755,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; isInvalid: <span class="hljs-built_in">boolean</span>; describedBy: <span class="hljs-function">(<span class="hljs-params">hasDescription?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span>, hasFeedback?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span></span>) =></span> <span class="hljs-built_in">string</span>; Label: Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">for</span>?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; classes?: SlotsToClasses&#x3C;...>; <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isRequired?: <span class="hljs-built_in">boolean</span>; }, <span class="hljs-string">\'size\'</span> | ... <span class="hljs-number">1</span> more ... | <span class="hljs-string">\'isRequired...</span>',
+          raw: '[{ <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>; isInvalid: <span class="hljs-built_in">boolean</span>; describedBy: <span class="hljs-function">(<span class="hljs-params">hasDescription?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span>, hasFeedback?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">boolean</span></span>) =></span> <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>; Label: Label (<span class="hljs-keyword">for</span>, size, isRequired bound); Description: FormDescription (id, size bound); Feedback: FormFeedback (id, size, messages, intent bound); }]',
           items: [
             {
               identifier: '0',
@@ -12768,7 +12794,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Label',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ <span class="hljs-keyword">for</span>?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; classes?: SlotsToClasses&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'asterisk\'</span>>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; isRequired?: <span class="hljs-built_in">boolean</span>; }, <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'for\'</span> | <span class="hljs-string">\'isRequired\'</span>></span>) =></span> ComponentReturn&#x3C;...>>',
+                      type: 'Label (<span class="hljs-keyword">for</span>, size, isRequired bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -12777,9 +12803,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Description',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ id?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'id\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
-                    },
+                    type: { type: 'FormDescription (id, size bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -12788,7 +12812,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Feedback',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ id?: <span class="hljs-built_in">string</span>; messages?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]; intent?: <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'accent\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'intent\'</span> | <span class="hljs-string">\'size\'</span> | <span class="hljs-string">\'id\'</span> | <span class="hljs-string">\'messages\'</span>></span>) =></span> ComponentReturn&#x3C;...>>',
+                      type: 'FormFeedback (id, size, messages, intent bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -13260,7 +13284,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Field',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Field (errors, formData, disabled, validateOn, validateField bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: 'The `Field` component, with args bound.',
@@ -13838,7 +13864,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: NativeSelectItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -13871,7 +13897,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'NativeSelectItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -13895,7 +13921,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: NativeSelectItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -13904,7 +13930,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'NativeSelectItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -14178,11 +14204,13 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[Radio: <span class="hljs-built_in">never</span>]',
+          raw: '[Radio: Radio (name, onChange, checkedValue, isDisabled bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: {
+                type: 'Radio (name, onChange, checkedValue, isDisabled bound)',
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -15180,7 +15208,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -15213,7 +15241,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -15237,7 +15265,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -15246,7 +15274,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -16432,7 +16460,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">CloseButton</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ title?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>; variant?: <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'subtle\'</span>; onPress?: (event: PressEvent) => <span class="hljs-built_in">void</span>; onClick?: (event: Event) => <span class="hljs-built_in">void</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'class\'</span> | <span class="hljs-string">\'onPress\'</span>></span>) =></span> ComponentReturn&#x3C;...>>; Header: Invokable&#x3C;...>; Body: Invok...',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: CloseButton (onPress, <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">bound</span>)</span>; Header: DrawerHeader (labelledById, classFromParent bound); Body: DrawerBody (classFromParent bound); Footer: DrawerFooter (classFromParent bound); headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -16442,7 +16470,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'CloseButton',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ title?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>; variant?: <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'subtle\'</span>; onPress?: (event: PressEvent) => <span class="hljs-built_in">void</span>; onClick?: (event: Event) => <span class="hljs-built_in">void</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'class\'</span> | <span class="hljs-string">\'onPress\'</span>></span>) =></span> ComponentReturn&#x3C;...>>',
+                      type: 'CloseButton (onPress, <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">bound</span>)</span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -16452,7 +16480,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;DrawerHeaderArgs, <span class="hljs-string">\'labelledById\'</span> | <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
+                      type: 'DrawerHeader (labelledById, classFromParent bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -16461,9 +16489,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;DrawerBodyArgs, <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
-                    },
+                    type: { type: 'DrawerBody (classFromParent bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -16471,9 +16497,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Footer',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;DrawerFooterArgs, <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
-                    },
+                    type: { type: 'DrawerFooter (classFromParent bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -16943,7 +16967,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">CloseButton</span>: Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ title?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>; variant?: <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'subtle\'</span>; onPress?: (event: PressEvent) => <span class="hljs-built_in">void</span>; onClick?: (event: Event) => <span class="hljs-built_in">void</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'class\'</span> | <span class="hljs-string">\'onPress\'</span>></span>) =></span> ComponentReturn&#x3C;...>>; Header: Invokable&#x3C;...>; Body: Invok...',
+          raw: '[{ <span class="hljs-attr">CloseButton</span>: CloseButton (onPress, <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">bound</span>)</span>; Header: ModalHeader (labelledById, classFromParent bound); Body: ModalBody (classFromParent bound); Footer: ModalFooter (classFromParent bound); headerId: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -16953,7 +16977,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'CloseButton',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;{ title?: <span class="hljs-built_in">string</span>; size?: <span class="hljs-string">\'xs\'</span> | <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'xl\'</span> | <span class="hljs-string">\'md\'</span>; variant?: <span class="hljs-string">\'transparent\'</span> | <span class="hljs-string">\'subtle\'</span>; onPress?: (event: PressEvent) => <span class="hljs-built_in">void</span>; onClick?: (event: Event) => <span class="hljs-built_in">void</span>; <span class="hljs-keyword">class</span>?: <span class="hljs-built_in">string</span>; }, <span class="hljs-string">\'class\'</span> | <span class="hljs-string">\'onPress\'</span>></span>) =></span> ComponentReturn&#x3C;...>>',
+                      type: 'CloseButton (onPress, <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">bound</span>)</span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -16963,7 +16987,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ModalHeaderArgs, <span class="hljs-string">\'labelledById\'</span> | <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
+                      type: 'ModalHeader (labelledById, classFromParent bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -16972,9 +16996,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ModalBodyArgs, <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
-                    },
+                    type: { type: 'ModalBody (classFromParent bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -16982,9 +17004,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Footer',
-                    type: {
-                      type: 'Invokable&#x3C;<span class="hljs-function">(<span class="hljs-params">named?: PrebindArgs&#x3C;ModalFooterArgs, <span class="hljs-string">\'classFromParent\'</span>></span>) =></span> ComponentReturn&#x3C;FlattenBlockParams&#x3C;{ <span class="hljs-attr">default</span>: { <span class="hljs-attr">Params</span>: { <span class="hljs-attr">Positional</span>: []; }; }; }>, HTMLDivElement>>',
-                    },
+                    type: { type: 'ModalFooter (classFromParent bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -17604,7 +17624,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">anchor</span>: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; }>; isOpen: <span class="hljs-built_in">boolean</span>; toggle: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; open: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; close: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; trigger: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; Args: { ...; }; }>; Content: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">anchor</span>: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; }>; isOpen: <span class="hljs-built_in">boolean</span>; toggle: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; open: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; close: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; trigger: ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; Args: { <span class="hljs-attr">Positional</span>: [eventType?: <span class="hljs-string">\'click\'</span> | <span class="hljs-string">\'hover\'</span>]; }; }>; Content: Content (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound); }]',
           items: [
             {
               identifier: '0',
@@ -17676,7 +17696,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Content',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'Content (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -19063,11 +19085,13 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[checkbox: <span class="hljs-built_in">never</span>]',
+          raw: '[checkbox: ChangesetFormFieldsCheckbox (_groupName, _parentOnChange, changeset, size bound)]',
           items: [
             {
               identifier: '0',
-              type: { type: '<span class="hljs-built_in">never</span>' },
+              type: {
+                type: 'ChangesetFormFieldsCheckbox (_groupName, _parentOnChange, changeset, size bound)',
+              },
               isRequired: false,
               isInternal: false,
               description: '',
@@ -21135,7 +21159,7 @@ const data: ComponentDoc[] = [
         identifier: 'item',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">item</span>: T; key: <span class="hljs-built_in">string</span>; label: <span class="hljs-built_in">string</span>; Item: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -21168,7 +21192,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21192,7 +21216,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Item</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Item</span>: ListboxItem (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -21201,7 +21225,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Item',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'ListboxItem (manager bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21284,7 +21308,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Row</span>: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Row</span>: SimpleTableRow (styleFns, classes bound); Cell: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -21293,7 +21317,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Row',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableRow (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21301,7 +21325,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21845,7 +21869,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Header</span>: Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;......',
+          raw: '[{ <span class="hljs-attr">Header</span>: SimpleTableHeader (styleFns, classes bound); Body: SimpleTableBody (styleFns, classes bound); Footer: SimpleTableFooter (styleFns, classes bound); Column: SimpleTableColumn (styleFns bound); Row: SimpleTableRow (styleFns, classes bound); Cell: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -21855,7 +21879,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> strin...',
+                      type: 'SimpleTableHeader (styleFns, classes bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -21864,9 +21888,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Body',
-                    type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">15</span> more ...; ...',
-                    },
+                    type: { type: 'SimpleTableBody (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21875,7 +21897,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Footer',
                     type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> strin...',
+                      type: 'SimpleTableFooter (styleFns, classes bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -21884,9 +21906,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Column',
-                    type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; styleFns?: { <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | ... <span class="hljs-number">3</span> more ... | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassPro...',
-                    },
+                    type: { type: 'SimpleTableColumn (styleFns bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21894,9 +21914,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Row',
-                    type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; hasStickyHeader?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: (slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; }...',
-                    },
+                    type: { type: 'SimpleTableRow (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21904,9 +21922,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; ... <span class="hljs-number">7</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">15</span> mor...',
-                    },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22007,7 +22023,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Cell</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">Cell</span>: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -22016,7 +22032,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Cell',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22720,7 +22736,7 @@ const data: ComponentDoc[] = [
         identifier: 'toolbar',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">ColumnVisibility</span>: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">ColumnVisibility</span>: ColumnVisibility&#x3C;T> (tableInstance bound); }]',
           items: [
             {
               identifier: '0',
@@ -22729,7 +22745,9 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'ColumnVisibility',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'ColumnVisibility&#x3C;T> (tableInstance bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22753,7 +22771,7 @@ const data: ComponentDoc[] = [
         identifier: 'cell',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">column</span>: Column&#x3C;T>; value: ContentValue; row: Row&#x3C;T>; For: <span class="hljs-built_in">never</span>; Default: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">column</span>: Column&#x3C;T>; value: ContentValue; row: Row&#x3C;T>; For: CellFor&#x3C;T, TColumns> (column, registry bound); Default: CellDefault&#x3C;T> (column, registry bound); }]',
           items: [
             {
               identifier: '0',
@@ -22799,7 +22817,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'For',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'CellFor&#x3C;T, TColumns> (column, registry bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22807,7 +22827,9 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Default',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: {
+                      type: 'CellDefault&#x3C;T> (column, registry bound)',
+                    },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22951,7 +22973,7 @@ const data: ComponentDoc[] = [
         identifier: 'bodyTop',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: SimpleTableRow (styleFns, classes bound); Cell: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -22971,7 +22993,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Row',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableRow (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22979,7 +23001,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -23003,7 +23025,7 @@ const data: ComponentDoc[] = [
         identifier: 'bodyBottom',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: SimpleTableRow (styleFns, classes bound); Cell: SimpleTableCell (styleFns, classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -23023,7 +23045,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Row',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableRow (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -23031,7 +23053,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    type: { type: 'SimpleTableCell (styleFns, classes bound)' },
                     isRequired: true,
                     isInternal: false,
                     description: '',

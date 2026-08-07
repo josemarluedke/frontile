@@ -4,15 +4,23 @@ const path = require('path');
 const lowlight = require('lowlight');
 const unified = require('unified');
 const rehypeStringify = require('rehype-stringify');
+const { collectBoundArgs, applyBoundArgs } = require('./bound-args');
 
 const processor = unified().use(rehypeStringify);
 
-const components = docgen.parse([
-  {
-    root: path.resolve(path.join(__dirname, '../../')),
-    pattern: 'packages/*/declarations/components/**/*.ts',
-  },
-]);
+const root = path.resolve(path.join(__dirname, '../../'));
+const pattern = 'packages/*/declarations/components/**/*.ts';
+
+const components = docgen.parse([{ root, pattern }]);
+
+// `WithBoundArgs<…>` renders as `never` (or an unreadable `Invokable<…>` blob) through
+// the docgen type checker, so render it from the declaration source instead.
+// See ./bound-args.js.
+const boundArgs = collectBoundArgs(
+  [...new Set(components.map((c) => path.join(root, c.fileName)))],
+  root
+);
+components.forEach((component) => applyBoundArgs(component, boundArgs));
 
 function highlight(property) {
   if (!property) {
