@@ -41,6 +41,7 @@ import type { ProgressBar } from './components/status';
 import type {
   VisuallyHidden,
   Collapsible,
+  Skeleton,
   Spinner,
   Divider
 } from './components/utilities';
@@ -90,6 +91,7 @@ export default interface Registry {
   // Utilities
   VisuallyHidden: typeof VisuallyHidden;
   Collapsible: typeof Collapsible;
+  Skeleton: typeof Skeleton;
   Spinner: typeof Spinner;
   Divider: typeof Divider;
 }

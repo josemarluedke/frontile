@@ -34,6 +34,15 @@
   }
 }
 
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
 /* Default theme values - can be overridden via CSS or JS config */
 :root {
   /* Drawer Sizes */
@@ -60,4 +69,5 @@
 
   /* Animations */
   --animate-swing: swing 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
 }
