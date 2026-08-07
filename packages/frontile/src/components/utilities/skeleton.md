@@ -167,6 +167,12 @@ import { Skeleton } from 'frontile';
 Skeleton renders `aria-hidden="true"`. It is decorative — announce the loading
 state on the container that owns it, not on each placeholder.
 
+## In Table
+
+[`Table`](/docs/components/collections/table#built-in-skeleton-rows) renders
+`Skeleton` for you when you set `@isLoading` and `@skeletonRows` — you rarely
+need to compose it by hand for that case.
+
 ## API
 
 <Signature @component="Skeleton" />
