@@ -3603,5 +3603,448 @@ module(
         assert.dom('[data-test-id="legacy-row"]').exists();
       });
     });
+
+    module('Skeleton Rows', function () {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      test('it renders the requested number of skeleton rows', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 5 });
+      });
+
+      test('each skeleton row has one cell per rendered column', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"]:first-child td')
+          .exists({ count: 2 });
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"]:first-child [data-column="id"]'
+          )
+          .exists();
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"]:first-child [data-column="name"]'
+          )
+          .exists();
+      });
+
+      test('a column can declare its skeleton shape', async function (assert) {
+        const shapedColumns = [
+          { key: 'id', name: '', skeleton: 'circle' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{shapedColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="id"] [data-component="skeleton"]'
+          )
+          .hasClass('rounded-full', 'the shaped column renders a circle');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="name"] [data-component="skeleton"]'
+          )
+          .hasClass('rounded-default', 'unshaped columns stay text bars');
+      });
+
+      test('a shaped skeleton is not stretched by the table slot', async function (assert) {
+        // Regression guard: the table's `skeleton` slot classes are merged
+        // last, so any width/height it sets would defeat the shape preset.
+        const shapedColumns = [
+          { key: 'id', name: '', skeleton: 'circle' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{shapedColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        const el = this.element.querySelector(
+          '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+        ) as HTMLElement;
+        const rect = el.getBoundingClientRect();
+
+        assert.dom(el).doesNotHaveClass('w-full');
+        assert.strictEqual(
+          Math.round(rect.width),
+          Math.round(rect.height),
+          'a circle skeleton renders square'
+        );
+      });
+
+      test('skeleton bars pulse rather than shimmer', async function (assert) {
+        // Ten shimmering bars sweeping at once reads as busy; a synchronised
+        // pulse is calmer at table scale.
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('animate-pulse');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .doesNotHaveClass('animate-shimmer');
+      });
+
+      test('skeleton rows fade in staggered', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+            />
+          </template>
+        );
+
+        const rows = Array.from(
+          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+        ) as HTMLElement[];
+
+        assert.dom(rows[0]!).hasClass('animate-skeleton-enter');
+        assert.dom(rows[0]!).hasClass('motion-reduce:animate-none');
+        assert.strictEqual(
+          rows.map((r) => r.style.animationDelay).join(','),
+          '0ms,60ms,120ms',
+          'each row waits 60ms longer than the one above it'
+        );
+      });
+
+      test('the entrance stagger is capped', async function (assert) {
+        // Without a cap a long skeleton leaves its last rows blank for longer
+        // than many requests take.
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{20}}
+            />
+          </template>
+        );
+
+        const rows = Array.from(
+          this.element.querySelectorAll('[data-test-id="table-skeleton-row"]')
+        ) as HTMLElement[];
+
+        assert.strictEqual(rows.length, 20);
+        assert.strictEqual(
+          rows[rows.length - 1]!.style.animationDelay,
+          '540ms',
+          'the delay stops growing rather than running away'
+        );
+      });
+
+      test('skeleton rows are hidden from assistive technology', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"]')
+          .hasAttribute('aria-hidden', 'true');
+      });
+
+      test('skeleton height follows the table size', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @size="sm"
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('h-3', 'sm table yields an sm skeleton');
+      });
+
+      test('skeleton cells include the selection column', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @selectionMode="multiple"
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="__selection__"]'
+          )
+          .exists();
+        assert
+          .dom('[data-test-id="table-skeleton-row"] td')
+          .exists({ count: 3 });
+      });
+
+      test('skeleton cells exclude a hidden column', async function (assert) {
+        const hiddenColumns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email', isVisible: false }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{hiddenColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"] td')
+          .exists({ count: 2 });
+        assert
+          .dom('[data-test-id="table-skeleton-row"] [data-column="email"]')
+          .doesNotExist();
+      });
+
+      test('it never replaces rows that are already visible', async function (assert) {
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+      });
+
+      test('it renders nothing when not loading', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{false}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+      });
+
+      test('empty content does not render alongside skeletons', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+              @emptyContent="No results found"
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 3 });
+        assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      });
+
+      test('a loading block takes precedence over skeletonRows', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+            >
+              <:loading>
+                <span data-test-id="custom-loading">Loading…</span>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="custom-loading"]').exists();
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+      });
+
+      test('omitting skeletonRows preserves current behavior', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @emptyContent="No results found"
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert
+          .dom('[data-test-id="table-empty-row"]')
+          .doesNotExist('empty content stays suppressed while loading');
+      });
+
+      test('@classes.skeleton is applied to the rendered skeleton placeholder', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @classes={{hash skeleton="custom-skeleton-class"}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('custom-skeleton-class');
+      });
+
+      test('the skeleton placeholder height is size-aware', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @size="sm"
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('h-3');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .doesNotHaveClass('h-4');
+      });
+    });
   }
 );

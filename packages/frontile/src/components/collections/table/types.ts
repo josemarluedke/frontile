@@ -2,7 +2,8 @@ import type {
   TableVariants,
   TableSlots,
   SlotsToClasses,
-  ClassValue
+  ClassValue,
+  SkeletonVariants
 } from '@frontile/theme';
 
 // Re-export universal-ember/table types for convenience
@@ -30,14 +31,21 @@ export interface CellSignature<T> {
   };
 }
 
-// Frontile sticky options
-export interface FrontileStickyOptions {
+// Frontile per-column options carried through universal-ember's pluginOptions
+export interface FrontileColumnOptions {
   isSticky?: boolean;
   stickyPosition?: 'left' | 'right';
+  skeleton?: SkeletonVariants['shape'];
 }
 
+/**
+ * @deprecated Renamed to `FrontileColumnOptions`, which now carries more than
+ * sticky configuration. This alias will be removed in a future major.
+ */
+export type FrontileStickyOptions = FrontileColumnOptions;
+
 // Frontile plugin option type for embedding in universal-ember pluginOptions
-export type FrontilePluginOption = [string, () => FrontileStickyOptions];
+export type FrontilePluginOption = [string, () => FrontileColumnOptions];
 
 // Our own independent ColumnConfig interface
 export interface ColumnConfig<T = unknown> {
@@ -59,6 +67,12 @@ export interface ColumnConfig<T = unknown> {
   isSortable?: boolean;
   /** Use this key instead of the column key for sorting. Useful when the display key differs from the data key */
   sortProperty?: string;
+  /**
+   * Shape of the placeholder rendered in this column by `@skeletonRows`.
+   * Defaults to a text bar. Use `circle` for avatar columns, `square` for
+   * thumbnails. For anything richer, render your own rows via `<:bodyTop>`.
+   */
+  skeleton?: SkeletonVariants['shape'];
 }
 
 // Type utility to extract column keys from ColumnConfig array as literal string union

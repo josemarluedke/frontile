@@ -81,7 +81,16 @@ const table = tv({
       'text-neutral-strong',
       '[&:has([role=checkbox])]:pr-0'
     ],
-    empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12']
+    empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12'],
+    // Deliberately carries no width or height: these classes are merged onto
+    // Skeleton *after* its own shape and size variants, so any dimension set
+    // here would defeat a column's `skeleton: 'circle'` preset. The table
+    // passes its `size` through to Skeleton instead.
+    skeleton: ['max-w-[16ch]'],
+    // Placeholder rows fade in one after another. The per-row `animation-delay`
+    // is set inline by the component, since a delay that scales with the row
+    // index cannot be a static utility class.
+    skeletonRow: ['animate-skeleton-enter', 'motion-reduce:animate-none']
   },
   variants: {
     size: {

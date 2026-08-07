@@ -84,11 +84,7 @@ Define reusable Cell components in your column configuration:
 
 ```gts preview
 import Component from '@glimmer/component';
-import {
-  Table,
-  type ColumnConfig,
-  type CellSignature
-} from 'frontile';
+import { Table, type ColumnConfig, type CellSignature } from 'frontile';
 import { Chip } from 'frontile';
 import { users, type User } from 'site/components/table-demo-data';
 import type { TOC } from '@ember/component/template-only';
@@ -423,6 +419,132 @@ export default class DemoComponent extends Component {
 }
 ```
 
+The hairline under the header shown above is deliberately subtle — it is meant
+for tables that already have content and are merely refreshing it. When a
+table is loading with nothing on screen yet, prefer the built-in skeleton rows
+below instead.
+
+### Built-in skeleton rows
+
+`@skeletonRows` renders placeholder rows while the table is loading and has no
+items. It is opt-in, and the number is required rather than defaulted: the row
+count is the one thing the table cannot infer, and a wrong default promises ten
+rows and delivers three.
+
+Load the data below to watch the placeholders hand off to real rows.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { Table, Button, type ColumnConfig } from 'frontile';
+import { users, type User } from 'site/components/table-demo-data';
+
+export default class DemoComponent extends Component {
+  columns = [
+    { key: 'name', name: 'Name' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' }
+  ] as const satisfies ColumnConfig<User>[];
+
+  @tracked isLoading = true;
+  @tracked items: User[] = [];
+
+  timer?: ReturnType<typeof setTimeout>;
+
+  load = () => {
+    this.reset();
+    this.timer = setTimeout(() => {
+      this.items = users;
+      this.isLoading = false;
+    }, 1600);
+  };
+
+  reset = () => {
+    clearTimeout(this.timer);
+    this.isLoading = true;
+    this.items = [];
+  };
+
+  willDestroy() {
+    super.willDestroy();
+    clearTimeout(this.timer);
+  }
+
+  <template>
+    <div class='w-full space-y-3'>
+      <div class='flex gap-2'>
+        <Button @size='sm' @intent='primary' {{on 'click' this.load}}>
+          Load data
+        </Button>
+        <Button @size='sm' @appearance='outlined' {{on 'click' this.reset}}>
+          Back to loading
+        </Button>
+      </div>
+
+      <Table
+        @columns={{this.columns}}
+        @items={{this.items}}
+        @isLoading={{this.isLoading}}
+        @skeletonRows={{5}}
+      />
+    </div>
+  </template>
+}
+```
+
+Placeholder rows fade in one after another, 60ms apart, so they arrive the way
+the real rows will rather than appearing as one block. The stagger stops
+growing after ten rows — past that the last row would sit blank longer than
+many requests take — and `prefers-reduced-motion` turns it off entirely.
+
+Skeleton rows render only when `@isLoading` is true **and** there are no items,
+so a refresh, a filter requery, or loading page two never throws away rows the
+user is already reading. `@emptyContent` and the `empty` block stay suppressed
+while they render, and a `loading` block takes precedence when present.
+
+Each placeholder cell is a [`Skeleton`](/docs/components/utilities/skeleton)
+component, sized from the table's `@size` so the bars match the row height.
+
+#### Shaping a column's placeholder
+
+A text bar is wrong for a column that holds an avatar. Set `skeleton` on the
+column to pick a shape — it accepts the same values as `Skeleton`'s `@shape`,
+and columns that omit it stay text bars.
+
+```gts preview
+import { array } from '@ember/helper';
+import { Table } from 'frontile';
+
+const columns = [
+  { key: 'avatar', name: '', skeleton: 'circle' },
+  { key: 'name', name: 'Name' },
+  { key: 'thumb', name: 'Preview', skeleton: 'square' },
+  { key: 'role', name: 'Role' }
+];
+
+<template>
+  <Table
+    @columns={{columns}}
+    @items={{(array)}}
+    @isLoading={{true}}
+    @skeletonRows={{4}}
+  />
+</template>
+```
+
+Because `circle` and `square` reuse Avatar's size scale, a placeholder in an
+`@size="md"` table is the same 32px as the `<Avatar @size="md">` it stands in
+for.
+
+This is deliberately only a shape. For anything richer — cells that stack an
+icon, a name and a chip, or per-column widths — use `bodyTop` with the yielded
+columns and render `Skeleton` yourself for each piece of content.
+
+If neither the built-in skeleton rows nor a custom `bodyTop` layout fit —
+for example, an overlay that needs to sit over content that is already on
+screen — use the `loading` named block described next.
+
 ### Custom Loading Indicator
 
 Use the `loading` named block for custom indicators:
@@ -730,11 +852,11 @@ rows that stand in for content that has not arrived yet.
 
 These are a supported contract, stable across minor versions:
 
-| Attribute     | Element | Value                                    |
-| ------------- | ------- | ---------------------------------------- |
-| `data-key`    | `<th>`  | the column's `key`                       |
-| `data-column` | `<td>`  | the column's `key`                       |
-| `data-key`    | `<tr>`  | the row's key, from `@getKey`            |
+| Attribute     | Element | Value                         |
+| ------------- | ------- | ----------------------------- |
+| `data-key`    | `<th>`  | the column's `key`            |
+| `data-column` | `<td>`  | the column's `key`            |
+| `data-key`    | `<tr>`  | the row's key, from `@getKey` |
 
 Use them for column-targeted styling and test selectors.
 
@@ -860,7 +982,9 @@ export default class DemoComponent extends Component {
   <template>
     <div>
       <p class='mb-4 text-sm'>
-        Selected: {{this.selectedKeys.size}} row(s)
+        Selected:
+        {{this.selectedKeys.size}}
+        row(s)
       </p>
       <Table
         @columns={{this.columns}}
@@ -911,7 +1035,8 @@ export default class DemoComponent extends Component {
   <template>
     <div>
       <p class='mb-4 text-sm'>
-        Selected: {{if this.selectedUser this.selectedUser.name 'None'}}
+        Selected:
+        {{if this.selectedUser this.selectedUser.name 'None'}}
       </p>
       <Table
         @columns={{this.columns}}

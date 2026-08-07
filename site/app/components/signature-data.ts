@@ -21249,7 +21249,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -21349,7 +21349,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -21526,7 +21526,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -21629,7 +21629,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -21724,7 +21724,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -21865,7 +21865,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Body',
                     type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> more ...; ...',
+                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; loadingColor?: <span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>; ... <span class="hljs-number">6</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">15</span> more ...; ...',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -21905,7 +21905,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Cell',
                     type: {
-                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; ... <span class="hljs-number">7</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">13</span> mor...',
+                      type: 'Invokable&#x3C;(named?: PrebindArgs&#x3C;{ <span class="hljs-class"><span class="hljs-keyword">class</span>?: <span class="hljs-title">string</span></span>; isSticky?: <span class="hljs-built_in">boolean</span>; stickyPosition?: <span class="hljs-string">\'left\'</span> | <span class="hljs-string">\'right\'</span>; isInStickyRow?: <span class="hljs-built_in">boolean</span>; styleFns?: { <span class="hljs-attr">base</span>: <span class="hljs-function">(<span class="hljs-params">slotProps?: { size?: <span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'md\'</span>; layout?: <span class="hljs-string">\'auto\'</span> | <span class="hljs-string">\'fixed\'</span>; striped?: <span class="hljs-built_in">boolean</span>; ... <span class="hljs-number">7</span> more ...; isScrollable?: <span class="hljs-built_in">boolean</span>; } &#x26; ClassProp&#x3C;...></span>) =></span> <span class="hljs-built_in">string</span>; ... <span class="hljs-number">15</span> mor...',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -21954,7 +21954,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -22452,7 +22452,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span>>',
+          type: 'SlotsToClasses&#x3C;<span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -22684,6 +22684,15 @@ const data: ComponentDoc[] = [
         description: 'Size variant for table cells and headers.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'skeletonRows',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Number of placeholder rows to render while loading with no items. Omit or 0 for no skeleton.',
+        tags: {},
       },
       {
         identifier: 'stickyKeys',

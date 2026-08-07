@@ -25,7 +25,8 @@
 }
 
 @keyframes swing {
-  0%, 100% {
+  0%,
+  100% {
     width: 50%;
     transform: translateX(-25%);
   }
@@ -40,6 +41,21 @@
   }
   to {
     background-position: -200% 0;
+  }
+}
+
+/*
+  Fades a skeleton row in once. Callers set an `animation-delay` per row so the
+  placeholders arrive in sequence, the way the real rows will. `both` holds the
+  from-state during the delay, so a row waiting its turn is hidden rather than
+  visible-then-flashing.
+*/
+@keyframes skeleton-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -64,10 +80,12 @@
 
 @theme {
   /* Opacity */
-  --opacity-hover: .8;
-  --opacity-disabled: .5;
+  --opacity-hover: 0.8;
+  --opacity-disabled: 0.5;
 
   /* Animations */
   --animate-swing: swing 2s ease-in-out infinite;
   --animate-shimmer: shimmer 2s linear infinite;
+  --animate-skeleton-enter: skeleton-enter 320ms cubic-bezier(0.16, 1, 0.3, 1)
+    both;
 }

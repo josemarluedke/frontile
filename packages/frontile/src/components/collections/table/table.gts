@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { hash, fn } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
+import { htmlSafe } from '@ember/template';
 import { tracked } from '@glimmer/tracking';
 import { cached } from '@glimmer/tracking';
 import { SimpleTable } from '../simple-table';
@@ -12,6 +13,7 @@ import CellForComponent from './cell-for';
 import CellDefaultComponent from './cell-default';
 import SortButtonComponent from './sort-button';
 import CheckboxComponent from './checkbox';
+import { Skeleton } from '../../utilities/skeleton';
 import { CellRenderingContext } from './cell-rendering-context';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
@@ -36,6 +38,7 @@ import type {
   SelectionMode
 } from './types';
 import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
+import type { SkeletonVariants } from '@frontile/theme';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 import type Owner from '@ember/owner';
 import type { SimpleTableRow } from '../simple-table/row';
@@ -74,6 +77,8 @@ interface TableSignature<
     isLoading?: boolean;
     /** Color variant for loading animation. @defaultValue 'default' */
     loadingColor?: TableVariants['loadingColor'];
+    /** Number of placeholder rows to render while loading with no items. Omit or 0 for no skeleton. */
+    skeletonRows?: number;
     /** Function to sort items when sorting is triggered. Receives the items array and sort descriptor. Returns sorted items. */
     onSort?: (items: T[], sortDescriptor: SortItem<T>) => T[];
     /** Initial sort descriptor to apply on mount. Only used for initial render, subsequent changes are ignored. */
@@ -167,6 +172,32 @@ function columnStickyPosition<T>(
 ): 'left' | 'right' | undefined {
   const frontileOptions = extractFrontileOptions(column);
   return frontileOptions?.stickyPosition;
+}
+
+function columnSkeletonShape<T>(
+  column: Column<T>
+): SkeletonVariants['shape'] | undefined {
+  const frontileOptions = extractFrontileOptions(column);
+  return frontileOptions?.skeleton;
+}
+
+/** Gap between one placeholder row's entrance and the next. */
+const SKELETON_STAGGER_MS = 60;
+/**
+ * Cap on the accumulated delay. Without it a 30-row skeleton would leave its
+ * last row blank for nearly two seconds — longer than many requests take, so
+ * the stagger would outlive the wait it is describing.
+ */
+const SKELETON_STAGGER_MAX_MS = 540;
+
+/**
+ * Per-row entrance delay, as an inline style. It has to be inline rather than a
+ * utility class: the value scales with the row index, and Tailwind only emits
+ * classes it can read as literals in the theme package's source.
+ */
+function skeletonRowDelay(index: number) {
+  const delay = Math.min(index * SKELETON_STAGGER_MS, SKELETON_STAGGER_MAX_MS);
+  return htmlSafe(`animation-delay:${delay}ms`);
 }
 
 function createCellContext<T>(column: Column<T>, row: Row<T>) {
@@ -503,6 +534,7 @@ class Table<
         isVisible,
         isSortable,
         sortProperty,
+        skeleton,
         Cell,
         value,
         ...baseColumn
@@ -510,11 +542,15 @@ class Table<
 
       const pluginOptions: unknown[] = [];
 
-      // Add Frontile sticky options if present
-      if (isSticky !== undefined || stickyPosition !== undefined) {
+      // Add Frontile per-column options if any are present
+      if (
+        isSticky !== undefined ||
+        stickyPosition !== undefined ||
+        skeleton !== undefined
+      ) {
         const frontileOption: FrontilePluginOption = [
           'frontile',
-          () => ({ isSticky, stickyPosition })
+          () => ({ isSticky, stickyPosition, skeleton })
         ];
         pluginOptions.push(frontileOption);
       }
@@ -626,12 +662,26 @@ class Table<
     return this.styles.table({ class: this.args.classes?.table });
   }
 
+  get skeletonRowClassNames() {
+    return this.styles.skeletonRow({ class: this.args.classes?.skeletonRow });
+  }
+
+  get skeletonClassNames() {
+    return this.styles.skeleton({ class: this.args.classes?.skeleton });
+  }
+
   get headlessColumns() {
     return columns.for(this.tableInstance);
   }
 
   get headlessRows() {
     return this.tableInstance.rows.values();
+  }
+
+  get skeletonRowsArray(): number[] {
+    const count = this.args.skeletonRows ?? 0;
+    // A dense array — `{{#each}}` over a sparse `new Array(n)` is not reliable.
+    return Array.from({ length: count }, (_, index) => index);
   }
 
   // Helper to check if a row is sticky
@@ -785,29 +835,57 @@ class Table<
               {{/each}}
             </t.Row>
           {{else}}
-            {{#unless @isLoading}}
-              {{#if (has-block "empty")}}
-                <t.Row data-test-id="table-empty-row">
-                  <t.Cell
-                    @class={{(this.styles.empty)}}
-                    colspan={{this.headlessColumns.length}}
-                    data-test-id="table-empty-cell"
+            {{#if (and @isLoading this.skeletonRowsArray.length)}}
+              {{#unless (has-block "loading")}}
+                {{#each this.skeletonRowsArray as |rowIndex|}}
+                  <t.Row
+                    @class={{this.skeletonRowClassNames}}
+                    style={{skeletonRowDelay rowIndex}}
+                    aria-hidden="true"
+                    data-test-id="table-skeleton-row"
                   >
-                    {{yield to="empty"}}
-                  </t.Cell>
-                </t.Row>
-              {{else if @emptyContent}}
-                <t.Row data-test-id="table-empty-row">
-                  <t.Cell
-                    @class={{(this.styles.empty)}}
-                    colspan={{this.headlessColumns.length}}
-                    data-test-id="table-empty-cell"
-                  >
-                    {{@emptyContent}}
-                  </t.Cell>
-                </t.Row>
-              {{/if}}
-            {{/unless}}
+                    {{#each this.headlessColumns as |column|}}
+                      <t.Cell
+                        @isSticky={{columnIsSticky column}}
+                        @stickyPosition={{columnStickyPosition column}}
+                        data-column={{column.key}}
+                      >
+                        <Skeleton
+                          @shape={{columnSkeletonShape column}}
+                          @size={{@size}}
+                          @animation="pulse"
+                          @class={{this.skeletonClassNames}}
+                        />
+                      </t.Cell>
+                    {{/each}}
+                  </t.Row>
+                {{/each}}
+              {{/unless}}
+            {{else}}
+              {{#unless @isLoading}}
+                {{#if (has-block "empty")}}
+                  <t.Row data-test-id="table-empty-row">
+                    <t.Cell
+                      @class={{(this.styles.empty)}}
+                      colspan={{this.headlessColumns.length}}
+                      data-test-id="table-empty-cell"
+                    >
+                      {{yield to="empty"}}
+                    </t.Cell>
+                  </t.Row>
+                {{else if @emptyContent}}
+                  <t.Row data-test-id="table-empty-row">
+                    <t.Cell
+                      @class={{(this.styles.empty)}}
+                      colspan={{this.headlessColumns.length}}
+                      data-test-id="table-empty-cell"
+                    >
+                      {{@emptyContent}}
+                    </t.Cell>
+                  </t.Row>
+                {{/if}}
+              {{/unless}}
+            {{/if}}
           {{/each}}
 
           {{#if (and @isLoading (has-block "loading"))}}
