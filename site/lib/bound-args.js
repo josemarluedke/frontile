@@ -90,8 +90,8 @@ function normalizeTypeText(text) {
     .replace(/\/\/[^\n]*/g, ' ')
     .replace(/\s+/g, ' ')
     .replace(/\s*;\s*/g, '; ')
-    .replace(/([[{])\s+/g, '$1 ')
-    .replace(/\[\s+/g, '[')
+    .replace(/\{\s+/g, '{ ')
+    .replace(/\[\s*/g, '[')
     .replace(/\s+\]/g, ']')
     .trim();
 }
@@ -212,17 +212,16 @@ class Declarations {
       return undefined;
     }
 
-    const base = path.resolve(path.dirname(index.filePath), specifier);
-    for (const candidate of [
-      `${base}.d.ts`,
-      path.join(base, 'index.d.ts'),
-      base,
-    ]) {
-      if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
-        return this.read(candidate);
-      }
-    }
-    return undefined;
+    const { resolvedModule } = ts.resolveModuleName(
+      specifier,
+      index.filePath,
+      { moduleResolution: ts.ModuleResolutionKind.Node10 },
+      ts.sys
+    );
+
+    return resolvedModule
+      ? this.read(resolvedModule.resolvedFileName)
+      : undefined;
   }
 
   /**
@@ -310,6 +309,10 @@ class Declarations {
 
     const name = typeNode.typeName.getText();
 
+    // This must run before the alias unwrap below, and is why `boundArgsOf`
+    // can't just delegate to `resolveNode`: the helpers are themselves aliases
+    // in the emitted declarations, so unwrapping first walks straight past the
+    // name we need and lands on the expanded `Invokable<…>` form.
     if (BOUND_ARG_HELPERS.has(name) && typeNode.typeArguments?.length) {
       return {
         target: friendlyComponentName(typeNode.typeArguments[0]),
@@ -409,18 +412,9 @@ class Declarations {
     }
 
     if (ts.isIndexedAccessTypeNode(typeNode)) {
-      const key =
-        ts.isLiteralTypeNode(typeNode.indexType) &&
-        ts.isStringLiteral(typeNode.indexType.literal)
-          ? typeNode.indexType.literal.text
-          : undefined;
-      if (!key) {
-        return [];
-      }
-      const owner = this.membersOf(typeNode.objectType, index, depth + 1);
-      const match = owner.find((entry) => propertyName(entry.member) === key);
-      return match
-        ? this.membersOf(match.member.type, match.index, depth + 1)
+      const resolved = this.resolveIndexedAccess(typeNode, index, depth + 1);
+      return resolved
+        ? this.membersOf(resolved.node, resolved.index, depth + 1)
         : [];
     }
 
@@ -460,7 +454,6 @@ function collectBlocks(blockMembers, declarations) {
     const params = {};
     const positional = {};
     const replacements = [];
-    let found = false;
 
     // A block param declared in another file (a named interface rather than an
     // inline literal) can't be spliced into the tuple's own source text.
@@ -476,7 +469,6 @@ function collectBlocks(blockMembers, declarations) {
 
       const asBound = declarations.boundArgsOf(elementType, index);
       if (asBound) {
-        found = true;
         positional[position] = formatBound(asBound);
         if (inTuple(elementType)) {
           replacements.push({
@@ -496,7 +488,6 @@ function collectBlocks(blockMembers, declarations) {
         if (!name || !bound) {
           continue;
         }
-        found = true;
         params[name] = formatBound(bound);
         if (inTuple(entry.member.type)) {
           replacements.push({
@@ -508,7 +499,7 @@ function collectBlocks(blockMembers, declarations) {
       }
     });
 
-    if (found) {
+    if (Object.keys(params).length || Object.keys(positional).length) {
       blocks.set(blockName, {
         raw: replacements.length
           ? printWithReplacements(tuple, replacements)
@@ -613,24 +604,28 @@ function collectBoundArgs(filePaths, root) {
   return byFile;
 }
 
-/** Escape a property name for use in a regular expression. */
-function escapeRegExp(text) {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/** Rewrite a parsed component's Args and Blocks in place using the collected lookup. */
+/**
+ * Rewrite a parsed component's Args and Blocks in place using the collected lookup.
+ *
+ * @returns {{expected: number, applied: number}} counts for the caller's sanity
+ *   check — this walks docgen's output shape, so a mismatch means that shape
+ *   changed under us and the docs are silently back to rendering `never`.
+ */
 function applyBoundArgs(component, byFile) {
   const entry = byFile.get(component.fileName)?.get(component.name);
   if (!entry) {
-    return;
+    return { expected: 0, applied: 0 };
   }
 
   const { blocks, args } = entry;
+  let expected = args.size;
+  let applied = 0;
 
   for (const arg of component.Args) {
     const rendered = args.get(arg.identifier);
     if (rendered) {
       arg.type = { type: rendered };
+      applied++;
     }
   }
 
@@ -640,21 +635,19 @@ function applyBoundArgs(component, byFile) {
       continue;
     }
 
+    expected +=
+      Object.keys(info.params).length + Object.keys(info.positional).length;
+
+    // Absent when every bound param came from another file — the checker's own
+    // rendering is a bare interface reference there, so it needs no rewriting.
     if (info.raw) {
       block.type.raw = info.raw;
-    } else if (block.type.raw) {
-      // Params resolved from another file: patch the checker's rendering instead.
-      for (const [name, rendered] of Object.entries(info.params)) {
-        block.type.raw = block.type.raw.replace(
-          new RegExp(`\\b${escapeRegExp(name)}: never\\b`, 'g'),
-          `${name}: ${rendered}`
-        );
-      }
     }
 
     (block.type.items || []).forEach((item, position) => {
       if (info.positional[position]) {
         item.type = { type: info.positional[position] };
+        applied++;
         return;
       }
 
@@ -662,10 +655,13 @@ function applyBoundArgs(component, byFile) {
         const rendered = info.params[param.identifier];
         if (rendered) {
           param.type = { type: rendered };
+          applied++;
         }
       });
     });
   }
+
+  return { expected, applied };
 }
 
 module.exports = { collectBoundArgs, applyBoundArgs };

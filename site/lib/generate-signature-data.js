@@ -20,7 +20,24 @@ const boundArgs = collectBoundArgs(
   [...new Set(components.map((c) => path.join(root, c.fileName)))],
   root
 );
-components.forEach((component) => applyBoundArgs(component, boundArgs));
+const applyTally = components.reduce(
+  (total, component) => {
+    const { expected, applied } = applyBoundArgs(component, boundArgs);
+    return {
+      expected: total.expected + expected,
+      applied: total.applied + applied,
+    };
+  },
+  { expected: 0, applied: 0 }
+);
+
+if (applyTally.applied !== applyTally.expected) {
+  throw new Error(
+    `bound-args: resolved ${applyTally.expected} bound components but only rewrote ` +
+      `${applyTally.applied}. glimmer-docgen-typescript's output shape likely changed — ` +
+      `the unrewritten entries are rendering as \`never\`.`
+  );
+}
 
 function highlight(property) {
   if (!property) {
