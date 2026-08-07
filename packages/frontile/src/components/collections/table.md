@@ -682,6 +682,62 @@ export default class DemoComponent extends Component {
 }
 ```
 
+### Column-aligned rows in `bodyTop` / `bodyBottom`
+
+`bodyTop` and `bodyBottom` yield the columns the table is actually rendering,
+along with style-bound `Row` and `Cell` components. Use these instead of
+hand-written `<tr>`/`<td>` so your rows stay aligned when a column is hidden
+via `ColumnVisibility` and when `@selectionMode="multiple"` adds its checkbox
+column.
+
+```gts preview
+import { array } from '@ember/helper';
+import { Table } from 'frontile';
+
+const columns = [
+  { key: 'name', name: 'Name' },
+  { key: 'email', name: 'Email' }
+];
+
+<template>
+  <Table @columns={{columns}} @items={{(array)}}>
+    <:bodyTop as |b|>
+      <b.Row>
+        {{#each b.columns as |column|}}
+          <b.Cell data-column={{column.key}}>
+            <div class='h-4 w-full rounded bg-surface-overlay-medium' />
+          </b.Cell>
+        {{/each}}
+      </b.Row>
+    </:bodyTop>
+  </Table>
+</template>
+```
+
+`b.columns` is the rendered column list, not the `@columns` argument you passed
+in. Treat `b.columns` as read-only. It is the table's live column list, not a
+copy — mutating it in place (`sort`, `push`, `splice`) will corrupt the header
+and the rendered rows. Copy it first if you need a different order. `b.Row`
+and `b.Cell` carry the table's resolved `@size` padding, sticky handling, and
+`@classes` overrides.
+
+The `loading` block yields `{ columns }` only — it renders inside a single
+spanning cell, so `Row` and `Cell` would not be valid there. Use it for an
+overlay or spinner over a table that already has content; use `bodyTop` for
+rows that stand in for content that has not arrived yet.
+
+### Data attributes
+
+These are a supported contract, stable across minor versions:
+
+| Attribute     | Element | Value                                    |
+| ------------- | ------- | ---------------------------------------- |
+| `data-key`    | `<th>`  | the column's `key`                       |
+| `data-column` | `<td>`  | the column's `key`                       |
+| `data-key`    | `<tr>`  | the row's key, from `@getKey`            |
+
+Use them for column-targeted styling and test selectors.
+
 ## Column Visibility
 
 Enable users to show/hide columns with the toolbar:

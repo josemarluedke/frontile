@@ -18734,6 +18734,41 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'skeleton',
+    name: 'Skeleton',
+    fileName:
+      'packages/frontile/declarations/components/utilities/skeleton.d.ts',
+    Args: [
+      {
+        identifier: 'animation',
+        type: { type: 'SkeletonVariants' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Animation style for the placeholder.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'shimmer'" } },
+        defaultValue: '<span class="hljs-string">\'shimmer\'</span>',
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: 'HTMLDivElement' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'spinner',
     name: 'Spinner',
     fileName:
@@ -21217,7 +21252,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Row</span>: <span class="hljs-keyword">typeof</span> SimpleTableRow; Cell: <span class="hljs-keyword">typeof</span> SimpleTableCell; }]',
+          raw: '[{ <span class="hljs-attr">Row</span>: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -21226,9 +21261,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Row',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> SimpleTableRow',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21236,9 +21269,7 @@ const data: ComponentDoc[] = [
                   },
                   {
                     identifier: 'Cell',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> SimpleTableCell',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -21944,7 +21975,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[{ <span class="hljs-attr">Cell</span>: <span class="hljs-keyword">typeof</span> SimpleTableCell; }]',
+          raw: '[{ <span class="hljs-attr">Cell</span>: <span class="hljs-built_in">never</span>; }]',
           items: [
             {
               identifier: '0',
@@ -21953,9 +21984,7 @@ const data: ComponentDoc[] = [
                 items: [
                   {
                     identifier: 'Cell',
-                    type: {
-                      type: '<span class="hljs-keyword">typeof</span> SimpleTableCell',
-                    },
+                    type: { type: '<span class="hljs-built_in">never</span>' },
                     isRequired: true,
                     isInternal: false,
                     description: '',
@@ -22845,8 +22874,32 @@ const data: ComponentDoc[] = [
         identifier: 'loading',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[]',
-          items: [],
+          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'columns',
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: 'Column&#x3C;T>[]',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
         },
         isRequired: true,
         isInternal: false,
@@ -22857,8 +22910,48 @@ const data: ComponentDoc[] = [
         identifier: 'bodyTop',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[]',
-          items: [],
+          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'columns',
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: 'Column&#x3C;T>[]',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Row',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Cell',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
         },
         isRequired: true,
         isInternal: false,
@@ -22869,8 +22962,48 @@ const data: ComponentDoc[] = [
         identifier: 'bodyBottom',
         type: {
           type: '<span class="hljs-built_in">Array</span>',
-          raw: '[]',
-          items: [],
+          raw: '[{ <span class="hljs-attr">columns</span>: Column&#x3C;T>[]; Row: <span class="hljs-built_in">never</span>; Cell: <span class="hljs-built_in">never</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-built_in">Object</span>',
+                items: [
+                  {
+                    identifier: 'columns',
+                    type: {
+                      type: '<span class="hljs-built_in">Array</span>',
+                      raw: 'Column&#x3C;T>[]',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Row',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Cell',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
         },
         isRequired: true,
         isInternal: false,

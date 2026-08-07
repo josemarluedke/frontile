@@ -3,6 +3,7 @@ import { hash } from '@ember/helper';
 import { useStyles, twMerge } from '@frontile/theme';
 import { SimpleTableCell } from './cell';
 import type { SlotsToClasses, TableSlots } from '../table/types';
+import type { WithBoundArgs } from '@glint/template';
 
 interface SimpleTableRowSignature {
   Args: {
@@ -27,7 +28,7 @@ interface SimpleTableRowSignature {
   Blocks: {
     default: [
       {
-        Cell: typeof SimpleTableCell;
+        Cell: WithBoundArgs<typeof SimpleTableCell, 'styleFns' | 'classes'>;
       }
     ];
   };
@@ -56,7 +57,11 @@ class SimpleTableRow extends Component<SimpleTableRowSignature> {
       data-component="table-row"
       ...attributes
     >
-      {{yield (hash Cell=SimpleTableCell)}}
+      {{yield
+        (hash
+          Cell=(component SimpleTableCell styleFns=this.styles classes=@classes)
+        )
+      }}
     </tr>
   </template>
 }
