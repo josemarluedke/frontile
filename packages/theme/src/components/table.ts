@@ -77,7 +77,6 @@ const table = tv({
     columnVisibilityButton: ['flex'],
     columnVisibilityIcon: ['size-6'],
     td: [
-      'p-4',
       'align-middle',
       'text-neutral-strong',
       '[&:has([role=checkbox])]:pr-0'
