@@ -3603,5 +3603,213 @@ module(
         assert.dom('[data-test-id="legacy-row"]').exists();
       });
     });
+
+    module('Skeleton Rows', function () {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      test('it renders the requested number of skeleton rows', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 5 });
+      });
+
+      test('each skeleton row has one cell per rendered column', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{2}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"]:first-child td')
+          .exists({ count: 2 });
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"]:first-child [data-column="id"]'
+          )
+          .exists();
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"]:first-child [data-column="name"]'
+          )
+          .exists();
+      });
+
+      test('skeleton cells include the selection column', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @selectionMode="multiple"
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-column="__selection__"]'
+          )
+          .exists();
+        assert
+          .dom('[data-test-id="table-skeleton-row"] td')
+          .exists({ count: 3 });
+      });
+
+      test('skeleton cells exclude a hidden column', async function (assert) {
+        const hiddenColumns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email', isVisible: false }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{hiddenColumns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="table-skeleton-row"] td')
+          .exists({ count: 2 });
+        assert
+          .dom('[data-test-id="table-skeleton-row"] [data-column="email"]')
+          .doesNotExist();
+      });
+
+      test('it never replaces rows that are already visible', async function (assert) {
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert.dom('[data-test-id="table-row"][data-key="1"]').exists();
+      });
+
+      test('it renders nothing when not loading', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{false}}
+              @skeletonRows={{5}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+      });
+
+      test('empty content does not render alongside skeletons', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+              @emptyContent="No results found"
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').exists({ count: 3 });
+        assert.dom('[data-test-id="table-empty-row"]').doesNotExist();
+      });
+
+      test('a loading block takes precedence over skeletonRows', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{3}}
+            >
+              <:loading>
+                <span data-test-id="custom-loading">Loading…</span>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="custom-loading"]').exists();
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+      });
+
+      test('omitting skeletonRows preserves current behavior', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @emptyContent="No results found"
+            />
+          </template>
+        );
+
+        assert.dom('[data-test-id="table-skeleton-row"]').doesNotExist();
+        assert
+          .dom('[data-test-id="table-empty-row"]')
+          .doesNotExist('empty content stays suppressed while loading');
+      });
+    });
   }
 );

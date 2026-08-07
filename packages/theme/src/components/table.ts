@@ -81,21 +81,25 @@ const table = tv({
       'text-neutral-strong',
       '[&:has([role=checkbox])]:pr-0'
     ],
-    empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12']
+    empty: ['text-neutral-soft', 'align-middle', 'text-center', 'py-12'],
+    skeleton: ['w-full', 'max-w-[16ch]']
   },
   variants: {
     size: {
       sm: {
         th: 'h-10 px-3 py-2 text-label-2xs',
-        td: 'px-3 py-2 text-body-micro'
+        td: 'px-3 py-2 text-body-micro',
+        skeleton: 'h-3'
       },
       md: {
         th: 'h-12 px-4 text-label-xs',
-        td: 'p-4 text-body-2xs'
+        td: 'p-4 text-body-2xs',
+        skeleton: 'h-4'
       },
       lg: {
         th: 'h-14 px-6 text-label-sm',
-        td: 'p-6 text-body-xs'
+        td: 'p-6 text-body-xs',
+        skeleton: 'h-5'
       }
     },
     isLoading: {

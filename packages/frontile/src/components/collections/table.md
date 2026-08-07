@@ -738,6 +738,46 @@ These are a supported contract, stable across minor versions:
 
 Use them for column-targeted styling and test selectors.
 
+### Built-in skeleton rows
+
+`@skeletonRows` renders placeholder rows while the table is loading and has no
+items. It is opt-in, and the number is required rather than defaulted: the row
+count is the one thing the table cannot infer, and a wrong default promises ten
+rows and delivers three.
+
+```gts preview
+import { array } from '@ember/helper';
+import { Table } from 'frontile';
+
+const columns = [
+  { key: 'name', name: 'Name' },
+  { key: 'email', name: 'Email' },
+  { key: 'role', name: 'Role' }
+];
+
+<template>
+  <Table
+    @columns={{columns}}
+    @items={{(array)}}
+    @isLoading={{true}}
+    @skeletonRows={{5}}
+  />
+</template>
+```
+
+Skeleton rows render only when `@isLoading` is true **and** there are no items,
+so a refresh, a filter requery, or loading page two never throws away rows the
+user is already reading. `@emptyContent` and the `empty` block stay suppressed
+while they render, and a `loading` block takes precedence when present.
+
+The placeholder is one uniform bar per cell, aligned and padded to the table's
+`@size`. For richer shapes — stacked cells, per-column widths — use `bodyTop`
+with the yielded columns instead.
+
+Because a skeleton is the intended affordance for a table that is loading with
+nothing on screen, note that the built-in `@isLoading` hairline under the header
+is deliberately subtle and is meant for tables that already have content.
+
 ## Column Visibility
 
 Enable users to show/hide columns with the toolbar:

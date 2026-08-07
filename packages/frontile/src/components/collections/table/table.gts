@@ -12,6 +12,7 @@ import CellForComponent from './cell-for';
 import CellDefaultComponent from './cell-default';
 import SortButtonComponent from './sort-button';
 import CheckboxComponent from './checkbox';
+import { Skeleton } from '../../utilities/skeleton';
 import { CellRenderingContext } from './cell-rendering-context';
 import { headlessTable as createHeadlessTable } from '@universal-ember/table';
 import { columns } from '@universal-ember/table/plugins';
@@ -74,6 +75,8 @@ interface TableSignature<
     isLoading?: boolean;
     /** Color variant for loading animation. @defaultValue 'default' */
     loadingColor?: TableVariants['loadingColor'];
+    /** Number of placeholder rows to render while loading with no items. Omit or 0 for no skeleton. */
+    skeletonRows?: number;
     /** Function to sort items when sorting is triggered. Receives the items array and sort descriptor. Returns sorted items. */
     onSort?: (items: T[], sortDescriptor: SortItem<T>) => T[];
     /** Initial sort descriptor to apply on mount. Only used for initial render, subsequent changes are ignored. */
@@ -634,6 +637,12 @@ class Table<
     return this.tableInstance.rows.values();
   }
 
+  get skeletonRowsArray(): number[] {
+    const count = this.args.skeletonRows ?? 0;
+    // A dense array — `{{#each}}` over a sparse `new Array(n)` is not reliable.
+    return Array.from({ length: count }, (_, index) => index);
+  }
+
   // Helper to check if a row is sticky
   isRowSticky = (row: Row<T>): boolean => {
     return !!this.args.stickyKeys?.includes(this.getKey(row));
@@ -785,29 +794,47 @@ class Table<
               {{/each}}
             </t.Row>
           {{else}}
-            {{#unless @isLoading}}
-              {{#if (has-block "empty")}}
-                <t.Row data-test-id="table-empty-row">
-                  <t.Cell
-                    @class={{(this.styles.empty)}}
-                    colspan={{this.headlessColumns.length}}
-                    data-test-id="table-empty-cell"
-                  >
-                    {{yield to="empty"}}
-                  </t.Cell>
-                </t.Row>
-              {{else if @emptyContent}}
-                <t.Row data-test-id="table-empty-row">
-                  <t.Cell
-                    @class={{(this.styles.empty)}}
-                    colspan={{this.headlessColumns.length}}
-                    data-test-id="table-empty-cell"
-                  >
-                    {{@emptyContent}}
-                  </t.Cell>
-                </t.Row>
-              {{/if}}
-            {{/unless}}
+            {{#if (and @isLoading this.skeletonRowsArray.length)}}
+              {{#unless (has-block "loading")}}
+                {{#each this.skeletonRowsArray}}
+                  <t.Row data-test-id="table-skeleton-row">
+                    {{#each this.headlessColumns as |column|}}
+                      <t.Cell
+                        @isSticky={{columnIsSticky column}}
+                        @stickyPosition={{columnStickyPosition column}}
+                        data-column={{column.key}}
+                      >
+                        <Skeleton @class={{(this.styles.skeleton)}} />
+                      </t.Cell>
+                    {{/each}}
+                  </t.Row>
+                {{/each}}
+              {{/unless}}
+            {{else}}
+              {{#unless @isLoading}}
+                {{#if (has-block "empty")}}
+                  <t.Row data-test-id="table-empty-row">
+                    <t.Cell
+                      @class={{(this.styles.empty)}}
+                      colspan={{this.headlessColumns.length}}
+                      data-test-id="table-empty-cell"
+                    >
+                      {{yield to="empty"}}
+                    </t.Cell>
+                  </t.Row>
+                {{else if @emptyContent}}
+                  <t.Row data-test-id="table-empty-row">
+                    <t.Cell
+                      @class={{(this.styles.empty)}}
+                      colspan={{this.headlessColumns.length}}
+                      data-test-id="table-empty-cell"
+                    >
+                      {{@emptyContent}}
+                    </t.Cell>
+                  </t.Row>
+                {{/if}}
+              {{/unless}}
+            {{/if}}
           {{/each}}
 
           {{#if (and @isLoading (has-block "loading"))}}
