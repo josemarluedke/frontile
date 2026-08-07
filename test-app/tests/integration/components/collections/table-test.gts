@@ -3810,6 +3810,55 @@ module(
           .dom('[data-test-id="table-empty-row"]')
           .doesNotExist('empty content stays suppressed while loading');
       });
+
+      test('@classes.skeleton is applied to the rendered skeleton placeholder', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @classes={{hash skeleton="custom-skeleton-class"}}
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('custom-skeleton-class');
+      });
+
+      test('the skeleton placeholder height is size-aware', async function (assert) {
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isLoading={{true}}
+              @skeletonRows={{1}}
+              @size="sm"
+            />
+          </template>
+        );
+
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .hasClass('h-3');
+        assert
+          .dom(
+            '[data-test-id="table-skeleton-row"] [data-component="skeleton"]'
+          )
+          .doesNotHaveClass('h-4');
+      });
     });
   }
 );

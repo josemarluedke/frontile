@@ -629,6 +629,10 @@ class Table<
     return this.styles.table({ class: this.args.classes?.table });
   }
 
+  get skeletonClassNames() {
+    return this.styles.skeleton({ class: this.args.classes?.skeleton });
+  }
+
   get headlessColumns() {
     return columns.for(this.tableInstance);
   }
@@ -804,7 +808,7 @@ class Table<
                         @stickyPosition={{columnStickyPosition column}}
                         data-column={{column.key}}
                       >
-                        <Skeleton @class={{(this.styles.skeleton)}} />
+                        <Skeleton @class={{this.skeletonClassNames}} />
                       </t.Cell>
                     {{/each}}
                   </t.Row>
