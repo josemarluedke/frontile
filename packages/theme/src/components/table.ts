@@ -111,6 +111,10 @@ const table = tv({
         ]
       }
     },
+    // Declared empty on purpose: these variants exist only so `isLoading` can
+    // pair with them in `compoundVariants` below, where the actual
+    // `thead: after:bg-*` colour is applied. A colour set here would paint the
+    // hairline even when the table is not loading.
     loadingColor: {
       default: {},
       primary: {},
