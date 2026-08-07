@@ -3400,5 +3400,208 @@ module(
           .hasText('28');
       });
     });
+
+    module('Body Block Yielded Columns', function () {
+      test('bodyTop yields the rendered columns', async function (assert) {
+        const columns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyTop as |b|>
+                <b.Row data-test-id="yielded-row">
+                  {{#each b.columns as |column|}}
+                    <b.Cell data-column={{column.key}}>{{column.key}}</b.Cell>
+                  {{/each}}
+                </b.Row>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="yielded-row"]').exists();
+        assert
+          .dom('[data-test-id="yielded-row"] [data-column="id"]')
+          .exists('renders a cell for the id column');
+        assert
+          .dom('[data-test-id="yielded-row"] [data-column="name"]')
+          .exists('renders a cell for the name column');
+        assert.dom('[data-test-id="yielded-row"] td').exists({ count: 2 });
+      });
+
+      test('bodyTop yielded columns include the selection column', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [
+          {
+            id: '1',
+            name: 'John Doe',
+            email: 'john@example.com',
+            role: 'admin'
+          }
+        ];
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+            >
+              <:bodyTop as |b|>
+                <b.Row data-test-id="yielded-row">
+                  {{#each b.columns as |column|}}
+                    <b.Cell data-column={{column.key}} />
+                  {{/each}}
+                </b.Row>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="yielded-row"] [data-column="__selection__"]')
+          .exists('includes the synthetic selection column');
+        assert.dom('[data-test-id="yielded-row"] td').exists({ count: 2 });
+      });
+
+      test('bodyTop yielded columns match the rendered header', async function (assert) {
+        const columns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' },
+          { key: 'email', name: 'Email', isVisible: false }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyTop as |b|>
+                <b.Row data-test-id="yielded-row">
+                  {{#each b.columns as |column|}}
+                    <b.Cell data-column={{column.key}} />
+                  {{/each}}
+                </b.Row>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        const headerKeys = Array.from(
+          this.element.querySelectorAll('thead th[data-key]'),
+          (th) => th.getAttribute('data-key')
+        );
+        const cellKeys = Array.from(
+          this.element.querySelectorAll(
+            '[data-test-id="yielded-row"] td[data-column]'
+          ),
+          (td) => td.getAttribute('data-column')
+        );
+
+        assert.deepEqual(
+          cellKeys,
+          headerKeys,
+          'yielded columns match the rendered header exactly'
+        );
+        assert.notOk(
+          headerKeys.includes('email'),
+          'the hidden column is absent from both'
+        );
+      });
+
+      test('a Cell yielded to bodyTop respects the table size', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @size="sm">
+              <:bodyTop as |b|>
+                <b.Row>
+                  <b.Cell data-test-id="sized-cell">Cell</b.Cell>
+                </b.Row>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="sized-cell"]').hasClass('px-3');
+        assert.dom('[data-test-id="sized-cell"]').doesNotHaveClass('p-4');
+      });
+
+      test('bodyBottom yields the rendered columns', async function (assert) {
+        const columns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyBottom as |b|>
+                <b.Row data-test-id="yielded-bottom-row">
+                  {{#each b.columns as |column|}}
+                    <b.Cell data-column={{column.key}} />
+                  {{/each}}
+                </b.Row>
+              </:bodyBottom>
+            </Table>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="yielded-bottom-row"] td')
+          .exists({ count: 2 });
+      });
+
+      test('loading yields the rendered columns', async function (assert) {
+        const columns = [
+          { key: 'id', name: 'ID' },
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}} @isLoading={{true}}>
+              <:loading as |l|>
+                <span data-test-id="loading-count">{{l.columns.length}}</span>
+              </:loading>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="loading-count"]').hasText('2');
+      });
+
+      test('existing blocks that take no block param still render', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+        const items: TestItem[] = [];
+
+        await render(
+          <template>
+            <Table @columns={{columns}} @items={{items}}>
+              <:bodyTop>
+                <tr data-test-id="legacy-row">
+                  <td colspan="1">Legacy</td>
+                </tr>
+              </:bodyTop>
+            </Table>
+          </template>
+        );
+
+        assert.dom('[data-test-id="legacy-row"]').exists();
+      });
+    });
   }
 );

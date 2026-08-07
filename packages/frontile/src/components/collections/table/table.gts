@@ -38,6 +38,8 @@ import type {
 import type { ColumnConfig as UniversalColumnConfig } from '@universal-ember/table';
 import type { ContentValue, WithBoundArgs } from '@glint/template';
 import type Owner from '@ember/owner';
+import type { SimpleTableRow } from '../simple-table/row';
+import type { SimpleTableCell } from '../simple-table/cell';
 
 interface TableSignature<
   T,
@@ -127,9 +129,25 @@ interface TableSignature<
         onSort: () => void;
       }
     ];
-    loading: [];
-    bodyTop: [];
-    bodyBottom: [];
+    loading: [
+      {
+        columns: Column<T>[];
+      }
+    ];
+    bodyTop: [
+      {
+        columns: Column<T>[];
+        Row: WithBoundArgs<typeof SimpleTableRow, 'styleFns' | 'classes'>;
+        Cell: WithBoundArgs<typeof SimpleTableCell, 'styleFns' | 'classes'>;
+      }
+    ];
+    bodyBottom: [
+      {
+        columns: Column<T>[];
+        Row: WithBoundArgs<typeof SimpleTableRow, 'styleFns' | 'classes'>;
+        Cell: WithBoundArgs<typeof SimpleTableCell, 'styleFns' | 'classes'>;
+      }
+    ];
   };
 }
 
@@ -701,7 +719,10 @@ class Table<
 
         <t.Body>
           {{#if (has-block "bodyTop")}}
-            {{yield to="bodyTop"}}
+            {{yield
+              (hash columns=this.headlessColumns Row=t.Row Cell=t.Cell)
+              to="bodyTop"
+            }}
           {{/if}}
 
           {{#each this.headlessRows as |row|}}
@@ -795,13 +816,16 @@ class Table<
                 colspan={{this.headlessColumns.length}}
                 data-test-id="table-loading-cell"
               >
-                {{yield to="loading"}}
+                {{yield (hash columns=this.headlessColumns) to="loading"}}
               </t.Cell>
             </t.Row>
           {{/if}}
 
           {{#if (has-block "bodyBottom")}}
-            {{yield to="bodyBottom"}}
+            {{yield
+              (hash columns=this.headlessColumns Row=t.Row Cell=t.Cell)
+              to="bodyBottom"
+            }}
           {{/if}}
         </t.Body>
 
