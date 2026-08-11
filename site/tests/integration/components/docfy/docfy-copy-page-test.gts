@@ -103,7 +103,7 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
     assert.dom('[data-test-id="copy-page-primary"]').hasText('Unavailable');
   });
 
-  test('the dropdown lists the remaining three actions', async function (assert) {
+  test('the dropdown lists the remaining actions', async function (assert) {
     await render(
       <template>
         <DocfyCopyPage
@@ -115,9 +115,99 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
 
     await click('[data-test-id="copy-page-trigger"]');
 
+    assert.dom('[data-key="copy-markdown-url"]').hasText('Copy Markdown URL');
     assert.dom('[data-key="view-as-markdown"]').hasText('View as Markdown');
     assert.dom('[data-key="open-chatgpt"]').hasText('Open in ChatGPT');
     assert.dom('[data-key="open-claude"]').hasText('Open in Claude');
+  });
+
+  test('"Copy Markdown URL" copies the .md URL itself, not the page contents', async function (assert) {
+    const copied: string[] = [];
+
+    window.fetch = (() => {
+      assert.step('fetch should not be called');
+      return Promise.reject(new Error('unexpected fetch'));
+    }) as typeof window.fetch;
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: (text: string) => {
+          copied.push(text);
+          return Promise.resolve();
+        },
+      },
+    });
+
+    await render(
+      <template>
+        <DocfyCopyPage
+          @url="/docs/components/buttons/button-group"
+          @title="ButtonGroup"
+        />
+      </template>
+    );
+
+    await click('[data-test-id="copy-page-trigger"]');
+    await click('[data-key="copy-markdown-url"]');
+
+    assert.deepEqual(copied, [
+      `${window.location.origin}/docs/components/buttons/button-group.md`,
+    ]);
+    assert.verifySteps([]);
+    assert
+      .dom('[data-test-id="copy-page-primary"]')
+      .hasText('URL copied!', 'the primary button reports what was copied');
+  });
+
+  test('"Copy Markdown URL" copies the index.md URL on an index page', async function (assert) {
+    const copied: string[] = [];
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: (text: string) => {
+          copied.push(text);
+          return Promise.resolve();
+        },
+      },
+    });
+
+    await render(
+      <template>
+        <DocfyCopyPage @url="/docs/get-started/" @title="Get Started" />
+      </template>
+    );
+
+    await click('[data-test-id="copy-page-trigger"]');
+    await click('[data-key="copy-markdown-url"]');
+
+    assert.deepEqual(copied, [
+      `${window.location.origin}/docs/get-started/index.md`,
+    ]);
+  });
+
+  test('"Copy Markdown URL" surfaces a failure when the clipboard rejects', async function (assert) {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: () => Promise.reject(new Error('denied')),
+      },
+    });
+
+    await render(
+      <template>
+        <DocfyCopyPage
+          @url="/docs/components/buttons/button-group"
+          @title="ButtonGroup"
+        />
+      </template>
+    );
+
+    await click('[data-test-id="copy-page-trigger"]');
+    await click('[data-key="copy-markdown-url"]');
+
+    assert.dom('[data-test-id="copy-page-primary"]').hasText('Unavailable');
   });
 
   test('"View as markdown" carries the .md URL as a real href, and also opens via keyboard/click through the menu action', async function (assert) {
