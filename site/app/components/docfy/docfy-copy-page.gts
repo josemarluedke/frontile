@@ -13,7 +13,7 @@ export interface DocfyCopyPageSignature {
   Element: HTMLDivElement;
 }
 
-type CopyStatus = 'idle' | 'copying' | 'copied' | 'error';
+type CopyStatus = 'idle' | 'copying' | 'copied' | 'copied-url' | 'error';
 
 /**
  * Map a Docfy page URL to the path of its exported Markdown mirror.
@@ -61,7 +61,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   }
 
   get isCopied(): boolean {
-    return this.status === 'copied';
+    return this.status === 'copied' || this.status === 'copied-url';
   }
 
   get primaryLabel(): string {
@@ -70,6 +70,8 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
         return 'Copying…';
       case 'copied':
         return 'Copied!';
+      case 'copied-url':
+        return 'URL copied!';
       case 'error':
         return 'Unavailable';
       default:
@@ -85,7 +87,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
       if (this.isDestroying || this.isDestroyed) {
         return;
       }
-      if (this.status === 'copied' || this.status === 'error') {
+      if (this.status !== 'copying') {
         this.status = 'idle';
       }
     }, 2000);
@@ -110,6 +112,20 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
       const text = await response.text();
       await navigator.clipboard.writeText(text);
       this.status = 'copied';
+    } catch {
+      this.status = 'error';
+    } finally {
+      this.resetAfterDelay();
+    }
+  }
+
+  // Copies the `.md` URL itself, rather than the page contents — handy for
+  // pasting into an agent that will do its own fetching.
+  @action
+  async copyMarkdownUrl(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(this.mdUrl);
+      this.status = 'copied-url';
     } catch {
       this.status = 'error';
     } finally {
@@ -160,7 +176,9 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
 
   @action
   handleMenuAction(key: string): void {
-    if (key === 'view-as-markdown') {
+    if (key === 'copy-markdown-url') {
+      void this.copyMarkdownUrl();
+    } else if (key === 'view-as-markdown') {
       this.viewAsMarkdown();
     } else if (key === 'open-chatgpt') {
       this.openInChatGpt();
@@ -210,6 +228,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
             @disableTransitions={{true}}
             as |Item|
           >
+            <Item @key="copy-markdown-url">Copy Markdown URL</Item>
             <Item @key="view-as-markdown">
               <a
                 href={{this.mdUrl}}
