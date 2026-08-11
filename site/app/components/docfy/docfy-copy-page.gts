@@ -15,13 +15,37 @@ export interface DocfyCopyPageSignature {
 
 type CopyStatus = 'idle' | 'copying' | 'copied' | 'error';
 
+/**
+ * Map a Docfy page URL to the path of its exported Markdown mirror.
+ *
+ * Docfy gives index pages (`index.md` / `readme.md`) a URL ending in `/` —
+ * e.g. `/docs/get-started/` — even though the router renders it without the
+ * trailing slash. @docfy/ember-vite's static export mirrors those to
+ * `<url>index.md`, so naively appending `.md` would ask for
+ * `/docs/get-started/.md` and 404. This mirrors `markdownFileName` from
+ * @docfy/ember-vite's static-export.
+ */
+export function markdownPathForPageUrl(url: string): string {
+  const normalized = url.startsWith('/') ? url : `/${url}`;
+
+  if (normalized === '/') {
+    return '/index.md';
+  }
+
+  if (normalized.endsWith('/')) {
+    return `${normalized}index.md`;
+  }
+
+  return `${normalized}.md`;
+}
+
 export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   @tracked status: CopyStatus = 'idle';
 
   resetTimer?: ReturnType<typeof setTimeout>;
 
   get mdUrl(): string {
-    return `${window.location.origin}${this.args.url}.md`;
+    return `${window.location.origin}${markdownPathForPageUrl(this.args.url)}`;
   }
 
   buildPrompt(): string {

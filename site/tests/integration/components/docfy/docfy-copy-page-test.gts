@@ -1,7 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
-import DocfyCopyPage from 'site/components/docfy/docfy-copy-page';
+import DocfyCopyPage, {
+  markdownPathForPageUrl,
+} from 'site/components/docfy/docfy-copy-page';
 
 module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
   setupRenderingTest(hooks);
@@ -190,6 +192,70 @@ module('Integration | Component | docfy/docfy-copy-page', function (hooks) {
     assert.strictEqual(
       openedUrls[1],
       `https://claude.ai/new?q=${encodeURIComponent(expectedPrompt)}`
+    );
+  });
+
+  test('markdownPathForPageUrl maps index page URLs to their index.md mirror', function (assert) {
+    assert.strictEqual(
+      markdownPathForPageUrl('/docs/components/buttons/button-group'),
+      '/docs/components/buttons/button-group.md'
+    );
+    assert.strictEqual(
+      markdownPathForPageUrl('/docs/get-started/'),
+      '/docs/get-started/index.md'
+    );
+    assert.strictEqual(markdownPathForPageUrl('/'), '/index.md');
+    assert.strictEqual(
+      markdownPathForPageUrl('docs/get-started/'),
+      '/docs/get-started/index.md'
+    );
+  });
+
+  test('an index page fetches and links to <url>index.md, not <url>.md', async function (assert) {
+    const requestedUrls: string[] = [];
+    const openedUrls: string[] = [];
+
+    window.fetch = ((input: string) => {
+      requestedUrls.push(input);
+      return Promise.resolve(new Response('# Get Started', { status: 200 }));
+    }) as typeof window.fetch;
+
+    window.open = ((url: string) => {
+      openedUrls.push(url);
+      return null;
+    }) as typeof window.open;
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.resolve() },
+    });
+
+    await render(
+      <template>
+        <DocfyCopyPage @url="/docs/get-started/" @title="Get Started" />
+      </template>
+    );
+
+    await click('[data-test-id="copy-page-primary"]');
+
+    assert.deepEqual(requestedUrls, [
+      `${window.location.origin}/docs/get-started/index.md`,
+    ]);
+
+    await click('[data-test-id="copy-page-trigger"]');
+
+    assert
+      .dom('[data-test-id="copy-page-view-markdown"]')
+      .hasAttribute(
+        'href',
+        `${window.location.origin}/docs/get-started/index.md`
+      );
+
+    await click('[data-key="view-as-markdown"]');
+
+    assert.strictEqual(
+      openedUrls[0],
+      `${window.location.origin}/docs/get-started/index.md`
     );
   });
 });
