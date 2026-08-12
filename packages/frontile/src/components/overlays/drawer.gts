@@ -17,24 +17,23 @@ import {
   type DrawerVariants
 } from '@frontile/theme';
 
-export interface DrawerArgs
-  extends Pick<
-    OverlaySignature['Args'],
-    | 'isOpen'
-    | 'onOpen'
-    | 'onClose'
-    | 'didClose'
-    | 'renderInPlace'
-    | 'target'
-    | 'transitionDuration'
-    | 'backdrop'
-    | 'disableTransitions'
-    | 'disableFocusTrap'
-    | 'focusTrapOptions'
-    | 'closeOnOutsideClick'
-    | 'closeOnEscapeKey'
-    | 'backdropTransition'
-  > {
+export interface DrawerArgs extends Pick<
+  OverlaySignature['Args'],
+  | 'isOpen'
+  | 'onOpen'
+  | 'onClose'
+  | 'didClose'
+  | 'renderInPlace'
+  | 'target'
+  | 'transitionDuration'
+  | 'backdrop'
+  | 'disableTransitions'
+  | 'disableFocusTrap'
+  | 'focusTrapOptions'
+  | 'closeOnOutsideClick'
+  | 'closeOnEscapeKey'
+  | 'backdropTransition'
+> {
   /**
    * The transition to be used in the Drawer.
    *

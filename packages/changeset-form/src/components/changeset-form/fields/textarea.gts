@@ -5,8 +5,7 @@ import FormTextarea from '@frontile/forms-legacy/components/form-textarea';
 import { type FormInputArgs } from '@frontile/forms-legacy/components/form-input';
 
 export interface ChangesetFormFieldsTextareaArgs
-  extends BaseArgs,
-    FormInputArgs {
+  extends BaseArgs, FormInputArgs {
   onInput?: (value: string, event: InputEvent) => void;
 }
 

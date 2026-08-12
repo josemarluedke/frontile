@@ -7,8 +7,7 @@ import { on } from '@ember/modifier';
 import { cssTransition } from 'ember-css-transitions';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-// @ts-ignore
-import { focusTrap } from 'ember-focus-trap';
+import { focusTrap, type FocusTrapModifierSignature } from 'ember-focus-trap';
 import onClickOutside from 'ember-click-outside/modifiers/on-click-outside';
 import { Backdrop, type BackdropSignature } from './backdrop';
 import { Portal, findParentPortal, type PortalSignature } from './portal';
@@ -16,6 +15,10 @@ import { getElementByAttribute } from '../../-private/dom';
 import type { ModifierLike } from '@glint/template';
 import type { CssTransitionSignature } from 'ember-css-transitions/modifiers/css-transition';
 import { isTesting, macroCondition } from '@embroider/macros';
+
+type FocusTrapOptions = NonNullable<
+  FocusTrapModifierSignature['Args']['Named']['focusTrapOptions']
+>;
 
 function hasNestedPortals(element: HTMLElement): boolean {
   const portal = findParentPortal(element);
@@ -45,8 +48,10 @@ function hasWormholeOrAlertParentElement(el: HTMLElement) {
   return false;
 }
 
-interface Args
-  extends Pick<PortalSignature['Args'], 'renderInPlace' | 'target'> {
+interface Args extends Pick<
+  PortalSignature['Args'],
+  'renderInPlace' | 'target'
+> {
   /**
    * Duration of the animation
    *
@@ -77,7 +82,7 @@ interface Args
    *
    * @defaultValue { clickOutsideDeactivates: true, allowOutsideClick: true }
    */
-  focusTrapOptions?: unknown;
+  focusTrapOptions?: FocusTrapOptions;
 
   /**
    * Whether it is open or not
@@ -279,7 +284,7 @@ class Overlay extends Component<OverlaySignature> {
     return !(this.args.disableTransitions === true);
   }
 
-  get focusTrapOptions(): unknown {
+  get focusTrapOptions(): FocusTrapOptions {
     return (
       this.args.focusTrapOptions || {
         clickOutsideDeactivates: true,

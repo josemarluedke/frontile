@@ -5,8 +5,7 @@ import FormCheckbox, {
 } from '@frontile/forms-legacy/components/form-checkbox';
 
 export interface ChangesetFormFieldsCheckboxArgs
-  extends BaseArgs,
-    FormCheckboxArgs {
+  extends BaseArgs, FormCheckboxArgs {
   _groupName?: string;
   _parentOnChange?: (value: unknown, event: Event) => void;
 

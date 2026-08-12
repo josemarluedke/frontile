@@ -14,17 +14,16 @@ import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from './listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
-interface DropdownArgs
-  extends Pick<
-    PopoverSignature['Args'],
-    | 'placement'
-    | 'flipOptions'
-    | 'middleware'
-    | 'shiftOptions'
-    | 'offsetOptions'
-    | 'strategy'
-    | 'didClose'
-  > {
+interface DropdownArgs extends Pick<
+  PopoverSignature['Args'],
+  | 'placement'
+  | 'flipOptions'
+  | 'middleware'
+  | 'shiftOptions'
+  | 'offsetOptions'
+  | 'strategy'
+  | 'didClose'
+> {
   /**
    * Whether the dropdown should close upon selecting an item.
    *
@@ -78,11 +77,10 @@ class Dropdown extends Component<DropdownSignature> {
   </template>
 }
 
-interface TriggerArgs
-  extends Pick<
-    ButtonSignature['Args'],
-    'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
-  > {
+interface TriggerArgs extends Pick<
+  ButtonSignature['Args'],
+  'appearance' | 'intent' | 'size' | 'isInGroup' | 'class'
+> {
   /**
    * @internal
    */
@@ -152,7 +150,8 @@ class Trigger extends Component<TriggerSignature> {
 }
 
 interface MenuArgs
-  extends Pick<
+  extends
+    Pick<
       ListboxSignature<unknown>['Args'],
       | 'appearance'
       | 'intent'

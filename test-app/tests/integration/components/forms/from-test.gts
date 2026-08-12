@@ -2834,8 +2834,7 @@ async function changeOption(
     );
   }
   const option = select.querySelector(`[data-key="${key}"]`) as
-    | HTMLOptionElement
-    | undefined;
+    HTMLOptionElement | undefined;
   if (!option) {
     throw new Error(
       `You called "${functionName}('${selectSelector}', '${key}')" but no option with key "${key}" was found`

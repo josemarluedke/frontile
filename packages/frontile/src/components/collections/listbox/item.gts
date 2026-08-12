@@ -31,12 +31,7 @@ export interface ListboxItemSignature {
      * The intent of each item
      */
     intent?:
-      | 'default'
-      | 'primary'
-      | 'accent'
-      | 'success'
-      | 'warning'
-      | 'danger';
+      'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
     type?: 'menu' | 'listbox';
   };

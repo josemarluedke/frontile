@@ -13,8 +13,7 @@ export function extractFrontileOptions<T = unknown>(
 
   // Find the frontile plugin option
   const pluginOptions = column.config.pluginOptions as (
-    | FrontilePluginOption
-    | unknown
+    FrontilePluginOption | unknown
   )[];
 
   const frontileOption = pluginOptions.find(

@@ -57,8 +57,7 @@ interface Args extends FormControlSharedArgs {
    * Receives the new boolean value and, optionally, the triggering Event.
    */
   onChange?:
-    | ((value: boolean, event: Event) => void)
-    | ((value: boolean) => void);
+    ((value: boolean, event: Event) => void) | ((value: boolean) => void);
 
   /**
    * Callback triggered when the Switch loses focus (blur event).

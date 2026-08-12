@@ -28,7 +28,8 @@ import { later, debounce, cancel } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 
 interface AutocompleteArgs<T>
-  extends Pick<
+  extends
+    Pick<
       PopoverSignature['Args'],
       | 'placement'
       | 'flipOptions'

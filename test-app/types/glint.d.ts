@@ -6,8 +6,7 @@ import type FrontileChangesetForm from '@frontile/changeset-form/template-regist
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry
-    extends FrontileRegistry,
-      FrontileChangesetForm {
+    extends FrontileRegistry, FrontileChangesetForm {
     /* your local loose-mode entries here */
   }
 }
