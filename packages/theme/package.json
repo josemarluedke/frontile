@@ -57,7 +57,7 @@
     "test": "echo 'A v2 addon does not have tests, run tests in test-app'"
   },
   "dependencies": {
-    "@embroider/addon-shim": "^1.8.7",
+    "@embroider/addon-shim": "^1.10.3",
     "culori": "^4.0.2",
     "deepmerge": "4.3.1",
     "flat": "^6.0.1",
@@ -80,8 +80,8 @@
     "@glint/environment-ember-template-imports": "1.5.2",
     "@glint/template": "^1.7.4",
     "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-node-resolve": "^16.0.0",
-    "@tsconfig/ember": "^3.0.9",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@tsconfig/ember": "^3.0.12",
     "@types/culori": "^4.0.1",
     "@types/flat": "^5.0.5",
     "@types/lodash.kebabcase": "^4.1.9",
