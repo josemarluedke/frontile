@@ -45,7 +45,7 @@
     "@ember/app-tsconfig": "^1.0.3",
     "@ember/optional-features": "^3.0.0",
     "@ember/string": "^4.0.1",
-    "@ember/test-helpers": "^5.2.2",
+    "@ember/test-helpers": "^5.4.3",
     "@ember/test-waiters": "^4.1.2",
     "@embroider/compat": "^4.1.1",
     "@embroider/config-meta-loader": "^1.0.0",
@@ -61,7 +61,7 @@
     "@glint/environment-ember-loose": "^1.5.2",
     "@glint/environment-ember-template-imports": "^1.5.2",
     "@glint/template": "^1.8.0",
-    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-babel": "^7.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "@types/qunit": "^2.19.14",
@@ -107,7 +107,7 @@
     "typescript-eslint": "^8.67.0",
     "unified": "^9.2.1",
     "valibot": "^1.4.2",
-    "vite": "^7.0.6"
+    "vite": "^7.0.8"
   },
   "engines": {
     "node": ">= 18"
