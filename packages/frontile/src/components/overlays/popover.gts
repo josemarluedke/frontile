@@ -266,23 +266,22 @@ class Popover extends Component<PopoverSignature> {
   </template>
 }
 
-interface ContentArgs
-  extends Pick<
-    OverlaySignature['Args'],
-    | 'onOpen'
-    | 'didClose'
-    | 'renderInPlace'
-    | 'target'
-    | 'transitionDuration'
-    | 'backdrop'
-    | 'disableTransitions'
-    | 'focusTrapOptions'
-    | 'closeOnOutsideClick'
-    | 'closeOnEscapeKey'
-    | 'backdropTransition'
-    | 'blockScroll'
-    | 'preventAutoFocus'
-  > {
+interface ContentArgs extends Pick<
+  OverlaySignature['Args'],
+  | 'onOpen'
+  | 'didClose'
+  | 'renderInPlace'
+  | 'target'
+  | 'transitionDuration'
+  | 'backdrop'
+  | 'disableTransitions'
+  | 'focusTrapOptions'
+  | 'closeOnOutsideClick'
+  | 'closeOnEscapeKey'
+  | 'backdropTransition'
+  | 'blockScroll'
+  | 'preventAutoFocus'
+> {
   /**
    * @internal
    */

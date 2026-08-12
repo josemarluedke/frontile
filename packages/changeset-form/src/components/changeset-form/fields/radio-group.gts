@@ -7,8 +7,7 @@ import FormRadioGroup, {
 import type { ComponentLike } from '@glint/template';
 
 export interface ChangesetFormFieldsRadioGroupArgs
-  extends BaseArgs,
-    FormRadioGroupArgs {
+  extends BaseArgs, FormRadioGroupArgs {
   onChange?: (value: unknown, event: Event) => void;
 }
 

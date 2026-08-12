@@ -10,12 +10,7 @@ interface ProgressBarSignature {
      * The intent of the progress bar
      */
     intent?:
-      | 'default'
-      | 'primary'
-      | 'accent'
-      | 'success'
-      | 'warning'
-      | 'danger';
+      'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
 
     /**
      * The size of the progress bar

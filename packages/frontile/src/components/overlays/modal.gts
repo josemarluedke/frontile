@@ -17,24 +17,23 @@ import {
 } from '@frontile/theme';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
-export interface ModalArgs
-  extends Pick<
-    OverlaySignature['Args'],
-    | 'isOpen'
-    | 'onOpen'
-    | 'onClose'
-    | 'didClose'
-    | 'renderInPlace'
-    | 'target'
-    | 'transitionDuration'
-    | 'backdrop'
-    | 'disableTransitions'
-    | 'disableFocusTrap'
-    | 'focusTrapOptions'
-    | 'closeOnOutsideClick'
-    | 'closeOnEscapeKey'
-    | 'backdropTransition'
-  > {
+export interface ModalArgs extends Pick<
+  OverlaySignature['Args'],
+  | 'isOpen'
+  | 'onOpen'
+  | 'onClose'
+  | 'didClose'
+  | 'renderInPlace'
+  | 'target'
+  | 'transitionDuration'
+  | 'backdrop'
+  | 'disableTransitions'
+  | 'disableFocusTrap'
+  | 'focusTrapOptions'
+  | 'closeOnOutsideClick'
+  | 'closeOnEscapeKey'
+  | 'backdropTransition'
+> {
   /**
    * The transition to be used in the Modal.
    *

@@ -45,8 +45,10 @@ function hasWormholeOrAlertParentElement(el: HTMLElement) {
   return false;
 }
 
-interface Args
-  extends Pick<PortalSignature['Args'], 'renderInPlace' | 'target'> {
+interface Args extends Pick<
+  PortalSignature['Args'],
+  'renderInPlace' | 'target'
+> {
   /**
    * Duration of the animation
    *

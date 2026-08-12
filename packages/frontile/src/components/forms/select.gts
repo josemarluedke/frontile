@@ -33,7 +33,8 @@ const eq = (a: unknown, b: unknown) => a === b;
 
 // Base interface for shared properties
 interface BaseSelectArgs<T>
-  extends Pick<
+  extends
+    Pick<
       PopoverSignature['Args'],
       | 'placement'
       | 'flipOptions'

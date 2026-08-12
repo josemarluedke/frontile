@@ -6,8 +6,10 @@ import type { ButtonArgs } from './button';
 import ToggleButton, { type ToggleButtonSignature } from './toggle-button';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
-interface ButtonGroupArgs
-  extends Pick<ButtonArgs, 'appearance' | 'intent' | 'size' | 'class'> {}
+interface ButtonGroupArgs extends Pick<
+  ButtonArgs,
+  'appearance' | 'intent' | 'size' | 'class'
+> {}
 
 interface ButtonGroupSignature {
   Args: ButtonGroupArgs;

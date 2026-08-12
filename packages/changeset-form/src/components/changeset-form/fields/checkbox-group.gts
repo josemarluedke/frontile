@@ -11,16 +11,14 @@ import type { WithBoundArgs } from '@glint/template';
 import type Owner from '@ember/owner';
 
 export interface ChangesetFormFieldsGroupArgs
-  extends BaseArgs,
-    FormCheckboxGroupArgs {
+  extends BaseArgs, FormCheckboxGroupArgs {
   errors?: string[];
   changeset: BufferedChangeset;
   groupName?: string;
   onChange?: (value: unknown, event: Event) => void;
 }
 
-export interface ChangesetFormFieldsCheckboxGroupSignature
-  extends BaseSignature {
+export interface ChangesetFormFieldsCheckboxGroupSignature extends BaseSignature {
   Args: ChangesetFormFieldsGroupArgs;
   Blocks: {
     default: [

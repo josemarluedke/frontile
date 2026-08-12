@@ -3,8 +3,10 @@ import { useStyles } from '@frontile/theme';
 import { press } from '../../modifiers/press';
 import type { ButtonArgs } from './button';
 
-interface ToggleButtonArgs
-  extends Pick<ButtonArgs, 'intent' | 'size' | 'class' | 'isInGroup'> {
+interface ToggleButtonArgs extends Pick<
+  ButtonArgs,
+  'intent' | 'size' | 'class' | 'isInGroup'
+> {
   /**
    * If the button is currently selected
    *

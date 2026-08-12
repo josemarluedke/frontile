@@ -5,8 +5,7 @@ import FormSelect, {
 } from '@frontile/forms-legacy/components/form-select';
 
 export interface ChangesetFormFieldsSelectArgs
-  extends BaseArgs,
-    FormSelectArgs {
+  extends BaseArgs, FormSelectArgs {
   onChange: (selection: unknown, select: unknown, event?: Event) => void;
   onFocusOut?: (select: unknown, event: FocusEvent) => void;
   onClose?: (select: unknown, e: Event) => boolean | undefined;
