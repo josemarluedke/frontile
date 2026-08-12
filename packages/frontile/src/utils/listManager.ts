@@ -147,7 +147,14 @@ class ListManager {
     this.#items = this.#items.filter((item) => item.el !== el);
 
     if (this.args.autoActivateMode == 'first') {
-      this.activateItem(this.#firstVisibleItem);
+      // Deferred for the same reason as the activation in `register`: unregister
+      // runs while Glimmer tears down the elements it is replacing, which is the
+      // same render pass in which item templates have already consumed
+      // `isActive`. Activating synchronously here would write to that tracked
+      // state after it was read, tripping a backtracking-rerender assertion.
+      later(() => {
+        this.activateItem(this.#firstVisibleItem);
+      }, 1);
     }
 
     if (typeof this.args.onListItemsChange === 'function') {
