@@ -1103,8 +1103,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.2
       ember-qunit:
-        specifier: ^9.0.3
-        version: 9.0.3(@babel/core@7.28.0)(@ember/test-helpers@5.2.2(@babel/core@7.28.0)(@glint/template@1.8.0))(@glint/template@1.8.0)(qunit@2.26.0)
+        specifier: ^9.1.0
+        version: 9.1.0(@ember/test-helpers@5.2.2(@babel/core@7.28.0)(@glint/template@1.8.0))(qunit@2.26.0)
       ember-resolver:
         specifier: ^13.2.0
         version: 13.2.0
@@ -1326,8 +1326,8 @@ importers:
         specifier: ^8.2.3
         version: 8.2.4(ember-source@6.6.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
       ember-qunit:
-        specifier: ^9.0.1
-        version: 9.0.3(@babel/core@7.28.0)(@ember/test-helpers@5.3.0(@babel/core@7.28.0)(@glint/template@1.8.0))(@glint/template@1.8.0)(qunit@2.26.0)
+        specifier: ^9.1.0
+        version: 9.1.0(@ember/test-helpers@5.3.0(@babel/core@7.28.0)(@glint/template@1.8.0))(qunit@2.26.0)
       ember-resolver:
         specifier: ^13.2.0
         version: 13.2.0
@@ -5655,8 +5655,8 @@ packages:
       ember-basic-dropdown: ^8.5.1
       ember-concurrency: ^4.0.2
 
-  ember-qunit@9.0.3:
-    resolution: {integrity: sha512-t+FD5/EWAR3WvGVj1etblFJJ6CaJqddDxusNcYYFZmW7zrQpCnQ9ziwpXM5/sw1sWabkhJZgYPXCn8bDRRhOfg==}
+  ember-qunit@9.1.0:
+    resolution: {integrity: sha512-dE32lSODyv4em0ACBS8PDzrAIPKR75hhSpn/au0qFBlzbdmNA/VVsgv2aoFAVRdlQ0zYJ8EiNPFqsBFciIeXVA==}
     peerDependencies:
       '@ember/test-helpers': '>=3.0.3'
       qunit: ^2.13.0
@@ -13238,11 +13238,11 @@ snapshots:
       fs-extra: 9.1.0
       is-subdir: 1.2.0
       js-string-escape: 1.0.1
-      lodash: 4.18.1
+      lodash: 4.17.21
       minimatch: 3.1.5
       pkg-entry-points: 1.1.2
       resolve-package-path: 4.0.3
-      semver: 7.8.5
+      semver: 7.7.4
       typescript-memoize: 1.1.1
     transitivePeerDependencies:
       - supports-color
@@ -14226,7 +14226,7 @@ snapshots:
 
   '@npmcli/fs@3.1.1':
     dependencies:
-      semver: 7.8.5
+      semver: 7.7.4
 
   '@npmcli/git@5.0.8':
     dependencies:
@@ -14260,7 +14260,7 @@ snapshots:
       json-parse-even-better-errors: 3.0.2
       pacote: 18.0.6
       proc-log: 4.2.0
-      semver: 7.8.5
+      semver: 7.7.4
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -15046,7 +15046,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.8.3)
       eslint: 8.57.1
-      semver: 7.8.5
+      semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -16695,7 +16695,7 @@ snapshots:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 8.1.2
-      semver: 7.8.5
+      semver: 7.7.2
       split: 1.0.1
 
   conventional-commits-filter@3.0.0:
@@ -18028,28 +18028,22 @@ snapshots:
       - ember-source
       - supports-color
 
-  ember-qunit@9.0.3(@babel/core@7.28.0)(@ember/test-helpers@5.2.2(@babel/core@7.28.0)(@glint/template@1.8.0))(@glint/template@1.8.0)(qunit@2.26.0):
+  ember-qunit@9.1.0(@ember/test-helpers@5.2.2(@babel/core@7.28.0)(@glint/template@1.8.0))(qunit@2.26.0):
     dependencies:
       '@ember/test-helpers': 5.2.2(@babel/core@7.28.0)(@glint/template@1.8.0)
       '@embroider/addon-shim': 1.10.3
-      '@embroider/macros': 1.20.6(@babel/core@7.28.0)(@glint/template@1.8.0)
       qunit: 2.26.0
       qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
       - supports-color
 
-  ember-qunit@9.0.3(@babel/core@7.28.0)(@ember/test-helpers@5.3.0(@babel/core@7.28.0)(@glint/template@1.8.0))(@glint/template@1.8.0)(qunit@2.26.0):
+  ember-qunit@9.1.0(@ember/test-helpers@5.3.0(@babel/core@7.28.0)(@glint/template@1.8.0))(qunit@2.26.0):
     dependencies:
       '@ember/test-helpers': 5.3.0(@babel/core@7.28.0)(@glint/template@1.8.0)
       '@embroider/addon-shim': 1.10.3
-      '@embroider/macros': 1.20.6(@babel/core@7.28.0)(@glint/template@1.8.0)
       qunit: 2.26.0
       qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
       - supports-color
 
   ember-resolver@13.2.0: {}
@@ -18525,7 +18519,7 @@ snapshots:
   eslint-compat-utils@0.5.1(eslint@9.32.0(jiti@2.7.0)):
     dependencies:
       eslint: 9.32.0(jiti@2.7.0)
-      semver: 7.8.5
+      semver: 7.7.2
 
   eslint-config-prettier@10.1.8(eslint@9.32.0(jiti@2.7.0)):
     dependencies:
@@ -19484,7 +19478,7 @@ snapshots:
   git-semver-tags@5.0.1:
     dependencies:
       meow: 8.1.2
-      semver: 7.8.5
+      semver: 7.7.2
 
   git-up@7.0.0:
     dependencies:
@@ -19962,7 +19956,7 @@ snapshots:
       cli-width: 2.2.1
       external-editor: 3.1.0
       figures: 2.0.0
-      lodash: 4.18.1
+      lodash: 4.17.21
       mute-stream: 0.0.7
       run-async: 2.4.1
       rxjs: 6.6.7
@@ -21405,7 +21399,7 @@ snapshots:
       make-fetch-happen: 13.0.1
       nopt: 7.2.1
       proc-log: 4.2.0
-      semver: 7.8.5
+      semver: 7.7.2
       tar: 6.2.1
       which: 4.0.0
     transitivePeerDependencies:
@@ -21442,7 +21436,7 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.1
-      semver: 7.8.5
+      semver: 7.7.2
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@6.0.2:
@@ -21465,7 +21459,7 @@ snapshots:
 
   npm-install-checks@6.3.0:
     dependencies:
-      semver: 7.8.5
+      semver: 7.7.4
 
   npm-normalize-package-bin@3.0.1: {}
 
