@@ -29,7 +29,7 @@
     "@glint/environment-ember-template-imports": "1.5.2",
     "@underline/eslint-config-ember-typescript": "^0.16.0",
     "@underline/eslint-config-node": "^0.16.0",
-    "concurrently": "^9.1.0",
+    "concurrently": "^10.0.4",
     "ember-source-channel-url": "^3.0.0",
     "ember-template-lint": "^6.1.0",
     "eslint": "^8.57.1",

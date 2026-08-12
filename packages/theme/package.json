@@ -87,7 +87,7 @@
     "@types/lodash.kebabcase": "^4.1.9",
     "@types/lodash.mapkeys": "^4.6.9",
     "babel-plugin-ember-template-compilation": "^2.2.1",
-    "concurrently": "^9.1.0",
+    "concurrently": "^10.0.4",
     "decorator-transforms": "^2.4.0",
     "ember-source": "^6.1.0",
     "rollup": "^4.62.4",
