@@ -20,9 +20,59 @@ class ListItem {
   key: string;
   textValue: string;
 
-  @tracked isSelected: boolean;
-  @tracked isDisabled: boolean;
-  @tracked isActive: boolean;
+  // Ember's tracked setter dirties a tag unconditionally — it never compares
+  // against the current value. That makes a redundant write more than wasted
+  // work here: Glimmer reads an attribute and writes it to the DOM inside a
+  // single autotracking frame, and writing `tabindex` onto the focused item
+  // blurs it, so the browser dispatches `focusout` synchronously and this
+  // item's own listeners run *inside* the frame that just consumed `isActive`.
+  // Dirtying a tag that frame already consumed trips a backtracking-rerender
+  // assertion, so every field below only writes on a real change.
+  //
+  // Each comparison reads a plain mirror rather than the tracked field itself.
+  // Reading the tracked field would *consume* its tag, so the write that
+  // followed would dirty a tag the current frame had just consumed — precisely
+  // the failure these guards exist to prevent.
+  @tracked private _isSelected: boolean;
+  @tracked private _isDisabled: boolean;
+  @tracked private _isActive: boolean;
+
+  private selectedValue: boolean;
+  private disabledValue: boolean;
+  private activeValue: boolean;
+
+  get isSelected(): boolean {
+    return this._isSelected;
+  }
+
+  set isSelected(value: boolean) {
+    if (this.selectedValue !== value) {
+      this.selectedValue = value;
+      this._isSelected = value;
+    }
+  }
+
+  get isDisabled(): boolean {
+    return this._isDisabled;
+  }
+
+  set isDisabled(value: boolean) {
+    if (this.disabledValue !== value) {
+      this.disabledValue = value;
+      this._isDisabled = value;
+    }
+  }
+
+  get isActive(): boolean {
+    return this._isActive;
+  }
+
+  set isActive(value: boolean) {
+    if (this.activeValue !== value) {
+      this.activeValue = value;
+      this._isActive = value;
+    }
+  }
 
   constructor(
     el: HTMLLIElement | HTMLOptionElement,
@@ -31,9 +81,9 @@ class ListItem {
     this.el = el;
     this.key = args.key;
     this.textValue = args.textValue;
-    this.isSelected = args.isSelected;
-    this.isDisabled = args.isDisabled;
-    this.isActive = args.isActive;
+    this._isSelected = this.selectedValue = args.isSelected;
+    this._isDisabled = this.disabledValue = args.isDisabled;
+    this._isActive = this.activeValue = args.isActive;
   }
 }
 
@@ -452,12 +502,31 @@ class ListManager {
         }
       };
 
+      // Glimmer mutates this item's DOM during a render — rewriting `tabindex`
+      // on the focused item, or clearing the block that contains it — and the
+      // browser reacts by blurring the element and dispatching `focusout`
+      // synchronously, inside the same autotracking frame that just consumed
+      // `isActive`. Writing tracked state from there trips a
+      // backtracking-rerender assertion.
+      //
+      // Such a blur has no `relatedTarget`: focus went nowhere rather than to
+      // another element. A user genuinely moving focus away — to a sibling
+      // option, the trigger, or anything else — always names that element, so
+      // reacting only when focus actually lands somewhere keeps deactivation
+      // working while ignoring the render's collateral.
+      const focusOut = (event: Event): void => {
+        if ((event as FocusEvent).relatedTarget === null) {
+          return;
+        }
+        mouseLeave();
+      };
+
       if (!args.disableEvents) {
         el.addEventListener('mouseenter', mouseEnter);
         el.addEventListener('mouseleave', mouseLeave);
 
         el.addEventListener('focusin', mouseEnter);
-        el.addEventListener('focusout', mouseLeave);
+        el.addEventListener('focusout', focusOut);
       }
 
       return (): void => {
@@ -468,7 +537,7 @@ class ListManager {
           el.removeEventListener('mouseleave', mouseLeave);
 
           el.removeEventListener('focusin', mouseEnter);
-          el.removeEventListener('focusout', mouseLeave);
+          el.removeEventListener('focusout', focusOut);
         }
       };
     }
