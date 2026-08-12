@@ -91,6 +91,6 @@
   },
   "dependencies": {
     "@types/qunit": "^2.19.14",
-    "ember-changeset": "^4.1.2"
+    "ember-changeset": "^5.0.0"
   }
 }

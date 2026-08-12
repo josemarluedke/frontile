@@ -42,7 +42,7 @@
     "@docfy/ember": "^0.12.0",
     "@docfy/ember-vite": "^0.12.0",
     "@docfy/plugin-with-prose": "^0.12.0",
-    "@ember/app-tsconfig": "^1.0.3",
+    "@ember/app-tsconfig": "^2.0.0",
     "@ember/optional-features": "^3.0.0",
     "@ember/string": "^4.0.1",
     "@ember/test-helpers": "^5.4.3",

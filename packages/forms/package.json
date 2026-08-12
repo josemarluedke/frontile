@@ -59,7 +59,7 @@
     "@babel/core": "7.26.7",
     "@babel/plugin-transform-typescript": "^7.26.7",
     "@ember/test-helpers": "^5.4.3",
-    "@embroider/addon-dev": "7.1.1",
+    "@embroider/addon-dev": "8.3.1",
     "@glimmer/component": "^2.1.1",
     "@glimmer/tracking": "^1.1.2",
     "@glint/core": "1.5.2",
