@@ -29,7 +29,7 @@ import { Button } from 'frontile';
 import { Button } from 'frontile';
 
 <template>
-  <div>
+  <div class='flex flex-wrap items-center gap-3'>
     <Button>Default</Button>
     <Button @appearance='soft'>Soft</Button>
     <Button @appearance='outlined'>Outlined</Button>
@@ -45,54 +45,42 @@ The default styles are mainly structural. Intent colors are applied as `color`.
 
 ## Button Intents
 
+Every intent is available in every appearance. The label on each row is the
+`@appearance` value; the button labels are the `@intent` values.
+
 ```gjs preview
 import { Button } from 'frontile';
+import { array } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
 
 <template>
-  <div>
-    <Button @intent='default'>Default</Button>
-    <Button @intent='primary'>Primary</Button>
-    <Button @intent='secondary'>Secondary</Button>
-    <Button @intent='tertiary'>Tertiary</Button>
-    <Button @intent='success'>Success</Button>
-    <Button @intent='warning'>Warning</Button>
-    <Button @intent='danger'>Danger</Button>
-  </div>
-  <div class='mt-4'>
-    <Button @appearance='soft' @intent='default'>Default</Button>
-    <Button @appearance='soft' @intent='primary'>Primary</Button>
-    <Button @appearance='soft' @intent='secondary'>Secondary</Button>
-    <Button @appearance='soft' @intent='tertiary'>Tertiary</Button>
-    <Button @appearance='soft' @intent='success'>Success</Button>
-    <Button @appearance='soft' @intent='warning'>Warning</Button>
-    <Button @appearance='soft' @intent='danger'>Danger</Button>
-  </div>
-  <div class='mt-4'>
-    <Button @appearance='outlined' @intent='default'>Default</Button>
-    <Button @appearance='outlined' @intent='primary'>Primary</Button>
-    <Button @appearance='outlined' @intent='secondary'>Secondary</Button>
-    <Button @appearance='outlined' @intent='tertiary'>Tertiary</Button>
-    <Button @appearance='outlined' @intent='success'>Success</Button>
-    <Button @appearance='outlined' @intent='warning'>Warning</Button>
-    <Button @appearance='outlined' @intent='danger'>Danger</Button>
-  </div>
-  <div class='mt-4'>
-    <Button @appearance='minimal' @intent='default'>Default</Button>
-    <Button @appearance='minimal' @intent='primary'>Primary</Button>
-    <Button @appearance='minimal' @intent='secondary'>Secondary</Button>
-    <Button @appearance='minimal' @intent='tertiary'>Tertiary</Button>
-    <Button @appearance='minimal' @intent='success'>Success</Button>
-    <Button @appearance='minimal' @intent='warning'>Warning</Button>
-    <Button @appearance='minimal' @intent='danger'>Danger</Button>
-  </div>
-  <div class='mt-4'>
-    <Button @appearance='tonal' @intent='default'>Default</Button>
-    <Button @appearance='tonal' @intent='primary'>Primary</Button>
-    <Button @appearance='tonal' @intent='secondary'>Secondary</Button>
-    <Button @appearance='tonal' @intent='tertiary'>Tertiary</Button>
-    <Button @appearance='tonal' @intent='success'>Success</Button>
-    <Button @appearance='tonal' @intent='warning'>Warning</Button>
-    <Button @appearance='tonal' @intent='danger'>Danger</Button>
+  <div class='flex flex-col gap-6'>
+    {{#each
+      (array 'default' 'soft' 'outlined' 'tonal' 'minimal')
+      as |appearance|
+    }}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Button @appearance={{appearance}} @intent={{intent}}>
+              {{intent}}
+            </Button>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
   </div>
 </template>
 ```
@@ -103,12 +91,14 @@ import { Button } from 'frontile';
 import { Button } from 'frontile';
 
 <template>
-  <Button @size='xs'>Button xs</Button>
-  <Button @size='sm'>Button sm</Button>
-  <Button>Button md</Button>
-  <Button @size='lg'>Button lg</Button>
-  <Button @size='xl'>Button xl</Button>
-  <Button @size='2xl'>Button 2xl</Button>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @size='xs'>Button xs</Button>
+    <Button @size='sm'>Button sm</Button>
+    <Button>Button md</Button>
+    <Button @size='lg'>Button lg</Button>
+    <Button @size='xl'>Button xl</Button>
+    <Button @size='2xl'>Button 2xl</Button>
+  </div>
 </template>
 ```
 
@@ -149,7 +139,7 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 import { Button } from 'frontile';
 
 <template>
-  <div>
+  <div class='flex flex-wrap items-center gap-3'>
     <Button @intent='default' disabled>Default</Button>
     <Button @intent='primary' disabled>Primary</Button>
     <Button @intent='secondary' disabled>Secondary</Button>
