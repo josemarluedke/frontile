@@ -1,4 +1,17 @@
 /**
+ * Font URLs below are relative to this file, which lets the consuming
+ * bundler resolve them: it fingerprints each font and rewrites the URL
+ * through the app's asset base.
+ *
+ * They used to be root-absolute (`/@frontile/theme/fonts/...`), matching the
+ * `ember-addon.public-assets` entries in package.json. Vite leaves a
+ * root-absolute url() untouched — no content hash, and no base prefix — so an
+ * app served from a CDN whose URL carries a path resolved the font against the
+ * CDN root and 404'd. The public-assets entries are kept for build pipelines
+ * that rely on them.
+ */
+
+/**
  * Domine (Variable Font)
  * Used for: marquee text styles (text-marquee-*)
  * Primary weight: 600 (SemiBold) - used by all marquee styles
@@ -10,7 +23,8 @@
 /* Variable Font - Normal */
 @font-face {
   font-family: 'Domine';
-  src: url('/@frontile/theme/fonts/domine-variable.woff2') format('woff2-variations');
+  src: url('../../public/fonts/domine-variable.woff2')
+    format('woff2-variations');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -28,7 +42,8 @@
 /* Variable Font - Normal */
 @font-face {
   font-family: 'Open Sans';
-  src: url('/@frontile/theme/fonts/open-sans-variable.woff2') format('woff2-variations');
+  src: url('../../public/fonts/open-sans-variable.woff2')
+    format('woff2-variations');
   font-weight: 300 800;
   font-style: normal;
   font-display: swap;
@@ -37,7 +52,8 @@
 /* Variable Font - Italic */
 @font-face {
   font-family: 'Open Sans';
-  src: url('/@frontile/theme/fonts/open-sans-italic-variable.woff2') format('woff2-variations');
+  src: url('../../public/fonts/open-sans-italic-variable.woff2')
+    format('woff2-variations');
   font-weight: 300 800;
   font-style: italic;
   font-display: swap;
@@ -54,7 +70,8 @@
 /* Variable Font - Normal */
 @font-face {
   font-family: 'Source Code Pro';
-  src: url('/@frontile/theme/fonts/source-code-pro-variable.woff2') format('woff2-variations');
+  src: url('../../public/fonts/source-code-pro-variable.woff2')
+    format('woff2-variations');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -63,7 +80,8 @@
 /* Variable Font - Italic */
 @font-face {
   font-family: 'Source Code Pro';
-  src: url('/@frontile/theme/fonts/source-code-pro-italic-variable.woff2') format('woff2-variations');
+  src: url('../../public/fonts/source-code-pro-italic-variable.woff2')
+    format('woff2-variations');
   font-weight: 200 900;
   font-style: italic;
   font-display: swap;
