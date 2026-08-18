@@ -31,6 +31,17 @@ export const surfaceOverlayLevels = [
 ] as const;
 
 /**
+ * Surface lift levels — the mirror of overlay
+ */
+export const surfaceLiftLevels = [
+  'subtle',
+  'soft',
+  'mild',
+  'firm',
+  'strong',
+] as const;
+
+/**
  * Color categories
  */
 export const colorCategories = [
@@ -51,6 +62,13 @@ export type ColorLevel = (typeof colorLevels)[number];
  */
 export function getSurfaceOverlayClass(level: string): string {
   return `bg-surface-overlay-${level}`;
+}
+
+/**
+ * Get Tailwind class name for surface lift
+ */
+export function getSurfaceLiftClass(level: string): string {
+  return `bg-surface-lift-${level}`;
 }
 
 /**

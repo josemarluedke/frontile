@@ -9,14 +9,15 @@ imports:
 
 # Surface System
 
-The Surface system provides a flexible way to create depth and hierarchy in your interfaces using opaque roles and translucent overlays.
+The Surface system provides a flexible way to create depth and hierarchy in your interfaces using opaque roles and two families of translucent veils.
 
 ## Overview
 
-The Surface system consists of two types:
+The Surface system consists of three types:
 
 - **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, modal, input)
-- **Surface Overlay** (subtle, soft, mild, firm, strong) - Translucent layers that stack on top of a role
+- **Surface Overlay** (subtle, soft, mild, firm, strong) - Translucent layers that push an element *into* its background
+- **Surface Lift** (subtle, soft, mild, firm, strong) - Translucent layers that pull an element *up off* its background
 
 ## Surface Roles
 
@@ -205,9 +206,9 @@ Overlays can stack on top of each other to create progressive depth:
     <div class='bg-surface-overlay-soft p-4 rounded'>
       Layer 2 (soft)
       <div class='bg-surface-overlay-mild p-4 rounded'>
-        Layer 3 (medium)
+        Layer 3 (mild)
         <div class='bg-surface-overlay-firm p-4 rounded'>
-          Layer 4 (strong)
+          Layer 4 (firm)
         </div>
       </div>
     </div>
@@ -225,6 +226,70 @@ Overlays can stack on top of each other to create progressive depth:
 </Overlay>
 ```
 
+## Surface Lift (subtle, soft, mild, firm, strong)
+
+Lift is the mirror of overlay. Overlay darkens in light mode and lightens in dark mode, pressing an element *into* the page. Lift does the opposite — a white veil on a light page, a black veil on a dark one — so the element reads as floating *above* whatever it covers.
+
+<SurfaceShowcase @type="lift" />
+
+Both families share the same level names, and both adapt to the active theme automatically:
+
+| Level    | Light mode    | Dark mode     |
+| -------- | ------------- | ------------- |
+| `subtle` | white @ 30%   | black @ 20%   |
+| `soft`   | white @ 50%   | black @ 30%   |
+| `mild`   | white @ 70%   | black @ 50%   |
+| `firm`   | white @ 90%   | black @ 60%   |
+| `strong` | white @ 95%   | white @ 95%   |
+
+`strong` is the exception: it is near-opaque white in *both* themes. Where `subtle`…`firm` are veils you see through, `strong` lifts a panel essentially clear of the page — the counterpart to `overlay-strong` being a scheme-invariant backdrop.
+
+### When to Use
+
+- **Frosted/glass panels**: Pair with `backdrop-blur-*` for a translucent panel that stays legible over busy content
+- **Sticky headers and toolbars**: Content scrolls under them without washing them out
+- **Floating controls over imagery**: Media captions, hero overlays, map controls
+- **Anything that must read as *above* the page** rather than recessed into it
+
+Reach for `surface-overlay-*` instead when the element belongs to the surface it sits on — hover states, table stripes, section fills.
+
+### Example: Frosted Sticky Header
+
+```hbs
+<header
+  class='sticky top-0 bg-surface-lift-firm backdrop-blur-md border-b border-surface-overlay-subtle'
+>
+  <nav>Content scrolls underneath, header stays legible</nav>
+</header>
+```
+
+### Example: Caption Over an Image
+
+```hbs
+<figure class='relative'>
+  <img src='/hero.jpg' alt='' />
+  <figcaption
+    class='absolute inset-x-0 bottom-0 bg-surface-lift-soft backdrop-blur-sm p-4'
+  >
+    Floats above the image in either theme
+  </figcaption>
+</figure>
+```
+
+### Example: Overlay vs Lift
+
+The same nesting, one family each — overlay recedes, lift advances:
+
+```hbs
+<div class='bg-surface-canvas p-6'>
+  {{! Recedes into the page }}
+  <div class='bg-surface-overlay-soft p-4 rounded'>Overlay</div>
+
+  {{! Floats above the page }}
+  <div class='bg-surface-lift-soft p-4 rounded'>Lift</div>
+</div>
+```
+
 ## Choosing the Right Surface
 
 Follow this decision flow:
@@ -240,8 +305,9 @@ Follow this decision flow:
    - If yes → Continue to next step
    - If no → Use a surface role
 
-4. **Is it on top of a solid surface?**
-   - If yes → Use `surface-overlay-*`
+4. **Should it read as recessed into the surface, or floating above it?**
+   - Recessed (hover states, section fills, table stripes) → Use `surface-overlay-*`
+   - Floating (frosted panels, sticky headers, captions over media) → Use `surface-lift-*`
    - If it's a modal/drawer backdrop → Use `surface-overlay-strong`
 
 ## Common Patterns

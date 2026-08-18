@@ -99,6 +99,25 @@ The values did not change — only the names:
 ```
 
 
+### New: Surface Lift
+
+`surface-lift-*` is a new translucent family alongside `surface-overlay-*`, with
+the same five levels. Overlay darkens in light mode and lightens in dark mode,
+pressing an element into the page; lift does the opposite, so the element floats
+above what it covers.
+
+```gts
+// Recedes — hover states, section fills
+<div class="bg-surface-overlay-soft" />
+
+// Floats — frosted panels, sticky headers, captions over media
+<header class="bg-surface-lift-firm backdrop-blur-md" />
+```
+
+Nothing is deprecated by this: existing `surface-overlay-*` usage is unaffected.
+See the [Surfaces](../../theming/design-tokens/surfaces.md) guide for the level
+table and usage guidance.
+
 ### Color Scale Changed
 
 The numbered scale (50, 100, 200, ..., 950) has been replaced with named levels:

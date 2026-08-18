@@ -143,20 +143,37 @@ export interface SurfaceOverlay {
   strong: string;
 }
 
-// TODO: enable together with the `lift` values in semantic.ts, once the
-// Tailwind plugin generates `surface-lift-*` utilities.
-//
-// Lift is the mirror of overlay: overlay darkens in light mode and lightens in
-// dark mode; lift does the opposite, so it pulls an element *up* off its
-// background in either scheme.
-//
-// export interface SurfaceLift {
-//   subtle: string;
-//   soft: string;
-//   mild: string;
-//   firm: string;
-//   strong: string;
-// }
+/**
+ * Translucent overlay system that *lightens* in light mode and *darkens* in
+ * dark mode — the mirror of {@link SurfaceOverlay}.
+ *
+ * Where overlay pushes an element down into its background, lift pulls it up
+ * off of it: a white veil on a light page, a black veil on a dark one. Use it
+ * for frosted/glass panels, sticky headers over content, and any surface that
+ * should read as floating above what it covers.
+ *
+ * Levels run low → high emphasis, same as overlay: `subtle`, `soft`, `mild`,
+ * `firm`, `strong`.
+ *
+ * @example
+ * // Frosted sticky header
+ * <header className="bg-surface-lift-firm backdrop-blur-md" />
+ */
+export interface SurfaceLift {
+  subtle: string;
+  soft: string;
+  mild: string;
+  firm: string;
+
+  /**
+   * Heaviest lift step, near-opaque (95%).
+   *
+   * Unlike `subtle`…`firm`, which flip direction between schemes, `strong` is
+   * white in both — it is the "lift a panel completely clear of the page"
+   * step rather than another veil.
+   */
+  strong: string;
+}
 
 /**
  * Surface color system defining background colors for UI containers.
@@ -187,8 +204,16 @@ export interface SurfaceColors {
    */
   overlay: SurfaceOverlay;
 
-  // TODO: enable with SurfaceLift above.
-  // lift: SurfaceLift;
+  /**
+   * Translucent lift system for elements that float above the page.
+   *
+   * The mirror of {@link overlay}: lightens in light mode, darkens in dark
+   * mode. See {@link SurfaceLift}.
+   *
+   * @example
+   * <div className="bg-surface-lift-soft backdrop-blur-sm" />
+   */
+  lift: SurfaceLift;
 
   /**
    * Root application background layer (hierarchy level 0).

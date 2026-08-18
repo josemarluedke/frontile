@@ -59,7 +59,7 @@ Meaningful color categories (neutral, primary, success, danger, warning) with in
 
 ### Surface System
 
-Flexible depth system with opaque solid surfaces (0-11) and translucent overlays (subtle, soft, mild, firm, strong) for creating visual hierarchy.
+Flexible depth system with opaque surface roles and two families of translucent veils — overlay (recedes) and lift (advances), each with subtle, soft, mild, firm, strong.
 
 ### Dark Mode
 
@@ -231,7 +231,8 @@ module.exports = frontile({
 The Surface system provides two types of backgrounds:
 
 - **Surface Solid** - Opaque base layers (0-11 scale)
-- **Surface Overlay** - Translucent layers (subtle, soft, mild, firm, strong)
+- **Surface Overlay** - Translucent layers that recede into the page (subtle, soft, mild, firm, strong)
+- **Surface Lift** - Translucent layers that float above the page (subtle, soft, mild, firm, strong)
 
 <SurfaceShowcase @type="overlay" />
 
