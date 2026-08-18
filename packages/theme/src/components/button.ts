@@ -23,7 +23,8 @@ const baseButton = tv({
     intent: {
       default: '',
       primary: 'focus-visible:ring-primary-soft',
-      accent: 'focus-visible:ring-accent-soft',
+      secondary: 'focus-visible:ring-secondary-soft',
+      tertiary: 'focus-visible:ring-tertiary-soft',
       success: 'focus-visible:ring-success-soft',
       warning: 'focus-visible:ring-warning-soft',
       danger: 'focus-visible:ring-danger-soft'
@@ -65,9 +66,15 @@ const baseButton = tv({
     },
     {
       appearance: 'outlined',
-      intent: 'accent',
+      intent: 'secondary',
       class:
-        'text-accent-strong border-accent hover:bg-accent-subtle hover:border-accent-soft hover:text-accent-bolder active:bg-accent-muted active:border-accent-firm active:text-accent-bolder'
+        'text-secondary-strong border-secondary hover:bg-secondary-subtle hover:border-secondary-soft hover:text-secondary-bolder active:bg-secondary-muted active:border-secondary-firm active:text-secondary-bolder'
+    },
+    {
+      appearance: 'outlined',
+      intent: 'tertiary',
+      class:
+        'text-tertiary-strong border-tertiary hover:bg-tertiary-subtle hover:border-tertiary-soft hover:text-tertiary-bolder active:bg-tertiary-muted active:border-tertiary-firm active:text-tertiary-bolder'
     },
     {
       appearance: 'outlined',
@@ -128,9 +135,15 @@ const button = tv({
     },
     {
       appearance: 'default',
-      intent: 'accent',
+      intent: 'secondary',
       class:
-        'bg-accent text-on-accent hover:bg-accent-soft active:bg-accent-firm'
+        'bg-secondary text-on-secondary hover:bg-secondary-soft active:bg-secondary-firm'
+    },
+    {
+      appearance: 'default',
+      intent: 'tertiary',
+      class:
+        'bg-tertiary text-on-tertiary hover:bg-tertiary-soft active:bg-tertiary-firm'
     },
     {
       appearance: 'default',
@@ -166,9 +179,15 @@ const button = tv({
     },
     {
       appearance: 'soft',
-      intent: 'accent',
+      intent: 'secondary',
       class:
-        'bg-accent-subtle border-accent text-accent-strong hover:bg-accent-muted hover:border-accent-soft hover:text-accent-bolder active:bg-accent-soft active:border-accent-firm active:text-accent-bolder'
+        'bg-secondary-subtle border-secondary text-secondary-strong hover:bg-secondary-muted hover:border-secondary-soft hover:text-secondary-bolder active:bg-secondary-soft active:border-secondary-firm active:text-secondary-bolder'
+    },
+    {
+      appearance: 'soft',
+      intent: 'tertiary',
+      class:
+        'bg-tertiary-subtle border-tertiary text-tertiary-strong hover:bg-tertiary-muted hover:border-tertiary-soft hover:text-tertiary-bolder active:bg-tertiary-soft active:border-tertiary-firm active:text-tertiary-bolder'
     },
     {
       appearance: 'soft',
@@ -204,9 +223,15 @@ const button = tv({
     },
     {
       appearance: 'minimal',
-      intent: 'accent',
+      intent: 'secondary',
       class:
-        'text-accent-strong hover:bg-accent-subtle hover:text-accent-bolder active:bg-accent-muted active:text-accent-bolder'
+        'text-secondary-strong hover:bg-secondary-subtle hover:text-secondary-bolder active:bg-secondary-muted active:text-secondary-bolder'
+    },
+    {
+      appearance: 'minimal',
+      intent: 'tertiary',
+      class:
+        'text-tertiary-strong hover:bg-tertiary-subtle hover:text-tertiary-bolder active:bg-tertiary-muted active:text-tertiary-bolder'
     },
     {
       appearance: 'minimal',
@@ -243,9 +268,15 @@ const button = tv({
     },
     {
       appearance: 'tonal',
-      intent: 'accent',
+      intent: 'secondary',
       class:
-        'bg-accent-subtle text-accent-strong hover:bg-accent-muted active:bg-accent-soft'
+        'bg-secondary-subtle text-secondary-strong hover:bg-secondary-muted active:bg-secondary-soft'
+    },
+    {
+      appearance: 'tonal',
+      intent: 'tertiary',
+      class:
+        'bg-tertiary-subtle text-tertiary-strong hover:bg-tertiary-muted active:bg-tertiary-soft'
     },
     {
       appearance: 'tonal',
@@ -279,8 +310,13 @@ const button = tv({
     },
     {
       appearance: 'custom',
-      intent: 'accent',
-      class: 'text-accent-strong'
+      intent: 'secondary',
+      class: 'text-secondary-strong'
+    },
+    {
+      appearance: 'custom',
+      intent: 'tertiary',
+      class: 'text-tertiary-strong'
     },
     {
       appearance: 'custom',
@@ -327,9 +363,15 @@ const toggleButton = tv({
     },
     {
       appearance: 'outlined',
-      intent: 'accent',
+      intent: 'secondary',
       isSelected: true,
-      class: 'bg-accent text-on-accent hover:bg-accent-soft'
+      class: 'bg-secondary text-on-secondary hover:bg-secondary-soft'
+    },
+    {
+      appearance: 'outlined',
+      intent: 'tertiary',
+      isSelected: true,
+      class: 'bg-tertiary text-on-tertiary hover:bg-tertiary-soft'
     },
     {
       appearance: 'outlined',

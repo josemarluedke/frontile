@@ -20,8 +20,11 @@ const progressBar = tv({
       primary: {
         progress: 'bg-primary-soft'
       },
-      accent: {
-        progress: 'bg-accent-soft'
+      secondary: {
+        progress: 'bg-secondary-soft'
+      },
+      tertiary: {
+        progress: 'bg-tertiary-soft'
       },
       success: {
         progress: 'bg-success-soft'

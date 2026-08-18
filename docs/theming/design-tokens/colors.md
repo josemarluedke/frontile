@@ -140,7 +140,9 @@ Banners:
 
 ### Accent
 
-<ColorPaletteGrid @category="accent" @showDescription={{true}} />
+<ColorPaletteGrid @category="secondary" @showDescription={{true}} />
+
+<ColorPaletteGrid @category="tertiary" @showDescription={{true}} />
 
 **Usage Examples:**
 
@@ -148,8 +150,8 @@ Banners:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Accent Alert }}
-    <div class='bg-accent-subtle border border-accent-soft p-4 rounded'>
-      <div class='text-accent-strong'>
+    <div class='bg-secondary-subtle border border-secondary-soft p-4 rounded'>
+      <div class='text-secondary-strong'>
         <div class='font-semibold'>New Feature!</div>
         <div class='text-sm'>Check out our latest updates and improvements.</div>
       </div>
@@ -157,7 +159,7 @@ Banners:
 
     {{! Accent Button }}
     <button
-      class='bg-accent text-on-accent hover:bg-accent-soft px-4 py-2 rounded'
+      class='bg-secondary text-on-secondary hover:bg-secondary-soft px-4 py-2 rounded'
     >
       Explore Features
     </button>
@@ -327,7 +329,7 @@ module.exports = frontile({
 });
 ```
 
-Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-modal`.
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-secondary`, `on-tertiary`, `on-success`, `on-warning`, `on-danger`, and `on-surface-modal`.
 
 > **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
 

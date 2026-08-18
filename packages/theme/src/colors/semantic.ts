@@ -2,6 +2,10 @@
  * Frontile Semantic Colors
  *
  * Semantic color mappings for light and dark themes.
+ *
+ * Values are transcribed from the Beacon design tokens (Figma), where alpha is
+ * expressed as a 0–1 float. Here it is folded into the color as a two-digit
+ * hex suffix — e.g. 20% becomes `33` (round(0.2 * 255) = 51 = 0x33).
  */
 
 import * as palette from './palette';
@@ -11,76 +15,94 @@ import type { ThemeColors } from './types';
 
 const themeColorsLight: ThemeColors = {
   neutral: {
-    subtle: `${palette.gray['500']}1a`, // palette.gray['500'] @ 10%
-    muted: `${palette.gray['400']}33`, // palette.gray['400'] @ 20%
+    subtle: palette.gray['50'],
+    muted: palette.gray['100'],
     soft: palette.gray['200'],
-    mild: palette.gray['200'], // TODO: confirm "mild" value
+    mild: palette.gray['300'],
     DEFAULT: palette.gray['500'],
-    firm: palette.gray['600'],
-    strong: palette.gray['700'],
-    bolder: palette.gray['800']
+    firm: palette.gray['700'],
+    strong: palette.gray['800'],
+    bolder: palette.gray['900']
   },
-  // Confirmed against Facet 2.0 (Figma): subtle/muted/mild/firm/strong/bolder
-  // all moved steps from the previous mapping — this is a full remap, not just
-  // an insertion of `mild`.
   primary: {
     subtle: palette.teal['50'],
     muted: palette.teal['100'],
     soft: `${palette.teal['600']}1a`, // palette.teal['600'] @ 10%
     mild: palette.teal['400'],
     DEFAULT: palette.teal['600'],
-    firm: palette.teal['700'], // was teal-900
-    strong: palette.teal['900'], // was teal-600
-    bolder: palette.teal['950'] // was teal-900
+    firm: palette.teal['700'],
+    strong: palette.teal['900'],
+    bolder: palette.teal['950']
   },
-  accent: {
-    subtle: `${palette.violet['600']}1a`, // palette.violet['600'] @ 10%
-    muted: `${palette.violet['600']}33`, // palette.violet['600'] @ 20%
-    soft: palette.violet['500'], // bg-hover
-    mild: palette.violet['500'], // TODO: confirm "mild" value
-    DEFAULT: palette.violet['600'],
-    firm: palette.violet['800'], // bg-pressed
-    strong: palette.violet['700'], // text
-    bolder: palette.violet['900'] // text-strong
+  secondary: {
+    subtle: palette.orange['50'],
+    muted: palette.orange['100'],
+    soft: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
+    mild: palette.orange['200'],
+    DEFAULT: palette.orange['300'],
+    firm: palette.orange['400'],
+    strong: palette.orange['500'],
+    bolder: palette.orange['700']
+  },
+  tertiary: {
+    subtle: palette.pink['100'],
+    muted: palette.pink['200'],
+    soft: `${palette.pink['400']}40`, // palette.pink['400'] @ 25%
+    mild: palette.pink['300'],
+    DEFAULT: palette.pink['400'],
+    firm: palette.pink['500'],
+    strong: palette.pink['600'],
+    bolder: palette.pink['700']
   },
   success: {
-    subtle: `${palette.green['400']}1a`, // palette.green['400'] @ 10%
-    muted: `${palette.green['400']}33`, // palette.green['400'] @ 20%
-    soft: palette.green['300'], // bg-hover
-    mild: palette.green['300'], // TODO: confirm "mild" value
+    subtle: palette.green['50'],
+    muted: palette.green['100'],
+    soft: `${palette.green['400']}40`, // palette.green['400'] @ 25%
+    mild: palette.green['200'],
     DEFAULT: palette.green['400'],
-    firm: palette.green['500'], // bg-pressed
-    strong: palette.green['800'], // text (darker than bg-rest for legibility)
-    bolder: palette.green['900'] // text-strong
+    firm: palette.green['600'],
+    strong: palette.green['800'],
+    bolder: palette.green['900']
   },
   warning: {
-    subtle: `${palette.orange['300']}1a`, // palette.orange['300'] @ 10%
-    muted: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
-    soft: palette.orange['200'], // bg-hover
-    mild: palette.orange['200'], // TODO: confirm "mild" value
+    subtle: palette.orange['50'],
+    muted: palette.orange['100'],
+    soft: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
+    mild: palette.orange['200'],
     DEFAULT: palette.orange['300'],
-    firm: palette.orange['400'], // bg-pressed
-    strong: palette.orange['600'], // text (darker than bg-rest for legibility)
-    bolder: palette.orange['900'] // text-strong
+    firm: palette.orange['400'],
+    strong: palette.orange['500'],
+    bolder: palette.orange['700']
   },
   danger: {
-    subtle: `${palette.red['600']}1a`, // palette.red['600'] @ 10%
-    muted: `${palette.red['600']}33`, // palette.red['600'] @ 20%
-    soft: palette.red['500'], // bg-hover (lightens too)
-    mild: palette.red['500'], // TODO: confirm "mild" value
-    DEFAULT: palette.red['600'],
-    firm: palette.red['700'], // bg-pressed
-    strong: palette.red['600'], // text (= bg-rest for danger)
-    bolder: palette.red['900'] // text-strong
+    subtle: palette.red['50'],
+    muted: palette.red['100'],
+    soft: `${palette.red['500']}26`, // palette.red['500'] @ 15%
+    mild: palette.red['300'],
+    DEFAULT: palette.red['500'],
+    firm: palette.red['600'],
+    strong: palette.red['800'],
+    bolder: palette.red['900']
   },
   surface: {
     overlay: {
-      subtle: `${absolute.black}05`, // absolute.black @ 2%
-      soft: `${absolute.black}0a`, // absolute.black @ 4%
-      mild: `${absolute.black}12`, // absolute.black @ 7%
-      firm: `${absolute.black}1c`, // absolute.black @ 11%
+      subtle: `${absolute.black}0d`, // absolute.black @ 5%
+      soft: `${absolute.black}14`, // absolute.black @ 8%
+      mild: `${absolute.black}1c`, // absolute.black @ 11%
+      firm: `${absolute.black}26`, // absolute.black @ 15%
       strong: `${absolute.black}bf` // absolute.black @ 75%, scheme-invariant
     },
+    // TODO: enable once `surface-lift` utilities are generated by the Tailwind
+    // plugin. Lift is the mirror of overlay: overlay darkens in light mode and
+    // lightens in dark mode, lift does the opposite, so it pulls an element
+    // *up* off its background in either scheme.
+    // lift: {
+    //   subtle: `${absolute.white}4d`, // absolute.white @ 30%
+    //   soft: `${absolute.white}80`, // absolute.white @ 50%
+    //   mild: `${absolute.white}b2`, // absolute.white @ 70%
+    //   firm: `${absolute.white}e5`, // absolute.white @ 90%
+    //   strong: `${absolute.white}f2` // absolute.white @ 95%
+    // },
     app: absolute.white,
     canvas: palette.gray['50'],
     card: absolute.white,
@@ -94,77 +116,93 @@ const themeColorsDark: ThemeColors = {
     subtle: palette.gray['900'],
     muted: palette.gray['800'],
     soft: palette.gray['700'],
-    mild: palette.gray['700'], // TODO: confirm "mild" value
-    DEFAULT: palette.gray['600'],
-    firm: palette.gray['500'],
-    strong: palette.gray['300'],
-    bolder: palette.gray['200']
+    mild: palette.gray['500'],
+    DEFAULT: palette.gray['400'],
+    firm: palette.gray['300'],
+    strong: palette.gray['200'],
+    bolder: palette.gray['100']
   },
-  // Dark stays unchanged for now (per confirmation, only light was remapped);
-  // `mild` is a placeholder pending dark-mode values.
   primary: {
-    subtle: `${palette.teal['300']}29`, // palette.teal['300'] @ 16% — bg-tonal
-    muted: `${palette.teal['300']}59`, // palette.teal['300'] @ 35%
-    soft: palette.teal['500'], // bg-hover (darkens)
-    mild: palette.teal['500'], // TODO: confirm "mild" value
+    subtle: palette.teal['900'],
+    muted: palette.teal['700'],
+    soft: `${palette.teal['300']}40`, // palette.teal['300'] @ 25%
+    mild: palette.teal['500'],
     DEFAULT: palette.teal['300'],
-    firm: palette.teal['100'], // bg-pressed (flashes light)
-    strong: palette.teal['300'], // text (= bg-rest for primary)
-    bolder: palette.teal['100'] // text-strong (= bg-pressed for primary)
+    firm: palette.teal['200'],
+    strong: palette.teal['100'],
+    bolder: palette.teal['50']
   },
-  accent: {
-    subtle: `${palette.violet['300']}29`, // palette.violet['300'] @ 16%
-    muted: `${palette.violet['300']}59`, // palette.violet['300'] @ 35%
-    soft: palette.violet['500'], // bg-hover
-    mild: palette.violet['500'], // TODO: confirm "mild" value
-    DEFAULT: palette.violet['300'],
-    firm: palette.violet['800'], // bg-pressed (presses deep, unlike primary's flash)
-    strong: palette.violet['300'], // text
-    bolder: palette.violet['100'] // text-strong
+  secondary: {
+    subtle: palette.orange['600'],
+    muted: palette.orange['500'],
+    soft: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
+    mild: palette.orange['400'],
+    DEFAULT: palette.orange['300'],
+    firm: palette.orange['200'],
+    strong: palette.orange['200'], // = firm in the Beacon dark tokens
+    bolder: palette.orange['100']
+  },
+  tertiary: {
+    subtle: palette.pink['900'],
+    muted: palette.pink['700'],
+    soft: `${palette.pink['500']}33`, // palette.pink['500'] @ 20%
+    mild: palette.pink['600'],
+    DEFAULT: palette.pink['500'],
+    firm: palette.pink['400'],
+    strong: palette.pink['300'],
+    bolder: palette.pink['200']
   },
   success: {
-    subtle: `${palette.green['400']}29`, // palette.green['400'] @ 16%
-    muted: `${palette.green['400']}59`, // palette.green['400'] @ 35%
-    soft: palette.green['700'], // bg-hover (darkens)
-    mild: palette.green['700'], // TODO: confirm "mild" value
+    subtle: palette.green['950'],
+    muted: palette.green['900'],
+    soft: `${palette.green['400']}33`, // palette.green['400'] @ 20%
+    mild: palette.green['600'],
     DEFAULT: palette.green['400'],
-    firm: palette.green['900'], // bg-pressed
-    strong: palette.green['300'], // text
-    bolder: palette.green['100'] // text-strong
+    firm: palette.green['300'],
+    strong: palette.green['200'],
+    bolder: palette.green['100']
   },
   warning: {
-    subtle: `${palette.orange['300']}29`, // palette.orange['300'] @ 16%
-    muted: `${palette.orange['300']}59`, // palette.orange['300'] @ 35%
-    soft: palette.orange['500'], // bg-hover (darkens)
-    mild: palette.orange['500'], // TODO: confirm "mild" value
+    subtle: palette.orange['600'],
+    muted: palette.orange['500'],
+    soft: `${palette.orange['300']}33`, // palette.orange['300'] @ 20%
+    mild: palette.orange['400'],
     DEFAULT: palette.orange['300'],
-    firm: palette.orange['700'], // bg-pressed
-    strong: palette.orange['300'], // text (= bg-rest)
-    bolder: palette.orange['100'] // text-strong
+    firm: palette.orange['200'],
+    strong: palette.orange['200'], // = firm in the Beacon dark tokens
+    bolder: palette.orange['100']
   },
   danger: {
-    subtle: `${palette.red['400']}29`, // palette.red['400'] @ 16%
-    muted: `${palette.red['400']}59`, // palette.red['400'] @ 35%
-    soft: palette.red['500'], // bg-hover
-    mild: palette.red['500'], // TODO: confirm "mild" value
+    subtle: palette.red['900'],
+    muted: palette.red['700'],
+    soft: `${palette.red['400']}26`, // palette.red['400'] @ 15%
+    mild: palette.red['600'],
     DEFAULT: palette.red['400'],
-    firm: palette.red['700'], // bg-pressed
-    strong: palette.red['300'], // text
-    bolder: palette.red['100'] // text-strong
+    firm: palette.red['300'],
+    strong: palette.red['100'],
+    bolder: palette.red['50']
   },
   surface: {
     overlay: {
-      subtle: `${absolute.white}08`, // absolute.white @ 3%
-      soft: `${absolute.white}0f`, // absolute.white @ 6%
-      mild: `${absolute.white}26`, // absolute.white @ 15%
-      firm: `${absolute.white}3d`, // absolute.white @ 24%
+      subtle: `${absolute.white}12`, // absolute.white @ 7%
+      soft: `${absolute.white}26`, // absolute.white @ 15%
+      mild: `${absolute.white}40`, // absolute.white @ 25%
+      firm: `${absolute.white}59`, // absolute.white @ 35%
       strong: `${absolute.black}bf` // absolute.black @ 75%
     },
+    // TODO: enable together with the light-mode `lift` block above.
+    // lift: {
+    //   subtle: `${absolute.black}33`, // absolute.black @ 20%
+    //   soft: `${absolute.black}4d`, // absolute.black @ 30%
+    //   mild: `${absolute.black}80`, // absolute.black @ 50%
+    //   firm: `${absolute.black}99`, // absolute.black @ 60%
+    //   strong: `${absolute.white}f2` // absolute.white @ 95%, inverts like overlay's
+    // },
     app: absolute.black,
     canvas: palette.gray['950'],
-    card: palette.gray['900'],
+    card: palette.gray['800'],
     input: absolute.black,
-    modal: palette.gray['900']
+    modal: palette.gray['950']
   }
 };
 

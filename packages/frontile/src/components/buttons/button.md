@@ -52,7 +52,8 @@ import { Button } from 'frontile';
   <div>
     <Button @intent='default'>Default</Button>
     <Button @intent='primary'>Primary</Button>
-    <Button @intent='accent'>Accent</Button>
+    <Button @intent='secondary'>Secondary</Button>
+    <Button @intent='tertiary'>Tertiary</Button>
     <Button @intent='success'>Success</Button>
     <Button @intent='warning'>Warning</Button>
     <Button @intent='danger'>Danger</Button>
@@ -60,7 +61,8 @@ import { Button } from 'frontile';
   <div class='mt-4'>
     <Button @appearance='soft' @intent='default'>Default</Button>
     <Button @appearance='soft' @intent='primary'>Primary</Button>
-    <Button @appearance='soft' @intent='accent'>Accent</Button>
+    <Button @appearance='soft' @intent='secondary'>Secondary</Button>
+    <Button @appearance='soft' @intent='tertiary'>Tertiary</Button>
     <Button @appearance='soft' @intent='success'>Success</Button>
     <Button @appearance='soft' @intent='warning'>Warning</Button>
     <Button @appearance='soft' @intent='danger'>Danger</Button>
@@ -68,7 +70,8 @@ import { Button } from 'frontile';
   <div class='mt-4'>
     <Button @appearance='outlined' @intent='default'>Default</Button>
     <Button @appearance='outlined' @intent='primary'>Primary</Button>
-    <Button @appearance='outlined' @intent='accent'>Accent</Button>
+    <Button @appearance='outlined' @intent='secondary'>Secondary</Button>
+    <Button @appearance='outlined' @intent='tertiary'>Tertiary</Button>
     <Button @appearance='outlined' @intent='success'>Success</Button>
     <Button @appearance='outlined' @intent='warning'>Warning</Button>
     <Button @appearance='outlined' @intent='danger'>Danger</Button>
@@ -76,7 +79,8 @@ import { Button } from 'frontile';
   <div class='mt-4'>
     <Button @appearance='minimal' @intent='default'>Default</Button>
     <Button @appearance='minimal' @intent='primary'>Primary</Button>
-    <Button @appearance='minimal' @intent='accent'>Accent</Button>
+    <Button @appearance='minimal' @intent='secondary'>Secondary</Button>
+    <Button @appearance='minimal' @intent='tertiary'>Tertiary</Button>
     <Button @appearance='minimal' @intent='success'>Success</Button>
     <Button @appearance='minimal' @intent='warning'>Warning</Button>
     <Button @appearance='minimal' @intent='danger'>Danger</Button>
@@ -84,7 +88,8 @@ import { Button } from 'frontile';
   <div class='mt-4'>
     <Button @appearance='tonal' @intent='default'>Default</Button>
     <Button @appearance='tonal' @intent='primary'>Primary</Button>
-    <Button @appearance='tonal' @intent='accent'>Accent</Button>
+    <Button @appearance='tonal' @intent='secondary'>Secondary</Button>
+    <Button @appearance='tonal' @intent='tertiary'>Tertiary</Button>
     <Button @appearance='tonal' @intent='success'>Success</Button>
     <Button @appearance='tonal' @intent='warning'>Warning</Button>
     <Button @appearance='tonal' @intent='danger'>Danger</Button>
@@ -147,7 +152,8 @@ import { Button } from 'frontile';
   <div>
     <Button @intent='default' disabled>Default</Button>
     <Button @intent='primary' disabled>Primary</Button>
-    <Button @intent='accent' disabled>Accent</Button>
+    <Button @intent='secondary' disabled>Secondary</Button>
+    <Button @intent='tertiary' disabled>Tertiary</Button>
     <Button @intent='success' disabled>Success</Button>
     <Button @intent='warning' disabled>Warning</Button>
     <Button @intent='danger' disabled>Danger</Button>

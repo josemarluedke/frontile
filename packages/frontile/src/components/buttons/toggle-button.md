@@ -3,13 +3,13 @@ label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
+
 # ToggleButton
 
-A toggle button allows to toggle a selection on or off, for example switching 
+A toggle button allows to toggle a selection on or off, for example switching
 between two states or modes.
 
-
-## Import 
+## Import
 
 ```js
 import { ToggleButton } from 'frontile';
@@ -34,10 +34,7 @@ export default class Example extends Component {
   }
 
   <template>
-    <ToggleButton
-      @isSelected={{this.isSelected}}
-      @onChange={{this.onChange}}
-    >
+    <ToggleButton @isSelected={{this.isSelected}} @onChange={{this.onChange}}>
       <StarIcon />
     </ToggleButton>
   </template>
@@ -58,7 +55,8 @@ export default class Example extends Component {
   isSelected = {
     default: false,
     primary: false,
-    accent: false,
+    secondary: false,
+    tertiary: false,
     success: false,
     warning: false,
     danger: false
@@ -71,15 +69,15 @@ export default class Example extends Component {
   }
 
   <template>
-   {{#each-in this.isSelected as |key val|}}
-     <ToggleButton
-       @isSelected={{val}}
-       @onChange={{(fn this.onChange key)}}
-       @intent={{key}}
-     >
-       Toggle
-     </ToggleButton>
-   {{/each-in}}
+    {{#each-in this.isSelected as |key val|}}
+      <ToggleButton
+        @isSelected={{val}}
+        @onChange={{(fn this.onChange key)}}
+        @intent={{key}}
+      >
+        Toggle
+      </ToggleButton>
+    {{/each-in}}
   </template>
 }
 ```
@@ -107,12 +105,13 @@ import { ToggleButton } from 'frontile';
 
 <template>
   <div>
-    <ToggleButton @intent='default' disabled="true">ToggleButton</ToggleButton>
-    <ToggleButton @intent='primary' disabled="true">Primary</ToggleButton>
-    <ToggleButton @intent='accent' disabled="true">Accent</ToggleButton>
-    <ToggleButton @intent='success' disabled="true">Success</ToggleButton>
-    <ToggleButton @intent='warning' disabled="true">Warning</ToggleButton>
-    <ToggleButton @intent='danger' disabled="true">Danger</ToggleButton>
+    <ToggleButton @intent='default' disabled='true'>ToggleButton</ToggleButton>
+    <ToggleButton @intent='primary' disabled='true'>Primary</ToggleButton>
+    <ToggleButton @intent='secondary' disabled='true'>Secondary</ToggleButton>
+    <ToggleButton @intent='tertiary' disabled='true'>Tertiary</ToggleButton>
+    <ToggleButton @intent='success' disabled='true'>Success</ToggleButton>
+    <ToggleButton @intent='warning' disabled='true'>Warning</ToggleButton>
+    <ToggleButton @intent='danger' disabled='true'>Danger</ToggleButton>
   </div>
 </template>
 ```

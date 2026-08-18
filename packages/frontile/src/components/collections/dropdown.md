@@ -243,7 +243,7 @@ export default class TriggerStyles extends Component {
       </Dropdown>
 
       <Dropdown as |d|>
-        <d.Trigger @intent='accent' @size='sm'>Accent</d.Trigger>
+        <d.Trigger @intent='secondary' @size='sm'>Secondary</d.Trigger>
         <d.Menu @onAction={{this.onAction}} as |Item|>
           <Item @key='option1'>Option 1</Item>
           <Item @key='option2'>Option 2</Item>

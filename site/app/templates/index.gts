@@ -109,7 +109,7 @@ class IndexPage extends Component {
           aria-hidden="true"
         ></div>
         <div
-          class="hero-glow-orb hero-glow-orb--accent hidden sm:block"
+          class="hero-glow-orb hero-glow-orb--secondary hidden sm:block"
           aria-hidden="true"
         ></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -119,7 +119,7 @@ class IndexPage extends Component {
             >
               Production-Ready UI Components
               <span
-                class="block mt-2 bg-gradient-to-r from-primary-strong to-accent-strong bg-clip-text text-transparent"
+                class="block mt-2 bg-gradient-to-r from-primary-strong to-secondary-strong bg-clip-text text-transparent"
               >for Ember.js</span>
             </h1>
             <p
@@ -216,10 +216,10 @@ class IndexPage extends Component {
             <FeatureCard
               @title="Tailwind Variants Theming"
               @description="Highly customizable styling system with class conflict resolution included. Replace default styles with your own styling without CSS-in-JS overhead."
-              @iconBg="bg-accent-subtle"
+              @iconBg="bg-secondary-subtle"
             >
               <:icon>
-                <PaletteIcon class="w-6 h-6 text-accent-strong" />
+                <PaletteIcon class="w-6 h-6 text-secondary-strong" />
               </:icon>
             </FeatureCard>
 
@@ -599,12 +599,12 @@ class IndexPage extends Component {
               @name="Collections"
               @count={{3}}
               @description="Table, Listbox, Dropdown"
-              @gradient="bg-accent-subtle"
-              @borderColor="border-accent-soft"
-              @countColor="text-accent-strong"
+              @gradient="bg-secondary-subtle"
+              @borderColor="border-secondary-soft"
+              @countColor="text-secondary-strong"
             >
               <:icon>
-                <ComponentIcon class="w-5 h-5 text-accent-strong mr-2" />
+                <ComponentIcon class="w-5 h-5 text-secondary-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
 
@@ -664,12 +664,12 @@ class IndexPage extends Component {
               @name="Theme"
               @count={{16}}
               @description="Styling system with Tailwind Variants"
-              @gradient="bg-accent-subtle"
-              @borderColor="border-accent-soft"
-              @countColor="text-accent-strong"
+              @gradient="bg-secondary-subtle"
+              @borderColor="border-secondary-soft"
+              @countColor="text-secondary-strong"
             >
               <:icon>
-                <PaletteIcon class="w-5 h-5 text-accent-strong mr-2" />
+                <PaletteIcon class="w-5 h-5 text-secondary-strong mr-2" />
               </:icon>
             </ComponentPackageCard>
           </div>
@@ -887,21 +887,21 @@ Listbox<Country>
       </section>
 
       {{! Theming Section }}
-      <section class="py-24 bg-accent-subtle">
+      <section class="py-24 bg-secondary-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             @title="Flexible Theming System"
             @subtitle="Semantic color tokens with built-in light and dark mode support"
-            @iconBg="bg-accent-subtle"
+            @iconBg="bg-secondary-subtle"
           >
             <:icon>
-              <PaletteIcon class="w-8 h-8 text-accent-strong" />
+              <PaletteIcon class="w-8 h-8 text-secondary-strong" />
             </:icon>
           </SectionHeader>
 
           <div class="max-w-4xl mx-auto">
             <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-accent-soft"
+              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-secondary-soft"
             >
               <h3
                 class="font-header text-header-lg text-neutral-bolder mb-6"

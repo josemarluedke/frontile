@@ -12,7 +12,8 @@ const spinner = tv({
     intent: {
       default: 'fill-neutral-strong',
       primary: 'fill-primary',
-      accent: 'fill-accent',
+      secondary: 'fill-secondary',
+      tertiary: 'fill-tertiary',
       success: 'fill-success',
       warning: 'fill-warning',
       danger: 'fill-danger'

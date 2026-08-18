@@ -13,12 +13,14 @@ module(
       assert.dom('[data-test-id="spinner"]').exists();
     });
 
-    test('it adds the class for the accent intent', async function (assert) {
+    test('it adds the class for the secondary intent', async function (assert) {
       await render(
-        <template><Spinner @intent="accent" data-test-id="spinner" /></template>
+        <template>
+          <Spinner @intent="secondary" data-test-id="spinner" />
+        </template>
       );
 
-      assert.dom('[data-test-id="spinner"]').hasClass('fill-accent');
+      assert.dom('[data-test-id="spinner"]').hasClass('fill-secondary');
     });
   }
 );

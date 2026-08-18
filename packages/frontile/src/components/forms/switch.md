@@ -48,7 +48,11 @@ export default class ControlledSwitch extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        as |form|
+      >
         <form.Field @name='notifications' as |field|>
           <field.Switch @label='Enable Email Notifications' />
         </form.Field>
@@ -57,7 +61,11 @@ export default class ControlledSwitch extends Component {
       <div class='p-3 border border-neutral-soft rounded'>
         <p class='text-sm'>
           Notifications are
-          <strong>{{if this.formData.notifications 'enabled' 'disabled'}}</strong>
+          <strong>{{if
+              this.formData.notifications
+              'enabled'
+              'disabled'
+            }}</strong>
         </p>
       </div>
     </div>
@@ -247,7 +255,16 @@ import { hash } from '@ember/helper';
       <div class='flex gap-4'>
         <Switch @intent='default' @label='Default' @defaultSelected={{true}} />
         <Switch @intent='primary' @label='Primary' @defaultSelected={{true}} />
-        <Switch @intent='accent' @label='Accent' @defaultSelected={{true}} />
+        <Switch
+          @intent='secondary'
+          @label='Secondary'
+          @defaultSelected={{true}}
+        />
+        <Switch
+          @intent='tertiary'
+          @label='Tertiary'
+          @defaultSelected={{true}}
+        />
         <Switch @intent='success' @label='Success' @defaultSelected={{true}} />
         <Switch @intent='warning' @label='Warning' @defaultSelected={{true}} />
         <Switch @intent='danger' @label='Danger' @defaultSelected={{true}} />

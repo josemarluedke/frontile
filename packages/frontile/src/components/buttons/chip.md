@@ -3,11 +3,12 @@ label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
+
 # Chip
 
 Chips are compact elements that represent an input, attribute, or action.
 
-## Import 
+## Import
 
 ```js
 import { Chip } from 'frontile';
@@ -46,26 +47,29 @@ import { Chip } from 'frontile';
   <div>
     <Chip @intent='default'>Chip</Chip>
     <Chip @intent='primary'>Primary</Chip>
-    <Chip @intent='accent'>Accent</Chip>
+    <Chip @intent='secondary'>Secondary</Chip>
+    <Chip @intent='tertiary'>Tertiary</Chip>
     <Chip @intent='success'>Success</Chip>
     <Chip @intent='warning'>Warning</Chip>
     <Chip @intent='danger'>Danger</Chip>
   </div>
-  <div class="mt-6">
-    <Chip @appearance="outlined" @intent='default'>Chip</Chip>
-    <Chip @appearance="outlined" @intent='primary'>Primary</Chip>
-    <Chip @appearance="outlined" @intent='accent'>Accent</Chip>
-    <Chip @appearance="outlined" @intent='success'>Success</Chip>
-    <Chip @appearance="outlined" @intent='warning'>Warning</Chip>
-    <Chip @appearance="outlined" @intent='danger'>Danger</Chip>
+  <div class='mt-6'>
+    <Chip @appearance='outlined' @intent='default'>Chip</Chip>
+    <Chip @appearance='outlined' @intent='primary'>Primary</Chip>
+    <Chip @appearance='outlined' @intent='secondary'>Secondary</Chip>
+    <Chip @appearance='outlined' @intent='tertiary'>Tertiary</Chip>
+    <Chip @appearance='outlined' @intent='success'>Success</Chip>
+    <Chip @appearance='outlined' @intent='warning'>Warning</Chip>
+    <Chip @appearance='outlined' @intent='danger'>Danger</Chip>
   </div>
-  <div class="mt-6">
-    <Chip @appearance="faded" @intent='default'>Chip</Chip>
-    <Chip @appearance="faded" @intent='primary'>Primary</Chip>
-    <Chip @appearance="faded" @intent='accent'>Accent</Chip>
-    <Chip @appearance="faded" @intent='success'>Success</Chip>
-    <Chip @appearance="faded" @intent='warning'>Warning</Chip>
-    <Chip @appearance="faded" @intent='danger'>Danger</Chip>
+  <div class='mt-6'>
+    <Chip @appearance='faded' @intent='default'>Chip</Chip>
+    <Chip @appearance='faded' @intent='primary'>Primary</Chip>
+    <Chip @appearance='faded' @intent='secondary'>Secondary</Chip>
+    <Chip @appearance='faded' @intent='tertiary'>Tertiary</Chip>
+    <Chip @appearance='faded' @intent='success'>Success</Chip>
+    <Chip @appearance='faded' @intent='warning'>Warning</Chip>
+    <Chip @appearance='faded' @intent='danger'>Danger</Chip>
   </div>
 </template>
 ```
@@ -77,19 +81,45 @@ import { Chip } from 'frontile';
 
 <template>
   <div>
-    <Chip @appearance="outlined" @intent='default' @withDot={{true}}>Chip</Chip>
-    <Chip @appearance="outlined" @intent='primary' @withDot={{true}}>Primary</Chip>
-    <Chip @appearance="outlined" @intent='accent' @withDot={{true}}>Accent</Chip>
-    <Chip @appearance="outlined" @intent='success' @withDot={{true}}>Success</Chip>
-    <Chip @appearance="outlined" @intent='warning' @withDot={{true}}>Warning</Chip>
-    <Chip @appearance="outlined" @intent='danger' @withDot={{true}}>Danger</Chip>
+    <Chip @appearance='outlined' @intent='default' @withDot={{true}}>Chip</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='primary'
+      @withDot={{true}}
+    >Primary</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='secondary'
+      @withDot={{true}}
+    >Secondary</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='tertiary'
+      @withDot={{true}}
+    >Tertiary</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='success'
+      @withDot={{true}}
+    >Success</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='warning'
+      @withDot={{true}}
+    >Warning</Chip>
+    <Chip
+      @appearance='outlined'
+      @intent='danger'
+      @withDot={{true}}
+    >Danger</Chip>
   </div>
 </template>
 ```
+
 ## Close Button
 
 If you pass the `@onClose` argument, the close button will be visible.
-  
+
 ```gjs preview
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
@@ -98,16 +128,22 @@ import { Chip } from 'frontile';
 export default class DemoComponent extends Component {
   @action
   onClose() {
-    console.log('close')
+    console.log('close');
   }
 
   <template>
-    <Chip @appearance="faded" @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance="faded" @intent="primary" @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance="faded" @intent="accent" @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance="faded" @intent="success" @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance="faded" @intent="warning" @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance="faded" @intent="danger" @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance='faded' @onClose={{this.onClose}}>My Chip</Chip>
+    <Chip @appearance='faded' @intent='primary' @onClose={{this.onClose}}>My
+      Chip</Chip>
+    <Chip @appearance='faded' @intent='secondary' @onClose={{this.onClose}}>My
+      Chip</Chip>
+    <Chip @appearance='faded' @intent='tertiary' @onClose={{this.onClose}}>My
+      Chip</Chip>
+    <Chip @appearance='faded' @intent='success' @onClose={{this.onClose}}>My
+      Chip</Chip>
+    <Chip @appearance='faded' @intent='warning' @onClose={{this.onClose}}>My
+      Chip</Chip>
+    <Chip @appearance='faded' @intent='danger' @onClose={{this.onClose}}>My Chip</Chip>
   </template>
 }
 ```
@@ -135,7 +171,8 @@ import { Chip } from 'frontile';
   <div>
     <Chip @intent='default' @isDisabled={{true}}>Chip</Chip>
     <Chip @intent='primary' @isDisabled={{true}}>Primary</Chip>
-    <Chip @intent='accent' @isDisabled={{true}}>Accent</Chip>
+    <Chip @intent='secondary' @isDisabled={{true}}>Secondary</Chip>
+    <Chip @intent='tertiary' @isDisabled={{true}}>Tertiary</Chip>
     <Chip @intent='success' @isDisabled={{true}}>Success</Chip>
     <Chip @intent='warning' @isDisabled={{true}}>Warning</Chip>
     <Chip @intent='danger' @isDisabled={{true}}>Danger</Chip>

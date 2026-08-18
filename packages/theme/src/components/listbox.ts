@@ -61,7 +61,7 @@ const listboxItem = tv({
       default: {},
       primary: {},
       secondary: {},
-      accent: {},
+      tertiary: {},
       success: {},
       warning: {},
       danger: {}
@@ -113,11 +113,21 @@ const listboxItem = tv({
     },
     {
       appearance: 'default',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
         base: [
-          'data-is-active:bg-accent-soft',
-          'data-is-active:text-on-accent-soft'
+          'data-is-active:bg-secondary-soft',
+          'data-is-active:text-on-secondary-soft'
+        ]
+      }
+    },
+    {
+      appearance: 'default',
+      intent: 'tertiary',
+      class: {
+        base: [
+          'data-is-active:bg-tertiary-soft',
+          'data-is-active:text-on-tertiary-soft'
         ]
       }
     },
@@ -169,10 +179,18 @@ const listboxItem = tv({
     },
     {
       appearance: 'default',
-      intent: 'accent',
+      intent: 'secondary',
       isActive: true,
       class: {
-        shortcut: ['text-on-accent-soft', 'border-on-accent-soft/20']
+        shortcut: ['text-on-secondary-soft', 'border-on-secondary-soft/20']
+      }
+    },
+    {
+      appearance: 'default',
+      intent: 'tertiary',
+      isActive: true,
+      class: {
+        shortcut: ['text-on-tertiary-soft', 'border-on-tertiary-soft/20']
       }
     },
     {
@@ -223,11 +241,21 @@ const listboxItem = tv({
     },
     {
       appearance: 'outlined',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
         base: [
-          'data-is-active:border-accent',
-          'data-is-active:text-accent-strong'
+          'data-is-active:border-secondary',
+          'data-is-active:text-secondary-strong'
+        ]
+      }
+    },
+    {
+      appearance: 'outlined',
+      intent: 'tertiary',
+      class: {
+        base: [
+          'data-is-active:border-tertiary',
+          'data-is-active:text-tertiary-strong'
         ]
       }
     },
@@ -287,12 +315,23 @@ const listboxItem = tv({
     },
     {
       appearance: 'faded',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
         base: [
-          'data-is-active:bg-accent-soft/20',
-          'data-is-active:border-accent',
-          'data-is-active:text-accent-strong'
+          'data-is-active:bg-secondary-soft/20',
+          'data-is-active:border-secondary',
+          'data-is-active:text-secondary-strong'
+        ]
+      }
+    },
+    {
+      appearance: 'faded',
+      intent: 'tertiary',
+      class: {
+        base: [
+          'data-is-active:bg-tertiary-soft/20',
+          'data-is-active:border-tertiary',
+          'data-is-active:text-tertiary-strong'
         ]
       }
     },

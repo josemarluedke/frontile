@@ -180,8 +180,9 @@ module.exports = frontile({
 ```
 
 You can override on-colors for any semantic color category:
-- `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`
-- `on-surface-solid` (with numeric keys 0-11)
+- `on-neutral`, `on-primary`, `on-secondary`, `on-tertiary`, `on-success`,
+  `on-warning`, `on-danger`
+- `on-surface-modal`
 
 #### Option 2: Via CSS Variables
 

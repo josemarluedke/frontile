@@ -1,13 +1,14 @@
-@import "tailwindcss" source("../../");
+@import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @plugin "@tailwindcss/typography";
 @source '../templates/docs/';
-@import "@frontile/theme";
+@import '@frontile/theme';
 
 @theme {
   /* Site defaults to the Frontile body/header face (Open Sans); code uses Source Code Pro */
-  --font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: 'Open Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:
+    'Source Code Pro', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
@@ -17,13 +18,25 @@
 }
 
 @keyframes hero-glow {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.15); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @layer components {
@@ -33,7 +46,8 @@
   }
 
   /* Global typography color hierarchy */
-  .prose, .dark .theme-inverse {
+  .prose,
+  .dark .theme-inverse {
     /* Headers with better contrast in dark mode */
     --tw-prose-headings: theme(colors.neutral.strong);
     /* Body text is softer for comfort */
@@ -54,7 +68,8 @@
   }
 
   /* Dark mode typography */
-  .dark .prose, .light .theme-inverse {
+  .dark .prose,
+  .light .theme-inverse {
     /* Headers with better contrast in dark mode */
     --tw-prose-headings: theme(colors.neutral.strong);
     /* Body text is softer for comfort */
@@ -74,19 +89,28 @@
     --tw-prose-td-borders: theme(colors.neutral.firm);
   }
 
-
   /* Headers with appropriate contrast */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply text-neutral-strong;
   }
 
   /* Paragraphs and general text content */
-  p, li, td, th {
+  p,
+  li,
+  td,
+  th {
     @apply text-neutral-firm;
   }
 
   /* Even softer for secondary content */
-  .text-muted, .caption, blockquote {
+  .text-muted,
+  .caption,
+  blockquote {
     @apply text-neutral-soft;
   }
 
@@ -102,16 +126,24 @@
   .hero-glow-orb--primary {
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, oklch(0.55 0.2 250 / 0.35) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      oklch(0.55 0.2 250 / 0.35) 0%,
+      transparent 70%
+    );
     top: -100px;
     left: 50%;
     transform: translateX(-70%);
   }
 
-  .hero-glow-orb--accent {
+  .hero-glow-orb--secondary {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, oklch(0.55 0.2 290 / 0.3) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      oklch(0.55 0.2 290 / 0.3) 0%,
+      transparent 70%
+    );
     top: -50px;
     left: 50%;
     transform: translateX(-20%);
@@ -134,8 +166,14 @@
     inset: 0;
     border-radius: 0.75rem;
     padding: 1px;
-    background: linear-gradient(135deg, oklch(0.6 0.2 250 / 0.5), oklch(0.6 0.2 290 / 0.5));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: linear-gradient(
+      135deg,
+      oklch(0.6 0.2 250 / 0.5),
+      oklch(0.6 0.2 290 / 0.5)
+    );
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
     pointer-events: none;
   }
@@ -165,12 +203,19 @@
     border-radius: 9999px;
   }
 
-  .install-terminal__dot--red { background: oklch(0.63 0.2 25); }
-  .install-terminal__dot--yellow { background: oklch(0.8 0.15 85); }
-  .install-terminal__dot--green { background: oklch(0.72 0.19 145); }
+  .install-terminal__dot--red {
+    background: oklch(0.63 0.2 25);
+  }
+  .install-terminal__dot--yellow {
+    background: oklch(0.8 0.15 85);
+  }
+  .install-terminal__dot--green {
+    background: oklch(0.72 0.19 145);
+  }
 
   .install-terminal__command {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.9375rem;
     color: oklch(0.85 0 none);
     display: flex;
@@ -193,12 +238,17 @@
 
   /* Feature card glow hover */
   .feature-card-glow {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .feature-card-glow:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 40px -10px oklch(0.55 0.2 250 / 0.15), 0 4px 6px -4px oklch(0 0 none / 0.1);
+    box-shadow:
+      0 10px 40px -10px oklch(0.55 0.2 250 / 0.15),
+      0 4px 6px -4px oklch(0 0 none / 0.1);
     border-color: oklch(0.7 0.1 250 / 0.3);
   }
 
@@ -215,12 +265,23 @@
     transform: translateX(-50%);
     width: min(80%, 600px);
     height: 1px;
-    background: linear-gradient(90deg, transparent, oklch(0.6 0.2 250 / 0.4), oklch(0.6 0.2 290 / 0.4), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(0.6 0.2 250 / 0.4),
+      oklch(0.6 0.2 290 / 0.4),
+      transparent
+    );
   }
 
   /* CTA gradient background */
   .cta-gradient-bg {
-    background: linear-gradient(135deg, oklch(0.45 0.2 250), oklch(0.4 0.18 280), oklch(0.42 0.2 290));
+    background: linear-gradient(
+      135deg,
+      oklch(0.45 0.2 250),
+      oklch(0.4 0.18 280),
+      oklch(0.42 0.2 290)
+    );
   }
 
   /* CTA frosted glass cards */
@@ -259,10 +320,24 @@
 .prose {
   font-family: var(--font-body);
 }
-.prose h1 { @apply font-header text-header-3xl; }
-.prose h2 { @apply font-header text-header-2xl; }
-.prose h3 { @apply font-header text-header-xl; }
-.prose h4 { @apply font-header text-header-lg; }
-.prose h5 { @apply font-header text-header-md; }
-.prose h6 { @apply font-header text-header-sm; }
-.prose :is(code, kbd, samp, pre) { @apply font-code; }
+.prose h1 {
+  @apply font-header text-header-3xl;
+}
+.prose h2 {
+  @apply font-header text-header-2xl;
+}
+.prose h3 {
+  @apply font-header text-header-xl;
+}
+.prose h4 {
+  @apply font-header text-header-lg;
+}
+.prose h5 {
+  @apply font-header text-header-md;
+}
+.prose h6 {
+  @apply font-header text-header-sm;
+}
+.prose :is(code, kbd, samp, pre) {
+  @apply font-code;
+}

@@ -143,6 +143,21 @@ export interface SurfaceOverlay {
   strong: string;
 }
 
+// TODO: enable together with the `lift` values in semantic.ts, once the
+// Tailwind plugin generates `surface-lift-*` utilities.
+//
+// Lift is the mirror of overlay: overlay darkens in light mode and lightens in
+// dark mode; lift does the opposite, so it pulls an element *up* off its
+// background in either scheme.
+//
+// export interface SurfaceLift {
+//   subtle: string;
+//   soft: string;
+//   mild: string;
+//   firm: string;
+//   strong: string;
+// }
+
 /**
  * Surface color system defining background colors for UI containers.
  *
@@ -171,6 +186,9 @@ export interface SurfaceColors {
    * <div className="bg-surface-app bg-surface-overlay-soft" />
    */
   overlay: SurfaceOverlay;
+
+  // TODO: enable with SurfaceLift above.
+  // lift: SurfaceLift;
 
   /**
    * Root application background layer (hierarchy level 0).
@@ -290,7 +308,8 @@ export interface SurfaceColors {
 export interface ThemeColors {
   neutral: SemanticColorCategory;
   primary: SemanticColorCategory;
-  accent: SemanticColorCategory;
+  secondary: SemanticColorCategory;
+  tertiary: SemanticColorCategory;
   success: SemanticColorCategory;
   warning: SemanticColorCategory;
   danger: SemanticColorCategory;
@@ -300,7 +319,8 @@ export interface ThemeColors {
   // If not provided, these will be auto-generated for optimal contrast
   'on-neutral'?: OnColorCategory;
   'on-primary'?: OnColorCategory;
-  'on-accent'?: OnColorCategory;
+  'on-secondary'?: OnColorCategory;
+  'on-tertiary'?: OnColorCategory;
   'on-success'?: OnColorCategory;
   'on-warning'?: OnColorCategory;
   'on-danger'?: OnColorCategory;
