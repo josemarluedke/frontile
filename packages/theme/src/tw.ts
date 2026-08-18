@@ -67,6 +67,11 @@ const twMergeConfig = {
         { 'text-marquee': [...COMMON_UNITS] },
         { 'text-header': [...COMMON_UNITS] },
         { 'text-body': [...COMMON_UNITS] },
+        // `strong` was missing here, so `text-strong-*` fell through to the
+        // text-color group and tailwind-merge dropped it whenever a component
+        // also set a text color (e.g. Button's `text-on-primary`) — silently
+        // losing the label's size, weight and tracking.
+        { 'text-strong': [...COMMON_UNITS] },
         { 'text-code': [...COMMON_UNITS] },
         { 'text-caption': [...COMMON_UNITS] },
         { 'text-label': [...COMMON_UNITS] }

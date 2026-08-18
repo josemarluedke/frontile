@@ -4,7 +4,7 @@ const chip = tv({
   slots: {
     base: [
       'disabled:cursor-not-allowed',
-      'disabled:opacity-40',
+      'disabled:opacity-disabled',
       'whitespace-nowrap',
       'inline-flex items-center justify-between box-border'
     ],
@@ -15,7 +15,7 @@ const chip = tv({
   },
   variants: {
     isDisabled: {
-      true: 'opacity-40'
+      true: 'opacity-disabled'
     },
     appearance: {
       default: '',
