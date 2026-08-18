@@ -84,6 +84,17 @@ const themeColorsLight: ThemeColors = {
     strong: palette.red['800'],
     bolder: palette.red['900']
   },
+  // Contrast colors for the translucent `soft` level. These are the one set
+  // we cannot auto-generate: the generator measures the raw RGBA value, not
+  // the composite over the page, and lands on the inverse of what is legible.
+  // Facet specifies black for every role here.
+  'on-neutral': { soft: absolute.black },
+  'on-primary': { soft: absolute.black },
+  'on-secondary': { soft: absolute.black },
+  'on-tertiary': { soft: absolute.black },
+  'on-success': { soft: absolute.black },
+  'on-warning': { soft: absolute.black },
+  'on-danger': { soft: absolute.black },
   surface: {
     overlay: {
       subtle: `${absolute.black}0d`, // absolute.black @ 5%
@@ -178,6 +189,17 @@ const themeColorsDark: ThemeColors = {
     strong: palette.red['100'],
     bolder: palette.red['50']
   },
+  // Contrast colors for the translucent `soft` level. These are the one set
+  // we cannot auto-generate: the generator measures the raw RGBA value, not
+  // the composite over the page, and lands on the inverse of what is legible.
+  // Facet specifies white for every role here.
+  'on-neutral': { soft: absolute.white },
+  'on-primary': { soft: absolute.white },
+  'on-secondary': { soft: absolute.white },
+  'on-tertiary': { soft: absolute.white },
+  'on-success': { soft: absolute.white },
+  'on-warning': { soft: absolute.white },
+  'on-danger': { soft: absolute.white },
   surface: {
     overlay: {
       subtle: `${absolute.white}12`, // absolute.white @ 7%

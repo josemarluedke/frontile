@@ -248,43 +248,43 @@ const button = tv({
       appearance: 'tonal',
       intent: 'default',
       class:
-        'bg-neutral-soft text-neutral-bolder hover:bg-neutral-muted hover:text-on-neutral-muted active:bg-neutral-mild active:text-on-neutral-mild'
+        'bg-neutral-soft text-on-neutral-soft hover:bg-neutral-muted hover:text-on-neutral-muted active:bg-neutral-mild active:text-on-neutral-mild'
     },
     {
       appearance: 'tonal',
       intent: 'primary',
       class:
-        'bg-primary-soft text-primary hover:bg-primary-muted hover:text-on-primary-muted active:bg-primary-mild active:text-on-primary-mild'
+        'bg-primary-soft text-on-primary-soft hover:bg-primary-muted hover:text-on-primary-muted active:bg-primary-mild active:text-on-primary-mild'
     },
     {
       appearance: 'tonal',
       intent: 'secondary',
       class:
-        'bg-secondary-soft text-secondary-strong hover:bg-secondary-muted hover:text-on-secondary-muted active:bg-secondary-mild active:text-on-secondary-mild'
+        'bg-secondary-soft text-on-secondary-soft hover:bg-secondary-muted hover:text-on-secondary-muted active:bg-secondary-mild active:text-on-secondary-mild'
     },
     {
       appearance: 'tonal',
       intent: 'tertiary',
       class:
-        'bg-tertiary-soft text-tertiary-strong hover:bg-tertiary-muted hover:text-on-tertiary-muted active:bg-tertiary-mild active:text-on-tertiary-mild'
+        'bg-tertiary-soft text-on-tertiary-soft hover:bg-tertiary-muted hover:text-on-tertiary-muted active:bg-tertiary-mild active:text-on-tertiary-mild'
     },
     {
       appearance: 'tonal',
       intent: 'success',
       class:
-        'bg-success-soft text-success-strong hover:bg-success-muted hover:text-on-success-muted active:bg-success-mild active:text-on-success-mild'
+        'bg-success-soft text-on-success-soft hover:bg-success-muted hover:text-on-success-muted active:bg-success-mild active:text-on-success-mild'
     },
     {
       appearance: 'tonal',
       intent: 'warning',
       class:
-        'bg-warning-soft text-warning-strong hover:bg-warning-muted hover:text-on-warning-muted active:bg-warning-mild active:text-on-warning-mild'
+        'bg-warning-soft text-on-warning-soft hover:bg-warning-muted hover:text-on-warning-muted active:bg-warning-mild active:text-on-warning-mild'
     },
     {
       appearance: 'tonal',
       intent: 'danger',
       class:
-        'bg-danger-soft text-danger hover:bg-danger-muted hover:text-on-danger-muted active:bg-danger-mild active:text-on-danger-mild'
+        'bg-danger-soft text-on-danger-soft hover:bg-danger-muted hover:text-on-danger-muted active:bg-danger-mild active:text-on-danger-mild'
     },
 
     // APPEARANCE: custom
