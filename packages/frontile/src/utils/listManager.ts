@@ -20,9 +20,66 @@ class ListItem {
   key: string;
   textValue: string;
 
-  @tracked isSelected: boolean;
-  @tracked isDisabled: boolean;
-  @tracked isActive: boolean;
+  // Ember's tracked setter dirties a tag unconditionally — it never compares
+  // against the current value. That makes a redundant write more than wasted
+  // work here: Glimmer reads an attribute and writes it to the DOM inside a
+  // single autotracking frame, and writing `tabindex` onto the focused item
+  // blurs it, so the browser dispatches `focusout` synchronously and this
+  // item's own listeners run *inside* the frame that just consumed `isActive`.
+  // Dirtying a tag that frame already consumed trips a backtracking-rerender
+  // assertion, so every field below only writes on a real change.
+  //
+  // Each comparison reads a plain mirror rather than the tracked field itself.
+  // Reading the tracked field would *consume* its tag, so the write that
+  // followed would dirty a tag the current frame had just consumed — precisely
+  // the failure these guards exist to prevent. For the same reason, code that
+  // reads a field only to decide whether to write it should read the mirror;
+  // `isActiveUntracked` exposes that for the one caller outside this class.
+  @tracked private _isSelected: boolean;
+  @tracked private _isDisabled: boolean;
+  @tracked private _isActive: boolean;
+
+  private isSelectedMirror: boolean;
+  private isDisabledMirror: boolean;
+  private isActiveMirror: boolean;
+
+  get isSelected(): boolean {
+    return this._isSelected;
+  }
+
+  set isSelected(value: boolean) {
+    if (this.isSelectedMirror !== value) {
+      this.isSelectedMirror = value;
+      this._isSelected = value;
+    }
+  }
+
+  get isDisabled(): boolean {
+    return this._isDisabled;
+  }
+
+  set isDisabled(value: boolean) {
+    if (this.isDisabledMirror !== value) {
+      this.isDisabledMirror = value;
+      this._isDisabled = value;
+    }
+  }
+
+  get isActive(): boolean {
+    return this._isActive;
+  }
+
+  set isActive(value: boolean) {
+    if (this.isActiveMirror !== value) {
+      this.isActiveMirror = value;
+      this._isActive = value;
+    }
+  }
+
+  /** `isActive` read without consuming its tag, for write decisions. */
+  get isActiveUntracked(): boolean {
+    return this.isActiveMirror;
+  }
 
   constructor(
     el: HTMLLIElement | HTMLOptionElement,
@@ -31,9 +88,9 @@ class ListItem {
     this.el = el;
     this.key = args.key;
     this.textValue = args.textValue;
-    this.isSelected = args.isSelected;
-    this.isDisabled = args.isDisabled;
-    this.isActive = args.isActive;
+    this._isSelected = this.isSelectedMirror = args.isSelected;
+    this._isDisabled = this.isDisabledMirror = args.isDisabled;
+    this._isActive = this.isActiveMirror = args.isActive;
   }
 }
 
@@ -229,7 +286,10 @@ class ListManager {
   }
 
   activateItem(item?: ListItem): void {
-    if (item && !item.isActive) {
+    // `isActiveUntracked`, not `isActive`: this read only decides whether to
+    // write, and consuming the tag here would put the write below in the same
+    // frame as a read of it — the hazard `ListItem` documents.
+    if (item && !item.isActiveUntracked) {
       this.#clearActive();
       item.isActive = true;
       this.args.onActiveItemChange?.(item.key, item);
@@ -381,10 +441,10 @@ class ListManager {
 
   #clearActive(): void {
     for (let i = 0; i < this.#items.length; i++) {
-      const item = this.#items[i] as ListItem;
-      if (item.isActive) {
-        item.isActive = false;
-      }
+      // No `isActive` check: the setter already skips unchanged values, and
+      // reading it here would consume every item's tag on a path that can run
+      // mid-render.
+      (this.#items[i] as ListItem).isActive = false;
     }
   }
 
@@ -452,12 +512,31 @@ class ListManager {
         }
       };
 
+      // Glimmer mutates this item's DOM during a render — rewriting `tabindex`
+      // on the focused item, or clearing the block that contains it — and the
+      // browser reacts by blurring the element and dispatching `focusout`
+      // synchronously, inside the frame that just consumed `isActive` (see
+      // `ListItem` above). Those blurs carry no `relatedTarget`.
+      //
+      // Neither do some genuine ones: clicking a non-focusable region,
+      // switching tab or window, or moving focus to browser chrome. Ignoring
+      // every targetless blur therefore trades a possibly-stale highlight for
+      // never writing tracked state mid-render. That is a good trade here —
+      // for a roving-tabindex widget, keeping the active item across a blur is
+      // closer to the ARIA pattern than clearing it.
+      const focusOut = (event: Event): void => {
+        if ((event as FocusEvent).relatedTarget === null) {
+          return;
+        }
+        mouseLeave();
+      };
+
       if (!args.disableEvents) {
         el.addEventListener('mouseenter', mouseEnter);
         el.addEventListener('mouseleave', mouseLeave);
 
         el.addEventListener('focusin', mouseEnter);
-        el.addEventListener('focusout', mouseLeave);
+        el.addEventListener('focusout', focusOut);
       }
 
       return (): void => {
@@ -468,7 +547,7 @@ class ListManager {
           el.removeEventListener('mouseleave', mouseLeave);
 
           el.removeEventListener('focusin', mouseEnter);
-          el.removeEventListener('focusout', mouseLeave);
+          el.removeEventListener('focusout', focusOut);
         }
       };
     }
