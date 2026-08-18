@@ -37,7 +37,7 @@ const table = tv({
       'left-0',
       'w-full',
       'h-px',
-      'bg-surface-overlay-medium'
+      'bg-surface-overlay-mild'
     ],
     th: [
       'h-12',

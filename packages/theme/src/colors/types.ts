@@ -124,22 +124,23 @@ export interface OnColorCategory {
 export interface SurfaceOverlay {
   subtle: string;
   soft: string;
-  medium: string;
-  strong: string;
+  mild: string;
+  firm: string;
   /**
-   * Heavy backdrop tint for modal/drawer scrims, one step past `strong`.
+   * Heaviest overlay step, used as the backdrop tint behind modals and
+   * drawers.
    *
    * Follows the same darken-in-light / lighten-in-dark direction as
-   * `subtle`/`soft`/`medium`/`strong`, just at much higher opacity (75%) so it
+   * `subtle`/`soft`/`mild`/`firm`, just at much higher opacity (75%) so it
    * reads as a deliberate backdrop rather than a hover/elevation hint. A black
-   * tint is used in light mode; a black scrim in dark mode would barely
+   * tint is used in light mode; a black backdrop in dark mode would barely
    * register against an already near-black page, so dark mode lightens
    * (white tint) instead — same visual weight, opposite direction.
    *
    * @example
-   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   * <div className="fixed inset-0 bg-surface-overlay-strong">
    */
-  scrim: string;
+  strong: string;
 }
 
 /**
@@ -257,7 +258,7 @@ export interface SurfaceColors {
    *
    * Used for modal dialogs, drawers, dropdown menus, and other floating
    * content that appears above all other surfaces. Modals and drawers pair it
-   * with a scrim backdrop to focus attention.
+   * with a `surface-overlay-strong` backdrop to focus attention.
    *
    * Light: Pure white, highest elevation
    * Dark: Medium gray, lightest surface for maximum elevation
@@ -271,7 +272,7 @@ export interface SurfaceColors {
    *
    * @example
    * // Drawer with backdrop
-   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   * <div className="fixed inset-0 bg-surface-overlay-strong">
    *   <aside className="bg-surface-modal h-full w-80">
    *     <DrawerContent />
    *   </aside>

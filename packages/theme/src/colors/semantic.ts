@@ -77,13 +77,13 @@ const themeColorsLight: ThemeColors = {
     overlay: {
       subtle: `${absolute.black}05`, // absolute.black @ 2%
       soft: `${absolute.black}0a`, // absolute.black @ 4%
-      medium: `${absolute.black}12`, // absolute.black @ 7%
-      strong: `${absolute.black}1c`, // absolute.black @ 11%
-      scrim: `${absolute.black}bf` // absolute.black @ 75%, scheme-invariant
+      mild: `${absolute.black}12`, // absolute.black @ 7%
+      firm: `${absolute.black}1c`, // absolute.black @ 11%
+      strong: `${absolute.black}bf` // absolute.black @ 75%, scheme-invariant
     },
     app: absolute.white,
     canvas: palette.gray['50'],
-    card: `${absolute.white}e6`, // absolute.white @ 90%
+    card: absolute.white,
     input: absolute.white,
     modal: absolute.white
   }
@@ -156,15 +156,15 @@ const themeColorsDark: ThemeColors = {
     overlay: {
       subtle: `${absolute.white}08`, // absolute.white @ 3%
       soft: `${absolute.white}0f`, // absolute.white @ 6%
-      medium: `${absolute.white}26`, // absolute.white @ 15%
-      strong: `${absolute.white}3d`, // absolute.white @ 24%
-      scrim: `${absolute.black}bf` // absolute.black @ 75%
+      mild: `${absolute.white}26`, // absolute.white @ 15%
+      firm: `${absolute.white}3d`, // absolute.white @ 24%
+      strong: `${absolute.black}bf` // absolute.black @ 75%
     },
     app: absolute.black,
     canvas: palette.gray['950'],
     card: palette.gray['900'],
     input: absolute.black,
-    modal: absolute.black
+    modal: palette.gray['900']
   }
 };
 

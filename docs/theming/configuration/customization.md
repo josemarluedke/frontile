@@ -498,7 +498,7 @@ Override styles for specific components using Tailwind variants:
 
 /* Custom modal backdrop */
 .modal-backdrop {
-  @apply bg-surface-overlay-scrim backdrop-blur-md;
+  @apply bg-surface-overlay-strong backdrop-blur-md;
 }
 ```
 

@@ -16,7 +16,7 @@ The Surface system provides a flexible way to create depth and hierarchy in your
 The Surface system consists of two types:
 
 - **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, modal, input)
-- **Surface Overlay** (subtle, soft, medium, strong, scrim) - Translucent layers that stack on top of a role
+- **Surface Overlay** (subtle, soft, mild, firm, strong) - Translucent layers that stack on top of a role
 
 ## Surface Roles
 
@@ -94,7 +94,7 @@ Modal, drawer, and popover container surface, highest elevation (hierarchy level
 - Popovers and dropdown menus
 - Confirmation prompts
 
-Pair it with `bg-surface-overlay-scrim` for the backdrop behind modals and drawers.
+Pair it with `bg-surface-overlay-strong` for the backdrop behind modals and drawers.
 
 ```gts preview
 <template>
@@ -147,7 +147,7 @@ Surface roles are designed to create visual depth through a hierarchy system:
 In **light mode**, elevated surfaces appear brighter (white) against gray backgrounds following the elevation-luminance principle.
 In **dark mode**, elevated surfaces appear progressively lighter against near-black backgrounds.
 
-## Surface Overlay (subtle, soft, medium, strong, scrim)
+## Surface Overlay (subtle, soft, mild, firm, strong)
 
 Translucent overlays with alpha channel that stack on top of solid surfaces. These add depth through transparency rather than changing the base color.
 
@@ -157,7 +157,7 @@ Translucent overlays with alpha channel that stack on top of solid surfaces. The
 - **Cards/panels on pages**: Elevated surfaces that float on top of the page background
 - **Hover states**: Subtle translucent effect on hover
 - **Progress bars, selection highlights**: Semi-transparent UI elements
-- **`scrim`**: The heavy backdrop behind modals and drawers. Unlike `subtle`/`soft`/`medium`/`strong`, which flip between darkening-black (light theme) and lightening-white (dark theme), `scrim` is deliberately much stronger (75%) so it always reads as a dedicated backdrop rather than a hover/elevation hint
+- **`strong`**: The heavy backdrop behind modals and drawers. Unlike `subtle`/`soft`/`mild`/`firm`, which flip between darkening-black (light theme) and lightening-white (dark theme), `strong` is deliberately much heavier (75%) so it always reads as a dedicated backdrop rather than a hover/elevation hint
 
 ### Example: Modal with Overlay Footer
 
@@ -204,9 +204,9 @@ Overlays can stack on top of each other to create progressive depth:
     Layer 1 (subtle)
     <div class='bg-surface-overlay-soft p-4 rounded'>
       Layer 2 (soft)
-      <div class='bg-surface-overlay-medium p-4 rounded'>
+      <div class='bg-surface-overlay-mild p-4 rounded'>
         Layer 3 (medium)
-        <div class='bg-surface-overlay-strong p-4 rounded'>
+        <div class='bg-surface-overlay-firm p-4 rounded'>
           Layer 4 (strong)
         </div>
       </div>
@@ -219,7 +219,7 @@ Overlays can stack on top of each other to create progressive depth:
 
 ```hbs
 <Overlay
-  @backdrop={{hash class='bg-surface-overlay-scrim backdrop-blur-sm'}}
+  @backdrop={{hash class='bg-surface-overlay-strong backdrop-blur-sm'}}
 >
   Modal content
 </Overlay>
@@ -242,7 +242,7 @@ Follow this decision flow:
 
 4. **Is it on top of a solid surface?**
    - If yes → Use `surface-overlay-*`
-   - If it's a modal/drawer backdrop → Use `surface-overlay-scrim`
+   - If it's a modal/drawer backdrop → Use `surface-overlay-strong`
 
 ## Common Patterns
 
@@ -332,7 +332,7 @@ If you're upgrading from an older version that used `content1-4`, here's the mig
 
 - **Prefer surface roles** (`surface-canvas`, `surface-card`, etc.) over ad hoc colors when they match your UI context
 - Stack overlays on a surface role for depth
-- Use `overlay-scrim` for modal/drawer backdrops
+- Use `overlay-strong` for modal/drawer backdrops
 - Test in both light and dark modes
 - Follow the hierarchy levels for visual consistency
 

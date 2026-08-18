@@ -28,13 +28,13 @@ const skeleton = tv({
       shimmer: [
         'bg-linear-to-r',
         'from-surface-overlay-soft',
-        'via-surface-overlay-strong',
+        'via-surface-overlay-firm',
         'to-surface-overlay-soft',
         'bg-[length:200%_100%]',
         'animate-shimmer'
       ],
-      pulse: ['bg-surface-overlay-medium', 'animate-pulse'],
-      none: ['bg-surface-overlay-medium']
+      pulse: ['bg-surface-overlay-mild', 'animate-pulse'],
+      none: ['bg-surface-overlay-mild']
     }
   },
   compoundVariants: [

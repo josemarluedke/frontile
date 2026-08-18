@@ -29,7 +29,8 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   private overlayClasses: Record<string, string> = {
     subtle: 'bg-surface-overlay-subtle',
     soft: 'bg-surface-overlay-soft',
-    medium: 'bg-surface-overlay-medium',
+    mild: 'bg-surface-overlay-mild',
+    firm: 'bg-surface-overlay-firm',
     strong: 'bg-surface-overlay-strong',
   };
 
@@ -57,8 +58,20 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     input: 'Form controls: inputs, checkboxes, radios',
   };
 
+  private overlayDescriptions: Record<string, string> = {
+    subtle: 'Translucent layer',
+    soft: 'Translucent layer',
+    mild: 'Translucent layer',
+    firm: 'Translucent layer',
+    strong: 'Modal/drawer backdrop — black at 75% in both themes',
+  };
+
   getOverlayClass = (level: string): string => {
     return this.overlayClasses[level] || '';
+  };
+
+  getOverlayDescription = (level: string): string => {
+    return this.overlayDescriptions[level] || 'Translucent layer';
   };
 
   getSurfaceRoleClass = (role: string): string => {
@@ -95,7 +108,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
                     surface-overlay-{{level}}
                   </span>
                   <span class="text-xs text-neutral-firm">
-                    Translucent layer
+                    {{this.getOverlayDescription level}}
                   </span>
                 </div>
               </div>
@@ -112,10 +125,10 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
             </p>
             <div class="bg-surface-overlay-soft p-4 rounded">
               <div class="text-sm text-neutral-strong mb-2">Layer 1 (soft)</div>
-              <div class="bg-surface-overlay-medium p-4 rounded">
-                <div class="text-sm text-neutral-strong mb-2">Layer 2 (medium)</div>
-                <div class="bg-surface-overlay-strong p-4 rounded">
-                  <div class="text-sm text-neutral-strong">Layer 3 (strong)</div>
+              <div class="bg-surface-overlay-mild p-4 rounded">
+                <div class="text-sm text-neutral-strong mb-2">Layer 2 (mild)</div>
+                <div class="bg-surface-overlay-firm p-4 rounded">
+                  <div class="text-sm text-neutral-strong">Layer 3 (firm)</div>
                 </div>
               </div>
             </div>

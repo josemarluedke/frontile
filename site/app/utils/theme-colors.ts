@@ -25,7 +25,8 @@ export const surfaceSolidLevels = [
 export const surfaceOverlayLevels = [
   'subtle',
   'soft',
-  'medium',
+  'mild',
+  'firm',
   'strong',
 ] as const;
 
