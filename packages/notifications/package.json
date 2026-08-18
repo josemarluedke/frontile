@@ -1,6 +1,6 @@
 {
   "name": "@frontile/notifications",
-  "version": "0.18.0-alpha.11",
+  "version": "0.18.0-alpha.12",
   "description": "Component Library for Ember Octane apps: Notifications",
   "keywords": [
     "ember-addon",
