@@ -52,48 +52,48 @@ const baseButton = tv({
     }
   },
   compoundVariants: [
-    // APPEARANCE: outlined (Facet "outline") — border + ink walk the ramp
+    // APPEARANCE: outlined (Facet "outline") — ink + border walk the role ladder
     {
       appearance: 'outlined',
       intent: 'default',
       class:
-        'text-neutral-strong border-neutral-bolder hover:text-neutral-bolder hover:border-neutral-strong active:text-neutral-bolder active:border-neutral-firm'
+        'text-neutral-bolder border-neutral-bolder hover:text-neutral-strong hover:border-neutral-strong active:text-neutral-firm active:border-neutral-firm'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       class:
-        'text-primary-strong border-primary hover:text-primary-bolder hover:border-primary-mild active:text-primary-bolder active:border-primary-firm'
+        'text-primary border-primary hover:text-primary-mild hover:border-primary-mild active:text-primary-firm active:border-primary-firm'
     },
     {
       appearance: 'outlined',
       intent: 'secondary',
       class:
-        'text-secondary-strong border-secondary hover:text-secondary-bolder hover:border-secondary-mild active:text-secondary-bolder active:border-secondary-firm'
+        'text-secondary-strong border-secondary-strong hover:text-secondary-firm hover:border-secondary-firm active:text-secondary-bolder active:border-secondary-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'tertiary',
       class:
-        'text-tertiary-strong border-tertiary hover:text-tertiary-bolder hover:border-tertiary-mild active:text-tertiary-bolder active:border-tertiary-firm'
+        'text-tertiary-strong border-tertiary-strong hover:text-tertiary-firm hover:border-tertiary-firm active:text-tertiary-bolder active:border-tertiary-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       class:
-        'text-success-strong border-success hover:text-success-bolder hover:border-success-mild active:text-success-bolder active:border-success-firm'
+        'text-success-strong border-success-strong hover:text-success-firm hover:border-success-firm active:text-success-bolder active:border-success-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       class:
-        'text-warning-strong border-warning hover:text-warning-bolder hover:border-warning-mild active:text-warning-bolder active:border-warning-firm'
+        'text-warning-strong border-warning-strong hover:text-warning-firm hover:border-warning-firm active:text-warning-bolder active:border-warning-bolder'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       class:
-        'text-danger-strong border-danger hover:text-danger-bolder hover:border-danger-mild active:text-danger-bolder active:border-danger-firm'
+        'text-danger border-danger hover:text-danger-mild hover:border-danger-mild active:text-danger-firm active:border-danger-firm'
     }
   ],
   defaultVariants: {
@@ -159,104 +159,102 @@ const button = tv({
       class:
         'bg-danger border-danger text-on-danger hover:bg-danger-mild hover:border-danger-mild hover:text-on-danger-mild active:bg-danger-firm active:border-danger-firm active:text-on-danger-firm'
     },
-    // APPEARANCE: soft — translucent tint fill, role ink
+    // APPEARANCE: soft — tint fill, plus the border Facet gives it
     {
       appearance: 'soft',
       intent: 'default',
       class:
-        'bg-neutral-soft border-neutral-bolder text-neutral-strong hover:bg-neutral-subtle hover:border-neutral-strong hover:text-neutral-bolder active:bg-neutral-muted active:border-neutral-firm active:text-neutral-bolder'
+        'bg-neutral-soft border-neutral-bolder text-neutral-bolder hover:bg-neutral-subtle hover:border-neutral-strong hover:text-neutral-strong active:bg-neutral-muted active:border-neutral-firm active:text-neutral-firm'
     },
     {
       appearance: 'soft',
       intent: 'primary',
       class:
-        'bg-primary-soft border-primary text-primary-strong hover:bg-primary-subtle hover:border-primary-mild hover:text-primary-bolder active:bg-primary-muted active:border-primary-firm active:text-primary-bolder'
+        'bg-primary-soft border-primary text-primary hover:bg-primary-subtle hover:border-primary-mild hover:text-primary-mild active:bg-primary-muted active:border-primary-firm active:text-primary-firm'
     },
     {
       appearance: 'soft',
       intent: 'secondary',
       class:
-        'bg-secondary-soft border-secondary text-secondary-strong hover:bg-secondary-subtle hover:border-secondary-mild hover:text-secondary-bolder active:bg-secondary-muted active:border-secondary-firm active:text-secondary-bolder'
+        'bg-secondary-soft border-secondary-strong text-secondary-strong hover:bg-secondary-subtle hover:border-secondary-firm hover:text-secondary-firm active:bg-secondary-muted active:border-secondary-bolder active:text-secondary-bolder'
     },
     {
       appearance: 'soft',
       intent: 'tertiary',
       class:
-        'bg-tertiary-soft border-tertiary text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-mild hover:text-tertiary-bolder active:bg-tertiary-muted active:border-tertiary-firm active:text-tertiary-bolder'
+        'bg-tertiary-soft border-tertiary-strong text-tertiary-strong hover:bg-tertiary-subtle hover:border-tertiary-firm hover:text-tertiary-firm active:bg-tertiary-muted active:border-tertiary-bolder active:text-tertiary-bolder'
     },
     {
       appearance: 'soft',
       intent: 'success',
       class:
-        'bg-success-soft border-success text-success-strong hover:bg-success-subtle hover:border-success-mild hover:text-success-bolder active:bg-success-muted active:border-success-firm active:text-success-bolder'
+        'bg-success-soft border-success-strong text-success-strong hover:bg-success-subtle hover:border-success-firm hover:text-success-firm active:bg-success-muted active:border-success-bolder active:text-success-bolder'
     },
     {
       appearance: 'soft',
       intent: 'warning',
       class:
-        'bg-warning-soft border-warning text-warning-strong hover:bg-warning-subtle hover:border-warning-mild hover:text-warning-bolder active:bg-warning-muted active:border-warning-firm active:text-warning-bolder'
+        'bg-warning-soft border-warning-strong text-warning-strong hover:bg-warning-subtle hover:border-warning-firm hover:text-warning-firm active:bg-warning-muted active:border-warning-bolder active:text-warning-bolder'
     },
     {
       appearance: 'soft',
       intent: 'danger',
       class:
-        'bg-danger-soft border-danger text-danger-strong hover:bg-danger-subtle hover:border-danger-mild hover:text-danger-bolder active:bg-danger-muted active:border-danger-firm active:text-danger-bolder'
+        'bg-danger-soft border-danger text-danger hover:bg-danger-subtle hover:border-danger-mild hover:text-danger-mild active:bg-danger-muted active:border-danger-firm active:text-danger-firm'
     },
     // APPEARANCE: minimal (Facet "ghost") — ink only, no fill
     {
       appearance: 'minimal',
       intent: 'default',
       class:
-        'text-neutral-strong hover:text-neutral-bolder active:text-neutral-bolder'
+        'text-neutral-bolder hover:text-neutral-strong active:text-neutral-firm'
     },
     {
       appearance: 'minimal',
       intent: 'primary',
-      class:
-        'text-primary-strong hover:text-primary-bolder active:text-primary-bolder'
+      class: 'text-primary hover:text-primary-mild active:text-primary-firm'
     },
     {
       appearance: 'minimal',
       intent: 'secondary',
       class:
-        'text-secondary-strong hover:text-secondary-bolder active:text-secondary-bolder'
+        'text-secondary-strong hover:text-secondary-firm active:text-secondary-bolder'
     },
     {
       appearance: 'minimal',
       intent: 'tertiary',
       class:
-        'text-tertiary-strong hover:text-tertiary-bolder active:text-tertiary-bolder'
+        'text-tertiary-strong hover:text-tertiary-firm active:text-tertiary-bolder'
     },
     {
       appearance: 'minimal',
       intent: 'success',
       class:
-        'text-success-strong hover:text-success-bolder active:text-success-bolder'
+        'text-success-strong hover:text-success-firm active:text-success-bolder'
     },
     {
       appearance: 'minimal',
       intent: 'warning',
       class:
-        'text-warning-strong hover:text-warning-bolder active:text-warning-bolder'
+        'text-warning-strong hover:text-warning-firm active:text-warning-bolder'
     },
     {
       appearance: 'minimal',
       intent: 'danger',
-      class:
-        'text-danger-strong hover:text-danger-bolder active:text-danger-bolder'
+      class: 'text-danger hover:text-danger-mild active:text-danger-firm'
     },
     // APPEARANCE: tonal — tint fill that deepens through the ramp
     {
       appearance: 'tonal',
       intent: 'default',
       class:
-        'bg-neutral-soft text-neutral-strong hover:bg-neutral-muted hover:text-on-neutral-muted active:bg-neutral-mild active:text-on-neutral-mild'
+        'bg-neutral-soft text-neutral-bolder hover:bg-neutral-muted hover:text-on-neutral-muted active:bg-neutral-mild active:text-on-neutral-mild'
     },
     {
       appearance: 'tonal',
       intent: 'primary',
       class:
-        'bg-primary-soft text-primary-strong hover:bg-primary-muted hover:text-on-primary-muted active:bg-primary-mild active:text-on-primary-mild'
+        'bg-primary-soft text-primary hover:bg-primary-muted hover:text-on-primary-muted active:bg-primary-mild active:text-on-primary-mild'
     },
     {
       appearance: 'tonal',
@@ -286,7 +284,7 @@ const button = tv({
       appearance: 'tonal',
       intent: 'danger',
       class:
-        'bg-danger-soft text-danger-strong hover:bg-danger-muted hover:text-on-danger-muted active:bg-danger-mild active:text-on-danger-mild'
+        'bg-danger-soft text-danger hover:bg-danger-muted hover:text-on-danger-muted active:bg-danger-mild active:text-on-danger-mild'
     },
 
     // APPEARANCE: custom
