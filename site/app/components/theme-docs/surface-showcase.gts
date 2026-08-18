@@ -53,24 +53,6 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     strong: 'bg-surface-lift-strong',
   };
 
-  // `strong` is white in both themes, so its label always needs dark ink;
-  // the rest flip with the veil and can use the theme-aware token.
-  private liftInkClasses: Record<string, string> = {
-    subtle: 'text-neutral-bolder',
-    soft: 'text-neutral-bolder',
-    mild: 'text-neutral-bolder',
-    firm: 'text-neutral-bolder',
-    strong: 'text-neutral-bolder',
-  };
-
-  private liftDescriptions: Record<string, string> = {
-    subtle: 'white @ 30% / black @ 20%',
-    soft: 'white @ 50% / black @ 30%',
-    mild: 'white @ 70% / black @ 50%',
-    firm: 'white @ 90% / black @ 60%',
-    strong: 'white @ 95% in both themes',
-  };
-
   private surfaceRoleClasses: Record<string, string> = {
     app: 'bg-surface-app',
     canvas: 'bg-surface-canvas',
@@ -113,14 +95,6 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
 
   getLiftClass = (level: string): string => {
     return this.liftClasses[level] || '';
-  };
-
-  getLiftInkClass = (level: string): string => {
-    return this.liftInkClasses[level] || 'text-neutral-bolder';
-  };
-
-  getLiftDescription = (level: string): string => {
-    return this.liftDescriptions[level] || '';
   };
 
   getSurfaceRoleClass = (role: string): string => {
@@ -195,31 +169,18 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
           <p class="text-sm text-neutral-firm mb-4">
             Lift veils run the opposite direction from overlay — white in light
             mode, black in dark mode — so the element reads as floating above
-            what it covers. The striped band below stands in for busy content.
+            what it covers.
           </p>
 
-          {{! Lift levels over a striped background }}
-          <div
-            class="relative rounded overflow-hidden [background-image:repeating-linear-gradient(45deg,var(--color-primary-mild)_0_12px,var(--color-secondary-mild)_12px_24px)]"
-          >
-            <div class="p-4 space-y-3">
-              {{#each this.liftLevels as |level|}}
-                <div class="{{this.getLiftClass level}} p-4 rounded">
-                  <div class="flex items-center justify-between gap-4">
-                    <span
-                      class="font-mono text-sm {{this.getLiftInkClass level}}"
-                    >
-                      surface-lift-{{level}}
-                    </span>
-                    <span
-                      class="text-xs {{this.getLiftInkClass level}} opacity-70"
-                    >
-                      {{this.getLiftDescription level}}
-                    </span>
-                  </div>
-                </div>
-              {{/each}}
-            </div>
+          {{! Lift levels }}
+          <div class="space-y-3">
+            {{#each this.liftLevels as |level|}}
+              <div class="{{this.getLiftClass level}} p-4 rounded">
+                <span class="font-mono text-sm text-neutral-bolder">
+                  surface-lift-{{level}}
+                </span>
+              </div>
+            {{/each}}
           </div>
 
           {{! Overlay vs lift, side by side }}

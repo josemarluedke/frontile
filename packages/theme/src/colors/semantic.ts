@@ -191,7 +191,7 @@ const themeColorsDark: ThemeColors = {
       soft: `${absolute.black}4d`, // absolute.black @ 30%
       mild: `${absolute.black}80`, // absolute.black @ 50%
       firm: `${absolute.black}99`, // absolute.black @ 60%
-      strong: `${absolute.black}f2` // absolute.black @ 95%, inverts like overlay's `strong`
+      strong: `${absolute.black}f2` // absolute.black @ 95%
     },
     app: absolute.black,
     canvas: palette.gray['950'],

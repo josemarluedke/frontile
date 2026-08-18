@@ -166,11 +166,11 @@ export interface SurfaceLift {
   firm: string;
 
   /**
-   * Heaviest lift step, near-opaque (95%).
+   * Heaviest lift step, near-opaque (95%) — a panel lifted essentially clear
+   * of the page rather than a veil you see through.
    *
-   * Unlike `subtle`…`firm`, which flip direction between schemes, `strong` is
-   * white in both — it is the "lift a panel completely clear of the page"
-   * step rather than another veil.
+   * Flips with the scheme like every other lift level: white in light mode,
+   * black in dark mode. (Overlay's `strong` is the one that does *not* flip.)
    */
   strong: string;
 }

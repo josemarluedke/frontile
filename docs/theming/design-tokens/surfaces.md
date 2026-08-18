@@ -240,9 +240,9 @@ Both families share the same level names, and both adapt to the active theme aut
 | `soft`   | white @ 50%   | black @ 30%   |
 | `mild`   | white @ 70%   | black @ 50%   |
 | `firm`   | white @ 90%   | black @ 60%   |
-| `strong` | white @ 95%   | white @ 95%   |
+| `strong` | white @ 95%   | black @ 95%   |
 
-`strong` is the exception: it is near-opaque white in *both* themes. Where `subtle`…`firm` are veils you see through, `strong` lifts a panel essentially clear of the page — the counterpart to `overlay-strong` being a scheme-invariant backdrop.
+Every lift level flips with the scheme, `strong` included — it is simply the heaviest step, near-opaque, lifting a panel essentially clear of the page rather than veiling it. Overlay is the family with an exception: its `strong` is a scheme-invariant black backdrop.
 
 ### When to Use
 
