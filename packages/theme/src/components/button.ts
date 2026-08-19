@@ -52,12 +52,11 @@ const baseButton = tv({
     }
   },
   compoundVariants: [
-    // APPEARANCE: outlined (Facet "outline") — ink + border walk the role ladder
     {
       appearance: 'outlined',
       intent: 'default',
       class:
-        'text-neutral-bolder border-neutral-bolder hover:text-neutral-strong hover:border-neutral-strong active:text-neutral-firm active:border-neutral-firm'
+        'text-neutral-bolder border-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-mild hover:border-neutral-strong active:bg-neutral-muted active:text-neutral-firm active:border-neutral-firm'
     },
     {
       appearance: 'outlined',
