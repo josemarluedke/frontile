@@ -3,17 +3,12 @@ import { focusVisibleRing } from './shared.ts';
 
 const baseButton = tv({
   base: [
-    // strong text role (Open Sans bold); size variants set text-strong-* which
-    // carries the label size, weight, tracking, and line-height per the Facet spec
     'inline-flex items-center justify-center',
     '[&_svg]:size-[1em]',
     'font-header',
     'border',
     'border-transparent',
     'disabled:cursor-not-allowed',
-    // Facet: disabled keeps the intent colors and simply drops opacity
-    // (--opacity-disabled: 50% light / 40% dark) rather than swapping in a
-    // grey palette.
     'disabled:opacity-disabled',
     ...focusVisibleRing
   ],
@@ -40,11 +35,6 @@ const baseButton = tv({
     },
     isInGroup: {
       true: [
-        // :first-of-type/:last-of-type (not :first-child/:last-child): a
-        // grouped Dropdown's trigger can have a trailing portal-marker
-        // <script> element as a sibling inside the group, which would make
-        // the last button no longer :last-child. -of-type only counts
-        // siblings of the same tag (button), so it isn't thrown off by it.
         'rounded-none first-of-type:rounded-s-full last-of-type:rounded-e-full',
         '[&:not(:first-of-type):not(:last-of-type)]:rounded-none',
         'not-last-of-type:-me-px'
@@ -56,7 +46,7 @@ const baseButton = tv({
       appearance: 'outlined',
       intent: 'default',
       class:
-        'text-neutral-bolder border-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-mild hover:border-neutral-strong active:bg-neutral-muted active:text-neutral-firm active:border-neutral-firm'
+        'text-neutral-bolder border-neutral-bolder hover:bg-neutral-subtle hover:text-neutral-firm/80 hover:border-neutral-strong active:bg-neutral-muted active:text-neutral-firm active:border-neutral-firm'
     },
     {
       appearance: 'outlined',
@@ -206,7 +196,7 @@ const button = tv({
       appearance: 'minimal',
       intent: 'default',
       class:
-        'text-neutral-bolder hover:text-neutral-strong active:text-neutral-firm'
+        'text-neutral-bolder hover:text-neutral-firm/80 active:text-neutral-firm'
     },
     {
       appearance: 'minimal',
