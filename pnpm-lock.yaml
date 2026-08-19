@@ -1238,13 +1238,13 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2(@embroider/core@3.5.7(@glint/template@1.8.0))(webpack@5.109.2(postcss@8.5.26))
       '@frontile/changeset-form':
-        specifier: workspace:0.18.0-alpha.12
+        specifier: workspace:0.18.0-alpha.13
         version: link:../packages/changeset-form
       '@frontile/forms-legacy':
-        specifier: workspace:0.18.0-alpha.12
+        specifier: workspace:0.18.0-alpha.13
         version: link:../packages/forms-legacy
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.12
+        specifier: workspace:0.18.0-alpha.13
         version: link:../packages/theme
       '@glimmer/component':
         specifier: ^2.1.1
@@ -1343,7 +1343,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(encoding@0.1.13)
       frontile:
-        specifier: workspace:0.18.0-alpha.12
+        specifier: workspace:0.18.0-alpha.13
         version: link:../packages/frontile
       globals:
         specifier: ^17.9.0
@@ -6008,6 +6008,7 @@ packages:
         integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==
       }
     engines: { node: '>=14.6' }
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xtuc/ieee754@1.2.0':
     resolution:
