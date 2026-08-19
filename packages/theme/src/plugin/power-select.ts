@@ -12,13 +12,15 @@ function registerPowerSelectComponents(
         '--tw-text-opacity': '1',
         '--tw-placeholder-opacity': '1'
       },
-    '.dark .ember-power-select-search-input, .dark .ember-power-select-trigger':
+    // Dark-mode surfaces for the deprecated forms-legacy components. These
+    // used to reference the numbered `--default-*` variables, which went away
+    // with the color scale in v0.18 — leaving the dropdown transparent and its
+    // options unreadable. Mapped onto the semantic tokens instead.
+    '.dark .ember-power-select-search-input, .dark .ember-power-select-trigger, .dark .ember-power-select-dropdown':
       {
-        backgroundColor: `hsl(var(--default-100) / var(--default-100-opacity, var(--tw-bg-opacity)))`
-      },
-    '.dark .ember-power-select-dropdown': {
-      backgroundColor: `hsl(var(--default-200) / var(--default-200-opacity, var(--tw-bg-opacity)))`
-    }
+        backgroundColor: `var(--color-surface-input)`,
+        color: `var(--color-neutral-bolder)`
+      }
   });
   powerSelectPlugin.registerComponents(
     {
