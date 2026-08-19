@@ -223,7 +223,7 @@ export default class ValidatedTextarea extends Component {
           />
         </form.Field>
 
-        <div class='flex justify-between items-center text-sm text-gray-600'>
+        <div class='flex justify-between items-center text-sm text-neutral'>
           <span>{{this.formData.feedback.length}}/500 characters</span>
           <Button type='submit' disabled={{form.isLoading}}>
             {{if form.isLoading 'Submitting...' 'Submit Feedback'}}
@@ -232,7 +232,7 @@ export default class ValidatedTextarea extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-strong rounded'>
+        <div class='p-3 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

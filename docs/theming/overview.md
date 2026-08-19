@@ -70,16 +70,22 @@ Automatic theme adaptation with intelligent color inversion. Simply toggle the `
 Here's how easy it is to create a themed button with Frontile:
 
 ```gts preview
+import { Button } from 'frontile';
+
 <template>
-  <button
-    class='bg-primary text-on-primary hover:bg-primary-soft px-4 py-2 rounded'
-  >
-    Click me
-  </button>
+  <Button @intent='primary'>Click me</Button>
 </template>
 ```
 
-This button automatically adapts to light and dark themes without additional code. The `primary` color provides the right emphasis, while `on-primary` automatically calculates the optimal contrasting text color (black or white) for accessibility.
+The Button already resolves its own semantic colors, so it adapts to light and dark themes without additional code. Under the hood the `primary` color provides the emphasis, while `on-primary` calculates the optimal contrasting text color (black or white) for accessibility — the same tokens you'd reach for on your own markup:
+
+```gts preview
+<template>
+  <div class='bg-primary text-on-primary rounded px-4 py-2'>
+    Your own element, same tokens
+  </div>
+</template>
+```
 
 ## Theme Switching
 

@@ -336,8 +336,7 @@ A practical example showing a confirmation dialog pattern.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { Modal } from 'frontile';
-import { Button } from 'frontile';
+import { Modal, Button, Spinner } from 'frontile';
 
 export default class ConfirmationDialog extends Component {
   @tracked isOpen = false;
@@ -399,9 +398,7 @@ export default class ConfirmationDialog extends Component {
 
             {{#if this.isDeleting}}
               <div class='flex items-center space-x-2'>
-                <div
-                  class='animate-spin rounded-full h-4 w-4 border-b-2 border-red-600'
-                ></div>
+                <Spinner @size='xs' @intent='danger' />
                 <span class='text-sm'>Deleting...</span>
               </div>
             {{/if}}

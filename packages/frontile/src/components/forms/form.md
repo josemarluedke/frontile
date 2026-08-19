@@ -84,7 +84,7 @@ export default class BasicForm extends Component {
           <pre class='text-sm'>{{JSON.stringify this.formData null 2}}</pre>
         </div>
 
-        <div class='p-4 bg-success-50 rounded'>
+        <div class='p-4 bg-success-subtle rounded'>
           <h4 class='font-medium mb-2'>Last Submitted Data:</h4>
           <pre class='text-sm'>{{JSON.stringify
               this.submittedData
@@ -177,7 +177,7 @@ export default class RealtimeForm extends Component {
       </Form>
 
       <div class='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div class='p-4 bg-warning-50 rounded'>
+        <div class='p-4 bg-warning-subtle rounded'>
           <h4 class='font-medium mb-2'>Input Events (Real-time):</h4>
           <pre class='text-sm overflow-auto'>{{JSON.stringify
               this.inputData
@@ -186,7 +186,7 @@ export default class RealtimeForm extends Component {
             }}</pre>
         </div>
 
-        <div class='p-4 bg-success-50 rounded'>
+        <div class='p-4 bg-success-subtle rounded'>
           <h4 class='font-medium mb-2'>Submit Events:</h4>
           <pre class='text-sm overflow-auto'>{{JSON.stringify
               this.submitData
@@ -618,7 +618,7 @@ export default class DirtyTrackingForm extends Component {
 
         <div
           class='mt-4 p-4 rounded
-            {{if form.dirty.size "bg-warning-50" "bg-neutral-subtle"}}'
+            {{if form.dirty.size "bg-warning-subtle" "bg-neutral-subtle"}}'
         >
           {{#if form.dirty.size}}
             <p class='font-medium text-warning-strong'>
@@ -1354,7 +1354,7 @@ export default class NestedForm extends Component {
           </form.Field>
 
           {{#if form.dirty.size}}
-            <div class='p-3 bg-warning-50 rounded text-sm'>
+            <div class='p-3 bg-warning-subtle rounded text-sm'>
               <strong>Unsaved changes in:</strong>
               {{#each form.dirty as |field|}}
                 <span
@@ -1676,7 +1676,7 @@ export default class ResetForm extends Component {
           </form.Field>
 
           {{#if form.dirty.size}}
-            <div class='p-3 bg-warning-50 rounded text-sm'>
+            <div class='p-3 bg-warning-subtle rounded text-sm'>
               You have unsaved changes
             </div>
           {{/if}}

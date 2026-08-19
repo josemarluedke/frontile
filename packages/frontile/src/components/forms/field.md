@@ -577,7 +577,7 @@ export default class CompleteFieldForm extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='mt-4 p-4 bg-success-50 text-success-strong rounded'>
+        <div class='mt-4 p-4 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

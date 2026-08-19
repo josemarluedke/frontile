@@ -15,7 +15,17 @@ It is also used under other components in Frontile, for example `Modal` and `Dra
 import { CloseButton } from 'frontile';
 ```
 
-```gjs preview
+## Usage
+
+```gts preview
+import { CloseButton } from 'frontile';
+
+<template><CloseButton /></template>
+```
+
+## Sizes
+
+```gts preview
 import { CloseButton } from 'frontile';
 
 <template>
@@ -59,7 +69,7 @@ export default class CloseButtonExample extends Component {
           <CloseButton @onPress={{this.handleClose}} />
         </div>
       {{else}}
-        <p class='text-gray-500'>Message dismissed (will reappear in 2 seconds)</p>
+        <p class='text-neutral'>Message dismissed (will reappear in 2 seconds)</p>
       {{/if}}
     </div>
   </template>

@@ -297,7 +297,7 @@ export default class MultiplePanels extends Component {
       </div>
 
       <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-success-50 border-b border-neutral-subtle'>
+        <div class='p-4 bg-success-subtle border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
@@ -317,7 +317,7 @@ export default class MultiplePanels extends Component {
       </div>
 
       <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-warning-50 border-b border-neutral-subtle'>
+        <div class='p-4 bg-warning-subtle border-b border-neutral-subtle'>
           <Button
             @appearance='minimal'
             @class='w-full text-left font-semibold'
