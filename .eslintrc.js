@@ -83,7 +83,8 @@ module.exports = {
         'site/eslint.config.mjs',
         'test-app/eslint.config.mjs',
         'packages/*/rollup.config.mjs',
-        'scripts/**/*.mjs'
+        'scripts/**/*.mjs',
+        '.claude/skills/**/*.mjs'
       ],
       env: {
         node: true

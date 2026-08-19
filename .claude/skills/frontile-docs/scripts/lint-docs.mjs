@@ -21,7 +21,10 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, relative, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
+const REPO_ROOT = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../../..'
+);
 const COMPONENTS_DIR = join(REPO_ROOT, 'packages/frontile/src/components');
 
 const REQUIRED_SECTIONS = ['Import', 'Usage', 'API'];
@@ -177,7 +180,11 @@ function collectFences(source) {
     const m = /^```(.*)$/.exec(line);
     if (!m) return;
     if (open) {
-      fences.push({ ...open, endLine: i + 1, content: lines.slice(open.line, i).join('\n') });
+      fences.push({
+        ...open,
+        endLine: i + 1,
+        content: lines.slice(open.line, i).join('\n')
+      });
       open = null;
     } else {
       open = { info: m[1].trim(), line: i + 1 };
@@ -226,10 +233,17 @@ function lintDoc(mdPath) {
     text: m[2].trim(),
     line: lineOf(source, m.index)
   }));
-  const topLevel = new Set(headings.filter((h) => h.depth === 2).map((h) => h.text));
+  const topLevel = new Set(
+    headings.filter((h) => h.depth === 2).map((h) => h.text)
+  );
 
   if (!headings.some((h) => h.depth === 1)) {
-    add('warn', 1, 'No H1 title', 'the H1 is the page title; there is no `title` frontmatter key');
+    add(
+      'warn',
+      1,
+      'No H1 title',
+      'the H1 is the page title; there is no `title` frontmatter key'
+    );
   }
 
   for (const section of REQUIRED_SECTIONS) {
@@ -237,7 +251,12 @@ function lintDoc(mdPath) {
     // A file using `## Basic Usage` already gets the rename warning below; reporting
     // it as a missing section too would send someone looking for content that's there.
     if (section === 'Usage' && topLevel.has('Basic Usage')) continue;
-    add('error', 1, `Missing \`## ${section}\` section`, 'see references/structure.md');
+    add(
+      'error',
+      1,
+      `Missing \`## ${section}\` section`,
+      'see references/structure.md'
+    );
   }
   if (!topLevel.has('Accessibility')) {
     add(
@@ -250,11 +269,14 @@ function lintDoc(mdPath) {
 
   for (const h of headings) {
     const advice = DISCOURAGED_HEADINGS[h.text];
-    if (advice && h.depth <= 3) add('warn', h.line, `Heading \`${h.text}\``, advice);
+    if (advice && h.depth <= 3)
+      add('warn', h.line, `Heading \`${h.text}\``, advice);
   }
 
   // --- <Signature> wiring -------------------------------------------------
-  const signatureTags = [...source.matchAll(/<Signature\s+[^>]*@component="([^"]+)"/g)];
+  const signatureTags = [
+    ...source.matchAll(/<Signature\s+[^>]*@component="([^"]+)"/g)
+  ];
   if (topLevel.has('API') && signatureTags.length === 0) {
     add(
       'error',
@@ -275,7 +297,12 @@ function lintDoc(mdPath) {
   // --- Fences -------------------------------------------------------------
   for (const fence of collectFences(source)) {
     if (fence.info === 'gjs preview') {
-      add('warn', fence.line, 'Legacy ```gjs preview fence', 'convert to ```gts preview');
+      add(
+        'warn',
+        fence.line,
+        'Legacy ```gjs preview fence',
+        'convert to ```gts preview'
+      );
     }
     const isPreview = /\bpreview\b/.test(fence.info);
     if (!isPreview && /<template>/.test(fence.content) && fence.info !== '') {
@@ -322,14 +349,19 @@ function lintDoc(mdPath) {
   // --- Args drift ---------------------------------------------------------
   const gtsPath = mdPath.replace(/\.md$/, '.gts');
   if (existsSync(gtsPath)) {
-    const { args, complete } = parseComponentArgs(readFileSync(gtsPath, 'utf8'));
+    const { args, complete } = parseComponentArgs(
+      readFileSync(gtsPath, 'utf8')
+    );
     const gtsRel = relative(REPO_ROOT, gtsPath);
 
     // Only check the component this file actually declares. Docs routinely document
     // sub-components that live in their own files (PortalTarget in portal.md), and
     // checking those against the wrong Args interface invents errors.
-    const own = basename(mdPath, '.md').replace(/(^|-)(\w)/g, (_, __, c) => c.toUpperCase());
-    const primary = signatureTags.map((t) => t[1]).find((name) => name === own) ?? null;
+    const own = basename(mdPath, '.md').replace(/(^|-)(\w)/g, (_, __, c) =>
+      c.toUpperCase()
+    );
+    const primary =
+      signatureTags.map((t) => t[1]).find((name) => name === own) ?? null;
     if (primary && complete) {
       for (const [arg, line] of argsUsedOnTag(source, primary)) {
         if (!args.has(arg)) {
@@ -343,7 +375,9 @@ function lintDoc(mdPath) {
       }
     }
 
-    const undocumented = [...args.values()].filter((a) => !a.documented).map((a) => a.name);
+    const undocumented = [...args.values()]
+      .filter((a) => !a.documented)
+      .map((a) => a.name);
     if (undocumented.length > 0) {
       add(
         'warn',
@@ -381,7 +415,9 @@ function publiclyExported() {
     if (!category.isDirectory()) continue;
     const barrel = join(COMPONENTS_DIR, category.name, 'index.ts');
     if (!existsSync(barrel)) continue;
-    for (const m of readFileSync(barrel, 'utf8').matchAll(/from\s+'\.\/([\w-]+)'/g)) {
+    for (const m of readFileSync(barrel, 'utf8').matchAll(
+      /from\s+'\.\/([\w-]+)'/g
+    )) {
       exported.add(join(COMPONENTS_DIR, category.name, `${m[1]}.gts`));
     }
   }
@@ -415,10 +451,14 @@ function main() {
   let findings = [];
 
   if (paths.length > 0) {
-    docs = paths.map((p) => resolve(process.cwd(), p)).filter((p) => p.endsWith('.md'));
+    docs = paths
+      .map((p) => resolve(process.cwd(), p))
+      .filter((p) => p.endsWith('.md'));
   } else {
     if (!existsSync(COMPONENTS_DIR)) {
-      console.error(`Cannot find ${COMPONENTS_DIR} — run from inside the frontile repo.`);
+      console.error(
+        `Cannot find ${COMPONENTS_DIR} — run from inside the frontile repo.`
+      );
       process.exit(2);
     }
     const all = walk(COMPONENTS_DIR);
@@ -435,7 +475,9 @@ function main() {
   const warnings = findings.filter((f) => f.level === 'warn');
 
   if (json) {
-    console.log(JSON.stringify({ docs: docs.length, errors, warnings }, null, 2));
+    console.log(
+      JSON.stringify({ docs: docs.length, errors, warnings }, null, 2)
+    );
   } else {
     const byFile = new Map();
     for (const f of findings) {
