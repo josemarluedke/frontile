@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, find, settled, click } from '@ember/test-helpers';
 
-import { Input } from 'frontile';
+import { Form, Input } from 'frontile';
 import { cell } from 'ember-resources';
 
 module('Integration | Component | @frontile/forms/Input', function (hooks) {
@@ -243,6 +243,58 @@ module('Integration | Component | @frontile/forms/Input', function (hooks) {
 
     await click('[data-test-id="input-clear-button"]');
     assert.equal(value.current, '');
+  });
+
+  test('clear button clears the element when the value is owned elsewhere', async function (assert) {
+    // A parent that observes changes without feeding a new @value back in —
+    // what `<Form>` does, since it reads the values off the DOM.
+    const observed: string[] = [];
+    const onChange = (val: string) => {
+      observed.push(val);
+    };
+
+    await render(
+      <template>
+        <Input data-test-input @onChange={{onChange}} @isClearable={{true}} />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="input-clear-button"]')
+      .doesNotExist('nothing to clear yet');
+
+    await fillIn('[data-test-input]', 'Josemar');
+    assert
+      .dom('[data-test-id="input-clear-button"]')
+      .exists('the field has a value, so it can be cleared');
+
+    await click('[data-test-id="input-clear-button"]');
+
+    assert.dom('[data-test-input]').hasValue('');
+    assert.deepEqual(observed, ['Josemar', ''], 'onChange is still notified');
+    assert
+      .dom('[data-test-id="input-clear-button"]')
+      .doesNotExist('the button goes away once the field is empty');
+  });
+
+  test('clear button clears a Form-owned field', async function (assert) {
+    const onSubmit = () => {};
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmit}} as |form|>
+          <form.Field @name="email" as |field|>
+            <field.Input @isClearable={{true}} data-test-input />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    await fillIn('[data-test-input]', 'josemar@example.com');
+    assert.dom('[data-test-input]').hasValue('josemar@example.com');
+
+    await click('[data-test-id="input-clear-button"]');
+    assert.dom('[data-test-input]').hasValue('');
   });
 
   test('uncontrolled input behavior', async function (assert) {

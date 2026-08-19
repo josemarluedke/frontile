@@ -73,6 +73,14 @@ function or(arg1: unknown, arg2: unknown): boolean {
 class Input extends Component<InputSignature> {
   @tracked uncontrolledValue: string = this.args.value || '';
 
+  /**
+   * What the element itself currently holds. A controlled parent does not
+   * always feed the value back through `@value` — `<Form>`, for one, reads it
+   * off the DOM instead — so the argument alone cannot tell us whether there
+   * is anything to clear.
+   */
+  @tracked elementValue: string = this.args.value || '';
+
   inputRef = ref<HTMLInputElement>();
 
   get isControlled() {
@@ -86,6 +94,20 @@ class Input extends Component<InputSignature> {
     return this.isControlled ? this.args.value : this.uncontrolledValue;
   }
 
+  /**
+   * The value in the field regardless of who owns it: the argument when the
+   * parent feeds one back, the element's own value otherwise.
+   */
+  get currentValue(): string | undefined {
+    if (!this.isControlled) {
+      return this.uncontrolledValue;
+    }
+
+    return typeof this.args.value === 'undefined'
+      ? this.elementValue
+      : this.args.value;
+  }
+
   get type(): string {
     if (typeof this.args.type === 'string') {
       return this.args.type;
@@ -95,6 +117,7 @@ class Input extends Component<InputSignature> {
 
   @action handleOnInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
+    this.elementValue = value;
 
     if (this.isControlled) {
       this.args.onInput?.(value, event as InputEvent);
@@ -105,6 +128,7 @@ class Input extends Component<InputSignature> {
 
   @action handleOnChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
+    this.elementValue = value;
 
     if (this.isControlled) {
       this.args.onChange?.(value, event as InputEvent);
@@ -118,6 +142,14 @@ class Input extends Component<InputSignature> {
   }
 
   @action clearValue(): void {
+    // Clear the element first: a parent that owns the value may derive it from
+    // the DOM (as `<Form>` does via FormData), in which case notifying it
+    // before the element is empty would just hand back the stale value.
+    if (this.inputRef.current) {
+      this.inputRef.current.value = '';
+    }
+    this.elementValue = '';
+
     if (this.isControlled) {
       this.args.onChange?.('');
       this.args.onInput?.('');
@@ -132,8 +164,8 @@ class Input extends Component<InputSignature> {
   get isClearable(): boolean {
     if (
       this.args.isClearable === true &&
-      this.value !== '' &&
-      typeof this.value !== 'undefined'
+      this.currentValue !== '' &&
+      typeof this.currentValue !== 'undefined'
     ) {
       return true;
     }
