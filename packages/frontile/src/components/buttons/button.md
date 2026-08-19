@@ -109,11 +109,13 @@ import { Button } from 'frontile';
 import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
 <template>
-  <Button @size='xs' @intent='primary'><DownloadIcon /> Download</Button>
-  <Button @size='sm' @intent='primary'><DownloadIcon /> Download</Button>
-  <Button @intent='primary'><DownloadIcon /> Download</Button>
-  <Button @size='lg' @intent='primary'><DownloadIcon /> Download</Button>
-  <Button @size='xl' @intent='primary'><DownloadIcon /> Download</Button>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @size='xs' @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @size='sm' @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @size='lg' @intent='primary'><DownloadIcon /> Download</Button>
+    <Button @size='xl' @intent='primary'><DownloadIcon /> Download</Button>
+  </div>
 </template>
 ```
 
@@ -129,6 +131,86 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
     <Button @appearance='outlined' @intent='default'>Share
       <ShareIcon /></Button>
     <Button @appearance='tonal' @intent='success'><CheckIcon /> Confirm</Button>
+  </div>
+</template>
+```
+
+## Label with a Unit
+
+A label can carry a smaller trailing unit — a price suffix like `/mo`, a count,
+or an abbreviation. The label keeps the bold `strong` text role that the size
+variant already applies; the unit uses the regular-weight `body` role, two steps
+down the scale.
+
+Wrap the pair so the unit sits tight against the label: the button's own `gap`
+spaces the icon slots, while the wrapper's narrower gap spaces label from unit.
+
+```gjs preview
+import { Button } from 'frontile';
+import { StarIcon } from 'site/components/icons';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @intent='primary'>
+      <span class='inline-flex items-center gap-1'>
+        Upgrade
+        <span class='font-body text-body-xs'>/mo</span>
+      </span>
+    </Button>
+
+    <Button @appearance='outlined' @intent='default'>
+      <StarIcon />
+      <span class='inline-flex items-center gap-1'>
+        Button
+        <span class='font-body text-body-xs'>/mo</span>
+      </span>
+      <StarIcon />
+    </Button>
+  </div>
+</template>
+```
+
+The unit token pairs with the label token the size variant sets, so it needs to
+change with `@size`:
+
+| `@size` | label (automatic) | unit              | wrapper gap |
+| ------- | ----------------- | ----------------- | ----------- |
+| `xs`    | `text-strong-sm`  | `text-body-micro` | `gap-0.5`   |
+| `sm`    | `text-strong-md`  | `text-body-2xs`   | `gap-0.5`   |
+| `md`    | `text-strong-lg`  | `text-body-xs`    | `gap-1`     |
+| `lg`    | `text-strong-xl`  | `text-body-sm`    | `gap-1`     |
+| `xl`    | `text-strong-2xl` | `text-body-md`    | `gap-1`     |
+| `2xl`   | `text-strong-3xl` | `text-body-lg`    | `gap-1.5`   |
+
+```gjs preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @size='sm' @intent='primary'>
+      <span class='inline-flex items-center gap-0.5'>
+        $9
+        <span class='font-body text-body-2xs'>/mo</span>
+      </span>
+    </Button>
+    <Button @intent='primary'>
+      <span class='inline-flex items-center gap-1'>
+        $19
+        <span class='font-body text-body-xs'>/mo</span>
+      </span>
+    </Button>
+    <Button @size='lg' @intent='primary'>
+      <span class='inline-flex items-center gap-1'>
+        $29
+        <span class='font-body text-body-sm'>/mo</span>
+      </span>
+    </Button>
+    <Button @size='2xl' @intent='primary'>
+      <span class='inline-flex items-center gap-1.5'>
+        $99
+        <span class='font-body text-body-lg'>/mo</span>
+      </span>
+    </Button>
   </div>
 </template>
 ```
