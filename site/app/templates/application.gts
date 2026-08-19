@@ -50,4 +50,9 @@ import { PortalTarget } from 'frontile';
     </a>
   </div>
   <PortalTarget class="relative z-20" />
+
+  {{! The deprecated forms-legacy components are built on ember-power-select,
+      which renders its dropdown into this element. Without it, BasicDropdown
+      has no destination and the dropdown never renders — see issue #330. }}
+  <div id="ember-basic-dropdown-wormhole"></div>
 </template>

@@ -253,6 +253,25 @@
 @import './highlight.css';
 @import './docfy-demo.css';
 
+/* The deprecated forms-legacy components render through ember-power-select,
+   whose dropdown is positioned by ember-basic-dropdown's structural CSS. That
+   CSS ships as a vendor file this app never imported, so the dropdown landed
+   unpositioned at the end of the page — see issue #330. These are the layout
+   rules it needs; appearance still comes from the Frontile theme plugin. */
+.ember-basic-dropdown {
+  position: relative;
+}
+
+.ember-basic-dropdown-content {
+  position: absolute;
+  width: auto;
+  z-index: 1000;
+}
+
+.ember-basic-dropdown-content-wormhole-origin {
+  display: inline;
+}
+
 /* Rendered docs prose follows the Frontile/Beacon type roles.
    Kept unlayered so it wins over the @tailwindcss/typography plugin's
    layered `.prose :where(...)` heading/text rules. */
