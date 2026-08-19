@@ -53,7 +53,7 @@ Shadow system for creating visual depth with six elevation levels (0-5).
 
 Background color system for creating distinct surface layers in your UI.
 
-**Generated utilities:** `bg-surface-app`, `bg-surface-modal`, `bg-surface-overlay-soft`
+**Generated utilities:** `bg-surface-app`, `bg-surface-modal`, `bg-surface-overlay-soft`, `bg-surface-lift-soft`
 
 ## How Tokens Work
 

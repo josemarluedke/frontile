@@ -53,7 +53,7 @@ The surface system (introduced during the v0.18 alpha cycle) has been simplified
 | `surface-overlay-content`      | `surface-modal`       | Same merge as above — this was already identical in value to `surface-popover`            |
 | `surface-panel`                | *(removed)*           | Had no real consumer; use `surface-card` for elevated sidebar/panel containers            |
 | `surface-inset`                | *(removed)*           | Had no real consumer; use `surface-overlay-subtle`/`soft` for recessed translucent wells   |
-| `surface-overlay-inverse-*`    | `surface-overlay-scrim` (for backdrops) | Had no real consumer. If you need a heavy, scheme-invariant tint, use `scrim`; for a normal darken/lighten step, use `subtle`/`soft`/`medium`/`strong` |
+| `surface-overlay-inverse-*`    | `surface-overlay-strong` (for backdrops) | Had no real consumer. If you need a heavy backdrop tint, use `strong`; for a normal darken/lighten step, use `subtle`/`soft`/`mild`/`firm` |
 | *(new)* `surface-input`        | —                     | Dedicated surface for text inputs, checkboxes, and radios (previously `surface-solid-0`)   |
 
 `surface-card` also changed value: it's now translucent (`white @ 90%` in light mode) instead of fully opaque, and resolves to `base-800` in dark mode instead of `base-700`.
@@ -71,6 +71,52 @@ The surface system (introduced during the v0.18 alpha cycle) has been simplified
 ```
 
 See the [Surfaces](../../theming/design-tokens/surfaces.md) guide for the full, current token set.
+
+### Surface Overlay Levels Renamed
+
+The translucent overlay levels were renamed to line up with the named levels used
+by every other color category (`subtle` → `soft` → `mild` → `firm` → `strong`).
+The values did not change — only the names:
+
+| Old                        | New                      | Notes                                                          |
+| -------------------------- | ------------------------ | -------------------------------------------------------------- |
+| `surface-overlay-subtle`   | `surface-overlay-subtle` | ✓ No change                                                     |
+| `surface-overlay-soft`     | `surface-overlay-soft`   | ✓ No change                                                     |
+| `surface-overlay-medium`   | `surface-overlay-mild`   | Same value, renamed to match the shared level names             |
+| `surface-overlay-strong`   | `surface-overlay-firm`   | Same value, shifted down one name                               |
+| `surface-overlay-scrim`    | `surface-overlay-strong` | The heavy modal/drawer backdrop is now just the top level       |
+
+```gts
+// Before
+<div class="bg-surface-overlay-medium" />
+<div class="border-surface-overlay-strong" />
+<div class="fixed inset-0 bg-surface-overlay-scrim" />
+
+// After
+<div class="bg-surface-overlay-mild" />
+<div class="border-surface-overlay-firm" />
+<div class="fixed inset-0 bg-surface-overlay-strong" />
+```
+
+
+### New: Surface Lift
+
+`surface-lift-*` is a new translucent family alongside `surface-overlay-*`, with
+the same five levels. Overlay darkens in light mode and lightens in dark mode,
+pressing an element into the page; lift does the opposite, so the element floats
+above what it covers.
+
+```gts
+// Recedes — hover states, section fills
+<div class="bg-surface-overlay-soft" />
+
+// Floats — frosted panels, sticky headers, captions over media
+<header class="bg-surface-lift-firm backdrop-blur-md" />
+```
+
+Nothing is deprecated by this: existing `surface-overlay-*` usage is unaffected.
+See the [Surfaces](../../theming/design-tokens/surfaces.md) guide for the level
+table and usage guidance.
 
 ### Color Scale Changed
 

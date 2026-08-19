@@ -108,7 +108,7 @@
     transform: translateX(-70%);
   }
 
-  .hero-glow-orb--accent {
+  .hero-glow-orb--secondary {
     width: 400px;
     height: 400px;
     background: radial-gradient(circle, oklch(0.55 0.2 290 / 0.3) 0%, transparent 70%);

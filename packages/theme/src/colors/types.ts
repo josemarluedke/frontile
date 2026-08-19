@@ -43,7 +43,7 @@ export type SemanticBaseColors = {
  * Surface band — fills. Backgrounds and decorative borders for filled/tinted
  * surfaces, ordered low → high emphasis:
  *
- *   subtle → muted → soft → DEFAULT → firm
+ *   subtle → muted → soft → mild → DEFAULT → firm
  *
  * `DEFAULT` is the resting fill (the bare `bg-{category}` class); `firm` is the
  * most emphatic fill, e.g. a pressed/active background.
@@ -55,6 +55,8 @@ export interface SurfaceBand {
   muted: string;
   /** Soft fill — the hover step for solid fills. */
   soft: string;
+  /** Between `soft` and `DEFAULT` — a lower-emphasis fill just short of resting. */
+  mild: string;
   /** Resting fill — the bare `bg-{category}` / `border-{category}` token. */
   DEFAULT: string;
   /** Most emphatic fill — pressed/active backgrounds. */
@@ -112,6 +114,7 @@ export interface OnColorCategory {
   subtle?: string;
   muted?: string;
   soft?: string;
+  mild?: string;
   DEFAULT?: string;
   firm?: string;
   strong?: string;
@@ -121,22 +124,55 @@ export interface OnColorCategory {
 export interface SurfaceOverlay {
   subtle: string;
   soft: string;
-  medium: string;
-  strong: string;
+  mild: string;
+  firm: string;
   /**
-   * Heavy backdrop tint for modal/drawer scrims, one step past `strong`.
+   * Heaviest overlay step, used as the backdrop tint behind modals and
+   * drawers.
    *
    * Follows the same darken-in-light / lighten-in-dark direction as
-   * `subtle`/`soft`/`medium`/`strong`, just at much higher opacity (75%) so it
+   * `subtle`/`soft`/`mild`/`firm`, just at much higher opacity (75%) so it
    * reads as a deliberate backdrop rather than a hover/elevation hint. A black
-   * tint is used in light mode; a black scrim in dark mode would barely
+   * tint is used in light mode; a black backdrop in dark mode would barely
    * register against an already near-black page, so dark mode lightens
    * (white tint) instead — same visual weight, opposite direction.
    *
    * @example
-   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   * <div className="fixed inset-0 bg-surface-overlay-strong">
    */
-  scrim: string;
+  strong: string;
+}
+
+/**
+ * Translucent overlay system that *lightens* in light mode and *darkens* in
+ * dark mode — the mirror of {@link SurfaceOverlay}.
+ *
+ * Where overlay pushes an element down into its background, lift pulls it up
+ * off of it: a white veil on a light page, a black veil on a dark one. Use it
+ * for frosted/glass panels, sticky headers over content, and any surface that
+ * should read as floating above what it covers.
+ *
+ * Levels run low → high emphasis, same as overlay: `subtle`, `soft`, `mild`,
+ * `firm`, `strong`.
+ *
+ * @example
+ * // Frosted sticky header
+ * <header className="bg-surface-lift-firm backdrop-blur-md" />
+ */
+export interface SurfaceLift {
+  subtle: string;
+  soft: string;
+  mild: string;
+  firm: string;
+
+  /**
+   * Heaviest lift step, near-opaque (95%) — a panel lifted essentially clear
+   * of the page rather than a veil you see through.
+   *
+   * Flips with the scheme like every other lift level: white in light mode,
+   * black in dark mode. (Overlay's `strong` is the one that does *not* flip.)
+   */
+  strong: string;
 }
 
 /**
@@ -167,6 +203,17 @@ export interface SurfaceColors {
    * <div className="bg-surface-app bg-surface-overlay-soft" />
    */
   overlay: SurfaceOverlay;
+
+  /**
+   * Translucent lift system for elements that float above the page.
+   *
+   * The mirror of {@link overlay}: lightens in light mode, darkens in dark
+   * mode. See {@link SurfaceLift}.
+   *
+   * @example
+   * <div className="bg-surface-lift-soft backdrop-blur-sm" />
+   */
+  lift: SurfaceLift;
 
   /**
    * Root application background layer (hierarchy level 0).
@@ -254,7 +301,7 @@ export interface SurfaceColors {
    *
    * Used for modal dialogs, drawers, dropdown menus, and other floating
    * content that appears above all other surfaces. Modals and drawers pair it
-   * with a scrim backdrop to focus attention.
+   * with a `surface-overlay-strong` backdrop to focus attention.
    *
    * Light: Pure white, highest elevation
    * Dark: Medium gray, lightest surface for maximum elevation
@@ -268,7 +315,7 @@ export interface SurfaceColors {
    *
    * @example
    * // Drawer with backdrop
-   * <div className="fixed inset-0 bg-surface-overlay-scrim">
+   * <div className="fixed inset-0 bg-surface-overlay-strong">
    *   <aside className="bg-surface-modal h-full w-80">
    *     <DrawerContent />
    *   </aside>
@@ -286,7 +333,8 @@ export interface SurfaceColors {
 export interface ThemeColors {
   neutral: SemanticColorCategory;
   primary: SemanticColorCategory;
-  accent: SemanticColorCategory;
+  secondary: SemanticColorCategory;
+  tertiary: SemanticColorCategory;
   success: SemanticColorCategory;
   warning: SemanticColorCategory;
   danger: SemanticColorCategory;
@@ -296,7 +344,8 @@ export interface ThemeColors {
   // If not provided, these will be auto-generated for optimal contrast
   'on-neutral'?: OnColorCategory;
   'on-primary'?: OnColorCategory;
-  'on-accent'?: OnColorCategory;
+  'on-secondary'?: OnColorCategory;
+  'on-tertiary'?: OnColorCategory;
   'on-success'?: OnColorCategory;
   'on-warning'?: OnColorCategory;
   'on-danger'?: OnColorCategory;

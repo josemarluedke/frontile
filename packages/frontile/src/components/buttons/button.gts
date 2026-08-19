@@ -22,7 +22,14 @@ export interface ButtonArgs {
   /**
    * The intent of the button
    */
-  intent?: 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
+  intent?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'success'
+    | 'warning'
+    | 'danger';
 
   /**
    * The size of the button

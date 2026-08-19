@@ -44,7 +44,8 @@ const formFeedback = tv({
   variants: {
     intent: {
       primary: 'text-primary',
-      accent: 'text-accent',
+      secondary: 'text-secondary',
+      tertiary: 'text-tertiary',
       success: 'text-success',
       danger: 'text-danger',
       warning: 'text-warning'
@@ -403,10 +404,16 @@ const switchInput = tv({
           'group-data-[selected=true]:text-on-primary'
         ]
       },
-      accent: {
+      secondary: {
         wrapper: [
-          'group-data-[selected=true]:bg-accent',
-          'group-data-[selected=true]:text-on-accent'
+          'group-data-[selected=true]:bg-secondary',
+          'group-data-[selected=true]:text-on-secondary'
+        ]
+      },
+      tertiary: {
+        wrapper: [
+          'group-data-[selected=true]:bg-tertiary',
+          'group-data-[selected=true]:text-on-tertiary'
         ]
       },
       success: {

@@ -5,6 +5,7 @@ export const colorLevels = [
   'subtle',
   'muted',
   'soft',
+  'mild',
   'DEFAULT',
   'firm',
   'strong',
@@ -24,7 +25,19 @@ export const surfaceSolidLevels = [
 export const surfaceOverlayLevels = [
   'subtle',
   'soft',
-  'medium',
+  'mild',
+  'firm',
+  'strong',
+] as const;
+
+/**
+ * Surface lift levels — the mirror of overlay
+ */
+export const surfaceLiftLevels = [
+  'subtle',
+  'soft',
+  'mild',
+  'firm',
   'strong',
 ] as const;
 
@@ -34,7 +47,8 @@ export const surfaceOverlayLevels = [
 export const colorCategories = [
   'neutral',
   'primary',
-  'accent',
+  'secondary',
+  'tertiary',
   'success',
   'danger',
   'warning',
@@ -51,6 +65,13 @@ export function getSurfaceOverlayClass(level: string): string {
 }
 
 /**
+ * Get Tailwind class name for surface lift
+ */
+export function getSurfaceLiftClass(level: string): string {
+  return `bg-surface-lift-${level}`;
+}
+
+/**
  * Get human-readable description for color level
  */
 export function getColorLevelDescription(level: ColorLevel): string {
@@ -59,6 +80,7 @@ export function getColorLevelDescription(level: ColorLevel): string {
     subtle: 'Surface · faintest fill for hairline backgrounds and tonal rests',
     muted: 'Surface · light fill for hover on tonal surfaces',
     soft: 'Surface · soft fill, the hover step for solid fills',
+    mild: 'Surface · low-emphasis fill between soft and the resting fill',
     DEFAULT: 'Surface · resting fill, the bare bg-{category} token',
     firm: 'Surface · most emphatic fill for pressed and active backgrounds',
     // Ink band — legible foregrounds for text and outlined borders
@@ -75,7 +97,8 @@ export function getCategoryDisplayName(category: ColorCategory): string {
   const names: Record<ColorCategory, string> = {
     neutral: 'Neutral',
     primary: 'Primary',
-    accent: 'Accent',
+    secondary: 'Secondary',
+    tertiary: 'Tertiary',
     success: 'Success',
     danger: 'Danger',
     warning: 'Warning',
@@ -90,7 +113,8 @@ export function getCategoryDescription(category: ColorCategory): string {
   const descriptions: Record<ColorCategory, string> = {
     neutral: 'Default interface colors for text, backgrounds, and borders',
     primary: 'Primary brand colors for important actions and brand elements',
-    accent: 'Secondary brand colors for highlights and special features',
+    secondary: 'Secondary brand colors for supporting actions and highlights',
+    tertiary: 'Tertiary brand colors for accents and decorative emphasis',
     success:
       'Colors for positive states, confirmations, and successful actions',
     danger: 'Colors for errors, warnings, and destructive actions',

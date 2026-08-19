@@ -15,7 +15,13 @@ interface ChipSignature {
      * The intent of the chip
      */
     intent?:
-      'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger';
+      | 'default'
+      | 'primary'
+      | 'secondary'
+      | 'tertiary'
+      | 'success'
+      | 'warning'
+      | 'danger';
 
     /**
      * The size of the chip

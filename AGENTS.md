@@ -196,12 +196,14 @@ import { on } from '@ember/modifier';
 Colors are **semantic categories with named levels** — not a numbered scale. Use these
 generated Tailwind utilities; there is no `primary-500`-style numbered class.
 
-- **Categories:** `neutral` (default UI), `primary` (brand/important actions), `accent`,
-  `success`, `warning`, `danger`, plus `inverse` (for inverted surfaces) and `surface-*`.
-- **Levels** (low → high emphasis): `subtle`, `muted`, `soft`, `medium` (= `DEFAULT`),
-  `firm`, `strong`, `bolder`, `boldest`. Because `medium` is `DEFAULT`, the bare class works
-  too — `bg-primary` == `bg-primary-medium`.
-- **Contrast text:** `on-{category}-{level}` (e.g. `text-on-primary-medium`) is
+- **Categories:** `neutral` (default UI), `primary` (brand/important actions),
+  `secondary`, `tertiary`, `success`, `warning`, `danger`, plus `inverse` (for inverted
+  surfaces) and `surface-*`.
+- **Levels** (low → high emphasis): `subtle`, `muted`, `soft`, `mild`, `DEFAULT`, `firm`,
+  `strong`, `bolder`. The `DEFAULT` level has no suffix — `bg-primary` is the resting fill.
+- **Surface overlay levels:** `subtle`, `soft`, `mild`, `firm`, `strong` (`strong` is the
+  modal/drawer backdrop).
+- **Contrast text:** `on-{category}-{level}` (e.g. `text-on-primary-firm`) is
   auto-generated (black/white) for WCAG contrast on that background. The bare `text-on-primary`
   also resolves via DEFAULT. Users may override these in their theme config.
 - Light/dark adapt automatically via CSS variables (`--color-{category}-{level}`); `strong`

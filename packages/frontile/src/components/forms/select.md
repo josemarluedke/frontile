@@ -26,10 +26,7 @@ import { Select } from 'frontile';
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
 <template>
-  <Select
-    @placeholder='Select an option'
-    @items={{options}}
-  />
+  <Select @placeholder='Select an option' @items={{options}} />
 </template>
 ```
 
@@ -39,7 +36,7 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
 
 Use `@intent` to color the highlighted and selected options in the dropdown. Open each
 Select to see how the active option adopts the intent color. Available intents are
-`default`, `primary`, `accent`, `success`, `warning`, and `danger`.
+`default`, `primary`, `secondary`, `tertiary`, `success`, `warning`, and `danger`.
 
 ```gts preview
 import { Select } from 'frontile';
@@ -50,7 +47,8 @@ const options = ['Option 1', 'Option 2', 'Option 3'];
   <div class='grid grid-cols-2 gap-4'>
     <Select @intent='default' @placeholder='Default' @items={{options}} />
     <Select @intent='primary' @placeholder='Primary' @items={{options}} />
-    <Select @intent='accent' @placeholder='Accent' @items={{options}} />
+    <Select @intent='secondary' @placeholder='Secondary' @items={{options}} />
+    <Select @intent='tertiary' @placeholder='Tertiary' @items={{options}} />
     <Select @intent='success' @placeholder='Success' @items={{options}} />
     <Select @intent='warning' @placeholder='Warning' @items={{options}} />
     <Select @intent='danger' @placeholder='Danger' @items={{options}} />
@@ -78,7 +76,11 @@ export default class DataBoundSingleSelect extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        as |form|
+      >
         <form.Field @name='selectedOption' as |field|>
           <field.SingleSelect
             @placeholder='Select an option'
@@ -105,7 +107,16 @@ import { Form, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
 import * as v from 'valibot';
 
-const countries = ['United States', 'Canada', 'Mexico', 'United Kingdom', 'Germany', 'France', 'Japan', 'Australia'];
+const countries = [
+  'United States',
+  'Canada',
+  'Mexico',
+  'United Kingdom',
+  'Germany',
+  'France',
+  'Japan',
+  'Australia'
+];
 const interests = [
   { key: 'tech', label: 'Technology' },
   { key: 'sports', label: 'Sports' },
@@ -235,7 +246,11 @@ export default class FilterableSelect extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+      <Form
+        @data={{this.formData}}
+        @onChange={{this.handleFormChange}}
+        as |form|
+      >
         <form.Field @name='country' as |field|>
           <field.SingleSelect
             @isFilterable={{true}}

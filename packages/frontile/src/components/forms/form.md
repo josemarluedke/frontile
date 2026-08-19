@@ -86,7 +86,11 @@ export default class BasicForm extends Component {
 
         <div class='p-4 bg-success-50 rounded'>
           <h4 class='font-medium mb-2'>Last Submitted Data:</h4>
-          <pre class='text-sm'>{{JSON.stringify this.submittedData null 2}}</pre>
+          <pre class='text-sm'>{{JSON.stringify
+              this.submittedData
+              null
+              2
+            }}</pre>
         </div>
       </div>
     </div>
@@ -101,13 +105,7 @@ The Form component provides real-time updates as users interact with form elemen
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import {
-  Form,
-  Input,
-  Checkbox,
-  Select,
-  type FormResultData
-} from 'frontile';
+import { Form, Input, Checkbox, Select, type FormResultData } from 'frontile';
 import { Button } from 'frontile';
 
 export default class RealtimeForm extends Component {
@@ -348,9 +346,9 @@ export default class ComprehensiveForm extends Component {
 
 ### Form Validation Integration
 
-The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation library, such as Valibot, for scalable form validation.  Frontile does not ship with a validation library by default, so you can choose which is right for you.  The only requirement is that it is compatible with Standard Schema.  _Validation logic_, however, is built in--concerns such as running validation on submit and blur events.  The following example demonstrates how to use Valibot for comprehensive form validation.  The use of hand-rolled custom validators is also supported.
+The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation library, such as Valibot, for scalable form validation. Frontile does not ship with a validation library by default, so you can choose which is right for you. The only requirement is that it is compatible with Standard Schema. _Validation logic_, however, is built in--concerns such as running validation on submit and blur events. The following example demonstrates how to use Valibot for comprehensive form validation. The use of hand-rolled custom validators is also supported.
 
-**Note**:  When using built-in form validation, the `Field` component _must_ be used (see example below).  The `Field` component handles automatic error binding.  Use of `Field` is unnecessary when not using built-in form validation.  [Learn more about the `Field` component and see more form validation examples](field).
+**Note**: When using built-in form validation, the `Field` component _must_ be used (see example below). The `Field` component handles automatic error binding. Use of `Field` is unnecessary when not using built-in form validation. [Learn more about the `Field` component and see more form validation examples](field).
 
 **Validation timing:** Most form components support field-level validation (validates on change/blur/input events). However, `CheckboxGroup` currently only supports validation on form submit, not field-level validation events. See the [CheckboxGroup](checkbox-group) and [Field](field) documentation for more details.
 
@@ -435,19 +433,24 @@ export default class ValidatedForm extends Component {
 
   customValidator(data: FormResultData<Schema>) {
     if (data['password'] !== data['confirmPassword']) {
-      return [{
-        message: 'Passwords must match',
-        path: [{ key: 'confirmPassword' }]
-      }];
+      return [
+        {
+          message: 'Passwords must match',
+          path: [{ key: 'confirmPassword' }]
+        }
+      ];
     }
-  };
+  }
 
   handleFormChange = (data: FormResultData<Schema>, event: Event) => {
     this.formData = data.data;
     console.log('Form input:', { data, event });
   };
 
-  handleFormSubmit = async (data: FormResultData<Schema>, event: SubmitEvent) => {
+  handleFormSubmit = async (
+    data: FormResultData<Schema>,
+    event: SubmitEvent
+  ) => {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     this.submitMessage = 'Account created successfully!';
@@ -475,10 +478,7 @@ export default class ValidatedForm extends Component {
       >
         <div class='flex flex-col gap-4'>
           <form.Field @name='name' as |field|>
-            <field.Input
-              @label='Full Name'
-              @isRequired={{true}}
-            />
+            <field.Input @label='Full Name' @isRequired={{true}} />
           </form.Field>
 
           <form.Field @name='email' as |field|>
@@ -489,7 +489,11 @@ export default class ValidatedForm extends Component {
             />
           </form.Field>
 
-          <form.Field @name='password' @validateOn={{array 'input' 'blur'}} as |field|>
+          <form.Field
+            @name='password'
+            @validateOn={{array 'input' 'blur'}}
+            as |field|
+          >
             <field.Input
               @label='Password'
               @type='password'
@@ -534,7 +538,7 @@ export default class ValidatedForm extends Component {
             {{if form.isLoading 'Creating Account...' 'Create Account'}}
           </Button>
 
-          <Button @appearance="outlined" type="reset">Reset</Button>
+          <Button @appearance='outlined' type='reset'>Reset</Button>
         </div>
       </Form>
 
@@ -559,9 +563,9 @@ export default class ValidatedForm extends Component {
 
 The Form component automatically tracks which fields have been modified by the user. This is useful for showing unsaved changes warnings or enabling/disabling submit buttons.
 
-Enable dirty field tracking by specifying a field in the initial `@data` passed into a `Form` component.  Dirty tracking is enabled only for fields specified in initial data.
+Enable dirty field tracking by specifying a field in the initial `@data` passed into a `Form` component. Dirty tracking is enabled only for fields specified in initial data.
 
-Dirty fields reset on submit.  After a sucessful submit, any tracked data is considered clean.
+Dirty fields reset on submit. After a sucessful submit, any tracked data is considered clean.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -607,28 +611,30 @@ export default class DirtyTrackingForm extends Component {
             <field.Checkbox @label='Enable email notifications' />
           </form.Field>
 
-          <Button
-            type='submit'
-          >
+          <Button type='submit'>
             Save Changes
           </Button>
         </div>
 
-        <div class='mt-4 p-4 rounded
-        {{if form.dirty.size "bg-warning-50" "bg-neutral-subtle"}}'>
-        {{#if form.dirty.size}}
-          <p class='font-medium text-warning-strong'>
-            Unsaved changes in:
-            {{#each form.dirty as |field|}}
-              <span class='inline-block px-2 py-1 bg-warning-subtle rounded text-sm ml-1'>
-                {{field}}
-              </span>
-            {{/each}}
-          </p>
-        {{else}}
-          <p class='text-neutral'>No unsaved changes</p>
-        {{/if}}
-      </div>
+        <div
+          class='mt-4 p-4 rounded
+            {{if form.dirty.size "bg-warning-50" "bg-neutral-subtle"}}'
+        >
+          {{#if form.dirty.size}}
+            <p class='font-medium text-warning-strong'>
+              Unsaved changes in:
+              {{#each form.dirty as |field|}}
+                <span
+                  class='inline-block px-2 py-1 bg-warning-subtle rounded text-sm ml-1'
+                >
+                  {{field}}
+                </span>
+              {{/each}}
+            </p>
+          {{else}}
+            <p class='text-neutral'>No unsaved changes</p>
+          {{/if}}
+        </div>
       </Form>
     </div>
   </template>
@@ -687,7 +693,10 @@ export default class CustomHandlingForm extends Component {
     }
 
     // Real-time password validation
-    if (data['data']['password'] && typeof data['data']['password'] === 'string') {
+    if (
+      data['data']['password'] &&
+      typeof data['data']['password'] === 'string'
+    ) {
       const password = data['data']['password'];
       const passwordErrors = [];
 
@@ -755,7 +764,7 @@ export default class CustomHandlingForm extends Component {
     }
   };
 
-  or(a: unknown, b:unknown) {
+  or(a: unknown, b: unknown) {
     return a || b;
   }
 
@@ -802,7 +811,10 @@ export default class CustomHandlingForm extends Component {
             @errors={{this.validationErrors.agreeToTerms}}
           />
 
-          <Button type='submit' disabled={{this.or form.isLoading this.hasValidationErrors}}>
+          <Button
+            type='submit'
+            disabled={{this.or form.isLoading this.hasValidationErrors}}
+          >
             {{#if form.isLoading}}
               Submitting...
               {{this.submitCount}}
@@ -843,6 +855,7 @@ export default class CustomHandlingForm extends Component {
 The Form component supports both controlled and uncontrolled patterns, similar to React form handling:
 
 **Controlled Forms** (with `@onChange` + `@data`)
+
 - You provide both `@data` and `@onChange`
 - Form values are controlled by your component state
 - You update state in `@onChange`, which flows back to form inputs
@@ -850,6 +863,7 @@ The Form component supports both controlled and uncontrolled patterns, similar t
 - Example: `<Form @data={{this.formData}} @onChange={{this.handleChange}}>`
 
 **Uncontrolled Forms** (without `@onChange`)
+
 - You provide only `@data` for initial values (or omit it entirely)
 - Form manages its own internal state
 - You receive final data only in `@onSubmit`
@@ -857,6 +871,7 @@ The Form component supports both controlled and uncontrolled patterns, similar t
 - Example: `<Form @data={{this.initialData}} @onSubmit={{this.handleSubmit}}>`
 
 **Choosing Between Patterns:**
+
 - Use **controlled** when you need real-time form data access, validation as user types, or complex interdependent fields
 - Use **uncontrolled** for simpler forms where you only care about the final submitted data
 - Both patterns support validation via `@schema` and `@validate`
@@ -882,10 +897,7 @@ schema = v.object({
 });
 
 <template>
-  <Form
-    @schema={{schema}}
-    as |form|
-  >
+  <Form @schema={{schema}} as |form|>
     ...
   </Form>
 </template>
@@ -896,6 +908,7 @@ schema = v.object({
 By default, the Form component validates data both on field changes and form submission. You can control when validation runs using the `@validateOn` argument.
 
 **Available options:**
+
 - `change` - Validate individual fields when users change a value and blur/defocus the field (per-field validation)
 - `input` - Validate individual fields as users type (real-time validation on every keystroke)
 - `blur` - Validate individual fields when they lose focus, regardless of whether the value changed
@@ -988,6 +1001,7 @@ By default, the Form component validates data both on field changes and form sub
 **Validation behavior details:**
 
 **Change validation (`'change'`)**:
+
 - Individual fields validate when users change a value and then blur/defocus the field
 - Validation errors appear after the user moves to the next field
 - Each field validates independently using its specific validation rules
@@ -996,6 +1010,7 @@ By default, the Form component validates data both on field changes and form sub
 - Based on the HTML `change` event (fires on blur after value modification, not on every keystroke)
 
 **Blur validation (`'blur'`)**:
+
 - Individual fields validate whenever they lose focus, regardless of whether the value changed
 - Validation errors appear immediately when the user tabs away or clicks outside the field
 - Each field validates independently using its specific validation rules
@@ -1005,6 +1020,7 @@ By default, the Form component validates data both on field changes and form sub
 - Useful for ensuring fields are validated even when users skip over them without making changes
 
 **Input validation (`'input'`)**:
+
 - Individual fields validate as users type, on every keystroke
 - Validation errors appear in real-time as the user types
 - Each field validates independently using its specific validation rules
@@ -1014,6 +1030,7 @@ By default, the Form component validates data both on field changes and form sub
 - Best for fields where real-time feedback is valuable (e.g., password strength, character limits)
 
 **Submit validation (`'submit'`)**:
+
 - The entire form validates when the submit button is clicked
 - All fields are validated together before calling `@onSubmit`
 - If validation fails, `@onError` is called and `@onSubmit` is not called
@@ -1022,6 +1039,7 @@ By default, the Form component validates data both on field changes and form sub
 **Common validation patterns:**
 
 **On-blur validation (recommended for most forms):**
+
 ```gts
 // Default - validates when field loses focus after modification AND on submit
 <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
@@ -1032,6 +1050,7 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **Explicit blur validation (validates on any focus loss):**
+
 ```gts
 // Validates whenever field loses focus, even if value didn't change
 // Useful for catching empty required fields as users navigate
@@ -1048,6 +1067,7 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **Real-time validation (best for immediate feedback):**
+
 ```gts
 // Validates as user types - great for password strength, character limits, etc.
 <Form
@@ -1063,6 +1083,7 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **Combined blur and input validation:**
+
 ```gts
 // Validates both as user types AND when field loses focus
 // Provides comprehensive feedback throughout the form-filling experience
@@ -1079,6 +1100,7 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **Submit-only validation (less intrusive for long forms):**
+
 ```gts
 // Only validates on submit - users can fill entire form without interruption
 <Form
@@ -1094,6 +1116,7 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **Manual validation (advanced use cases):**
+
 ```gts
 // Skip automatic validation - handle it manually
 <Form
@@ -1107,11 +1130,13 @@ By default, the Form component validates data both on field changes and form sub
 ```
 
 **When to skip validation:**
+
 - When you want to handle validation manually in your `@onSubmit` handler
 - When building multi-step forms where validation should only run on the final step
 - When you need to submit partial or draft data without validation
 
 **Important notes:**
+
 - When `@validateOn` includes `'change'`, `'blur'`, or `'input'`, you must use the `form.Field` component for automatic field-level validation
 - When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
 - All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
@@ -1217,11 +1242,7 @@ export default class DisabledForm extends Component {
       >
         <div class='flex flex-col gap-4'>
           <form.Field @name='email' as |field|>
-            <field.Input
-              @label='Email'
-              @type='email'
-              @isRequired={{true}}
-            />
+            <field.Input @label='Email' @type='email' @isRequired={{true}} />
           </form.Field>
 
           <form.Field @name='password' as |field|>
@@ -1336,7 +1357,9 @@ export default class NestedForm extends Component {
             <div class='p-3 bg-warning-50 rounded text-sm'>
               <strong>Unsaved changes in:</strong>
               {{#each form.dirty as |field|}}
-                <span class='inline-block px-2 py-1 bg-warning-subtle rounded ml-1'>
+                <span
+                  class='inline-block px-2 py-1 bg-warning-subtle rounded ml-1'
+                >
                   {{field}}
                 </span>
               {{/each}}
@@ -1381,10 +1404,7 @@ const userSchema = v.object({
       v.nonEmpty('First name is required'),
       v.minLength(2, 'Must be at least 2 characters')
     ),
-    lastName: v.pipe(
-      v.string(),
-      v.nonEmpty('Last name is required')
-    ),
+    lastName: v.pipe(v.string(), v.nonEmpty('Last name is required')),
     contact: v.object({
       email: v.pipe(
         v.string(),
@@ -1583,21 +1603,25 @@ export default class MixedFieldsForm extends Component {
 ### Key Points for Nested Fields
 
 **Field Naming Convention:**
+
 - Use dot notation for nested fields: `@name="user.profile.email"`
 - Validation errors are automatically mapped to dotted field names
 - Dirty tracking works at the leaf level (e.g., `user.name.first` not just `user`)
 
 **Data Structure:**
+
 - Pass nested objects via `@data`.
 - `@onChange` and `@onSubmit` callbacks receive nested data structure
 - The form automatically flattens data internally and unflattens for callbacks
 
 **Validation:**
+
 - Schema validators should mirror your data structure
 - Error messages are keyed by dotted paths (e.g., `"user.email": "Email is required"`)
 - Custom validators work with nested data structures
 
 **Dirty Field Tracking:**
+
 - Dirty fields are tracked using dotted notation
 - Deep comparison ensures nested object changes are detected
 - `form.dirty` contains paths like `"user.profile.email"`, not just `"user"`
@@ -1775,12 +1799,15 @@ When you call `form.reset()`:
 4. **Clears dirty state**: The dirty field tracking is reset to an empty set
 
 **For controlled forms** (with `@onChange`):
+
 - Calls `@onChange` with the initial data, allowing your component to update its state
 
 **For uncontrolled forms** (without `@onChange`):
+
 - Updates the internal form state to the initial data
 
 **With no initial data**:
+
 - Simply calls the native form reset, clearing all fields to empty values
 
 ## Feedback Messages
@@ -1792,7 +1819,7 @@ examples above).
 
 For feedback outside of validation errors — hints, confirmations, or warnings — render the
 standalone `FormFeedback` component and choose an `@intent`. Available intents are
-`primary`, `accent`, `success`, `warning`, and `danger`.
+`primary`, `secondary`, `tertiary`, `success`, `warning`, and `danger`.
 
 ```gts preview
 import { FormFeedback } from 'frontile';
@@ -1800,9 +1827,19 @@ import { FormFeedback } from 'frontile';
 <template>
   <div class='flex flex-col gap-2'>
     <FormFeedback @intent='primary' @messages='Your changes are being saved.' />
-    <FormFeedback @intent='accent' @messages='This field supports Markdown.' />
+    <FormFeedback
+      @intent='secondary'
+      @messages='This field supports Markdown.'
+    />
+    <FormFeedback
+      @intent='tertiary'
+      @messages='This field supports Markdown.'
+    />
     <FormFeedback @intent='success' @messages='Looks good!' />
-    <FormFeedback @intent='warning' @messages='This username is close to the limit.' />
+    <FormFeedback
+      @intent='warning'
+      @messages='This username is close to the limit.'
+    />
     <FormFeedback @intent='danger' @messages='This field is required.' />
   </div>
 </template>
@@ -1835,6 +1872,7 @@ The Form component yields an object with the following properties:
 - **`Field`**: The Field component with `errors` and `formData` already bound
 
 Example usage:
+
 ```gts
 <Form @data={{this.formData}} @onSubmit={{this.handleSubmit}} as |form|>
   {{! Access current form data }}

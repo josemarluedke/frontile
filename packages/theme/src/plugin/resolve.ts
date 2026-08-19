@@ -62,7 +62,8 @@ function getCachedColor(colorValue: string): ParsedColor {
 const SEMANTIC_COLOR_PREFIXES = [
   'neutral',
   'primary',
-  'accent',
+  'secondary',
+  'tertiary',
   'success',
   'danger',
   'warning',
@@ -81,7 +82,12 @@ function shouldGenerateOnColor(colorName: string): boolean {
     return false;
   }
 
-  if (colorName.startsWith('surface-overlay')) {
+  // Translucent veils: contrast depends on whatever shows through, so a
+  // single on-color cannot be computed for them.
+  if (
+    colorName.startsWith('surface-overlay') ||
+    colorName.startsWith('surface-lift')
+  ) {
     return false;
   }
 

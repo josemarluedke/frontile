@@ -38,8 +38,8 @@ import { ProgressBar } from 'frontile';
     />
     <ProgressBar
       @progress={{50}}
-      @label='Accent'
-      @intent='accent'
+      @label='Secondary'
+      @intent='secondary'
       @showValueLabel={{false}}
     />
     <ProgressBar

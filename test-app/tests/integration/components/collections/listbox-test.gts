@@ -591,7 +591,7 @@ module(
                 default: { base: 'intent-default' },
                 primary: { base: 'intent-primary' },
                 secondary: { base: 'intent-secondary' },
-                accent: { base: 'intent-accent' },
+                tertiary: { base: 'intent-tertiary' },
                 success: { base: 'intent-success' },
                 warning: { base: 'intent-warning' },
                 danger: { base: 'intent-danger' }
@@ -641,7 +641,7 @@ module(
               <l.Item @key="item-4" @withDivider={{true}}>Item 4</l.Item>
               <l.Item @key="item-5">Item 5</l.Item>
               <l.Item @key="item-6">Item 6</l.Item>
-              <l.Item @key="item-7" @intent="accent">Item 7</l.Item>
+              <l.Item @key="item-7" @intent="tertiary">Item 7</l.Item>
             </Listbox>
           </template>
         );
@@ -663,8 +663,8 @@ module(
         // intent overwritten at item
         assert.dom('[data-key="item-3"]').hasClass('intent-danger');
 
-        // accent intent overwritten at item
-        assert.dom('[data-key="item-7"]').hasClass('intent-accent');
+        // tertiary intent overwritten at item
+        assert.dom('[data-key="item-7"]').hasClass('intent-tertiary');
 
         // Divider
         assert.dom('[data-key="item-4"]').hasClass('with-divider');

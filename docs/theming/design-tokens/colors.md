@@ -21,13 +21,15 @@ Every category exposes the same set of levels, organized into **two bands**.
 The bands share one emphasis vocabulary but are consumed by different CSS
 properties — the band a level belongs to tells you what it's for.
 
-| Band        | Levels (low → high emphasis)                     | Use for                                          |
-| ----------- | ------------------------------------------------ | ------------------------------------------------ |
-| **Surface** | `subtle` · `muted` · `soft` · `DEFAULT` · `firm` | Fills — `bg-*` and decorative `border-*`         |
-| **Ink**     | `strong` · `bolder`                              | Legible foregrounds — `text-*`, outlined borders |
+| Band        | Levels (low → high emphasis)                              | Use for                                          |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------------ |
+| **Surface** | `subtle` · `muted` · `soft` · `mild` · `DEFAULT` · `firm` | Fills — `bg-*` and decorative `border-*`         |
+| **Ink**     | `strong` · `bolder`                                          | Legible foregrounds — `text-*`, outlined borders |
 
 - **`DEFAULT`** is the resting fill. It has no suffix, so the bare class works:
   `bg-primary` is the DEFAULT fill, `text-primary` the DEFAULT-level text.
+- **`mild`** sits between `soft` and `DEFAULT` — a lower-emphasis fill for
+  cases where `soft` reads too faint but the full resting fill is too strong.
 - **`firm`** is the most emphatic _fill_ (e.g. a pressed background). It sits at
   the top of the surface band, below the ink band it never competes with —
   `firm` is a background, `strong`/`bolder` are text, so they live in different
@@ -138,7 +140,9 @@ Banners:
 
 ### Accent
 
-<ColorPaletteGrid @category="accent" @showDescription={{true}} />
+<ColorPaletteGrid @category="secondary" @showDescription={{true}} />
+
+<ColorPaletteGrid @category="tertiary" @showDescription={{true}} />
 
 **Usage Examples:**
 
@@ -146,8 +150,8 @@ Banners:
 <template>
   <div class='flex gap-4 flex-col'>
     {{! Accent Alert }}
-    <div class='bg-accent-subtle border border-accent-soft p-4 rounded'>
-      <div class='text-accent-strong'>
+    <div class='bg-secondary-subtle border border-secondary-soft p-4 rounded'>
+      <div class='text-secondary-strong'>
         <div class='font-semibold'>New Feature!</div>
         <div class='text-sm'>Check out our latest updates and improvements.</div>
       </div>
@@ -155,7 +159,7 @@ Banners:
 
     {{! Accent Button }}
     <button
-      class='bg-accent text-on-accent hover:bg-accent-soft px-4 py-2 rounded'
+      class='bg-secondary text-on-secondary hover:bg-secondary-soft px-4 py-2 rounded'
     >
       Explore Features
     </button>
@@ -325,7 +329,7 @@ module.exports = frontile({
 });
 ```
 
-Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-accent`, `on-success`, `on-warning`, `on-danger`, and `on-surface-modal`.
+Partial overrides are supported — only define the levels you want to customize, and the rest will be auto-generated as usual. This works for all semantic color categories: `on-neutral`, `on-primary`, `on-secondary`, `on-tertiary`, `on-success`, `on-warning`, `on-danger`, and `on-surface-modal`.
 
 > **Note:** If a color value is a CSS variable reference (e.g., `var(--my-color)`), auto-generation is skipped for that color since contrast cannot be calculated at build time.
 

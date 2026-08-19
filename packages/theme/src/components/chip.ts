@@ -4,7 +4,7 @@ const chip = tv({
   slots: {
     base: [
       'disabled:cursor-not-allowed',
-      'disabled:opacity-40',
+      'disabled:opacity-disabled',
       'whitespace-nowrap',
       'inline-flex items-center justify-between box-border'
     ],
@@ -15,7 +15,7 @@ const chip = tv({
   },
   variants: {
     isDisabled: {
-      true: 'opacity-40'
+      true: 'opacity-disabled'
     },
     appearance: {
       default: '',
@@ -36,13 +36,22 @@ const chip = tv({
           'focus-visible:ring-primary-soft'
         ]
       },
-      accent: {
-        dot: 'bg-accent',
+      secondary: {
+        dot: 'bg-secondary',
         closeButton: [
-          'bg-accent-muted',
-          'text-on-accent',
-          'hover:bg-accent-firm',
-          'focus-visible:ring-accent-soft'
+          'bg-secondary-muted',
+          'text-on-secondary',
+          'hover:bg-secondary-firm',
+          'focus-visible:ring-secondary-soft'
+        ]
+      },
+      tertiary: {
+        dot: 'bg-tertiary',
+        closeButton: [
+          'bg-tertiary-muted',
+          'text-on-tertiary',
+          'hover:bg-tertiary-firm',
+          'focus-visible:ring-tertiary-soft'
         ]
       },
       success: {
@@ -115,9 +124,16 @@ const chip = tv({
     },
     {
       appearance: 'default',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
-        base: 'bg-accent text-on-accent'
+        base: 'bg-secondary text-on-secondary'
+      }
+    },
+    {
+      appearance: 'default',
+      intent: 'tertiary',
+      class: {
+        base: 'bg-tertiary text-on-tertiary'
       }
     },
     {
@@ -159,9 +175,16 @@ const chip = tv({
     },
     {
       appearance: 'faded',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
-        base: 'text-accent-strong bg-accent-subtle'
+        base: 'text-secondary-strong bg-secondary-subtle'
+      }
+    },
+    {
+      appearance: 'faded',
+      intent: 'tertiary',
+      class: {
+        base: 'text-tertiary-strong bg-tertiary-subtle'
       }
     },
     {
@@ -203,9 +226,16 @@ const chip = tv({
     },
     {
       appearance: 'outlined',
-      intent: 'accent',
+      intent: 'secondary',
       class: {
-        base: 'text-accent-strong border border-accent'
+        base: 'text-secondary-strong border border-secondary'
+      }
+    },
+    {
+      appearance: 'outlined',
+      intent: 'tertiary',
+      class: {
+        base: 'text-tertiary-strong border border-tertiary'
       }
     },
     {

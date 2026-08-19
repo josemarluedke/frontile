@@ -13,7 +13,7 @@ registerCustomStyles({
     variants: {
       intent: {
         primary: 'intent-primary',
-        accent: 'intent-accent',
+        secondary: 'intent-secondary',
         success: 'intent-success',
         warning: 'intent-warning',
         danger: 'form-field-feedback--error'
@@ -70,12 +70,14 @@ module(
         .hasAttribute('id', 'feedback');
     });
 
-    test('it adds the class for the accent intent', async function (assert) {
+    test('it adds the class for the secondary intent', async function (assert) {
       messages.current = 'My message';
-      intent.current = 'accent';
+      intent.current = 'secondary';
       await settled();
 
-      assert.dom('[data-component="form-feedback"]').hasClass('intent-accent');
+      assert
+        .dom('[data-component="form-feedback"]')
+        .hasClass('intent-secondary');
     });
 
     test('it renders aria-live', async function (assert) {

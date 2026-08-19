@@ -1,10 +1,13 @@
 import Component from '@glimmer/component';
 
-import { surfaceOverlayLevels } from '../../utils/theme-colors';
+import {
+  surfaceOverlayLevels,
+  surfaceLiftLevels,
+} from '../../utils/theme-colors';
 
 interface SurfaceShowcaseSignature {
   Args: {
-    type: 'overlay' | 'roles';
+    type: 'overlay' | 'lift' | 'roles';
     sideBySide?: boolean;
   };
 }
@@ -14,8 +17,16 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     return surfaceOverlayLevels;
   }
 
+  get liftLevels() {
+    return surfaceLiftLevels;
+  }
+
   get isOverlay() {
     return this.args.type === 'overlay';
+  }
+
+  get isLift() {
+    return this.args.type === 'lift';
   }
 
   get isRoles() {
@@ -29,8 +40,17 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   private overlayClasses: Record<string, string> = {
     subtle: 'bg-surface-overlay-subtle',
     soft: 'bg-surface-overlay-soft',
-    medium: 'bg-surface-overlay-medium',
+    mild: 'bg-surface-overlay-mild',
+    firm: 'bg-surface-overlay-firm',
     strong: 'bg-surface-overlay-strong',
+  };
+
+  private liftClasses: Record<string, string> = {
+    subtle: 'bg-surface-lift-subtle',
+    soft: 'bg-surface-lift-soft',
+    mild: 'bg-surface-lift-mild',
+    firm: 'bg-surface-lift-firm',
+    strong: 'bg-surface-lift-strong',
   };
 
   private surfaceRoleClasses: Record<string, string> = {
@@ -57,8 +77,24 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     input: 'Form controls: inputs, checkboxes, radios',
   };
 
+  private overlayDescriptions: Record<string, string> = {
+    subtle: 'Translucent layer',
+    soft: 'Translucent layer',
+    mild: 'Translucent layer',
+    firm: 'Translucent layer',
+    strong: 'Modal/drawer backdrop — black at 75% in both themes',
+  };
+
   getOverlayClass = (level: string): string => {
     return this.overlayClasses[level] || '';
+  };
+
+  getOverlayDescription = (level: string): string => {
+    return this.overlayDescriptions[level] || 'Translucent layer';
+  };
+
+  getLiftClass = (level: string): string => {
+    return this.liftClasses[level] || '';
   };
 
   getSurfaceRoleClass = (role: string): string => {
@@ -95,7 +131,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
                     surface-overlay-{{level}}
                   </span>
                   <span class="text-xs text-neutral-firm">
-                    Translucent layer
+                    {{this.getOverlayDescription level}}
                   </span>
                 </div>
               </div>
@@ -112,11 +148,61 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
             </p>
             <div class="bg-surface-overlay-soft p-4 rounded">
               <div class="text-sm text-neutral-strong mb-2">Layer 1 (soft)</div>
-              <div class="bg-surface-overlay-medium p-4 rounded">
-                <div class="text-sm text-neutral-strong mb-2">Layer 2 (medium)</div>
-                <div class="bg-surface-overlay-strong p-4 rounded">
-                  <div class="text-sm text-neutral-strong">Layer 3 (strong)</div>
+              <div class="bg-surface-overlay-mild p-4 rounded">
+                <div class="text-sm text-neutral-strong mb-2">Layer 2 (mild)</div>
+                <div class="bg-surface-overlay-firm p-4 rounded">
+                  <div class="text-sm text-neutral-strong">Layer 3 (firm)</div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {{else if this.isLift}}
+        {{! Lift Demonstration }}
+        <div
+          class="p-6 rounded-lg bg-surface-canvas border border-neutral-subtle"
+        >
+          <h4 class="text-sm font-semibold mb-4 text-neutral-strong">
+            Surface Lift (over page content)
+          </h4>
+          <p class="text-sm text-neutral-firm mb-4">
+            Lift veils run the opposite direction from overlay — white in light
+            mode, black in dark mode — so the element reads as floating above
+            what it covers.
+          </p>
+
+          {{! Lift levels }}
+          <div class="space-y-3">
+            {{#each this.liftLevels as |level|}}
+              <div class="{{this.getLiftClass level}} p-4 rounded">
+                <span class="font-mono text-sm text-neutral-bolder">
+                  surface-lift-{{level}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+
+          {{! Overlay vs lift, side by side }}
+          <div class="mt-6">
+            <h5 class="text-sm font-semibold mb-2 text-neutral-strong">
+              Overlay vs Lift
+            </h5>
+            <p class="text-sm text-neutral-firm mb-4">
+              The same level, one from each family, on the same base:
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-surface-overlay-mild p-4 rounded text-center">
+                <span class="font-mono text-xs text-neutral-strong">
+                  overlay-mild
+                </span>
+                <p class="text-xs text-neutral-firm mt-1">recedes</p>
+              </div>
+              <div class="bg-surface-lift-mild p-4 rounded text-center">
+                <span class="font-mono text-xs text-neutral-bolder">
+                  lift-mild
+                </span>
+                <p class="text-xs text-neutral-firm mt-1">advances</p>
               </div>
             </div>
           </div>
