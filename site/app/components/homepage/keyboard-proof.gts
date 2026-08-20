@@ -99,7 +99,7 @@ export default class KeyboardProof extends Component {
           <code
             class="font-code text-code-sm text-primary-firm"
           >aria-selected</code>
-          itself — none of that is wired up on this page.
+          itself. None of that is wired up on this page.
         </p>
       </div>
     </div>

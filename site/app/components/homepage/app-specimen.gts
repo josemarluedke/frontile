@@ -142,10 +142,11 @@ export default class AppSpecimen extends Component {
                     @withDot={{true}}
                   >Active</Chip>
                 {{else}}
-                  {{! Neutral rather than `warning`: a pending invitation is not
-                      a warning, and Frontile's warning chip lands at 3.2-4.0:1
-                      at this size in both schemes — under 4.5:1 whichever
-                      appearance is used. The dot carries the "pending" reading. }}
+                  {{!-- Neutral rather than warning: a pending invitation is not
+                        a warning, and Frontile's warning chip measures 3.2 to
+                        4.0 to 1 at this size in both schemes, under the 4.5
+                        threshold whichever appearance is used. The dot carries
+                        the pending reading. --}}
                   <Chip @size="sm" @appearance="faded" @withDot={{true}}>
                     Invited
                   </Chip>

@@ -295,11 +295,73 @@
     background: var(--color-surface-canvas);
   }
 
+  @keyframes specimen-arrive {
+    from {
+      opacity: 0;
+      translate: 0 1.25rem;
+    }
+
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .specimen-tile {
+        animation: specimen-arrive linear both;
+        animation-timeline: view();
+        animation-range: entry 2% cover 22%;
+      }
+    }
+  }
+
   /* Theming lab */
   .theme-lab__panel {
     border-radius: 0.75rem;
     border: 1px solid var(--color-neutral-soft);
     padding: 1.25rem;
+  }
+
+  /* The active ramp, all eight named levels. In a section about colour this is
+     the content, not decoration. Ink comes from the same black/white contrast
+     choice the plugin makes for `on-*`. */
+  .theme-lab__ramp {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.25rem;
+    margin-top: 1.25rem;
+    /* Two of the eight levels are alpha values (`soft` is the accent at 10 to
+       25 percent). On a tinted section field they composite into the tint and
+       vanish. A known neutral ground underneath makes the translucent steps
+       legible and honest about what they are. */
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--color-surface-app);
+    border: 1px solid var(--color-neutral-soft);
+  }
+
+  @media (width >= 640px) {
+    .theme-lab__ramp {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+  }
+
+  .theme-lab__step {
+    display: flex;
+    align-items: flex-end;
+    min-height: 4.5rem;
+    padding: 0.4rem 0.45rem;
+    border-radius: 0.375rem;
+    overflow: hidden;
+  }
+
+  .theme-lab__step-name {
+    font-family: var(--font-label);
+    font-size: var(--text-label-micro);
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .theme-lab__swatch {

@@ -249,6 +249,25 @@ export default class ThemeLab extends Component {
 
   isActive = (key: string): boolean => key === this.activePreset.key;
 
+  /** The active ramp as swatches, lowest level first. */
+  get activeLevels(): { name: string; style: SafeString }[] {
+    return lightRamp(this.activePreset.family).map(({ name, value }) => {
+      // `soft` carries an alpha suffix, so the swatch is the accent blended
+      // into whatever sits behind it. `onColor` reads only the RGB half and
+      // would pick ink for the opaque colour, which is wrong once the swatch is
+      // mostly ground. Translucent steps take the theme's own ink instead.
+      const isTranslucent = value.replace('#', '').length > 6;
+      const ink = isTranslucent
+        ? 'var(--color-neutral-strong)'
+        : onColor(value);
+
+      return {
+        name: name === 'DEFAULT' ? 'default' : name,
+        style: htmlSafe(`background: ${value}; color: ${ink}`)
+      };
+    });
+  }
+
   /**
    * A scoped stylesheet using the plugin's own selector pairs, so each panel
    * resolves the ramp belonging to the scheme it renders in.
@@ -321,6 +340,16 @@ ${toConfigObject(darkRamp(f), '          ')}
             {{/each}}
           </div>
         </fieldset>
+
+        {{! The eight named levels of the active ramp, at a size worth looking
+            at. This is the section's subject matter, so it earns the space. }}
+        <div class="theme-lab__ramp" aria-hidden="true">
+          {{#each this.activeLevels as |level|}}
+            <span class="theme-lab__step" style={{level.style}}>
+              <span class="theme-lab__step-name">{{level.name}}</span>
+            </span>
+          {{/each}}
+        </div>
       </div>
 
       {{! Both schemes, one configuration, live }}
@@ -335,7 +364,7 @@ ${toConfigObject(darkRamp(f), '          ')}
       <div>
         <p class="font-body text-body-sm text-neutral-firm mb-3">
           One ramp per scheme, in a plain CommonJS file that Frontile compiles to
-          custom properties — generating the matching
+          custom properties, generating the matching
           <code
             class="font-code text-code-sm text-primary-firm"
           >on-primary-*</code>

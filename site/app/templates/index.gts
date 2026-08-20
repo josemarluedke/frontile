@@ -196,8 +196,8 @@ export default class IndexPage extends Component {
             class="mt-4 font-caption text-caption-sm text-neutral-firm max-w-2xl"
           >
             <span class="hidden sm:inline">Drag the seam.</span>
-            Both sides are the same markup — nothing was restyled, duplicated,
-            or patched up for dark mode.
+            Both sides are the same markup. Nothing was restyled, duplicated, or
+            patched up for dark mode.
           </p>
         </div>
       </section>
@@ -205,15 +205,15 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Specimen wall — breadth, as doors }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-surface-canvas">
+      <section class="py-20 sm:py-24 bg-primary-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="max-w-2xl mb-12">
             <h2
               class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
             >Start anywhere</h2>
             <p class="mt-3 font-body text-body-md text-neutral-firm">
-              Every tile below is the real component, rendered by the library —
-              and a link straight into its documentation.
+              Every tile below is the real component, rendered by the library, and a
+              link straight into its documentation.
             </p>
           </div>
 
@@ -394,7 +394,7 @@ export default class IndexPage extends Component {
               <p class="mt-3 font-body text-body-md text-neutral-firm">
                 Overlays are where component libraries usually leak: focus
                 escapes, the background scrolls, Escape does nothing. Open these
-                and try to break them — then read how the focus trap is built.
+                and try to break them, then read how the focus trap is built.
               </p>
               <div class="mt-6 flex flex-wrap gap-3">
                 <Button @intent="primary" @onPress={{this.openModal}}>
@@ -415,9 +415,6 @@ export default class IndexPage extends Component {
             <div
               class="rounded-xl border border-neutral-soft bg-surface-canvas p-6"
             >
-              <p
-                class="font-label text-label-2xs text-neutral-firm uppercase mb-4"
-              >Dropdown, in place</p>
               <Dropdown as |d|>
                 <d.Trigger @intent="primary" @size="sm">
                   Row actions
@@ -532,15 +529,15 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Theming laboratory }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-surface-canvas">
+      <section class="py-20 sm:py-24 bg-tertiary-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="max-w-2xl mb-12">
             <h2
               class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
             >Make it look like your product</h2>
             <p class="mt-3 font-body text-body-md text-neutral-firm">
-              Frontile's colors are semantic roles at named levels — not a
-              numbered scale. Swap the ramp and every component follows, in both
+              Frontile's colors are semantic roles at named levels, not a numbered
+              scale. Swap the ramp and every component follows, in both
               themes, with no rebuild.
             </p>
           </div>
@@ -567,7 +564,7 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Prove the two claims that matter }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24">
+      <section class="py-20 sm:py-24 bg-surface-canvas">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="max-w-2xl mb-12">
             <h2
@@ -575,7 +572,7 @@ export default class IndexPage extends Component {
             >The work you don't have to do</h2>
             <p class="mt-3 font-body text-body-md text-neutral-firm">
               Keyboard behaviour, ARIA state, and template types arrive with the
-              components. Both of these are running right now — try them rather
+              components. Both of these are running right now, so try them rather
               than take our word for it.
             </p>
           </div>
@@ -622,7 +619,7 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Full inventory — every door, counted honestly }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-surface-canvas">
+      <section class="py-20 sm:py-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="max-w-2xl mb-12">
             <h2
@@ -668,8 +665,8 @@ export default class IndexPage extends Component {
           >Pick a component and start reading.</h2>
           <p class="mt-4 font-body text-body-md text-neutral-firm">
             Every component's documentation is built around live, interactive
-            demos of the component itself — the same ones running on this page,
-            with the source beside each of them. Start wherever your interface is
+            demos of the component itself: the same ones running on this page, with
+            the source beside each of them. Start wherever your interface is
             thinnest.
           </p>
 
@@ -712,9 +709,6 @@ export default class IndexPage extends Component {
           </div>
 
           <div class="mt-10">
-            <p
-              class="font-label text-label-2xs text-neutral-firm uppercase mb-3"
-            >When you are ready</p>
             <CodePanel
               @code="pnpm install frontile @frontile/theme"
               @isTerminal={{true}}
@@ -722,7 +716,7 @@ export default class IndexPage extends Component {
             <p class="mt-3 font-body text-body-sm text-neutral-firm">
               Two packages, a Tailwind v4 stylesheet, and one
               <code class="font-code text-code-sm text-primary-firm">@source</code>
-              line so Tailwind stops purging Frontile's classes — the
+              line so Tailwind stops purging Frontile's classes. The
               <DocfyLink
                 @to="/docs/get-started/installation"
                 class="text-primary-firm underline"
