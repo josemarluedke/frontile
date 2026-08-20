@@ -46,8 +46,7 @@
       "Bash(pnpm --filter site generate-signature-data:*)",
       "Bash(pnpm --filter site test:node:*)",
 
-      "Bash(node .claude/skills/frontile-docs/scripts/lint-docs.mjs:*)",
-      "Bash(node scripts/migrate-semantic-colors.mjs:*)"
+      "Bash(node .claude/skills/frontile-docs/scripts/lint-docs.mjs:*)"
     ],
     "deny": [],
     "ask": []
