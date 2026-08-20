@@ -3,137 +3,343 @@
 /**
  * Semantic Colors v2 Migration Script
  *
- * Migrates Frontile codebase from old numbered color system (default-100, primary-500)
- * to new semantic color levels (neutral-subtle, brand-soft, etc.)
+ * Migrates from the old numbered color system (default-100, primary-500) to the
+ * named semantic levels (neutral-subtle, primary-soft, ...).
+ *
+ * Copy this file anywhere and run it from the root of the project you want to
+ * migrate — it resolves everything relative to the working directory, not to
+ * its own location.
  *
  * Usage:
- *   node scripts/migrate-semantic-colors.mjs              # Dry run
- *   node scripts/migrate-semantic-colors.mjs --write      # Write changes
- *   node scripts/migrate-semantic-colors.mjs --path="packages/theme"  # Specific path
+ *   node migrate-semantic-colors.mjs                     # dry run
+ *   node migrate-semantic-colors.mjs --write             # apply
+ *   node migrate-semantic-colors.mjs --path=app          # limit the scope
+ *   node migrate-semantic-colors.mjs --exclude=docs,CHANGELOG.md
+ *
+ * Mappings mirror the tables in Frontile's v0.18 semantic-colors migration
+ * guide. When @frontile/theme is installed, every mapping is checked against the
+ * theme's own type declarations before anything is rewritten, so a target the
+ * theme does not define fails the run instead of producing dead classes.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
-import { resolve, dirname, join, extname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
+import { resolve, join, extname, relative } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const ROOT = resolve(__dirname, '..');
+// Everything is relative to where the script is invoked, so the file can be
+// copied into any project. `--path` and `--exclude` are relative to this too.
+const ROOT = process.cwd();
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
 const shouldWrite = args.includes('--write');
 const pathArg = args.find((arg) => arg.startsWith('--path='));
 const targetPath = pathArg ? pathArg.split('=')[1] : '.';
+const excludeArg = args.find((arg) => arg.startsWith('--exclude='));
+const userExcludes = excludeArg
+  ? excludeArg
+      .slice('--exclude='.length)
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+  : [];
 
 console.log(`\n🎨 Semantic Colors v2 Migration Script`);
 console.log(`Mode: ${shouldWrite ? '✍️  WRITE' : '🔍 DRY RUN'}`);
 console.log(`Path: ${targetPath}\n`);
 
 /**
- * Color migration mappings
+ * Where the theme's colour types might live, most specific first:
+ *   - installed in a consuming app (the published package ships declarations/,
+ *     not src/)
+ *   - built inside the Frontile monorepo
+ *   - source inside the Frontile monorepo
+ *
+ * If none resolve — the theme is not installed, or this is running somewhere
+ * unexpected — validation falls back to the token set below and says so, rather
+ * than either failing or pretending it verified something.
+ */
+const THEME_TYPE_CANDIDATES = [
+  'node_modules/@frontile/theme/declarations/colors/types.d.ts',
+  'packages/theme/declarations/colors/types.d.ts',
+  'packages/theme/src/colors/types.ts'
+];
+
+/** Emphasis levels, shared by every semantic category. */
+const KNOWN_LEVELS = [
+  'subtle',
+  'muted',
+  'soft',
+  'mild',
+  'firm',
+  'strong',
+  'bolder'
+];
+
+/** Used only when the theme's own types cannot be found. */
+const FALLBACK_CATEGORIES = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger',
+  'surface',
+  'on-neutral',
+  'on-primary',
+  'on-secondary',
+  'on-tertiary',
+  'on-success',
+  'on-warning',
+  'on-danger'
+];
+
+const FALLBACK_SURFACE_ROLES = [
+  'overlay',
+  'lift',
+  'app',
+  'canvas',
+  'card',
+  'input',
+  'modal'
+];
+
+/**
+ * Old class fragment -> new class fragment.
+ *
+ * These mirror the mapping tables in
+ * docs/migrations/v0.18/semantic-colors.md. Where the old numbered scale is
+ * genuinely ambiguous the table offers two levels; this script takes the lower
+ * one and reports the line so it can be reviewed, because guessing high makes
+ * an element louder than it was and that is the harder error to notice.
  */
 const colorMigrations = {
-  // Foreground colors (text on colored backgrounds) - highest priority, most specific
-  // Note: -foreground colors typically map to on-{color}-medium as that's the most common usage
-  'default-foreground': 'on-neutral-medium',
-  'primary-foreground': 'on-brand-medium',
-  'success-foreground': 'on-success-medium',
-  'warning-foreground': 'on-warning-medium',
-  'danger-foreground': 'on-danger-medium',
+  // `{color}-foreground` became the automatic contrast colour. DEFAULT level,
+  // matching the docs table (`text-default-foreground` -> `text-on-neutral`).
+  'default-foreground': 'on-neutral',
+  'primary-foreground': 'on-primary',
+  'secondary-foreground': 'on-secondary',
+  'tertiary-foreground': 'on-tertiary',
+  'success-foreground': 'on-success',
+  'warning-foreground': 'on-warning',
+  'danger-foreground': 'on-danger',
 
-  // Default/Neutral numbered scales
+  // The `default` category was renamed to `neutral`.
   'default-50': 'neutral-subtle',
   'default-100': 'neutral-subtle',
   'default-200': 'neutral-subtle',
   'default-300': 'neutral-soft',
   'default-400': 'neutral-soft',
   'default-500': 'neutral-soft',
-  'default-600': 'neutral-medium',
-  'default-700': 'neutral-medium',
+  'default-600': 'neutral',
+  'default-700': 'neutral',
   'default-800': 'neutral-strong',
   'default-900': 'neutral-strong',
   'default-950': 'neutral-strong',
 
-  // Primary/Brand numbered scales
-  'primary-500': 'brand-soft',
-  'primary-600': 'brand-medium',
-  'primary-700': 'brand-medium',
-  'primary-800': 'brand-strong',
-  'primary-900': 'brand-strong',
-  'primary-1000': 'brand-strong',
+  // `primary` kept its name; only the scale changed. Note there is no
+  // `primary-*` -> `primary-*` identity entry here: the category rename that
+  // once made those necessary was reverted before 0.18 shipped.
+  'primary-500': 'primary-soft',
+  'primary-600': 'primary',
+  'primary-700': 'primary',
+  'primary-800': 'primary-strong',
+  'primary-900': 'primary-strong',
 
-  // Success numbered scales
+  'secondary-500': 'secondary-soft',
+  'secondary-600': 'secondary',
+  'secondary-700': 'secondary',
+  'secondary-800': 'secondary-strong',
+  'secondary-900': 'secondary-strong',
+
   'success-100': 'success-subtle',
   'success-200': 'success-subtle',
   'success-400': 'success-subtle',
   'success-500': 'success-soft',
-  'success-600': 'success-medium',
-  'success-700': 'success-medium',
+  'success-600': 'success',
+  'success-700': 'success',
   'success-800': 'success-strong',
   'success-900': 'success-strong',
 
-  // Warning numbered scales
   'warning-100': 'warning-subtle',
   'warning-200': 'warning-subtle',
   'warning-500': 'warning-soft',
-  'warning-600': 'warning-medium',
-  'warning-700': 'warning-medium',
+  'warning-600': 'warning',
+  'warning-700': 'warning',
   'warning-800': 'warning-strong',
   'warning-900': 'warning-strong',
 
-  // Danger numbered scales
   'danger-100': 'danger-subtle',
   'danger-200': 'danger-subtle',
   'danger-500': 'danger-soft',
-  'danger-600': 'danger-medium',
-  'danger-700': 'danger-medium',
+  'danger-600': 'danger',
+  'danger-700': 'danger',
   'danger-800': 'danger-strong',
   'danger-900': 'danger-strong',
 
-  // Special dark mode patterns
-  'dark:bg-default-200': 'dark:bg-inverse-subtle',
-  'dark:bg-default-300': 'dark:bg-inverse-soft',
-  'dark:hover:bg-default-300': 'dark:hover:bg-inverse-soft',
-  'dark:text-default-950': 'dark:text-inverse-strong',
+  // Surface rename.
+  'bg-background': 'bg-surface-canvas',
 
-  // Base color names without numbers (lower priority, handle after numbered ones)
+  // Unnumbered `default`. `text-default` goes to the ink band, since text needs
+  // a legible foreground rather than a fill.
   'bg-default': 'bg-neutral',
-  'text-default': 'text-neutral-medium',
-  'border-default': 'border-neutral-soft',
-  'bg-primary': 'bg-brand',
-  'text-primary': 'text-brand',
-  'border-primary': 'border-brand-medium',
-  'ring-primary': 'ring-brand-soft',
-  'focus-visible:ring-primary-500': 'focus-visible:ring-brand-soft'
+  'text-default': 'text-neutral-strong',
+  'border-default': 'border-neutral-soft'
 };
 
 /**
- * Patterns that need special handling based on context
+ * Old numbers whose docs mapping offers a choice. Migrated to the lower level
+ * and reported, rather than silently picked.
  */
-const contextualPatterns = [
-  // Text colors often need -medium or -strong suffix
-  {
-    pattern: /text-default(?!-)/g,
-    check: (line) => {
-      // If it's a heading or strong emphasis context, use strong
-      if (
-        line.includes('font-bold') ||
-        line.includes('font-semibold') ||
-        line.includes('heading')
-      ) {
-        return 'text-neutral-strong';
-      }
-      // Default to medium for body text
-      return 'text-neutral-medium';
-    }
-  },
-  // Hover states for default backgrounds
-  {
-    pattern: /hover:bg-default(?!-)/g,
-    replacement: 'hover:bg-neutral-soft'
+const AMBIGUOUS = new Set([
+  'default-500',
+  'default-700',
+  'primary-500',
+  'primary-700',
+  'secondary-500',
+  'secondary-700',
+  'success-500',
+  'success-600',
+  'success-700',
+  'warning-500',
+  'warning-600',
+  'warning-700',
+  'danger-500',
+  'danger-600',
+  'danger-700'
+]);
+
+/**
+ * Reads the categories and surface roles out of the theme's type declarations.
+ * Returns null when they cannot be found.
+ *
+ * Indentation-agnostic on purpose: the source uses two spaces and the published
+ * .d.ts uses four, and anchoring on a fixed width made this silently match
+ * nothing against the published copy — which would have rejected every mapping.
+ */
+function readThemeTokens() {
+  const found = THEME_TYPE_CANDIDATES.map((candidate) =>
+    resolve(ROOT, candidate)
+  ).find((candidate) => existsSync(candidate));
+
+  if (!found) {
+    return null;
   }
-];
+
+  const source = readFileSync(found, 'utf-8');
+
+  const categories = new Set();
+  for (const match of source.matchAll(
+    /^\s+'?(on-[\w-]+|[a-z]+)'?\??:\s*(SemanticColorCategory|OnColorCategory|SurfaceColors)/gm
+  )) {
+    categories.add(match[1]);
+  }
+
+  const surfaceBlock = source.slice(source.indexOf('interface SurfaceColors'));
+  const surfaceRoles = new Set(
+    [
+      ...surfaceBlock
+        .slice(0, surfaceBlock.indexOf('\n}'))
+        .matchAll(/^\s+(\w+)\??:/gm)
+    ].map((match) => match[1])
+  );
+
+  if (categories.size === 0 || surfaceRoles.size === 0) {
+    return null;
+  }
+
+  return {
+    source: relative(ROOT, found) || found,
+    categories,
+    surfaceRoles
+  };
+}
+
+/**
+ * Refuses to run if any replacement targets a token the theme does not define,
+ * or maps a class to itself.
+ *
+ * This is the check whose absence let `brand-*` and `*-medium` sit in this file
+ * across releases: a bad target produces a class Tailwind cannot resolve, which
+ * emits no CSS and no error, so the damage is invisible in the diff and on the
+ * page.
+ */
+function validateTargets() {
+  const theme = readThemeTokens();
+
+  const categories = theme ? theme.categories : new Set(FALLBACK_CATEGORIES);
+  const surfaceRoles = theme
+    ? theme.surfaceRoles
+    : new Set(FALLBACK_SURFACE_ROLES);
+  const levels = new Set(KNOWN_LEVELS);
+
+  const bad = [];
+  for (const [from, to] of Object.entries(colorMigrations)) {
+    const token = to.replace(
+      /^(bg|text|border|ring|placeholder|divide|outline|decoration|shadow|from|to|via)-/,
+      ''
+    );
+    const [category, ...rest] = token.split('-');
+
+    if (from === to) {
+      bad.push(`${from} -> ${to} (no-op mapping)`);
+      continue;
+    }
+
+    if (category === 'surface') {
+      const [role, ...roleRest] = rest;
+      if (!surfaceRoles.has(role)) {
+        bad.push(`${from} -> ${to} (unknown surface role "${role}")`);
+      } else if (roleRest.length > 0 && !levels.has(roleRest.join('-'))) {
+        bad.push(
+          `${from} -> ${to} (unknown level "${roleRest.join('-')}" on surface-${role})`
+        );
+      }
+      continue;
+    }
+
+    const level = rest.join('-');
+    const known =
+      categories.has(token) ||
+      categories.has(category) ||
+      categories.has(`${category}-${rest[0]}`);
+
+    if (!known) {
+      bad.push(`${from} -> ${to} (unknown category "${category}")`);
+      continue;
+    }
+    if (level && !levels.has(level) && !categories.has(token)) {
+      bad.push(`${from} -> ${to} (unknown level "${level}")`);
+    }
+  }
+
+  if (bad.length > 0) {
+    console.error(
+      `\n❌ ${bad.length} mapping(s) target tokens this theme does not define:\n`
+    );
+    bad.forEach((entry) => console.error(`   ${entry}`));
+    console.error(`\nFix the mappings before running.\n`);
+    process.exit(1);
+  }
+
+  const count = Object.keys(colorMigrations).length;
+  if (theme) {
+    console.log(`✓ ${count} mappings validated against ${theme.source}\n`);
+  } else {
+    console.log(
+      `✓ ${count} mappings validated against this script's built-in token list.`
+    );
+    console.log(
+      `  @frontile/theme was not found from ${ROOT}, so the mappings could not be`
+    );
+    console.log(
+      `  cross-checked against your installed version. Run from a directory where`
+    );
+    console.log(
+      `  node_modules/@frontile/theme exists for the stronger check.\n`
+    );
+  }
+}
 
 /**
  * Build regex patterns from migration map
@@ -238,9 +444,49 @@ function processFile(filepath) {
 /**
  * Recursively find files with specific extensions
  */
+/**
+ * Paths never rewritten.
+ *
+ * Documentation about this migration quotes the old class names on purpose, in
+ * "before" columns and mapping tables. Rewriting those turns a guide that
+ * explains the migration into one showing the same class on both sides. The
+ * same goes for agent instruction files: Frontile's AGENTS.md contains the
+ * sentence "there is no `primary-500`-style numbered class", and rewriting it
+ * inverts the meaning.
+ *
+ * The Frontile-specific entries simply do not exist in a consuming app, so they
+ * cost nothing there. Add your own with `--exclude=`.
+ */
+const ignorePaths = [
+  'docs/migrations',
+  'site/app/templates/docs/migrations',
+  'AGENTS.md',
+  'CLAUDE.md',
+  ...userExcludes
+]
+  .map((entry) => resolve(ROOT, entry))
+  // The script should never rewrite itself, wherever it has been copied to.
+  .concat([resolve(process.argv[1] ?? '')]);
+
 function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
   const results = [];
-  const ignoreNames = ['node_modules', 'dist', 'tmp', '.git', 'declarations'];
+  const ignoreNames = [
+    'node_modules',
+    'dist',
+    'tmp',
+    '.git',
+    // transient git worktrees and agent scratch space
+    '.claude',
+    'declarations'
+  ];
+
+  if (
+    ignorePaths.some(
+      (ignored) => dir === ignored || dir.startsWith(ignored + '/')
+    )
+  ) {
+    return results;
+  }
 
   try {
     const entries = readdirSync(dir, { withFileTypes: true });
@@ -255,6 +501,9 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
       if (entry.isDirectory()) {
         results.push(...findFiles(fullPath, extensions));
       } else if (entry.isFile() && extensions.includes(extname(entry.name))) {
+        if (ignorePaths.includes(fullPath)) {
+          continue;
+        }
         results.push(fullPath);
       }
     }
@@ -269,6 +518,10 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
  * Main execution
  */
 function main() {
+  // Before touching anything: a mapping that points at a token the theme does
+  // not define is worse than no migration, because the result is silent.
+  validateTargets();
+
   const searchPath = resolve(ROOT, targetPath);
   const files = findFiles(searchPath);
 
@@ -323,6 +576,33 @@ function main() {
     );
   }
 
+  // Surface the changes whose old number mapped to more than one plausible
+  // level. Migrating low is the safe direction, but these are the lines where a
+  // human has to decide.
+  const ambiguous = sortedChanges.filter(([change]) =>
+    [...AMBIGUOUS].some(
+      (key) =>
+        change.startsWith(`${key} →`) ||
+        (/^(bg|text|border|ring|placeholder|divide|outline|decoration|shadow|from|to|via)-/.test(
+          change
+        ) &&
+          change.split(' →')[0].endsWith(key))
+    )
+  );
+
+  if (ambiguous.length > 0) {
+    console.log(
+      `\n⚠️  ${ambiguous.length} change type(s) had more than one reasonable level.`
+    );
+    console.log(
+      `   Migrated to the lower level; review these and raise where the element`
+    );
+    console.log(`   should carry more emphasis:\n`);
+    ambiguous.forEach(([change, { count }]) =>
+      console.log(`   ${change}  (${count})`)
+    );
+  }
+
   console.log(`\n📁 Modified files:\n`);
   for (const result of results.slice(0, 20)) {
     console.log(
@@ -339,11 +619,17 @@ function main() {
       `\n💡 This was a dry run. Run with --write to apply changes.\n`
     );
   } else {
-    console.log(`\n✅ Migration complete! Remember to:\n`);
-    console.log(`   1. Review the changes with git diff`);
-    console.log(`   2. Build the theme: pnpm --filter theme build`);
-    console.log(`   3. Test the application: pnpm start`);
-    console.log(`   4. Run tests: cd test-app && pnpm ember test\n`);
+    console.log(`\n✅ Migration complete. Before you commit:\n`);
+    console.log(`   1. Review the diff, especially anything flagged above`);
+    console.log(`   2. Rebuild your styles and look at the running app`);
+    console.log(`   3. Search for leftovers this script cannot resolve:`);
+    console.log(
+      `      grep -rnE '(bg|text|border|ring|from|to|via)-(neutral|primary|secondary|tertiary|success|warning|danger)-[0-9]{2,3}' .`
+    );
+    console.log(
+      `\n   A leftover numbered class emits no CSS and no error, so a build`
+    );
+    console.log(`   passing is not evidence that it worked.\n`);
   }
 }
 

@@ -9,150 +9,98 @@ subcategory: v0.18
 
 Frontile v0.18 is a major release that includes several breaking changes aimed at improving the design system's consistency, accessibility, and developer experience. This guide provides an overview of all breaking changes and links to detailed migration guides for each.
 
-## Overview of Breaking Changes
+## What breaks, and how loudly
 
-v0.18 introduces the following breaking changes:
+Two of these changes stop your app from working. The rest are cleanup, and one of
+them is optional for the whole 0.18 line.
 
-1. **[Package Consolidation](./package-consolidation.md)** - Seven `@frontile/*` packages consolidated into a single `frontile` package
-2. **[Semantic Colors v2](./semantic-colors.md)** - Complete redesign of the color system
-3. **[Theme Configuration](./theme-configuration.md)** - Updated configuration structure and CSS imports
-4. **OKLCH Color Format** - Colors now use OKLCH instead of HSL for better perceptual uniformity
-5. **Surface Colors** - `bg-background` renamed to `bg-surface-canvas`
+| Change | If you skip it | Fails how? |
+| --- | --- | --- |
+| Missing `@import "@frontile/theme"` | No Frontile styles at all | Loudly — the app is visibly unstyled |
+| Numbered color classes (`bg-primary-500`) | Those elements render unstyled | **Silently** |
+| `bg-background` → `bg-surface-canvas` | Those elements render unstyled | **Silently** |
+| `--frontile-*` variable references | The declaration is dropped | **Silently** |
+| Nested `LayoutTheme` config | Build or type error | Loudly, and only if you customize the theme |
+| `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
 
-## Migration Priority
+**The silent ones are the reason to take this in order.** A class Tailwind can't
+resolve produces no error, no warning, and no CSS — the element just renders
+without the style you asked for. We hit this in Frontile's own documentation
+during the 0.18 work: thirteen demos were shipping with `bg-success-50` and
+`bg-warning-50`, rendering with no background at all, and nobody noticed until a
+linter went looking. Budget time for looking at the result, not just for the
+find-and-replace.
 
-We recommend migrating in this order:
+## Migration order
 
-### 1. Package Consolidation (Recommended First)
+### 1. Theme configuration — do this first
 
-Seven individual `@frontile/*` component packages have been consolidated into the single `frontile` package. The old packages now re-export from `frontile` with deprecation warnings, and will be removed in 0.19.0.
+Nothing else is verifiable until the theme loads. Add the CSS import, and update
+your config shape if you customize it.
 
-**Impact:** Medium - import paths change, but old paths continue to work during 0.18.x
+**Impact:** required. **Time:** 15–30 minutes.
 
-**Time Required:** 10-30 minutes (automated script available)
+- Add `@import "@frontile/theme"` to your `app/styles/app.css`
+- `LayoutTheme` moved from a flat to a nested structure (`hoverOpacity` becomes
+  `opacity: { hover }`)
+- CSS variables lost the `--frontile-` prefix; colors gained `--color-`
 
-**Key Changes:**
-- `@frontile/buttons`, `@frontile/forms`, `@frontile/collections`, `@frontile/overlays`, `@frontile/notifications`, `@frontile/status`, and `@frontile/utilities` are now deprecated
-- Import from `frontile` or `frontile/<scope>` instead (e.g. `frontile/buttons`, `frontile/overlays`)
-- Sub-path imports like `@frontile/overlays/components/modal` become `frontile/components/overlays/modal`
-- `@frontile/theme` is **not** affected and remains a separate package
+**See:** [Theme Configuration](./theme-configuration.md)
 
-**See:** [Package Consolidation Migration Guide](./package-consolidation.md)
+### 2. Colors and surfaces — the bulk of the work
 
-### 2. Theme Configuration (Required)
+One pass over your classes and custom CSS. Everything in this step fails
+silently, so verify visually as you go rather than at the end.
 
-The theme configuration structure has been updated to support Tailwind v4's CSS-first approach. This must be done before color migration as it affects the entire theme system.
+**Impact:** required, and touches every colored element. **Time:** an hour or two
+for a small app, a day or more for a large one.
 
-**Impact:** Medium - only affects apps with custom theme configurations, but required for v0.18
+- Numbered scales (`50`, `100`, … `950`) become named levels (`subtle`, `muted`,
+  `soft`, `mild`, DEFAULT, `firm`, `strong`, `bolder`)
+- `default-*` becomes `neutral-*`
+- `bg-background` becomes `bg-surface-canvas`
+- `{color}-foreground` and `contrast-1`/`contrast-2` become `on-{color}-{level}`
+- `text-foreground` is gone
+- `theme-inverse` flips every semantic token in a region, for panels that should read as the opposite theme
 
-**Time Required:** 15-30 minutes
+Colors also moved from HSL to OKLCH. That part is automatic — you may notice
+small perceptual differences, but there is nothing to change.
 
-**Key Changes:**
-- CSS variable names are now unprefixed (remove `--frontile-` prefix)
-- LayoutTheme interface changed from flat to nested structure
-- Must add `@import "@frontile/theme"` to your app.css
+**See:** [Semantic Colors](./semantic-colors.md)
 
-**See:** [Theme Configuration Migration Guide](./theme-configuration.md)
+### 3. Package consolidation — optional, any time before 0.19
 
-### 3. Semantic Colors v2 (Required)
+Seven `@frontile/*` component packages became the single `frontile` package. The
+old packages still re-export everything and only log a deprecation warning, so
+**your imports keep working for all of 0.18.x.**
 
-The semantic color system has been completely redesigned with named levels instead of numbered scales. This affects all components that use colors.
+Leave this until the app builds and looks right. It rewrites every Frontile
+import in your codebase, and doing that first buries the changes above in a diff
+you can't read — which matters precisely because those changes fail silently.
 
-**Impact:** High - affects all color-related classes throughout your application
+**Impact:** none until 0.19. **Time:** 10–30 minutes, mostly automated.
 
-**Time Required:** Varies based on codebase size (1-4 hours for small apps, 1-2 days for large apps)
+**See:** [Package Consolidation](./package-consolidation.md)
 
-**Key Changes:**
-- Renamed `default-*` to `neutral-*` (the `primary-*` category name is unchanged; only its numbered scale moved to named levels)
-- Replaced numbered scales (50, 100, 200...) with named levels (subtle, soft, firm, strong)
-- Removed legacy `text-foreground` classes
-- Added `inverse` color category for elements on inverted surfaces (e.g. `text-inverse-strong`)
-- Replaced `contrast-1`/`contrast-2` with automatic `on-{color}-{level}` classes
+## Checklist
 
-**See:** [Semantic Colors Migration Guide](./semantic-colors.md)
+- [ ] `@import "@frontile/theme"` added to `app.css`
+- [ ] `LayoutTheme` config nested, if you customize it
+- [ ] `--frontile-*` variable references renamed (colors take `--color-`)
+- [ ] Numbered color classes replaced with named levels
+- [ ] `default-*` renamed to `neutral-*`
+- [ ] `bg-background` replaced with `bg-surface-canvas`
+- [ ] `{color}-foreground` / `contrast-*` replaced with `on-{color}-{level}`
+- [ ] **Looked at the running app**, not just the diff
+- [ ] Imports moved to `frontile` (optional until 0.19)
 
-### 4. OKLCH Color Format (Automatic)
+## New projects
 
-Colors now use the OKLCH color format instead of HSL for improved perceptual uniformity and consistency across color scales.
+Starting fresh on v0.18 needs no migration. Follow
+[Getting Started](../../get-started/index.md).
 
-**Impact:** Low - colors are converted automatically, may see minor visual differences
+## Need help?
 
-**Time Required:** No action required (automatic)
-
-**Key Changes:**
-- CSS variables now contain complete OKLCH values: `--color-primary-subtle: oklch(65.27% 0.1234 240.50)`
-- Color variable names now use `--color-` prefix: `--color-primary-subtle` instead of `--primary-subtle`
-- Tailwind v4 with Lightning CSS automatically generates RGB fallbacks for older browsers
-- Minor perceptual differences in colors (OKLCH is perceptually uniform, HSL is not)
-
-**No Manual Migration Required:** The color system automatically converts colors to OKLCH format. If you're overriding colors via CSS, update variable names to include the `--color-` prefix.
-
-### 5. Surface Colors Rename (Find & Replace)
-
-The `background` color token has been renamed to `surface-canvas` for better semantic clarity.
-
-**Impact:** Low - simple find and replace
-
-**Time Required:** 5-10 minutes
-
-**Migration:**
-
-```bash
-# Find all instances
-grep -r "bg-background" .
-
-# Replace in your codebase
-find . -type f \( -name "*.hbs" -o -name "*.gts" -o -name "*.gjs" -o -name "*.html" \) \
-  -exec sed -i '' 's/bg-background/bg-surface-canvas/g' {} +
-```
-
-**Examples:**
-
-```html
-<!-- Before -->
-<body class="bg-background text-neutral-strong">
-
-<!-- After -->
-<body class="bg-surface-canvas text-neutral-strong">
-```
-
-```html
-<!-- Before -->
-<div class="theme-inverse p-6 bg-background rounded-lg">
-
-<!-- After -->
-<div class="theme-inverse p-6 bg-surface-canvas rounded-lg">
-```
-
-## Migration Strategy
-
-### For Existing Projects
-
-1. **Start with Package Consolidation** - Update imports from `@frontile/*` to `frontile` (automated script available)
-2. **Update Theme Configuration** - Update your theme configuration and CSS imports
-3. **Update Colors** - Migrate to the new semantic color system
-4. **Test thoroughly** - Verify visual appearance, accessibility, and functionality after each step
-5. **Use migration scripts** - Automated scripts are available to help with both package and color migrations
-
-### For New Projects
-
-If you're starting a new project, you can use v0.18 directly without migration concerns. Follow the [Getting Started](../../get-started/index.md) guide to begin with the latest version.
-
-## Breaking Changes Checklist
-
-Use this checklist to track your migration progress:
-
-- [ ] Package Consolidation - Update imports from `@frontile/*` to `frontile`
-- [ ] Theme Configuration - Update CSS imports and variable names
-- [ ] Semantic Colors v2 - Replace numbered color scales with named levels
-- [ ] OKLCH Color Format - Update CSS variable overrides to use `--color-` prefix (if applicable)
-- [ ] Surface Colors - Replace `bg-background` with `bg-surface-canvas`
-
-## Need Help?
-
-If you encounter issues during migration:
-
-- Check the individual migration guides linked above
-- Review the [documentation](../../index.md) for updated usage examples
-- Search or create an issue on [GitHub](https://github.com/josemarluedke/frontile)
-- Join our community discussions for support
+- The individual guides linked above
+- The [documentation](../../index.md) for current usage examples
+- Search or open an issue on [GitHub](https://github.com/josemarluedke/frontile)

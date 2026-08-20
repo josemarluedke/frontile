@@ -19,6 +19,13 @@ Starting with version **0.18.0**, Frontile consolidates seven separate `@frontil
 - `@frontile/status`
 - `@frontile/utilities`
 
+> **This one is optional for all of 0.18.x.** The old packages re-export
+> everything and only log a deprecation warning, so your imports keep working
+> until 0.19. Do the [theme configuration](./theme-configuration.md) and
+> [color](./semantic-colors.md) migrations first — those actually break things,
+> and mostly do it silently. Rewriting every import before them produces a diff
+> large enough to hide the changes you need to review.
+
 **Why?** Modern Ember.js applications use explicit imports via `.gts`/`.gjs` template tag format. With explicit imports, bundlers can tree-shake unused code automatically, making the multi-package architecture unnecessary overhead. A single package simplifies installation, version management, and dependency resolution without sacrificing bundle size.
 
 **Timeline:**

@@ -46,7 +46,15 @@ For the default theme, add this to your `app/styles/app.css`:
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
+
+/* Tailwind v4 skips node_modules when scanning for classes. Without these,
+   Frontile's own component classes are purged and components render unstyled. */
+@source '../../node_modules/frontile';
+@source '../../node_modules/@frontile';
 ```
+
+Paths are relative to this file — under Vite, where the entry stylesheet is
+usually `app/app.css`, they are one level shallower.
 
 ### Customizing Frontile Theme
 

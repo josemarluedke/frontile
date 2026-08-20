@@ -38,9 +38,21 @@ Add Frontile's theme configuration to your `app/styles/app.css` for Tailwind CSS
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
+@import "@frontile/theme";
+
+/* Tailwind skips node_modules when scanning for classes, so Frontile's own
+   templates have to be pointed at or their classes get purged. */
+@source '../../node_modules/frontile';
 @source '../../node_modules/@frontile';
-@custom-variant dark (&:is(.dark *));
 ```
+
+Paths are relative to the CSS file. Under Vite the entry stylesheet is usually
+`app/app.css`, one level shallower, so the sources become
+`'../node_modules/...'`.
+
+The `dark` variant comes from `@import "@frontile/theme"` — you do not need to
+declare `@custom-variant dark` yourself, and the version the theme ships also
+handles `theme-inverse`.
 
 ### Your First Component
 

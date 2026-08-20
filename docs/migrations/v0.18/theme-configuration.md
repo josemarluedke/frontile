@@ -22,7 +22,9 @@ Frontile v0.18 updates the theme system to align with Tailwind CSS v4's new CSS-
 
 ### 1. CSS Import Required
 
-**You must add** `@import "@frontile/theme"` to your application's CSS file.
+**You must add** `@import "@frontile/theme"` to your application's entry
+stylesheet — `app/styles/app.css` on a classic Ember build, `app/app.css` under
+Vite. It has to come after the `@plugin` line.
 
 #### Before (v0.17)
 
@@ -41,9 +43,54 @@ Frontile v0.18 updates the theme system to align with Tailwind CSS v4's new CSS-
 
 **Why:** The `@import "@frontile/theme"` statement loads Frontile's base CSS styles, custom variants, and animations that are now CSS-based rather than plugin-generated.
 
-### 2. CSS Variable Names (Unprefixed)
+### 2. Tailwind Content Detection
 
-All CSS variables have been unprefixed. The `--frontile-` prefix has been removed.
+This one is a consequence of [package
+consolidation](./package-consolidation.md) rather than of the theme itself, and
+it is the easiest to miss.
+
+Tailwind v4 skips `node_modules` when it scans for classes. Frontile's own
+component templates live there, so they have to be pointed at explicitly or
+their classes are purged and components render unstyled — with no error, since a
+purged class is simply a class that no longer exists.
+
+In v0.17 one `@source` covered everything, because every component shipped under
+the `@frontile` scope:
+
+```css
+@source '../../node_modules/@frontile';
+```
+
+In v0.18 the components moved to the unscoped `frontile` package, so that line no
+longer reaches them:
+
+```css
+@source '../../node_modules/frontile';
+/* Keep the scoped line too if you use @frontile/forms-legacy or
+   @frontile/changeset-form, which remain separate packages. */
+@source '../../node_modules/@frontile';
+```
+
+Paths are relative to the CSS file, so adjust the depth to match where yours
+lives. This applies whether or not you have migrated your imports: the classes
+come from `frontile` either way, because the old packages only re-export from it.
+
+**If components look unstyled after upgrading and the theme import is present,
+this is almost always why.**
+
+### 3. CSS Variable Names
+
+The `--frontile-` prefix is gone. What replaces it depends on the kind of token:
+
+| Token kind | v0.17 | v0.18 |
+| --- | --- | --- |
+| Colors | `--frontile-primary-500` | `--color-primary-firm` (a `--color-` prefix, and a named level) |
+| Everything else | `--frontile-hover-opacity` | `--opacity-hover` (no prefix) |
+
+Colors are the case to watch. They did not simply lose a prefix — they gained
+`--color-`, and the numbered scale they used is gone, so there is no
+`--color-primary-500` either. Pick the level that matches the emphasis you
+wanted; see the [semantic colors guide](./semantic-colors.md) for the mapping.
 
 #### Before (v0.17)
 
@@ -58,19 +105,21 @@ All CSS variables have been unprefixed. The `--frontile-` prefix has been remove
 
 ```css
 .my-component {
-  background: var(--primary-500);
+  background: var(--color-primary);
   opacity: var(--opacity-hover);
 }
 ```
 
-**Migration:** Search your codebase for `--frontile-` and remove the prefix:
+**Migration:** search your codebase for `--frontile-`. Nothing errors if you
+miss one — an undefined custom property silently resolves to nothing, so the
+declaration is simply dropped:
 
 ```bash
-# Find all CSS variable references
-grep -r "var(--frontile-" --include="*.{css,gts,gjs,ts,js}"
+grep -rn -- "--frontile-" --include="*.css" --include="*.scss" \
+  --include="*.gts" --include="*.gjs" --include="*.ts" --include="*.js" .
 ```
 
-### 3. LayoutTheme Interface (Nested Structure)
+### 4. LayoutTheme Interface (Nested Structure)
 
 If you're using TypeScript and customizing the theme configuration, the `LayoutTheme` interface has changed from flat to nested.
 
@@ -104,7 +153,7 @@ module.exports = frontile({
 
 ### Step 1: Update CSS Imports
 
-Add the `@import "@frontile/theme"` statement to your `app/styles/app.css`:
+Add the `@import "@frontile/theme"` statement to your entry stylesheet:
 
 ```css
 @import 'tailwindcss' source('../../');
@@ -124,19 +173,25 @@ Add the `@import "@frontile/theme"` statement to your `app/styles/app.css`:
 
 ### Step 2: Update CSS Variable References
 
-If you're directly referencing CSS variables in your stylesheets or components:
+If you reference Frontile's CSS variables directly in your own stylesheets or
+components:
 
 1. **Find all references:**
 
 ```bash
-grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
+grep -rn -- "--frontile-" --include="*.css" --include="*.scss" \
+  --include="*.gts" --include="*.gjs" .
 ```
 
-2. **Remove the prefix:**
+2. **Rename them.** Colors take a `--color-` prefix and a named level; other
+   tokens just drop the prefix:
 
 ```diff
 - background: var(--frontile-primary);
-+ background: var(--primary);
++ background: var(--color-primary);
+
+- border-color: var(--frontile-primary-700);
++ border-color: var(--color-primary-firm);
 
 - opacity: var(--frontile-hover-opacity);
 + opacity: var(--opacity-hover);
@@ -146,8 +201,11 @@ grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
 
 ```diff
 - const color = getComputedStyle(el).getPropertyValue('--frontile-primary-500');
-+ const color = getComputedStyle(el).getPropertyValue('--primary-500');
++ const color = getComputedStyle(el).getPropertyValue('--color-primary');
 ```
+
+   `getPropertyValue` returns an empty string for a variable that doesn't
+   exist, so a missed rename here reads as "no color" rather than throwing.
 
 ### Step 3: Update Theme Configuration (If Customized)
 
