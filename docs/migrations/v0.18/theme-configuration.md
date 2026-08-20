@@ -41,9 +41,19 @@ Frontile v0.18 updates the theme system to align with Tailwind CSS v4's new CSS-
 
 **Why:** The `@import "@frontile/theme"` statement loads Frontile's base CSS styles, custom variants, and animations that are now CSS-based rather than plugin-generated.
 
-### 2. CSS Variable Names (Unprefixed)
+### 2. CSS Variable Names
 
-All CSS variables have been unprefixed. The `--frontile-` prefix has been removed.
+The `--frontile-` prefix is gone. What replaces it depends on the kind of token:
+
+| Token kind | v0.17 | v0.18 |
+| --- | --- | --- |
+| Colors | `--frontile-primary-500` | `--color-primary-firm` (a `--color-` prefix, and a named level) |
+| Everything else | `--frontile-hover-opacity` | `--opacity-hover` (no prefix) |
+
+Colors are the case to watch. They did not simply lose a prefix — they gained
+`--color-`, and the numbered scale they used is gone, so there is no
+`--color-primary-500` either. Pick the level that matches the emphasis you
+wanted; see the [semantic colors guide](./semantic-colors.md) for the mapping.
 
 #### Before (v0.17)
 
@@ -58,16 +68,18 @@ All CSS variables have been unprefixed. The `--frontile-` prefix has been remove
 
 ```css
 .my-component {
-  background: var(--primary-500);
+  background: var(--color-primary);
   opacity: var(--opacity-hover);
 }
 ```
 
-**Migration:** Search your codebase for `--frontile-` and remove the prefix:
+**Migration:** search your codebase for `--frontile-`. Nothing errors if you
+miss one — an undefined custom property silently resolves to nothing, so the
+declaration is simply dropped:
 
 ```bash
-# Find all CSS variable references
-grep -r "var(--frontile-" --include="*.{css,gts,gjs,ts,js}"
+grep -rn -- "--frontile-" --include="*.css" --include="*.scss" \
+  --include="*.gts" --include="*.gjs" --include="*.ts" --include="*.js" .
 ```
 
 ### 3. LayoutTheme Interface (Nested Structure)
@@ -124,19 +136,25 @@ Add the `@import "@frontile/theme"` statement to your `app/styles/app.css`:
 
 ### Step 2: Update CSS Variable References
 
-If you're directly referencing CSS variables in your stylesheets or components:
+If you reference Frontile's CSS variables directly in your own stylesheets or
+components:
 
 1. **Find all references:**
 
 ```bash
-grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
+grep -rn -- "--frontile-" --include="*.css" --include="*.scss" \
+  --include="*.gts" --include="*.gjs" .
 ```
 
-2. **Remove the prefix:**
+2. **Rename them.** Colors take a `--color-` prefix and a named level; other
+   tokens just drop the prefix:
 
 ```diff
 - background: var(--frontile-primary);
-+ background: var(--primary);
++ background: var(--color-primary);
+
+- border-color: var(--frontile-primary-700);
++ border-color: var(--color-primary-firm);
 
 - opacity: var(--frontile-hover-opacity);
 + opacity: var(--opacity-hover);
@@ -146,8 +164,11 @@ grep -r "var(--frontile-" --include="*.{css,scss,gts,gjs}" .
 
 ```diff
 - const color = getComputedStyle(el).getPropertyValue('--frontile-primary-500');
-+ const color = getComputedStyle(el).getPropertyValue('--primary-500');
++ const color = getComputedStyle(el).getPropertyValue('--color-primary');
 ```
+
+   `getPropertyValue` returns an empty string for a variable that doesn't
+   exist, so a missed rename here reads as "no color" rather than throwing.
 
 ### Step 3: Update Theme Configuration (If Customized)
 

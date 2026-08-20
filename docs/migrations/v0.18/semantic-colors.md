@@ -25,10 +25,6 @@ The semantic color system has been redesigned to use named levels instead of num
 | Old Name    | New Name    | Notes                                                    |
 | ----------- | ----------- | -------------------------------------------------------- |
 | `default-*` | `neutral-*` | Renamed to better indicate non-semantic UI elements      |
-| `primary-*` | `primary-*` | ✓ Name unchanged; scale → named levels                   |
-| `success-*` | `success-*` | ✓ No change                                              |
-| `warning-*` | `warning-*` | ✓ No change                                              |
-| `danger-*`  | `danger-*`  | ✓ No change                                              |
 
 ### New: Inverse Category
 
@@ -80,8 +76,6 @@ The values did not change — only the names:
 
 | Old                        | New                      | Notes                                                          |
 | -------------------------- | ------------------------ | -------------------------------------------------------------- |
-| `surface-overlay-subtle`   | `surface-overlay-subtle` | ✓ No change                                                     |
-| `surface-overlay-soft`     | `surface-overlay-soft`   | ✓ No change                                                     |
 | `surface-overlay-medium`   | `surface-overlay-mild`   | Same value, renamed to match the shared level names             |
 | `surface-overlay-strong`   | `surface-overlay-firm`   | Same value, shifted down one name                               |
 | `surface-overlay-scrim`    | `surface-overlay-strong` | The heavy modal/drawer backdrop is now just the top level       |
@@ -177,55 +171,43 @@ calculated for optimal WCAG contrast on the specified background level.
 
 | Old Class                 | New Class                                  | Context                |
 | ------------------------- | ------------------------------------------ | ---------------------- |
-| `bg-primary`              | `bg-primary`        | Standard primary color |
 | `bg-primary-500`          | `bg-primary-soft` or `bg-primary`   | Hover states           |
 | `bg-primary-600`          | `bg-primary`                        | Default buttons        |
 | `bg-primary-700`          | `bg-primary` or `bg-primary-strong` | Strong emphasis        |
 | `bg-primary-800`          | `bg-primary-strong`                        | Active/pressed states  |
-| `text-primary`            | `text-primary`    | Primary text           |
 | `text-primary-foreground` | `text-on-primary`                   | Contrasting text on bg |
-| `border-primary`          | `border-primary`                    | Primary borders        |
 | `ring-primary-500`        | `ring-primary-soft`                        | Focus rings            |
 
 #### Success
 
 | Old Class                 | New Class                                  | Context                  |
 | ------------------------- | ------------------------------------------ | ------------------------ |
-| `bg-success`              | `bg-success`        | Standard success color   |
 | `bg-success-100`          | `bg-success-subtle`                        | Alert backgrounds        |
 | `bg-success-500`          | `bg-success-soft` or `bg-success`   | Moderate emphasis        |
 | `bg-success-600`          | `bg-success` or `bg-success-strong` | Buttons, hover           |
 | `bg-success-800`          | `bg-success-strong`                        | Active states            |
-| `text-success`            | `text-success`    | Success text             |
 | `text-success-foreground` | `text-on-success`                   | Contrasting text on bg   |
-| `border-success`          | `border-success`                    | Success borders          |
 | `ring-success-500`        | `ring-success-soft`                        | Focus rings              |
 
 #### Warning
 
 | Old Class                 | New Class                                  | Context                  |
 | ------------------------- | ------------------------------------------ | ------------------------ |
-| `bg-warning`              | `bg-warning`        | Standard warning color   |
 | `bg-warning-100`          | `bg-warning-subtle`                        | Alert backgrounds        |
 | `bg-warning-500`          | `bg-warning-soft` or `bg-warning`   | Moderate emphasis        |
 | `bg-warning-600`          | `bg-warning` or `bg-warning-strong` | Buttons, hover           |
 | `bg-warning-800`          | `bg-warning-strong`                        | Active states            |
-| `text-warning`            | `text-warning`    | Warning text             |
 | `text-warning-foreground` | `text-on-warning`                   | Contrasting text on bg   |
-| `border-warning`          | `border-warning`                    | Warning borders          |
 
 #### Danger
 
 | Old Class                | New Class                                | Context                 |
 | ------------------------ | ---------------------------------------- | ----------------------- |
-| `bg-danger`              | `bg-danger`        | Standard danger color   |
 | `bg-danger-100`          | `bg-danger-subtle`                       | Alert backgrounds       |
 | `bg-danger-500`          | `bg-danger-soft` or `bg-danger`   | Moderate emphasis       |
 | `bg-danger-600`          | `bg-danger` or `bg-danger-strong` | Buttons, hover          |
 | `bg-danger-800`          | `bg-danger-strong`                       | Active states           |
-| `text-danger`            | `text-danger`    | Danger text             |
 | `text-danger-foreground` | `text-on-danger`                  | Contrasting text on bg  |
-| `border-danger`          | `border-danger`                   | Danger borders          |
 
 ## Common UI Pattern Migrations
 
@@ -412,24 +394,50 @@ Replace old color classes with new semantic levels:
 - **Accessibility**: Verify contrast ratios still meet WCAG AA standards
 - **Interactive states**: Test hover, focus, active, and disabled states
 
-## Automated Migration
+## Interactive states
 
-For large codebases, consider creating a codemod or script:
+The tables above map each old number to a resting level. They deliberately do not
+try to guess hover, pressed, or disabled variants, because the old numbered scale
+encoded those by stepping the number and the new one has dedicated levels:
+
+| Old | New | Level |
+| --- | --- | --- |
+| `hover:bg-primary-500` on a `bg-primary-600` element | `hover:bg-primary-soft` | `soft` is the hover step for solid fills |
+| `active:bg-primary-800` | `active:bg-primary-firm` | `firm` is the most emphatic fill |
+| `hover:bg-default-200` on a tonal surface | `hover:bg-neutral-muted` | `muted` is the hover step for tonal surfaces |
+| A fill between resting and firm | `bg-primary-mild` | `mild` |
+
+If you had a three-state solid button — `bg-primary-600`, `hover:bg-primary-500`,
+`active:bg-primary-700` — it becomes `bg-primary`, `hover:bg-primary-soft`,
+`active:bg-primary-firm`.
+
+## Automated migration
+
+There is no supported codemod for this. A find-and-replace can do the
+unambiguous half — the category rename and the `foreground` suffix — but it
+cannot pick emphasis levels, and it cannot tell a resting fill from a hover one:
 
 ```bash
-# Example: Simple find and replace (use with caution)
-find . -type f \( -name "*.ts" -o -name "*.gts" \) -exec sed -i '' \
-  -e 's/bg-default-/bg-neutral-/g' \
-  -e 's/text-default-/text-neutral-/g' \
-  -e 's/border-default-/border-neutral-/g' \
-  -e 's/bg-primary-[0-9]\{2,3\}/bg-primary/g' \
-  -e 's/text-primary-[0-9]\{2,3\}/text-primary/g' \
-  -e 's/border-primary-[0-9]\{2,3\}/border-primary/g' \
-  -e 's/ring-primary-[0-9]\{2,3\}/ring-primary-soft/g' \
+# The mechanical part only. Review everything it touches.
+# GNU sed: drop the '' after -i
+find . -type f \( -name "*.hbs" -o -name "*.gts" -o -name "*.gjs" -o -name "*.ts" \) \
+  -exec sed -i '' \
+  -e 's/\bbg-default-/bg-neutral-/g' \
+  -e 's/\btext-default-/text-neutral-/g' \
+  -e 's/\bborder-default-/border-neutral-/g' \
+  -e 's/\bbg-background\b/bg-surface-canvas/g' \
   {} +
 ```
 
-**Note**: This script collapses every numbered `primary` class to a single level (the bare `primary` DEFAULT, and `ring-primary-soft` for rings). That loses the distinction between hover (`soft`), default (`DEFAULT`), and active/pressed (`firm`) states, so manual review is required to pick the right level for each usage.
+Then find what's left by hand — anything still carrying a number needs a level
+chosen for it:
+
+```bash
+grep -rnE '(bg|text|border|ring|from|to|via)-(neutral|primary|secondary|tertiary|success|warning|danger)-[0-9]{2,3}' .
+```
+
+That grep is worth keeping in CI for a release or two. A leftover numbered class
+produces no CSS and no error, so it will not show up any other way.
 
 ## Decision Guide
 
