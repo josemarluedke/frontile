@@ -348,10 +348,8 @@ interface SelectSignature<T> {
   };
 }
 
-/**
- * Select Component - A feature-rich dropdown selection component
- *
- * ## Selection State Architecture
+/*
+ * Internal: selection state architecture
  *
  * This component uses a **two-way data binding pattern** for managing selection state:
  *
@@ -387,6 +385,13 @@ interface SelectSignature<T> {
  *   → Parent updates its @selectedKey state
  *   → updateSingleSelectValue modifier syncs _selectedKey with new arg value
  * ```
+ */
+/**
+ * A dropdown selection component: a custom listbox in a popover, backed by a
+ * visually hidden native `<select>` so the value submits with a form.
+ *
+ * Selection can be controlled with `@selectedKey` / `@selectedKeys` plus
+ * `@onSelectionChange`, or left uncontrolled.
  */
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];

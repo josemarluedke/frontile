@@ -96,6 +96,8 @@
     "qunit-dom": "^3.6.0",
     "rehype-highlight": "^4.1.0",
     "rehype-stringify": "^8.0.0",
+    "remark-parse": "^9.0.0",
+    "remark-rehype": "^8.1.0",
     "remark-autolink-headings": "^6.1.0",
     "remark-code-import": "^0.3.0",
     "stylelint": "^17.14.1",
