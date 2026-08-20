@@ -6,42 +6,103 @@
  * Migrates from the old numbered color system (default-100, primary-500) to the
  * named semantic levels (neutral-subtle, primary-soft, ...).
  *
- * Mappings mirror docs/migrations/v0.18/semantic-colors.md and are validated
- * against the theme on every run, so a target that the theme does not define
- * fails the script instead of producing dead classes.
+ * Copy this file anywhere and run it from the root of the project you want to
+ * migrate — it resolves everything relative to the working directory, not to
+ * its own location.
  *
  * Usage:
- *   node scripts/migrate-semantic-colors.mjs              # Dry run
- *   node scripts/migrate-semantic-colors.mjs --write      # Write changes
- *   node scripts/migrate-semantic-colors.mjs --path="packages/theme"  # Specific path
+ *   node migrate-semantic-colors.mjs                     # dry run
+ *   node migrate-semantic-colors.mjs --write             # apply
+ *   node migrate-semantic-colors.mjs --path=app          # limit the scope
+ *   node migrate-semantic-colors.mjs --exclude=docs,CHANGELOG.md
+ *
+ * Mappings mirror the tables in Frontile's v0.18 semantic-colors migration
+ * guide. When @frontile/theme is installed, every mapping is checked against the
+ * theme's own type declarations before anything is rewritten, so a target the
+ * theme does not define fails the run instead of producing dead classes.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
-import { resolve, dirname, join, extname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
+import { resolve, join, extname, relative } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const ROOT = resolve(__dirname, '..');
+// Everything is relative to where the script is invoked, so the file can be
+// copied into any project. `--path` and `--exclude` are relative to this too.
+const ROOT = process.cwd();
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
 const shouldWrite = args.includes('--write');
 const pathArg = args.find((arg) => arg.startsWith('--path='));
 const targetPath = pathArg ? pathArg.split('=')[1] : '.';
+const excludeArg = args.find((arg) => arg.startsWith('--exclude='));
+const userExcludes = excludeArg
+  ? excludeArg
+      .slice('--exclude='.length)
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+  : [];
 
 console.log(`\n🎨 Semantic Colors v2 Migration Script`);
 console.log(`Mode: ${shouldWrite ? '✍️  WRITE' : '🔍 DRY RUN'}`);
 console.log(`Path: ${targetPath}\n`);
 
 /**
- * Levels the theme actually defines, and the categories that carry them.
- * Kept in sync with packages/theme/src/colors/semantic.ts by validateTargets()
- * below rather than by hand — an earlier version of this script migrated code
- * to `brand-*` and `*-medium`, neither of which has ever existed, and nothing
- * caught it because the output is only ever dead CSS.
+ * Where the theme's colour types might live, most specific first:
+ *   - installed in a consuming app (the published package ships declarations/,
+ *     not src/)
+ *   - built inside the Frontile monorepo
+ *   - source inside the Frontile monorepo
+ *
+ * If none resolve — the theme is not installed, or this is running somewhere
+ * unexpected — validation falls back to the token set below and says so, rather
+ * than either failing or pretending it verified something.
  */
-const THEME_SOURCE = 'packages/theme/src/colors/types.ts';
+const THEME_TYPE_CANDIDATES = [
+  'node_modules/@frontile/theme/declarations/colors/types.d.ts',
+  'packages/theme/declarations/colors/types.d.ts',
+  'packages/theme/src/colors/types.ts'
+];
+
+/** Emphasis levels, shared by every semantic category. */
+const KNOWN_LEVELS = [
+  'subtle',
+  'muted',
+  'soft',
+  'mild',
+  'firm',
+  'strong',
+  'bolder'
+];
+
+/** Used only when the theme's own types cannot be found. */
+const FALLBACK_CATEGORIES = [
+  'neutral',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger',
+  'surface',
+  'on-neutral',
+  'on-primary',
+  'on-secondary',
+  'on-tertiary',
+  'on-success',
+  'on-warning',
+  'on-danger'
+];
+
+const FALLBACK_SURFACE_ROLES = [
+  'overlay',
+  'lift',
+  'app',
+  'canvas',
+  'card',
+  'input',
+  'modal'
+];
 
 /**
  * Old class fragment -> new class fragment.
@@ -149,53 +210,81 @@ const AMBIGUOUS = new Set([
 ]);
 
 /**
- * Fails the run if any replacement targets a token the theme does not define.
- * This is the check whose absence let `brand-*` and `*-medium` sit here across
- * releases: a bad target produces a class Tailwind cannot resolve, which emits
- * no CSS and no error, so the damage is invisible in the diff and on the page.
+ * Reads the categories and surface roles out of the theme's type declarations.
+ * Returns null when they cannot be found.
+ *
+ * Indentation-agnostic on purpose: the source uses two spaces and the published
+ * .d.ts uses four, and anchoring on a fixed width made this silently match
+ * nothing against the published copy — which would have rejected every mapping.
  */
-function validateTargets() {
-  const typesPath = resolve(ROOT, THEME_SOURCE);
-  const source = readFileSync(typesPath, 'utf-8');
+function readThemeTokens() {
+  const found = THEME_TYPE_CANDIDATES.map((candidate) =>
+    resolve(ROOT, candidate)
+  ).find((candidate) => existsSync(candidate));
+
+  if (!found) {
+    return null;
+  }
+
+  const source = readFileSync(found, 'utf-8');
 
   const categories = new Set();
   for (const match of source.matchAll(
-    /^\s{2}'?(on-[\w-]+|[a-z]+)'?\??:\s*(SemanticColorCategory|OnColorCategory|SurfaceColors)/gm
+    /^\s+'?(on-[\w-]+|[a-z]+)'?\??:\s*(SemanticColorCategory|OnColorCategory|SurfaceColors)/gm
   )) {
     categories.add(match[1]);
   }
 
-  const levels = new Set([
-    'subtle',
-    'muted',
-    'soft',
-    'mild',
-    'firm',
-    'strong',
-    'bolder'
-  ]);
-
-  // `surface` does not use the emphasis levels — it has named roles of its own
-  // (canvas, card, input, …) plus two translucent families that do take levels.
   const surfaceBlock = source.slice(source.indexOf('interface SurfaceColors'));
   const surfaceRoles = new Set(
     [
       ...surfaceBlock
         .slice(0, surfaceBlock.indexOf('\n}'))
-        .matchAll(/^\s{2}(\w+):/gm)
-    ].map((m) => m[1])
+        .matchAll(/^\s+(\w+)\??:/gm)
+    ].map((match) => match[1])
   );
+
+  if (categories.size === 0 || surfaceRoles.size === 0) {
+    return null;
+  }
+
+  return {
+    source: relative(ROOT, found) || found,
+    categories,
+    surfaceRoles
+  };
+}
+
+/**
+ * Refuses to run if any replacement targets a token the theme does not define,
+ * or maps a class to itself.
+ *
+ * This is the check whose absence let `brand-*` and `*-medium` sit in this file
+ * across releases: a bad target produces a class Tailwind cannot resolve, which
+ * emits no CSS and no error, so the damage is invisible in the diff and on the
+ * page.
+ */
+function validateTargets() {
+  const theme = readThemeTokens();
+
+  const categories = theme ? theme.categories : new Set(FALLBACK_CATEGORIES);
+  const surfaceRoles = theme
+    ? theme.surfaceRoles
+    : new Set(FALLBACK_SURFACE_ROLES);
+  const levels = new Set(KNOWN_LEVELS);
 
   const bad = [];
   for (const [from, to] of Object.entries(colorMigrations)) {
-    // Strip any leading utility so we are left with `category` or
-    // `category-level`.
     const token = to.replace(
       /^(bg|text|border|ring|placeholder|divide|outline|decoration|shadow|from|to|via)-/,
       ''
     );
     const [category, ...rest] = token.split('-');
-    const level = rest.join('-');
+
+    if (from === to) {
+      bad.push(`${from} -> ${to} (no-op mapping)`);
+      continue;
+    }
 
     if (category === 'surface') {
       const [role, ...roleRest] = rest;
@@ -206,12 +295,10 @@ function validateTargets() {
           `${from} -> ${to} (unknown level "${roleRest.join('-')}" on surface-${role})`
         );
       }
-      if (from === to) {
-        bad.push(`${from} -> ${to} (no-op mapping)`);
-      }
       continue;
     }
 
+    const level = rest.join('-');
     const known =
       categories.has(token) ||
       categories.has(category) ||
@@ -224,25 +311,34 @@ function validateTargets() {
     if (level && !levels.has(level) && !categories.has(token)) {
       bad.push(`${from} -> ${to} (unknown level "${level}")`);
     }
-    if (from === to) {
-      bad.push(`${from} -> ${to} (no-op mapping)`);
-    }
   }
 
   if (bad.length > 0) {
     console.error(
       `\n❌ ${bad.length} mapping(s) target tokens this theme does not define:\n`
     );
-    bad.forEach((b) => console.error(`   ${b}`));
-    console.error(
-      `\nChecked against ${THEME_SOURCE}. Fix the mappings before running.\n`
-    );
+    bad.forEach((entry) => console.error(`   ${entry}`));
+    console.error(`\nFix the mappings before running.\n`);
     process.exit(1);
   }
 
-  console.log(
-    `✓ ${Object.keys(colorMigrations).length} mappings validated against ${THEME_SOURCE}\n`
-  );
+  const count = Object.keys(colorMigrations).length;
+  if (theme) {
+    console.log(`✓ ${count} mappings validated against ${theme.source}\n`);
+  } else {
+    console.log(
+      `✓ ${count} mappings validated against this script's built-in token list.`
+    );
+    console.log(
+      `  @frontile/theme was not found from ${ROOT}, so the mappings could not be`
+    );
+    console.log(
+      `  cross-checked against your installed version. Run from a directory where`
+    );
+    console.log(
+      `  node_modules/@frontile/theme exists for the stronger check.\n`
+    );
+  }
 }
 
 /**
@@ -348,6 +444,30 @@ function processFile(filepath) {
 /**
  * Recursively find files with specific extensions
  */
+/**
+ * Paths never rewritten.
+ *
+ * Documentation about this migration quotes the old class names on purpose, in
+ * "before" columns and mapping tables. Rewriting those turns a guide that
+ * explains the migration into one showing the same class on both sides. The
+ * same goes for agent instruction files: Frontile's AGENTS.md contains the
+ * sentence "there is no `primary-500`-style numbered class", and rewriting it
+ * inverts the meaning.
+ *
+ * The Frontile-specific entries simply do not exist in a consuming app, so they
+ * cost nothing there. Add your own with `--exclude=`.
+ */
+const ignorePaths = [
+  'docs/migrations',
+  'site/app/templates/docs/migrations',
+  'AGENTS.md',
+  'CLAUDE.md',
+  ...userExcludes
+]
+  .map((entry) => resolve(ROOT, entry))
+  // The script should never rewrite itself, wherever it has been copied to.
+  .concat([resolve(process.argv[1] ?? '')]);
+
 function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
   const results = [];
   const ignoreNames = [
@@ -358,22 +478,6 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
     // transient git worktrees and agent scratch space
     '.claude',
     'declarations'
-  ];
-
-  // The migration guides quote the old class names on purpose, in their "before"
-  // columns and mapping tables. Rewriting those turns the document that explains
-  // the migration into one that shows the same class on both sides — which is
-  // exactly the no-op-row problem the guide was just cleaned of. The generated
-  // site templates are derived from those files, so they go too.
-  const ignorePaths = [
-    join(ROOT, 'docs/migrations'),
-    // Agent instruction files name the old tokens in prose to explain that they
-    // no longer exist ("there is no `primary-500`-style class"). Rewriting those
-    // sentences inverts their meaning.
-    join(ROOT, 'AGENTS.md'),
-    join(ROOT, 'CLAUDE.md'),
-    join(ROOT, 'site/app/templates/docs/migrations'),
-    join(ROOT, 'scripts/migrate-semantic-colors.mjs')
   ];
 
   if (
@@ -515,11 +619,17 @@ function main() {
       `\n💡 This was a dry run. Run with --write to apply changes.\n`
     );
   } else {
-    console.log(`\n✅ Migration complete! Remember to:\n`);
-    console.log(`   1. Review the changes with git diff`);
-    console.log(`   2. Build the theme: pnpm --filter theme build`);
-    console.log(`   3. Test the application: pnpm start`);
-    console.log(`   4. Run tests: cd test-app && pnpm ember test\n`);
+    console.log(`\n✅ Migration complete. Before you commit:\n`);
+    console.log(`   1. Review the diff, especially anything flagged above`);
+    console.log(`   2. Rebuild your styles and look at the running app`);
+    console.log(`   3. Search for leftovers this script cannot resolve:`);
+    console.log(
+      `      grep -rnE '(bg|text|border|ring|from|to|via)-(neutral|primary|secondary|tertiary|success|warning|danger)-[0-9]{2,3}' .`
+    );
+    console.log(
+      `\n   A leftover numbered class emits no CSS and no error, so a build`
+    );
+    console.log(`   passing is not evidence that it worked.\n`);
   }
 }
 
