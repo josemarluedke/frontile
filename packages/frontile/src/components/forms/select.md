@@ -542,6 +542,27 @@ export default class NativeSelectExample extends Component {
 }
 ```
 
+## Accessibility
+
+Select is a custom listbox, not a native `<select>`, so its semantics are assembled from
+several pieces:
+
+| Element    | What it exposes                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Trigger    | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier |
+| Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                         |
+| Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                     |
+| Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                          |
+
+Keyboard handling comes from the listbox:
+
+| Key                                   | Behavior                    |
+| ------------------------------------- | --------------------------- |
+| `ArrowDown` / `ArrowUp`               | Move between options        |
+| `Home` / `PageUp`, `End` / `PageDown` | Jump to first / last option |
+| `Enter`, `Space`                      | Select the active option    |
+| `Escape`                              | Closes the dropdown         |
+
 ## API
 
 <Signature @component="Select" />

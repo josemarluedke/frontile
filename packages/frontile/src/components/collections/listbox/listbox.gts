@@ -190,10 +190,23 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
     return 'listbox';
   }
 
+  /**
+   * A listbox that accepts more than one selection has to say so, otherwise a
+   * screen reader presents it as a single-choice list. Only meaningful on
+   * `role="listbox"`; a `menu` conveys multi-select through its item roles.
+   */
+  get ariaMultiselectable(): 'true' | undefined {
+    if (this.role !== 'listbox') {
+      return undefined;
+    }
+    return this.args.selectionMode === 'multiple' ? 'true' : undefined;
+  }
+
   <template>
     <ul
       tabindex="0"
       role={{this.role}}
+      aria-multiselectable={{this.ariaMultiselectable}}
       {{this.listManager.setup
         selectedKeys=@selectedKeys
         disabledKeys=@disabledKeys

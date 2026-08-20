@@ -75,10 +75,7 @@ export default class BasicFieldExample extends Component {
       <div class='flex flex-col gap-4'>
         {{! Field component automatically handles error binding }}
         <form.Field @name='username' as |field|>
-          <field.Input
-            @label='Username'
-            @isRequired={{true}}
-          />
+          <field.Input @label='Username' @isRequired={{true}} />
         </form.Field>
 
         <form.Field @name='email' as |field|>
@@ -96,8 +93,6 @@ export default class BasicFieldExample extends Component {
         <Button @onPress={{this.changeEmail}}>Update Email via formData</Button>
       </div>
     </Form>
-
-
   </template>
 }
 ```
@@ -114,10 +109,7 @@ import { Button } from 'frontile';
 import * as v from 'valibot';
 
 const schema = v.object({
-  name: v.pipe(
-    v.string(),
-    v.nonEmpty('Name is required')
-  ),
+  name: v.pipe(v.string(), v.nonEmpty('Name is required')),
   bio: v.pipe(
     v.string(),
     v.nonEmpty('Bio is required'),
@@ -162,10 +154,7 @@ export default class FieldComponentTypes extends Component {
       <div class='flex flex-col gap-4'>
         {{! Input field }}
         <form.Field @name='name' as |field|>
-          <field.Input
-            @label='Full Name'
-            @isRequired={{true}}
-          />
+          <field.Input @label='Full Name' @isRequired={{true}} />
         </form.Field>
 
         {{! Textarea field }}
@@ -237,10 +226,12 @@ export default class CustomValidationField extends Component {
   // Custom validator for password matching
   customValidator = (data: Schema) => {
     if (data['password'] !== data['confirmPassword']) {
-      return [{
-        message: 'Passwords must match',
-        path: [{ key: 'confirmPassword' }]
-      }];
+      return [
+        {
+          message: 'Passwords must match',
+          path: [{ key: 'confirmPassword' }]
+        }
+      ];
     }
   };
 
@@ -317,11 +308,7 @@ export default class FieldWithGroups extends Component {
   };
 
   <template>
-    <Form
-      @schema={{schema}}
-      @onSubmit={{this.handleFormSubmit}}
-      as |form|
-    >
+    <Form @schema={{schema}} @onSubmit={{this.handleFormSubmit}} as |form|>
       <div class='flex flex-col gap-4'>
         {{! RadioGroup field }}
         <form.Field @name='experience' as |field|>
@@ -345,10 +332,10 @@ export default class FieldWithGroups extends Component {
             @isRequired={{true}}
             as |Checkbox|
           >
-            <Checkbox @label='Frontend Development' value="skill-frontend" />
-            <Checkbox @label='Backend Development' value="skill-backend" />
-            <Checkbox @label='Mobile Development' value="skill-mobile" />
-            <Checkbox @label='DevOps & Infrastructure' value="skill-infra" />
+            <Checkbox @label='Frontend Development' value='skill-frontend' />
+            <Checkbox @label='Backend Development' value='skill-backend' />
+            <Checkbox @label='Mobile Development' value='skill-mobile' />
+            <Checkbox @label='DevOps & Infrastructure' value='skill-infra' />
           </field.CheckboxGroup>
         </form.Field>
 
@@ -422,10 +409,7 @@ const schema = v.object({
   ),
 
   // Legal
-  terms: v.pipe(
-    v.boolean(),
-    v.literal(true, 'You must accept the terms')
-  ),
+  terms: v.pipe(v.boolean(), v.literal(true, 'You must accept the terms')),
   privacy: v.pipe(
     v.boolean(),
     v.literal(true, 'You must accept the privacy policy')
@@ -454,11 +438,7 @@ export default class CompleteFieldForm extends Component {
 
   <template>
     <div class='max-w-2xl'>
-      <Form
-        @schema={{schema}}
-        @onSubmit={{this.handleFormSubmit}}
-        as |form|
-      >
+      <Form @schema={{schema}} @onSubmit={{this.handleFormSubmit}} as |form|>
         <div class='flex flex-col gap-6'>
           {{! Personal Information Section }}
           <div class='border-b border-neutral-subtle pb-6'>
@@ -466,17 +446,11 @@ export default class CompleteFieldForm extends Component {
 
             <div class='grid grid-cols-2 gap-4'>
               <form.Field @name='firstName' as |field|>
-                <field.Input
-                  @label='First Name'
-                  @isRequired={{true}}
-                />
+                <field.Input @label='First Name' @isRequired={{true}} />
               </form.Field>
 
               <form.Field @name='lastName' as |field|>
-                <field.Input
-                  @label='Last Name'
-                  @isRequired={{true}}
-                />
+                <field.Input @label='Last Name' @isRequired={{true}} />
               </form.Field>
             </div>
 
@@ -588,7 +562,7 @@ export default class CompleteFieldForm extends Component {
 
 ## Select Components with Field
 
-When using select components **outside of `Field`**, you use the generic `Select` component.  Rendering of single vs. multi is handled by `Select`.
+When using select components **outside of `Field`**, you use the generic `Select` component. Rendering of single vs. multi is handled by `Select`.
 
 However, when using select components **with `Field`**, you must explicitly specify which variant you need:
 
@@ -618,19 +592,19 @@ This distinction allows the Field component to properly bind values to the compo
 ```
 
 **Key Differences:**
+
 - With Field: Use `field.SingleSelect` or `field.MultiSelect`
 - Field automatically handles value binding based on the component type
 
-## Key Features
-
-### Automatic Error Binding
+## Automatic Error Binding
 
 The Field component automatically:
+
 - Extracts errors for the specified field name from the form's validation errors
 - Passes these errors to any yielded form component
 - Updates error display in real-time as validation occurs
 
-### Automatic Value Binding
+## Automatic Value Binding
 
 When used with a Form component that provides `@data`, Field automatically binds values to form controls:
 
@@ -642,6 +616,7 @@ When used with a Form component that provides `@data`, Field automatically binds
   - Enables the Form component to be the single source of truth
 
 **Example:**
+
 ```gts
 <Form @data={{this.formData}} @onChange={{this.handleChange}} as |form|>
   <form.Field @name="email" as |field|>
@@ -652,7 +627,7 @@ When used with a Form component that provides `@data`, Field automatically binds
 </Form>
 ```
 
-### Field-Level Validation
+## Field-Level Validation
 
 When the Form component's `@validateOn` argument includes `'change'` or `'input'` (defaults to `['change', 'submit']`), Field automatically validates individual fields as users interact with them. This provides feedback without waiting for form submission.
 
@@ -661,6 +636,7 @@ When the Form component's `@validateOn` argument includes `'change'` or `'input'
 Validates when a field loses focus (blur) after being modified:
 
 **How it works:**
+
 1. Form passes `@validateOn` to Field components (defaults to `['change']`)
 2. Field's `handleChange` action checks if `'change'` is included
 3. If change validation is enabled, Field calls `validateField` for that specific field when the field loses focus
@@ -673,6 +649,7 @@ Validates when a field loses focus (blur) after being modified:
 Validates as the user types, on every keystroke:
 
 **How it works:**
+
 1. Form passes `@validateOn` to Field components
 2. Field's `handleInput` action checks if `'input'` is included
 3. If input validation is enabled, Field calls `validateField` for that specific field on every keystroke
@@ -681,28 +658,27 @@ Validates as the user types, on every keystroke:
 **Note:** The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types. This provides immediate feedback but may be distracting for some use cases.
 
 **Example with change validation enabled (default):**
+
 ```gts
 import * as v from 'valibot';
 
 const schema = v.object({
-  email: v.pipe(
-    v.string(),
-    v.email('Please enter a valid email address')
-  )
+  email: v.pipe(v.string(), v.email('Please enter a valid email address'))
 });
 
 <template>
   <Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
     {{! Change validation is enabled by default }}
     {{! Email field validates when user blurs/defocuses after changing value }}
-    <form.Field @name="email" as |field|>
-      <field.Input @label="Email" />
+    <form.Field @name='email' as |field|>
+      <field.Input @label='Email' />
     </form.Field>
   </Form>
 </template>
 ```
 
 **Example with input validation enabled:**
+
 ```gts
 import * as v from 'valibot';
 
@@ -722,14 +698,15 @@ const schema = v.object({
   >
     {{! Input validation is enabled }}
     {{! Password field validates as user types }}
-    <form.Field @name="password" as |field|>
-      <field.Input @label="Password" @type="password" />
+    <form.Field @name='password' as |field|>
+      <field.Input @label='Password' @type='password' />
     </form.Field>
   </Form>
 </template>
 ```
 
 **Example with change validation disabled:**
+
 ```gts
 <template>
   <Form
@@ -740,14 +717,15 @@ const schema = v.object({
   >
     {{! Change validation is disabled }}
     {{! Email field only validates on form submit }}
-    <form.Field @name="email" as |field|>
-      <field.Input @label="Email" />
+    <form.Field @name='email' as |field|>
+      <field.Input @label='Email' />
     </form.Field>
   </Form>
 </template>
 ```
 
 **Benefits of change validation:**
+
 - **Early feedback**: Users see validation errors as they move between fields
 - **Better UX**: Errors are caught before form submission, reducing frustration
 - **Per-field validation**: Each field validates independently when blurred
@@ -755,18 +733,21 @@ const schema = v.object({
 - **Natural flow**: Validation happens when user is done with a field (on blur)
 
 **Benefits of input validation:**
+
 - **Immediate feedback**: Users see validation errors in real-time as they type
 - **Perfect for specific cases**: Great for password strength, character limits, username availability
 - **Continuous guidance**: Users can adjust their input immediately based on feedback
 - **Progressive disclosure**: Errors clear as soon as the input becomes valid
 
 **When to use input validation:**
+
 - Password fields with strength requirements
 - Fields with character limits or specific format requirements
 - Username fields that check availability
 - Fields where immediate feedback improves the user experience
 
 **When to disable field-level validation:**
+
 - Long forms where validation on every interaction might be distracting
 - Forms where you want to allow incomplete data entry until final submission
 - Multi-step forms where validation should only run at specific steps
@@ -778,20 +759,21 @@ Individual Fields can override the Form's `@validateOn` setting to customize whe
 ```gts
 <template>
   <Form @validateOn={{array 'submit'}} as |form|>
-    <form.Field @name="username" as |field|>
+    <form.Field @name='username' as |field|>
       {{! Inherits Form's validateOn - validates on submit only }}
       <field.Input />
     </form.Field>
 
-    <form.Field @name="password" @validateOn={{array 'input'}} as |field|>
+    <form.Field @name='password' @validateOn={{array 'input'}} as |field|>
       {{! Overrides to validate as user types }}
-      <field.Input @type="password" />
+      <field.Input @type='password' />
     </form.Field>
   </Form>
 </template>
 ```
 
 **Important notes:**
+
 - Field-level validation (`'change'` or `'input'`) requires using `form.Field` components
 - The Field component automatically handles the validation logic
 - Both `@schema` and `@validate` custom validators work with field-level validation
@@ -800,9 +782,10 @@ Individual Fields can override the Form's `@validateOn` setting to customize whe
 - The `'input'` event fires on every keystroke as the user types
 - Input validation may trigger many validation calls, so consider performance for complex validation logic
 
-### Yielded Components
+## Anatomy
 
 Field yields bound versions of all form components:
+
 - `field.Input` - Text input with automatic error and value binding
 - `field.Textarea` - Textarea with automatic error and value binding
 - `field.SingleSelect` - Select dropdown with automatic error and selectedKey binding
@@ -814,6 +797,7 @@ Field yields bound versions of all form components:
 - `field.Radio` - Individual radio button with automatic error and checkedValue binding (requires manual `@value` for each radio's unique identifier)
 
 Each component automatically receives:
+
 - The `@name` prop from the Field
 - Any validation errors for that field name
 - The current value from form data (if provided)
@@ -823,19 +807,19 @@ Each component automatically receives:
 ## When to Use Field
 
 **Use the Field component when:**
+
 - You're implementing form validation with `@schema` or `@validate`
 - You want automatic error handling for form fields
 - You need consistent error binding across multiple form components
 - You're building forms with complex validation requirements
 
 **Don't use the Field component when:**
+
 - You're building simple forms without validation
 - You want direct control over error handling
 - You're not using the Form component's validation features
 
-## Best Practices
-
-### Consistent Field Names
+## Matching Schema and Field Names
 
 Ensure field names match between your validation schema and Field components:
 
@@ -851,7 +835,7 @@ schema = v.object({
 </form.Field>
 ```
 
-### Select Field Schema Validation
+## Select Fields in Validated Forms
 
 **Important:** When working with select fields in validated forms, follow these guidelines:
 
@@ -876,7 +860,8 @@ schema = v.object({
     @label='Country'
     @items={{this.countries}}
     @placeholder='Select a country'
-    @allowEmpty={{true}}  {{! Important when no initial value }}
+    @allowEmpty={{true}}
+    {{! Important when no initial value }}
     @isRequired={{true}}
   />
 </form.Field>
@@ -884,7 +869,7 @@ schema = v.object({
 
 These patterns ensure proper handling of select field validation, especially when fields start without a selected value.
 
-### Error Display
+## Where Errors Appear
 
 Field components automatically display errors, but you can customize the display:
 
@@ -900,11 +885,23 @@ Field components automatically display errors, but you can customize the display
 
 ## Accessibility
 
-The Field component maintains all accessibility features of the underlying form components:
-- Proper ARIA attributes for error states
-- Automatic `aria-invalid` and `aria-describedby` updates
-- Screen reader announcements for validation errors
-- Maintains all keyboard navigation of wrapped components
+Field itself renders no markup and sets no attributes — it binds `errors` down to the
+control it yields, and the control's `FormControl` wrapper does the rest. So the behavior
+below comes from the wrapped component, and holds for `field.Input`, `field.Select`,
+`field.Checkbox`, `field.Textarea` and the rest alike:
+
+| Behavior                                                               | Where it comes from                                                             |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `aria-invalid` on the control when the field has errors                | `FormControl`, from the bound `errors`                                          |
+| `aria-describedby` linking the control to its description and feedback | `FormControl.describedBy`                                                       |
+| Errors announced as they appear                                        | `FormFeedback` renders `aria-live="assertive"` for errors, `"polite"` otherwise |
+| Label associated via `for`                                             | `FormControl` + `Label`                                                         |
+
+Two consequences worth knowing. Because error feedback is `aria-live="assertive"`, a form
+using `@validateOn={{array "input"}}` interrupts a screen reader on **every keystroke** —
+prefer `change` or `blur` for validation a user hears. And because the announcement is tied
+to the feedback element rather than the control, a field whose errors you render yourself,
+outside `FormControl`, gets no announcement at all.
 
 ## API
 
