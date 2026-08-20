@@ -44,7 +44,7 @@ Add Frontile's theme configuration to your `app/styles/app.css` for Tailwind CSS
 
 ### Your First Component
 
-```gjs
+```gts
 import Component from '@glimmer/component';
 import { Button } from 'frontile';
 

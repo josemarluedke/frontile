@@ -16,7 +16,7 @@ import { Chip } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -26,7 +26,7 @@ import { Chip } from 'frontile';
 
 ## Chip Appearances
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -40,7 +40,7 @@ import { Chip } from 'frontile';
 
 ## Chip Intents
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -76,7 +76,7 @@ import { Chip } from 'frontile';
 
 ## Chip with Dots
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -120,7 +120,7 @@ import { Chip } from 'frontile';
 
 If you pass the `@onClose` argument, the close button will be visible.
 
-```gjs preview
+```gts preview
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Chip } from 'frontile';
@@ -150,7 +150,7 @@ export default class DemoComponent extends Component {
 
 ## Chip Sizes
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -164,7 +164,7 @@ import { Chip } from 'frontile';
 
 You can pass the argument `@isDisabled` to represent a disabled chip.
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>
@@ -182,7 +182,7 @@ import { Chip } from 'frontile';
 
 You can also use TailwindCSS classes to customize even further.
 
-```gjs preview
+```gts preview
 import { Chip } from 'frontile';
 
 <template>

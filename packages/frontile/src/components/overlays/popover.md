@@ -28,7 +28,7 @@ import { Popover } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 
@@ -51,7 +51,7 @@ Prevents the user from tabbing outside of the popover content while it's open,
 ensuring better accessibility and usability. To enable this option, ensure a
 focusable element is rendered at all times within the popover content.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 import { Input } from 'frontile';
@@ -79,7 +79,7 @@ such as `open`, `close`, or `toggle`, offering convenient control over the popov
 
 In the example below, the popover is showned when the user hovers the trigger button.
 
-```gjs preview
+```gts preview
 import { on } from '@ember/modifier';
 import { Popover } from 'frontile';
 import { Button } from 'frontile';
@@ -107,7 +107,7 @@ import { Button } from 'frontile';
 Prevent scrolling of the main window when the popover is open, focusing the
 user's attention on the popover content.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 import { Input } from 'frontile';
@@ -131,7 +131,7 @@ import { Input } from 'frontile';
 
 Choose from various backdrop options such as none, faded, blur, or transparent.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 import { Input } from 'frontile';
@@ -165,7 +165,7 @@ const backdrops = ['none', 'faded', 'blur', 'transparent'];
 Easily specify the placement of the popover relative to its trigger element,
 ensuring optimal positioning in various UI layouts.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 
@@ -205,7 +205,7 @@ const placements = [
 The size of the content. It can be overwritten by passing width Tailwind classes
 to the `Content` yielded component.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { Popover } from 'frontile';
 
@@ -289,7 +289,7 @@ added overlay and closes it, ensuring a natural and intuitive user experience.
 Similarly, clicking outside of the overlays prioritizes the most recent addition,
 closing it before proceeding to the underlying layers.
 
-```gjs preview
+```gts preview
 import { Popover } from 'frontile';
 import { Button } from 'frontile';
 

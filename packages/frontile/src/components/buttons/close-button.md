@@ -43,7 +43,7 @@ import { CloseButton } from 'frontile';
 
 The CloseButton component supports press interactions through the `@onPress` callback, providing cross-platform support for mouse, touch, and keyboard events.
 
-```gjs preview
+```gts preview
 import { CloseButton } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

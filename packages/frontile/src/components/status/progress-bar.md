@@ -16,7 +16,7 @@ import { ProgressBar } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template><ProgressBar @progress={{50}} @label='Progress' /></template>
@@ -24,7 +24,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Intents
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template>
@@ -66,7 +66,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Sizes
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template>
@@ -96,7 +96,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Radius
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template>
@@ -135,7 +135,7 @@ import { ProgressBar } from 'frontile';
 
 ## ProgressBar Labels
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 import { hash } from '@ember/helper';
 
@@ -163,7 +163,7 @@ import { hash } from '@ember/helper';
 
 ## ProgressBar Description
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template>
@@ -179,7 +179,7 @@ import { ProgressBar } from 'frontile';
 
 You can pass the argument `@isIndeterminate` to represent when the effort or duration can not be calculated
 
-```gjs preview
+```gts preview
 import { ProgressBar } from 'frontile';
 
 <template>

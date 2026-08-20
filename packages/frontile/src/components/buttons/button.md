@@ -15,7 +15,7 @@ import { Button } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -25,7 +25,7 @@ import { Button } from 'frontile';
 
 ## Button Appearances
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -48,7 +48,7 @@ The default styles are mainly structural. Intent colors are applied as `color`.
 Every intent is available in every appearance. The label on each row is the
 `@appearance` value; the button labels are the `@intent` values.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { array } from '@ember/helper';
 
@@ -87,7 +87,7 @@ const intents = [
 
 ## Button Sizes
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -104,7 +104,7 @@ import { Button } from 'frontile';
 
 ## With Icons
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
@@ -121,7 +121,7 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
 Icons can be placed before or after text. They inherit the button's text color via `currentColor`.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 
@@ -145,7 +145,7 @@ down the scale.
 Wrap the pair so the unit sits tight against the label: the button's own `gap`
 spaces the icon slots, while the wrapper's narrower gap spaces label from unit.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import { StarIcon } from 'site/components/icons';
 
@@ -182,7 +182,7 @@ change with `@size`:
 | `xl`    | `text-strong-2xl` | `text-body-md`    | `gap-1`     |
 | `2xl`   | `text-strong-3xl` | `text-body-lg`    | `gap-1.5`   |
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -217,7 +217,7 @@ import { Button } from 'frontile';
 
 ## Disabled
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -239,7 +239,7 @@ Sometimes a button element is not ideal for a given case, but the same styles ar
 Frontile provides the option to disable rendering the `button` element, but instead it yields back an object with
 the class names it would use.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -253,7 +253,7 @@ import { Button } from 'frontile';
 
 You can compose appearance with intents and more to create the button that best fits your needs.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -267,7 +267,7 @@ import { Button } from 'frontile';
 
 You can use TailwindCSS classes to customize even further.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -279,7 +279,7 @@ import { Button } from 'frontile';
 
 Here is another example using TailwindCSS classes with the `custom` appearance.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 
 <template>
@@ -300,7 +300,7 @@ argument `@class` will override and merge TailwindCSS class names.
 
 The Button component supports press interactions through the `@onPress` callback, which provides cross-platform support for mouse, touch, and keyboard events.
 
-```gjs preview
+```gts preview
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
