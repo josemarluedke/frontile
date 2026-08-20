@@ -3,22 +3,35 @@ import { useStyles, type FormFeedbackVariants } from '@frontile/theme';
 
 interface FormFeedbackSignature {
   Args: {
+    /**
+     * The id of the feedback element, referenced by the control's
+     * `aria-describedby`.
+     */
     id?: string;
-    /*
-     * A list of messages or a single message string
+
+    /**
+     * A list of messages or a single message string. An array is joined with `; `.
      */
     messages?: string[] | string;
 
-    /*
-     * The intent of the feedback
+    /**
+     * The intent of the feedback, which also decides whether it is announced
+     * assertively (`danger`) or politely.
+     *
      * @defaultValue 'danger'
      */
     intent?: FormFeedbackVariants['intent'];
 
-    /*
+    /**
+     * The size of the feedback text.
+     *
      * @defaultValue 'md'
      */
     size?: FormFeedbackVariants['size'];
+
+    /**
+     * Class names for the feedback element, merged with the theme's.
+     */
     class?: string;
   };
   Element: HTMLDivElement;

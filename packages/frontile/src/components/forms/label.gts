@@ -13,10 +13,16 @@ interface LabelSignature {
      */
     for?: string;
 
-    /*
+    /**
+     * The size of the label text.
+     *
      * @defaultValue 'md'
      */
     size?: LabelVariants['size'];
+
+    /**
+     * Class names for each slot of the component, merged with the theme's.
+     */
     classes?: SlotsToClasses<LabelSlots>;
 
     /**
@@ -24,8 +30,9 @@ interface LabelSignature {
      */
     class?: string;
 
-    /*
+    /**
      * Whether the field is required or not, if true, an asterisk will be added to the label.
+     *
      * @defaultValue false
      */
     isRequired?: boolean;

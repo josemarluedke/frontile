@@ -3,12 +3,22 @@ import { useStyles, type FormDescriptionVariants } from '@frontile/theme';
 
 interface FormDescriptionSignature {
   Args: {
+    /**
+     * The id of the description element, referenced by the control's
+     * `aria-describedby`.
+     */
     id?: string;
-    /*
+
+    /**
+     * The size of the description text.
+     *
      * @defaultValue 'md'
      */
     size?: FormDescriptionVariants['size'];
 
+    /**
+     * Class names for the description element, merged with the theme's.
+     */
     class?: string;
   };
   Element: HTMLDivElement;
