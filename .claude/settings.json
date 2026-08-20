@@ -4,19 +4,50 @@
     "allow": [
       "WebSearch",
       "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(xargs:*)",
+
+      "Bash(pnpm install:*)",
       "Bash(pnpm build)",
+      "Bash(pnpm start)",
       "Bash(pnpm ember test:*)",
-      "Bash(pnpm run lint:js:*)",
       "Bash(pnpm lint:js:*)",
+      "Bash(pnpm run lint:js:*)",
+
+      "Bash(pnpm --filter frontile build)",
+      "Bash(pnpm --filter frontile lint:types:*)",
       "Bash(pnpm --filter buttons build)",
       "Bash(pnpm --filter collections build)",
-      "Bash(pnpm --filter core build)",
       "Bash(pnpm --filter forms build)",
-      "Bash(pnpm --filter frontile build)",
       "Bash(pnpm --filter notifications build)",
       "Bash(pnpm --filter overlays build)",
       "Bash(pnpm --filter status build)",
-      "Bash(pnpm --filter theme build)"
+      "Bash(pnpm --filter theme build)",
+      "Bash(pnpm --filter theme lint:types:*)",
+      "Bash(pnpm --filter collections lint:types:*)",
+      "Bash(pnpm --filter forms-legacy build:*)",
+
+      "Bash(pnpm --filter @frontile/theme build:*)",
+      "Bash(pnpm --filter @frontile/theme lint:types:*)",
+      "Bash(pnpm --filter @frontile/buttons build:*)",
+      "Bash(pnpm --filter @frontile/collections build:*)",
+      "Bash(pnpm --filter @frontile/forms build:*)",
+      "Bash(pnpm --filter @frontile/notifications build:*)",
+      "Bash(pnpm --filter @frontile/overlays build:*)",
+      "Bash(pnpm --filter @frontile/status build:*)",
+      "Bash(pnpm --filter @frontile/utilities build:*)",
+
+      "Bash(pnpm --filter site build:*)",
+      "Bash(pnpm --filter site lint:types:*)",
+      "Bash(pnpm --filter site generate-signature-data:*)",
+      "Bash(pnpm --filter site test:node:*)",
+
+      "Bash(node .claude/skills/frontile-docs/scripts/lint-docs.mjs:*)",
+      "Bash(node scripts/migrate-semantic-colors.mjs:*)"
     ],
     "deny": [],
     "ask": []
