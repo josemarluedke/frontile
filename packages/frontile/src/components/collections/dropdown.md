@@ -643,7 +643,7 @@ Keys are handled in two places, which is worth knowing when debugging one that d
 
 | Focus is on the trigger | Behavior                                        |
 | ----------------------- | ----------------------------------------------- |
-| `Enter` / `Space`       | Opens the menu (native button activation)       |
+| `Enter` / `Space`       | Opens the menu, on key release                  |
 | `ArrowDown` / `ArrowUp` | Opens the menu                                  |
 | any letter              | Opens the menu                                  |
 | `Escape`                | Closes                                          |
