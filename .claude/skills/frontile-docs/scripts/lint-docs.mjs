@@ -531,7 +531,9 @@ function main() {
   const sinceFlag = argv.indexOf('--since');
   const since = sinceFlag === -1 ? null : (argv[sinceFlag + 1] ?? 'HEAD');
   const paths = argv.filter(
-    (a, i) => !a.startsWith('--') && i !== sinceFlag + 1
+    // Guard on sinceFlag !== -1: without it, `sinceFlag + 1` is 0 when --since
+    // is absent, which silently swallows the first file argument.
+    (a, i) => !a.startsWith('--') && !(sinceFlag !== -1 && i === sinceFlag + 1)
   );
 
   let docs;
