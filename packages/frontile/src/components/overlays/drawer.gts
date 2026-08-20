@@ -77,6 +77,9 @@ export interface DrawerArgs extends Pick<
    */
   size?: DrawerVariants['size'];
 
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<DrawerSlots>;
 }
 

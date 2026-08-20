@@ -3767,7 +3767,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when closing has finished, including any exit transition.',
         tags: {},
       },
       {
@@ -3777,7 +3778,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
         tags: {},
       },
       {
@@ -3788,7 +3790,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
         tags: {},
       },
       {
@@ -3843,7 +3846,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
         tags: {},
       },
       {
@@ -3948,9 +3952,9 @@ const data: ComponentDoc[] = [
           type: 'ModifierLike&#x3C;{ <span class="hljs-attr">Element</span>: HTMLElement; }>',
         },
         isRequired: true,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: { internal: { name: 'internal', value: '' } },
       },
       {
         identifier: 'appearance',
@@ -4104,7 +4108,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -4210,7 +4215,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -4329,7 +4335,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Callback when a menu item is selected, receiving that item's `@key`.",
         tags: {},
       },
       {
@@ -4591,7 +4598,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -4697,7 +4705,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -4766,7 +4775,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when closing has finished, including any exit transition.',
         tags: {},
       },
       {
@@ -4864,7 +4874,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
         tags: {},
       },
       {
@@ -5009,7 +5020,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
         tags: {},
       },
       {
@@ -5205,7 +5217,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
         tags: {},
       },
       {
@@ -5539,7 +5552,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -5599,7 +5613,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute applied to every checkbox in the group, so they are\nsubmitted together as one field.',
         tags: {},
       },
       {
@@ -5610,7 +5625,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when a checkbox in the group is toggled. It is bound onto every\nyielded Checkbox, so a checkbox that sets its own `@onChange` replaces this\none rather than running alongside it.',
         tags: {},
       },
       {
@@ -5622,8 +5638,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'How the checkboxes are laid out.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'vertical'" } },
+        defaultValue: '<span class="hljs-string">\'vertical\'</span>',
       },
       {
         identifier: 'size',
@@ -5634,7 +5651,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "The size applied to every checkbox in the group and to the group's label.",
         tags: {},
       },
     ],
@@ -5681,7 +5699,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether the checkbox is checked. Pair with `onChange` to control the\ncheckbox; leave it unset to let the element track its own state.',
         tags: {},
       },
       {
@@ -5691,7 +5710,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -5751,7 +5771,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute of the underlying input, used when the checkbox is\nsubmitted as part of a form.',
         tags: {},
       },
       {
@@ -5762,7 +5783,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onblur is triggered',
         tags: {},
       },
       {
@@ -5773,7 +5794,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onchange is triggered',
         tags: {},
       },
       {
@@ -5785,8 +5806,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the checkbox and its label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [],
@@ -6695,7 +6717,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -6777,7 +6800,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute of the underlying input, used when the input is\nsubmitted as part of a form.',
         tags: {},
       },
       {
@@ -6822,8 +6846,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the input and its label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
       {
         identifier: 'startContentPointerEvents',
@@ -6844,15 +6869,17 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The type attribute of the underlying input element.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'text'" } },
+        defaultValue: '<span class="hljs-string">\'text\'</span>',
       },
       {
         identifier: 'value',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The value of the input. Pair with `onInput` or `onChange` to control the\ninput; leave it unset to let the element track its own value.',
         tags: {},
       },
     ],
@@ -7426,7 +7453,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -7486,7 +7514,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute applied to every radio in the group, which is what makes\nthe browser treat them as mutually exclusive.',
         tags: {},
       },
       {
@@ -7497,7 +7526,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when the selected radio changes, receiving the new value.',
         tags: {},
       },
       {
@@ -7509,8 +7539,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'How the radios are laid out.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'vertical'" } },
+        defaultValue: '<span class="hljs-string">\'vertical\'</span>',
       },
       {
         identifier: 'size',
@@ -7521,7 +7552,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "The size applied to every radio in the group and to the group's label.",
         tags: {},
       },
       {
@@ -7529,7 +7561,8 @@ const data: ComponentDoc[] = [
         type: { type: 'T' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The currently selected value. Pair with `onChange` to control the group.',
         tags: {},
       },
     ],
@@ -7578,7 +7611,8 @@ const data: ComponentDoc[] = [
         type: { type: 'T' },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'The value this radio represents. It is passed to `onChange` when the radio\nis selected, and compared against `checkedValue` to decide whether it is.',
         tags: {},
       },
       {
@@ -7586,7 +7620,8 @@ const data: ComponentDoc[] = [
         type: { type: 'T' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The currently selected value of the group. This radio renders as checked\nwhen it equals `value`. Usually supplied by RadioGroup rather than set\ndirectly.',
         tags: {},
       },
       {
@@ -7596,7 +7631,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -7656,7 +7692,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute shared by the radios in a group, which is what makes the\nbrowser treat them as mutually exclusive.',
         tags: {},
       },
       {
@@ -7667,7 +7704,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onblur is triggered',
         tags: {},
       },
       {
@@ -7678,7 +7715,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onchange is triggered',
         tags: {},
       },
       {
@@ -7690,8 +7727,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the radio and its label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [],
@@ -7740,7 +7778,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -7846,7 +7885,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -7914,7 +7954,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when closing has finished, including any exit transition.',
         tags: {},
       },
       {
@@ -8002,7 +8043,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
         tags: {},
       },
       {
@@ -8148,7 +8190,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
         tags: {},
       },
       {
@@ -8372,7 +8415,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
         tags: {},
       },
       {
@@ -8928,7 +8972,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -8956,7 +9001,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The id attribute of the textarea, also used to associate the label and\ndescription with it. One is generated when this is omitted.',
         tags: {},
       },
       {
@@ -8996,7 +9042,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The name attribute of the underlying textarea, used when it is submitted as\npart of a form.',
         tags: {},
       },
       {
@@ -9007,7 +9054,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onblur is triggered',
         tags: {},
       },
       {
@@ -9018,7 +9065,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when onchange is triggered',
         tags: {},
       },
       {
@@ -9029,7 +9076,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Callback when oninput is triggered',
         tags: {},
       },
       {
@@ -9041,8 +9088,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the textarea and its label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
       {
         identifier: 'value',
@@ -9053,7 +9101,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The value of the textarea. Pair with `onInput` or `onChange` to control it;\nleave it unset to let the element track its own value.',
         tags: {},
       },
     ],
@@ -9401,7 +9450,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -9507,7 +9557,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -9517,7 +9568,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -9913,7 +9965,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -10019,7 +10072,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -10029,7 +10083,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -10401,7 +10456,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -10507,7 +10563,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -10524,7 +10581,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom class name for the content element, merged with the default ones\nusing Tailwind Merge.',
         tags: {},
       },
       {
@@ -10563,7 +10621,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "An extra modifier applied to the content element, for behavior the overlay\ndoesn't provide itself.",
         tags: {},
       },
       {
@@ -10583,8 +10642,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Opt out of the flex layout applied to the content element, for overlays\nthat need to lay their content out themselves.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'disableFocusTrap',
@@ -10843,7 +10904,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when closing has finished, including any exit transition.',
         tags: {},
       },
       {
@@ -10853,7 +10915,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui flip middleware, which moves the content to\nthe opposite side when it would overflow the viewport.',
         tags: {},
       },
       {
@@ -10861,7 +10924,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Whether the popover is open. Pair with `onOpenChange` to control it;\nleave it unset to let the popover manage its own state.',
         tags: {},
       },
       {
@@ -10872,7 +10936,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
         tags: {},
       },
       {
@@ -10900,7 +10965,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Callback when the popover opens or closes, receiving the new state.',
         tags: {},
       },
       {
@@ -10938,7 +11004,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Options for the floating-ui shift middleware, which nudges the content\nalong its axis to keep it in view.',
         tags: {},
       },
       {
@@ -11127,7 +11194,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
         tags: {},
       },
       {
@@ -11233,7 +11301,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Transition classes for the backdrop, overriding the defaults used when it\nfades in and out.',
         tags: {},
       },
       {
@@ -11250,7 +11319,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom class name for the content element, merged with the default ones\nusing Tailwind Merge.',
         tags: {},
       },
       {
@@ -11508,9 +11578,9 @@ const data: ComponentDoc[] = [
         identifier: 'triggerWidth',
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
-        isInternal: false,
+        isInternal: true,
         description: '',
-        tags: {},
+        tags: { internal: { name: 'internal', value: '' } },
       },
     ],
     Blocks: [

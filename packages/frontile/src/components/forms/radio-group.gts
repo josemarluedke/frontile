@@ -10,13 +10,34 @@ import {
 import type { WithBoundArgs } from '@glint/template';
 
 interface Args<T> extends FormControlSharedArgs {
+  /**
+   * The name attribute applied to every radio in the group, which is what makes
+   * the browser treat them as mutually exclusive.
+   */
   name?: string;
+
+  /**
+   * The currently selected value. Pair with `onChange` to control the group.
+   */
   value?: T;
+
+  /**
+   * Callback when the selected radio changes, receiving the new value.
+   */
   onChange?: RadioSignature<T>['Args']['onChange'];
+
+  /**
+   * The size applied to every radio in the group and to the group's label.
+   */
   size?: RadioVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<RadioGroupSlots>;
 
-  /*
+  /**
+   * How the radios are laid out.
    *
    * @defaultValue 'vertical'
    */

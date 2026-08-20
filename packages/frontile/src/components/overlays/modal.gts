@@ -76,6 +76,9 @@ export interface ModalArgs extends Pick<
    */
   size?: ModalVariants['size'];
 
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<ModalSlots>;
 }
 

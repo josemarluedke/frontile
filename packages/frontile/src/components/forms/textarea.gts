@@ -10,20 +10,49 @@ import {
 } from '@frontile/theme';
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * The id attribute of the textarea, also used to associate the label and
+   * description with it. One is generated when this is omitted.
+   */
   id?: string;
+
+  /**
+   * The value of the textarea. Pair with `onInput` or `onChange` to control it;
+   * leave it unset to let the element track its own value.
+   */
   value?: string | number | boolean;
+
+  /**
+   * The name attribute of the underlying textarea, used when it is submitted as
+   * part of a form.
+   */
   name?: string;
 
+  /**
+   * The size of the textarea and its label.
+   *
+   * @defaultValue 'md'
+   */
   size?: TextareaVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<TextareaSlots>;
 
-  // Callback when oninput is triggered
+  /**
+   * Callback when oninput is triggered
+   */
   onInput?: (value: string, event: InputEvent) => void;
 
-  // Callback when onchange is triggered
+  /**
+   * Callback when onchange is triggered
+   */
   onChange?: (value: string, event: InputEvent) => void;
 
-  // Callback when onblur is triggered
+  /**
+   * Callback when onblur is triggered
+   */
   onBlur?: () => void;
 }
 

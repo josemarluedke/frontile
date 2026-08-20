@@ -10,17 +10,36 @@ import {
 } from '@frontile/theme';
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * Whether the checkbox is checked. Pair with `onChange` to control the
+   * checkbox; leave it unset to let the element track its own state.
+   */
   checked?: boolean;
+
+  /**
+   * The name attribute of the underlying input, used when the checkbox is
+   * submitted as part of a form.
+   */
   name?: string;
+
+  /**
+   * The size of the checkbox and its label.
+   *
+   * @defaultValue 'md'
+   */
   size?: CheckboxVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<CheckboxSlots>;
 
-  /*
+  /**
    * Callback when onchange is triggered
    */
   onChange?: (value: boolean, event: Event) => void;
 
-  /*
+  /**
    * Callback when onblur is triggered
    */
   onBlur?: () => void;
