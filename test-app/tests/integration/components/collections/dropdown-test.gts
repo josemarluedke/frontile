@@ -224,5 +224,63 @@ module(
 
       assert.dom('[data-test-id="listbox"]').exists();
     });
+
+    test('it opens with Enter on the trigger', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Dropdown</d.Trigger>
+
+            <d.Menu @disableTransitions={{true}} as |Item|>
+              <Item @key="profile">My Profile</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      assert.dom('[data-test-id="listbox"]').doesNotExist();
+
+      await triggerKeyEvent(
+        '[data-test-id="dropdown-trigger"]',
+        'keydown',
+        'Enter'
+      );
+      await triggerKeyEvent(
+        '[data-test-id="dropdown-trigger"]',
+        'keyup',
+        'Enter'
+      );
+
+      assert
+        .dom('[data-test-id="listbox"]')
+        .exists('Enter on a focused trigger opens the menu');
+    });
+
+    test('it opens with Space on the trigger', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Dropdown</d.Trigger>
+
+            <d.Menu @disableTransitions={{true}} as |Item|>
+              <Item @key="profile">My Profile</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      assert.dom('[data-test-id="listbox"]').doesNotExist();
+
+      await triggerKeyEvent(
+        '[data-test-id="dropdown-trigger"]',
+        'keydown',
+        ' '
+      );
+      await triggerKeyEvent('[data-test-id="dropdown-trigger"]', 'keyup', ' ');
+
+      assert
+        .dom('[data-test-id="listbox"]')
+        .exists('Space on a focused trigger opens the menu');
+    });
   }
 );

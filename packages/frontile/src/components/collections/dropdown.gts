@@ -127,8 +127,25 @@ class Trigger extends Component<TriggerSignature> {
     }
   };
 
+  /**
+   * Enter and Space have to be handled here rather than left to the button's
+   * native activation. The trigger renders Frontile's Button, whose `press`
+   * modifier calls preventDefault on Enter/Space keydown — that is deliberate,
+   * since press synthesises its own press event for `@onPress` consumers — but
+   * it also cancels the native click, and Popover's `trigger` modifier opens on
+   * click. Without this the menu could only be opened with the arrow keys.
+   *
+   * Select is unaffected because its trigger is a plain `<button>` with no press
+   * modifier, so its native click still fires. Handling this in Popover instead
+   * would double-toggle there.
+   */
   handleKeyUp = (event: KeyboardEvent) => {
-    if (event.key === 'ArrowDown' || event.key == 'ArrowUp') {
+    if (
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Enter' ||
+      event.key === ' '
+    ) {
       this.args.toggle();
     }
   };
