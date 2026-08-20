@@ -93,6 +93,41 @@ module(
       assert.dom('[data-test-avatar] img').hasAttribute('alt', 'User Avatar');
     });
 
+    // An <img> with no alt attribute at all is announced by its filename or URL,
+    // which for `pravatar.cc/150?img=5` is noise. An empty alt marks it
+    // decorative instead, which is the right default beside a visible name.
+    test('an image with no @alt is marked decorative', async function (assert) {
+      await render(
+        <template><Avatar data-test-avatar @src="/avatar.jpg" /></template>
+      );
+
+      assert.dom('[data-test-avatar] img').hasAttribute('alt', '');
+    });
+
+    // role="img" makes an element's contents presentational, so the initials
+    // stop being read and the only name left is aria-label. Without one the
+    // avatar is an unnamed image — worse than plain text.
+    test('initials with no @alt are readable rather than an unnamed image', async function (assert) {
+      await render(
+        <template><Avatar data-test-avatar @name="John Smith" /></template>
+      );
+
+      assert.dom('[data-test-avatar] [role="img"]').doesNotExist();
+      assert.dom('[data-test-avatar]').hasText('JS');
+    });
+
+    test('initials with @alt are named for assistive technology', async function (assert) {
+      await render(
+        <template>
+          <Avatar data-test-avatar @name="John Smith" @alt="John Smith" />
+        </template>
+      );
+
+      assert
+        .dom('[data-test-avatar] [role="img"]')
+        .hasAttribute('aria-label', 'John Smith');
+    });
+
     test('it does not render initials when an image is present', async function (assert) {
       await render(
         <template>

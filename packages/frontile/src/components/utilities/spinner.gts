@@ -3,12 +3,22 @@ import { useStyles, type SpinnerVariants } from '@frontile/theme';
 
 const Spinner: TOC<{
   Args: {
-    class?: string;
     /**
+     * Custom class name, it will override the default ones using Tailwind Merge
+     * library. Use `fill-*` for the highlighted arc and `text-*` for the track.
+     */
+    class?: string;
+
+    /**
+     * The size of the spinner.
+     *
      * @defaultValue 'md'
      */
     size?: SpinnerVariants['size'];
+
     /**
+     * The color of the spinner, matching the intents used elsewhere.
+     *
      * @defaultValue 'default'
      */
     intent?: SpinnerVariants['intent'];
@@ -16,9 +26,14 @@ const Spinner: TOC<{
   Element: SVGElement;
 }> = <template>
   {{#let (useStyles) as |styles|}}
+    {{! A spinner is decorative: the loading state belongs on the region that
+    is loading, not on the graphic. Hidden by default so it is not announced as
+    an unnamed image; attributes are applied last, so a caller that really wants
+    it announced can pass its own aria-hidden and label. }}
     <svg
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
       class={{styles.spinner class=@class size=@size intent=@intent}}
       ...attributes
     >
