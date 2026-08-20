@@ -4046,5 +4046,90 @@ module(
           .doesNotHaveClass('h-4');
       });
     });
+
+    module('header semantics', function () {
+      test('aria-sort on a sortable header tracks the sort state', async function (assert) {
+        // aria-sort itself comes from universal-ember's DataSorting plugin, via
+        // the columnHeader modifier applied to each header cell. This guards the
+        // wiring: drop that modifier and sighted users keep the chevron while
+        // screen reader users lose the sort state entirely.
+        const columns = [
+          { key: 'name', name: 'Name', isSortable: true },
+          { key: 'email', name: 'Email' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Charlie', email: 'c@example.com', role: 'user' },
+          { id: '2', name: 'Alice', email: 'a@example.com', role: 'admin' }
+        ];
+
+        const handleSort = (
+          items: TestItem[],
+          sortDescriptor: SortItem<TestItem>
+        ) => {
+          if (sortDescriptor.direction === 'none') {
+            return items;
+          }
+
+          return [...items].sort((a, b) => {
+            const aValue = a[sortDescriptor.property];
+            const bValue = b[sortDescriptor.property];
+
+            if (aValue === undefined || bValue === undefined) return 0;
+
+            if (sortDescriptor.direction === 'ascending') {
+              return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+            }
+
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+          });
+        };
+
+        await render(
+          <template>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @onSort={{handleSort}}
+            />
+          </template>
+        );
+
+        const nameHeader = '[data-test-id="table-column"][data-key="name"]';
+
+        assert
+          .dom(nameHeader)
+          .hasAttribute('aria-sort', 'none', 'sortable but not yet sorted');
+
+        await click(`${nameHeader} button[type="button"]`);
+        assert.dom(nameHeader).hasAttribute('aria-sort', 'descending');
+
+        await click(`${nameHeader} button[type="button"]`);
+        assert.dom(nameHeader).hasAttribute('aria-sort', 'ascending');
+
+        await click(`${nameHeader} button[type="button"]`);
+        assert
+          .dom(nameHeader)
+          .hasAttribute('aria-sort', 'none', 'back to unsorted');
+      });
+
+      test('header cells are scoped to their column', async function (assert) {
+        const columns = [
+          { key: 'name', name: 'Name' }
+        ] as const satisfies ColumnConfig<TestItem>[];
+
+        const items: TestItem[] = [
+          { id: '1', name: 'Alice', email: 'a@example.com', role: 'admin' }
+        ];
+
+        await render(
+          <template><Table @columns={{columns}} @items={{items}} /></template>
+        );
+
+        assert
+          .dom('[data-test-id="table-column"][data-key="name"]')
+          .hasAttribute('scope', 'col');
+      });
+    });
   }
 );

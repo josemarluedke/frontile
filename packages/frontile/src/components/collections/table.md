@@ -27,7 +27,7 @@ For manual composition and custom layouts, use [SimpleTable](./simple-table) ins
 import { Table, type ColumnConfig } from 'frontile';
 ```
 
-## Basic Usage
+## Usage
 
 Define columns and items to render a table automatically:
 
@@ -1306,6 +1306,36 @@ export default class DemoComponent extends Component {
 - **Selection colors**: Customize highlight with `@selectionColor` (default, primary, success, warning, danger)
 - **Sticky selection column**: Auto-sticky on horizontal scroll
 - **Select all control**: Hide with `@showSelectAll={{false}}`
+
+## Accessibility
+
+Table builds on [SimpleTable](./simple-table.md), so it inherits real table markup and
+`scope="col"` header cells — structure and navigation come from the browser rather than ARIA.
+On top of that:
+
+| Feature             | What it exposes                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| Sortable column     | `aria-sort` on the header cell, tracking `none` / `ascending` / `descending`                 |
+| Sort control        | A real `<button>` inside the header, so it is focusable and activates on `Enter` and `Space` |
+| Sort direction icon | `aria-hidden="true"` — the chevron is decoration, `aria-sort` carries the meaning            |
+| Row selection       | A checkbox per row labelled "Select row", and "Select all rows" in the header                |
+| Skeleton rows       | `aria-hidden="true"` while loading, so placeholder rows are not announced as data            |
+
+`aria-sort` comes from the underlying table library's header-cell modifier, which applies it
+to every header cell — including non-sortable ones, where it reads `none`. That is harmless
+but means the attribute's presence is not a reliable signal of whether a column can be
+sorted; `data-sortable` is.
+
+Two things to supply yourself:
+
+- **An accessible name for the table.** Add a `<caption>`, or `aria-labelledby` pointing at
+  the heading above it.
+- **Better selection labels when rows are identifiable.** Every row checkbox is labelled
+  "Select row", which is unambiguous only when a screen reader user is already inside the
+  row. If your rows have a natural name, render your own checkbox in a cell with a label
+  that includes it.
+
+Sticky headers and footers are positioned with CSS and do not change the reading order.
 
 ## API
 

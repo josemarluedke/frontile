@@ -14,16 +14,6 @@ A listbox presents a list of options allowing users to select one or multiple it
 import { Listbox } from 'frontile';
 ```
 
-## Key Features
-
-- **Multiple Selection Modes**: None, single, or multiple item selection
-- **Full Keyboard Navigation**: Arrow keys, Home/End, PageUp/PageDown, and type-ahead search
-- **Dynamic or Static Items**: Render from an array or define items explicitly
-- **Rich Item Content**: Icons, descriptions, shortcuts, and dividers
-- **Accessible**: Complete ARIA support and screen reader friendly
-- **Customizable**: Control appearance, intent, and styling
-- **Flexible Selection**: Allow or require selection with `@allowEmpty`
-
 ## Usage
 
 ### Basic Listbox with Selection
@@ -547,93 +537,30 @@ export default class EmptySelection extends Component {
 }
 ```
 
-## Important Notes
+## Accessibility
 
-### Keyboard Navigation
+| Element  | What it exposes                                                                                |
+| -------- | ---------------------------------------------------------------------------------------------- |
+| The list | `role="listbox"`, or `role="menu"` with `@type="menu"`                                         |
+|          | `aria-multiselectable="true"` when `@selectionMode="multiple"` (listbox only)                  |
+| Items    | `role="option"` (or `menuitem`), `aria-labelledby` pointing at the item's label                |
+|          | `aria-selected` reflecting selection — options only, since it is invalid on a plain `menuitem` |
+|          | `aria-disabled="true"` for keys in `@disabledKeys`                                             |
 
-The Listbox component includes comprehensive keyboard support:
+Keyboard, handled on the list itself:
 
-- **Arrow Up/Down**: Navigate through items
-- **Home**: Jump to first item
-- **End**: Jump to last item
-- **Page Up**: Jump to first item
-- **Page Down**: Jump to last item
-- **Enter/Space**: Select the active item
-- **Type-ahead**: Type letters to jump to matching items
+| Key                     | Behavior                                                            |
+| ----------------------- | ------------------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp` | Move the active item                                                |
+| `Home` / `PageUp`       | Jump to the first item                                              |
+| `End` / `PageDown`      | Jump to the last item                                               |
+| `Enter`, `Space`        | Select the active item                                              |
+| any single character    | Type-ahead: jumps to the item whose text starts with what you typed |
 
-To enable keyboard events, set `@isKeyboardEventsEnabled={{true}}`.
-
-### Selection Modes
-
-Three selection modes are available via `@selectionMode`:
-
-- **`"none"`**: No selection, items trigger actions via `@onAction`
-- **`"single"`**: Only one item can be selected at a time
-- **`"multiple"`**: Multiple items can be selected
-
-### Auto-Activation
-
-Control which item is initially active using `@autoActivateMode`:
-
-- **`"first"`** (default): First item becomes active
-- **`"selected"`**: First selected item becomes active
-- **`"none"`**: No item is initially active
-
-### Allow Empty Selection
-
-- **`@allowEmpty={{true}}`**: Users can deselect all items
-- **`@allowEmpty={{false}}`** (default): At least one item must be selected (only affects single/multiple modes)
-
-### Dynamic vs Static Items
-
-**Dynamic Items**: Pass an array to `@items` and the component renders them automatically
-
-```gts
-<Listbox @items={{this.myArray}} />
-```
-
-**Static Items**: Use the yielded `Item` component for full control
-
-```gts
-<Listbox as |l|>
-  <l.Item @key="option1">Option 1</l.Item>
-  <l.Item @key="option2">Option 2</l.Item>
-</Listbox>
-```
-
-**Custom Rendering**: Combine `@items` with the `:item` block
-
-```gts
-<Listbox @items={{this.users}}>
-  <:item as |o|>
-    <o.Item @key={{o.item.id}}>{{o.item.name}}</o.Item>
-  </:item>
-</Listbox>
-```
-
-### Item Blocks
-
-ListboxItem supports named blocks:
-
-- **`:start`**: Content before the label (e.g., icons)
-- **`:default`**: The main label
-- **`:end`**: Content after the label
-- **`:selectedIcon`**: Custom selection indicator
-
-### Callbacks
-
-- **`@onAction`**: Called when an item is clicked (selection mode "none")
-- **`@onSelectionChange`**: Called when selection changes (returns array of keys)
-- **`@onActiveItemChange`**: Called when the active item changes (keyboard navigation)
-
-### Accessibility
-
-The Listbox component is fully accessible:
-
-- **ARIA Attributes**: Proper `role="listbox"` or `role="menu"` based on `@type`
-- **Focus Management**: Keyboard navigation with visual focus indicators
-- **Screen Reader Support**: Descriptive labels and state announcements
-- **Disabled State**: Proper handling of disabled items
+Two details worth knowing. Type-ahead means `Space` selects only when no search is in
+progress, so a space typed mid-search is treated as part of the search string rather than as
+a selection. And `@elementToAddKeyboardEvents` moves the key handling onto another element —
+that is how Select and Autocomplete keep focus in their input while driving the list.
 
 ## API
 

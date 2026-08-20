@@ -14,16 +14,6 @@ A menu activated by a button, representing a set of actions or displaying a list
 import { Dropdown } from 'frontile';
 ```
 
-## Key Features
-
-- **Action Menu**: Execute actions when items are selected
-- **Selection Support**: Single or multiple item selection
-- **Keyboard Navigation**: Arrow keys and Enter/Space for interaction
-- **Flexible Positioning**: Control placement with Floating UI options
-- **Accessible**: Full ARIA support and keyboard controls
-- **Customizable**: Style trigger, menu, and items independently
-- **Close Control**: Configure when the dropdown closes
-
 ## Usage
 
 ### Basic Dropdown
@@ -636,69 +626,42 @@ export default class DropdownWithCallback extends Component {
 }
 ```
 
-## Important Notes
+## Accessibility
 
-### Keyboard Navigation
+Dropdown is a Popover wrapping a Listbox with `@type="menu"`, and inherits from both.
 
-The Dropdown component includes built-in keyboard support:
+The trigger — a real `<button>`, so it is focusable and activates on `Enter` and `Space` —
+carries `aria-haspopup="true"`, `aria-controls` pointing at the menu, and `aria-expanded`
+kept in sync. The menu itself is `role="menu"` and its items are `role="menuitem"` with
+`aria-labelledby`, plus `aria-disabled="true"` for keys in `@disabledKeys`.
 
-- **Arrow Down/Arrow Up**: Opens the dropdown when trigger is focused
-- **Arrow Down/Arrow Up**: Navigates through menu items when open
-- **Enter/Space**: Selects the focused item
-- **Escape**: Closes the dropdown
-- **Tab**: Moves focus out and closes the dropdown
+Menu items deliberately carry no `aria-selected`: it is invalid on a plain `menuitem`, which
+conveys state through `aria-checked` and only as `menuitemcheckbox` or `menuitemradio`. A
+menu is a list of commands rather than a set of choices.
 
-### Accessibility
+Keys are handled in two places, which is worth knowing when debugging one that doesn't fire:
 
-The Dropdown component includes full accessibility features:
+| Focus is on the trigger | Behavior                                        |
+| ----------------------- | ----------------------------------------------- |
+| `Enter` / `Space`       | Opens the menu, on key release                  |
+| `ArrowDown` / `ArrowUp` | Opens the menu                                  |
+| any letter              | Opens the menu                                  |
+| `Escape`                | Closes                                          |
+| `Tab`                   | Closes and moves on, without pulling focus back |
 
-- **ARIA Attributes**: Proper `aria-haspopup`, `aria-expanded`, and `aria-controls` on trigger
-- **Focus Management**: Automatic focus handling when opening/closing
-- **Keyboard Support**: Complete keyboard navigation
-- **Screen Reader Support**: Proper semantic structure and labels
+Once open, focus moves into the menu and the list takes over:
 
-### Close Behavior
+| Focus is in the menu                  | Behavior                                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp`               | Move the active item                                                         |
+| `Home` / `PageUp`, `End` / `PageDown` | First / last item                                                            |
+| `Enter`, `Space`                      | Runs the active item's action                                                |
+| any single character                  | Type-ahead to a matching item                                                |
+| `Escape`                              | Closes — handled by the underlying Overlay, and focus returns to the trigger |
 
-By default, the dropdown closes when:
-
-- An item is selected (disable with `@closeOnItemSelect={{false}}`)
-- User clicks outside the menu
-- User presses Escape key
-- Trigger is clicked again
-
-### Selection Modes
-
-The Menu supports different selection modes via `@selectionMode`:
-
-- **`"none"`** (default): No selection, only actions
-- **`"single"`**: Single item selection
-- **`"multiple"`**: Multiple items can be selected
-
-When using selection modes, use `@selectedKeys` and `@onSelectionChange` to control the selection state.
-
-### Item Actions
-
-There are two ways to handle item interactions:
-
-1. **Menu-level handler**: Use `@onAction` on the Menu to handle all item clicks
-2. **Item-level handler**: Use `@onClick` on individual Items for specific behavior
-
-Both can be used together - the Item's `@onClick` fires first, then the Menu's `@onAction`.
-
-### Positioning
-
-The Dropdown uses Floating UI for smart positioning:
-
-- Automatically flips to stay in viewport
-- Shifts to avoid overflow
-- Customizable via `@placement`, `@flipOptions`, `@shiftOptions`, `@offsetOptions`
-
-### Menu Variants
-
-The Menu component inherits appearance options from Listbox:
-
-- **`@appearance`**: Style variant for menu items
-- **`@intent`**: Color intent for the menu
+Because the content is inside an Overlay with a focus trap, `Tab` from within the menu cycles
+inside it rather than leaving. `@autoActivateMode="none"` means no item is active when the
+menu opens, so the first `ArrowDown` lands on the first item rather than the second.
 
 ## API
 
