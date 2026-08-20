@@ -116,19 +116,24 @@ class Avatar extends Component<AvatarSignature> {
       ...attributes
     >
       {{#if this.shouldShowInitials}}
+        {{! role="img" makes the contents presentational, so the initials stop
+        being read. Only claim the role when there is an @alt to name it with;
+        otherwise leave the letters as plain text. }}
         <span
           aria-label={{@alt}}
           class={{this.classes.name class=@classes.name}}
-          role="img"
+          role={{if @alt "img"}}
         >
           {{this.initials}}
         </span>
       {{/if}}
       {{#if @src}}
+        {{! An omitted alt makes screen readers fall back to the URL. An empty
+        one marks the image decorative, which is right beside a visible name. }}
         <img
           class={{this.classes.img class=@classes.img}}
           src={{@src}}
-          alt={{@alt}}
+          alt={{if @alt @alt ""}}
         />
       {{/if}}
     </span>

@@ -233,6 +233,29 @@ module(
       });
     });
 
+    module('indeterminate arias', () => {
+      // ARIA requires aria-valuenow to be *absent* when the value is unknown.
+      // Reporting a number says "0%" rather than "in progress, amount unknown",
+      // which is the one thing @isIndeterminate exists to express.
+      test('it omits aria-valuenow when indeterminate', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @isIndeterminate={{true}}
+              @label="Loading"
+            />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.dom(selector).hasAttribute('role', 'progressbar');
+        assert.dom(selector).hasNoAttribute('aria-valuenow');
+        assert.dom(selector).hasAria('valuemin', '0');
+        assert.dom(selector).hasAria('valuemax', '100');
+      });
+    });
+
     module('progress label', () => {
       test('it renders label and arias', async function (assert) {
         await render(

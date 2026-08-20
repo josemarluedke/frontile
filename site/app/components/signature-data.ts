@@ -12260,7 +12260,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The tag to render instead of the one the orientation would choose — for\nexample <code>li</code> when the divider sits between list items.',
         tags: {},
       },
       {
@@ -12268,7 +12269,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge\nlibrary.',
         tags: {},
       },
       {
@@ -12280,8 +12282,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Which way the divider runs. A horizontal divider renders an <code>&#x3C;hr></code>; a\nvertical one renders a <code>&#x3C;div></code>, since <code>&#x3C;hr></code> cannot express that.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'horizontal'" } },
+        defaultValue: '<span class="hljs-string">\'horizontal\'</span>',
       },
     ],
     Blocks: [],
@@ -12373,7 +12377,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge\nlibrary. Use <code>fill-*</code> for the highlighted arc and <code>text-*</code> for the track.',
         tags: {},
       },
       {
@@ -12393,7 +12398,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The color of the spinner, matching the intents used elsewhere.',
         tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
         defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
@@ -12406,7 +12412,7 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'The size of the spinner.',
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>',
       },

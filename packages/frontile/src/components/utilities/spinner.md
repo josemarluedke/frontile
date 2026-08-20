@@ -84,6 +84,126 @@ import { Spinner } from 'frontile';
 </template>
 ```
 
+## Accessibility
+
+The spinner is `aria-hidden` by default, and deliberately so: it is a picture of
+a state, not the state itself. An unhidden, unnamed `<svg>` is announced as an
+image with no name, which tells a screen reader user nothing — and naming the
+graphic ("Loading spinner") describes the decoration rather than saying that the
+content they asked for is on its way.
+
+Put the state on the thing that is loading. `aria-busy` marks the region, and a
+polite live region announces the transition once:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Button, Spinner } from 'frontile';
+
+export default class Example extends Component {
+  @tracked isLoading = false;
+  @tracked rows: string[] = [];
+
+  load = async () => {
+    this.isLoading = true;
+    this.rows = [];
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    this.rows = ['Fiber route A', 'Fiber route B', 'Fiber route C'];
+    this.isLoading = false;
+  };
+
+  <template>
+    <div class='flex flex-col gap-3'>
+      <Button @intent='primary' @onPress={{this.load}}>Load routes</Button>
+
+      <div
+        aria-busy={{if this.isLoading 'true' 'false'}}
+        aria-live='polite'
+        class='border-neutral-soft rounded border p-4'
+      >
+        {{#if this.isLoading}}
+          <span class='flex items-center gap-2'>
+            <Spinner @size='sm' @intent='primary' />
+            Loading routes…
+          </span>
+        {{else if this.rows}}
+          <ul class='not-prose'>
+            {{#each this.rows as |row|}}
+              <li>{{row}}</li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <p class='text-neutral'>No routes loaded yet.</p>
+        {{/if}}
+      </div>
+    </div>
+  </template>
+}
+```
+
+The visible "Loading routes…" text is what carries the meaning here — the spinner
+beside it is redundant by design, which is exactly what makes hiding it correct.
+
+A spinner with no adjacent text needs the text supplied some other way, or the
+wait is silent. `VisuallyHidden` is the usual answer for a button that swaps its
+label for a spinner:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Button, Spinner, VisuallyHidden } from 'frontile';
+
+export default class Example extends Component {
+  @tracked isSaving = false;
+
+  save = async () => {
+    this.isSaving = true;
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    this.isSaving = false;
+  };
+
+  <template>
+    <Button @intent='primary' @onPress={{this.save}} disabled={{this.isSaving}}>
+      {{#if this.isSaving}}
+        <Spinner @size='sm' />
+        <VisuallyHidden>Saving, please wait</VisuallyHidden>
+      {{else}}
+        Save
+      {{/if}}
+    </Button>
+  </template>
+}
+```
+
+If you genuinely need the graphic itself announced — a full-page loader with
+nothing else on screen — pass your own attributes, which are applied after the
+default and so win:
+
+```gts preview
+import { Spinner } from 'frontile';
+
+<template>
+  <Spinner @size='xl' aria-hidden='false' role='status' aria-label='Loading' />
+</template>
+```
+
+Motion is the other consideration, and worth knowing precisely: the theme applies
+`animate-spin` with **no** `motion-reduce` variant, so the spinner keeps turning
+for users who have asked for reduced motion. That is a deliberate trade — a
+stopped spinner conveys nothing at all — but if your product treats the
+preference as absolute, suppress it yourself:
+
+```gts preview
+import { Spinner } from 'frontile';
+
+<template>
+  <Spinner @intent='primary' @class='motion-reduce:animate-none' />
+</template>
+```
+
+Which is another reason not to let a spinner be the only sign that something is
+happening: the text beside it keeps working when the animation does not.
+
 ## API
 
 <Signature @component="Spinner" />

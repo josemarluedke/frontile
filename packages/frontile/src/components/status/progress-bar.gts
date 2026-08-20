@@ -167,6 +167,14 @@ class ProgressBar extends Component<ProgressBarSignature> {
     return this.percentage.toFixed(0) + '%';
   }
 
+  /**
+   * ARIA requires aria-valuenow to be absent when the value is unknown —
+   * reporting a number would announce "0%" rather than "amount unknown".
+   */
+  get ariaValueNow(): number | undefined {
+    return this.args.isIndeterminate ? undefined : this.progress;
+  }
+
   get progressWidth(): SafeString {
     let percentage = this.percentage;
     if (this.args.isIndeterminate) {
@@ -198,7 +206,7 @@ class ProgressBar extends Component<ProgressBarSignature> {
         <div
           role="progressbar"
           aria-labelledby={{if @label this.id}}
-          aria-valuenow={{this.progress}}
+          aria-valuenow={{this.ariaValueNow}}
           aria-valuemin={{this.minValue}}
           aria-valuemax={{this.maxValue}}
           class={{this.classNames.progress}}
