@@ -127,8 +127,13 @@ export interface SurfaceOverlay {
   mild: string;
   firm: string;
   /**
-   * Heaviest overlay step, used as the backdrop tint behind modals and
-   * drawers.
+   * Heaviest overlay step (75% in light, 95% in dark).
+   *
+   * In light mode this is the backdrop tint behind modals and drawers. In dark
+   * mode the black scrim is {@link SurfaceLift}'s `strong` instead, because the
+   * families mirror each other — pair them as
+   * `bg-surface-overlay-strong dark:bg-surface-lift-strong` for a scrim that
+   * holds in both schemes.
    *
    * Follows the same darken-in-light / lighten-in-dark direction as
    * `subtle`/`soft`/`mild`/`firm`, just at much higher opacity (75%) so it
@@ -138,7 +143,7 @@ export interface SurfaceOverlay {
    * (white tint) instead — same visual weight, opposite direction.
    *
    * @example
-   * <div className="fixed inset-0 bg-surface-overlay-strong">
+   * <div className="fixed inset-0 bg-surface-overlay-strong dark:bg-surface-lift-strong">
    */
   strong: string;
 }
@@ -267,7 +272,9 @@ export interface SurfaceColors {
    * through the elevation-luminance principle.
    *
    * Light: Pure white, creating lifted appearance against gray canvas
-   * Dark: Medium gray, lighter than canvas for elevation
+   * Dark: A translucent veil (white @ 7%, the same value as `overlay-subtle`),
+   * so content behind it shows through faintly. Use an opaque role such as
+   * `surface-canvas` where it must not — a sticky table header, for instance.
    *
    * @example
    * // Product card
@@ -301,7 +308,8 @@ export interface SurfaceColors {
    *
    * Used for modal dialogs, drawers, dropdown menus, and other floating
    * content that appears above all other surfaces. Modals and drawers pair it
-   * with a `surface-overlay-strong` backdrop to focus attention.
+   * with a `surface-overlay-strong dark:surface-lift-strong` backdrop to focus
+   * attention.
    *
    * Light: Pure white, highest elevation
    * Dark: Medium gray, lightest surface for maximum elevation
@@ -315,7 +323,7 @@ export interface SurfaceColors {
    *
    * @example
    * // Drawer with backdrop
-   * <div className="fixed inset-0 bg-surface-overlay-strong">
+   * <div className="fixed inset-0 bg-surface-overlay-strong dark:bg-surface-lift-strong">
    *   <aside className="bg-surface-modal h-full w-80">
    *     <DrawerContent />
    *   </aside>

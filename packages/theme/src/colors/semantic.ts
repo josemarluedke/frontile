@@ -97,17 +97,17 @@ const themeColorsLight: ThemeColors = {
   'on-danger': { soft: absolute.black },
   surface: {
     overlay: {
-      subtle: `${absolute.black}0d`, // absolute.black @ 5%
-      soft: `${absolute.black}14`, // absolute.black @ 8%
-      mild: `${absolute.black}1c`, // absolute.black @ 11%
-      firm: `${absolute.black}26`, // absolute.black @ 15%
-      strong: `${absolute.black}bf` // absolute.black @ 75%, scheme-invariant
+      subtle: `${absolute.black}08`, // absolute.black @ 3%
+      soft: `${absolute.black}0d`, // absolute.black @ 5%
+      mild: `${absolute.black}1a`, // absolute.black @ 10%
+      firm: `${absolute.black}24`, // absolute.black @ 14%
+      strong: `${absolute.black}bf` // absolute.black @ 75% — the scrim in this scheme
     },
     lift: {
-      subtle: `${absolute.white}4d`, // absolute.white @ 30%
+      subtle: `${absolute.white}4c`, // absolute.white @ 30%
       soft: `${absolute.white}80`, // absolute.white @ 50%
       mild: `${absolute.white}b2`, // absolute.white @ 70%
-      firm: `${absolute.white}e5`, // absolute.white @ 90%
+      firm: `${absolute.white}e6`, // absolute.white @ 90%
       strong: `${absolute.white}f2` // absolute.white @ 95%
     },
     app: absolute.white,
@@ -203,21 +203,26 @@ const themeColorsDark: ThemeColors = {
   surface: {
     overlay: {
       subtle: `${absolute.white}12`, // absolute.white @ 7%
-      soft: `${absolute.white}26`, // absolute.white @ 15%
-      mild: `${absolute.white}40`, // absolute.white @ 25%
-      firm: `${absolute.white}59`, // absolute.white @ 35%
-      strong: `${absolute.black}bf` // absolute.black @ 75%
+      soft: `${absolute.white}1c`, // absolute.white @ 11%
+      mild: `${absolute.white}2b`, // absolute.white @ 17%
+      firm: `${absolute.white}40`, // absolute.white @ 25%
+      strong: `${absolute.white}f2` // absolute.white @ 95%
     },
+    // The two families are mirrored, so the black scrim lives in `lift` here
+    // rather than in `overlay`. Components wanting a backdrop in both schemes
+    // pair `overlay-strong` with `dark:lift-strong` — see the Overlay theme.
     lift: {
-      subtle: `${absolute.black}33`, // absolute.black @ 20%
-      soft: `${absolute.black}4d`, // absolute.black @ 30%
-      mild: `${absolute.black}80`, // absolute.black @ 50%
-      firm: `${absolute.black}99`, // absolute.black @ 60%
-      strong: `${absolute.black}f2` // absolute.black @ 95%
+      subtle: `${absolute.black}1a`, // absolute.black @ 10%
+      soft: `${absolute.black}33`, // absolute.black @ 20%
+      mild: `${absolute.black}4c`, // absolute.black @ 30%
+      firm: `${absolute.black}66`, // absolute.black @ 40%
+      strong: `${absolute.black}bf` // absolute.black @ 75% — the scrim in this scheme
     },
     app: absolute.black,
     canvas: palette.gray['950'],
-    card: palette.gray['800'],
+    // Beacon aliases dark `card` to `surface.overlay.subtle`, i.e. a
+    // translucent veil rather than an opaque step.
+    card: `${absolute.white}12`, // absolute.white @ 7%
     input: absolute.black,
     modal: palette.gray['950']
   }

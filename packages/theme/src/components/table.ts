@@ -178,7 +178,9 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-card']
+        // `surface-card` is translucent in dark, which would let rows show
+        // through a stuck header; `surface-canvas` is opaque in both schemes.
+        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-canvas']
       }
     },
     // Sticky footer

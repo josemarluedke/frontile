@@ -20,8 +20,11 @@ const backdrop = tv({
     type: {
       none: '',
       transparent: '',
-      blur: 'bg-surface-overlay-strong backdrop-blur-sm',
-      faded: 'bg-surface-overlay-strong'
+      // The scrim is `overlay-strong` in light and `lift-strong` in dark: the
+      // two families are mirrored, so the black 75% step swaps sides. Pairing
+      // them keeps the backdrop a dark scrim in both schemes.
+      blur: 'bg-surface-overlay-strong dark:bg-surface-lift-strong backdrop-blur-sm',
+      faded: 'bg-surface-overlay-strong dark:bg-surface-lift-strong'
     },
     inPlace: {
       true: 'absolute'

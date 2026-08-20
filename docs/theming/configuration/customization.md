@@ -16,12 +16,12 @@ The fastest way to customize Frontile is using CSS variables in your `app/styles
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
-@import "@frontile/theme";
+@import '@frontile/theme';
 
 @theme {
   --radius: 12px;
   --size-icon-md: 20px;
-  --opacity-hover: .9;
+  --opacity-hover: 0.9;
 }
 ```
 
@@ -84,12 +84,13 @@ Then reference it in your CSS:
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
-@import "@frontile/theme";
+@import '@frontile/theme';
 ```
 
 ### How Color Customization Works
 
 Frontile automatically:
+
 - Generates contrasting text colors (`on-{color}-{level}`)
 - Converts your colors to OKLCH format for perceptual uniformity
 - Accepts any color format as input (hex, rgb, hsl, oklch, CSS variables)
@@ -115,8 +116,8 @@ module.exports = frontile({
         },
         // Override specific on-colors
         'on-primary': {
-          DEFAULT: '#ffffff',  // Force white text on the bare primary fill
-          strong: '#e0f2fe'    // Use light blue instead of white
+          DEFAULT: '#ffffff', // Force white text on the bare primary fill
+          strong: '#e0f2fe' // Use light blue instead of white
         }
         // on-primary-subtle and on-primary-soft will still be auto-generated
       }
@@ -126,6 +127,7 @@ module.exports = frontile({
 ```
 
 **Key behavior:**
+
 - Partial overrides work — define only the levels you want to customize, and the rest will be auto-generated
 - Works for: `on-neutral`, `on-primary`, `on-secondary`, `on-tertiary`, `on-success`, `on-warning`, `on-danger`, `on-surface-modal`
 - CSS variable references (e.g., `var(--my-color)`) are passed through as-is — auto-generation is skipped since contrast can't be calculated
@@ -278,8 +280,8 @@ Adjust hover and disabled opacity:
 
 ```css
 @theme {
-  --opacity-hover: .9;
-  --opacity-disabled: .4;
+  --opacity-hover: 0.9;
+  --opacity-disabled: 0.4;
 }
 ```
 
@@ -328,8 +330,8 @@ Specify which theme loads by default:
 module.exports = frontile({
   defaultTheme: 'dark', // or 'light'
   themes: {
-    light: { /* ... */ },
-    dark: { /* ... */ }
+    light: {/* ... */},
+    dark: {/* ... */}
   }
 });
 ```
@@ -391,7 +393,7 @@ module.exports = frontile({
 ```css
 @import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
-@import "@frontile/theme";
+@import '@frontile/theme';
 
 /* Load custom fonts */
 @font-face {
@@ -418,8 +420,8 @@ module.exports = frontile({
   --size-icon-lg: 24px;
 
   /* Subtle opacity changes */
-  --opacity-hover: .9;
-  --opacity-disabled: .5;
+  --opacity-hover: 0.9;
+  --opacity-disabled: 0.5;
 }
 
 /* Component customization */
@@ -461,7 +463,7 @@ module.exports = frontile({
 @theme {
   --border-width-default: 2px;
   --border-width-heavy: 3px;
-  --opacity-hover: .95;
+  --opacity-hover: 0.95;
 }
 
 .light,
@@ -476,7 +478,7 @@ module.exports = frontile({
 @theme {
   --border-width-thin: 0.5px;
   --border-width-default: 1px;
-  --opacity-hover: .85;
+  --opacity-hover: 0.85;
   --shadow-elevation-2: 0px 2px 4px rgba(0, 0, 0, 0.04);
 }
 ```
@@ -498,7 +500,7 @@ Override styles for specific components using Tailwind variants:
 
 /* Custom modal backdrop */
 .modal-backdrop {
-  @apply bg-surface-overlay-strong backdrop-blur-md;
+  @apply bg-surface-overlay-strong dark:bg-surface-lift-strong backdrop-blur-md;
 }
 ```
 
@@ -612,7 +614,7 @@ module.exports = frontile({
   themes: {
     light: {
       colors: {
-        primary: { /* ... */ }
+        primary: {/* ... */}
       }
     }
   }
@@ -647,12 +649,12 @@ module.exports = frontile({
 /* Correct */
 .light,
 .dark .theme-inverse {
-  --opacity-hover: .85;
+  --opacity-hover: 0.85;
 }
 
 /* Incomplete */
 .light {
-  --opacity-hover: .85;
+  --opacity-hover: 0.85;
 }
 ```
 

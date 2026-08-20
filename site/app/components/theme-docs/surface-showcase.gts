@@ -82,7 +82,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     soft: 'Translucent layer',
     mild: 'Translucent layer',
     firm: 'Translucent layer',
-    strong: 'Modal/drawer backdrop — black at 75% in both themes',
+    strong: 'Heaviest step — the modal/drawer backdrop in light mode',
   };
 
   getOverlayClass = (level: string): string => {
