@@ -14,10 +14,35 @@ import { ref } from '../../utils/ref';
 import { CloseButton } from '../buttons/close-button';
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * The type attribute of the underlying input element.
+   *
+   * @defaultValue 'text'
+   */
   type?: string;
+
+  /**
+   * The value of the input. Pair with `onInput` or `onChange` to control the
+   * input; leave it unset to let the element track its own value.
+   */
   value?: string;
+
+  /**
+   * The name attribute of the underlying input, used when the input is
+   * submitted as part of a form.
+   */
   name?: string;
+
+  /**
+   * The size of the input and its label.
+   *
+   * @defaultValue 'md'
+   */
   size?: InputVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<InputSlots>;
 
   /**

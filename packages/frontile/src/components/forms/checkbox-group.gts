@@ -10,12 +10,31 @@ import {
 import type { WithBoundArgs } from '@glint/template';
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * The name attribute applied to every checkbox in the group, so they are
+   * submitted together as one field.
+   */
   name?: string;
+
+  /**
+   * Callback when a checkbox in the group is toggled. It is bound onto every
+   * yielded Checkbox, so a checkbox that sets its own `@onChange` replaces this
+   * one rather than running alongside it.
+   */
   onChange?: CheckboxSignature['Args']['onChange'];
+
+  /**
+   * The size applied to every checkbox in the group and to the group's label.
+   */
   size?: CheckboxGroupVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<CheckboxGroupSlots>;
 
-  /*
+  /**
+   * How the checkboxes are laid out.
    *
    * @defaultValue 'vertical'
    */

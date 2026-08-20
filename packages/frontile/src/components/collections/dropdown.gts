@@ -85,6 +85,10 @@ interface TriggerArgs extends Pick<
    * @internal
    */
   anchor: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * @internal
+   */
   trigger: ModifierLike<{ Element: HTMLElement }>;
 
   /**
@@ -190,6 +194,9 @@ interface MenuArgs
    */
   toggle: () => void;
 
+  /**
+   * Callback when a menu item is selected, receiving that item's `@key`.
+   */
   onAction?: (key: string) => void;
 
   /**

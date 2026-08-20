@@ -59,8 +59,17 @@ interface Args extends Pick<
    */
   transitionDuration?: number;
 
+  /**
+   * How the area behind the overlay is rendered: `none` omits the backdrop
+   * entirely, `transparent` keeps it clickable but invisible, `faded` dims the
+   * page, and `blur` blurs it.
+   */
   backdrop?: BackdropSignature['Args']['type'];
 
+  /**
+   * Transition classes for the backdrop, overriding the defaults used when it
+   * fades in and out.
+   */
   backdropTransition?: BackdropSignature['Args']['transition'];
 
   /**
@@ -135,8 +144,24 @@ interface Args extends Pick<
    */
   transition?: CssTransitionSignature['Args']['Named'];
 
+  /**
+   * Opt out of the flex layout applied to the content element, for overlays
+   * that need to lay their content out themselves.
+   *
+   * @defaultValue false
+   */
   disableFlexContent?: boolean;
+
+  /**
+   * An extra modifier applied to the content element, for behavior the overlay
+   * doesn't provide itself.
+   */
   customContentModifier?: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * Custom class name for the content element, merged with the default ones
+   * using Tailwind Merge.
+   */
   class?: string;
   /**
    * @defaultValue false

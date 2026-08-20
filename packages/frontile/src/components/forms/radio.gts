@@ -10,17 +10,45 @@ import {
 } from '@frontile/theme';
 
 interface Args<T> extends FormControlSharedArgs {
+  /**
+   * The value this radio represents. It is passed to `onChange` when the radio
+   * is selected, and compared against `checkedValue` to decide whether it is.
+   */
   value: T;
+
+  /**
+   * The currently selected value of the group. This radio renders as checked
+   * when it equals `value`. Usually supplied by RadioGroup rather than set
+   * directly.
+   */
   checkedValue?: T | undefined | null;
+
+  /**
+   * The name attribute shared by the radios in a group, which is what makes the
+   * browser treat them as mutually exclusive.
+   */
   name?: string;
 
+  /**
+   * The size of the radio and its label.
+   *
+   * @defaultValue 'md'
+   */
   size?: RadioVariants['size'];
+
+  /**
+   * Class names for each slot of the component, merged with the theme's.
+   */
   classes?: SlotsToClasses<RadioSlots>;
 
-  // Callback when onchange is triggered
+  /**
+   * Callback when onchange is triggered
+   */
   onChange?: (value: T, event: Event) => void;
 
-  // Callback when onblur is triggered
+  /**
+   * Callback when onblur is triggered
+   */
   onBlur?: () => void;
 }
 

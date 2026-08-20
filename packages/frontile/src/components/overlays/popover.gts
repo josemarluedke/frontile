@@ -33,8 +33,22 @@ interface PopoverSignature {
       | 'left-start'
       | 'left-end';
 
+    /**
+     * Options for the floating-ui flip middleware, which moves the content to
+     * the opposite side when it would overflow the viewport.
+     */
     flipOptions?: VelcroSignature['Args']['Named']['flipOptions'];
+
+    /**
+     * Additional floating-ui middleware, for positioning behavior beyond what
+     * `placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.
+     */
     middleware?: VelcroSignature['Args']['Named']['middleware'];
+
+    /**
+     * Options for the floating-ui shift middleware, which nudges the content
+     * along its axis to keep it in view.
+     */
     shiftOptions?: VelcroSignature['Args']['Named']['shiftOptions'];
 
     /**
@@ -47,8 +61,20 @@ interface PopoverSignature {
      */
     strategy?: VelcroSignature['Args']['Named']['strategy'];
 
+    /**
+     * Whether the popover is open. Pair with `onOpenChange` to control it;
+     * leave it unset to let the popover manage its own state.
+     */
     isOpen?: boolean;
+
+    /**
+     * Callback when the popover opens or closes, receiving the new state.
+     */
     onOpenChange?: (isOpen: boolean) => void;
+
+    /**
+     * Callback when closing has finished, including any exit transition.
+     */
     didClose?: () => void;
   };
   Element: HTMLUListElement;
@@ -311,8 +337,15 @@ interface ContentArgs extends Pick<
    */
   preventFocusRestore?: boolean;
 
+  /**
+   * @internal
+   */
   triggerWidth?: number;
 
+  /**
+   * Custom class name for the content element, merged with the default ones
+   * using Tailwind Merge.
+   */
   class?: string;
 
   /**
