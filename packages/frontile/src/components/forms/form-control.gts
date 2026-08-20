@@ -171,7 +171,7 @@ class FormControl extends Component<FormControlSignature> {
         </Label>
       {{/if}}
 
-      {{#if (or @description (has-block "Description"))}}
+      {{#if (or @description (has-block "description"))}}
         <Description @id={{this.descriptionId}} @size={{@size}}>
           {{@description}}
           {{yield to="description"}}

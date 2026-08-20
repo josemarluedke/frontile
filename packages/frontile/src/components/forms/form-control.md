@@ -127,6 +127,30 @@ import { FormControl } from 'frontile';
 </template>
 ```
 
+`:description` works the same way, for help text that needs a link or inline markup. It
+renders inside the same description element that `@description` would have produced, so
+`c.describedBy` still points the control at it.
+
+```gts preview
+import { FormControl } from 'frontile';
+
+<template>
+  <FormControl @label='Webhook URL'>
+    <:description>
+      Must be publicly reachable over HTTPS.
+      <a href='#docs' class='text-primary underline'>Read the requirements</a>
+    </:description>
+    <:default as |c|>
+      <input
+        id={{c.id}}
+        aria-describedby={{c.describedBy true false}}
+        class='bg-surface-input text-neutral-strong border-neutral-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+      />
+    </:default>
+  </FormControl>
+</template>
+```
+
 ## Sizes
 
 `@size` scales the label, description and feedback text. It does not touch the control
