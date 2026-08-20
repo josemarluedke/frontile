@@ -184,6 +184,17 @@ function toConfigObject(ramp: Level[], indent: string): string {
     .join(',\n');
 }
 
+const LEVEL_NAMES = [
+  'subtle',
+  'muted',
+  'soft',
+  'mild',
+  'default',
+  'firm',
+  'strong',
+  'bolder'
+] as const;
+
 const PRESETS: Preset[] = Object.entries(FAMILIES).map(([key, family]) => ({
   key,
   label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -249,24 +260,21 @@ export default class ThemeLab extends Component {
 
   isActive = (key: string): boolean => key === this.activePreset.key;
 
-  /** The active ramp as swatches, lowest level first. */
-  get activeLevels(): { name: string; style: SafeString }[] {
-    return lightRamp(this.activePreset.family).map(({ name, value }) => {
-      // `soft` carries an alpha suffix, so the swatch is the accent blended
-      // into whatever sits behind it. `onColor` reads only the RGB half and
-      // would pick ink for the opaque colour, which is wrong once the swatch is
-      // mostly ground. Translucent steps take the theme's own ink instead.
-      const isTranslucent = value.replace('#', '').length > 6;
-      const ink = isTranslucent
-        ? 'var(--color-neutral-strong)'
-        : onColor(value);
-
-      return {
-        name: name === 'DEFAULT' ? 'default' : name,
-        style: htmlSafe(`background: ${value}; color: ${ink}`)
-      };
-    });
-  }
+  /**
+   * The eight levels as CSS variable references rather than literal values.
+   *
+   * Two reasons this is not the raw hex: the ramp has to show the scheme the
+   * visitor is actually looking at (the previous version always rendered the
+   * light ramp, so it disagreed with the dark panel beside it), and the scoped
+   * stylesheet already publishes the active preset per scheme. Referencing the
+   * variables means the ramp follows both the preset and the theme for free.
+   */
+  levels = LEVEL_NAMES.map((name) => ({
+    name,
+    style: htmlSafe(
+      `--swatch: var(--color-primary${name === 'default' ? '' : `-${name}`})`
+    )
+  }));
 
   /**
    * A scoped stylesheet using the plugin's own selector pairs, so each panel
@@ -343,9 +351,10 @@ ${toConfigObject(darkRamp(f), '          ')}
 
         {{! The eight named levels of the active ramp, at a size worth looking
             at. This is the section's subject matter, so it earns the space. }}
-        <div class="theme-lab__ramp" aria-hidden="true">
-          {{#each this.activeLevels as |level|}}
+        <div class="theme-lab__ramp theme-lab-scope" aria-hidden="true">
+          {{#each this.levels as |level|}}
             <span class="theme-lab__step" style={{level.style}}>
+              <span class="theme-lab__chip"></span>
               <span class="theme-lab__step-name">{{level.name}}</span>
             </span>
           {{/each}}

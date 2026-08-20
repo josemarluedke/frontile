@@ -350,18 +350,45 @@
 
   .theme-lab__step {
     display: flex;
-    align-items: flex-end;
-    min-height: 4.5rem;
-    padding: 0.4rem 0.45rem;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  /* The swatch itself. Two of the eight levels carry alpha (`soft` is the
+     accent at 10 to 25 percent), so the colour is layered over a checkerboard:
+     a translucent step then reads as translucent instead of as an empty chip.
+     The colour comes in through --swatch as a variable reference, so the ramp
+     follows both the active preset and the current scheme. */
+  .theme-lab__chip {
+    --check: var(--color-neutral-mild);
+
+    display: block;
+    height: 3.25rem;
     border-radius: 0.375rem;
-    overflow: hidden;
+    border: 1px solid var(--color-neutral-soft);
+    background-image:
+      linear-gradient(var(--swatch), var(--swatch)),
+      conic-gradient(
+        from 90deg at 50% 50%,
+        var(--check) 25%,
+        transparent 0 50%,
+        var(--check) 0 75%,
+        transparent 0
+      );
+    background-size:
+      100% 100%,
+      10px 10px;
   }
 
   .theme-lab__step-name {
     font-family: var(--font-label);
-    font-size: var(--text-label-micro);
+    font-size: var(--text-label-nano);
     line-height: 1;
+    color: var(--color-neutral-firm);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .theme-lab__swatch {
