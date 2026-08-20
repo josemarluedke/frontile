@@ -5,7 +5,7 @@ imports:
 
 # Collapsible
 
-An unstyled component that provides smooth expand and collapse animations for content. Perfect for building accordions, FAQ sections, expandable cards, and other disclosure patterns.
+An unstyled wrapper that animates its content's height and opacity as it opens and closes, for building accordions, FAQ sections, expandable cards, and other disclosure patterns.
 
 ## Import
 
@@ -13,33 +13,21 @@ An unstyled component that provides smooth expand and collapse animations for co
 import { Collapsible } from 'frontile';
 ```
 
-## Key Features
-
-- **Smooth Animations**: Built-in height and opacity transitions with cubic-bezier easing
-- **Initial Height Support**: Show a preview of content when collapsed
-- **Fully Controlled**: Manage open/close state from parent component
-- **Unstyled**: Complete styling freedom
-- **Accessible**: Works with any accessible disclosure pattern
-- **Test-Friendly**: Built-in test waiters for reliable async testing
-
 ## Usage
 
-### Basic Collapsible
-
-A simple collapsible panel with toggle button.
+`@isOpen` is required and the component is fully controlled: keep the state in the parent and render your own trigger. Expanding animates height and opacity over `0.4s`, collapsing over `0.2s`; once expanded the height is set back to `auto` so content can keep growing.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Collapsible, Button } from 'frontile';
 
 export default class BasicCollapsible extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
     <div class='max-w-md'>
@@ -54,8 +42,7 @@ export default class BasicCollapsible extends Component {
         >
           <p class='text-neutral-strong'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit.
+            malesuada lacus ex, sit amet blandit leo lobortis eget.
           </p>
         </div>
       </Collapsible>
@@ -64,91 +51,86 @@ export default class BasicCollapsible extends Component {
 }
 ```
 
-### With Initial Height
+## Initial Height
 
-Show a preview of content when collapsed using `@initialHeight`.
-
-> **Note:** Always include the unit (e.g., `px`, `rem`, `em`) in the height value.
+`@initialHeight` keeps part of the content visible while collapsed — the "Read more" pattern. Opacity stays at `1` instead of fading out, and only the height animates. Include the unit in the value (`80px`, `5rem`) — a bare number isn't a valid CSS height and is ignored.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { Collapsible, Button } from 'frontile';
 
 export default class PreviewCollapsible extends Component {
   @tracked isOpen = false;
 
-  @action toggle() {
+  toggle = () => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   <template>
-    <div class='max-w-md'>
-      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <Collapsible @isOpen={{this.isOpen}} @initialHeight='80px'>
-          <div class='p-6 bg-neutral-subtle'>
-            <h3 class='text-lg font-semibold mb-2'>Article Title</h3>
-            <p class='text-neutral'>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget. Sed hendrerit turpis nec dolor maximus, vitae facilisis
-              lectus scelerisque.
-            </p>
-          </div>
-        </Collapsible>
-
-        <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
-          <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
-            {{if this.isOpen 'Read Less' 'Read More'}}
-          </Button>
+    <div
+      class='max-w-md border border-neutral-subtle rounded-lg overflow-hidden'
+    >
+      <Collapsible @isOpen={{this.isOpen}} @initialHeight='80px'>
+        <div class='p-6 bg-neutral-subtle'>
+          <h3 class='text-lg font-semibold mb-2'>Article Title</h3>
+          <p class='text-neutral'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
+            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
+            lacus ex, sit amet blandit leo lobortis eget. Sed hendrerit turpis
+            nec dolor maximus, vitae facilisis lectus scelerisque.
+          </p>
         </div>
+      </Collapsible>
+
+      <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
+        <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
+          {{if this.isOpen 'Read Less' 'Read More'}}
+        </Button>
       </div>
     </div>
   </template>
 }
 ```
 
-### FAQ Accordion
+## Accordion
 
-Build an FAQ section with multiple collapsible items.
+For an accordion, hold a single open id in the parent so opening one panel closes the others.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { Collapsible, Button } from 'frontile';
 
 export default class FaqAccordion extends Component {
-  @tracked openItem = null;
+  @tracked openItem: string | null = null;
 
   faqs = [
     {
       id: 'shipping',
       question: 'What are the shipping options?',
       answer:
-        'We offer standard shipping (5-7 business days) and express shipping (2-3 business days). Free standard shipping is available on orders over $50.'
+        'Standard shipping takes 5-7 business days and express shipping 2-3. Free standard shipping on orders over $50.'
     },
     {
       id: 'returns',
       question: 'What is your return policy?',
       answer:
-        'We accept returns within 30 days of purchase. Items must be unused and in original packaging. Refunds are processed within 5-10 business days.'
+        'Returns are accepted within 30 days of purchase, unused and in original packaging. Refunds are processed within 5-10 business days.'
     },
     {
       id: 'warranty',
       question: 'Do you offer a warranty?',
       answer:
-        'Yes, all products come with a 1-year manufacturer warranty covering defects in materials and workmanship. Extended warranties are available for purchase.'
+        'All products come with a 1-year manufacturer warranty covering defects in materials and workmanship.'
     }
   ];
 
-  @action toggleItem(id: string) {
+  toggleItem = (id: string) => {
     this.openItem = this.openItem === id ? null : id;
-  }
+  };
 
   isOpen = (id: string) => {
     return this.openItem === id;
@@ -158,20 +140,28 @@ export default class FaqAccordion extends Component {
     <div class='max-w-2xl space-y-2'>
       {{#each this.faqs as |faq|}}
         <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-          <Button
-            @appearance='minimal'
-            @class='w-full text-left px-6 py-4 hover:bg-neutral-subtle'
-            @onPress={{fn this.toggleItem faq.id}}
-          >
-            <div class='flex items-center justify-between'>
-              <span class='font-semibold'>{{faq.question}}</span>
-              <span class='text-neutral-soft'>
-                {{if (this.isOpen faq.id) '−' '+'}}
-              </span>
-            </div>
-          </Button>
+          <h3>
+            <Button
+              @appearance='minimal'
+              @class='w-full text-left px-6 py-4 hover:bg-neutral-subtle'
+              @onPress={{fn this.toggleItem faq.id}}
+              aria-expanded='{{this.isOpen faq.id}}'
+              aria-controls='faq-panel-{{faq.id}}'
+            >
+              <div class='flex items-center justify-between'>
+                <span class='font-semibold'>{{faq.question}}</span>
+                <span class='text-neutral-soft'>
+                  {{if (this.isOpen faq.id) '−' '+'}}
+                </span>
+              </div>
+            </Button>
+          </h3>
 
-          <Collapsible @isOpen={{this.isOpen faq.id}}>
+          <Collapsible
+            @isOpen={{this.isOpen faq.id}}
+            id='faq-panel-{{faq.id}}'
+            role='region'
+          >
             <div class='px-6 pb-4 text-neutral'>
               {{faq.answer}}
             </div>
@@ -183,61 +173,113 @@ export default class FaqAccordion extends Component {
 }
 ```
 
-### Expandable Card
+## Independent Panels
 
-Create an expandable card with additional details.
+Track one flag per panel instead of a single id and any number of them can be open at once.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { fn } from '@ember/helper';
 import { Collapsible, Button } from 'frontile';
 
-export default class ExpandableCard extends Component {
-  @tracked isExpanded = false;
+export default class IndependentPanels extends Component {
+  @tracked openPanels: Record<string, boolean> = {};
 
-  @action toggleExpand() {
-    this.isExpanded = !this.isExpanded;
-  }
+  panels = [
+    {
+      id: 'features',
+      title: 'Features',
+      body: 'Smooth animations, fully customizable markup, and no styling to fight.'
+    },
+    {
+      id: 'pricing',
+      title: 'Pricing',
+      body: 'Starting at $9.99/month with a 14-day free trial.'
+    },
+    {
+      id: 'support',
+      title: 'Support',
+      body: '24/7 email support with an average response time of 2 hours.'
+    }
+  ];
+
+  toggle = (id: string) => {
+    this.openPanels = { ...this.openPanels, [id]: !this.openPanels[id] };
+  };
+
+  isOpen = (id: string) => {
+    return !!this.openPanels[id];
+  };
 
   <template>
-    <div class='max-w-md border border-neutral-subtle rounded-lg overflow-hidden'>
-      <div class='p-6'>
-        <div class='flex items-start gap-4'>
-          <div
-            class='w-12 h-12 rounded-full bg-primary-subtle flex items-center justify-center'
-          >
-            <span class='text-primary font-semibold text-lg'>JD</span>
+    <div class='max-w-md space-y-4'>
+      {{#each this.panels as |panel|}}
+        <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
+          <div class='p-4 bg-neutral-subtle border-b border-neutral-subtle'>
+            <Button
+              @appearance='minimal'
+              @class='w-full text-left font-semibold'
+              @onPress={{fn this.toggle panel.id}}
+              aria-expanded='{{this.isOpen panel.id}}'
+            >
+              {{panel.title}}
+              <span class='float-right'>
+                {{if (this.isOpen panel.id) '▲' '▼'}}
+              </span>
+            </Button>
           </div>
-          <div class='flex-1'>
-            <h3 class='font-semibold text-lg'>John Doe</h3>
-            <p class='text-neutral-soft text-sm'>Software Engineer</p>
-          </div>
+
+          <Collapsible @isOpen={{this.isOpen panel.id}}>
+            <p class='p-4 text-neutral'>{{panel.body}}</p>
+          </Collapsible>
         </div>
+      {{/each}}
+    </div>
+  </template>
+}
+```
 
-        <Collapsible @isOpen={{this.isExpanded}}>
-          <div class='mt-4 pt-4 border-t border-neutral-subtle'>
-            <dl class='space-y-2 text-sm'>
-              <div class='flex'>
-                <dt class='font-medium w-24'>Email:</dt>
-                <dd class='text-neutral'>john.doe@example.com</dd>
-              </div>
-              <div class='flex'>
-                <dt class='font-medium w-24'>Phone:</dt>
-                <dd class='text-neutral'>+1 (555) 123-4567</dd>
-              </div>
-              <div class='flex'>
-                <dt class='font-medium w-24'>Location:</dt>
-                <dd class='text-neutral'>San Francisco, CA</dd>
-              </div>
-            </dl>
-          </div>
-        </Collapsible>
-      </div>
+## Initially Open
 
-      <div class='px-6 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
-        <Button @size='sm' @appearance='minimal' @onPress={{this.toggleExpand}}>
-          {{if this.isExpanded 'Show Less' 'Show More'}}
+Passing `@isOpen={{true}}` on the first render shows the content immediately, with no opening animation. Closing it afterwards animates as usual.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Collapsible, Button } from 'frontile';
+
+export default class InitiallyOpen extends Component {
+  @tracked isOpen = true;
+
+  toggle = () => {
+    this.isOpen = !this.isOpen;
+  };
+
+  <template>
+    <div class='max-w-md border border-primary-soft rounded-lg overflow-hidden'>
+      <h3
+        class='p-4 font-semibold bg-primary-subtle border-b border-primary-soft'
+      >
+        Welcome Message
+      </h3>
+
+      <Collapsible @isOpen={{this.isOpen}}>
+        <div class='p-4'>
+          <p class='text-neutral mb-4'>
+            Thank you for signing up! Here are some quick tips to get started.
+          </p>
+          <ul class='space-y-2 text-neutral'>
+            <li>→ Complete your profile</li>
+            <li>→ Connect your accounts</li>
+            <li>→ Explore the dashboard</li>
+          </ul>
+        </div>
+      </Collapsible>
+
+      <div class='px-4 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
+        <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
+          {{if this.isOpen 'Dismiss' 'Show Again'}}
         </Button>
       </div>
     </div>
@@ -245,299 +287,93 @@ export default class ExpandableCard extends Component {
 }
 ```
 
-### Multiple Independent Panels
+## Nested Collapsibles
 
-Each panel can be controlled independently.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
-import { Collapsible, Button } from 'frontile';
-
-export default class MultiplePanels extends Component {
-  @tracked isPanelOneOpen = false;
-  @tracked isPanelTwoOpen = false;
-  @tracked isPanelThreeOpen = false;
-
-  @action togglePanelOne() {
-    this.isPanelOneOpen = !this.isPanelOneOpen;
-  }
-
-  @action togglePanelTwo() {
-    this.isPanelTwoOpen = !this.isPanelTwoOpen;
-  }
-
-  @action togglePanelThree() {
-    this.isPanelThreeOpen = !this.isPanelThreeOpen;
-  }
-
-  <template>
-    <div class='max-w-md space-y-4'>
-      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-primary-subtle border-b border-neutral-subtle'>
-          <Button
-            @appearance='minimal'
-            @class='w-full text-left font-semibold'
-            @onPress={{this.togglePanelOne}}
-          >
-            Features
-            <span class='float-right'>{{if this.isPanelOneOpen '▲' '▼'}}</span>
-          </Button>
-        </div>
-        <Collapsible @isOpen={{this.isPanelOneOpen}}>
-          <div class='p-4'>
-            <ul class='space-y-2 text-neutral'>
-              <li>✓ Smooth animations</li>
-              <li>✓ Fully customizable</li>
-              <li>✓ Accessible by default</li>
-            </ul>
-          </div>
-        </Collapsible>
-      </div>
-
-      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-success-subtle border-b border-neutral-subtle'>
-          <Button
-            @appearance='minimal'
-            @class='w-full text-left font-semibold'
-            @onPress={{this.togglePanelTwo}}
-          >
-            Pricing
-            <span class='float-right'>{{if this.isPanelTwoOpen '▲' '▼'}}</span>
-          </Button>
-        </div>
-        <Collapsible @isOpen={{this.isPanelTwoOpen}}>
-          <div class='p-4'>
-            <p class='text-neutral'>
-              Starting at $9.99/month with a 14-day free trial.
-            </p>
-          </div>
-        </Collapsible>
-      </div>
-
-      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-warning-subtle border-b border-neutral-subtle'>
-          <Button
-            @appearance='minimal'
-            @class='w-full text-left font-semibold'
-            @onPress={{this.togglePanelThree}}
-          >
-            Support
-            <span class='float-right'>{{if
-                this.isPanelThreeOpen
-                '▲'
-                '▼'
-              }}</span>
-          </Button>
-        </div>
-        <Collapsible @isOpen={{this.isPanelThreeOpen}}>
-          <div class='p-4'>
-            <p class='text-neutral'>
-              24/7 email support with average response time of 2 hours.
-            </p>
-          </div>
-        </Collapsible>
-      </div>
-    </div>
-  </template>
-}
-```
-
-### Initially Open
-
-Start with content expanded.
+A Collapsible can contain others. The outer one measures its content when it opens, so a nested panel that expands later grows the outer panel with it.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
-import { Collapsible, Button } from 'frontile';
-
-export default class InitiallyOpen extends Component {
-  @tracked isOpen = true;
-
-  @action toggle() {
-    this.isOpen = !this.isOpen;
-  }
-
-  <template>
-    <div class='max-w-md'>
-      <div class='border border-primary-soft rounded-lg overflow-hidden'>
-        <div class='p-4 bg-primary-subtle border-b border-primary-soft'>
-          <h3 class='font-semibold'>Welcome Message</h3>
-        </div>
-
-        <Collapsible @isOpen={{this.isOpen}}>
-          <div class='p-4'>
-            <p class='text-neutral mb-4'>
-              Thank you for signing up! Here are some quick tips to get started
-              with our platform.
-            </p>
-            <ul class='space-y-2 text-neutral'>
-              <li>→ Complete your profile</li>
-              <li>→ Connect your accounts</li>
-              <li>→ Explore the dashboard</li>
-            </ul>
-          </div>
-        </Collapsible>
-
-        <div class='px-4 py-3 bg-neutral-subtle border-t border-neutral-subtle'>
-          <Button @size='sm' @appearance='minimal' @onPress={{this.toggle}}>
-            {{if this.isOpen 'Dismiss' 'Show Again'}}
-          </Button>
-        </div>
-      </div>
-    </div>
-  </template>
-}
-```
-
-### Nested Collapsibles
-
-Collapsibles can be nested within each other.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { fn } from '@ember/helper';
 import { Collapsible, Button } from 'frontile';
 
 export default class NestedCollapsibles extends Component {
   @tracked isParentOpen = false;
-  @tracked isChildOneOpen = false;
-  @tracked isChildTwoOpen = false;
+  @tracked openChildren: Record<string, boolean> = {};
 
-  @action toggleParent() {
+  subcategories = [
+    { id: 'one', title: 'Subcategory 1', body: 'Details for subcategory 1' },
+    { id: 'two', title: 'Subcategory 2', body: 'Details for subcategory 2' }
+  ];
+
+  toggleParent = () => {
     this.isParentOpen = !this.isParentOpen;
-  }
+  };
 
-  @action toggleChildOne() {
-    this.isChildOneOpen = !this.isChildOneOpen;
-  }
+  toggleChild = (id: string) => {
+    this.openChildren = { ...this.openChildren, [id]: !this.openChildren[id] };
+  };
 
-  @action toggleChildTwo() {
-    this.isChildTwoOpen = !this.isChildTwoOpen;
-  }
+  isChildOpen = (id: string) => {
+    return !!this.openChildren[id];
+  };
 
   <template>
-    <div class='max-w-md'>
-      <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-        <div class='p-4 bg-neutral-subtle'>
-          <Button
-            @appearance='minimal'
-            @class='w-full text-left font-semibold'
-            @onPress={{this.toggleParent}}
-          >
-            Category
-            <span class='float-right'>{{if this.isParentOpen '▲' '▼'}}</span>
-          </Button>
-        </div>
-
-        <Collapsible @isOpen={{this.isParentOpen}}>
-          <div class='p-4 space-y-2'>
-            <div class='border border-neutral-subtle rounded overflow-hidden'>
-              <div class='p-3 bg-neutral-subtle'>
-                <Button
-                  @appearance='minimal'
-                  @size='sm'
-                  @class='w-full text-left'
-                  @onPress={{this.toggleChildOne}}
-                >
-                  Subcategory 1
-                  <span class='float-right'>{{if
-                      this.isChildOneOpen
-                      '−'
-                      '+'
-                    }}</span>
-                </Button>
-              </div>
-              <Collapsible @isOpen={{this.isChildOneOpen}}>
-                <div class='p-3 text-sm text-neutral'>
-                  Details for subcategory 1
-                </div>
-              </Collapsible>
-            </div>
-
-            <div class='border border-neutral-subtle rounded overflow-hidden'>
-              <div class='p-3 bg-neutral-subtle'>
-                <Button
-                  @appearance='minimal'
-                  @size='sm'
-                  @class='w-full text-left'
-                  @onPress={{this.toggleChildTwo}}
-                >
-                  Subcategory 2
-                  <span class='float-right'>{{if
-                      this.isChildTwoOpen
-                      '−'
-                      '+'
-                    }}</span>
-                </Button>
-              </div>
-              <Collapsible @isOpen={{this.isChildTwoOpen}}>
-                <div class='p-3 text-sm text-neutral'>
-                  Details for subcategory 2
-                </div>
-              </Collapsible>
-            </div>
-          </div>
-        </Collapsible>
+    <div
+      class='max-w-md border border-neutral-subtle rounded-lg overflow-hidden'
+    >
+      <div class='p-4 bg-neutral-subtle'>
+        <Button
+          @appearance='minimal'
+          @class='w-full text-left font-semibold'
+          @onPress={{this.toggleParent}}
+          aria-expanded='{{this.isParentOpen}}'
+        >
+          Category
+          <span class='float-right'>{{if this.isParentOpen '▲' '▼'}}</span>
+        </Button>
       </div>
+
+      <Collapsible @isOpen={{this.isParentOpen}}>
+        <div class='p-4 space-y-2'>
+          {{#each this.subcategories as |sub|}}
+            <div class='border border-neutral-subtle rounded overflow-hidden'>
+              <div class='p-3 bg-neutral-subtle'>
+                <Button
+                  @appearance='minimal'
+                  @size='sm'
+                  @class='w-full text-left'
+                  @onPress={{fn this.toggleChild sub.id}}
+                  aria-expanded='{{this.isChildOpen sub.id}}'
+                >
+                  {{sub.title}}
+                  <span class='float-right'>
+                    {{if (this.isChildOpen sub.id) '−' '+'}}
+                  </span>
+                </Button>
+              </div>
+
+              <Collapsible @isOpen={{this.isChildOpen sub.id}}>
+                <p class='p-3 text-sm text-neutral'>{{sub.body}}</p>
+              </Collapsible>
+            </div>
+          {{/each}}
+        </div>
+      </Collapsible>
     </div>
   </template>
 }
 ```
 
-## Important Notes
+## Accessibility
 
-### Animation Behavior
+Collapsible renders a plain `<div>` with no roles or ARIA of its own, and it has no trigger — the disclosure semantics are yours to supply. It forwards `...attributes`, so `id`, `role`, and `aria-*` can be set on it directly.
 
-The Collapsible component animates both height and opacity:
-
-- **Expanding**: Height and opacity transition smoothly to full size over 0.4s
-- **Collapsing**: Height and opacity transition to collapsed state over 0.2-0.3s
-- **Easing**: Uses cubic-bezier easing for smooth, natural motion
-
-After expansion completes, the height is set to `auto` and overflow is reset to allow dynamic content changes.
-
-### Initial Height
-
-When using `@initialHeight`:
-
-- Content is always visible up to the specified height, even when collapsed
-- Opacity remains at `1` when collapsed (instead of fading to `0`)
-- Useful for "Read More" patterns and content previews
-- Remember to include units (`px`, `rem`, `em`, etc.)
-
-### State Management
-
-The component is **fully controlled**:
-
-- You must manage the `@isOpen` state in your parent component
-- Toggle the state with your own button or trigger
-- This gives you complete control over when and how the collapsible opens
-
-### Styling
-
-The component is **unstyled** by default:
-
-- Apply your own classes and styles to the content wrapper
-- Style the trigger button however you need
-- Works with any CSS framework or custom styles
-- The component only manages height and opacity transitions
-
-### Accessibility
-
-When building collapsible UIs, remember to:
-
-- Use semantic HTML (buttons for triggers)
-- Add `aria-expanded` to toggle buttons
-- Add `aria-controls` linking trigger to content
-- Consider `aria-labelledby` for the content region
-- Use proper heading hierarchy for accordion items
-
-Example accessible pattern:
+- Use a real `<button>` (or Frontile's `Button`) as the trigger, so Enter, Space, and focus work without extra code.
+- Put `aria-expanded` on the trigger, mirroring the same state you pass to `@isOpen`.
+- Point `aria-controls` at the Collapsible's `id`, and give the Collapsible `role="region"` when it holds a self-contained chunk of content.
+- In an accordion, wrap each trigger in a heading (`<h3>` and so on) at the right level for the surrounding page.
+- Collapsed content stays in the DOM and remains focusable, so avoid interactive elements inside a panel that is expected to read as hidden.
 
 ```gts
 <button
@@ -554,13 +390,7 @@ Example accessible pattern:
 </Collapsible>
 ```
 
-### Testing
-
-The component includes built-in test waiters:
-
-- Transitions are properly tracked for test stability
-- Use `await settled()` in tests to wait for animations
-- The component waits for height and opacity transitions to complete
+> **Note:** Transitions are registered with an Ember test waiter, so `await settled()` in tests resolves only after the open or close animation has finished.
 
 ## API
 

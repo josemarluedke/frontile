@@ -6,7 +6,7 @@ imports:
 
 # Portal & PortalTarget
 
-The `Portal` and `PortalTarget` components are designed to make it easy to render content into a different part of the DOM. This is useful for scenarios such as rendering modals, popovers, or other UI elements that should not be restricted by parent container overflow or need to be placed in a specific area of the page for accessibility or UX considerations.
+`Portal` renders its content somewhere else in the DOM, and `PortalTarget` marks the places it can render to. Reach for them when content has to escape a parent's `overflow: hidden` or stacking context — modals, drawers, popovers, tooltips, toasts — or when it belongs in a specific region of the page for reading order or z-index reasons.
 
 ## Import
 
@@ -14,31 +14,119 @@ The `Portal` and `PortalTarget` components are designed to make it easy to rende
 import { Portal, PortalTarget } from 'frontile';
 ```
 
-## Server-Side Rendering Support
-
-The `Portal` and `PortalTarget` components are fully compatible with server-side rendering (SSR). This ensures that your content is properly rendered and accessible, even when the application is being served from the server, making these components suitable for SEO and initial page load performance considerations.
-
 ## Usage
 
-### Basic Example
+With no arguments, `Portal` renders into the closest destination it can find, falling back to `document.body`.
 
-The `Portal` component renders its content to a specified target or, by default, to the closest available target. You can use it to decouple your UI elements from their usual place in the DOM.
-
-```gts
-import { Portal, PortalTarget } from 'frontile';
+```gts preview
+import { Portal } from 'frontile';
 
 <template>
   <Portal>
-    <div class='p-4 border rounded shadow-md'>
+    <div class='p-4 border border-neutral-soft rounded shadow-md'>
       This content is rendered in a portal.
     </div>
   </Portal>
 </template>
 ```
 
-### Nesting Portals
+## PortalTarget
 
-You can also nest `Portal` components within each other. The inner `Portal` elements can append to the parent portal if configured that way.
+`PortalTarget` renders a `div` marked with `data-portal-target="true"` and, when `@for` is
+given, `data-portal-for="<name>"`. It takes attributes and a block, so it can be positioned
+and styled like any other element and can hold content of its own.
+
+A target with no `@for` is **unnamed**: it is the default destination for any `Portal`
+rendered below it that has no `@target` of its own. A target with `@for` is only used by
+portals that ask for it by name, so it never captures unrelated content.
+
+```gts preview
+import { Portal, PortalTarget } from 'frontile';
+
+<template>
+  <div class='flex flex-col space-y-4'>
+    <PortalTarget />
+    <PortalTarget @for='target-1' />
+
+    <Portal @target='target-1'>
+      <div class='p-4 border border-neutral-soft rounded shadow-md'>
+        Rendered to target-1
+      </div>
+    </Portal>
+  </div>
+</template>
+```
+
+### Named targets as slots
+
+Because named targets are opt-in, several can coexist and each `Portal` picks one by name.
+The target's own block content stays put; portal content is appended after it.
+
+```gts preview
+import { Button, Portal, PortalTarget } from 'frontile';
+
+<template>
+  <div class='flex gap-4'>
+    <PortalTarget
+      @for='toolbar'
+      class='flex-1 flex items-center gap-2 p-3 border border-neutral-soft rounded'
+    >
+      <span class='text-neutral-strong'>Toolbar</span>
+    </PortalTarget>
+
+    <PortalTarget
+      @for='footer'
+      class='flex-1 flex items-center gap-2 p-3 border border-neutral-soft rounded'
+    >
+      <span class='text-neutral-strong'>Footer</span>
+    </PortalTarget>
+
+    <Portal @target='toolbar'>
+      <Button @size='sm'>Save changes</Button>
+    </Portal>
+
+    <Portal @target='footer'>
+      <Button @size='sm' @appearance='outlined'>Cancel</Button>
+    </Portal>
+  </div>
+</template>
+```
+
+### An application-level target
+
+Without a target, overlays land in `document.body`, outside the element your app styles and
+outside its stacking context. Rendering one unnamed `PortalTarget` near the end of the
+application template gives every overlay a predictable home you control — this documentation
+site does exactly that:
+
+```gts
+import { PortalTarget } from 'frontile';
+
+<template>
+  {{outlet}}
+
+  <PortalTarget class='relative z-20' />
+</template>
+```
+
+### How a destination is chosen
+
+`Portal` resolves its destination in this order:
+
+1. `@renderInPlace={{true}}` — no portal at all, the content stays where it is written.
+2. `@target` as an `Element` — that element.
+3. `@target` as a string beginning with `#` — the element with that id.
+4. `@target` as any other string — the nearest `PortalTarget` with a matching `@for`.
+5. Otherwise, the nearest parent portal, unless `@appendToParentPortal={{false}}`.
+6. Otherwise, the nearest **unnamed** `PortalTarget`.
+7. Otherwise, `document.body`.
+
+When the destination ends up being plain `document.body`, `Portal` wraps its content in a
+`PortalTarget` for you, so portals nested inside it still have somewhere to go.
+
+## Nesting Portals
+
+Portals nest: an inner `Portal` renders into the destination of the outer one.
 
 ```gts preview
 import { Portal, PortalTarget } from 'frontile';
@@ -66,48 +154,16 @@ import { Portal, PortalTarget } from 'frontile';
 </template>
 ```
 
-In this example, the inner `Portal` renders its content inside the destination of the outer `Portal`.
+## Rendering Inline
 
-### Using `PortalTarget`
-
-The `PortalTarget` component is used to create named or unnamed locations where content can be rendered using the `Portal` component. This allows for more control over where a portal's content is displayed.
-
-```gts preview
-import { Portal, PortalTarget } from 'frontile';
-
-<template>
-  <div class='flex flex-col space-y-4'>
-    <PortalTarget />
-    <PortalTarget @for='target-1' />
-
-    <Portal @target='target-1'>
-      <div class='p-4 border rounded shadow-md'>
-        Rendered to target-1
-      </div>
-    </Portal>
-  </div>
-</template>
-```
-
-In this example, the portal content is directed to the named target, `target-1`, ensuring it is rendered in the appropriate place within the DOM.
-
-## Controlling Where Content Renders
-
-The `Portal` component has a `target` argument that allows you to specify where the content should be rendered. This can be:
-
-- A DOM `Element` directly.
-- An ID prefixed with `#` to target a specific element by its ID.
-- A target name to match a `PortalTarget` with the `@for` argument.
-
-### Rendering Inline
-
-If you set the `@renderInPlace` argument to `true`, the content will be rendered inline without creating a new portal.
+`@renderInPlace={{true}}` skips the portal entirely and renders the content where it is
+written — useful for turning portalling off conditionally.
 
 ```gts preview
-import { Portal, PortalTarget } from 'frontile';
+import { Portal } from 'frontile';
 
 <template>
-  <div class='p-4 border rounded'>
+  <div class='p-4 border border-neutral-soft rounded'>
     <Portal @renderInPlace={{true}}>
       This content is rendered inline instead of a portal.
     </Portal>
@@ -115,30 +171,31 @@ import { Portal, PortalTarget } from 'frontile';
 </template>
 ```
 
-### Rendering Inside a Specific DOM Element
+## Rendering Inside a Specific DOM Element
 
-You can use a target element directly by passing its ID or a reference to the `@target` argument.
+`@target` also accepts an element id prefixed with `#`, or an `Element` reference, for
+destinations that are not `PortalTarget`s — a third-party container, for instance.
 
 ```gts preview
-import { Portal, PortalTarget } from 'frontile';
+import { Portal } from 'frontile';
 
 <template>
-  <div id='target' class='border p-4'>
+  <div id='target' class='border border-neutral-soft p-4'>
     Target Element
   </div>
   <Portal @target='#target'>
-    <div class='p-4 border rounded shadow-md'>
+    <div class='p-4 border border-neutral-soft rounded shadow-md'>
       Rendered inside target element.
     </div>
   </Portal>
 </template>
 ```
 
-In this example, the portal content is rendered inside the element with the ID `target`.
-
 ## Append to Parent Portal
 
-By default, `Portal` components append their content to the parent portal if one exists. This behavior can be disabled by setting the `@appendToParentPortal` argument to `false`.
+By default a `Portal` appends to the parent portal when there is one. Set
+`@appendToParentPortal={{false}}` to make it resolve a destination on its own instead, which
+sends it to the nearest unnamed `PortalTarget`.
 
 ```gts preview
 import { Portal, PortalTarget } from 'frontile';
@@ -155,14 +212,33 @@ import { Portal, PortalTarget } from 'frontile';
 </template>
 ```
 
-In this example, the inner `Portal` will not append its content to the parent portal, resulting in the content being rendered at a different level.
+## Server-Side Rendering
 
-## Accessibility and Considerations
+Both components work under FastBoot. `Portal` resolves its destination from the owner's
+document rather than the global `document`, so portalled content is present in the
+server-rendered HTML.
 
-- Ensure that portal content, especially dynamic elements like modals and popovers, has a clear focus and can be accessed by keyboard navigation.
-- Portals are useful when elements should escape any parent `overflow: hidden` constraints.
+## Accessibility
 
-The `Portal` and `PortalTarget` components provide a robust way to manage dynamic content placement within your Ember.js applications, making them a powerful tool for managing modals, popovers, tooltips, and more.
+Neither component adds a role or any ARIA attribute — `PortalTarget` is a plain `div`, and
+that is deliberate: the semantics belong to whatever you render inside it. What they do
+change is DOM position, and that has consequences:
+
+- **Reading and tab order follow the destination, not the source.** Content written next to a
+  button but portalled to the end of the page is announced and reached there. Place your
+  application-level `PortalTarget` after the main content so overlay content comes last.
+- **Focus management is not handled here.** `Portal` does not move, trap, or restore focus.
+  For dialogs use `Modal`, `Drawer`, or `Overlay`, which handle focus, focus trapping, and
+  the Escape key on top of `Portal`.
+- **Keep the relationship explicit.** When portalled content describes a control that stays
+  behind — a popover, a tooltip, an error message — wire it up with `aria-controls`,
+  `aria-describedby`, or `aria-labelledby`, since proximity in the DOM no longer implies it.
+- **Give a named target only one owner.** Two portals targeting the same name append in render
+  order; for a slot that should hold one thing at a time, render one `Portal` at a time.
+
+These notes come from reading `portal.gts` and `portal-target.gts` and the integration tests
+in `test-app/tests/integration/components/overlays/`; the tests cover destination resolution,
+not assistive-technology behavior.
 
 ## API
 

@@ -11749,7 +11749,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: 'Target name',
+        description:
+          "Name of this target, matched against a `Portal`'s `@target` argument.\n\nWhen omitted, the target is unnamed: any `Portal` rendered below it that\nhas no `@target` and no parent portal will render here. A named target is\nonly used by portals that ask for it by name.",
         tags: {},
       },
     ],

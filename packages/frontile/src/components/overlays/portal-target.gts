@@ -3,7 +3,11 @@ import type { TOC } from '@ember/component/template-only';
 const PortalTarget: TOC<{
   Args: {
     /**
-     * Target name
+     * Name of this target, matched against a `Portal`'s `@target` argument.
+     *
+     * When omitted, the target is unnamed: any `Portal` rendered below it that
+     * has no `@target` and no parent portal will render here. A named target is
+     * only used by portals that ask for it by name.
      */
     for?: string;
   };
