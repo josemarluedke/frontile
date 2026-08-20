@@ -3,8 +3,12 @@
 /**
  * Semantic Colors v2 Migration Script
  *
- * Migrates Frontile codebase from old numbered color system (default-100, primary-500)
- * to new semantic color levels (neutral-subtle, brand-soft, etc.)
+ * Migrates from the old numbered color system (default-100, primary-500) to the
+ * named semantic levels (neutral-subtle, primary-soft, ...).
+ *
+ * Mappings mirror docs/migrations/v0.18/semantic-colors.md and are validated
+ * against the theme on every run, so a target that the theme does not define
+ * fails the script instead of producing dead classes.
  *
  * Usage:
  *   node scripts/migrate-semantic-colors.mjs              # Dry run
@@ -31,109 +35,215 @@ console.log(`Mode: ${shouldWrite ? '✍️  WRITE' : '🔍 DRY RUN'}`);
 console.log(`Path: ${targetPath}\n`);
 
 /**
- * Color migration mappings
+ * Levels the theme actually defines, and the categories that carry them.
+ * Kept in sync with packages/theme/src/colors/semantic.ts by validateTargets()
+ * below rather than by hand — an earlier version of this script migrated code
+ * to `brand-*` and `*-medium`, neither of which has ever existed, and nothing
+ * caught it because the output is only ever dead CSS.
+ */
+const THEME_SOURCE = 'packages/theme/src/colors/types.ts';
+
+/**
+ * Old class fragment -> new class fragment.
+ *
+ * These mirror the mapping tables in
+ * docs/migrations/v0.18/semantic-colors.md. Where the old numbered scale is
+ * genuinely ambiguous the table offers two levels; this script takes the lower
+ * one and reports the line so it can be reviewed, because guessing high makes
+ * an element louder than it was and that is the harder error to notice.
  */
 const colorMigrations = {
-  // Foreground colors (text on colored backgrounds) - highest priority, most specific
-  // Note: -foreground colors typically map to on-{color}-medium as that's the most common usage
-  'default-foreground': 'on-neutral-medium',
-  'primary-foreground': 'on-brand-medium',
-  'success-foreground': 'on-success-medium',
-  'warning-foreground': 'on-warning-medium',
-  'danger-foreground': 'on-danger-medium',
+  // `{color}-foreground` became the automatic contrast colour. DEFAULT level,
+  // matching the docs table (`text-default-foreground` -> `text-on-neutral`).
+  'default-foreground': 'on-neutral',
+  'primary-foreground': 'on-primary',
+  'secondary-foreground': 'on-secondary',
+  'tertiary-foreground': 'on-tertiary',
+  'success-foreground': 'on-success',
+  'warning-foreground': 'on-warning',
+  'danger-foreground': 'on-danger',
 
-  // Default/Neutral numbered scales
+  // The `default` category was renamed to `neutral`.
   'default-50': 'neutral-subtle',
   'default-100': 'neutral-subtle',
   'default-200': 'neutral-subtle',
   'default-300': 'neutral-soft',
   'default-400': 'neutral-soft',
   'default-500': 'neutral-soft',
-  'default-600': 'neutral-medium',
-  'default-700': 'neutral-medium',
+  'default-600': 'neutral',
+  'default-700': 'neutral',
   'default-800': 'neutral-strong',
   'default-900': 'neutral-strong',
   'default-950': 'neutral-strong',
 
-  // Primary/Brand numbered scales
-  'primary-500': 'brand-soft',
-  'primary-600': 'brand-medium',
-  'primary-700': 'brand-medium',
-  'primary-800': 'brand-strong',
-  'primary-900': 'brand-strong',
-  'primary-1000': 'brand-strong',
+  // `primary` kept its name; only the scale changed. Note there is no
+  // `primary-*` -> `primary-*` identity entry here: the category rename that
+  // once made those necessary was reverted before 0.18 shipped.
+  'primary-500': 'primary-soft',
+  'primary-600': 'primary',
+  'primary-700': 'primary',
+  'primary-800': 'primary-strong',
+  'primary-900': 'primary-strong',
 
-  // Success numbered scales
+  'secondary-500': 'secondary-soft',
+  'secondary-600': 'secondary',
+  'secondary-700': 'secondary',
+  'secondary-800': 'secondary-strong',
+  'secondary-900': 'secondary-strong',
+
   'success-100': 'success-subtle',
   'success-200': 'success-subtle',
   'success-400': 'success-subtle',
   'success-500': 'success-soft',
-  'success-600': 'success-medium',
-  'success-700': 'success-medium',
+  'success-600': 'success',
+  'success-700': 'success',
   'success-800': 'success-strong',
   'success-900': 'success-strong',
 
-  // Warning numbered scales
   'warning-100': 'warning-subtle',
   'warning-200': 'warning-subtle',
   'warning-500': 'warning-soft',
-  'warning-600': 'warning-medium',
-  'warning-700': 'warning-medium',
+  'warning-600': 'warning',
+  'warning-700': 'warning',
   'warning-800': 'warning-strong',
   'warning-900': 'warning-strong',
 
-  // Danger numbered scales
   'danger-100': 'danger-subtle',
   'danger-200': 'danger-subtle',
   'danger-500': 'danger-soft',
-  'danger-600': 'danger-medium',
-  'danger-700': 'danger-medium',
+  'danger-600': 'danger',
+  'danger-700': 'danger',
   'danger-800': 'danger-strong',
   'danger-900': 'danger-strong',
 
-  // Special dark mode patterns
-  'dark:bg-default-200': 'dark:bg-inverse-subtle',
-  'dark:bg-default-300': 'dark:bg-inverse-soft',
-  'dark:hover:bg-default-300': 'dark:hover:bg-inverse-soft',
-  'dark:text-default-950': 'dark:text-inverse-strong',
+  // Surface rename.
+  'bg-background': 'bg-surface-canvas',
 
-  // Base color names without numbers (lower priority, handle after numbered ones)
+  // Unnumbered `default`. `text-default` goes to the ink band, since text needs
+  // a legible foreground rather than a fill.
   'bg-default': 'bg-neutral',
-  'text-default': 'text-neutral-medium',
-  'border-default': 'border-neutral-soft',
-  'bg-primary': 'bg-brand',
-  'text-primary': 'text-brand',
-  'border-primary': 'border-brand-medium',
-  'ring-primary': 'ring-brand-soft',
-  'focus-visible:ring-primary-500': 'focus-visible:ring-brand-soft'
+  'text-default': 'text-neutral-strong',
+  'border-default': 'border-neutral-soft'
 };
 
 /**
- * Patterns that need special handling based on context
+ * Old numbers whose docs mapping offers a choice. Migrated to the lower level
+ * and reported, rather than silently picked.
  */
-const contextualPatterns = [
-  // Text colors often need -medium or -strong suffix
-  {
-    pattern: /text-default(?!-)/g,
-    check: (line) => {
-      // If it's a heading or strong emphasis context, use strong
-      if (
-        line.includes('font-bold') ||
-        line.includes('font-semibold') ||
-        line.includes('heading')
-      ) {
-        return 'text-neutral-strong';
-      }
-      // Default to medium for body text
-      return 'text-neutral-medium';
-    }
-  },
-  // Hover states for default backgrounds
-  {
-    pattern: /hover:bg-default(?!-)/g,
-    replacement: 'hover:bg-neutral-soft'
+const AMBIGUOUS = new Set([
+  'default-500',
+  'default-700',
+  'primary-500',
+  'primary-700',
+  'secondary-500',
+  'secondary-700',
+  'success-500',
+  'success-600',
+  'success-700',
+  'warning-500',
+  'warning-600',
+  'warning-700',
+  'danger-500',
+  'danger-600',
+  'danger-700'
+]);
+
+/**
+ * Fails the run if any replacement targets a token the theme does not define.
+ * This is the check whose absence let `brand-*` and `*-medium` sit here across
+ * releases: a bad target produces a class Tailwind cannot resolve, which emits
+ * no CSS and no error, so the damage is invisible in the diff and on the page.
+ */
+function validateTargets() {
+  const typesPath = resolve(ROOT, THEME_SOURCE);
+  const source = readFileSync(typesPath, 'utf-8');
+
+  const categories = new Set();
+  for (const match of source.matchAll(
+    /^\s{2}'?(on-[\w-]+|[a-z]+)'?\??:\s*(SemanticColorCategory|OnColorCategory|SurfaceColors)/gm
+  )) {
+    categories.add(match[1]);
   }
-];
+
+  const levels = new Set([
+    'subtle',
+    'muted',
+    'soft',
+    'mild',
+    'firm',
+    'strong',
+    'bolder'
+  ]);
+
+  // `surface` does not use the emphasis levels — it has named roles of its own
+  // (canvas, card, input, …) plus two translucent families that do take levels.
+  const surfaceBlock = source.slice(source.indexOf('interface SurfaceColors'));
+  const surfaceRoles = new Set(
+    [
+      ...surfaceBlock
+        .slice(0, surfaceBlock.indexOf('\n}'))
+        .matchAll(/^\s{2}(\w+):/gm)
+    ].map((m) => m[1])
+  );
+
+  const bad = [];
+  for (const [from, to] of Object.entries(colorMigrations)) {
+    // Strip any leading utility so we are left with `category` or
+    // `category-level`.
+    const token = to.replace(
+      /^(bg|text|border|ring|placeholder|divide|outline|decoration|shadow|from|to|via)-/,
+      ''
+    );
+    const [category, ...rest] = token.split('-');
+    const level = rest.join('-');
+
+    if (category === 'surface') {
+      const [role, ...roleRest] = rest;
+      if (!surfaceRoles.has(role)) {
+        bad.push(`${from} -> ${to} (unknown surface role "${role}")`);
+      } else if (roleRest.length > 0 && !levels.has(roleRest.join('-'))) {
+        bad.push(
+          `${from} -> ${to} (unknown level "${roleRest.join('-')}" on surface-${role})`
+        );
+      }
+      if (from === to) {
+        bad.push(`${from} -> ${to} (no-op mapping)`);
+      }
+      continue;
+    }
+
+    const known =
+      categories.has(token) ||
+      categories.has(category) ||
+      categories.has(`${category}-${rest[0]}`);
+
+    if (!known) {
+      bad.push(`${from} -> ${to} (unknown category "${category}")`);
+      continue;
+    }
+    if (level && !levels.has(level) && !categories.has(token)) {
+      bad.push(`${from} -> ${to} (unknown level "${level}")`);
+    }
+    if (from === to) {
+      bad.push(`${from} -> ${to} (no-op mapping)`);
+    }
+  }
+
+  if (bad.length > 0) {
+    console.error(
+      `\n❌ ${bad.length} mapping(s) target tokens this theme does not define:\n`
+    );
+    bad.forEach((b) => console.error(`   ${b}`));
+    console.error(
+      `\nChecked against ${THEME_SOURCE}. Fix the mappings before running.\n`
+    );
+    process.exit(1);
+  }
+
+  console.log(
+    `✓ ${Object.keys(colorMigrations).length} mappings validated against ${THEME_SOURCE}\n`
+  );
+}
 
 /**
  * Build regex patterns from migration map
@@ -240,7 +350,39 @@ function processFile(filepath) {
  */
 function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
   const results = [];
-  const ignoreNames = ['node_modules', 'dist', 'tmp', '.git', 'declarations'];
+  const ignoreNames = [
+    'node_modules',
+    'dist',
+    'tmp',
+    '.git',
+    // transient git worktrees and agent scratch space
+    '.claude',
+    'declarations'
+  ];
+
+  // The migration guides quote the old class names on purpose, in their "before"
+  // columns and mapping tables. Rewriting those turns the document that explains
+  // the migration into one that shows the same class on both sides — which is
+  // exactly the no-op-row problem the guide was just cleaned of. The generated
+  // site templates are derived from those files, so they go too.
+  const ignorePaths = [
+    join(ROOT, 'docs/migrations'),
+    // Agent instruction files name the old tokens in prose to explain that they
+    // no longer exist ("there is no `primary-500`-style class"). Rewriting those
+    // sentences inverts their meaning.
+    join(ROOT, 'AGENTS.md'),
+    join(ROOT, 'CLAUDE.md'),
+    join(ROOT, 'site/app/templates/docs/migrations'),
+    join(ROOT, 'scripts/migrate-semantic-colors.mjs')
+  ];
+
+  if (
+    ignorePaths.some(
+      (ignored) => dir === ignored || dir.startsWith(ignored + '/')
+    )
+  ) {
+    return results;
+  }
 
   try {
     const entries = readdirSync(dir, { withFileTypes: true });
@@ -255,6 +397,9 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
       if (entry.isDirectory()) {
         results.push(...findFiles(fullPath, extensions));
       } else if (entry.isFile() && extensions.includes(extname(entry.name))) {
+        if (ignorePaths.includes(fullPath)) {
+          continue;
+        }
         results.push(fullPath);
       }
     }
@@ -269,6 +414,10 @@ function findFiles(dir, extensions = ['.ts', '.gts', '.gjs', '.md', '.css']) {
  * Main execution
  */
 function main() {
+  // Before touching anything: a mapping that points at a token the theme does
+  // not define is worse than no migration, because the result is silent.
+  validateTargets();
+
   const searchPath = resolve(ROOT, targetPath);
   const files = findFiles(searchPath);
 
@@ -320,6 +469,33 @@ function main() {
     console.log(`   ${change}`);
     console.log(
       `      ${count} occurrence${count > 1 ? 's' : ''} in ${files.size} file${files.size > 1 ? 's' : ''}`
+    );
+  }
+
+  // Surface the changes whose old number mapped to more than one plausible
+  // level. Migrating low is the safe direction, but these are the lines where a
+  // human has to decide.
+  const ambiguous = sortedChanges.filter(([change]) =>
+    [...AMBIGUOUS].some(
+      (key) =>
+        change.startsWith(`${key} →`) ||
+        (/^(bg|text|border|ring|placeholder|divide|outline|decoration|shadow|from|to|via)-/.test(
+          change
+        ) &&
+          change.split(' →')[0].endsWith(key))
+    )
+  );
+
+  if (ambiguous.length > 0) {
+    console.log(
+      `\n⚠️  ${ambiguous.length} change type(s) had more than one reasonable level.`
+    );
+    console.log(
+      `   Migrated to the lower level; review these and raise where the element`
+    );
+    console.log(`   should carry more emphasis:\n`);
+    ambiguous.forEach(([change, { count }]) =>
+      console.log(`   ${change}  (${count})`)
     );
   }
 
