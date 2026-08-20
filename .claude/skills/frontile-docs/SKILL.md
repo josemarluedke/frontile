@@ -147,8 +147,10 @@ node .claude/skills/frontile-docs/scripts/lint-docs.mjs packages/frontile/src/co
 ```
 
 The linter handles the mechanical half — required sections, fence languages, `<Signature>`
-wiring, arguments used in demos that don't exist in the signature, arguments missing the
-JSDoc that populates the API table. It exits non-zero on errors, so it can run in CI. Fix
+wiring (including a tag naming a component that isn't in the generated data, which renders
+as an empty API entry and is otherwise only a line in the build log), arguments used in
+demos that don't exist in the signature, arguments missing the JSDoc that populates the
+API table. It exits non-zero on errors, so it can run in CI. Fix
 what it reports, then re-run rather than assuming.
 
 Then confirm the demos actually render, since the linter can't execute them:

@@ -216,6 +216,25 @@ function lineOf(source, index) {
   return source.slice(0, index).split('\n').length;
 }
 
+/**
+ * Component names present in the generated signature data, or null when it
+ * hasn't been generated. Entries are emitted as package/module/name/fileName
+ * groups; anchoring on the preceding `module:` avoids picking up the `name`
+ * keys that appear inside Blocks metadata.
+ */
+let signatureNamesCache;
+function knownSignatureComponents() {
+  if (signatureNamesCache !== undefined) return signatureNamesCache;
+  const dataPath = join(REPO_ROOT, 'site/app/components/signature-data.ts');
+  if (!existsSync(dataPath)) return (signatureNamesCache = null);
+  const source = readFileSync(dataPath, 'utf8');
+  const names = new Set();
+  for (const m of source.matchAll(/module:\s*'[^']*',\s*name:\s*'([^']+)'/g)) {
+    names.add(m[1]);
+  }
+  return (signatureNamesCache = names.size > 0 ? names : null);
+}
+
 // ---------------------------------------------------------------------------
 // The checks
 // ---------------------------------------------------------------------------
@@ -292,6 +311,24 @@ function lintDoc(mdPath) {
       '`<Signature />` used but not imported in frontmatter',
       "add `imports:\\n  - import Signature from 'site/components/signature';`"
     );
+  }
+
+  // A tag naming a component that isn't in the generated data renders as an
+  // empty API entry — the site only logs "No component found" during the build,
+  // which is easy to miss. Skipped when the data hasn't been generated yet,
+  // since a missing file would otherwise condemn every tag in the repo.
+  const known = knownSignatureComponents();
+  if (known) {
+    for (const tag of signatureTags) {
+      if (!known.has(tag[1])) {
+        add(
+          'error',
+          lineOf(source, tag.index),
+          `\`<Signature @component="${tag[1]}" />\` matches no component in signature-data.ts`,
+          'check the name, or run `pnpm --filter frontile build && pnpm --filter site generate-signature-data` if the component is new'
+        );
+      }
+    }
   }
 
   // --- Fences -------------------------------------------------------------
