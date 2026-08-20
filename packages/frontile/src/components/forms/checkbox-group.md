@@ -232,7 +232,7 @@ export default class ValidatedCheckboxGroup extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-strong rounded'>
+        <div class='p-3 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}
@@ -399,7 +399,7 @@ export default class CompleteFormWithCheckbox extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-3 bg-success-50 text-success-strong rounded'>
+        <div class='p-3 bg-success-subtle text-success-strong rounded'>
           {{this.submitMessage}}
         </div>
       {{/if}}

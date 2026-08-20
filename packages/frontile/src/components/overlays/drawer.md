@@ -593,7 +593,7 @@ export default class NonDismissibleDrawer extends Component {
                 @intent='success'
               />
             {{else}}
-              <p class='text-green-600'>Ready to process data.</p>
+              <p class='text-success'>Ready to process data.</p>
             {{/if}}
           </div>
         </d.Body>

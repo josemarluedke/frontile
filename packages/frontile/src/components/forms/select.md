@@ -202,7 +202,7 @@ export default class SelectFormValidation extends Component {
       </Form>
 
       {{#if this.submitMessage}}
-        <div class='p-4 bg-success-50 border border-success-subtle rounded'>
+        <div class='p-4 bg-success-subtle border border-success-subtle rounded'>
           <p class='text-success-strong'>{{this.submitMessage}}</p>
           <div class='mt-2 text-sm'>
             <p><strong>Country:</strong> {{this.formData.country}}</p>
@@ -501,7 +501,7 @@ export default class CustomContentBlocksSelect extends Component {
         <span class='ml-2'>▼</span>
       </:endContent>
       <:emptyContent>
-        <div class='p-2 text-center text-gray-500'>
+        <div class='p-2 text-center text-neutral'>
           No fruits found.
         </div>
       </:emptyContent>

@@ -8,13 +8,13 @@ imports:
 A button group is used to group buttons whose actions are related.
 
 
-## Import 
+## Import
 
 ```js
 import { ButtonGroup } from 'frontile';
 ```
 
-## Using with Button
+## Usage
 
 ```gjs preview
 import { ButtonGroup } from 'frontile';
