@@ -8,22 +8,20 @@
   /* Site defaults to the Frontile body/header face (Open Sans); code uses Source Code Pro */
   --font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* The bundled highlight.js theme (highlight.css) is GitHub Dark with fixed
+     token colors, so code panels stay dark in BOTH schemes. The theme's own
+     neutrals invert between light and dark and cannot express that, so these
+     are named tokens taken from the palette's dark end — defined once here so
+     no literal color appears at a use site. */
+  --color-code-surface: #140b06; /* palette gray-950 */
+  --color-code-chrome: #241c17; /* palette gray-900 */
+  --color-code-border: #39332e; /* palette gray-800 */
+  --color-code-ink: #c9d1d9; /* highlight.js base ink */
+  --color-code-prompt: #7ce0e1; /* palette teal-200 */
+
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
-
-  --animate-hero-glow: hero-glow 8s ease-in-out infinite;
-  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
-}
-
-@keyframes hero-glow {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.15); opacity: 0.8; }
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
 }
 
 @layer components {
@@ -90,162 +88,333 @@
     @apply text-neutral-soft;
   }
 
-  /* Hero glow orbs */
-  .hero-glow-orb {
-    position: absolute;
-    border-radius: 9999px;
-    pointer-events: none;
-    filter: blur(80px);
-    animation: var(--animate-hero-glow);
-  }
+  /* ------------------------------------------------------------------ *
+   * Homepage
+   *
+   * Every value here resolves through a Frontile token. The previous
+   * homepage styled its hero orbs, install terminal, CTA gradient, stat
+   * glow, and section dividers with literal blue/violet oklch() values,
+   * which appear nowhere in the palette — Frontile's primary is teal and
+   * its secondary is orange. Those rules are gone rather than recolored.
+   * ------------------------------------------------------------------ */
 
-  .hero-glow-orb--primary {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, oklch(0.55 0.2 250 / 0.35) 0%, transparent 70%);
-    top: -100px;
-    left: 50%;
-    transform: translateX(-70%);
-  }
-
-  .hero-glow-orb--secondary {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, oklch(0.55 0.2 290 / 0.3) 0%, transparent 70%);
-    top: -50px;
-    left: 50%;
-    transform: translateX(-20%);
-    animation-delay: -4s;
-  }
-
-  /* Install terminal */
-  .install-terminal {
+  /* The theme seam: one specimen, both themes, a draggable divide. */
+  .theme-seam {
     position: relative;
-    background: oklch(0.15 0.005 270);
-    border-radius: 0.75rem;
-    padding: 1.25rem 1.5rem;
+    isolation: isolate;
     overflow: hidden;
-    border: 1px solid oklch(0.3 0.02 270);
-  }
-
-  .install-terminal::before {
-    content: '';
-    position: absolute;
-    inset: 0;
     border-radius: 0.75rem;
-    padding: 1px;
-    background: linear-gradient(135deg, oklch(0.6 0.2 250 / 0.5), oklch(0.6 0.2 290 / 0.5));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  .install-terminal::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 40px;
-    background: oklch(0.55 0.2 250 / 0.15);
-    filter: blur(20px);
-    pointer-events: none;
-  }
-
-  .install-terminal__dots {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 0.75rem;
-  }
-
-  .install-terminal__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 9999px;
-  }
-
-  .install-terminal__dot--red { background: oklch(0.63 0.2 25); }
-  .install-terminal__dot--yellow { background: oklch(0.8 0.15 85); }
-  .install-terminal__dot--green { background: oklch(0.72 0.19 145); }
-
-  .install-terminal__command {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.9375rem;
-    color: oklch(0.85 0 none);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .install-terminal__prompt {
-    color: oklch(0.7 0.15 145);
+    touch-action: pan-y;
+    /* The specimen is a picture; letting a drag select its text turns the
+       seam gesture into a text highlight. */
     user-select: none;
   }
 
-  /* Code block - always dark background */
-  .code-block-glow {
-    position: relative;
-    background: oklch(0.15 0.005 270) !important;
-    border: 1px solid oklch(0.25 0.01 270 / 0.5);
-    box-shadow: inset 0 1px 0 oklch(1 0 none / 0.03);
+  .theme-seam__inverse {
+    position: absolute;
+    inset: 0;
   }
 
-  /* Feature card glow hover */
-  .feature-card-glow {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  /* The label only exists for the stacked mobile layout, where the two copies
+     are no longer self-evidently "the same panel, two themes". */
+  .theme-seam__label {
+    display: none;
   }
 
-  .feature-card-glow:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 40px -10px oklch(0.55 0.2 250 / 0.15), 0 4px 6px -4px oklch(0 0 none / 0.1);
-    border-color: oklch(0.7 0.1 250 / 0.3);
+  /* Below `sm` a vertical seam cuts through a 375px-wide table mid-row, which
+     reads as a rendering fault rather than a comparison. Stack the two copies
+     instead and label them. The clip is an inline style, so overriding it here
+     needs `!important` — the alternative would be branching the template on a
+     viewport width the server cannot know. */
+  /* These selectors are deliberately one step more specific than the base
+     rules they override. The base rules are declared later in this file, and at
+     equal specificity the later declaration would win — so specificity, not
+     source order, is what keeps the mobile layout stable. */
+  @media (width < 640px) {
+    .theme-seam.theme-seam {
+      overflow: visible;
+    }
+
+    .theme-seam .theme-seam__inverse {
+      position: static;
+      inset: auto;
+      clip-path: none !important;
+      margin-top: 1.25rem;
+    }
+
+    .theme-seam .theme-seam__line,
+    .theme-seam .theme-seam__handle {
+      display: none;
+    }
+
+    .theme-seam .theme-seam__label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-family: var(--font-label);
+      font-size: var(--text-label-2xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      color: var(--color-neutral-firm);
+    }
   }
 
-  /* Section divider gradient */
-  .section-divider-gradient {
-    position: relative;
-  }
-
-  .section-divider-gradient::before {
-    content: '';
+  .theme-seam__line {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(80%, 600px);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, oklch(0.6 0.2 250 / 0.4), oklch(0.6 0.2 290 / 0.4), transparent);
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--color-primary);
+    pointer-events: none;
+    z-index: 2;
   }
 
-  /* CTA gradient background */
-  .cta-gradient-bg {
-    background: linear-gradient(135deg, oklch(0.45 0.2 250), oklch(0.4 0.18 280), oklch(0.42 0.2 290));
+  .theme-seam__handle {
+    position: absolute;
+    top: 50%;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-left: -1.375rem;
+    margin-top: -1.375rem;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: 2px solid var(--color-surface-app);
+    box-shadow: 0 2px 8px -2px var(--color-surface-overlay-firm);
+    cursor: ew-resize;
+    touch-action: none;
   }
 
-  /* CTA frosted glass cards */
-  .cta-card {
-    padding: 1.5rem;
-    background: oklch(1 0 none / 0.1);
-    backdrop-filter: blur(12px);
+  .theme-seam__handle:focus-visible {
+    outline: 2px solid var(--color-primary-firm);
+    outline-offset: 3px;
+  }
+
+  /* Two chevrons, drawn rather than iconised, so the affordance reads at
+     any size without shipping an asset. */
+  .theme-seam__grip {
+    width: 1.25rem;
+    height: 0.75rem;
+    background:
+      linear-gradient(to bottom right, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) left / 50% 50% no-repeat,
+      linear-gradient(to top right, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) left bottom / 50% 50% no-repeat,
+      linear-gradient(to bottom left, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) right / 50% 50% no-repeat,
+      linear-gradient(to top left, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) right bottom / 50% 50% no-repeat;
+  }
+
+  /* Specimen wall.
+     A uniform auto-fill grid sized its rows to the tallest cell — the Table —
+     which left every other tile with a large empty stage. Instead the Table
+     spans two columns and two rows, and the rest sit at one unit each, so the
+     wall is dense rather than padded. */
+  .specimen-wall {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(10.5rem, auto);
+  }
+
+  @media (width >= 640px) {
+    .specimen-wall {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .specimen-tile--wide {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+  }
+
+  @media (width >= 1024px) {
+    .specimen-wall {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .specimen-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     border-radius: 0.75rem;
-    border: 1px solid oklch(1 0 none / 0.15);
-    transition: border-color 0.2s ease;
+    border: 1px solid var(--color-neutral-soft);
+    background: var(--color-surface-app);
+    overflow: hidden;
+    transition: border-color 150ms ease, transform 150ms ease;
   }
 
-  .cta-card:hover {
-    border-color: oklch(1 0 none / 0.3);
+  /* The link covers the card instead of wrapping it — an anchor may not contain
+     the Buttons, Switches and inputs these specimens render. */
+  .specimen-tile__link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
   }
 
-  /* Stat number glow */
-  .stat-glow {
-    text-shadow: 0 0 20px oklch(0.6 0.2 250 / 0.3);
+  .specimen-tile:hover {
+    border-color: var(--color-primary-mild);
+    transform: translateY(-2px);
+  }
+
+  .specimen-tile:has(.specimen-tile__link:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .specimen-tile__stage {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    overflow: hidden;
+  }
+
+  .specimen-tile__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.875rem 1.125rem 1rem;
+    border-top: 1px solid var(--color-neutral-soft);
+    background: var(--color-surface-canvas);
+  }
+
+  /* Theming lab */
+  .theme-lab__panel {
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-neutral-soft);
+    padding: 1.25rem;
+  }
+
+  .theme-lab__swatch {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+    vertical-align: -1px;
+  }
+
+  /* Code window. Dark in both schemes (see --color-code-* above), with chrome
+     dots and a soft glow lifted from the accent so the panel reads as a
+     surface rather than a flat block. The glow is a real offset shadow, not a
+     zero-offset halo. */
+  .code-panel {
+    background: var(--color-code-surface);
+    border: 1px solid var(--color-code-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow:
+      0 18px 40px -24px var(--color-primary-soft),
+      0 2px 10px -6px var(--color-surface-overlay-firm),
+      inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .code-panel__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--color-code-chrome);
+    border-bottom: 1px solid var(--color-code-border);
+  }
+
+  .code-panel__dots {
+    display: flex;
+    gap: 0.375rem;
+    flex: none;
+  }
+
+  /* Traffic-light chrome. These use the status hues as *illustration* — they
+     depict a window's controls and report no state, which is why they are not
+     a breach of the status-means-status rule. They are also decorative:
+     aria-hidden, and never the only carrier of meaning. */
+  .code-panel__dot:nth-child(1) {
+    background: var(--color-danger);
+  }
+
+  .code-panel__dot:nth-child(2) {
+    background: var(--color-warning);
+  }
+
+  .code-panel__dot:nth-child(3) {
+    background: var(--color-success);
+  }
+
+  .code-panel__dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 9999px;
+    background: var(--color-code-border);
+  }
+
+  .code-panel__label {
+    color: var(--color-neutral);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The toggle sits on a dark panel in both schemes, so its ink comes from the
+     code tokens rather than the inverting neutrals. */
+  .code-panel__action {
+    margin-left: auto;
+    flex: none;
+    color: var(--color-code-ink);
+  }
+
+  .code-panel__body {
+    margin: 0;
+    padding: 1.125rem 1.25rem;
+    color: var(--color-code-ink);
+    overflow-x: auto;
+  }
+
+  .code-panel__prompt {
+    color: var(--color-code-prompt);
+    user-select: none;
+  }
+
+  /* Inventory lists */
+  .inventory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .inventory-list__link {
+    display: block;
+    padding: 0.3125rem 0.5rem;
+    margin-left: -0.5rem;
+    border-radius: 0.375rem;
+    color: var(--color-neutral-firm);
+    font-family: var(--font-body);
+    font-size: var(--text-body-xs);
+  }
+
+  .inventory-list__link:hover {
+    background: var(--color-primary-subtle);
+    color: var(--color-primary-firm);
+  }
+
+  .inventory-list__link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .hero-glow-orb {
-      animation: none;
+    .specimen-tile {
+      transition: none;
+    }
+
+    .specimen-tile:hover {
+      transform: none;
     }
   }
 }
