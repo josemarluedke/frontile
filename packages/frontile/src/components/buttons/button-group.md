@@ -16,7 +16,7 @@ import { ButtonGroup } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import { ButtonGroup } from 'frontile';
 
 <template>
@@ -71,7 +71,7 @@ export default class Example extends Component {
 A common use case for `ButtonGroup` is to create a split button. 
 
 
-```gjs preview
+```gts preview
 import { ButtonGroup } from 'frontile';
 import { ChevronDownIcon } from 'site/components/icons';
 
@@ -88,7 +88,7 @@ import { ChevronDownIcon } from 'site/components/icons';
 You pass pass arguments to `ButtonGroup` and they will be passed in to each of the yielded component. 
 You can overwrite at the specific component as well.
 
-```gjs preview
+```gts preview
 import { ButtonGroup } from 'frontile';
 
 <template>

@@ -24,7 +24,7 @@ The `Portal` and `PortalTarget` components are fully compatible with server-side
 
 The `Portal` component renders its content to a specified target or, by default, to the closest available target. You can use it to decouple your UI elements from their usual place in the DOM.
 
-```gjs
+```gts
 import { Portal, PortalTarget } from 'frontile';
 
 <template>
@@ -40,7 +40,7 @@ import { Portal, PortalTarget } from 'frontile';
 
 You can also nest `Portal` components within each other. The inner `Portal` elements can append to the parent portal if configured that way.
 
-```gjs preview
+```gts preview
 import { Portal, PortalTarget } from 'frontile';
 
 <template>
@@ -72,7 +72,7 @@ In this example, the inner `Portal` renders its content inside the destination o
 
 The `PortalTarget` component is used to create named or unnamed locations where content can be rendered using the `Portal` component. This allows for more control over where a portal's content is displayed.
 
-```gjs preview
+```gts preview
 import { Portal, PortalTarget } from 'frontile';
 
 <template>
@@ -103,7 +103,7 @@ The `Portal` component has a `target` argument that allows you to specify where 
 
 If you set the `@renderInPlace` argument to `true`, the content will be rendered inline without creating a new portal.
 
-```gjs preview
+```gts preview
 import { Portal, PortalTarget } from 'frontile';
 
 <template>
@@ -119,7 +119,7 @@ import { Portal, PortalTarget } from 'frontile';
 
 You can use a target element directly by passing its ID or a reference to the `@target` argument.
 
-```gjs preview
+```gts preview
 import { Portal, PortalTarget } from 'frontile';
 
 <template>
@@ -140,7 +140,7 @@ In this example, the portal content is rendered inside the element with the ID `
 
 By default, `Portal` components append their content to the parent portal if one exists. This behavior can be disabled by setting the `@appendToParentPortal` argument to `false`.
 
-```gjs preview
+```gts preview
 import { Portal, PortalTarget } from 'frontile';
 
 <template>

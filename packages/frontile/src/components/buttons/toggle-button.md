@@ -17,7 +17,7 @@ import { ToggleButton } from 'frontile';
 
 ## Usage
 
-```gjs preview
+```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
@@ -84,7 +84,7 @@ export default class Example extends Component {
 
 ## ToggleButton Sizes
 
-```gjs preview
+```gts preview
 import { ToggleButton } from 'frontile';
 
 <template>
@@ -100,7 +100,7 @@ import { ToggleButton } from 'frontile';
 
 You can pass the attribute `disabled` to disable a toggle button.
 
-```gjs preview
+```gts preview
 import { ToggleButton } from 'frontile';
 
 <template>

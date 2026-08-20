@@ -546,6 +546,6 @@ export default class NativeSelectExample extends Component {
 ## API
 
 <Signature @component="Select" />
-<Signature @component="SelectItem" />
+<Signature @component="ListboxItem" />
 <Signature @component="NativeSelect" />
 <Signature @component="NativeSelectItem" />
