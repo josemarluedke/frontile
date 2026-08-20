@@ -6,7 +6,9 @@ imports:
 
 # Form
 
-A powerful form wrapper component that automatically handles form data extraction and provides real-time updates via dedicated `@onChange` and `@onSubmit` callbacks. It uses `form-data-utils` under the hood to serialize form data efficiently and supports all native HTML form elements as well as Frontile form components.
+Form wraps a native `<form>` element, serializes its fields with `form-data-utils`, and hands
+the result to `@onChange` on every change and `@onSubmit` on submission. Through the yielded
+`Field` component it also runs validation and tracks which fields the user has modified.
 
 ## Import
 
@@ -16,9 +18,52 @@ import { Form } from 'frontile';
 
 ## Usage
 
-### Basic Form
+Give every control a `@name` and Form collects it. `@onSubmit` is the only required argument;
+it receives the serialized data and the `SubmitEvent`, with `preventDefault()` already applied.
 
-The most basic usage of the Form component with automatic data extraction.
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Button, Form, Input, type FormResultData } from 'frontile';
+
+export default class SimpleForm extends Component {
+  @tracked submitted: FormResultData | null = null;
+
+  handleSubmit = (data: FormResultData) => {
+    this.submitted = data;
+  };
+
+  <template>
+    <div class='flex flex-col gap-4 w-80'>
+      <Form @onSubmit={{this.handleSubmit}}>
+        <div class='flex flex-col gap-4'>
+          <Input @name='firstName' @label='First Name' />
+          <Input @name='email' @label='Email' @type='email' />
+          <Button type='submit'>Submit</Button>
+        </div>
+      </Form>
+
+      {{#if this.submitted}}
+        <pre class='p-4 bg-neutral-subtle rounded text-sm'>{{JSON.stringify
+            this.submitted.data
+            null
+            2
+          }}</pre>
+      {{/if}}
+    </div>
+  </template>
+}
+```
+
+## Controlled and Uncontrolled Forms
+
+Passing `@onChange` makes the form controlled: you own the state, and the data you assign back
+to `@data` flows into the inputs. Reach for it when you need the values as they are typed —
+live previews, dependent fields, computed summaries.
+
+Without `@onChange` the form is uncontrolled. `@data` seeds the initial values, Form keeps the
+current values internally, and you only see them in `@onSubmit`. Both patterns support
+`@schema` and `@validate`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -98,111 +143,11 @@ export default class BasicForm extends Component {
 }
 ```
 
-### Real-time Form Updates
+## Form Components
 
-The Form component provides real-time updates as users interact with form elements.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { Form, Input, Checkbox, Select, type FormResultData } from 'frontile';
-import { Button } from 'frontile';
-
-export default class RealtimeForm extends Component {
-  @tracked inputData: FormResultData = {};
-  @tracked submitData: FormResultData = {};
-  @tracked selectedRole: string | null = null;
-
-  roles = [
-    { label: 'User', key: 'user' },
-    { label: 'Admin', key: 'admin' },
-    { label: 'Moderator', key: 'moderator' },
-    { label: 'Guest', key: 'guest' }
-  ];
-
-  handleFormChange = (data: FormResultData, event: Event) => {
-    this.inputData = data;
-    console.log('Input event:', { data, event });
-  };
-
-  handleFormSubmit = (data: FormResultData, event: SubmitEvent) => {
-    this.submitData = data;
-    console.log('Submit event:', { data, event });
-  };
-
-  handleRoleChange = (selectedKey: string | null) => {
-    this.selectedRole = selectedKey;
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <Form
-        @onChange={{this.handleFormChange}}
-        @onSubmit={{this.handleFormSubmit}}
-      >
-        <div class='flex flex-col gap-4'>
-          <Input
-            @name='username'
-            @label='Username'
-            placeholder='Enter username'
-          />
-
-          <Input
-            @name='password'
-            @label='Password'
-            @type='password'
-            placeholder='Enter password'
-          />
-
-          <Select
-            @name='role'
-            @label='User Role'
-            @items={{this.roles}}
-            @placeholder='Select your role'
-            @selectedKey={{this.selectedRole}}
-            @onSelectionChange={{this.handleRoleChange}}
-          />
-
-          <Checkbox @name='rememberMe' @label='Remember me' />
-
-          <Checkbox
-            @name='agreeToTerms'
-            @label='I agree to the terms and conditions'
-          />
-
-          <Button type='submit'>
-            Sign In
-          </Button>
-        </div>
-      </Form>
-
-      <div class='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div class='p-4 bg-warning-subtle rounded'>
-          <h4 class='font-medium mb-2'>Input Events (Real-time):</h4>
-          <pre class='text-sm overflow-auto'>{{JSON.stringify
-              this.inputData
-              null
-              2
-            }}</pre>
-        </div>
-
-        <div class='p-4 bg-success-subtle rounded'>
-          <h4 class='font-medium mb-2'>Submit Events:</h4>
-          <pre class='text-sm overflow-auto'>{{JSON.stringify
-              this.submitData
-              null
-              2
-            }}</pre>
-        </div>
-      </div>
-    </div>
-  </template>
-}
-```
-
-### Form with All Component Types
-
-Demonstrate how the Form component works with all Frontile form components.
+Every Frontile form component participates, as do plain HTML form elements. Data types follow
+the markup: text inputs give strings, checkboxes and switches booleans, multi-selects arrays,
+file inputs `File` objects.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -344,13 +289,16 @@ export default class ComprehensiveForm extends Component {
 }
 ```
 
-### Form Validation Integration
+## Validation
 
-The Form component works seamlessly with any [Standard Schema](https://standardschema.dev/)-compliant validation library, such as Valibot, for scalable form validation. Frontile does not ship with a validation library by default, so you can choose which is right for you. The only requirement is that it is compatible with Standard Schema. _Validation logic_, however, is built in--concerns such as running validation on submit and blur events. The following example demonstrates how to use Valibot for comprehensive form validation. The use of hand-rolled custom validators is also supported.
+Validation is built in — running it on the right events, mapping issues back to fields, and
+rendering the messages — but the schema is yours. Any
+[Standard Schema](https://standardschema.dev/) library works; the examples use
+[Valibot](https://valibot.dev/). `@validate` adds a hand-rolled check on top, for rules a
+schema can't express (comparing two fields, for instance) and returns Standard Schema issues.
 
-**Note**: When using built-in form validation, the `Field` component _must_ be used (see example below). The `Field` component handles automatic error binding. Use of `Field` is unnecessary when not using built-in form validation. [Learn more about the `Field` component and see more form validation examples](field).
-
-**Validation timing:** Most form components support field-level validation (validates on change/blur/input events). However, `CheckboxGroup` currently only supports validation on form submit, not field-level validation events. See the [CheckboxGroup](checkbox-group) and [Field](field) documentation for more details.
+Built-in validation requires the yielded `Field` component — it is what binds a field's errors
+to its control. See [Field](field) for its own arguments and more examples.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -559,13 +507,50 @@ export default class ValidatedForm extends Component {
 }
 ```
 
-### Dirty Field Tracking
+### Validation Timing
 
-The Form component automatically tracks which fields have been modified by the user. This is useful for showing unsaved changes warnings or enabling/disabling submit buttons.
+`@validateOn` controls which events trigger validation. It defaults to
+`{{array 'change' 'blur' 'submit'}}`.
 
-Enable dirty field tracking by specifying a field in the initial `@data` passed into a `Form` component. Dirty tracking is enabled only for fields specified in initial data.
+| Value    | Validates                                                                 |
+| -------- | ------------------------------------------------------------------------- |
+| `change` | one field, when its value was modified and it loses focus (HTML `change`) |
+| `blur`   | one field, whenever it loses focus — even if nothing changed              |
+| `input`  | one field, on every keystroke                                             |
+| `submit` | the whole form; on failure `@onError` runs and `@onSubmit` does not       |
 
-Dirty fields reset on submit. After a sucessful submit, any tracked data is considered clean.
+```gts
+{{! validate as the user types, and again on submit }}
+<Form
+  @schema={{schema}}
+  @validateOn={{array 'input' 'submit'}}
+  @onSubmit={{this.handleSubmit}}
+  as |form|
+>
+  <form.Field @name='password' as |field|>
+    <field.Input @label='Password' @type='password' />
+  </form.Field>
+</Form>
+```
+
+Which to pick: `change` is the least intrusive and catches most mistakes; add `blur` to flag
+required fields a user tabbed straight past; use `input` only where per-keystroke feedback
+earns the noise, such as password strength. Drop `submit` for long forms where an error summary
+on submit would be jarring.
+
+An empty array (`@validateOn={{array}}`) skips validation entirely: `@onSubmit` is called
+regardless of validity and `@onError` never fires. That's the path for multi-step forms, draft
+saves, or validating by hand inside `@onSubmit`. Everything else — dirty tracking, reset, data
+snapshots — keeps working.
+
+Two limits worth knowing: the field-level values (`change`, `blur`, `input`) need
+`form.Field`, and [CheckboxGroup](checkbox-group) validates only on submit.
+
+## Dirty Field Tracking
+
+`form.dirty` is a `Set` of the fields whose value differs from the initial `@data`. Tracking
+covers only the keys present in that initial data, so a field you never seeded is never
+reported dirty. Submitting clears the set.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -641,9 +626,10 @@ export default class DirtyTrackingForm extends Component {
 }
 ```
 
-### Custom Form Handling
+## Validating Without a Schema
 
-Advanced usage showing how to handle complex form logic and custom validation.
+`Field` is unnecessary when you are not using built-in validation. Pass `@errors` to each
+control yourself and you keep full control of when and how validation runs.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -829,463 +815,12 @@ export default class CustomHandlingForm extends Component {
 }
 ```
 
-## Key Features
-
-### Automatic Data Extraction
-
-- Uses `form-data-utils` to automatically serialize form data
-- Works with all HTML form elements and Frontile components
-- Handles complex data types including arrays and nested objects
-
-### Event Handling
-
-- **`@onChange`**: Fired on every form input change for real-time updates and receives `(data, event)`
-- **`@onSubmit`**: Fired when the form is submitted with `preventDefault()` applied and receives `(data, submitEvent)`
-- Access to the original DOM event for advanced use cases in both handlers
-
-### Data Types Support
-
-- Strings, numbers, and booleans
-- Arrays from multi-select elements
-- Nested objects from grouped form elements
-- File uploads (when using file inputs)
-
-### Controlled vs Uncontrolled Forms
-
-The Form component supports both controlled and uncontrolled patterns, similar to React form handling:
-
-**Controlled Forms** (with `@onChange` + `@data`)
-
-- You provide both `@data` and `@onChange`
-- Form values are controlled by your component state
-- You update state in `@onChange`, which flows back to form inputs
-- Best for forms where you need to validate or transform data in real-time
-- Example: `<Form @data={{this.formData}} @onChange={{this.handleChange}}>`
-
-**Uncontrolled Forms** (without `@onChange`)
-
-- You provide only `@data` for initial values (or omit it entirely)
-- Form manages its own internal state
-- You receive final data only in `@onSubmit`
-- Simpler pattern for basic forms
-- Example: `<Form @data={{this.initialData}} @onSubmit={{this.handleSubmit}}>`
-
-**Choosing Between Patterns:**
-
-- Use **controlled** when you need real-time form data access, validation as user types, or complex interdependent fields
-- Use **uncontrolled** for simpler forms where you only care about the final submitted data
-- Both patterns support validation via `@schema` and `@validate`
-
-## Best Practices
-
-### Form Validation
-
-For scalable form validation, use built-in validation with a library that implements [Standard Schema](https://standardschema.dev/), such as [Valibot](https://valibot.dev/):
-
-```gts
-// Define a Valibot schema for type-safe validation
-schema = v.object({
-  email: v.pipe(
-    v.string(),
-    v.nonEmpty('Email is required'),
-    v.email('Please enter a valid email address')
-  ),
-  password: v.pipe(
-    v.string(),
-    v.minLength(6, 'Password must be at least 6 characters')
-  )
-});
-
-<template>
-  <Form @schema={{schema}} as |form|>
-    ...
-  </Form>
-</template>
-```
-
-### Validation Timing
-
-By default, the Form component validates data both on field changes and form submission. You can control when validation runs using the `@validateOn` argument.
-
-**Available options:**
-
-- `change` - Validate individual fields when users change a value and blur/defocus the field (per-field validation)
-- `input` - Validate individual fields as users type (real-time validation on every keystroke)
-- `blur` - Validate individual fields when they lose focus, regardless of whether the value changed
-- `submit` - Validate the entire form when submitted
-
-**Default behavior:** `@validateOn={{array 'change' 'submit'}}` - validates on both field changes (blur) and form submission.
-
-**Note on `'change'` vs `'blur'`:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) **only if** its value has been modified. The `'blur'` option validates on the HTML `blur` event, which fires whenever a field loses focus, regardless of whether the value changed. The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types.
-
-**Usage:**
-
-```gts
-// Default behavior - validates on both change and submit
-<Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
-  ...
-</Form>
-
-// Equivalent to default - explicit both change and submit
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'change' 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Change validation only - validate on blur after modification, but not on submit
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'change'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Blur validation only - validate on any focus loss, but not on submit
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'blur'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Input validation only - validate as users type, but not on submit
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'input'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Combined validation - validate on change, blur, AND as users type
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'change' 'blur' 'input' 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Submit validation only - validate only when form is submitted
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-
-// Skip validation entirely by omitting a schema or setting `validateOn` to an
-// empty array.  `onSubmit` is called regardless of data validity.
-<Form
-  @schema={{schema}}
-  @validateOn={{array}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-```
-
-**Validation behavior details:**
-
-**Change validation (`'change'`)**:
-
-- Individual fields validate when users change a value and then blur/defocus the field
-- Validation errors appear after the user moves to the next field
-- Each field validates independently using its specific validation rules
-- Provides feedback without waiting for form submission
-- Uses the Field component's `handleChange` action to trigger validation
-- Based on the HTML `change` event (fires on blur after value modification, not on every keystroke)
-
-**Blur validation (`'blur'`)**:
-
-- Individual fields validate whenever they lose focus, regardless of whether the value changed
-- Validation errors appear immediately when the user tabs away or clicks outside the field
-- Each field validates independently using its specific validation rules
-- Provides feedback as users navigate between fields
-- Uses the Field component's `handleBlur` action to trigger validation
-- Based on the HTML `blur` event (fires whenever a field loses focus)
-- Useful for ensuring fields are validated even when users skip over them without making changes
-
-**Input validation (`'input'`)**:
-
-- Individual fields validate as users type, on every keystroke
-- Validation errors appear in real-time as the user types
-- Each field validates independently using its specific validation rules
-- Provides immediate feedback while the user is still focused on the field
-- Uses the Field component's `handleInput` action to trigger validation
-- Based on the HTML `input` event (fires on every keystroke)
-- Best for fields where real-time feedback is valuable (e.g., password strength, character limits)
-
-**Submit validation (`'submit'`)**:
-
-- The entire form validates when the submit button is clicked
-- All fields are validated together before calling `@onSubmit`
-- If validation fails, `@onError` is called and `@onSubmit` is not called
-- Validation errors are displayed for all invalid fields
-
-**Common validation patterns:**
-
-**On-blur validation (recommended for most forms):**
-
-```gts
-// Default - validates when field loses focus after modification AND on submit
-<Form @schema={{schema}} @onSubmit={{this.handleSubmit}} as |form|>
-  <form.Field @name="email" as |field|>
-    <field.Input @label="Email" />
-  </form.Field>
-</Form>
-```
-
-**Explicit blur validation (validates on any focus loss):**
-
-```gts
-// Validates whenever field loses focus, even if value didn't change
-// Useful for catching empty required fields as users navigate
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'blur' 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  <form.Field @name="email" as |field|>
-    <field.Input @label="Email" />
-  </form.Field>
-</Form>
-```
-
-**Real-time validation (best for immediate feedback):**
-
-```gts
-// Validates as user types - great for password strength, character limits, etc.
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'input' 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  <form.Field @name="password" as |field|>
-    <field.Input @label="Password" @type="password" />
-  </form.Field>
-</Form>
-```
-
-**Combined blur and input validation:**
-
-```gts
-// Validates both as user types AND when field loses focus
-// Provides comprehensive feedback throughout the form-filling experience
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'blur' 'input' 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  <form.Field @name="password" as |field|>
-    <field.Input @label="Password" @type="password" />
-  </form.Field>
-</Form>
-```
-
-**Submit-only validation (less intrusive for long forms):**
-
-```gts
-// Only validates on submit - users can fill entire form without interruption
-<Form
-  @schema={{schema}}
-  @validateOn={{array 'submit'}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  <form.Field @name="email" as |field|>
-    <field.Input @label="Email" />
-  </form.Field>
-</Form>
-```
-
-**Manual validation (advanced use cases):**
-
-```gts
-// Skip automatic validation - handle it manually
-<Form
-  @schema={{schema}}
-  @validateOn={{array}}
-  @onSubmit={{this.handleSubmit}}
-  as |form|
->
-  ...
-</Form>
-```
-
-**When to skip validation:**
-
-- When you want to handle validation manually in your `@onSubmit` handler
-- When building multi-step forms where validation should only run on the final step
-- When you need to submit partial or draft data without validation
-
-**Important notes:**
-
-- When `@validateOn` includes `'change'`, `'blur'`, or `'input'`, you must use the `form.Field` component for automatic field-level validation
-- When `@validateOn` is an empty array, validation is completely skipped and `@onError` will never be called
-- All other form functionality (dirty state tracking, form reset, data snapshots) continues to work normally regardless of validation timing
-- **Difference between `'change'` and `'blur'`:**
-  - `'change'` validates only when a field's value has been modified AND the field loses focus
-  - `'blur'` validates whenever a field loses focus, even if the value didn't change
-  - Use `'blur'` to catch empty required fields as users navigate through the form
-  - Use `'change'` for a less intrusive experience that only validates when users actually modify fields
-- Change validation provides better user experience by catching errors as users move between fields
-- Blur validation ensures all fields are validated as users navigate, even if they skip over fields
-- Input validation provides immediate feedback but may be distracting for some use cases
-- The `'change'` event fires when a field loses focus (blur) after being modified, not on every keystroke
-- The `'blur'` event fires whenever a field loses focus, regardless of whether the value changed
-- The `'input'` event fires on every keystroke as the user types
-- Consider using `'input'` validation for fields where real-time feedback is valuable (password strength, character limits, username availability)
-- Consider using `'blur'` validation when you want to ensure required fields are validated even if users skip over them
-
-### Performance Considerations
-
-- The Form component only re-renders when necessary
-- Form data extraction is optimized using `form-data-utils`
-- Consider debouncing input validation for complex forms
-
-### Disabling Forms
-
-The Form component supports disabling all form fields at once using the `@disabled` argument. This is useful for preventing user interaction during form submission or when certain conditions aren't met.
-
-When `@disabled={{true}}` is passed to the Form component, all yielded Field components and their child form controls (Input, Checkbox, Select, Textarea, etc.) are automatically disabled.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { Form, type FormResultData } from 'frontile';
-import { Button } from 'frontile';
-import * as v from 'valibot';
-
-const schema = v.object({
-  email: v.pipe(
-    v.string(),
-    v.nonEmpty('Email is required'),
-    v.email('Please enter a valid email address')
-  ),
-  password: v.pipe(
-    v.string(),
-    v.nonEmpty('Password is required'),
-    v.minLength(6, 'Password must be at least 6 characters')
-  )
-});
-
-type Schema = v.InferOutput<typeof schema>;
-
-export default class DisabledForm extends Component {
-  @tracked formData: Schema = {
-    email: '',
-    password: ''
-  };
-  @tracked isFormDisabled = false;
-  @tracked submitMessage = '';
-
-  handleFormChange = (data: FormResultData<Schema>) => {
-    this.formData = data.data;
-  };
-
-  handleFormSubmit = async (data: FormResultData<Schema>) => {
-    // Simulate API call
-    this.isFormDisabled = true;
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    this.submitMessage = 'Login successful!';
-    this.isFormDisabled = false;
-    console.log('Form submitted:', data);
-  };
-
-  toggleDisabled = () => {
-    this.isFormDisabled = !this.isFormDisabled;
-  };
-
-  or(a: unknown, b: unknown) {
-    return a || b;
-  }
-
-  <template>
-    <div class='flex flex-col gap-4 w-80'>
-      <div class='flex items-center gap-2 p-3 bg-neutral-subtle rounded'>
-        <label class='flex items-center gap-2 cursor-pointer'>
-          <input
-            type='checkbox'
-            checked={{this.isFormDisabled}}
-            {{on 'change' this.toggleDisabled}}
-            class='w-4 h-4'
-          />
-          <span class='text-sm font-medium'>Disable form</span>
-        </label>
-      </div>
-
-      <Form
-        @disabled={{this.isFormDisabled}}
-        @data={{this.formData}}
-        @schema={{schema}}
-        @onChange={{this.handleFormChange}}
-        @onSubmit={{this.handleFormSubmit}}
-        as |form|
-      >
-        <div class='flex flex-col gap-4'>
-          <form.Field @name='email' as |field|>
-            <field.Input @label='Email' @type='email' @isRequired={{true}} />
-          </form.Field>
-
-          <form.Field @name='password' as |field|>
-            <field.Input
-              @label='Password'
-              @type='password'
-              @isRequired={{true}}
-            />
-          </form.Field>
-
-          <Button
-            type='submit'
-            disabled={{this.or form.isLoading this.isFormDisabled}}
-          >
-            {{if form.isLoading 'Logging in...' 'Log In'}}
-          </Button>
-        </div>
-      </Form>
-
-      {{#if this.submitMessage}}
-        <div class='p-4 bg-success-subtle text-success-strong rounded'>
-          {{this.submitMessage}}
-        </div>
-      {{/if}}
-    </div>
-  </template>
-}
-```
-
-**Common use cases for disabled forms:**
-
-- **During submission**: Disable the form while an async operation is in progress to prevent duplicate submissions
-- **Conditional access**: Disable forms when user permissions or prerequisites aren't met
-- **Read-only mode**: Show form data in a non-editable state
-- **Multi-step forms**: Disable previous steps once completed
-
-**Note:** The `@disabled` argument affects only the yielded `Field` components. If you're using individual form components without `Field`, you'll need to manage their disabled state separately.
-
 ## Nested Fields
 
-The Form component fully supports nested data structures, allowing you to organize form data hierarchically while maintaining flat HTML form field names. Nested objects are automatically converted to dotted field notation (e.g., `user.profile.email`).
-
-### Basic Nested Form
+Nested data is addressed with dot notation: `@name='user.profile.email'`. Form flattens the
+object internally and unflattens it again for `@onChange` and `@onSubmit`, so your schema and
+your `@data` keep the shape you actually want. Errors and dirty entries are keyed by the same
+dotted path down to the leaf — `user.name.first`, never just `user`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1385,9 +920,9 @@ export default class NestedForm extends Component {
 }
 ```
 
-### Nested Form with Validation
+### Nested Fields with Validation
 
-Nested fields work seamlessly with validation schemas. Use nested object structures in your schema that match your data structure.
+Mirror the data shape in the schema and issues land on the right control.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1524,9 +1059,9 @@ export default class ValidatedNestedForm extends Component {
 }
 ```
 
-### Mixed Flat and Nested Fields
+### Mixing Flat and Nested Fields
 
-You can freely mix flat and nested fields in the same form. The Form component automatically detects and handles both structures.
+Flat and nested names can sit side by side in one form.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1600,37 +1135,12 @@ export default class MixedFieldsForm extends Component {
 }
 ```
 
-### Key Points for Nested Fields
-
-**Field Naming Convention:**
-
-- Use dot notation for nested fields: `@name="user.profile.email"`
-- Validation errors are automatically mapped to dotted field names
-- Dirty tracking works at the leaf level (e.g., `user.name.first` not just `user`)
-
-**Data Structure:**
-
-- Pass nested objects via `@data`.
-- `@onChange` and `@onSubmit` callbacks receive nested data structure
-- The form automatically flattens data internally and unflattens for callbacks
-
-**Validation:**
-
-- Schema validators should mirror your data structure
-- Error messages are keyed by dotted paths (e.g., `"user.email": "Email is required"`)
-- Custom validators work with nested data structures
-
-**Dirty Field Tracking:**
-
-- Dirty fields are tracked using dotted notation
-- Deep comparison ensures nested object changes are detected
-- `form.dirty` contains paths like `"user.profile.email"`, not just `"user"`
-
 ## Resetting Forms
 
-The Form component provides a `reset` function that allows you to reset the form to its initial state. This is useful for implementing "Cancel" or "Reset" buttons in your forms.
-
-### Basic Reset
+`form.reset` calls the native form reset, restores `@data`'s initial values, clears validation
+errors, and empties the dirty set. In a controlled form it reports the initial data back through
+`@onChange`; in an uncontrolled one it updates the internal state. With no `@data` at all it
+just clears the fields.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1703,7 +1213,7 @@ export default class ResetForm extends Component {
 
 ### Reset with Validation
 
-The `reset` function clears validation errors and restores the form to its initial state, including resetting dirty field tracking.
+Errors already on screen are cleared along with the values.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1789,37 +1299,126 @@ export default class ResetValidationForm extends Component {
 }
 ```
 
-### Reset Behavior
+## Disabled Forms
 
-When you call `form.reset()`:
+`@disabled` disables every yielded `Field` and the control inside it at once — useful while a
+submission is in flight, in read-only views, or for steps of a wizard that are already done. It
+reaches `Field` children only; controls used without `Field` manage their own `disabled`.
 
-1. **Calls native form reset**: The underlying HTML form element's `reset()` method is called, which resets all form controls to their default values
-2. **Restores initial data**: The form data is restored to the values provided in the initial `@data` prop
-3. **Clears validation errors**: Any validation errors are cleared
-4. **Clears dirty state**: The dirty field tracking is reset to an empty set
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { Form, type FormResultData } from 'frontile';
+import { Button } from 'frontile';
+import * as v from 'valibot';
 
-**For controlled forms** (with `@onChange`):
+const schema = v.object({
+  email: v.pipe(
+    v.string(),
+    v.nonEmpty('Email is required'),
+    v.email('Please enter a valid email address')
+  ),
+  password: v.pipe(
+    v.string(),
+    v.nonEmpty('Password is required'),
+    v.minLength(6, 'Password must be at least 6 characters')
+  )
+});
 
-- Calls `@onChange` with the initial data, allowing your component to update its state
+type Schema = v.InferOutput<typeof schema>;
 
-**For uncontrolled forms** (without `@onChange`):
+export default class DisabledForm extends Component {
+  @tracked formData: Schema = {
+    email: '',
+    password: ''
+  };
+  @tracked isFormDisabled = false;
+  @tracked submitMessage = '';
 
-- Updates the internal form state to the initial data
+  handleFormChange = (data: FormResultData<Schema>) => {
+    this.formData = data.data;
+  };
 
-**With no initial data**:
+  handleFormSubmit = async (data: FormResultData<Schema>) => {
+    // Simulate API call
+    this.isFormDisabled = true;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    this.submitMessage = 'Login successful!';
+    this.isFormDisabled = false;
+    console.log('Form submitted:', data);
+  };
 
-- Simply calls the native form reset, clearing all fields to empty values
+  toggleDisabled = () => {
+    this.isFormDisabled = !this.isFormDisabled;
+  };
+
+  or(a: unknown, b: unknown) {
+    return a || b;
+  }
+
+  <template>
+    <div class='flex flex-col gap-4 w-80'>
+      <div class='flex items-center gap-2 p-3 bg-neutral-subtle rounded'>
+        <label class='flex items-center gap-2 cursor-pointer'>
+          <input
+            type='checkbox'
+            checked={{this.isFormDisabled}}
+            {{on 'change' this.toggleDisabled}}
+            class='w-4 h-4'
+          />
+          <span class='text-sm font-medium'>Disable form</span>
+        </label>
+      </div>
+
+      <Form
+        @disabled={{this.isFormDisabled}}
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        as |form|
+      >
+        <div class='flex flex-col gap-4'>
+          <form.Field @name='email' as |field|>
+            <field.Input @label='Email' @type='email' @isRequired={{true}} />
+          </form.Field>
+
+          <form.Field @name='password' as |field|>
+            <field.Input
+              @label='Password'
+              @type='password'
+              @isRequired={{true}}
+            />
+          </form.Field>
+
+          <Button
+            type='submit'
+            disabled={{this.or form.isLoading this.isFormDisabled}}
+          >
+            {{if form.isLoading 'Logging in...' 'Log In'}}
+          </Button>
+        </div>
+      </Form>
+
+      {{#if this.submitMessage}}
+        <div class='p-4 bg-success-subtle text-success-strong rounded'>
+          {{this.submitMessage}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}
+```
 
 ## Feedback Messages
 
-When a field fails validation, `Form`/`Field` automatically render a `FormFeedback`
-element with the `danger` intent and the appropriate `aria-live` announcement — you don't
-need to wire this up yourself (see the [Form Validation](#form-validation-integration)
-examples above).
+When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` intent
+and an assertive `aria-live` region — no wiring needed.
 
-For feedback outside of validation errors — hints, confirmations, or warnings — render the
-standalone `FormFeedback` component and choose an `@intent`. Available intents are
-`primary`, `secondary`, `tertiary`, `success`, `warning`, and `danger`.
+For feedback that isn't a validation error — hints, confirmations, warnings — render
+`FormFeedback` yourself and pick an `@intent` from `primary`, `secondary`, `tertiary`,
+`success`, `warning`, or `danger`. Anything other than `danger` announces politely.
 
 ```gts preview
 import { FormFeedback } from 'frontile';
@@ -1847,57 +1446,30 @@ import { FormFeedback } from 'frontile';
 
 ## Accessibility
 
-The Form component maintains all standard HTML form accessibility features:
+Form renders a native `<form>`, so submission on <kbd>Enter</kbd>, field labelling, and
+`...attributes` pass-through all behave natively.
 
-- Proper form semantics with native `<form>` element
-- Submit handling with keyboard support (Enter key)
-- Works with screen readers and assistive technologies
-- Maintains focus management and navigation
-- Supports all ARIA attributes when passed through `...attributes`
-- Disabled form fields are properly marked with the `disabled` attribute and announced by screen readers
+- **Invalid fields** get `aria-invalid='true'` from `Field`, removed again once the field
+  validates.
+- **Error messages** render in a `FormFeedback` with `aria-live='assertive'` and are associated
+  with the control, so a screen reader announces them as they appear.
+- **Disabled fields** carry the real `disabled` attribute rather than a styling-only state.
+- **Focus** is not managed or trapped by Form; it stays where the browser puts it. If you
+  redirect focus to the first invalid field in `@onError`, see
+  [focus management](/docs/accessibility/focus-management).
 
 ## API
 
-### Yielded Context
+The default block yields a context object:
 
-The Form component yields an object with the following properties:
-
-- **`data`**: The current form data as key/value pairs (matches the `@data` prop in controlled forms)
-- **`isLoading`**: Boolean indicating if the form is currently submitting (async `@onSubmit` in progress)
-- **`isValid`**: Boolean indicating if the form has no validation errors
-- **`isInvalid`**: Boolean indicating if the form has validation errors
-- **`errors`**: Object containing validation errors keyed by field name
-- **`dirty`**: Set containing field names that have changed from their initial values
-- **`reset`**: Function to reset the form to its initial state (clears fields, errors, and dirty tracking)
-- **`Field`**: The Field component with `errors` and `formData` already bound
-
-Example usage:
-
-```gts
-<Form @data={{this.formData}} @onSubmit={{this.handleSubmit}} as |form|>
-  {{! Access current form data }}
-  <div>Current email: {{form.data.email}}</div>
-
-  {{! Show loading state }}
-  <button type="submit" disabled={{form.isLoading}}>
-    {{if form.isLoading "Saving..." "Save"}}
-  </button>
-
-  {{! Reset form to initial state }}
-  <button type="button" {{on "click" form.reset}}>
-    Reset
-  </button>
-
-  {{! Check validation state }}
-  {{#if form.isInvalid}}
-    <div class="error">Please fix errors before submitting</div>
-  {{/if}}
-
-  {{! Check for unsaved changes }}
-  {{#if form.dirty.size}}
-    <div class="warning">You have unsaved changes</div>
-  {{/if}}
-</Form>
-```
+| Property                | Description                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| `data`                  | Current form data as key/value pairs                              |
+| `isLoading`             | `true` while an async `@onSubmit` is in flight                    |
+| `isValid` / `isInvalid` | Whether the form currently has validation errors                  |
+| `errors`                | Validation errors keyed by field name                             |
+| `dirty`                 | `Set` of fields changed from their initial values                 |
+| `reset`                 | Resets values, errors, and dirty tracking                         |
+| `Field`                 | The `Field` component, with `errors` and `formData` already bound |
 
 <Signature @component="Form" />
