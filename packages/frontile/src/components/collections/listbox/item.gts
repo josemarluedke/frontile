@@ -136,6 +136,19 @@ class ListboxItem extends Component<ListboxItemSignature> {
     return 'option';
   }
 
+  /**
+   * `aria-selected` belongs on `option`, and only there — a plain `menuitem`
+   * that carries it is invalid ARIA, since menu items convey state through
+   * `aria-checked` and only as `menuitemcheckbox`/`menuitemradio`. Returning
+   * undefined omits the attribute rather than rendering an empty one.
+   */
+  get ariaSelected(): 'true' | 'false' | undefined {
+    if (this.role !== 'option') {
+      return undefined;
+    }
+    return this.listItem?.isSelected ? 'true' : 'false';
+  }
+
   <template>
     <li
       {{this.manager.setupItem
@@ -147,6 +160,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       id={{this.itemId}}
       role={{this.role}}
       aria-labelledby={{this.labelId}}
+      aria-selected={{this.ariaSelected}}
       tabindex={{this.tabindex}}
       data-active="{{this.listItem.isActive}}"
       data-selected="{{this.listItem.isSelected}}"

@@ -676,5 +676,121 @@ module(
         assert.dom('[data-key="item-6"]').hasClass('is-disabled');
       });
     });
+
+    module('aria selection state', function () {
+      test('options expose aria-selected reflecting selection', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant'];
+        const selectedKeys = cell<string[]>(['crocodile']);
+
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="single"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-key="crocodile"]').hasAttribute('role', 'option');
+        assert
+          .dom('[data-key="crocodile"]')
+          .hasAttribute(
+            'aria-selected',
+            'true',
+            'the selected option says so'
+          );
+        assert
+          .dom('[data-key="cheetah"]')
+          .hasAttribute(
+            'aria-selected',
+            'false',
+            'unselected options are present but not selected'
+          );
+
+        await click('[data-key="elephant"]');
+
+        assert
+          .dom('[data-key="elephant"]')
+          .hasAttribute('aria-selected', 'true', 'updates on selection');
+        assert
+          .dom('[data-key="crocodile"]')
+          .hasAttribute('aria-selected', 'false', 'and clears the previous');
+      });
+
+      test('a multiple-selection listbox is marked aria-multiselectable', async function (assert) {
+        const animals = ['cheetah', 'crocodile'];
+        const selectionMode = cell<'single' | 'multiple'>('single');
+        const selectedKeys = cell<string[]>([]);
+
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode={{selectionMode.current}}
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="listbox"]')
+          .doesNotHaveAttribute(
+            'aria-multiselectable',
+            'absent for single selection'
+          );
+
+        selectionMode.current = 'multiple';
+        await settled();
+
+        assert
+          .dom('[data-test-id="listbox"]')
+          .hasAttribute('aria-multiselectable', 'true');
+      });
+
+      test('menu items do not carry aria-selected', async function (assert) {
+        // `aria-selected` on a plain menuitem is invalid ARIA - menus convey
+        // state via aria-checked, and only as menuitemcheckbox/menuitemradio.
+        const animals = ['cheetah', 'crocodile'];
+        const selectedKeys = cell<string[]>(['cheetah']);
+
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @type="menu"
+              @selectionMode="single"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        assert.dom('[data-key="cheetah"]').hasAttribute('role', 'menuitem');
+        assert
+          .dom('[data-key="cheetah"]')
+          .doesNotHaveAttribute(
+            'aria-selected',
+            'selected menu item has no aria-selected'
+          );
+        assert
+          .dom('[data-test-id="listbox"]')
+          .doesNotHaveAttribute('aria-multiselectable');
+      });
+    });
   }
 );

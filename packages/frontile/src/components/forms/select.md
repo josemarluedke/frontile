@@ -550,8 +550,8 @@ several pieces:
 | Element    | What it exposes                                                                                                                               |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Trigger    | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier |
-| Dropdown   | `role="listbox"`                                                                                                                              |
-| Options    | `role="option"` with `aria-labelledby`, plus `aria-disabled="true"` on disabled keys                                                          |
+| Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                         |
+| Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                     |
 | Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                          |
 
 Keyboard handling comes from the listbox:
@@ -562,18 +562,6 @@ Keyboard handling comes from the listbox:
 | `Home` / `PageUp`, `End` / `PageDown` | Jump to first / last option |
 | `Enter`, `Space`                      | Select the active option    |
 | `Escape`                              | Closes the dropdown         |
-
-### Known gap: selection is not announced
-
-Options carry no `aria-selected`, and a multi-select dropdown carries no
-`aria-multiselectable` — selection state is exposed only through `data-selected`, which
-assistive technology does not read. A screen reader user can therefore navigate the options
-and choose one, but is not told which option is currently selected.
-
-If that matters for your use case, two options today: use
-[NativeSelect](./native-select.md), which is a real `<select>` and gets this from the
-browser, or [Autocomplete](./autocomplete.md), which implements full combobox semantics
-including `aria-activedescendant`.
 
 ## API
 
