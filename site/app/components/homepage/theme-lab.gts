@@ -184,17 +184,6 @@ function toConfigObject(ramp: Level[], indent: string): string {
     .join(',\n');
 }
 
-const LEVEL_NAMES = [
-  'subtle',
-  'muted',
-  'soft',
-  'mild',
-  'default',
-  'firm',
-  'strong',
-  'bolder'
-] as const;
-
 const PRESETS: Preset[] = Object.entries(FAMILIES).map(([key, family]) => ({
   key,
   label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -259,22 +248,6 @@ export default class ThemeLab extends Component {
   }
 
   isActive = (key: string): boolean => key === this.activePreset.key;
-
-  /**
-   * The eight levels as CSS variable references rather than literal values.
-   *
-   * Two reasons this is not the raw hex: the ramp has to show the scheme the
-   * visitor is actually looking at (the previous version always rendered the
-   * light ramp, so it disagreed with the dark panel beside it), and the scoped
-   * stylesheet already publishes the active preset per scheme. Referencing the
-   * variables means the ramp follows both the preset and the theme for free.
-   */
-  levels = LEVEL_NAMES.map((name) => ({
-    name,
-    style: htmlSafe(
-      `--swatch: var(--color-primary${name === 'default' ? '' : `-${name}`})`
-    )
-  }));
 
   /**
    * A scoped stylesheet using the plugin's own selector pairs, so each panel
@@ -349,16 +322,6 @@ ${toConfigObject(darkRamp(f), '          ')}
           </div>
         </fieldset>
 
-        {{! The eight named levels of the active ramp, at a size worth looking
-            at. This is the section's subject matter, so it earns the space. }}
-        <div class="theme-lab__ramp theme-lab-scope" aria-hidden="true">
-          {{#each this.levels as |level|}}
-            <span class="theme-lab__step" style={{level.style}}>
-              <span class="theme-lab__chip"></span>
-              <span class="theme-lab__step-name">{{level.name}}</span>
-            </span>
-          {{/each}}
-        </div>
       </div>
 
       {{! Both schemes, one configuration, live }}
