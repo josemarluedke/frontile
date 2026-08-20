@@ -7,18 +7,75 @@ import Label, { type LabelSignature } from './label';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface FormControlSharedArgs {
+  /**
+   * The label text rendered above the control and associated with it via `for`.
+   * Use the `:label` block instead when the label needs markup.
+   */
   label?: string;
+
+  /**
+   * Whether the field is required. Adds an asterisk to the label; it does not
+   * set the `required` attribute on the control itself.
+   *
+   * @defaultValue false
+   */
   isRequired?: boolean;
+
+  /**
+   * Help text rendered between the label and the control, and referenced by the
+   * ids `describedBy` returns.
+   */
   description?: string;
+
+  /**
+   * Validation messages for the field. A non-empty value also marks the control
+   * invalid, and an array is joined with `; ` when displayed.
+   */
   errors?: string[] | string;
+
+  /**
+   * Marks the control invalid without supplying messages, for validation that is
+   * reported elsewhere.
+   *
+   * @defaultValue false
+   */
   isInvalid?: boolean;
+
+  /**
+   * Whether the field is disabled. FormControl passes this through for styling;
+   * the control it wraps is responsible for the `disabled` attribute.
+   *
+   * @defaultValue false
+   */
   isDisabled?: boolean;
 }
 
 interface Args extends FormControlSharedArgs {
+  /**
+   * The id given to the control, and the base for the description and feedback
+   * ids. Generated when omitted, so pass one only when something outside the
+   * block has to reference it.
+   */
   id?: string;
+
+  /**
+   * The size of the label, description and feedback text.
+   *
+   * @defaultValue 'md'
+   */
   size?: 'sm' | 'md' | 'lg';
+
+  /**
+   * Suppresses the automatic error feedback, for when the block renders the
+   * yielded `Feedback` itself or places messages elsewhere.
+   *
+   * @defaultValue false
+   */
   preventErrorFeedback?: boolean;
+
+  /**
+   * Class names for the wrapping element.
+   */
   class?: string;
 }
 

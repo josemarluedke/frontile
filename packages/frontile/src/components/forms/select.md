@@ -513,9 +513,7 @@ export default class CustomContentBlocksSelect extends Component {
 
 ### Using NativeSelect
 
-The `NativeSelect` component is a lightweight version of the select component that renders a native HTML `<select>` element. This is especially useful when you need maximum accessibility or want to rely on the browser’s native behavior.
-It supports most of the same features as the custom `Select` component, such as passing an array of items, managing selection state, and handling selection changes.
-By using `NativeSelect` directly, you can simplify your markup while still benefiting from Frontile’s APIs.
+When you want the browser's own picker instead of this custom listbox — the native dropdown on mobile, the OS list box on desktop — use [NativeSelect](./native-select). It renders a real `<select>` and takes the same `@items`, `@selectedKey` and `@onSelectionChange` arguments.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -533,6 +531,7 @@ export default class NativeSelectExample extends Component {
 
   <template>
     <NativeSelect
+      @allowEmpty={{true}}
       @placeholder='Select an option'
       @items={{options}}
       @selectedKey={{this.selectedKey}}
@@ -547,5 +546,3 @@ export default class NativeSelectExample extends Component {
 
 <Signature @component="Select" />
 <Signature @component="ListboxItem" />
-<Signature @component="NativeSelect" />
-<Signature @component="NativeSelectItem" />

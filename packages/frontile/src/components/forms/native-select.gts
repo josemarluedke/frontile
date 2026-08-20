@@ -24,12 +24,50 @@ type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
 
 // Base interface for shared properties
 interface BaseArgs<T> extends FormControlSharedArgs {
+  /**
+   * Keys of the options that cannot be selected. Disabled options are still
+   * rendered and announced, they just cannot be picked.
+   */
   disabledKeys?: string[];
+
+  /**
+   * Renders an extra empty option, letting the user clear the selection.
+   * Label it with the placeholder argument.
+   *
+   * @defaultValue false
+   */
   allowEmpty?: boolean;
+
+  /**
+   * Collection used to render the options. Strings and numbers become both the
+   * key and the label; objects use key or id for the key and label, value,
+   * name or title for the label. Use the :item block when your data does not
+   * follow those conventions.
+   */
   items?: T[];
+
+  /**
+   * Id applied to the select element and referenced by its label. One is
+   * generated when omitted.
+   */
   id?: string;
+
+  /**
+   * Name of the select element, used when the surrounding form is submitted.
+   */
   name?: string;
+
+  /**
+   * The size of the control.
+   *
+   * @defaultValue 'md'
+   */
   size?: NativeSelectVariants['size'];
+
+  /**
+   * Per-slot class overrides: base, innerContainer, input, startContent,
+   * endContent and icon.
+   */
   classes?: SlotsToClasses<NativeSelectSlots>;
 
   /**
@@ -37,6 +75,10 @@ interface BaseArgs<T> extends FormControlSharedArgs {
    */
   placeholder?: string;
 
+  /**
+   * Called with the key of an option whenever it is acted upon, including when
+   * the same option is picked again. Use onSelectionChange to track state.
+   */
   onAction?: (key: string) => void;
 
   /**
@@ -65,17 +107,56 @@ interface BaseArgs<T> extends FormControlSharedArgs {
 
 // Single selection mode interface
 interface SingleNativeSelectArgs<T> extends BaseArgs<T> {
+  /**
+   * Whether one option or several can be selected. Multiple renders the native
+   * multi-select list box and switches to selectedKeys.
+   *
+   * @defaultValue 'single'
+   */
   selectionMode?: 'single' | undefined;
+
+  /**
+   * The selected key in single selection mode. The component is controlled:
+   * update this from onSelectionChange.
+   */
   selectedKey?: string | null;
+
+  /**
+   * Not available in single selection mode; use selectedKey.
+   */
   selectedKeys?: never;
+
+  /**
+   * Called with the newly selected key, or null when the selection is cleared
+   * through the allowEmpty option.
+   */
   onSelectionChange?: (key: string | null) => void;
 }
 
 // Multiple selection mode interface
 interface MultipleNativeSelectArgs<T> extends BaseArgs<T> {
+  /**
+   * Whether one option or several can be selected. Multiple renders the native
+   * multi-select list box and switches to selectedKeys.
+   *
+   * @defaultValue 'single'
+   */
   selectionMode: 'multiple';
+
+  /**
+   * Not available in multiple selection mode; use selectedKeys.
+   */
   selectedKey?: never;
+
+  /**
+   * The selected keys in multiple selection mode. The component is controlled:
+   * update this from onSelectionChange.
+   */
   selectedKeys?: string[];
+
+  /**
+   * Called with every selected key each time the selection changes.
+   */
   onSelectionChange?: (keys: string[]) => void;
 }
 
@@ -299,8 +380,22 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
 
 export interface SelectItemSignature {
   Args: {
+    /**
+     * The ListManager that tracks selection for the parent select. It is bound
+     * for you on the yielded Item component.
+     */
     manager: ListManager;
+
+    /**
+     * Value of the rendered option, and the key reported by onSelectionChange,
+     * selectedKey or selectedKeys, and disabledKeys.
+     */
     key: string;
+
+    /**
+     * Text representation of the option, used for matching. Defaults to the
+     * option's rendered text content.
+     */
     textValue?: string;
   };
   Element: HTMLOptionElement;

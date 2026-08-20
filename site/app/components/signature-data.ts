@@ -4764,7 +4764,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -4842,7 +4843,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -4976,8 +4978,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isLoading',
@@ -4993,8 +4997,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'items',
@@ -5009,7 +5015,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -5561,7 +5568,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -5573,7 +5581,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -5581,31 +5590,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -5719,7 +5735,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -5731,7 +5748,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -5739,31 +5757,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6021,7 +6046,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description: 'Class names for the wrapping element.',
         tags: {},
       },
       {
@@ -6029,7 +6054,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -6041,7 +6067,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -6049,7 +6076,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The id given to the control, and the base for the description and feedback\nids. Generated when omitted, so pass one only when something outside the\nblock has to reference it.',
         tags: {},
       },
       {
@@ -6057,31 +6085,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6089,8 +6124,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Suppresses the automatic error feedback, for when the block renders the\nyielded `Feedback` itself or places messages elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'size',
@@ -6101,8 +6138,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the label, description and feedback text.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [
@@ -6234,7 +6272,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for the description element, merged with the theme's.",
         tags: {},
       },
       {
@@ -6242,7 +6281,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "The id of the description element, referenced by the control's\n`aria-describedby`.",
         tags: {},
       },
       {
@@ -6254,8 +6294,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the description text.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [
@@ -6293,7 +6334,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for the feedback element, merged with the theme's.",
         tags: {},
       },
       {
@@ -6301,7 +6343,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "The id of the feedback element, referenced by the control's\n`aria-describedby`.",
         tags: {},
       },
       {
@@ -6320,8 +6363,10 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'The intent of the feedback, which also decides whether it is announced\nassertively (`danger`) or politely.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'danger'" } },
+        defaultValue: '<span class="hljs-string">\'danger\'</span>',
       },
       {
         identifier: 'messages',
@@ -6332,7 +6377,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'A list of messages or a single message string. An array is joined with `; `.',
         tags: {},
       },
       {
@@ -6344,8 +6390,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the feedback text.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [
@@ -6726,7 +6773,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -6752,7 +6800,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -6768,31 +6817,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6939,7 +6995,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
         tags: {},
       },
       {
@@ -6955,8 +7012,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required or not, if true, an asterisk will be added to the label.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'size',
@@ -6967,8 +7026,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the label text.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
     ],
     Blocks: [
@@ -7006,8 +7066,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Renders an extra empty option, letting the user clear the selection.\nLabel it with the placeholder argument.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'classes',
@@ -7016,7 +7078,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Per-slot class overrides: base, innerContainer, input, startContent,\nendContent and icon.',
         tags: {},
       },
       {
@@ -7024,7 +7087,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -7035,7 +7099,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Keys of the options that cannot be selected. Disabled options are still\nrendered and announced, they just cannot be picked.',
         tags: {},
       },
       {
@@ -7061,7 +7126,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -7069,7 +7135,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Id applied to the select element and referenced by its label. One is\ngenerated when omitted.',
         tags: {},
       },
       {
@@ -7077,31 +7144,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'items',
         type: { type: '<span class="hljs-built_in">Array</span>', raw: 'T[]' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Collection used to render the options. Strings and numbers become both the\nkey and the label; objects use key or id for the key and label, value,\nname or title for the label. Use the :item block when your data does not\nfollow those conventions.',
         tags: {},
       },
       {
@@ -7109,7 +7183,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7117,7 +7192,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Name of the select element, used when the surrounding form is submitted.',
         tags: {},
       },
       {
@@ -7128,7 +7204,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Called with the key of an option whenever it is acted upon, including when\nthe same option is picked again. Use onSelectionChange to track state.',
         tags: {},
       },
       {
@@ -7150,7 +7227,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Called with the newly selected key, or null when the selection is cleared\nthrough the allowEmpty option.\nCalled with every selected key each time the selection changes.',
         tags: {},
       },
       {
@@ -7167,7 +7245,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The selected key in single selection mode. The component is controlled:\nupdate this from onSelectionChange.\nNot available in multiple selection mode; use selectedKeys.',
         tags: {},
       },
       {
@@ -7178,7 +7257,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Not available in single selection mode; use selectedKey.\nThe selected keys in multiple selection mode. The component is controlled:\nupdate this from onSelectionChange.',
         tags: {},
       },
       {
@@ -7190,8 +7270,13 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether one option or several can be selected. Multiple renders the native\nmulti-select list box and switches to selectedKeys.',
+        tags: {
+          defaultValue: { name: 'defaultValue', value: "'single'\n'single'" },
+        },
+        defaultValue:
+          '<span class="hljs-string">\'single\'</span>\n<span class="hljs-string">\'single\'</span>',
       },
       {
         identifier: 'size',
@@ -7202,8 +7287,9 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description: 'The size of the control.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
       {
         identifier: 'startContentPointerEvents',
@@ -7360,7 +7446,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'Value of the rendered option, and the key reported by onSelectionChange,\nselectedKey or selectedKeys, and disabledKeys.',
         tags: {},
       },
       {
@@ -7368,7 +7455,8 @@ const data: ComponentDoc[] = [
         type: { type: 'ListManager' },
         isRequired: true,
         isInternal: false,
-        description: '',
+        description:
+          'The ListManager that tracks selection for the parent select. It is bound\nfor you on the yielded Item component.',
         tags: {},
       },
       {
@@ -7376,7 +7464,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          "Text representation of the option, used for matching. Defaults to the\noption's rendered text content.",
         tags: {},
       },
     ],
@@ -7462,7 +7551,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -7474,7 +7564,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -7482,31 +7573,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7640,7 +7738,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -7652,7 +7751,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -7660,31 +7760,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7943,7 +8050,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -8011,7 +8119,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -8128,8 +8237,9 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the select should be disabled, preventing user interaction.',
-        tags: {},
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.\nWhether the select should be disabled, preventing user interaction.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isFilterable',
@@ -8146,8 +8256,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isLoading',
@@ -8163,8 +8275,10 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'items',
@@ -8179,7 +8293,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -8765,7 +8880,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -8777,7 +8893,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -8815,16 +8932,20 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isSelected',
@@ -8840,7 +8961,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -8981,7 +9103,8 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
         tags: {},
       },
       {
@@ -8993,7 +9116,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
         tags: {},
       },
       {
@@ -9010,31 +9134,38 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isInvalid',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'isRequired',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
-        tags: {},
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'label',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
         tags: {},
       },
       {
