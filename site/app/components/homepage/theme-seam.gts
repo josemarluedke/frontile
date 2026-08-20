@@ -195,10 +195,34 @@ export default class ThemeSeam extends Component<Signature> {
             keep following the cursor. }}
         {{on "lostpointercapture" this.handlePointerUp}}
         {{on "keydown" this.handleKeyDown}}
-      >
-        <span class="theme-seam__grip" aria-hidden="true"></span>
-      </div>
+      ></div>
       {{! template-lint-enable no-pointer-down-event-binding }}
+
+      {{! The icon is a sibling, not a child: an element with role="separator"
+          may not have semantic descendants, and this keeps the handle's ARIA
+          contract clean. It never receives pointer events, so the handle
+          underneath still gets the drag. }}
+      <span
+        class="theme-seam__grip-wrap"
+        style={{this.seamStyle}}
+        aria-hidden="true"
+      >
+        <svg
+          class="theme-seam__grip"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          focusable="false"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+          />
+        </svg>
+      </span>
     </div>
   </template>
 }

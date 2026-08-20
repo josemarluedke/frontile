@@ -194,16 +194,28 @@
     outline-offset: 3px;
   }
 
-  /* Two chevrons, drawn rather than iconised, so the affordance reads at
-     any size without shipping an asset. */
+  /* The icon overlays the handle rather than living inside it, so the handle
+     keeps a clean role="separator" with no semantic descendants. It must never
+     swallow the drag. */
+  .theme-seam__grip-wrap {
+    position: absolute;
+    top: 50%;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-left: -1.375rem;
+    margin-top: -1.375rem;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    color: var(--color-on-primary);
+  }
+
   .theme-seam__grip {
-    width: 1.25rem;
-    height: 0.75rem;
-    background:
-      linear-gradient(to bottom right, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) left / 50% 50% no-repeat,
-      linear-gradient(to top right, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) left bottom / 50% 50% no-repeat,
-      linear-gradient(to bottom left, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) right / 50% 50% no-repeat,
-      linear-gradient(to top left, transparent 45%, currentColor 45%, currentColor 55%, transparent 55%) right bottom / 50% 50% no-repeat;
+    width: 1.125rem;
+    height: 1.125rem;
+    flex: none;
   }
 
   /* Specimen wall.
