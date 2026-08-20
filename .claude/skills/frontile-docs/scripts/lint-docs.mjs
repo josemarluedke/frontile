@@ -20,6 +20,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, relative, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const REPO_ROOT = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -432,6 +433,40 @@ function lintDoc(mdPath) {
 // Discovery + reporting
 // ---------------------------------------------------------------------------
 
+/**
+ * Compares a doc against a git ref and reports demos that disappeared.
+ *
+ * Shortening a page is usually an improvement, but the cheap way to shorten it
+ * is to delete demos, which silently trades executable coverage for prose. That
+ * loss is invisible in review — the page reads better — so it gets checked here
+ * rather than left to judgment.
+ */
+function demoRegressions(mdPath, ref) {
+  const rel = relative(REPO_ROOT, mdPath);
+  let before;
+  try {
+    before = execSync(`git show ${ref}:${rel}`, {
+      cwd: REPO_ROOT,
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).toString();
+  } catch {
+    return []; // new file, or not in that ref — nothing to compare
+  }
+  const count = (s) => [...s.matchAll(/^```g[jt]s preview$/gm)].length;
+  const was = count(before);
+  const now = count(readFileSync(mdPath, 'utf8'));
+  if (now >= was) return [];
+  return [
+    {
+      file: rel,
+      level: 'error',
+      line: 1,
+      message: `${was - now} runnable demo(s) removed since ${ref} (${was} → ${now})`,
+      hint: 'name the retained demo covering each removed state, or consolidate instead of deleting — see SKILL.md'
+    }
+  ];
+}
+
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
@@ -482,7 +517,13 @@ function findOrphanComponents(files) {
 function main() {
   const argv = process.argv.slice(2);
   const json = argv.includes('--json');
-  const paths = argv.filter((a) => !a.startsWith('--'));
+  // `--since <ref>` additionally compares each doc against that ref and errors
+  // when runnable demos have been removed.
+  const sinceFlag = argv.indexOf('--since');
+  const since = sinceFlag === -1 ? null : (argv[sinceFlag + 1] ?? 'HEAD');
+  const paths = argv.filter(
+    (a, i) => !a.startsWith('--') && i !== sinceFlag + 1
+  );
 
   let docs;
   let findings = [];
@@ -506,6 +547,7 @@ function main() {
   for (const doc of docs) {
     if (!existsSync(doc) || !statSync(doc).isFile()) continue;
     findings = findings.concat(lintDoc(doc));
+    if (since) findings = findings.concat(demoRegressions(doc, since));
   }
 
   const errors = findings.filter((f) => f.level === 'error');

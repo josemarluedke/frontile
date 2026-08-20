@@ -40,11 +40,33 @@ export interface ButtonArgs {
 
 Use `@defaultValue` for anything with a default — it becomes its own column. Describe what
 the argument *is for*, not what its type already says ("The button appearance", not "A
-string that can be default, soft, outlined…"). After changing JSDoc, regenerate:
+string that can be default, soft, outlined…"). Verify a default against the theme's
+`defaultVariants` rather than assuming one exists; several components genuinely have none.
+
+After changing JSDoc, regenerate:
 
 ```bash
-pnpm --filter frontile build && pnpm --filter site generate-signature-data
+pnpm build && pnpm --filter site generate-signature-data
 ```
+
+**Build everything first, not just the package you touched.** The generator reads
+`packages/*/declarations/`, and it doesn't fail when those are missing — it writes a file
+covering only what it found, silently dropping thousands of lines of other packages'
+signatures and blanking their API tables. If you regenerate before a full build, recover
+with `git checkout -- site/app/components/signature-data.ts`, build, and regenerate again.
+Check `git diff --stat` on that file afterwards: a diff far larger than your change means
+this happened.
+
+Two related traps worth knowing before you go looking for them:
+
+- **A component with no `.md` is never checked.** The linter only inspects a `.gts` when a
+  sibling doc exists, so components without a page accumulate undocumented arguments
+  invisibly. When you create a page for one, audit its whole `Args` interface for JSDoc
+  first — otherwise you ship a beautiful page whose API table is a column of blank cells.
+- **Utilities hardcoded in a component's `.gts` are never generated.** The site's Tailwind
+  scans `site/` and `packages/theme/src` only. A class written directly into a component
+  template under `packages/frontile` produces no CSS on the docs site. Style through the
+  theme's variants instead.
 
 Never restate the full argument list as a prose table in the `.md` — it will drift from the
 generated one, and readers get two conflicting sources. Prose earns its place by covering
@@ -161,23 +183,63 @@ cd site && pnpm build
 
 Report honestly: if `pnpm build` didn't run, say the demos are unverified.
 
+### Keep the change the size of the request
+
+Reading the source to document a component surfaces adjacent problems — a wrong class in a
+neighbouring doc, a theme variant that looks broken, a missing test. Documenting one
+component is not licence to fix them. Report what you found and leave it, unless your change
+is actually wrong without it; a docs edit that also rewrites the theme package is hard to
+review and hard to revert, and it buries the part the user asked for. When you do have to
+reach outside the doc and its component, say so explicitly and say why it was necessary.
+
 ## Reviewing and auditing existing docs
 
-You have editorial authority here — cut verbose prose, merge redundant examples, and shorten
-bloated files. Length is itself a defect: `form.md` is 1,903 lines, and nobody reads to the
-end of it. What earns its place is a runnable example or a fact the reader can't get from
-the API table. What doesn't: restated types, marketing adjectives ("powerful", "flexible",
-"modern"), and three examples demonstrating one idea.
+You have editorial authority over prose. Length is a real defect — `form.md` is 1,903 lines
+and nobody reads to the end — and most of that weight is text: restated types, marketing
+adjectives ("powerful", "flexible", "modern"), orphaned notes, and paragraphs explaining
+what the demo below already shows. Cut all of it freely.
 
-Two things to be careful with, because they look like fat and aren't:
+**Demos are not prose, and the same authority does not extend to them.** Prose can be
+rewritten from the source at any time; a working demo is executable proof that a particular
+combination of arguments does what the docs claim, it is the thing readers copy, and it is
+the only part of the page the site actually runs. Replacing a demo with a sentence
+describing it converts checked behavior into an unchecked assertion. That trade is almost
+never worth it, and it is invisible in review — the page gets shorter and reads better,
+while coverage quietly drops.
 
-- **A demo that looks redundant may cover a distinct state.** Check what's different before
-  merging — controlled vs. uncontrolled, single vs. multiple selection.
-- **Prose explaining a footgun.** The `class` vs. `@class` note in `button.md` is exactly the
-  kind of thing that belongs in prose and would be lost in a cut.
+So the two edits pull in opposite directions, and the reduction you're after comes from
+prose. Before removing any demo, do this explicitly:
 
-When you delete a substantial example or section, say what you removed and why in your
-summary, so the user can push back on a specific call rather than re-reading the diff.
+1. Name the state it exercises — which arguments, which mode, which interaction.
+2. Find a demo you are **keeping** that exercises that same state.
+3. If you can't name one, the demo stays.
+
+"Both demos are about `@isOpen`" is not step 2. Two demos sharing an argument can still
+exercise different states — controlled vs. uncontrolled, single vs. multiple selection, one
+panel vs. several, nested vs. flat, initially-open vs. opening on interaction. Readers also
+navigate by scenario rather than by argument: someone looking for an accordion doesn't
+recognize their problem in a demo titled "Basic".
+
+When two demos genuinely do exercise the same state, **consolidate rather than delete** —
+fold them into one demo with several instances, or an `{{#each}}` over the varying values.
+That keeps the coverage and still removes the duplication.
+
+The one thing prose should keep is a footgun: the `class` vs. `@class` note in `button.md`
+is exactly the kind of fact a reader can't derive from a demo, and it would be lost in an
+undifferentiated cut.
+
+Then report what you did, because a shorter file is not self-evidently a better one:
+
+- demo count before → after
+- for each demo removed, the retained demo that covers its state
+- what prose you cut, in one line
+
+If that list is uncomfortable to write, that's the signal — you removed coverage, not fat.
+The linter checks this mechanically, and it is worth running on any file you shortened:
+
+```bash
+node .claude/skills/frontile-docs/scripts/lint-docs.mjs --since HEAD <file>
+```
 
 For a multi-file audit, run the linter across everything first and work from its output —
 it's cheaper and more consistent than reading 31 files, and it won't miss the boring
