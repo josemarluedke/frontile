@@ -87,7 +87,7 @@
     "@embroider/macros": "^1.20.6",
     "@frontile/theme": "workspace:^",
     "@glint/template": "^1.8.0",
-    "@universal-ember/table": "^3.6.2",
+    "@universal-ember/table": "^4.0.0",
     "ember-auto-import": "^2.13.1",
     "ember-click-outside": "^6.1.0",
     "ember-css-transitions": "^4.4.0",
