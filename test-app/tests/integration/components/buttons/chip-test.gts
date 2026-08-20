@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, triggerKeyEvent } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Chip } from 'frontile';
@@ -153,6 +153,50 @@ module('Integration | Component | Chip | @frontile/buttons', function (hooks) {
         );
 
         assert.dom('[data-test-id="button"] .chip-close-button').exists();
+      });
+
+      // Chip used to wire @onClose to CloseButton's deprecated @onClick, so
+      // every closable chip emitted a deprecation the consumer could not
+      // silence. Keyboard activation is the part @onClick never covered.
+      test('close button responds to keyboard activation', async function (assert) {
+        let closed = 0;
+        const onClose = () => {
+          closed++;
+        };
+        await render(
+          <template>
+            <Chip @onClose={{onClose}} data-test-id="button">My Chip</Chip>
+          </template>
+        );
+
+        const selector = '[data-test-id="button"] .chip-close-button';
+        await triggerKeyEvent(selector, 'keydown', 'Enter');
+        await triggerKeyEvent(selector, 'keyup', 'Enter');
+
+        assert.strictEqual(closed, 1, 'Enter closed the chip');
+      });
+    });
+
+    module('@closeButtonTitle', () => {
+      test('it names the close button, defaulting to Close', async function (assert) {
+        const onClose = () => {};
+        await render(
+          <template>
+            <Chip @onClose={{onClose}} data-test-id="default">Alpha</Chip>
+            <Chip
+              @onClose={{onClose}}
+              @closeButtonTitle="Remove Beta"
+              data-test-id="named"
+            >Beta</Chip>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="default"] .chip-close-button')
+          .hasText('Close');
+        assert
+          .dom('[data-test-id="named"] .chip-close-button')
+          .hasText('Remove Beta');
       });
     });
   });

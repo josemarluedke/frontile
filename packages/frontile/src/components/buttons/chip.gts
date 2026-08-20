@@ -45,6 +45,15 @@ interface ChipSignature {
     onClose?: () => void;
 
     /**
+     * The accessible name of the close button. Every close button would
+     * otherwise be announced as just "Close", which does not say *what* is
+     * being removed — worth setting when several chips sit together.
+     *
+     * @defaultValue 'Close'
+     */
+    closeButtonTitle?: string;
+
+    /**
      * Disables the clip and disables the close button if any.
      */
     isDisabled?: boolean;
@@ -91,7 +100,8 @@ class Chip extends Component<ChipSignature> {
       {{#if @onClose}}
         <CloseButton
           @class={{this.classNames.closeButton}}
-          @onClick={{@onClose}}
+          @title={{@closeButtonTitle}}
+          @onPress={{@onClose}}
           disabled={{@isDisabled}}
         />
       {{/if}}

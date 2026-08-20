@@ -27,6 +27,10 @@ const REPO_ROOT = resolve(
   '../../../..'
 );
 const COMPONENTS_DIR = join(REPO_ROOT, 'packages/frontile/src/components');
+// Not every page is co-located: notifications are documented together, one
+// directory up. Left out of discovery, that page is never linted at all — which
+// is how `bg-success-50` sat in a live demo.
+const EXTRA_DOCS_DIRS = [join(REPO_ROOT, 'packages/frontile/docs')];
 
 const REQUIRED_SECTIONS = ['Import', 'Usage', 'API'];
 const DISCOURAGED_HEADINGS = {
@@ -39,6 +43,10 @@ const SEMANTIC_CATEGORIES =
   'neutral|primary|secondary|tertiary|success|warning|danger|inverse|surface';
 const UTILITY_PREFIXES =
   'bg|text|border|ring|from|to|via|fill|stroke|divide|outline|shadow|accent|caret|decoration|placeholder';
+// `border-l-primary-400` and `divide-x-danger-500` are as broken as their
+// undirected forms, so the side/axis segment has to be optional rather than
+// absent — without it the checks read straight past every directional variant.
+const UTILITY_SIDES = '(?:-(?:t|r|b|l|s|e|x|y))?';
 
 // ---------------------------------------------------------------------------
 // Tiny TS parsing. Deliberately tolerant: when it can't confidently resolve an
@@ -359,10 +367,9 @@ function lintDoc(mdPath) {
         'import from `site/components/icons` instead, adding the icon there if it is missing'
       );
     }
-    const rawPalette =
-      /\b(?:bg|text|border|ring|fill|stroke)-(?:slate|gray|zinc|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/.exec(
-        fence.content
-      );
+    const rawPalette = new RegExp(
+      `\\b(?:bg|text|border|ring|fill|stroke|divide)${UTILITY_SIDES}-(?:slate|gray|zinc|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\\d{2,3}\\b`
+    ).exec(fence.content);
     if (rawPalette) {
       add(
         'warn',
@@ -372,7 +379,7 @@ function lintDoc(mdPath) {
       );
     }
     const badColor = new RegExp(
-      `\\b(?:${UTILITY_PREFIXES})-(?:${SEMANTIC_CATEGORIES})-\\d{2,3}\\b`
+      `\\b(?:${UTILITY_PREFIXES})${UTILITY_SIDES}-(?:${SEMANTIC_CATEGORIES})-\\d{2,3}\\b`
     ).exec(fence.content);
     if (badColor) {
       add(
@@ -505,11 +512,37 @@ function publiclyExported() {
   return exported;
 }
 
-function findOrphanComponents(files) {
+/**
+ * Components whose API table lives on a page that isn't beside them — the
+ * `<Signature>` tag is what makes a page that component's reference, wherever
+ * the file sits.
+ */
+function documentedElsewhere(docs) {
+  const named = new Set();
+  for (const doc of docs) {
+    for (const m of readFileSync(doc, 'utf8').matchAll(
+      /<Signature\s+@component=["'](\w+)["']/g
+    )) {
+      named.add(m[1]);
+    }
+  }
+  return named;
+}
+
+/** `notification-card.gts` -> `NotificationCard`. */
+function componentNameFor(gtsPath) {
+  return basename(gtsPath, '.gts')
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+function findOrphanComponents(files, coveredNames = new Set()) {
   const orphans = [];
   const expected = publiclyExported();
   for (const file of files) {
     if (!expected.has(file)) continue;
+    if (coveredNames.has(componentNameFor(file))) continue;
     if (!existsSync(file.replace(/\.gts$/, '.md'))) {
       orphans.push({
         file: relative(REPO_ROOT, file),
@@ -552,7 +585,13 @@ function main() {
     }
     const all = walk(COMPONENTS_DIR);
     docs = all.filter((f) => f.endsWith('.md'));
-    findings = findings.concat(findOrphanComponents(all));
+    for (const dir of EXTRA_DOCS_DIRS) {
+      if (!existsSync(dir)) continue;
+      docs = docs.concat(walk(dir).filter((f) => f.endsWith('.md')));
+    }
+    findings = findings.concat(
+      findOrphanComponents(all, documentedElsewhere(docs))
+    );
   }
 
   for (const doc of docs) {

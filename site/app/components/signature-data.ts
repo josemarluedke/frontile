@@ -3435,6 +3435,16 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'closeButtonTitle',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The accessible name of the close button. Every close button would\notherwise be announced as just "Close", which does not say <em>what</em> is\nbeing removed — worth setting when several chips sit together.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Close'" } },
+        defaultValue: '<span class="hljs-string">\'Close\'</span>',
+      },
+      {
         identifier: 'intent',
         type: {
           type: '<span class="hljs-built_in">enum</span>',

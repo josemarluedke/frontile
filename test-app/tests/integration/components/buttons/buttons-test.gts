@@ -1,10 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerEvent } from '@ember/test-helpers';
+import {
+  render,
+  triggerEvent,
+  triggerKeyEvent,
+  click
+} from '@ember/test-helpers';
 import { registerCustomStyles, tv } from '@frontile/theme';
 import { Button } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
 
 registerCustomStyles({
   button: tv({
@@ -222,6 +228,65 @@ module(
         assert
           .dom('[data-test-id="button"]')
           .doesNotHaveAttribute('data-pressed');
+      });
+
+      // The `press` modifier calls preventDefault on Enter/Space keydown, which
+      // cancels the click the browser would otherwise synthesize. These two
+      // tests pin down which callbacks survive that, because the docs tell
+      // readers to reach for @onPress over {{on "click"}} on its account.
+      test('@onPress fires for keyboard Enter and Space', async function (assert) {
+        let pressCount = 0;
+
+        class TestComponent extends Component {
+          handlePress = () => {
+            pressCount++;
+          };
+
+          <template>
+            <Button data-test-id="button" @onPress={{this.handlePress}}>
+              Press me
+            </Button>
+          </template>
+        }
+
+        await render(<template><TestComponent /></template>);
+
+        await triggerKeyEvent('[data-test-id="button"]', 'keydown', 'Enter');
+        await triggerKeyEvent('[data-test-id="button"]', 'keyup', 'Enter');
+        assert.strictEqual(pressCount, 1, 'Enter triggered @onPress');
+
+        await triggerKeyEvent('[data-test-id="button"]', 'keydown', ' ');
+        await triggerKeyEvent('[data-test-id="button"]', 'keyup', ' ');
+        assert.strictEqual(pressCount, 2, 'Space triggered @onPress');
+      });
+
+      test('a click listener does not fire for keyboard activation', async function (assert) {
+        let clickCount = 0;
+
+        class TestComponent extends Component {
+          handleClick = () => {
+            clickCount++;
+          };
+
+          <template>
+            <Button data-test-id="button" {{on "click" this.handleClick}}>
+              Press me
+            </Button>
+          </template>
+        }
+
+        await render(<template><TestComponent /></template>);
+
+        await triggerKeyEvent('[data-test-id="button"]', 'keydown', 'Enter');
+        await triggerKeyEvent('[data-test-id="button"]', 'keyup', 'Enter');
+        assert.strictEqual(
+          clickCount,
+          0,
+          'Enter did not reach the click listener'
+        );
+
+        await click('[data-test-id="button"]');
+        assert.strictEqual(clickCount, 1, 'a pointer click still reaches it');
       });
 
       test('it works with renderless mode', async function (assert) {
