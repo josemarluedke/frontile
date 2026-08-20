@@ -31,49 +31,56 @@ The `light` class is optional since light mode is the default. However, it's use
 
 ### Client-Side Toggle
 
-Here's a basic implementation for theme switching:
+Here's a basic implementation. It stays a static snippet rather than a live demo
+because it writes to `localStorage` and swaps classes on `<html>`, which would
+fight this site's own theme switcher.
 
 ```gts
-import { Component } from '@glimmer/component';
+import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { Button } from 'frontile';
 
 export default class ThemeToggle extends Component {
   @tracked isDark = false;
 
-  constructor(owner, args) {
-    super(owner, args);
-    // Check localStorage or system preference
-    this.isDark = localStorage.getItem('theme') === 'dark' ||
-      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  constructor(owner: unknown, args: Record<string, unknown>) {
+    super(owner as never, args);
+    // Saved choice wins; fall back to the system preference.
+    const saved = localStorage.getItem('theme');
+    this.isDark = saved
+      ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
     this.applyTheme();
   }
 
   @action
-  toggleTheme() {
+  toggleTheme(): void {
     this.isDark = !this.isDark;
     this.applyTheme();
     localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
   }
 
-  applyTheme() {
+  applyTheme(): void {
     const html = document.documentElement;
-    if (this.isDark) {
-      html.classList.add('dark');
-      html.classList.remove('light');
-    } else {
-      html.classList.add('light');
-      html.classList.remove('dark');
-    }
+    // Both classes are meaningful — `light` is what makes `theme-inverse`
+    // work inside a dark region — so set one and clear the other.
+    html.classList.toggle('dark', this.isDark);
+    html.classList.toggle('light', !this.isDark);
   }
 
   <template>
-    <button {{on 'click' this.toggleTheme}}>
+    <Button @appearance='outlined' @onPress={{this.toggleTheme}}>
       {{if this.isDark '☀️ Light Mode' '🌙 Dark Mode'}}
-    </button>
+    </Button>
   </template>
 }
 ```
+
+Frontile's own documentation site does exactly this — see
+[`docfy-theme-switcher.gts`](https://github.com/josemarluedke/frontile/blob/main/site/app/components/docfy/docfy-theme-switcher.gts)
+for a version that also reacts to the system preference changing while the page
+is open, and guards against running during server-side rendering.
 
 ### Respecting System Preference
 

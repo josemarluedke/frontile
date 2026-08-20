@@ -1,3 +1,17 @@
+# `/docs` and `/docs/installation` were duplicate copies of the get-started
+# pages, kept in sync by hand until they weren't. They are gone; these keep old
+# bookmarks and search results working. Must precede the SPA catch-all below,
+# since Netlify applies the first matching rule.
+[[redirects]]
+  from = "/docs"
+  to = "/docs/get-started/"
+  status = 301
+
+[[redirects]]
+  from = "/docs/installation"
+  to = "/docs/get-started/installation"
+  status = 301
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
