@@ -299,9 +299,6 @@ interface AutocompleteSignature<T> {
  * static list (built-in filtering), an externally filtered list
  * (`disableFiltering` + `onInputChange`), or an async source (`onSearch`).
  *
- * Selection state follows the same two-way data binding pattern as `Select`:
- * internal tracked state gives immediate UI updates, while `onSelectionChange`
- * notifies the parent, whose arg updates sync back through modifiers.
  */
 class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
   @tracked nodes: ListItem[] = [];

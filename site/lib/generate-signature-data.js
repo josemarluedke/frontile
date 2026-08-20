@@ -4,9 +4,41 @@ const path = require('path');
 const lowlight = require('lowlight');
 const unified = require('unified');
 const rehypeStringify = require('rehype-stringify');
+const remarkParse = require('remark-parse');
+const remarkRehype = require('remark-rehype');
 const { collectBoundArgs, applyBoundArgs } = require('./bound-args');
 
 const processor = unified().use(rehypeStringify);
+
+// JSDoc descriptions are markdown — inline code especially, which 130+ of the
+// argument descriptions rely on. They used to reach the page as raw text, so
+// `` `none` `` rendered with its backticks showing. Convert them here, the same
+// way types are converted to highlighted HTML above, and keep the docfy
+// markdown plugin's stripHtml step as the inverse.
+const markdownProcessor = unified()
+  .use(remarkParse)
+  .use(remarkRehype)
+  .use(rehypeStringify);
+
+function renderMarkdown(value, { inline } = {}) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    return value;
+  }
+
+  const html = markdownProcessor.processSync(value).toString().trim();
+
+  // A one-line description becomes a single <p>. Inside a table cell that just
+  // contributes stray block margins, so unwrap it; multi-paragraph component
+  // descriptions keep their structure.
+  if (inline) {
+    const single = /^<p>([\s\S]*)<\/p>$/.exec(html);
+    if (single && !single[1].includes('<p>')) {
+      return single[1];
+    }
+  }
+
+  return html;
+}
 
 const root = path.resolve(path.join(__dirname, '../../'));
 const pattern = 'packages/*/declarations/components/**/*.ts';
@@ -86,6 +118,13 @@ components.forEach((component) => {
   component.Args.forEach(highlight);
   component.Blocks.forEach(highlight);
   highlight(component.Element);
+
+  component.description = renderMarkdown(component.description);
+  for (const property of [...component.Args, ...component.Blocks]) {
+    property.description = renderMarkdown(property.description, {
+      inline: true,
+    });
+  }
 });
 
 fs.writeFileSync(

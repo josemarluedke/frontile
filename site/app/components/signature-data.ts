@@ -171,7 +171,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'If the checkbox is checked.\nYou must also pass `onChange` to update its value.',
+          'If the checkbox is checked.\nYou must also pass <code>onChange</code> to update its value.',
         tags: {},
       },
       {
@@ -421,7 +421,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the input.\nYou must also pass `onChange` or `onInput` to update its value.',
+          'The value to be used in the input.\nYou must also pass <code>onChange</code> or <code>onInput</code> to update its value.',
         tags: {},
       },
       {
@@ -575,7 +575,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the input.\nYou must also pass `onChange` or `onInput` to update its value.',
+          'The value to be used in the input.\nYou must also pass <code>onChange</code> or <code>onInput</code> to update its value.',
         tags: {},
       },
       {
@@ -895,7 +895,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The current checked value.\nThis will be used to compare against the `value` argument,\nif equal, the radio will me marked as checked.',
+          'The current checked value.\nThis will be used to compare against the <code>value</code> argument,\nif equal, the radio will me marked as checked.',
         tags: {},
       },
       {
@@ -919,7 +919,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the radio button.\nYou must also pass `onChange` to update its value.',
+          'The value to be used in the radio button.\nYou must also pass <code>onChange</code> to update its value.',
         tags: {},
       },
       {
@@ -2250,7 +2250,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the input.\nYou must also pass `onChange` or `onInput` to update its value.',
+          'The value to be used in the input.\nYou must also pass <code>onChange</code> or <code>onInput</code> to update its value.',
         tags: {},
       },
       {
@@ -2446,7 +2446,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Callback executed when from `onreset` event is triggered',
+        description:
+          'Callback executed when from <code>onreset</code> event is triggered',
         tags: {},
       },
       {
@@ -2458,7 +2459,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback executed when from `onsubmit` event is triggered',
+          'Callback executed when from <code>onsubmit</code> event is triggered',
         tags: {},
       },
       {
@@ -3791,7 +3792,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
         tags: {},
       },
       {
@@ -4109,7 +4110,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -4336,7 +4337,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Callback when a menu item is selected, receiving that item's `@key`.",
+          "Callback when a menu item is selected, receiving that item's <code>@key</code>.",
         tags: {},
       },
       {
@@ -4393,7 +4394,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -4599,7 +4600,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -4765,7 +4766,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -4797,7 +4798,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Disables the built-in filtering, rendering `@items` as-is.\nUse together with `inputValue`/`onInputChange` when filtering happens\noutside of the component (e.g. server-side).',
+          'Disables the built-in filtering, rendering <code>@items</code> as-is.\nUse together with <code>inputValue</code>/<code>onInputChange</code> when filtering happens\noutside of the component (e.g. server-side).',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -4830,7 +4831,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of endContent.\nDefaults to `none` to pass click events to the input. If your content\nneeds to capture events, add the `pointer-events-auto` class to that element.',
+          'Controls pointer-events property of endContent.\nDefaults to <code>none</code> to pass click events to the input. If your content\nneeds to capture events, add the <code>pointer-events-auto</code> class to that element.',
         tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
         defaultValue: '<span class="hljs-string">\'none\'</span>',
       },
@@ -4844,7 +4845,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -4931,7 +4932,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The text value of the input.\n\nPass this together with `onInputChange` to control the input text externally,\nfor example to implement server-side filtering.',
+          '<p>The text value of the input.</p>\n<p>Pass this together with <code>onInputChange</code> to control the input text externally,\nfor example to implement server-side filtering.</p>',
         tags: {},
       },
       {
@@ -4960,7 +4961,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the `allowEmpty` setting.',
+          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the <code>allowEmpty</code> setting.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -4989,7 +4990,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'If true, the autocomplete will show a loading spinner instead of the dropdown icon.\nThe spinner is also shown automatically while an `onSearch` promise is pending.',
+          'If true, the autocomplete will show a loading spinner instead of the dropdown icon.\nThe spinner is also shown automatically while an <code>onSearch</code> promise is pending.',
         tags: {},
       },
       {
@@ -4998,7 +4999,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5016,7 +5017,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -5028,7 +5029,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
         tags: {},
       },
       {
@@ -5105,7 +5106,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Async search function. When provided, the component calls it (debounced)\nas the user types and renders the resolved items, showing a loading\nspinner while the returned promise is pending. Stale responses are\nignored (latest query wins). Built-in filtering is disabled; `@items`\nis used as the initial list before the first search.',
+          'Async search function. When provided, the component calls it (debounced)\nas the user types and renders the resolved items, showing a loading\nspinner while the returned promise is pending. Stale responses are\nignored (latest query wins). Built-in filtering is disabled; <code>@items</code>\nis used as the initial list before the first search.',
         tags: {
           param: { name: 'param', value: 'query   - The current input text' },
           returns: { name: 'returns', value: 'The items matching the query' },
@@ -5120,7 +5121,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the selection changes.\n\nUpdate your `@selectedKey` state in this callback to maintain two-way binding.',
+          '<p>Callback fired when the selection changes.</p>\n<p>Update your <code>@selectedKey</code> state in this callback to maintain two-way binding.</p>',
         tags: {
           param: {
             name: 'param',
@@ -5175,7 +5176,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large\n- 'trigger': Same size as the trigger",
+          "<p>Defines the size of the popover dropdown.</p>\n<ul>\n<li>'sm': Small</li>\n<li>'md': Medium</li>\n<li>'lg': Large</li>\n<li>'trigger': Same size as the trigger</li>\n</ul>",
         tags: { defaultValue: { name: 'defaultValue', value: "'trigger'" } },
         defaultValue: '<span class="hljs-string">\'trigger\'</span>',
       },
@@ -5195,7 +5196,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Debounce duration, in milliseconds, applied to `onSearch` calls.',
+          'Debounce duration, in milliseconds, applied to <code>onSearch</code> calls.',
         tags: { defaultValue: { name: 'defaultValue', value: '250' } },
         defaultValue: '<span class="hljs-number">250</span>',
       },
@@ -5205,7 +5206,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Message shown in the dropdown of an async autocomplete (`onSearch`)\nwhile the query is blank — e.g. "Type to search for an address…".\nPrompts the user to start typing when they open the dropdown by\nclicking. Also customizable via the `searchMessage` block.',
+          'Message shown in the dropdown of an async autocomplete (<code>onSearch</code>)\nwhile the query is blank — e.g. "Type to search for an address…".\nPrompts the user to start typing when they open the dropdown by\nclicking. Also customizable via the <code>searchMessage</code> block.',
         tags: {},
       },
       {
@@ -5214,7 +5215,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected key.\n\nAutocomplete is single-selection only — for a searchable multi-select,\nuse `Select` with `@isFilterable` and `@selectionMode="multiple"`.\n\n**Data Flow:**\n- Pass this to set the initial selection\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection',
+          '<p>The currently selected key.</p>\n<p>Autocomplete is single-selection only — for a searchable multi-select,\nuse <code>Select</code> with <code>@isFilterable</code> and <code>@selectionMode="multiple"</code>.</p>\n<p><strong>Data Flow:</strong></p>\n<ul>\n<li>Pass this to set the initial selection</li>\n<li>Update this in your <code>onSelectionChange</code> handler to maintain two-way binding</li>\n<li>The component calls <code>onSelectionChange</code> whenever the user changes the selection</li>\n</ul>',
         tags: {},
       },
       {
@@ -5238,7 +5239,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to <code>none</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
@@ -5265,7 +5266,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -5492,7 +5493,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Content to display at the **beginning** of the autocomplete component.\nThis can be an icon, a label, or any custom UI element.',
+          'Content to display at the <strong>beginning</strong> of the autocomplete component.\nThis can be an icon, a label, or any custom UI element.',
         tags: {},
       },
       {
@@ -5505,7 +5506,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Content to display at the **end** of the autocomplete component.\nThis can be an icon, a button, or any custom UI element.',
+          'Content to display at the <strong>end</strong> of the autocomplete component.\nThis can be an icon, a button, or any custom UI element.',
         tags: {},
       },
       {
@@ -5518,7 +5519,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The content to display when there are no matching options.\nIf `hideEmptyContent` argument is true, this content will not be shown.',
+          'The content to display when there are no matching options.\nIf <code>hideEmptyContent</code> argument is true, this content will not be shown.',
         tags: {},
       },
       {
@@ -5531,7 +5532,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Message shown in the dropdown of an async autocomplete while the\nquery is blank, prompting the user to start typing. Takes priority\nover the `searchMessage` argument.',
+          'Message shown in the dropdown of an async autocomplete while the\nquery is blank, prompting the user to start typing. Takes priority\nover the <code>searchMessage</code> argument.',
         tags: {},
       },
     ],
@@ -5542,7 +5543,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description:
-      'Autocomplete Component - a text input combined with a listbox popover,\nfollowing the WAI-ARIA 1.2 combobox pattern.\n\nUsers filter the options by typing (type-ahead). Options can come from a\nstatic list (built-in filtering), an externally filtered list\n(`disableFiltering` + `onInputChange`), or an async source (`onSearch`).\n\nSelection state follows the same two-way data binding pattern as `Select`:\ninternal tracked state gives immediate UI updates, while `onSelectionChange`\nnotifies the parent, whose arg updates sync back through modifiers.',
+      '<p>Autocomplete Component - a text input combined with a listbox popover,\nfollowing the WAI-ARIA 1.2 combobox pattern.</p>\n<p>Users filter the options by typing (type-ahead). Options can come from a\nstatic list (built-in filtering), an externally filtered list\n(<code>disableFiltering</code> + <code>onInputChange</code>), or an async source (<code>onSearch</code>).</p>',
     tags: {},
   },
   {
@@ -5569,7 +5570,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -5582,7 +5583,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -5591,7 +5592,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5611,7 +5612,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5621,7 +5622,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -5642,7 +5643,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback when a checkbox in the group is toggled. It is bound onto every\nyielded Checkbox, so a checkbox that sets its own `@onChange` replaces this\none rather than running alongside it.',
+          'Callback when a checkbox in the group is toggled. It is bound onto every\nyielded Checkbox, so a checkbox that sets its own <code>@onChange</code> replaces this\none rather than running alongside it.',
         tags: {},
       },
       {
@@ -5716,7 +5717,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the checkbox is checked. Pair with `onChange` to control the\ncheckbox; leave it unset to let the element track its own state.',
+          'Whether the checkbox is checked. Pair with <code>onChange</code> to control the\ncheckbox; leave it unset to let the element track its own state.',
         tags: {},
       },
       {
@@ -5736,7 +5737,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -5749,7 +5750,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -5758,7 +5759,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5778,7 +5779,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5788,7 +5789,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6031,7 +6032,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
     },
     description:
-      'Field is a component wrapper that provides conveniences for form fields.\nIt automatically binds the appropriate form errors by name to yielded\ncomponents.',
+      '<p>Field is a component wrapper that provides conveniences for form fields.\nIt automatically binds the appropriate form errors by name to yielded\ncomponents.</p>',
     tags: {},
   },
   {
@@ -6055,7 +6056,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -6068,7 +6069,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -6086,7 +6087,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -6106,7 +6107,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -6116,7 +6117,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6125,7 +6126,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Suppresses the automatic error feedback, for when the block renders the\nyielded `Feedback` itself or places messages elsewhere.',
+          'Suppresses the automatic error feedback, for when the block renders the\nyielded <code>Feedback</code> itself or places messages elsewhere.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -6282,7 +6283,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The id of the description element, referenced by the control's\n`aria-describedby`.",
+          "The id of the description element, referenced by the control's\n<code>aria-describedby</code>.",
         tags: {},
       },
       {
@@ -6344,7 +6345,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The id of the feedback element, referenced by the control's\n`aria-describedby`.",
+          "The id of the feedback element, referenced by the control's\n<code>aria-describedby</code>.",
         tags: {},
       },
       {
@@ -6364,7 +6365,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The intent of the feedback, which also decides whether it is announced\nassertively (`danger`) or politely.',
+          'The intent of the feedback, which also decides whether it is announced\nassertively (<code>danger</code>) or politely.',
         tags: { defaultValue: { name: 'defaultValue', value: "'danger'" } },
         defaultValue: '<span class="hljs-string">\'danger\'</span>',
       },
@@ -6378,7 +6379,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'A list of messages or a single message string. An array is joined with `; `.',
+          'A list of messages or a single message string. An array is joined with <code>; </code>.',
         tags: {},
       },
       {
@@ -6433,7 +6434,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Callback invoked on form submission.  If `onSubmit` returns a promise,\nthe form will be marked as `isLoading` until the promise resolves.',
+          'Callback invoked on form submission.  If <code>onSubmit</code> returns a promise,\nthe form will be marked as <code>isLoading</code> until the promise resolves.',
         tags: {
           param: {
             name: 'param',
@@ -6458,7 +6459,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the entire form and all its fields should be disabled.  This only\napplies when using the yielded `Field` component.',
+          'Whether the entire form and all its fields should be disabled.  This only\napplies when using the yielded <code>Field</code> component.',
         tags: {},
       },
       {
@@ -6587,7 +6588,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Optional custom validation function.  A custom validator should return\nan array of Standard Schema issues, or `undefined` if there are none.\nThis function may be async or sync.',
+          'Optional custom validation function.  A custom validator should return\nan array of Standard Schema issues, or <code>undefined</code> if there are none.\nThis function may be async or sync.',
         tags: {},
       },
       {
@@ -6721,7 +6722,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/Array',
     },
     description:
-      'A form component that handles form submissions and input changes.',
+      '<p>A form component that handles form submissions and input changes.</p>',
     tags: {
       example: { name: 'example', value: '```hbs\n<Form' },
       data: { name: 'data', value: '={{this.formData}}' },
@@ -6774,7 +6775,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -6787,7 +6788,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of endContent.\nIf you want to pass the click event to the input, set it to `none`.',
+          'Controls pointer-events property of endContent.\nIf you want to pass the click event to the input, set it to <code>none</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
@@ -6801,7 +6802,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -6818,7 +6819,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -6838,7 +6839,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -6848,7 +6849,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -6916,7 +6917,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to <code>none</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
@@ -6935,7 +6936,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The value of the input. Pair with `onInput` or `onChange` to control the\ninput; leave it unset to let the element track its own value.',
+          'The value of the input. Pair with <code>onInput</code> or <code>onChange</code> to control the\ninput; leave it unset to let the element track its own value.',
         tags: {},
       },
     ],
@@ -7004,7 +7005,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: "The 'for' attribute of a <label>.",
+        description: "The 'for' attribute of a .",
         tags: {},
       },
       {
@@ -7088,7 +7089,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -7113,7 +7114,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of endContent.\nDefauled to `none` to pass the click event to the input. If your content\nneeds to capture events, consider adding `pointer-events-auto` class to that\nelement only.',
+          'Controls pointer-events property of endContent.\nDefauled to <code>none</code> to pass the click event to the input. If your content\nneeds to capture events, consider adding <code>pointer-events-auto</code> class to that\nelement only.',
         tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
         defaultValue: '<span class="hljs-string">\'none\'</span>',
       },
@@ -7127,7 +7128,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -7145,7 +7146,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7165,7 +7166,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7184,7 +7185,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7237,7 +7238,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Placeholder text used when `allowEmpty` is set to `true`.',
+          'Placeholder text used when <code>allowEmpty</code> is set to <code>true</code>.',
         tags: {},
       },
       {
@@ -7301,7 +7302,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to <code>none</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
@@ -7552,7 +7553,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -7565,7 +7566,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -7574,7 +7575,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7594,7 +7595,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7604,7 +7605,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7660,7 +7661,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected value. Pair with `onChange` to control the group.',
+          'The currently selected value. Pair with <code>onChange</code> to control the group.',
         tags: {},
       },
     ],
@@ -7710,7 +7711,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value this radio represents. It is passed to `onChange` when the radio\nis selected, and compared against `checkedValue` to decide whether it is.',
+          'The value this radio represents. It is passed to <code>onChange</code> when the radio\nis selected, and compared against <code>checkedValue</code> to decide whether it is.',
         tags: {},
       },
       {
@@ -7719,7 +7720,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected value of the group. This radio renders as checked\nwhen it equals `value`. Usually supplied by RadioGroup rather than set\ndirectly.',
+          'The currently selected value of the group. This radio renders as checked\nwhen it equals <code>value</code>. Usually supplied by RadioGroup rather than set\ndirectly.',
         tags: {},
       },
       {
@@ -7739,7 +7740,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -7752,7 +7753,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -7761,7 +7762,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7781,7 +7782,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -7791,7 +7792,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -7886,7 +7887,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -8051,7 +8052,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -8106,7 +8107,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of endContent.\nDefaults to `none` to pass click events to the input. If your content\nneeds to capture events, add the `pointer-events-auto` class to that element.',
+          'Controls pointer-events property of endContent.\nDefaults to <code>none</code> to pass click events to the input. If your content\nneeds to capture events, add the <code>pointer-events-auto</code> class to that element.',
         tags: { defaultValue: { name: 'defaultValue', value: "'none'" } },
         defaultValue: '<span class="hljs-string">\'none\'</span>',
       },
@@ -8120,7 +8121,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -8227,7 +8228,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the `allowEmpty` setting.',
+          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the <code>allowEmpty</code> setting.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -8237,7 +8238,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.\nWhether the select should be disabled, preventing user interaction.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.\nWhether the select should be disabled, preventing user interaction.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -8276,7 +8277,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -8294,7 +8295,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -8306,7 +8307,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
         tags: {},
       },
       {
@@ -8366,7 +8367,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the selection changes in single mode.\n\nUpdate your `@selectedKey` state in this callback to maintain two-way binding.\nCallback fired when the selection changes in multiple mode.\n\nUpdate your `@selectedKeys` state in this callback to maintain two-way binding.',
+          '<p>Callback fired when the selection changes in single mode.</p>\n<p>Update your <code>@selectedKey</code> state in this callback to maintain two-way binding.\nCallback fired when the selection changes in multiple mode.</p>\n<p>Update your <code>@selectedKeys</code> state in this callback to maintain two-way binding.</p>',
         tags: {
           param: {
             name: 'param',
@@ -8422,7 +8423,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Defines the size of the popover dropdown.\n- 'sm': Small\n- 'md': Medium\n- 'lg': Large\n- 'trigger': Same size as the trigger",
+          "<p>Defines the size of the popover dropdown.</p>\n<ul>\n<li>'sm': Small</li>\n<li>'md': Medium</li>\n<li>'lg': Large</li>\n<li>'trigger': Same size as the trigger</li>\n</ul>",
         tags: { defaultValue: { name: 'defaultValue', value: "'trigger'" } },
         defaultValue: '<span class="hljs-string">\'trigger\'</span>',
       },
@@ -8442,7 +8443,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected key for single selection mode.\n\n**Data Flow:**\n- Pass this to set the initial selection\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection',
+          '<p>The currently selected key for single selection mode.</p>\n<p><strong>Data Flow:</strong></p>\n<ul>\n<li>Pass this to set the initial selection</li>\n<li>Update this in your <code>onSelectionChange</code> handler to maintain two-way binding</li>\n<li>The component calls <code>onSelectionChange</code> whenever the user changes the selection</li>\n</ul>',
         tags: {
           example: {
             name: 'example',
@@ -8478,7 +8479,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The currently selected keys for multiple selection mode.\n\n**Data Flow:**\n- Pass this to set the initial selection (array of keys)\n- Update this in your `onSelectionChange` handler to maintain two-way binding\n- The component calls `onSelectionChange` whenever the user changes the selection',
+          '<p>The currently selected keys for multiple selection mode.</p>\n<p><strong>Data Flow:</strong></p>\n<ul>\n<li>Pass this to set the initial selection (array of keys)</li>\n<li>Update this in your <code>onSelectionChange</code> handler to maintain two-way binding</li>\n<li>The component calls <code>onSelectionChange</code> whenever the user changes the selection</li>\n</ul>',
         tags: {
           deprecated: {
             name: 'deprecated',
@@ -8519,7 +8520,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Determines the selection mode of the select component.\n- 'single': Only one item can be selected at a time.\nDetermines the selection mode of the select component.\n- 'multiple': Allows multiple selections.",
+          "<p>Determines the selection mode of the select component.</p>\n<ul>\n<li>'single': Only one item can be selected at a time.\nDetermines the selection mode of the select component.</li>\n<li>'multiple': Allows multiple selections.</li>\n</ul>",
         tags: { defaultValue: { name: 'defaultValue', value: "'single'" } },
         defaultValue: '<span class="hljs-string">\'single\'</span>',
       },
@@ -8544,7 +8545,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to `none`.',
+          'Controls pointer-events property of startContent.\nIf you want to pass the click event to the input, set it to <code>none</code>.',
         tags: { defaultValue: { name: 'defaultValue', value: "'auto'" } },
         defaultValue: '<span class="hljs-string">\'auto\'</span>',
       },
@@ -8571,7 +8572,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -8798,7 +8799,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Content to display at the **beginning** of the select component.\nThis can be an icon, a label, or any custom UI element.\n\nExample: A search icon or a custom label.',
+          '<p>Content to display at the <strong>beginning</strong> of the select component.\nThis can be an icon, a label, or any custom UI element.</p>\n<p>Example: A search icon or a custom label.</p>',
         tags: {},
       },
       {
@@ -8811,7 +8812,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Content to display at the **end** of the select component.\nThis can be an icon, a button, or any custom UI element.\n\nExample: A clear button or a dropdown arrow.',
+          '<p>Content to display at the <strong>end</strong> of the select component.\nThis can be an icon, a button, or any custom UI element.</p>\n<p>Example: A clear button or a dropdown arrow.</p>',
         tags: {},
       },
       {
@@ -8824,7 +8825,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The content to display when there are no available options.\nIf `hideEmptyContent` argument is true, this content will not be shown.',
+          'The content to display when there are no available options.\nIf <code>hideEmptyContent</code> argument is true, this content will not be shown.',
         tags: {},
       },
     ],
@@ -8835,18 +8836,8 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description:
-      'Select Component - A feature-rich dropdown selection component\n\n## Selection State Architecture\n\nThis component uses a **two-way data binding pattern** for managing selection state:\n\n### Data Flow\n1. **External → Internal (Initialization & Updates)**\n   - Parent passes `@selectedKey` or `@selectedKeys` as arguments\n   - Constructor initializes internal tracked properties (`_selectedKey` or `_selectedKeys`)\n   - Modifiers (`updateSingleSelectValue`, `updateMultipleSelectValue`) sync internal state\n     when parent updates the arguments\n\n2. **Internal State Management**\n   - `_selectedKey` / `_selectedKeys`: Internal tracked state (prefixed with underscore)\n   - These serve as the "source of truth" for rendering and reactivity\n   - Getters (`getSelectedKey`, `selectedKeys`) expose this internal state to the template\n\n3. **Internal → External (User Interactions)**\n   - User interactions trigger selection change handlers\n   - Handlers update internal `_selectedKey` / `_selectedKeys` for immediate UI update\n   - Handlers call parent\'s `@onSelectionChange` callback to notify of state change\n   - Parent updates its state, which flows back through step 1\n\n### Why Both Internal State AND Callbacks?\n- **Internal state:** Enables immediate, responsive UI updates (`_selectedKey` / `_selectedKeys`)\n- **Parent callback:** Enables parent to take action when changes occur (`@onSelectionChange`)\n- This pattern provides both responsive UX and parent inclusion over state\n\n### Example Flow\n```\nUser clicks item\n  → onSelectionChange handler\n  → Updates _selectedKey (immediate UI update)\n  → Calls parent\'s',
-    tags: {
-      onSelectionChange: {
-        name: 'onSelectionChange',
-        value: 'callback\n→ Parent updates its',
-      },
-      selectedKey: {
-        name: 'selectedKey',
-        value:
-          'state\n→ updateSingleSelectValue modifier syncs _selectedKey with new arg value\n```',
-      },
-    },
+      '<p>A dropdown selection component: a custom listbox in a popover, backed by a\nvisually hidden native <code>&#x3C;select></code> so the value submits with a form.</p>\n<p>Selection can be controlled with <code>@selectedKey</code> / <code>@selectedKeys</code> plus\n<code>@onSelectionChange</code>, or left uncontrolled.</p>',
+    tags: {},
   },
   {
     package: 'unknown',
@@ -8881,7 +8872,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -8894,7 +8885,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -8943,7 +8934,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -8962,7 +8953,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -9104,7 +9095,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Help text rendered between the label and the control, and referenced by the\nids `describedBy` returns.',
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
         tags: {},
       },
       {
@@ -9117,7 +9108,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with `; ` when displayed.',
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
         tags: {},
       },
       {
@@ -9135,7 +9126,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the `disabled` attribute.',
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -9155,7 +9146,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the field is required. Adds an asterisk to the label; it does not\nset the `required` attribute on the control itself.',
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -9165,7 +9156,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The label text rendered above the control and associated with it via `for`.\nUse the `:label` block instead when the label needs markup.',
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
         tags: {},
       },
       {
@@ -9233,7 +9224,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The value of the textarea. Pair with `onInput` or `onChange` to control it;\nleave it unset to let the element track its own value.',
+          'The value of the textarea. Pair with <code>onInput</code> or <code>onChange</code> to control it;\nleave it unset to let the element track its own value.',
         tags: {},
       },
     ],
@@ -9582,7 +9573,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -9848,7 +9839,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -10097,7 +10088,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -10358,7 +10349,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -10588,7 +10579,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -10872,7 +10863,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -11056,7 +11047,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether the popover is open. Pair with `onOpenChange` to control it;\nleave it unset to let the popover manage its own state.',
+          'Whether the popover is open. Pair with <code>onOpenChange</code> to control it;\nleave it unset to let the popover manage its own state.',
         tags: {},
       },
       {
@@ -11068,7 +11059,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Additional floating-ui middleware, for positioning behavior beyond what\n`placement`, `offsetOptions`, `flipOptions`, and `shiftOptions` cover.',
+          'Additional floating-ui middleware, for positioning behavior beyond what\n<code>placement</code>, <code>offsetOptions</code>, <code>flipOptions</code>, and <code>shiftOptions</code> cover.',
         tags: {},
       },
       {
@@ -11326,7 +11317,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'How the area behind the overlay is rendered: `none` omits the backdrop\nentirely, `transparent` keeps it clickable but invisible, `faded` dims the\npage, and `blur` blurs it.',
+          'How the area behind the overlay is rendered: <code>none</code> omits the backdrop\nentirely, <code>transparent</code> keeps it clickable but invisible, <code>faded</code> dims the\npage, and <code>blur</code> blurs it.',
         tags: {},
       },
       {
@@ -11580,7 +11571,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
       {
@@ -11734,7 +11725,7 @@ const data: ComponentDoc[] = [
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
-    description: 'Component yielded from Popover',
+    description: '<p>Component yielded from Popover</p>',
     tags: {},
   },
   {
@@ -11750,7 +11741,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Name of this target, matched against a `Portal`'s `@target` argument.\n\nWhen omitted, the target is unnamed: any `Portal` rendered below it that\nhas no `@target` and no parent portal will render here. A named target is\nonly used by portals that ask for it by name.",
+          "<p>Name of this target, matched against a <code>Portal</code>'s <code>@target</code> argument.</p>\n<p>When omitted, the target is unnamed: any <code>Portal</code> rendered below it that\nhas no <code>@target</code> and no parent portal will render here. A named target is\nonly used by portals that ask for it by name.</p>",
         tags: {},
       },
     ],
@@ -11812,7 +11803,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The target where to render the portal.\nThere are 3 options: 1) `Element` object, 2) element id, 3) portal target name.\n\nFor element id, string must be prefixed with `#`.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or `document.body`.',
+          '<p>The target where to render the portal.\nThere are 3 options: 1) <code>Element</code> object, 2) element id, 3) portal target name.</p>\n<p>For element id, string must be prefixed with <code>#</code>.\nIf no value is passed in, we will render to the closest unnamed portal target,\nparent portal or <code>document.body</code>.</p>',
         tags: {},
       },
     ],
@@ -12011,7 +12002,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
         isInternal: false,
-        description: '\nThe largest value allowed for the input',
+        description: 'The largest value allowed for the input',
         tags: { defaultValue: { name: 'defaultValue', value: '100' } },
         defaultValue: '<span class="hljs-number">100</span>',
       },
@@ -12020,7 +12011,7 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
         isInternal: false,
-        description: '\nThe smallest value allowed for the input',
+        description: 'The smallest value allowed for the input',
         tags: { defaultValue: { name: 'defaultValue', value: '0' } },
         defaultValue: '<span class="hljs-number">0</span>',
       },
@@ -12110,7 +12101,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Alternative text for accessibility.\nIf `@src` is provided, this text will be used as the `alt`\nattribute for the image.\nIf only initials are displayed, this text will be read by screen readers.',
+          'Alternative text for accessibility.\nIf <code>@src</code> is provided, this text will be used as the <code>alt</code>\nattribute for the image.\nIf only initials are displayed, this text will be read by screen readers.',
         tags: {},
       },
       {
@@ -12130,7 +12121,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'First name of the user, used to generate initials.\nIf `@name` is not provided, initials will be generated from\n`@firstName` and `@lastName`.',
+          'First name of the user, used to generate initials.\nIf <code>@name</code> is not provided, initials will be generated from\n<code>@firstName</code> and <code>@lastName</code>.',
         tags: {},
       },
       {
@@ -12139,7 +12130,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Last name of the user, used to generate initials.\nIf `@name` is not provided, initials will be generated from\n`@firstName` and `@lastName`.',
+          'Last name of the user, used to generate initials.\nIf <code>@name</code> is not provided, initials will be generated from\n<code>@firstName</code> and <code>@lastName</code>.',
         tags: {},
       },
       {
@@ -12148,7 +12139,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Full name of the user, used to generate initials.\nIf `@firstName` and `@lastName` are not provided, initials will be\nderived from this property.',
+          'Full name of the user, used to generate initials.\nIf <code>@firstName</code> and <code>@lastName</code> are not provided, initials will be\nderived from this property.',
         tags: {},
       },
       {
@@ -12331,7 +12322,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Shape preset. `text` fills its container at text height; `circle` and\n`square` are equal-sided and match Avatar's radii; `rounded` and `rect`\nfill their container for image and card placeholders.",
+          "Shape preset. <code>text</code> fills its container at text height; <code>circle</code> and\n<code>square</code> are equal-sided and match Avatar's radii; <code>rounded</code> and <code>rect</code>\nfill their container for image and card placeholders.",
         tags: { defaultValue: { name: 'defaultValue', value: "'text'" } },
         defaultValue: '<span class="hljs-string">\'text\'</span>',
       },
@@ -12345,7 +12336,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Size preset. For `circle` and `square` this sets both dimensions from\nAvatar's scale; for the other shapes it sets the height.",
+          "Size preset. For <code>circle</code> and <code>square</code> this sets both dimensions from\nAvatar's scale; for the other shapes it sets the height.",
         tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
         defaultValue: '<span class="hljs-string">\'md\'</span>',
       },
@@ -12678,7 +12669,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'If the checkbox is checked.\nYou must also pass `onChange` to update its value.',
+          'If the checkbox is checked.\nYou must also pass <code>onChange</code> to update its value.',
         tags: {},
       },
       {
@@ -12839,7 +12830,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the input.\nYou must also pass `onChange` or `onInput` to update its value.',
+          'The value to be used in the input.\nYou must also pass <code>onChange</code> or <code>onInput</code> to update its value.',
         tags: {},
       },
       {
@@ -13188,7 +13179,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The current checked value.\nThis will be used to compare against the `value` argument,\nif equal, the radio will me marked as checked.',
+          'The current checked value.\nThis will be used to compare against the <code>value</code> argument,\nif equal, the radio will me marked as checked.',
         tags: {},
       },
       {
@@ -13220,7 +13211,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the radio button.\nYou must also pass `onChange` to update its value.',
+          'The value to be used in the radio button.\nYou must also pass <code>onChange</code> to update its value.',
         tags: {},
       },
       {
@@ -14323,7 +14314,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'The value to be used in the input.\nYou must also pass `onChange` or `onInput` to update its value.',
+          'The value to be used in the input.\nYou must also pass <code>onChange</code> or <code>onInput</code> to update its value.',
         tags: {},
       },
       {
@@ -14728,7 +14719,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The element to add keyboard events to.\n\nThis does not respect the option `iskeyboardEventsEnabled`.',
+          '<p>The element to add keyboard events to.</p>\n<p>This does not respect the option <code>iskeyboardEventsEnabled</code>.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'null' } },
         defaultValue: '<span class="hljs-literal">null</span>',
       },
@@ -15796,7 +15787,7 @@ const data: ComponentDoc[] = [
       },
     ],
     description:
-      'Default/fallback rendering component for table cells. Only renders its content\nwhen no CellForComponent has claimed the current column key.\n\nUsage:\n```hbs\n<c.Default>\n  Default: {{c.value}}\n</c.Default>\n\n<!-- Or with explicit exclusions -->\n<c.Default',
+      '<p>Default/fallback rendering component for table cells. Only renders its content\nwhen no CellForComponent has claimed the current column key.</p>\n<p>Usage:</p>\n<pre><code class="language-hbs">&#x3C;c.Default>\n  Default: {{c.value}}\n&#x3C;/c.Default>\n\n&#x3C;!-- Or with explicit exclusions -->\n&#x3C;c.Default\n</code></pre>',
     tags: {
       except: {
         name: 'except',
@@ -15852,7 +15843,7 @@ const data: ComponentDoc[] = [
       },
     ],
     description:
-      'Conditional rendering component for table cells. Only renders its content\nwhen the current column key matches the specified',
+      '<p>Conditional rendering component for table cells. Only renders its content\nwhen the current column key matches the specified</p>',
     tags: {
       key: {
         name: 'key',
@@ -15950,7 +15941,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
     },
     description:
-      'Internal checkbox component for table selection.\nSimplified version without FormControl wrapper.',
+      '<p>Internal checkbox component for table selection.\nSimplified version without FormControl wrapper.</p>',
     tags: {},
   },
   {

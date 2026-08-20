@@ -363,3 +363,83 @@ test('loadSignatureData throws a clear error when the file does not match the ex
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test('descriptions stored as rendered HTML are reduced to text in the markdown output', () => {
+  // generate-signature-data.js renders JSDoc markdown to HTML for the browser
+  // table. The markdown output has to undo that, or inline code arrives as
+  // literal <code> tags inside a markdown cell.
+  const data = [
+    {
+      package: 'overlays',
+      module: 'overlay',
+      name: 'Overlay',
+      description:
+        '<p>An overlay built on <code>Portal</code>.</p>\n<p>Second paragraph.</p>',
+      Element: { type: { type: 'HTMLDivElement' } },
+      Args: [
+        {
+          identifier: 'backdrop',
+          type: { type: 'string' },
+          isRequired: false,
+          isInternal: false,
+          description:
+            'How it renders: <code>none</code> omits it, <code>blur</code> blurs.',
+          tags: {},
+        },
+      ],
+      Blocks: [],
+    },
+  ];
+
+  const markdown = resolveSignatureTags(
+    '<Signature @component="Overlay" />',
+    data,
+  );
+
+  assert.ok(
+    !markdown.includes('<code>'),
+    'no HTML tags survive into the markdown',
+  );
+  assert.ok(
+    !markdown.includes('<p>'),
+    'paragraph wrappers are stripped as well',
+  );
+  assert.match(markdown, /How it renders: none omits it, blur blurs\./);
+  assert.match(markdown, /An overlay built on Portal\./);
+});
+
+test('HTML entities are decoded, not left as escapes', () => {
+  // Both lowlight (types) and remark (descriptions) escape `<` on the way out,
+  // so stripping tags alone leaves `SlotsToClasses&#x3C;'base'>` in the cell.
+  const data = [
+    {
+      package: 'utilities',
+      module: 'avatar',
+      name: 'Avatar',
+      description: '<p>Renders a <code>&#x3C;span></code> wrapper.</p>',
+      Element: { type: { type: 'HTMLDivElement' } },
+      Args: [
+        {
+          identifier: 'classes',
+          type: { type: "SlotsToClasses&#x3C;'base' | 'img'>" },
+          isRequired: false,
+          isInternal: false,
+          description: 'Slot classes',
+          tags: {},
+        },
+      ],
+      Blocks: [],
+    },
+  ];
+
+  const markdown = resolveSignatureTags(
+    '<Signature @component="Avatar" />',
+    data,
+  );
+
+  assert.match(
+    markdown,
+    /Renders a <span> wrapper\./,
+    'the escaped < in a description is decoded, not left as &#x3C;',
+  );
+});

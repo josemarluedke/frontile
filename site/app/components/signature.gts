@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { htmlSafe } from '@ember/template';
 import data, { type ComponentDoc } from './signature-data';
 import { Popover } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
@@ -58,7 +59,7 @@ export default class Signature extends Component<SignatureSignature> {
     {{/if}}
 
     {{#if this.component.description}}
-      <p>{{this.component.description}}</p>
+      <div>{{htmlSafe this.component.description}}</div>
     {{/if}}
 
     <h4>
@@ -185,7 +186,7 @@ const PropertiesTable: TOC<{
               </td>
 
               <td>
-                {{arg.description}}
+                {{htmlSafe arg.description}}
               </td>
             </tr>
           {{/unless}}

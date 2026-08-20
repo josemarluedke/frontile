@@ -11,8 +11,36 @@ const ATTR_PATTERN = /@(component|package|module)="([^"]*)"/g;
 const DATA_ARRAY_PATTERN =
   /const data: ComponentDoc\[\] = (\[[\s\S]*\]);\nexport type/;
 
+// Both producers of this data — lowlight for types, remark for descriptions —
+// emit HTML, so `<` and `&` arrive escaped. Dropping the tags without decoding
+// the entities leaves things like `SlotsToClasses&#x3C;'base'>` in the markdown.
+const ENTITIES = {
+  '&#x3C;': '<',
+  '&#x3E;': '>',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x27;': "'",
+  '&nbsp;': ' ',
+};
+
+function decodeEntities(value) {
+  return (
+    value
+      .replace(
+        /&(?:#x3C|#x3E|lt|gt|quot|#39|#x27|nbsp);/gi,
+        (match) => ENTITIES[match.toLowerCase()] ?? ENTITIES[match] ?? match,
+      )
+      // `&amp;` last, so a double-escaped `&amp;lt;` doesn't become a tag.
+      .replace(/&amp;/g, '&')
+  );
+}
+
 function stripHtml(value) {
-  return typeof value === 'string' ? value.replace(/<[^>]*>/g, '') : value;
+  return typeof value === 'string'
+    ? decodeEntities(value.replace(/<[^>]*>/g, ''))
+    : value;
 }
 
 // The mirror image of generate-signature-data.js's highlight() step: that
@@ -115,7 +143,11 @@ function formatType(type) {
 }
 
 function formatDescription(item) {
-  const description = item.description ? escapeCell(item.description) : '';
+  // Descriptions are stored as rendered HTML for the browser table, the same as
+  // types are stored highlighted. Strip back to text for the markdown output.
+  const description = item.description
+    ? escapeCell(stripHtml(item.description))
+    : '';
 
   return item.isInternal ? `${description} _(internal)_`.trim() : description;
 }
@@ -152,7 +184,13 @@ export function buildSignatureMarkdown(entry) {
   const lines = [`### ${entry.name}`, ''];
 
   if (entry.description) {
-    lines.push(entry.description, '');
+    // Stored as rendered HTML for the browser table; the markdown output wants
+    // text. Paragraph breaks become blank lines so multi-paragraph component
+    // descriptions don't collapse into one run-on line.
+    lines.push(
+      stripHtml(entry.description.replace(/<\/p>\s*<p>/g, '\n\n')),
+      '',
+    );
   }
 
   if (entry.Element && entry.Element.type && entry.Element.type.type) {
