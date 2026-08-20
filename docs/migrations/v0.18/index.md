@@ -61,7 +61,7 @@ for a small app, a day or more for a large one.
 - `bg-background` becomes `bg-surface-canvas`
 - `{color}-foreground` and `contrast-1`/`contrast-2` become `on-{color}-{level}`
 - `text-foreground` is gone
-- New `inverse` category for content on inverted surfaces
+- `theme-inverse` flips every semantic token in a region, for panels that should read as the opposite theme
 
 Colors also moved from HSL to OKLCH. That part is automatic — you may notice
 small perceptual differences, but there is nothing to change.

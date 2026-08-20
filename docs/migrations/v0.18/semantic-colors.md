@@ -26,16 +26,35 @@ The semantic color system has been redesigned to use named levels instead of num
 | ----------- | ----------- | -------------------------------------------------------- |
 | `default-*` | `neutral-*` | Renamed to better indicate non-semantic UI elements      |
 
-### New: Inverse Category
+### Inverted Surfaces
 
-A new `inverse` category has been added for elements on inverted surfaces (dark surfaces in light mode):
+There is no `inverse` color category. Content on an inverted surface is handled
+one of two ways.
+
+For a single element sitting on a filled background, use the automatic contrast
+color for that background level:
 
 ```gts
-// Dark card in light mode
-<div class="bg-neutral-strong text-inverse-strong">
-  Content with good contrast
+<div class="bg-neutral-strong text-on-neutral-strong">
+  Content with guaranteed contrast
 </div>
 ```
+
+For a whole region that should read as the opposite theme — a dark panel in light
+mode, or a light one in dark mode — add the `theme-inverse` class. Every semantic
+token inside it resolves to its other-theme value, so ordinary classes keep
+working:
+
+```gts
+<div class="theme-inverse bg-surface-canvas p-6">
+  <h3 class="text-neutral-bolder">Reads as dark in light mode</h3>
+  <p class="text-neutral-strong">And as light in dark mode.</p>
+</div>
+```
+
+`theme-inverse` is a selector the theme defines, not a color. It is unrelated to
+the `inverse` category that appeared briefly during the 0.18 alpha cycle and was
+removed before release.
 
 ### Surface Roles Simplified
 
