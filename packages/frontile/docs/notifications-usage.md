@@ -137,10 +137,7 @@ import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { Button } from 'frontile';
 import { RadioGroup } from 'frontile';
-import {
-  NotificationsContainer,
-  type NotificationsService
-} from 'frontile';
+import { NotificationsContainer, type NotificationsService } from 'frontile';
 
 export default class PositionExample extends Component {
   @service notifications!: NotificationsService;
@@ -254,7 +251,9 @@ export default class ActionsExample extends Component {
       </div>
 
       {{#if this.result}}
-        <div class='p-3 rounded border bg-success-50 text-success'>
+        <div
+          class='p-3 rounded border bg-success-subtle text-success-strong border-success-muted'
+        >
           {{this.result}}
         </div>
       {{/if}}

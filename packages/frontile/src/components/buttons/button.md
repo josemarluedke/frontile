@@ -334,9 +334,96 @@ button[data-pressed='true'] {
 }
 ```
 
-### Keyboard Accessibility
+## Accessibility
 
-The press interaction automatically handles keyboard accessibility, responding to both Enter and Space key presses, making your buttons fully accessible to keyboard and screen reader users.
+`Button` renders a native `<button type="button">`, so focus order, the disabled
+state, and Enter/Space activation come from the platform. What follows is what
+you still have to get right.
+
+| Key     | Behaviour                                                |
+| ------- | -------------------------------------------------------- |
+| `Tab`   | Moves focus to the button. Disabled buttons are skipped. |
+| `Enter` | Activates the button, firing `@onPress`.                 |
+| `Space` | Activates the button, firing `@onPress`.                 |
+
+### Use `@onPress`, not a `click` listener
+
+The `press` modifier calls `preventDefault()` on Enter and Space so the two keys
+behave identically across elements. A side effect is that the browser never
+synthesises the `click` event it would normally follow with — so a
+`{{on "click"}}` handler on a default `@type='button'` fires for the mouse but
+**not** for the keyboard:
+
+```gts preview
+import { Button } from 'frontile';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+
+export default class KeyboardParityExample extends Component {
+  @tracked pressCount = 0;
+  @tracked clickCount = 0;
+
+  handlePress = () => {
+    this.pressCount++;
+  };
+
+  handleClick = () => {
+    this.clickCount++;
+  };
+
+  <template>
+    <div class='flex flex-wrap items-center gap-4'>
+      <Button @intent='primary' @onPress={{this.handlePress}}>
+        @onPress ({{this.pressCount}})
+      </Button>
+      <Button @appearance='outlined' {{on 'click' this.handleClick}}>
+        click listener ({{this.clickCount}})
+      </Button>
+      <p class='text-neutral'>
+        Activate each with the mouse, then again with
+        <kbd>Tab</kbd>
+        +
+        <kbd>Enter</kbd>. Only the first counter moves the second time.
+      </p>
+    </div>
+  </template>
+}
+```
+
+`@type='submit'` and `@type='reset'` are deliberately exempt: the default is
+preserved there so a button inside a form still submits or resets it from the
+keyboard.
+
+### Buttons with no text
+
+An icon on its own leaves the button unnamed. Give it an `aria-label` — it
+passes through to the element via `...attributes`:
+
+```gts preview
+import { Button } from 'frontile';
+import { ShareIcon } from 'site/components/icons';
+
+<template>
+  <Button @intent='primary' aria-label='Share this page'>
+    <ShareIcon />
+  </Button>
+</template>
+```
+
+### Disabling
+
+There is no `@isDisabled` argument. Pass the plain HTML `disabled` attribute, as
+the [Disabled](#disabled) demo above does; it removes the button from the tab
+order and is what assistive technology reports.
+
+### Renderless buttons
+
+`@isRenderless` hands back only class names, so every semantic the `<button>`
+provided becomes yours. An `<a href>` is already focusable and activates on
+Enter; anything else — a `<div>`, a `<span>` — needs `role='button'`,
+`tabindex='0'`, and its own key handling. Prefer a real `<button>` or `<a>` over
+recreating that.
 
 ## API
 

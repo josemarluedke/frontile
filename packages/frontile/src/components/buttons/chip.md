@@ -196,6 +196,107 @@ Note that here we used the HTML attribute `class`, instead of the argument `@cla
 Using the class attribute will just append the class names passed in, while the
 argument `@class` will override and merge TailwindCSS class names.
 
+### Naming the close button
+
+Every close button is announced as "Close" unless you say otherwise, which does
+not tell anyone _what_ is being removed. When several closable chips sit together
+— the usual case, since chips represent a set — give each one a
+`@closeButtonTitle` naming its own value:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { concat, fn } from '@ember/helper';
+import { Chip } from 'frontile';
+
+export default class Example extends Component {
+  @tracked filters = ['Fiber', 'Metro', 'Wholesale'];
+
+  remove = (name: string): void => {
+    this.filters = this.filters.filter((filter) => filter !== name);
+  };
+
+  <template>
+    <div class='flex flex-wrap items-center gap-2'>
+      {{#each this.filters as |filter|}}
+        <Chip
+          @appearance='faded'
+          @intent='primary'
+          @onClose={{fn this.remove filter}}
+          @closeButtonTitle={{concat 'Remove ' filter}}
+        >
+          {{filter}}
+        </Chip>
+      {{else}}
+        <p class='text-neutral'>All filters removed.</p>
+      {{/each}}
+    </div>
+  </template>
+}
+```
+
+## Accessibility
+
+A `Chip` is a `<div>` holding text — it has no role of its own, because a chip is
+not one thing. What it means depends on what you are using it for, and that
+determines what you owe it:
+
+- **As a label or attribute** (a status, a tag, a count) it is ordinary text.
+  Nothing extra is needed. Do not rely on `@intent` alone to carry the meaning:
+  `@intent='danger'` reads as "failed" to a sighted user and as nothing at all to
+  a screen reader, so keep the word in the content.
+- **As a removable value** — with `@onClose` — the close button is the only
+  interactive part. It is a real `<button>`, reached with `Tab` and activated
+  with `Enter` or `Space`, and it needs a name that identifies the chip; see
+  [above](#naming-the-close-button).
+- **As something clickable in its own right**, a chip is the wrong element. Put a
+  `Button` or a link inside it, or use a `Button` instead — attaching a click
+  handler to the `<div>` leaves it unfocusable and unannounced.
+
+When chips represent a set that changes, the container should say so, or removals
+happen silently for anyone not watching the screen. A `role='list'` wrapper gives
+the set a size and position; an `aria-live` region announces the change:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { concat, fn } from '@ember/helper';
+import { Chip } from 'frontile';
+
+export default class Example extends Component {
+  @tracked tags = ['Design', 'Docs', 'Testing'];
+  @tracked announcement = '';
+
+  remove = (name: string): void => {
+    this.tags = this.tags.filter((tag) => tag !== name);
+    this.announcement = `${name} removed. ${this.tags.length} remaining.`;
+  };
+
+  <template>
+    <ul role='list' aria-label='Tags' class='flex flex-wrap items-center gap-2'>
+      {{#each this.tags as |tag|}}
+        <li>
+          <Chip
+            @appearance='outlined'
+            @onClose={{fn this.remove tag}}
+            @closeButtonTitle={{concat 'Remove ' tag}}
+          >
+            {{tag}}
+          </Chip>
+        </li>
+      {{/each}}
+    </ul>
+
+    <p aria-live='polite' class='text-neutral mt-3'>{{this.announcement}}</p>
+  </template>
+}
+```
+
+`@isDisabled` styles the chip as disabled and disables its close button, so the
+value can no longer be removed. It does not hide the chip from assistive
+technology — the text is still read, which is usually what you want for a value
+that is present but locked.
+
 ## API
 
 <Signature @component="Chip" />
