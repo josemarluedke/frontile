@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { DocfyLink } from '@docfy/ember';
+import { NotificationCard, Notification } from 'frontile/notifications';
 import {
   Avatar,
   Button,
@@ -14,6 +15,7 @@ import {
   Field,
   Modal,
   ProgressBar,
+  RadioGroup,
   Skeleton,
   Spinner,
   Switch,
@@ -97,6 +99,11 @@ const templateSnippet = `<Table @columns={{columns}} @items={{members}} />
 <Table @columns={{columns}} @items={{projects}} />
 {{! ^ Type 'Project[]' is not assignable to 'Member[]' }}`;
 
+const toast = new Notification({}, 'Invitation sent to ada@example.com', {
+  appearance: 'success',
+  transitionDuration: 0
+});
+
 export default class IndexPage extends Component {
   @tracked isModalOpen = false;
   @tracked isDrawerOpen = false;
@@ -104,6 +111,7 @@ export default class IndexPage extends Component {
 
   inventory = inventory;
   members = tableMembers;
+  toast = toast;
   signatureSnippet = signatureSnippet;
   templateSnippet = templateSnippet;
 
@@ -344,15 +352,29 @@ export default class IndexPage extends Component {
             </SpecimenTile>
 
             <SpecimenTile
-              @name="Divider"
-              @path="/docs/components/utilities/divider"
-              @note="Horizontal and vertical, token-aware"
+              @name="RadioGroup"
+              @path="/docs/components/forms/radio"
+              @note="Grouped, labelled, and keyboard-navigable"
             >
-              <div class="w-full space-y-3">
-                <Divider />
-                <Divider />
+              <RadioGroup @name="tile-theme" @value="dark" as |Radio|>
+                <Radio @label="Light mode" @value="light" />
+                <Radio @label="Dark mode" @value="dark" />
+              </RadioGroup>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Notifications"
+              @path="/docs/components/notifications/notifications"
+              @note="Toasts with live regions and auto-dismiss"
+            >
+              <div class="w-full">
+                <NotificationCard
+                  @notification={{this.toast}}
+                  @placement="top-right"
+                />
               </div>
             </SpecimenTile>
+
           </div>
         </div>
       </section>

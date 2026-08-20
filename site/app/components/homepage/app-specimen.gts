@@ -117,7 +117,7 @@ export default class AppSpecimen extends Component {
                       class="font-label text-label-xs text-neutral-strong truncate"
                     >{{c.row.data.name}}</p>
                     <p
-                      class="font-caption text-caption-sm text-neutral truncate"
+                      class="font-caption text-caption-sm text-neutral-firm truncate"
                     >{{c.row.data.email}}</p>
                   </div>
                 </div>
@@ -137,17 +137,18 @@ export default class AppSpecimen extends Component {
                 {{#if (this.isActive c.row.data.status)}}
                   <Chip
                     @size="sm"
-                    @appearance="outlined"
+                    @appearance="faded"
                     @intent="success"
                     @withDot={{true}}
                   >Active</Chip>
                 {{else}}
-                  <Chip
-                    @size="sm"
-                    @appearance="outlined"
-                    @intent="warning"
-                    @withDot={{true}}
-                  >Invited</Chip>
+                  {{! Neutral rather than `warning`: a pending invitation is not
+                      a warning, and Frontile's warning chip lands at 3.2-4.0:1
+                      at this size in both schemes — under 4.5:1 whichever
+                      appearance is used. The dot carries the "pending" reading. }}
+                  <Chip @size="sm" @appearance="faded" @withDot={{true}}>
+                    Invited
+                  </Chip>
                 {{/if}}
               </c.For>
 
