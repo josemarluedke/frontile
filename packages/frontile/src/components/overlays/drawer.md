@@ -14,15 +14,6 @@ The Drawer component is a slide-out panel that appears from any edge of the scre
 import { Drawer } from 'frontile';
 ```
 
-## Key Features
-
-- **Multiple Placements**: Slide from top, bottom, left, or right
-- **Flexible Sizing**: Multiple size options from xs to full screen
-- **Built-in Components**: Header, Body, Footer, and CloseButton
-- **Accessible**: Proper ARIA attributes and focus management
-- **Customizable**: Control close button visibility and behavior
-- **All Overlay Features**: Focus trapping, keyboard support, portal rendering, etc.
-
 ## Usage
 
 ### Basic Drawer
@@ -703,53 +694,43 @@ export default class NavigationDrawer extends Component {
 }
 ```
 
-## Important Notes
+## Anatomy
 
-### Yielded Components
+Drawer yields the pieces you assemble it from:
 
-The Drawer component yields several components for easy composition:
+| Yielded       | Purpose                                                         |
+| ------------- | --------------------------------------------------------------- |
+| `Header`      | Heading region; applies the id that `aria-labelledby` points at |
+| `Body`        | Main content area                                               |
+| `Footer`      | Action row                                                      |
+| `CloseButton` | Styled close button wired to `@onClose`                         |
+| `headerId`    | The id `Header` uses, for labelling your own heading instead    |
 
-- **`CloseButton`**: A close button with proper styling and onPress handler
-- **`Header`**: A header section with proper ID for accessibility
-- **`Body`**: The main content area
-- **`Footer`**: A footer section for actions or additional content
-- **`headerId`**: A unique ID string for the header (used for aria-labelledby)
+## Accessibility
 
-### Accessibility
+The drawer renders as `role="dialog"` with `tabindex="0"`, labelled by `aria-labelledby`
+pointing at the id yielded as `headerId` — which `<d.Header>` applies. **A drawer with no
+`Header` has a dangling label reference.** Render a `Header`, or put `headerId` on your own
+heading, so assistive technology has something to announce.
 
-The Drawer component includes built-in accessibility features:
+Behavior inherited from [Overlay](./overlay.md):
 
-- **ARIA Attributes**: Proper `role="dialog"` and `aria-labelledby` attributes
-- **Focus Management**: Inherits all focus management from Overlay component
-- **Keyboard Support**: Escape key to close (can be disabled)
-- **Screen Reader Support**: Proper semantic structure
+| Behavior       | Detail                                                 |
+| -------------- | ------------------------------------------------------ |
+| Focus on open  | Moves into the drawer, and a focus trap keeps it there |
+| Focus on close | Returns to whatever was focused before opening         |
+| `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`           |
+| Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`        |
+| Body scroll    | Blocked while open                                     |
 
-### Size Variants
+The drawer needs at least one focusable element inside it, or the focus trap has nowhere to
+put focus. `@allowClosing={{false}}` disables Escape, backdrop click and the close button at
+once, leaving a keyboard user no way out — the Non-Dismissible example above pairs it with
+explicit footer actions for that reason.
 
-Available size options:
-
-- **`xs`**: Extra small
-- **`sm`**: Small
-- **`md`**: Medium (default)
-- **`lg`**: Large
-- **`xl`**: Extra large
-- **`full`**: Full width/height
-
-### Placement Options
-
-Available placement options:
-
-- **`top`**: Slides down from top
-- **`bottom`**: Slides up from bottom
-- **`left`**: Slides in from left
-- **`right`**: Slides in from right (default)
-
-### Controlling Close Behavior
-
-- **`@allowClosing={{false}}`**: Disables all close methods (Escape, backdrop click, close button)
-- **`@allowCloseButton={{false}}`**: Hides the default close button
-- **`@closeOnOutsideClick={{false}}`**: Disables backdrop click to close
-- **`@closeOnEscapeKey={{false}}`**: Disables Escape key to close
+Note that `@placement` is purely visual: a drawer sliding in from the left is announced no
+differently from one on the right, and nothing about the placement reaches assistive
+technology. Frontile also does not set `aria-modal` or `aria-describedby`.
 
 ## API
 
