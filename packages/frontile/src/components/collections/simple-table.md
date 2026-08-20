@@ -24,7 +24,7 @@ For automatic rendering with advanced features like sticky elements and data man
 import { SimpleTable } from 'frontile';
 ```
 
-## Basic Usage
+## Usage
 
 SimpleTable uses block form composition where you manually define the table structure:
 
@@ -680,6 +680,27 @@ The loading feature supports five color variants:
 - **`success`** - Green loading animation for success states
 - **`warning`** - Orange/yellow loading animation for warnings
 - **`danger`** - Red loading animation for error states
+
+## Accessibility
+
+SimpleTable renders real table markup — `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`,
+`<th>`, `<td>` — so screen readers get row and column structure, dimensions, and cell
+navigation from the browser rather than from ARIA. That is the whole reason to reach for it
+over a grid of divs.
+
+Header cells carry `scope="col"`, which associates a column's data cells with its header for
+assistive technology. If you need a row header, put `scope="row"` on that cell yourself —
+the `...attributes` spread means it overrides the default.
+
+Two things the component cannot do for you:
+
+- **Give the table an accessible name** when the surrounding page doesn't already. Add a
+  `<caption>` in the default block, or `aria-labelledby` on the table pointing at a heading.
+- **Keep the markup semantic if you nest interactive content in cells.** A button inside a
+  `<td>` is fine; a click handler on the `<tr>` itself is not reachable by keyboard.
+
+If the table scrolls (`@isScrollable`), the scroll container needs to be keyboard reachable
+so someone can scroll it without a mouse — give it `tabindex="0"` and a label.
 
 ## API
 
