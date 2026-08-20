@@ -700,11 +700,7 @@ module(
         assert.dom('[data-key="crocodile"]').hasAttribute('role', 'option');
         assert
           .dom('[data-key="crocodile"]')
-          .hasAttribute(
-            'aria-selected',
-            'true',
-            'the selected option says so'
-          );
+          .hasAttribute('aria-selected', 'true', 'the selected option says so');
         assert
           .dom('[data-key="cheetah"]')
           .hasAttribute(
