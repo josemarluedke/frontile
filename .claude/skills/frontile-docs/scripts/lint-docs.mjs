@@ -456,13 +456,22 @@ function demoRegressions(mdPath, ref) {
   const was = count(before);
   const now = count(readFileSync(mdPath, 'utf8'));
   if (now >= was) return [];
+  const lost = was - now;
+  // Severity tracks scale, because the two cases are different in kind.
+  // Dropping one demo of seven is usually real cleanup with a defensible
+  // reason, and erroring on it would forbid all removal and get this check
+  // switched off. Losing a third of the page's demos is coverage collapse,
+  // which is what this check exists to stop.
+  const collapse = lost / was > 1 / 3;
   return [
     {
       file: rel,
-      level: 'error',
+      level: collapse ? 'error' : 'warn',
       line: 1,
-      message: `${was - now} runnable demo(s) removed since ${ref} (${was} → ${now})`,
-      hint: 'name the retained demo covering each removed state, or consolidate instead of deleting — see SKILL.md'
+      message: `${lost} runnable demo(s) removed since ${ref} (${was} → ${now})`,
+      hint: collapse
+        ? "that is most of the page's executable coverage — consolidate instead of deleting, see SKILL.md"
+        : 'fine if deliberate: name the retained demo covering the removed state in your summary'
     }
   ];
 }
