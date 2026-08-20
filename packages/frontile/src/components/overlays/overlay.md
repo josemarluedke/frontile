@@ -13,19 +13,6 @@ The Overlay component is the foundation for building overlay interactions like M
 import { Overlay } from 'frontile';
 ```
 
-## Key Features
-
-- **Auto-Focusing**: Automatically focuses the overlay when opened
-- **Focus Trapping**: Keeps focus within the overlay while open
-- **Portal Rendering**: Renders in a portal by default, with option to render in-place
-- **Keyboard Support**: Press `Esc` to dismiss
-- **Click Outside**: Click on the backdrop to dismiss
-- **Smooth Animations**: Built-in CSS transitions
-- **Scroll Management**: Prevents body scroll when overlay is open
-- **Focus Restoration**: Restores focus to the previously focused element when closed
-
-> **Important**: You must have at least one focusable element inside the Overlay for proper accessibility.
-
 ## Usage
 
 ### Basic Overlay
@@ -191,8 +178,8 @@ export default class RenderInPlace extends Component {
       <div
         class='relative border-2 border-dashed border-neutral-soft p-4 min-h-48'
       >
-        <p class='text-sm text-neutral mb-4'>This container shows the
-          difference between portal and in-place rendering.</p>
+        <p class='text-sm text-neutral mb-4'>This container shows the difference
+          between portal and in-place rendering.</p>
 
         <Overlay
           @isOpen={{this.inPlaceOpen}}
@@ -577,42 +564,42 @@ export default class OverlayElementClick extends Component {
 >
 > This option is set to `true` by default to make "outside click" functionality work intuitively. Most overlay content is wrapped with an inner element (like a card or dialog), which prevents accidental closure when clicking on the actual content. The overlay element itself acts as part of the "outside" area, allowing users to click anywhere around the content to dismiss the overlay.
 
-## Important Notes
+## Using Power Select inside an Overlay
 
-### Focus Requirements
+`FormSelect` uses Power Select, which defaults to `@renderInPlace={{false}}` and so inserts
+its dropdown outside the overlay. The focus trap then treats the dropdown as outside the
+overlay and blocks access to it, including its search input.
 
-> **Important**: You must have at least one focusable element inside the Overlay for proper accessibility and focus management.
+Pass `@renderInPlace={{true}}` on the `FormSelect` so the dropdown stays inside the trap:
 
-### Portal Elements and FormSelect
+```gts
+<FormSelect @renderInPlace={{true}} />
+```
 
-`FormSelect` uses Power Select under the hood and has `@renderInPlace={{false}}` set by default, which will insert the dropdown content outside of the Overlay. This can cause focus-trap to prevent accessing focusable elements (like search input) in the Power Select dropdown.
-
-**Solutions:**
-
-- Use `<FormSelect @renderInPlace={{true}} />` (recommended)
-- Use `<Overlay @disableFocusTrap={{true}} />` (not recommended for accessibility)
-
-### Backdrop Types
-
-- **`faded`** (default): Semi-transparent backdrop
-- **`blur`**: Backdrop with blur effect
-- **`none`**: No backdrop
-
-### Transition Options
-
-- **`transitionDuration`**: Duration in milliseconds (default: 200ms)
-- **`disableTransitions`**: Disable all animations (default: false)
-- **`transition`**: Custom transition configuration
+Disabling the overlay's focus trap with `@disableFocusTrap={{true}}` also works, but it
+removes the trap for everything else in the overlay too — prefer the first option.
 
 ## Accessibility
 
-The Overlay component follows accessibility best practices:
+Overlay is the primitive under Modal, Drawer and Popover, and supplies their shared focus
+and keyboard behavior. It sets `tabindex="0"` on the content element but no role — a
+semantic role is the consuming component's job, which is why Modal and Drawer add
+`role="dialog"` themselves. If you build directly on Overlay, give it a role and an
+accessible name.
 
-- **Focus Management**: Automatically focuses the overlay when opened and restores focus when closed
-- **Focus Trapping**: Keeps focus within the overlay (can be disabled)
-- **Keyboard Support**: Escape key to close (can be disabled)
-- **Screen Reader Support**: Proper ARIA roles and attributes
-- **Scroll Management**: Prevents body scroll when overlay is open
+| Behavior       | Detail                                                                     |
+| -------------- | -------------------------------------------------------------------------- |
+| Focus on open  | Moves into the overlay; `ember-focus-trap` keeps it there                  |
+| Focus trap     | Disable with `@disableFocusTrap={{true}}`, or tune via `@focusTrapOptions` |
+| Focus on close | Returns to the previously focused element, unless `@preventFocusRestore`   |
+| `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`                               |
+| Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`                            |
+| Body scroll    | Blocked while open, unless `@blockScroll={{false}}`                        |
+
+**The overlay needs at least one focusable element inside it.** A focus trap with nothing to
+focus leaves the keyboard stranded, and nothing warns you at runtime.
+
+Frontile does not set `aria-modal`, `aria-labelledby` or `aria-describedby` at this level.
 
 ## API
 

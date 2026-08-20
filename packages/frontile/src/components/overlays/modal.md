@@ -14,15 +14,6 @@ The Modal component is a centered dialog that appears over the main content. It'
 import { Modal } from 'frontile';
 ```
 
-## Key Features
-
-- **Centered Positioning**: Automatically centers content on screen
-- **Flexible Sizing**: Multiple size options from xs to full screen
-- **Built-in Components**: Header, Body, Footer, and CloseButton
-- **Accessible**: Proper ARIA attributes and focus management
-- **Customizable**: Control close button visibility and behavior
-- **All Overlay Features**: Focus trapping, keyboard support, portal rendering, etc.
-
 ## Usage
 
 ### Basic Modal
@@ -178,7 +169,8 @@ export default class ModalSizes extends Component {
 
 ### Centered vs Standard Positioning
 
-Control vertical centering with the `@isCentered` argument.
+By default the modal sits toward the top of the screen. `@isCentered={{true}}` centers it
+vertically.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -738,8 +730,8 @@ export default class NestedModals extends Component {
         <m.Body>
           <p class='mb-4'>This is the first modal. You can open another modal
             from here.</p>
-          <p class='text-sm text-neutral'>Notice how the backdrop becomes
-            darker with each modal layer.</p>
+          <p class='text-sm text-neutral'>Notice how the backdrop becomes darker
+            with each modal layer.</p>
 
           <!-- Second Modal -->
           <Modal
@@ -752,8 +744,8 @@ export default class NestedModals extends Component {
             <m.Body>
               <p class='mb-4'>This is the second modal, opened from the first
                 one.</p>
-              <p class='text-sm text-neutral'>You can continue nesting
-                modals as needed.</p>
+              <p class='text-sm text-neutral'>You can continue nesting modals as
+                needed.</p>
 
               <!-- Third Modal -->
               <Modal
@@ -766,8 +758,8 @@ export default class NestedModals extends Component {
                 <m.Body>
                   <p class='mb-4'>This is the third and final modal in this
                     example.</p>
-                  <p class='text-sm text-neutral'>Each modal maintains its
-                    own focus trap and can be closed independently.</p>
+                  <p class='text-sm text-neutral'>Each modal maintains its own
+                    focus trap and can be closed independently.</p>
                 </m.Body>
                 <m.Footer @class='flex gap-2'>
                   <Button @onPress={{this.toggleThird}}>
@@ -805,57 +797,43 @@ export default class NestedModals extends Component {
 }
 ```
 
-## Important Notes
+## Anatomy
 
-### Yielded Components
+Modal yields the pieces you assemble the dialog from:
 
-The Modal component yields several components for easy composition:
+| Yielded       | Purpose                                                         |
+| ------------- | --------------------------------------------------------------- |
+| `Header`      | Heading region; applies the id that `aria-labelledby` points at |
+| `Body`        | Main content area                                               |
+| `Footer`      | Action row                                                      |
+| `CloseButton` | Styled close button wired to `@onClose`                         |
+| `headerId`    | The id `Header` uses, for labelling your own heading instead    |
 
-- **`CloseButton`**: A close button with proper styling and onPress handler
-- **`Header`**: A header section with proper ID for accessibility
-- **`Body`**: The main content area
-- **`Footer`**: A footer section for actions or additional content
-- **`headerId`**: A unique ID string for the header (used for aria-labelledby)
+## Accessibility
 
-### Accessibility
+The dialog element renders as `role="dialog"` with `tabindex="0"`, labelled by
+`aria-labelledby` pointing at the id yielded as `headerId` — which is applied by
+`<m.Header>`. **A modal with no `Header` therefore has a dangling label reference.** Either
+render a `Header`, or put `headerId` on your own heading element, so assistive technology
+has something to announce.
 
-The Modal component includes built-in accessibility features:
+Behavior inherited from [Overlay](./overlay.md):
 
-- **ARIA Attributes**: Proper `role="dialog"` and `aria-labelledby` attributes
-- **Focus Management**: Inherits all focus management from Overlay component
-- **Keyboard Support**: Escape key to close (can be disabled)
-- **Screen Reader Support**: Proper semantic structure
+| Behavior       | Detail                                                |
+| -------------- | ----------------------------------------------------- |
+| Focus on open  | Moves into the modal, and a focus trap keeps it there |
+| Focus on close | Returns to whatever was focused before opening        |
+| `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`          |
+| Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`       |
+| Body scroll    | Blocked while open                                    |
 
-### Size Variants
+The modal needs at least one focusable element inside it, or the focus trap has nowhere to
+put focus. Note that `@allowClosing={{false}}` disables Escape, backdrop click and the close
+button together, which leaves a keyboard user no way out — reserve it for flows that provide
+their own explicit resolution.
 
-Available size options:
-
-- **`xs`**: Extra small
-- **`sm`**: Small
-- **`md`**: Medium
-- **`lg`**: Large (default)
-- **`xl`**: Extra large
-- **`full`**: Full screen
-
-### Positioning
-
-- **Standard**: Modal appears towards the top of the screen
-- **Centered**: Use `@isCentered={{true}}` to vertically center the modal
-
-### Controlling Close Behavior
-
-- **`@allowClosing={{false}}`**: Disables all close methods (Escape, backdrop click, close button)
-- **`@allowCloseButton={{false}}`**: Hides the default close button
-- **`@closeOnOutsideClick={{false}}`**: Disables backdrop click to close
-- **`@closeOnEscapeKey={{false}}`**: Disables Escape key to close
-
-### Best Practices
-
-- Use modals sparingly to avoid overwhelming users
-- Keep modal content focused and concise
-- Provide clear actions in the footer
-- Use appropriate sizes for the content
-- Consider using drawers for complex forms or navigation
+Frontile does not set `aria-modal` or `aria-describedby`. Add them yourself if your dialog
+needs them.
 
 ## API
 

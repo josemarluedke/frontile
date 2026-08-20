@@ -323,6 +323,37 @@ import { Button } from 'frontile';
 </template>
 ```
 
+## Accessibility
+
+The `trigger` modifier sets three attributes on whatever element you attach it to, and keeps
+the last one in sync as the popover opens and closes:
+
+```
+aria-haspopup="true"
+aria-controls="<the content's id>"
+aria-expanded="true" | "false"
+```
+
+Because those go on your element, the trigger should be something natively focusable — a
+`<button>`. Attaching `trigger` to a `<div>` gives you the ARIA without the keyboard.
+
+With the default `click` trigger type, the trigger handles:
+
+| Key                     | Behavior                                                       |
+| ----------------------- | -------------------------------------------------------------- |
+| `Enter` / `Space`       | Toggles, via the element's native click                        |
+| `ArrowDown` / `ArrowUp` | Opens when closed                                              |
+| any letter key          | Opens when closed, for type-ahead into the content             |
+| `Escape`                | Closes when open                                               |
+| `Tab`                   | Closes and moves on, without pulling focus back to the trigger |
+
+Focus moves into the content when it opens and returns to the trigger when it closes.
+
+**`{{p.trigger "hover"}}` is mouse-only.** The hover branch attaches `mouseenter` and
+`mouseleave` and no key handling at all, so none of the keys above work and focus is not
+restored on close. A hover popover is fine for supplementary content that is also reachable
+another way; don't put anything a keyboard or screen-reader user needs behind one.
+
 ## API
 
 <Signature @component="Popover" />
