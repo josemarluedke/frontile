@@ -102,5 +102,5 @@ Starting fresh on v0.18 needs no migration. Follow
 ## Need help?
 
 - The individual guides linked above
-- The [documentation](../../index.md) for current usage examples
+- The [documentation](../../get-started/index.md) for current usage examples
 - Search or open an issue on [GitHub](https://github.com/josemarluedke/frontile)
