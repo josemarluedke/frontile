@@ -15,5 +15,6 @@ onlyBuiltDependencies:
   - nx
 overrides:
   '@ember/test-waiters': ^4.1.2
+  '@embroider/macros': ^1.20.6
   ember-concurrency: ^4.0.2
   browserslist-generator: 3.0.0
