@@ -85,8 +85,26 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     strong: 'Heaviest step — the modal/drawer backdrop in light mode',
   };
 
+  // `strong` is the scrim step and inverts against the page — black 75% in
+  // light, white 95% in dark — so its ink has to invert too. There is no
+  // `on-surface-overlay-*` token: translucent veils are excluded from
+  // on-color generation, since contrast depends on what shows through.
+  private overlayInkClasses: Record<string, string> = {
+    strong: 'text-white dark:text-black',
+  };
+
   getOverlayClass = (level: string): string => {
     return this.overlayClasses[level] || '';
+  };
+
+  getOverlayInkClass = (level: string): string => {
+    return this.overlayInkClasses[level] || 'text-neutral-strong';
+  };
+
+  getOverlayMutedInkClass = (level: string): string => {
+    return this.overlayInkClasses[level]
+      ? `${this.overlayInkClasses[level]} opacity-70`
+      : 'text-neutral-firm';
   };
 
   getOverlayDescription = (level: string): string => {
@@ -127,10 +145,12 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
             {{#each this.overlayLevels as |level|}}
               <div class="{{this.getOverlayClass level}} p-6 rounded">
                 <div class="flex items-center justify-between">
-                  <span class="font-mono text-sm text-neutral-strong">
+                  <span
+                    class="font-mono text-sm {{this.getOverlayInkClass level}}"
+                  >
                     surface-overlay-{{level}}
                   </span>
-                  <span class="text-xs text-neutral-firm">
+                  <span class="text-xs {{this.getOverlayMutedInkClass level}}">
                     {{this.getOverlayDescription level}}
                   </span>
                 </div>
