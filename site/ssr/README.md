@@ -40,19 +40,19 @@ directly.
 
 ## Layout
 
-| File                                            | Role                                                                                                                     |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [`app/ssr-entry.ts`](../app/ssr-entry.ts)       | Exports `render(url, document)`. Boots the app once, builds a fresh `ApplicationInstance` per route, visits, serializes. |
-| [`vite.config.ssr.mjs`](../vite.config.ssr.mjs) | Same plugin stack as `vite.config.mjs`, but `build.ssr` + `ssr.noExternal: true` → one Node ESM bundle.                  |
-| [`prerender.mjs`](./prerender.mjs)              | Installs browser-ish globals, imports that bundle, loops `dist/docfy-urls.json`, writes `dist/<route>/index.html`.       |
-| [`app/utils/origin.ts`](../app/utils/origin.ts) | `window.location.origin` with a config-driven fallback for Node.                                                         |
+| File                                            | Role                                                                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`app/ssr-entry.ts`](../app/ssr-entry.ts)       | Exports `render(url, document)`. Boots the app once, builds a fresh `ApplicationInstance` per route, visits, serializes.                   |
+| [`vite.config.mjs`](../vite.config.mjs)         | One config for both builds. Shared plugin stack; `isSsrBuild` adds `outDir: dist-ssr` + `ssr.noExternal` and drops Tailwind/static-export. |
+| [`prerender.mjs`](./prerender.mjs)              | Installs browser-ish globals, imports that bundle, loops `dist/docfy-urls.json`, writes `dist/<route>.html`.                               |
+| [`app/utils/origin.ts`](../app/utils/origin.ts) | `window.location.origin` with a config-driven fallback for Node.                                                                           |
 
 `pnpm --filter site build` — the command Netlify runs — chains all three:
 
 ```
 build        → build:client && build:ssr && prerender
 build:client → vite build                                # dist/
-build:ssr    → vite build --config vite.config.ssr.mjs    # dist-ssr/
+build:ssr    → vite build --ssr app/ssr-entry.ts           # dist-ssr/
 prerender    → node ssr/prerender.mjs                     # 68 × <route>.html into dist/
 ```
 
@@ -75,14 +75,27 @@ SimpleDOM-era `document.createRawHTMLSection` for `{{{html}}}`.
 Every DOM constructor is taken from linkedom's `window`, _not_ Node's globals.
 Mixing them breaks: linkedom's `dispatchEvent` writes `event.eventPhase`, which
 is getter-only on a native `Event`, so a `new CustomEvent(...)` that resolves to
-Node's built-in throws on dispatch.
+Node's built-in throws on dispatch. `navigator` needs `defineProperty` because
+Node's is getter-only; `matchMedia` and the frame callbacks are shimmed because
+linkedom has no counterpart (docfy-theme-switcher reads `matchMedia` from its
+constructor, i.e. during render).
+
+The route loop is sequential by necessity: every render shares one Ember
+`Application`, one run loop, and the ambient `globalThis.document`, so two
+in-flight renders would read each other's document. Real parallelism would need
+worker processes, and at ~2s for the whole pass that is a clear loss.
 
 ### App config
 
 `app/config/environment.ts` calls `loadConfigFromMeta('site')`, which reads a
 `<meta name="site/config/environment">` tag at **module scope**. So
 `globalThis.document` must already hold the parsed `dist/index.html` before the
-SSR bundle is imported.
+SSR bundle is imported — that ordering in `prerender.mjs` is load-bearing.
+
+The same meta tag is where `EmberENV` comes from, rather than being restated in
+the driver. Otherwise the prerender could boot Ember under different feature
+flags than the client bundle that rehydrates its output, and the symptom would be
+a rehydration mismatch rather than a config error.
 
 ### Rehydration
 

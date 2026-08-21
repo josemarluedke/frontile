@@ -17,7 +17,7 @@
   "scripts": {
     "build": "pnpm build:client && pnpm build:ssr && pnpm prerender",
     "build:client": "vite build",
-    "build:ssr": "vite build --config vite.config.ssr.mjs",
+    "build:ssr": "vite build --ssr app/ssr-entry.ts",
     "prerender": "node ssr/prerender.mjs",
     "format": "prettier . --cache --write",
     "generate-signature-data": "node lib/generate-signature-data.js && pnpm prettier app/components/signature-data.ts --write",

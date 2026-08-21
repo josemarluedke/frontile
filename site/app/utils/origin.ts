@@ -1,5 +1,10 @@
 import config from 'site/config/environment';
 
+/** Drop the scheme and any trailing slash, e.g. `next.frontile.dev`. */
+export function stripScheme(url: string): string {
+  return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+}
+
 /**
  * The origin the page is being served from.
  *
@@ -15,10 +20,10 @@ export function currentOrigin(): string {
     return window.location.origin;
   }
 
-  return typeof config.siteURL === 'string' ? config.siteURL : '';
+  return config.siteURL;
 }
 
 /** `currentOrigin()` with the scheme stripped, e.g. `next.frontile.dev`. */
 export function currentDomain(): string {
-  return currentOrigin().replace(/^https?:\/\//, '');
+  return stripScheme(currentOrigin());
 }

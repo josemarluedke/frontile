@@ -4,7 +4,7 @@
 //
 //   pnpm build:client   # client bundle -> dist/
 //   pnpm build:ssr      # node bundle   -> dist-ssr/
-//   pnpm prerender      # 68 x index.html into dist/
+//   pnpm prerender      # 68 x <route>.html into dist/
 //
 // Takes route arguments for a fast iteration loop:
 //
@@ -18,6 +18,7 @@ import { parseHTML } from 'linkedom';
 // still declares `node >= 18`.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(root, 'dist');
+
 // Snapshot the untouched shell outside dist/, so it isn't deployed: prerendering
 // "/" overwrites dist/index.html, and a second run would otherwise use its own
 // output as the template.
@@ -30,8 +31,18 @@ try {
   await writeFile(shellPath, shell, 'utf8');
 }
 
+// The flag index.html boots on: present means "this HTML was serialized by a
+// server render, rehydrate it" (see the boot script in index.html). It is a
+// build-wide constant, so it goes into the template once rather than being
+// appended to each route's document. Injected after the snapshot is written, so
+// the snapshot on disk stays a clean copy of the client build's output.
+shell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
+
 /** A linkedom document that is close enough to a browser one for Glimmer. */
 function createDocument() {
+  // Re-parsing the 4KB shell per route measured at 12ms across all 68 — 0.6% of
+  // the pass — and `parseHTML` is what mints the paired `window` each document
+  // needs. Don't "optimize" this into a shared clone; isolation is the point.
   const { window, document } = parseHTML(shell);
 
   // Glimmer still reaches for this SimpleDOM-era API for `{{{html}}}`.
@@ -46,49 +57,62 @@ function createDocument() {
   return { window, document };
 }
 
-// --- install browser-ish globals BEFORE importing the app bundle -------------
-const { window, document } = createDocument();
+/**
+ * Make a fresh document the ambient one, and hand it back.
+ *
+ * Ember reads `globalThis.document` in places that don't take an explicit
+ * document, so the global has to track whichever document we're rendering into.
+ */
+function installDocument() {
+  const { window, document } = createDocument();
 
-globalThis.window = window;
-globalThis.document = document;
+  globalThis.window = window;
+  globalThis.document = document;
+
+  return { window, document };
+}
+
+// --- install browser-ish globals BEFORE importing the app bundle -------------
+// The ordering is load-bearing: app/config/environment.ts calls
+// loadConfigFromMeta() at *module scope*, so a document holding the shell's
+// `<meta name="site/config/environment">` has to be in place before the dynamic
+// import below.
+const bootstrap = installDocument();
+
 globalThis.self = globalThis;
-// Take every DOM constructor from linkedom rather than letting Node's built-in
-// Event/CustomEvent leak in: linkedom's dispatchEvent writes `eventPhase`,
-// which is getter-only on a native Event.
+
+// Take the DOM constructors from linkedom rather than letting Node's built-ins
+// leak in: linkedom's dispatchEvent writes `eventPhase`, which is getter-only on
+// a native Event, so a `new CustomEvent()` resolving to Node's version throws on
+// dispatch. Only names linkedom actually defines are listed — anything else
+// belongs in the fallbacks below.
 for (const name of [
   'Event',
   'CustomEvent',
   'Node',
   'Element',
   'HTMLElement',
-  'HTMLDocument',
   'DocumentFragment',
   'Text',
   'Comment',
   'MutationObserver',
-  'CSS',
-  'getComputedStyle',
-  'requestAnimationFrame',
-  'cancelAnimationFrame',
-  'matchMedia',
   'localStorage',
   'sessionStorage',
-  'navigator',
 ]) {
-  if (window[name] === undefined) continue;
-  Object.defineProperty(globalThis, name, {
-    value: window[name],
-    writable: true,
-    configurable: true,
-  });
+  globalThis[name] = bootstrap.window[name];
 }
-if (!globalThis.navigator?.userAgent) {
-  Object.defineProperty(globalThis, 'navigator', {
-    value: { userAgent: 'node' },
-    writable: true,
-    configurable: true,
-  });
-}
+
+// `navigator` is a getter-only global in Node, so it needs defineProperty
+// rather than assignment. linkedom supplies a full userAgent.
+Object.defineProperty(globalThis, 'navigator', {
+  value: bootstrap.window.navigator,
+  writable: true,
+  configurable: true,
+});
+
+// linkedom has no counterpart for these. `matchMedia` is genuinely reached
+// during render (docfy-theme-switcher reads it in its constructor); the frame
+// callbacks are here because a component could schedule one from a getter.
 globalThis.matchMedia ??= () => ({
   matches: false,
   addEventListener() {},
@@ -99,31 +123,18 @@ globalThis.matchMedia ??= () => ({
 globalThis.requestAnimationFrame ??= (cb) =>
   setTimeout(() => cb(Date.now()), 0);
 globalThis.cancelAnimationFrame ??= (id) => clearTimeout(id);
-globalThis.localStorage ??= {
-  getItem: () => null,
-  setItem() {},
-  removeItem() {},
-  clear() {},
-};
-let ok = 0;
-let failed = 0;
 
-// A ReferenceError thrown from inside Glimmer's render escapes the per-route
-// try/catch via the run loop, so keep the process alive for the remaining
-// routes — but still count it, so the build fails.
-process.on('uncaughtException', (error) => {
-  console.error(`  ! uncaught: ${error.message}`);
-  failed++;
-});
-globalThis.EmberENV = {
-  EXTEND_PROTOTYPES: false,
-  FEATURES: {},
-  _APPLICATION_TEMPLATE_WRAPPER: false,
-  _DEFAULT_ASYNC_OBSERVERS: true,
-  _JQUERY_INTEGRATION: false,
-  _NO_IMPLICIT_ROUTE_MODEL: true,
-  _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
-};
+// Mirrors what @embroider/virtual/vendor.js sets in the browser. Read out of the
+// config meta tag rather than restated, so the prerender can't boot Ember under
+// different feature flags than the client bundle that rehydrates its output.
+const appConfig = JSON.parse(
+  decodeURIComponent(
+    bootstrap.document
+      .querySelector('meta[name="site/config/environment"]')
+      .getAttribute('content'),
+  ),
+);
+globalThis.EmberENV = appConfig.EmberENV;
 globalThis.runningTests = false;
 
 const { render } = await import(join(root, 'dist-ssr/ssr-entry.mjs'));
@@ -132,8 +143,8 @@ const { render } = await import(join(root, 'dist-ssr/ssr-entry.mjs'));
 const urls = JSON.parse(
   await readFile(join(distDir, 'docfy-urls.json'), 'utf8'),
 );
-const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
-const routes = only.length ? only : ['/', ...urls];
+const args = process.argv.slice(2);
+const routes = args.length ? args : ['/', ...urls];
 
 /**
  * Where a route's HTML goes.
@@ -154,27 +165,34 @@ function outputPathForUrl(url) {
     : join(distDir, `${relative}.html`);
 }
 
+let ok = 0;
+let failed = 0;
+
+// A ReferenceError thrown from inside Glimmer's render escapes the per-route
+// try/catch via the run loop, so keep the process alive for the remaining
+// routes — but still count it, so the build fails.
+process.on('uncaughtException', (error) => {
+  console.error(`  ! uncaught: ${error.message}`);
+  failed++;
+});
+
+// Sequential by necessity, not by oversight: every render shares one Ember
+// Application, one run loop, and the ambient `globalThis.document`, so two
+// in-flight renders would read each other's document.
 for (const url of routes) {
   const started = performance.now();
   try {
-    const fresh = createDocument();
-    globalThis.window = fresh.window;
-    globalThis.document = fresh.document;
+    const { document } = installDocument();
 
-    const marker = fresh.document.createElement('meta');
-    marker.setAttribute('name', 'x-prerendered');
-    marker.setAttribute('content', url);
-    fresh.document.head.appendChild(marker);
-
-    const result = await render(url, fresh.document);
+    const { html, title } = await render(url, document);
 
     const outPath = outputPathForUrl(url);
     await mkdir(dirname(outPath), { recursive: true });
-    await writeFile(outPath, result.html, 'utf8');
+    await writeFile(outPath, html, 'utf8');
 
     const ms = Math.round(performance.now() - started);
     console.log(
-      `✓ ${url}  ${(result.html.length / 1024).toFixed(0)}kb  ${ms}ms  title=${JSON.stringify(result.title)}`,
+      `✓ ${url}  ${(html.length / 1024).toFixed(0)}kb  ${ms}ms  title=${JSON.stringify(title)}`,
     );
     ok++;
   } catch (error) {

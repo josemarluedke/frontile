@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
-import { currentDomain } from 'site/utils/origin';
+import { currentDomain, stripScheme } from 'site/utils/origin';
 
 interface VersionDropdownSignature {
   Element: HTMLDivElement;
@@ -63,10 +63,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
       if (version.url === '/') {
         return false;
       }
-      const versionDomain = version.url
-        .replace(/^https?:\/\//, '')
-        .replace(/\/$/, '');
-      return domain === versionDomain;
+      return domain === stripScheme(version.url);
     });
 
     // Return matched version or latest version as fallback
