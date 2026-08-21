@@ -25,7 +25,7 @@ export interface Signature {
 const OverlayDoor: TOC<Signature> = <template>
   <div class="border-t border-neutral-soft pt-4">
     <p
-      class="font-label text-label-2xs text-neutral-firm uppercase mb-3"
+      class="field-label mb-3"
     >{{@name}}</p>
     {{yield}}
     <p

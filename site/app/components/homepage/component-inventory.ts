@@ -4,9 +4,8 @@
  * `forms-legacy` and `changeset-form` are deprecated and slated for removal
  * before v1, so counting them would overstate what Frontile currently offers.
  *
- * If a component gains or loses a docs page, update this list — the counts on
- * the homepage are derived from it rather than written by hand, so they cannot
- * drift the way the previous hard-coded numbers did.
+ * If a component gains or loses a docs page, update this list. It is the only
+ * place the homepage names components, so nothing else has to be kept in step.
  */
 
 export interface InventoryItem {
@@ -15,7 +14,6 @@ export interface InventoryItem {
 }
 
 export interface InventoryCategory {
-  key: string;
   name: string;
   /** What this group is for, in the product's own terms. */
   summary: string;
@@ -24,7 +22,6 @@ export interface InventoryCategory {
 
 export const inventory: InventoryCategory[] = [
   {
-    key: 'forms',
     name: 'Forms',
     summary:
       'Labelling, validation, and state handled by the control itself, not by the page.',
@@ -45,7 +42,6 @@ export const inventory: InventoryCategory[] = [
     ]
   },
   {
-    key: 'utilities',
     name: 'Utilities',
     summary: 'Small primitives the rest of the library is built out of.',
     items: [
@@ -64,7 +60,6 @@ export const inventory: InventoryCategory[] = [
     ]
   },
   {
-    key: 'buttons',
     name: 'Buttons',
     summary: 'One press primitive, five shapes of it.',
     items: [
@@ -76,7 +71,6 @@ export const inventory: InventoryCategory[] = [
     ]
   },
   {
-    key: 'overlays',
     name: 'Overlays',
     summary:
       'Focus trapping, scroll locking, and portalling, shared by every layer.',
@@ -89,7 +83,6 @@ export const inventory: InventoryCategory[] = [
     ]
   },
   {
-    key: 'collections',
     name: 'Collections',
     summary:
       'Typed, keyboard-navigable lists and tables that infer against your data.',
@@ -101,7 +94,6 @@ export const inventory: InventoryCategory[] = [
     ]
   },
   {
-    key: 'feedback',
     name: 'Feedback',
     summary: 'Progress and notifications, with the live regions wired up.',
     items: [

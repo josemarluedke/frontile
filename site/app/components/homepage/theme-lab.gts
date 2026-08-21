@@ -4,10 +4,10 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { htmlSafe } from '@ember/template';
+import type { SafeString } from '@ember/template';
 import { Button, Chip, Field, ProgressBar, ToggleButton } from 'frontile';
+import { teal, blue, pink, green } from '@frontile/theme/colors';
 import CodePanel from './code-panel';
-
-type SafeString = ReturnType<typeof htmlSafe>;
 
 /**
  * Live demonstration of the token system: picking a ramp rewrites the same
@@ -57,56 +57,13 @@ interface Preset {
   family: Family;
 }
 
-const FAMILIES: Record<string, Family> = {
-  teal: {
-    '50': '#f1fdfc',
-    '100': '#c6f5f4',
-    '200': '#7ce0e1',
-    '300': '#47c1c7',
-    '400': '#26a0aa',
-    '500': '#12828e',
-    '600': '#076873',
-    '700': '#01525c',
-    '900': '#003138',
-    '950': '#00262c'
-  },
-  blue: {
-    '50': '#f9fcff',
-    '100': '#f1f7ff',
-    '200': '#d2e6ff',
-    '300': '#95c4ff',
-    '400': '#4a8ee7',
-    '500': '#2259a6',
-    '600': '#053273',
-    '700': '#001b4e',
-    '900': '#00072d',
-    '950': '#020825'
-  },
-  pink: {
-    '50': '#fefafc',
-    '100': '#ffebf4',
-    '200': '#ffcee4',
-    '300': '#fca8cc',
-    '400': '#f17bad',
-    '500': '#e1458a',
-    '600': '#c10566',
-    '700': '#920147',
-    '900': '#4a011c',
-    '950': '#390011'
-  },
-  green: {
-    '50': '#f7ffeb',
-    '100': '#e6ffbc',
-    '200': '#d1ff8c',
-    '300': '#bbff60',
-    '400': '#a3fa3a',
-    '500': '#66e221',
-    '600': '#2fc511',
-    '700': '#07a20a',
-    '900': '#005321',
-    '950': '#002e1b'
-  }
-};
+/**
+ * The real palette families, imported rather than transcribed. An earlier
+ * version inlined all forty hex values, which made the section's central claim
+ * — that these are Frontile's own ramps — expire silently the first time the
+ * palette was retuned.
+ */
+const FAMILIES: Record<string, Family> = { teal, blue, pink, green };
 
 /** Mirrors semantic.ts's light-theme primary derivation. */
 function lightRamp(f: Family): Level[] {
@@ -155,11 +112,15 @@ function luminance(hex: string): number {
 }
 
 /**
- * Black or white, whichever contrasts better — the same choice the plugin's
- * `resolve.ts` makes when it generates `on-*` colors. Emitting these alongside
- * the ramp is not optional: `text-on-primary` would otherwise keep the ink
- * generated for the *original* ramp, and a light accent like Green would render
+ * Black or white, whichever contrasts better. Emitting these alongside the ramp
+ * is not optional: `text-on-primary` would otherwise keep the ink generated for
+ * the *original* ramp, and a light accent like Green would render
  * white-on-green at roughly 2.3:1.
+ *
+ * This is a luminance threshold, while the plugin's `getContrastingColor`
+ * compares real WCAG ratios through culori — so the two can disagree on a
+ * borderline swatch. The theme does not export that helper today; when it does,
+ * this should call it instead of approximating it.
  */
 function onColor(hex: string): string {
   return luminance(hex) > 0.179 ? '#000000' : '#ffffff';
@@ -191,15 +152,27 @@ const PRESETS: Preset[] = Object.entries(FAMILIES).map(([key, family]) => ({
   swatchStyle: htmlSafe(`background: ${family['600']}`)
 }));
 
+/**
+ * One copy of the demo UI, in whichever theme its wrapper resolves to.
+ *
+ * Both copies are fully interactive. This is deliberately unlike the hero's
+ * theme seam, where the two copies are one picture of a UI and are therefore
+ * `inert`: here they are two peer panels, and half the point is that the
+ * inverted theme has finished focus, hover, and pressed states of its own. An
+ * earlier version marked the inverted copy `inert` and `aria-hidden`, which
+ * silently made that unprovable.
+ */
 const LabPanel: TOC<{
   Args: {
     /** Which theme this copy shows, relative to the visitor's own. */
     scheme: string;
+    /** Distinguishes this copy's form controls from the other's. */
+    fieldName: string;
   };
 }> = <template>
   <div class="theme-lab__panel theme-lab-scope bg-surface-app text-neutral-firm">
     <p
-      class="font-label text-label-2xs text-neutral-firm uppercase mb-4"
+      class="field-label mb-4"
     >{{@scheme}}</p>
 
     <div class="space-y-4">
@@ -213,7 +186,7 @@ const LabPanel: TOC<{
         </Button>
       </div>
 
-      <Field @name="lab-project" as |field|>
+      <Field @name={{@fieldName}} as |field|>
         <field.Input
           @label="Project name"
           @size="sm"
@@ -302,7 +275,7 @@ ${toConfigObject(darkRamp(f), '          ')}
       <div class="lg:col-span-2">
         <fieldset>
           <legend
-            class="font-label text-label-2xs text-neutral-firm uppercase mb-3"
+            class="field-label mb-3"
           >Swap the primary ramp</legend>
           <div class="flex flex-wrap gap-2">
             {{#each this.presets as |item|}}
@@ -326,9 +299,9 @@ ${toConfigObject(darkRamp(f), '          ')}
 
       {{! Both schemes, one configuration, live }}
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <LabPanel @scheme="Your theme" />
-        <div class="theme-inverse" aria-hidden="true" inert>
-          <LabPanel @scheme="Inverted" />
+        <LabPanel @scheme="Your theme" @fieldName="lab-project-ambient" />
+        <div class="theme-inverse">
+          <LabPanel @scheme="Inverted" @fieldName="lab-project-inverted" />
         </div>
       </div>
 

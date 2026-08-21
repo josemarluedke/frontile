@@ -39,6 +39,7 @@ import SpecimenTile from '../components/homepage/specimen-tile';
 import CodePanel from '../components/homepage/code-panel';
 import LinkButton from '../components/homepage/link-button';
 import OverlayDoor from '../components/homepage/overlay-door';
+import SectionIntro from '../components/homepage/section-intro';
 import onceInView from '../modifiers/once-in-view';
 import { inventory } from '../components/homepage/component-inventory';
 
@@ -113,11 +114,6 @@ export default class IndexPage extends Component {
   @tracked isDrawerOpen = false;
   @tracked notifyByEmail = true;
 
-  inventory = inventory;
-  members = tableMembers;
-  toast = toast;
-  signatureSnippet = signatureSnippet;
-  templateSnippet = templateSnippet;
 
   columns = [
     { key: 'name', name: 'Member' },
@@ -157,7 +153,7 @@ export default class IndexPage extends Component {
       {{! The seam — one UI, both themes, at once }}
       {{! ------------------------------------------------------------------ }}
       <section class="ambient pt-16 pb-20 sm:pt-24 sm:pb-28">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="page-container">
           <div class="max-w-3xl">
             <p class="eyebrow rise-text">Ember component library</p>
             <h1
@@ -189,7 +185,7 @@ export default class IndexPage extends Component {
         </div>
 
         <div
-          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 rise rise-step-4"
+          class="page-container mt-14 rise rise-step-4"
         >
           <ThemeSeam
             @description="A workspace members panel built from Frontile's Avatar,
@@ -215,17 +211,11 @@ export default class IndexPage extends Component {
       {{! Specimen wall — breadth, as doors }}
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--wall py-24 sm:py-28 bg-primary-subtle">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-14 reveal">
-            <p class="eyebrow mb-4">The library</p>
-            <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
-            >Start anywhere</h2>
-            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+        <div class="page-container">
+          <SectionIntro class="max-w-2xl mb-14" @eyebrow="The library" @title="Start anywhere">
               Every tile below is the real component, rendered by the library, and a
               link straight into its documentation.
-            </p>
-          </div>
+          </SectionIntro>
 
           <div class="specimen-wall">
             <SpecimenTile
@@ -245,7 +235,7 @@ export default class IndexPage extends Component {
               @note="Sorting, selection, sticky headers, typed columns"
               @isWide={{true}}
             >
-              <Table @columns={{this.columns}} @items={{this.members}} />
+              <Table @columns={{this.columns}} @items={{tableMembers}} />
             </SpecimenTile>
 
             <SpecimenTile
@@ -379,7 +369,7 @@ export default class IndexPage extends Component {
             >
               <div class="w-full">
                 <NotificationCard
-                  @notification={{this.toast}}
+                  @notification={{toast}}
                   @placement="top-right"
                 />
               </div>
@@ -393,7 +383,7 @@ export default class IndexPage extends Component {
       {{! Overlays — the things a specimen tile cannot show }}
       {{! ------------------------------------------------------------------ }}
       <section class="py-24 sm:py-28">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="page-container">
           {{! The column ratio used to be inverted: 416px of heading and copy
               beside 760px holding one button and one sentence, which left a
               760x274 hole under the card. The argument now sits in the narrow
@@ -401,18 +391,21 @@ export default class IndexPage extends Component {
           <div
             class="grid grid-cols-1 lg:grid-cols-[minmax(0,22rem)_1fr] gap-x-16 gap-y-12 items-start"
           >
-            <div class="reveal">
-              <p class="eyebrow mb-4">Overlays</p>
-              <h2
-                class="font-header text-header-2xl text-neutral-bolder text-balance"
-              >The parts you have to open</h2>
-              <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+            <div>
+              {{! Compact: this header sits in a 22rem column, so the heading
+                  holds one step down rather than growing at the sm breakpoint. }}
+              <SectionIntro
+                @eyebrow="Overlays"
+                @title="The parts you have to open"
+                @isCompact={{true}}
+                class="mb-5"
+              >
                 Overlays are where component libraries usually leak: focus
                 escapes, the background scrolls, Escape does nothing. Every
                 layer here shares one focus trap, one scroll lock, and one
                 portal.
-              </p>
-              <p class="mt-5 font-body text-body-sm text-neutral-firm">
+              </SectionIntro>
+              <p class="reveal font-body text-body-sm text-neutral-firm">
                 <DocfyLink
                   @to="/docs/accessibility/focus-management"
                   class="text-primary-firm underline"
@@ -426,13 +419,8 @@ export default class IndexPage extends Component {
                   Drawer cover everything behind them. It is genuinely live,
                   not a picture of one, and the trigger closes and reopens it. }}
               {{! It opens itself on arrival through the yielded open function
-                  rather than through a controlled isOpen argument. Popover
-                  cannot be born open, because its Content reads velcro.loop,
-                  which the anchor modifier has not installed on the first
-                  render pass; driving the argument from outside fails the same
-                  way even after mount and leaves the subtree dead. The yielded
-                  function is the supported path and keeps the component's own
-                  state authoritative. }}
+                  rather than a controlled isOpen argument. See once-in-view.ts
+                  for why the argument cannot do this. }}
               {{! The block param is pop rather than the conventional p. This
                   block contains real paragraph elements, and a single-letter
                   param named p collides with them in a strict-mode template,
@@ -448,11 +436,11 @@ export default class IndexPage extends Component {
                 as |pop|
               >
                 <div
-                  class="rounded-xl border border-neutral-soft bg-surface-canvas p-6 min-h-[30rem] sm:min-h-[19rem]"
+                  class="popover-stage rounded-xl border border-neutral-soft bg-surface-canvas p-6"
                   {{onceInView pop.open}}
                 >
                   <p
-                    class="font-label text-label-2xs text-neutral-firm uppercase mb-5"
+                    class="field-label mb-5"
                   >Popover</p>
 
                   {{! Stacked, the trigger goes last: the panel is positioned
@@ -671,18 +659,12 @@ export default class IndexPage extends Component {
       <section
         class="ambient ambient--lab py-24 sm:py-28 bg-secondary-subtle dark:bg-surface-canvas"
       >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-14 reveal">
-            <p class="eyebrow mb-4">Theming</p>
-            <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
-            >Make it look like your product</h2>
-            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+        <div class="page-container">
+          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Theming" @title="Make it look like your product">
               Frontile's colors are semantic roles at named levels, not a numbered
               scale. Swap the ramp and every component follows, in both
               themes, with no rebuild.
-            </p>
-          </div>
+          </SectionIntro>
 
           <div class="reveal">
             <ThemeLab />
@@ -709,18 +691,12 @@ export default class IndexPage extends Component {
       {{! Prove the two claims that matter }}
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--proof py-24 sm:py-28 bg-surface-canvas">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-14 reveal">
-            <p class="eyebrow mb-4">Built in</p>
-            <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
-            >The work you don't have to do</h2>
-            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+        <div class="page-container">
+          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Built in" @title="The work you don't have to do">
               Keyboard behaviour, ARIA state, and template types arrive with the
               components. Both of these are running right now, so try them rather
               than take our word for it.
-            </p>
-          </div>
+          </SectionIntro>
 
           <div class="space-y-14">
             <div class="reveal">
@@ -746,12 +722,12 @@ export default class IndexPage extends Component {
               </p>
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <CodePanel
-                  @code={{this.signatureSnippet}}
+                  @code={{signatureSnippet}}
                   @language="typescript"
                   @label="columns.ts"
                 />
                 <CodePanel
-                  @code={{this.templateSnippet}}
+                  @code={{templateSnippet}}
                   @language="handlebars"
                   @label="members.gts"
                 />
@@ -765,20 +741,14 @@ export default class IndexPage extends Component {
       {{! Full inventory — every door, counted honestly }}
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--inventory py-24 sm:py-28">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-14 reveal">
-            <p class="eyebrow mb-4">Every component</p>
-            <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
-            >Grouped by the job</h2>
-            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+        <div class="page-container">
+          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Every component" @title="Grouped by the job">
               Everything Frontile documents today, with the deprecated legacy
               packages left out. Every name is a link.
-            </p>
-          </div>
+          </SectionIntro>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
-            {{#each this.inventory as |category|}}
+            {{#each inventory as |category|}}
               <div class="reveal">
                 <h3
                   class="font-header text-header-md text-neutral-bolder mb-1"
@@ -806,18 +776,15 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--close py-24 sm:py-28">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="reveal">
-            <p class="eyebrow mb-4">Start here</p>
-            <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
-            >Pick a component and start reading.</h2>
-            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
-              Every component's documentation is built around live, interactive
-              demos of the component itself: the same ones running on this page,
-              with the source beside each of them. Start wherever your interface
-              is thinnest.
-            </p>
-          </div>
+          <SectionIntro
+            @eyebrow="Start here"
+            @title="Pick a component and start reading."
+          >
+            Every component's documentation is built around live, interactive
+            demos of the component itself: the same ones running on this page,
+            with the source beside each of them. Start wherever your interface
+            is thinnest.
+          </SectionIntro>
 
           <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
             <LinkButton

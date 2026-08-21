@@ -15,8 +15,6 @@ export interface Signature {
     isTerminal?: boolean;
     /** Put the body behind a toggle, for snippets long enough to dominate. */
     isCollapsible?: boolean;
-    /** Start a collapsible panel already open. */
-    startOpen?: boolean;
   };
   Element: HTMLDivElement;
 }
@@ -35,7 +33,15 @@ export interface Signature {
  * so a forty-line config does not out-weigh the thing it explains.
  */
 export default class CodePanel extends Component<Signature> {
-  @tracked isOpen = this.args.startOpen ?? false;
+  @tracked isOpen = false;
+
+  /**
+   * Collapsible always renders its block — it hides the content with
+   * `height: 0; overflow: hidden` — so without this the syntax highlighter ran
+   * over the whole snippet at first paint for zero visible pixels, and again on
+   * every re-render of the panel's source.
+   */
+  @tracked hasOpened = false;
 
   get toggleLabel(): string {
     return this.isOpen ? 'Hide code' : 'Show code';
@@ -44,6 +50,7 @@ export default class CodePanel extends Component<Signature> {
   @action
   toggle(): void {
     this.isOpen = !this.isOpen;
+    this.hasOpened = this.hasOpened || this.isOpen;
   }
 
   <template>
@@ -79,9 +86,11 @@ export default class CodePanel extends Component<Signature> {
         ><span class="code-panel__prompt" aria-hidden="true">$</span> {{@code}}</pre>
       {{else if @isCollapsible}}
         <Collapsible @isOpen={{this.isOpen}}>
-          <pre
-            class="code-panel__body font-code text-code-sm"
-          >{{highlightCode @code @language}}</pre>
+          {{#if this.hasOpened}}
+            <pre
+              class="code-panel__body font-code text-code-sm"
+            >{{highlightCode @code @language}}</pre>
+          {{/if}}
         </Collapsible>
       {{else}}
         <pre

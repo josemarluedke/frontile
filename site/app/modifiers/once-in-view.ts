@@ -18,17 +18,7 @@ import { modifier } from 'ember-modifier';
  * its initial state and its own trigger still works.
  */
 export default modifier(
-  (element: Element, [onInView]: [(() => void) | undefined]) => {
-    if (typeof onInView !== 'function') {
-      return;
-    }
-
-    if (typeof IntersectionObserver === 'undefined') {
-      onInView();
-
-      return;
-    }
-
+  (element: Element, [onInView]: [() => void]) => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {

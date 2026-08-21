@@ -82,7 +82,7 @@ export default class KeyboardProof extends Component {
 
       <div>
         <p
-          class="font-label text-label-2xs text-neutral-firm uppercase mb-2"
+          class="field-label mb-2"
         >What just happened</p>
         <p
           class="font-code text-code-sm text-neutral-strong min-h-12"

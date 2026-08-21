@@ -32,12 +32,12 @@ export interface Signature {
  * own sections and in the docs.
  */
 const SpecimenTile: TOC<Signature> = <template>
-  <div class="specimen-tile {{if @isWide 'specimen-tile--wide'}}">
-    <DocfyLink
-      @to={{@path}}
-      class="specimen-tile__link"
-      aria-label="{{@name}} documentation"
-    ><span class="sr-only">{{@name}} documentation</span></DocfyLink>
+  <div class="specimen-tile reveal {{if @isWide 'specimen-tile--wide'}}">
+    {{! The name is carried by the link's own text rather than an aria-label:
+        with both, the label wins and the span is unreachable markup. }}
+    <DocfyLink @to={{@path}} class="specimen-tile__link"><span
+        class="sr-only"
+      >{{@name}} documentation</span></DocfyLink>
 
     <span class="specimen-tile__stage" aria-hidden="true" inert>
       {{yield}}

@@ -52,7 +52,6 @@ interface Member {
   email: string;
   role: string;
   workerType: string;
-  status: string;
 }
 
 const members: Member[] = [
@@ -62,8 +61,7 @@ const members: Member[] = [
     name: 'Kate Moore',
     email: 'kate@acme.com',
     role: 'Chief Executive Officer',
-    workerType: 'Employee',
-    status: 'active'
+    workerType: 'Employee'
   },
   {
     id: '2',
@@ -71,8 +69,7 @@ const members: Member[] = [
     name: 'John Smith',
     email: 'john@acme.com',
     role: 'Chief Technology Officer',
-    workerType: 'Employee',
-    status: 'active'
+    workerType: 'Employee'
   },
   {
     id: '3',
@@ -80,8 +77,7 @@ const members: Member[] = [
     name: 'Mike Wilson',
     email: 'mike@acme.com',
     role: 'VP of Engineering',
-    workerType: 'Employee',
-    status: 'active'
+    workerType: 'Employee'
   },
   {
     id: '4',
@@ -89,8 +85,7 @@ const members: Member[] = [
     name: 'Alex Turner',
     email: 'alex@acme.com',
     role: 'Product Manager',
-    workerType: 'Contractor',
-    status: 'active'
+    workerType: 'Contractor'
   },
   {
     id: '5',
@@ -98,14 +93,9 @@ const members: Member[] = [
     name: 'Emma Davis',
     email: 'emma@acme.com',
     role: 'Senior Designer',
-    workerType: 'Contractor',
-    status: 'invited'
+    workerType: 'Contractor'
   }
 ];
-
-function isActive(status: string): boolean {
-  return status === 'active';
-}
 
 function isEmployee(workerType: string): boolean {
   return workerType === 'Employee';
@@ -152,9 +142,6 @@ export default class AppSpecimen extends Component {
       select-all checkbox are both on show. */
   selectedKeys = ['1', '3'];
 
-  members = members;
-  isActive = isActive;
-  isEmployee = isEmployee;
 
   <template>
     <div
@@ -219,7 +206,7 @@ export default class AppSpecimen extends Component {
       <div class="px-5 py-2">
         <Table
           @columns={{this.columns}}
-          @items={{this.members}}
+          @items={{members}}
           @selectionMode="multiple"
           @selectedKeys={{this.selectedKeys}}
           @initialSort={{this.initialSort}}
@@ -235,7 +222,7 @@ export default class AppSpecimen extends Component {
                 <Button
                   @appearance="minimal"
                   @size="xs"
-                  class="px-0! size-7 shrink-0"
+                  @class="px-0 size-7 shrink-0"
                   aria-label="Copy worker ID"
                 >
                   <DuplicateIcon />
@@ -261,7 +248,7 @@ export default class AppSpecimen extends Component {
               {{! Employment type is a category, not a state, so it takes the
                   neutral chip. Colour-coding it would spend a semantic hue on
                   decoration and leave real status with no signal of its own. }}
-              {{#if (this.isEmployee c.row.data.workerType)}}
+              {{#if (isEmployee c.row.data.workerType)}}
                 <Chip @size="sm" @appearance="faded">Employee</Chip>
               {{else}}
                 <Chip @size="sm" @appearance="outlined">Contractor</Chip>
@@ -273,7 +260,7 @@ export default class AppSpecimen extends Component {
                 <Button
                   @appearance="soft"
                   @size="xs"
-                  class="px-0! size-7 shrink-0"
+                  @class="px-0 size-7 shrink-0"
                   aria-label="View member"
                 >
                   <ViewIcon />
@@ -282,7 +269,7 @@ export default class AppSpecimen extends Component {
                   @appearance="soft"
                   @intent="primary"
                   @size="xs"
-                  class="px-0! size-7 shrink-0"
+                  @class="px-0 size-7 shrink-0"
                   aria-label="Edit member"
                 >
                   <EditIcon />
@@ -291,7 +278,7 @@ export default class AppSpecimen extends Component {
                   @appearance="soft"
                   @intent="danger"
                   @size="xs"
-                  class="px-0! size-7 shrink-0"
+                  @class="px-0 size-7 shrink-0"
                   aria-label="Remove member"
                 >
                   <DeleteIcon />

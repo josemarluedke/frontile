@@ -109,6 +109,8 @@
 
   /* The theme seam: one specimen, both themes, a draggable divide. */
   .theme-seam {
+    --seam-handle-size: 2.75rem;
+
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -122,6 +124,8 @@
   .theme-seam__inverse {
     position: absolute;
     inset: 0;
+    /* inset(top right bottom left) — reveal only what sits right of the seam. */
+    clip-path: inset(0 0 0 var(--seam-split, 50%));
   }
 
   /* The label only exists for the stacked mobile layout, where the two copies
@@ -130,47 +134,23 @@
     display: none;
   }
 
-  /* Below `sm` a vertical seam cuts through a 375px-wide table mid-row, which
-     reads as a rendering fault rather than a comparison. Stack the two copies
-     instead and label them. The clip is an inline style, so overriding it here
-     needs `!important` — the alternative would be branching the template on a
-     viewport width the server cannot know. */
-  /* These selectors are deliberately one step more specific than the base
-     rules they override. The base rules are declared later in this file, and at
-     equal specificity the later declaration would win — so specificity, not
-     source order, is what keeps the mobile layout stable. */
-  @media (width < 640px) {
-    .theme-seam.theme-seam {
-      overflow: visible;
-    }
-
-    .theme-seam .theme-seam__inverse {
-      position: static;
-      inset: auto;
-      clip-path: none !important;
-      margin-top: 1.25rem;
-    }
-
-    .theme-seam .theme-seam__line,
-    .theme-seam .theme-seam__handle {
-      display: none;
-    }
-
-    .theme-seam .theme-seam__label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-family: var(--font-label);
-      font-size: var(--text-label-2xs);
-      font-weight: var(--font-weight-semibold);
-      text-transform: uppercase;
-      color: var(--color-neutral-firm);
-    }
+  /* The small uppercase tier that labels a control or a demo stage. Was written
+     out as the same four utilities at six call sites and once more as longhand
+     CSS here. */
+  .field-label,
+  .theme-seam__label {
+    font-family: var(--font-label);
+    font-size: var(--text-label-2xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    color: var(--color-neutral-firm);
   }
 
   .theme-seam__line {
     position: absolute;
     top: 0;
     bottom: 0;
+    left: var(--seam-split, 50%);
     width: 4px;
     margin-left: -2px;
     background: var(--color-primary);
@@ -178,17 +158,22 @@
     z-index: 2;
   }
 
-  .theme-seam__handle {
+  .theme-seam__handle,
+  .theme-seam__grip-wrap {
     position: absolute;
     top: 50%;
-    width: 2.75rem;
-    height: 2.75rem;
-    margin-left: -1.375rem;
-    margin-top: -1.375rem;
-    z-index: 3;
+    left: var(--seam-split, 50%);
+    width: var(--seam-handle-size);
+    height: var(--seam-handle-size);
+    margin: calc(var(--seam-handle-size) / -2) 0 0
+      calc(var(--seam-handle-size) / -2);
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .theme-seam__handle {
+    z-index: 3;
     border-radius: 9999px;
     background: var(--color-primary);
     color: var(--color-on-primary);
@@ -207,16 +192,7 @@
      keeps a clean role="separator" with no semantic descendants. It must never
      swallow the drag. */
   .theme-seam__grip-wrap {
-    position: absolute;
-    top: 50%;
-    width: 2.75rem;
-    height: 2.75rem;
-    margin-left: -1.375rem;
-    margin-top: -1.375rem;
     z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     pointer-events: none;
     color: var(--color-on-primary);
   }
@@ -225,6 +201,36 @@
     width: 1.125rem;
     height: 1.125rem;
     flex: none;
+  }
+
+  /* Below `sm` a vertical seam cuts through a 375px-wide table mid-row, which
+     reads as a rendering fault rather than a comparison. Stack the two copies
+     instead and label them. Declared after the rules it overrides, so plain
+     single-class selectors win on source order — an earlier version doubled the
+     selectors and forced the clip off with `!important`, both of which the
+     `--seam-split` indirection made unnecessary. */
+  @media (width < 640px) {
+    .theme-seam {
+      overflow: visible;
+    }
+
+    .theme-seam__inverse {
+      position: static;
+      inset: auto;
+      clip-path: none;
+      margin-top: 1.25rem;
+    }
+
+    .theme-seam__line,
+    .theme-seam__handle,
+    .theme-seam__grip-wrap {
+      display: none;
+    }
+
+    .theme-seam__label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
   }
 
   /* Specimen wall.
@@ -319,28 +325,6 @@
     background: var(--color-surface-canvas);
   }
 
-  @keyframes specimen-arrive {
-    from {
-      opacity: 0;
-      translate: 0 1.25rem;
-    }
-
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .specimen-tile {
-        animation: specimen-arrive linear both;
-        animation-timeline: view();
-        animation-range: entry 2% cover 22%;
-      }
-    }
-  }
-
   /* Theming lab */
   .theme-lab__panel {
     border-radius: 0.75rem;
@@ -407,7 +391,6 @@
     width: 0.625rem;
     height: 0.625rem;
     border-radius: 9999px;
-    background: var(--color-code-border);
   }
 
   .code-panel__label {
@@ -468,6 +451,38 @@
   .inventory-list__link:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 1px;
+  }
+
+  /* The page's content column. Was repeated verbatim at every section. */
+  .page-container {
+    max-width: var(--container-7xl);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (width >= 640px) {
+    .page-container {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (width >= 1024px) {
+    .page-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* The stage that reserves room for the overlays section's popover panel. The
+     height is coupled to that panel's content, so it lives here next to the
+     thing it serves rather than inline. */
+  .popover-stage {
+    min-height: 30rem;
+  }
+
+  @media (width >= 640px) {
+    .popover-stage {
+      min-height: 19rem;
+    }
   }
 
   /* Section eyebrow. The page previously jumped straight from a section's
@@ -614,8 +629,10 @@
    * the progress, so an easing curve here would make the element lurch while
    * the visitor scrolls at a constant speed.
    *
-   * Both animate only `opacity`, `translate`, and `filter` — never a
-   * property that triggers layout.
+   * Both animate only `opacity`, `translate`, and `filter`, so neither
+   * triggers layout. `filter` is not free, though: an animating blur
+   * re-rasterizes the text each frame, which is why it is confined to the
+   * three lines of the first viewport and never used on a container.
    * ------------------------------------------------------------------ */
 
   @keyframes rise {
@@ -687,6 +704,13 @@
         animation: reveal linear both;
         animation-timeline: view();
         animation-range: entry 4% cover 26%;
+      }
+
+      /* The tiles use the same reveal, entered a little earlier and finished a
+         little sooner: a wall of them should be settling while the section is
+         still arriving. */
+      .specimen-tile {
+        animation-range: entry 2% cover 22%;
       }
     }
   }

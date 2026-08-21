@@ -48,13 +48,8 @@ export default class ThemeSeam extends Component<Signature> {
 
   private dragging = false;
 
-  get clipStyle(): SafeString {
-    // inset(top right bottom left) — reveal only what sits right of the seam.
-    return htmlSafe(`clip-path: inset(0 0 0 ${this.split}%)`);
-  }
-
-  get seamStyle(): SafeString {
-    return htmlSafe(`left: ${this.split}%`);
+  get splitStyle(): SafeString {
+    return htmlSafe(`--seam-split: ${this.split}%`);
   }
 
   get roundedSplit(): number {
@@ -65,16 +60,18 @@ export default class ThemeSeam extends Component<Signature> {
     return Math.min(MAX, Math.max(MIN, value));
   }
 
+  /**
+   * Measured once per gesture. Reading the rect on every `pointermove` forces a
+   * synchronous layout, and the previous move already wrote a style — so each
+   * event paid for a read-after-write recalc at pointer rate. The track's left
+   * edge and width cannot change mid-drag.
+   */
+  private trackRect?: DOMRect;
+
   private setFromClientX(handle: HTMLElement, clientX: number): void {
-    const track = handle.parentElement;
+    const rect = this.trackRect;
 
-    if (!track) {
-      return;
-    }
-
-    const rect = track.getBoundingClientRect();
-
-    if (rect.width === 0) {
+    if (!rect || rect.width === 0) {
       return;
     }
 
@@ -86,6 +83,7 @@ export default class ThemeSeam extends Component<Signature> {
     const handle = event.currentTarget as HTMLElement;
 
     this.dragging = true;
+    this.trackRect = handle.parentElement?.getBoundingClientRect();
     handle.setPointerCapture(event.pointerId);
     handle.focus();
     this.setFromClientX(handle, event.clientX);
@@ -106,6 +104,7 @@ export default class ThemeSeam extends Component<Signature> {
     const handle = event.currentTarget as HTMLElement;
 
     this.dragging = false;
+    this.trackRect = undefined;
 
     if (handle.hasPointerCapture(event.pointerId)) {
       handle.releasePointerCapture(event.pointerId);
@@ -144,31 +143,22 @@ export default class ThemeSeam extends Component<Signature> {
   }
 
   <template>
-    <div class="theme-seam" ...attributes>
+    <div class="theme-seam" style={{this.splitStyle}} ...attributes>
       <VisuallyHidden>{{@description}}</VisuallyHidden>
 
       {{! Ambient theme }}
-      <div class="theme-seam__copy" inert>
+      <div inert>
         <span class="theme-seam__label" aria-hidden="true">Your theme</span>
         {{yield to="specimen"}}
       </div>
 
       {{! Opposite theme, clipped to the right of the seam }}
-      <div
-        class="theme-seam__inverse theme-seam__copy theme-inverse"
-        style={{this.clipStyle}}
-        aria-hidden="true"
-        inert
-      >
+      <div class="theme-seam__inverse theme-inverse" aria-hidden="true" inert>
         <span class="theme-seam__label" aria-hidden="true">Inverted</span>
         {{yield to="specimen"}}
       </div>
 
-      <div
-        class="theme-seam__line"
-        style={{this.seamStyle}}
-        aria-hidden="true"
-      ></div>
+      <div class="theme-seam__line" aria-hidden="true"></div>
 
       {{! A drag affordance has to begin on pointerdown; there is no way to
           start a drag from pointerup. Keyboard users get the full ARIA
@@ -177,7 +167,6 @@ export default class ThemeSeam extends Component<Signature> {
       {{! template-lint-disable no-pointer-down-event-binding }}
       <div
         class="theme-seam__handle"
-        style={{this.seamStyle}}
         role="separator"
         tabindex="0"
         aria-orientation="vertical"
@@ -202,11 +191,7 @@ export default class ThemeSeam extends Component<Signature> {
           may not have semantic descendants, and this keeps the handle's ARIA
           contract clean. It never receives pointer events, so the handle
           underneath still gets the drag. }}
-      <span
-        class="theme-seam__grip-wrap"
-        style={{this.seamStyle}}
-        aria-hidden="true"
-      >
+      <span class="theme-seam__grip-wrap" aria-hidden="true">
         <svg
           class="theme-seam__grip"
           xmlns="http://www.w3.org/2000/svg"

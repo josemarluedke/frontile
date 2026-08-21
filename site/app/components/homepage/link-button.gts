@@ -1,7 +1,7 @@
 import type { TOC } from '@ember/component/template-only';
 import { LinkTo } from '@ember/routing';
 import { DocfyLink } from '@docfy/ember';
-import { Button } from 'frontile';
+import { Button, type ButtonArgs } from 'frontile';
 
 export interface Signature {
   Args: {
@@ -11,15 +11,9 @@ export interface Signature {
     route?: string;
     /** An external URL; opens in a new tab. */
     href?: string;
-    intent?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
-    appearance?:
-      | 'default'
-      | 'soft'
-      | 'outlined'
-      | 'minimal'
-      | 'tonal'
-      | 'custom';
-    size?: 'xs' | 'sm' | 'md' | 'lg';
+    intent?: ButtonArgs['intent'];
+    appearance?: ButtonArgs['appearance'];
+    size?: ButtonArgs['size'];
   };
   Blocks: { default: [] };
 }
