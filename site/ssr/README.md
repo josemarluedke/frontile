@@ -152,6 +152,41 @@ Three things in `prerender.mjs` look incidental and are not:
 - No `<html>` class is baked in, so the inline theme script still chooses
   light/dark at runtime.
 
+## Prior art: vite-ember-ssr
+
+[evoactivity/vite-ember-ssr](https://github.com/evoactivity/vite-ember-ssr) (npm
+`vite-ember-ssr`, experimental) solves this problem as a published, general
+package. If the constraint below ever lifts, prefer it over maintaining this.
+
+It arrives at the same mechanism we do — `autoboot: false` plus
+`app.visit(url, { _renderMode: 'rehydrate' })`, a page-level flag choosing the
+boot path, a snapshot of the shell as a template. Two independent
+implementations converging is decent evidence the approach is sound. Beyond that
+it does considerably more: request-time SSR and dev-mode SSR as well as SSG, a
+tinypool worker pool with optional process isolation, a shoebox that captures
+server `fetch` responses and replays them during rehydration, Playwright
+coverage, and benchmarks. It renders with happy-dom.
+
+**We cannot use it here: it targets compatless apps only** — no
+`@embroider/compat`, no `ember-cli-build.js`, no `classicEmberSupport()`. This
+site is all three, and `ember-resolver` with `compatModules` rather than
+`ember-strict-application-resolver`. The blocker that matters most is indirect:
+`splitAtRoutes` lives only in `@embroider/compat`, so going compatless to adopt
+this would also give up route splitting. Smaller friction: its SSG takes a
+static `routes` array in the Vite config, while ours are derived from the
+`docfy-urls.json` that Docfy emits during the build.
+
+Two notes for a future revisit:
+
+- Its SSG writes `<route>/index.html`, the convention that 301s every cold load
+  on Netlify (see [Output layout](#output-layout)). Ember's `LinkTo` emits
+  slash-free hrefs, so this likely affects any Ember app deployed there — worth
+  raising upstream rather than rediscovering.
+- `settled()` from `@ember/test-helpers` is how it waits for a render to finish:
+  run loop, pending timers and registered test-waiters. That is the principled
+  answer wherever we need to know a render is done, and `@ember/test-helpers` is
+  already a devDependency here.
+
 ## Gaps
 
 - **Nothing in CI runs the prerender or the rehydrate path.** CI runs `pnpm build`
