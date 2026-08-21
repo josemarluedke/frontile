@@ -1141,6 +1141,9 @@ importers:
       globals:
         specifier: ^17.9.0
         version: 17.9.0
+      highlight.js:
+        specifier: ~10.7.0
+        version: 10.7.3
       lowlight:
         specifier: ^1.20.0
         version: 1.20.0

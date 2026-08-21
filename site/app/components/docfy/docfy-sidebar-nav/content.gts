@@ -5,7 +5,7 @@ import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 import { concat } from '@ember/helper';
 import { service } from '@ember/service';
-import DocfyLink from '@docfy/ember/components/docfy-link';
+import DocsLink from '../../docs-link';
 import { Chip } from 'frontile';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
@@ -151,13 +151,13 @@ export default class DocfySidebarNavContent extends Component<Signature> {
             <ul class="space-y-0">
               {{#each @node.pages as |page|}}
                 <li>
-                  <DocfyLink
+                  <DocsLink
                     @to={{page.url}}
                     class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-primary-soft rounded"
                     @activeClass="bg-primary-soft/30 text-neutral-firm font-medium"
                   >
                     {{page.title}}
-                  </DocfyLink>
+                  </DocsLink>
                 </li>
               {{/each}}
             </ul>
@@ -173,7 +173,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
             <ul class="space-y-0">
               {{#each child.pages as |page|}}
                 <li>
-                  <DocfyLink
+                  <DocsLink
                     @to={{page.url}}
                     class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-primary-soft rounded"
                     @activeClass="bg-primary-soft/30 text-neutral-firm font-medium"
@@ -182,7 +182,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                     {{#if page.frontmatter.label}}
                       <Label @label={{page.frontmatter.label}} />
                     {{/if}}
-                  </DocfyLink>
+                  </DocsLink>
                 </li>
               {{/each}}
 
@@ -228,13 +228,13 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                     <ul class="space-y-0">
                       {{#each subChild.pages as |page|}}
                         <li>
-                          <DocfyLink
+                          <DocsLink
                             @to={{page.url}}
                             class="transition flex items-center px-6 py-1.5 text-sm text-neutral-strong hover:text-neutral-firm hover:bg-neutral-muted/50 outline-none focus-visible:ring-2 focus-visible:ring-primary-soft rounded"
                             @activeClass="bg-primary-soft/30 text-neutral-firm font-medium"
                           >
                             {{page.title}}
-                          </DocfyLink>
+                          </DocsLink>
                         </li>
                       {{/each}}
                     </ul>

@@ -1,8 +1,7 @@
 import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/template';
 import type { SafeString } from '@ember/template';
-// @ts-ignore: missing types
-import lowlight from 'lowlight';
+import lowlight from 'site/utils/lowlight';
 
 interface HighlightCodeSignature {
   Args: {
@@ -96,7 +95,7 @@ function highlightCode([code, language = 'javascript']: [
 
     // Map gjs/gts to their base languages
     const actualLanguage = languageMap[language] || language;
-    const result = lowlight.highlight(actualLanguage, code);
+    const result = lowlight.highlight(actualLanguage, code) as HastNode;
     const html = hastToHtml(result);
 
     return htmlSafe(`<code class="hljs language-${language}">${html}</code>`);
