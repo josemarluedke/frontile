@@ -9,6 +9,11 @@ imports:
 A toggle button allows to toggle a selection on or off, for example switching
 between two states or modes.
 
+Unselected, it reads as an outlined button — ink and border only. Selected, it
+fills with its intent color and switches to the matching contrast ink; hovering
+and pressing deepen that fill one step at a time, the same ramp a filled
+`Button` uses, so the label stays readable in every state.
+
 ## Import
 
 ```js
