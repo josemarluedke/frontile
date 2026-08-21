@@ -1,14 +1,11 @@
 import type { TOC } from '@ember/component/template-only';
-import { LinkTo } from '@ember/routing';
-import { DocfyLink } from '@docfy/ember';
+import DocsLink from '../docs-link';
 import { Button, type ButtonArgs } from 'frontile';
 
 export interface Signature {
   Args: {
     /** A Docfy path, e.g. "/docs/theming/overview". */
     to?: string;
-    /** An Ember route name, e.g. "docs.get-started". */
-    route?: string;
     /** An external URL; opens in a new tab. */
     href?: string;
     intent?: ButtonArgs['intent'];
@@ -38,10 +35,8 @@ const LinkButton: TOC<Signature> = <template>
     @size={{@size}}
     as |b|
   >
-    {{#if @route}}
-      <LinkTo @route={{@route}} class={{b.classNames}}>{{yield}}</LinkTo>
-    {{else if @to}}
-      <DocfyLink @to={{@to}} class={{b.classNames}}>{{yield}}</DocfyLink>
+    {{#if @to}}
+      <DocsLink @to={{@to}} class={{b.classNames}}>{{yield}}</DocsLink>
     {{else}}
       <a
         href={{@href}}

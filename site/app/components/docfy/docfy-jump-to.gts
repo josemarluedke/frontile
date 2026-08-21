@@ -5,12 +5,11 @@ import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import { DocfyService } from '@docfy/ember';
-import RouterService from '@ember/routing/router-service';
 import type { PageMetadata } from '@docfy/core/lib/types';
-import Fuse from 'fuse.js';
+import type Fuse from 'fuse.js';
 import { Overlay } from 'frontile';
 import { VisuallyHidden } from 'frontile';
-import DocfyLink from '@docfy/ember/components/docfy-link';
+import DocsLink from '../docs-link';
 
 interface DocfyJumpToArgs {}
 
@@ -24,7 +23,6 @@ function eq(a: unknown, b: unknown): boolean {
 
 export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
   @service docfy!: DocfyService;
-  @service router!: RouterService;
 
   @tracked isOpen = false;
 
@@ -33,10 +31,23 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
   @tracked selected?: number;
   @tracked resultsContainerElement?: HTMLElement;
 
-  fuse = new Fuse(this.docfy.flat, {
-    keys: ['title', 'parentLabel'],
-    threshold: 0.4,
-  });
+  /**
+   * fuse.js plus the index built over every documentation page is ~50 kB of
+   * the initial payload, and nothing on the homepage can search until this
+   * dialog is opened. Building it on first open keeps it out of the bundle
+   * every visitor downloads.
+   */
+  private fuse?: Promise<Fuse<PageMetadata>>;
+
+  private loadFuse(): Promise<Fuse<PageMetadata>> {
+    return (this.fuse ??= import('fuse.js').then(
+      ({ default: FuseImpl }) =>
+        new FuseImpl(this.docfy.flat, {
+          keys: ['title', 'parentLabel'],
+          threshold: 0.4,
+        })
+    ));
+  }
 
   selectNext(): void {
     if (!this.results) {
@@ -78,6 +89,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
     ) {
       if (event.key === '/') {
         this.isOpen = true;
+        void this.loadFuse();
       }
     }
   }
@@ -90,10 +102,11 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
     };
   });
 
-  @action search(event: Event): void {
+  @action async search(event: Event): Promise<void> {
     const pattern = (event.target as HTMLInputElement).value;
+    const fuse = await this.loadFuse();
 
-    this.results = this.fuse.search(pattern).map((item) => {
+    this.results = fuse.search(pattern).map((item) => {
       return {
         item: item.item,
       };
@@ -104,25 +117,20 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
   @action toggle(): void {
     this.isOpen = !this.isOpen;
+
+    // Warm the index while the user is still reaching for the keyboard, so
+    // the first keystroke does not wait on a network round trip.
+    if (this.isOpen) {
+      void this.loadFuse();
+    }
   }
 
   @action didClose(): void {
     this.results = undefined;
   }
 
-  @action onItemClick(event: MouseEvent): void {
-    event.preventDefault();
-
-    const target = event.target as HTMLElement;
-    let element: HTMLElement | null = target;
-
-    if (['svg', 'span'].includes(target.tagName.toLowerCase())) {
-      element = target.parentElement;
-    }
-
+  @action onItemClick(): void {
     this.isOpen = false;
-    const href = element?.getAttribute('href') || '/';
-    this.router.transitionTo(href);
   }
 
   @action selectElement(event: MouseEvent): void {
@@ -213,7 +221,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
           <div class="space-y-2 max-h-96 overflow-y-scroll">
             {{#each this.results as |result index|}}
-              <DocfyLink
+              <DocsLink
                 @to={{result.item.url}}
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
@@ -246,7 +254,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 <span class="text-neutral-strong">
                   {{result.item.title}}
                 </span>
-              </DocfyLink>
+              </DocsLink>
             {{/each}}
           </div>
         </div>

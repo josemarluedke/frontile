@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
-import { DocfyLink } from '@docfy/ember';
+import DocsLink from '../components/docs-link';
 import { NotificationCard, Notification } from 'frontile/notifications';
 import {
   Avatar,
@@ -417,10 +417,10 @@ export default class IndexPage extends Component {
                 portal.
               </SectionIntro>
               <p class="reveal font-body text-body-sm text-neutral-firm">
-                <DocfyLink
+                <DocsLink
                   @to="/docs/accessibility/focus-management"
                   class="text-primary-firm underline"
-                >Read the focus management guide</DocfyLink>
+                >Read the focus management guide</DocsLink>
               </p>
             </div>
 
@@ -785,12 +785,12 @@ export default class IndexPage extends Component {
                 <ul class="flex flex-col gap-0.5">
                   {{#each category.items as |item|}}
                     <li>
-                      <DocfyLink
+                      <DocsLink
                         @to={{item.path}}
                         class="block -ml-2 px-2 py-[0.3125rem] rounded-md font-body text-body-xs text-neutral-firm transition-[color,background-color,translate] duration-180 ease-settle hover:bg-primary-subtle hover:text-primary-firm hover:translate-x-[0.1875rem] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
                       >
                         {{item.name}}
-                      </DocfyLink>
+                      </DocsLink>
                     </li>
                   {{/each}}
                 </ul>
@@ -817,7 +817,7 @@ export default class IndexPage extends Component {
 
           <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
             <LinkButton
-              @route="docs.get-started"
+              @to="/docs/get-started"
               @intent="primary"
               @size="lg"
             >Read the docs</LinkButton>
@@ -863,10 +863,10 @@ export default class IndexPage extends Component {
                 class="font-code text-code-sm text-primary-firm"
               >@source</code>
               line so Tailwind stops purging Frontile's classes. The
-              <DocfyLink
+              <DocsLink
                 @to="/docs/get-started/installation"
                 class="text-primary-firm underline"
-              >installation guide</DocfyLink>
+              >installation guide</DocsLink>
               has the exact paths.
             </p>
           </div>

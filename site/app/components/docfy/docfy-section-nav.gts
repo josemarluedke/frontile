@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import { DocfyOutput } from '@docfy/ember';
-import DocfyLink from '@docfy/ember/components/docfy-link';
+import DocsLink from '../docs-link';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
 
@@ -43,7 +43,7 @@ export default class DocfySectionNav extends Component {
             {{#each node.children as |child|}}
               {{#let (this.getFirstPageUrl child) as |url|}}
                 {{#if url}}
-                  <DocfyLink
+                  <DocsLink
                     @to={{url}}
                     class="pb-3 lg:pb-4 text-xs lg:text-sm font-medium transition-colors text-neutral-strong hover:text-neutral-firm hover:border-b-2 hover:border-primary hover:-mb-px whitespace-nowrap
                       {{if
@@ -52,7 +52,7 @@ export default class DocfySectionNav extends Component {
                       }}"
                   >
                     {{child.label}}
-                  </DocfyLink>
+                  </DocsLink>
                 {{/if}}
               {{/let}}
             {{/each}}
