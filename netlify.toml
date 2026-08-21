@@ -16,3 +16,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Everything Vite emits under /assets/ carries a content hash in its filename,
+# so a given URL can never change. Netlify's default for these is
+# `public,max-age=0,must-revalidate`, which makes a repeat visitor revalidate
+# every JS chunk, stylesheet and font on every navigation — several megabytes of
+# conditional requests for bytes that are immutable by construction. Fonts live
+# here too. The HTML keeps Netlify's default of `max-age=0, must-revalidate`,
+# which is what it needs — it names the hashed assets, so it has to revalidate
+# for a deploy to be picked up.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -62,5 +62,11 @@ export default defineConfig(({ isSsrBuild }) => ({
           noExternal: true,
         },
       }
-    : {}),
+    : {
+        build: {
+          // ssr/prerender.mjs reads this to work out which lazy route chunks a
+          // page needs, so each prerendered page can preload its own.
+          manifest: true,
+        },
+      }),
 }));
