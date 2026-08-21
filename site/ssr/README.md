@@ -195,6 +195,43 @@ Importing `@ember/test-helpers` for `settled()` costs ~376 KB in the Node bundle
 (never shipped) and one shim: it reads `document.location.search` at module
 scope, and linkedom supplies no location.
 
+## Preloads
+
+A prerendered page knows things Vite cannot. Vite emits `modulepreload` for what
+the _entry_ needs, but the lazily loaded route chunk is chosen at runtime by
+`@embroider/router`, and fonts are found only after the stylesheet is parsed and
+laid out. Both therefore arrive as later request waves, each costing a round trip.
+
+Measured on a docs page against a 6–25ms first wave: route chunks started at
+35ms, fonts at 41ms; on the homepage, fonts at 82ms. After declaring them in the
+HTML, all of it starts at 6–7ms.
+
+`ssr/preload.mjs` works out what to declare, and `prerender.mjs` injects it:
+
+- **Route chunks.** `render()` returns `router.currentRouteName`, which maps to
+  the `splitAtRoutes` bundles covering it — its own split point and every
+  ancestor, since visiting `docs.components.buttons.button` activates `docs` too.
+  Static `imports` are followed transitively, otherwise shared chunks (405 kB of
+  generated signature data among them) would just become a third wave. The split
+  point is read from the emitted filename, because the build manifest keys each
+  bundle by whichever route it happened to see first.
+- **Fonts.** The two used on every page, plus `domine` on the homepage only,
+  where it sets the `h1`. Preloading it everywhere would waste 39 kB a page and
+  earn an unused-preload warning. The italics are conditional and never above the
+  fold. URLs come from the built stylesheet, which is what actually references
+  them — the manifest does not expose emitted font filenames.
+
+Injected hrefs are deduped against what the shell already declares, so nothing is
+requested twice. Verified cold: one request per font, no double fetches, no
+unused-preload warnings.
+
+Two things deliberately left alone. The fonts are unsubset — Open Sans is 273 kB
+and its italic 305 kB, where a latin subset would be a fraction of that; worth
+doing, but it belongs in `@frontile/theme` rather than here. And
+`@embroider/virtual/vendor.js` is a 316-byte blocking classic script that is a
+separate request on the critical path; inlining it would need a build plugin, for
+one round trip.
+
 ## Prior art: vite-ember-ssr
 
 [evoactivity/vite-ember-ssr](https://github.com/evoactivity/vite-ember-ssr) (npm

@@ -12,6 +12,12 @@ import { fileURLToPath } from 'node:url';
 import { parseHTML } from 'linkedom';
 
 import { outputPathForUrl } from './output-path.mjs';
+import {
+  fontFamiliesFor,
+  fontUrls,
+  routeBundles,
+  routeChunksFor,
+} from './preload.mjs';
 
 // `import.meta.dirname` needs Node 20.11; package.json declares `node >= 18`.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -34,6 +40,52 @@ try {
 // the template once rather than per document, and after the snapshot is written
 // so the file on disk stays a clean copy of the client build.
 shell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
+
+// --- preloads ---------------------------------------------------------------
+const manifest = JSON.parse(
+  await readFile(join(distDir, '.vite', 'manifest.json'), 'utf8'),
+);
+const bundles = routeBundles(manifest);
+
+// Font URLs are read from the built stylesheet, which is the thing that actually
+// references them — the manifest does not expose the emitted filenames.
+const stylesheets = Object.values(manifest).flatMap((entry) => entry.css ?? []);
+const css = (
+  await Promise.all(
+    stylesheets.map((file) => readFile(join(distDir, file), 'utf8')),
+  )
+).join('\n');
+
+/** Hrefs the shell already declares, so preloads are not emitted twice. */
+const alreadyDeclared = new Set(
+  [...shell.matchAll(/(?:href|src)="(\/assets\/[^"]+)"/g)].map((m) => m[1]),
+);
+
+/**
+ * Declare what this page is about to fetch, so it does not have to be
+ * discovered.
+ *
+ * Route chunks otherwise form a second request wave that cannot start until the
+ * app has booted and resolved its route, and fonts a third, behind stylesheet
+ * parse and layout. Measured against a 6-25ms first wave: chunks at 35ms, fonts
+ * at 41ms on a docs page and 82ms on the homepage — and on a real connection
+ * each wave costs a full round trip.
+ */
+function withPreloads(html, routeName) {
+  const chunks = routeChunksFor(bundles, routeName)
+    .map((file) => `/${file}`)
+    .filter((href) => !alreadyDeclared.has(href))
+    .map((href) => `<link rel="modulepreload" crossorigin href="${href}">`);
+
+  const fonts = fontUrls(css, fontFamiliesFor(routeName)).map(
+    (href) =>
+      `<link rel="preload" as="font" type="font/woff2" href="${href}" crossorigin>`,
+  );
+
+  const links = [...fonts, ...chunks].join('');
+
+  return links ? html.replace('</head>', `${links}</head>`) : html;
+}
 
 /**
  * A document Glimmer can render into, paired with its own `window`.
@@ -145,15 +197,17 @@ for (const url of routes) {
   try {
     const { document } = installDocument();
 
-    const { html, title } = await render(url, document);
+    const { html, title, routeName } = await render(url, document);
+
+    const output = withPreloads(html, routeName);
 
     const outPath = outputPathForUrl(distDir, url);
     await mkdir(dirname(outPath), { recursive: true });
-    await writeFile(outPath, html, 'utf8');
+    await writeFile(outPath, output, 'utf8');
 
     const ms = Math.round(performance.now() - started);
     console.log(
-      `✓ ${url}  ${(html.length / 1024).toFixed(0)}kb  ${ms}ms  title=${JSON.stringify(title)}`,
+      `✓ ${url}  ${(output.length / 1024).toFixed(0)}kb  ${ms}ms  route=${routeName}  title=${JSON.stringify(title)}`,
     );
     ok++;
   } catch (error) {

@@ -8,6 +8,11 @@ import config from './config/environment';
 export interface RenderResult {
   html: string;
   /**
+   * The route that was rendered, e.g. `docs.components.buttons.button`. The
+   * prerenderer maps it to the lazy route chunks the page will need.
+   */
+  routeName: string | undefined;
+  /**
    * Read before the instance is torn down — ember-page-title clears
    * `document.title` on teardown, so the caller cannot recover it afterwards.
    */
@@ -64,9 +69,14 @@ export async function render(
       instance.visit as (url: string, options: BootOptions) => Promise<unknown>
     )(url, bootOptions);
 
+    const router = instance.lookup('service:router') as {
+      currentRouteName?: string;
+    };
+
     const result = {
       html: `<!DOCTYPE html>\n${document.documentElement.outerHTML}`,
       title: document.title,
+      routeName: router.currentRouteName,
     };
 
     // Wait for work the transition did not await before the owner is destroyed.
