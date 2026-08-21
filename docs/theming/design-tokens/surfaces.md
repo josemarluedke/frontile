@@ -15,7 +15,7 @@ The Surface system provides a flexible way to create depth and hierarchy in your
 
 The Surface system consists of three types:
 
-- **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, modal, input)
+- **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, table, modal, input)
 - **Surface Overlay** (subtle, soft, mild, firm, strong) - Translucent layers that push an element _into_ its background
 - **Surface Lift** (subtle, soft, mild, firm, strong) - Translucent layers that pull an element _up off_ its background
 
@@ -76,9 +76,9 @@ Component contrast baseline (hierarchy level 1).
 
 Elevated card container surface (hierarchy level 1). Opaque white in light mode;
 in dark mode it is a translucent veil (white @ 7%, the same value as
-`overlay-subtle`), so whatever sits behind it shows through faintly. Reach for an
-opaque role such as `surface-canvas` when content must be fully hidden behind it
-— a sticky table header, for instance.
+`overlay-subtle`), so whatever sits behind it shows through faintly. Where a
+surface has to stay opaque, use `surface-table` — the same colour without the
+transparency.
 
 **When to use:**
 
@@ -96,6 +96,57 @@ opaque role such as `surface-canvas` when content must be fully hidden behind it
       <p class='text-neutral-strong'>This card is elevated off the canvas
         background</p>
     </article>
+  </div>
+</template>
+```
+
+#### Table (`bg-surface-table`)
+
+Data table surface (hierarchy level 1). The same colour as a card, guaranteed
+opaque: pure white in light mode, and in dark mode `gray-900` — what
+`surface-card` renders over `surface-canvas`.
+
+Tables need that guarantee. A sticky header, a frozen row, or a pinned column
+paints over the rows and columns scrolling beneath it, and anything translucent
+lets them show through.
+
+**When to use:**
+
+- Data table containers, and the sticky parts inside them
+- Any surface at card elevation that has to stay opaque
+
+Recolour it for the whole app the way you would any semantic colour:
+
+```js
+module.exports = frontile({
+  themes: {
+    dark: {
+      colors: {
+        surface: { table: '#1c1c1c' }
+      }
+    }
+  }
+});
+```
+
+For one table that sits on a different background, set `--color-surface-table` on
+it instead — it is a plain custom property, and it applies to everything below
+it. The Table component takes it as a wrapper class; see
+[Table](/docs/components/collections/table).
+
+```gts preview
+<template>
+  <div class='bg-surface-canvas p-6'>
+    <div class='bg-surface-table rounded-lg h-32 overflow-auto'>
+      <div class='bg-surface-table sticky top-0 px-4 py-2'>
+        <p class='text-neutral-bolder'>Sticky header — rows pass under it</p>
+      </div>
+      <div class='px-4 py-2 text-neutral-strong'>Row one</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row two</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row three</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row four</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row five</div>
+    </div>
   </div>
 </template>
 ```
@@ -160,12 +211,12 @@ Form control surface for inputs, checkboxes, radios, and similar controls (hiera
 
 Surface roles are designed to create visual depth through a hierarchy system:
 
-| Level | Role         | Purpose                                                  |
-| ----- | ------------ | -------------------------------------------------------- |
-| -1    | Input        | Recessed below canvas                                    |
-| 0     | App          | Root application background                              |
-| 1     | Canvas, Card | Component contrast baseline and first level of elevation |
-| 3     | Modal        | Highest elevation (modals, drawers, popovers, dropdowns) |
+| Level | Role                | Purpose                                                  |
+| ----- | ------------------- | -------------------------------------------------------- |
+| -1    | Input               | Recessed below canvas                                    |
+| 0     | App                 | Root application background                              |
+| 1     | Canvas, Card, Table | Component contrast baseline and first level of elevation |
+| 3     | Modal               | Highest elevation (modals, drawers, popovers, dropdowns) |
 
 In **light mode**, elevated surfaces appear brighter (white) against gray backgrounds following the elevation-luminance principle.
 In **dark mode**, elevated surfaces appear progressively lighter against near-black backgrounds.
@@ -325,7 +376,7 @@ The same nesting, one family each — overlay recedes, lift advances:
 Follow this decision flow:
 
 1. **Does this match a specific UI context?**
-   - If yes → Use `surface-{role}` (app, canvas, card, modal, input)
+   - If yes → Use `surface-{role}` (app, canvas, card, table, modal, input)
    - Surface roles provide semantic meaning and automatically adapt to themes.
 
 2. **Is this the base container and no role matches?**

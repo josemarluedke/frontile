@@ -273,8 +273,8 @@ export interface SurfaceColors {
    *
    * Light: Pure white, creating lifted appearance against gray canvas
    * Dark: A translucent veil (white @ 7%, the same value as `overlay-subtle`),
-   * so content behind it shows through faintly. Use an opaque role such as
-   * `surface-canvas` where it must not — a sticky table header, for instance.
+   * so content behind it shows through faintly. Where a surface has to stay
+   * opaque, use {@link table} — the same color without the transparency.
    *
    * @example
    * // Product card
@@ -288,6 +288,28 @@ export interface SurfaceColors {
    * <div className="bg-surface-card hover:bg-surface-overlay-subtle">
    */
   card: string;
+
+  /**
+   * Data table surface (hierarchy level 1).
+   *
+   * The same color as {@link card}, guaranteed opaque. Tables need that
+   * guarantee: a sticky header, a frozen row, or a pinned column paints over the
+   * rows and columns scrolling beneath it, and anything translucent lets them
+   * show through.
+   *
+   * Light: Pure white, identical to `card`
+   * Dark: `gray-900` — the color `card` renders over `canvas`, so the two are
+   * indistinguishable on a canvas-backed page
+   *
+   * For one table on a different background, set `--color-surface-table` on it
+   * rather than recolouring the role — it is a plain custom property, and it
+   * applies to everything below it.
+   *
+   * @example
+   * // Sticky table header, which the rows scroll under
+   * <thead className="sticky top-0 bg-surface-table">
+   */
+  table: string;
 
   /**
    * Form control surface for inputs, checkboxes, radios, and similar controls

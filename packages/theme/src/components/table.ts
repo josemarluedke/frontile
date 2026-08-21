@@ -8,17 +8,31 @@ const table = tv({
       'isolate',
       'overflow-auto',
       'rounded-default',
-      'bg-surface-card'
+      // `surface-table` rather than `surface-card`, which the table otherwise
+      // looks exactly like: every sticky part of the table paints over the rows
+      // and columns scrolling beneath it, and in dark `card` is a translucent
+      // veil that would let them read through. The role carries the colour that
+      // veil renders, with the alpha already resolved. Override
+      // `--color-surface-table` to sit a table on a different background.
+      'bg-surface-table'
     ],
     table: ['w-full', 'table-auto'],
     thead: ['relative', 'bg-surface-overlay-subtle'],
     tbody: [
       'divide-y',
       'divide-surface-overlay-subtle',
+      // Rows carry the surface themselves rather than letting the wrapper show
+      // through: a sticky row has to hide the rows sliding under it, and a
+      // sticky cell picks its fill up from its row via `background-color:
+      // inherit`. Row tints layer on top of this, and any tint that replaces it
+      // has to be opaque too — see `striped` and the selection variants.
+      '[&>tr]:bg-surface-table',
       '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-neutral-subtle',
       '[&>tr]:data-[selectable=true]:transition-colors'
     ],
-    tfoot: ['relative'],
+    // Footer rows take the surface for the same reason body rows do: a sticky
+    // column in the footer scrolls past the cells to its side.
+    tfoot: ['relative', '[&>tr]:bg-surface-table'],
     tr: [
       'data-[disabled=true]:opacity-50',
       'data-[disabled=true]:cursor-not-allowed',
@@ -148,7 +162,11 @@ const table = tv({
     },
     striped: {
       true: {
-        tbody: '[&_tr:nth-child(odd)]:bg-surface-overlay-subtle'
+        // A translucent tint, so it goes on as a background *image* layer over
+        // the row's opaque fill instead of replacing it. Painting it as the
+        // background colour would make every striped sticky row see-through.
+        tbody:
+          '[&_tr:nth-child(odd)]:[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
       }
     },
     isSticky: {
@@ -178,9 +196,16 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        // `surface-card` is translucent in dark, which would let rows show
-        // through a stuck header; `surface-canvas` is opaque in both schemes.
-        thead: ['sticky', 'top-0', 'z-2', 'bg-surface-canvas']
+        // The opaque surface plus the header's own translucent tint as a layer
+        // above it, which is what a non-sticky `thead` composites to over the
+        // wrapper — so stuck and unstuck headers read as the same colour.
+        thead: [
+          'sticky',
+          'top-0',
+          'z-2',
+          'bg-surface-table',
+          '[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
+        ]
       }
     },
     // Sticky footer
@@ -188,10 +213,13 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-surface-card']
+        tfoot: ['sticky', 'bottom-0', 'z-2', 'bg-surface-table']
       }
     },
-    // Sticky columns - medium priority, header cells get higher z-index
+    // Sticky columns - medium priority, header cells get higher z-index.
+    // Body and footer cells inherit their row's paint — fill, and any tint
+    // layered over it — so a pinned column tracks selection, hover and striping
+    // instead of masking them with a surface of its own.
     {
       isSticky: true,
       stickyPosition: 'left',
@@ -200,10 +228,16 @@ const table = tv({
           'sticky',
           'left-0',
           'z-3',
-          'bg-surface-card',
+          'bg-surface-table',
           '[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
         ],
-        td: ['sticky', 'left-0', 'z-1', 'bg-surface-card']
+        td: [
+          'sticky',
+          'left-0',
+          'z-1',
+          'bg-inherit',
+          '[background-image:inherit]'
+        ]
       }
     },
     {
@@ -214,10 +248,16 @@ const table = tv({
           'sticky',
           'right-0',
           'z-3',
-          'bg-surface-card',
+          'bg-surface-table',
           '[background-image:linear-gradient(var(--color-surface-overlay-subtle),var(--color-surface-overlay-subtle))]'
         ],
-        td: ['sticky', 'right-0', 'z-1', 'bg-surface-card']
+        td: [
+          'sticky',
+          'right-0',
+          'z-1',
+          'bg-inherit',
+          '[background-image:inherit]'
+        ]
       }
     },
     // Sticky rows - base layer
@@ -225,14 +265,14 @@ const table = tv({
       isSticky: true,
       stickyPosition: 'top',
       class: {
-        tr: ['sticky', 'top-0', 'z-1', 'bg-surface-card']
+        tr: ['sticky', 'top-0', 'z-1', 'bg-surface-table']
       }
     },
     {
       isSticky: true,
       stickyPosition: 'bottom',
       class: {
-        tr: ['sticky', 'bottom-0', 'z-1', 'bg-surface-card']
+        tr: ['sticky', 'bottom-0', 'z-1', 'bg-surface-table']
       }
     },
     // Sticky rows with sticky header - position after header
@@ -244,7 +284,7 @@ const table = tv({
         tr: [
           'sticky',
           'z-2',
-          'bg-surface-card',
+          'bg-surface-table',
           '[&.sticky]:[top:var(--table-header-height,48px)]'
         ]
       }
@@ -255,7 +295,13 @@ const table = tv({
       stickyPosition: 'left',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'left-0', 'z-2', 'bg-surface-card']
+        td: [
+          'sticky',
+          'left-0',
+          'z-2',
+          'bg-inherit',
+          '[background-image:inherit]'
+        ]
       }
     },
     {
@@ -263,7 +309,13 @@ const table = tv({
       stickyPosition: 'right',
       isInStickyRow: true,
       class: {
-        td: ['sticky', 'right-0', 'z-2', 'bg-surface-card']
+        td: [
+          'sticky',
+          'right-0',
+          'z-2',
+          'bg-inherit',
+          '[background-image:inherit]'
+        ]
       }
     },
     // Loading states with color variants
@@ -306,7 +358,11 @@ const table = tv({
     {
       selectionColor: 'default',
       class: {
-        tbody: '[&>tr]:data-[selected=true]:bg-neutral-subtle/50',
+        // Half-opacity, so it layers over the row's fill rather than replacing
+        // it — a selected sticky row still has to occlude what scrolls under.
+        // The other selection colours are opaque and can stay plain fills.
+        tbody:
+          '[&>tr]:data-[selected=true]:[background-image:linear-gradient(color-mix(in_oklab,var(--color-neutral-subtle)_50%,transparent),color-mix(in_oklab,var(--color-neutral-subtle)_50%,transparent))]',
         tr: ['data-[selectable=true]:focus-visible:ring-default']
       }
     },

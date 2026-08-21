@@ -183,6 +183,26 @@ export default class DemoComponent extends Component {
 
 ## Sticky Elements
 
+Sticky parts of a table — a frozen header or footer, sticky rows, pinned columns
+— are painted with `surface-table`, the same opaque surface as the table itself,
+so they cover the rows and columns that scroll under them. Pinned columns keep
+their row's selection, hover, and striping.
+
+Tables assume they sit on a canvas-backed page. On any other background, point
+`--color-surface-table` at it — in CSS, or through `@classes`:
+
+```gts
+<Table
+  @columns={{this.columns}}
+  @items={{this.items}}
+  @isScrollable={{true}}
+  @classes={{hash wrapper='[--color-surface-table:var(--color-surface-app)]'}}
+/>
+```
+
+Whatever you point it at has to be opaque. See
+[Surfaces](/docs/theming/design-tokens/surfaces) for the role itself.
+
 ### Sticky Header
 
 Keep the header visible while scrolling:

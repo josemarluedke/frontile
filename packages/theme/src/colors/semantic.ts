@@ -113,6 +113,8 @@ const themeColorsLight: ThemeColors = {
     app: absolute.white,
     canvas: palette.gray['50'],
     card: absolute.white,
+    // `card` is already opaque in this scheme, so the table matches it exactly.
+    table: absolute.white,
     input: absolute.white,
     modal: absolute.white
   }
@@ -223,6 +225,9 @@ const themeColorsDark: ThemeColors = {
     // Beacon aliases dark `card` to `surface.overlay.subtle`, i.e. a
     // translucent veil rather than an opaque step.
     card: `${absolute.white}12`, // absolute.white @ 7%
+    // What `card` renders: white @ 7% over `canvas` (gray-950) composites to
+    // exactly gray-900 — the same colour, opaque.
+    table: palette.gray['900'],
     input: absolute.black,
     modal: palette.gray['950']
   }
