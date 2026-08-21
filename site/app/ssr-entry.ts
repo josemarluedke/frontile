@@ -1,6 +1,7 @@
 // Prerender entry point. Bundled for Node by the `isSsrBuild` branch of
 // vite.config.mjs and driven by ssr/prerender.mjs — see ssr/README.md.
 import type { BootOptions } from '@ember/engine/instance';
+import { settled } from '@ember/test-helpers';
 import App from './app';
 import config from './config/environment';
 
@@ -63,10 +64,28 @@ export async function render(
       instance.visit as (url: string, options: BootOptions) => Promise<unknown>
     )(url, bootOptions);
 
-    return {
+    const result = {
       html: `<!DOCTYPE html>\n${document.documentElement.outerHTML}`,
       title: document.title,
     };
+
+    // Wait for work the transition did not await before the owner is destroyed.
+    // With `splitAtRoutes`, rendering a page's sidebar pulls route handlers for
+    // every split route it links to, and @embroider/router answers those with
+    // `registerBundle(bundle).then(() => original(name))` — a continuation with
+    // no `isDestroying` guard, unlike `registerBundle` itself. Tearing down
+    // immediately makes those chains throw
+    // `Cannot call .lookup('route:…') after the owner has been destroyed`.
+    //
+    // `settled()` resolves once the run loop, pending timers and pending
+    // requests are quiet, which is long enough for those already-resolved
+    // dynamic imports to finish. Note it is *not* tracking them via test
+    // waiters: @ember/test-waiters compiles to a no-op outside a development
+    // build, so @embroider/router's lazy-route waiter contributes nothing here.
+    // The HTML is snapshotted above so nothing below can alter the output.
+    await settled();
+
+    return result;
   } finally {
     instance.destroy();
   }

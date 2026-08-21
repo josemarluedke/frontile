@@ -6,7 +6,7 @@ import PageHeadings from './docfy-page-headings';
 import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
 import DocfyCopyPage from './docfy-copy-page';
-import { DocfyLink, DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
+import { DocfyLink, DocfyOutput, DocfyPreviousAndNextPage } from '@docfy/ember';
 
 interface Signature {
   Args: {

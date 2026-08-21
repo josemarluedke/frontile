@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
-import { DocfyLink } from '@docfy/ember';
 import { NotificationCard, Notification } from 'frontile/notifications';
 import {
   Avatar,
@@ -39,6 +38,7 @@ import SpecimenTile from '../components/homepage/specimen-tile';
 import CodePanel from '../components/homepage/code-panel';
 import LinkButton from '../components/homepage/link-button';
 import OverlayDoor from '../components/homepage/overlay-door';
+import { DocfyLink } from '@docfy/ember';
 import SectionIntro from '../components/homepage/section-intro';
 import onceInView from '../modifiers/once-in-view';
 import { inventory } from '../components/homepage/component-inventory';
@@ -817,7 +817,7 @@ export default class IndexPage extends Component {
 
           <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
             <LinkButton
-              @route="docs.get-started"
+              @to="/docs/get-started"
               @intent="primary"
               @size="lg"
             >Read the docs</LinkButton>

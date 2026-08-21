@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { DocfyOutput } from '@docfy/ember';
-import DocfyLink from '@docfy/ember/components/docfy-link';
+import { DocfyLink, DocfyOutput } from '@docfy/ember';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
 
