@@ -149,6 +149,79 @@ module.exports = frontile({
 
 **Why:** The nested structure provides better organization for related theme properties and aligns with CSS custom property conventions.
 
+### 5. Border Radius Is Now a Derived Scale
+
+Every `rounded-*` step is now `calc(var(--radius) * n)` instead of a hardcoded
+value, so `--radius` is a single knob for how round the whole library looks.
+
+#### Before (v0.17)
+
+```css
+--radius-xs: 1px;
+--radius-sm: 2px;
+--radius-md: 4px;
+--radius: 8px;
+--radius-xl: 12px;
+--radius-2xl: 16px;
+--radius-default: 20px;
+```
+
+#### After (v0.18)
+
+```css
+--radius: 0.5rem;                            /* 8px — the base */
+--radius-xs: calc(var(--radius) * 0.25);     /* 2px */
+--radius-sm: calc(var(--radius) * 0.5);      /* 4px */
+--radius-md: calc(var(--radius) * 0.75);     /* 6px */
+--radius-lg: calc(var(--radius) * 1);        /* 8px */
+--radius-xl: calc(var(--radius) * 1.5);      /* 12px */
+--radius-2xl: calc(var(--radius) * 2);       /* 16px */
+--radius-3xl: calc(var(--radius) * 3);       /* 24px */
+--radius-4xl: calc(var(--radius) * 4);       /* 32px */
+--radius-default: calc(var(--radius) * 2.5); /* 20px */
+```
+
+**What actually changes visually.** Three steps got slightly larger, bringing the
+scale back in line with stock Tailwind v4:
+
+| Utility | v0.17 | v0.18 |
+| --- | --- | --- |
+| `rounded-xs` | 1px | 2px |
+| `rounded-sm` | 2px | 4px |
+| `rounded-md` | 4px | 6px |
+
+Everything from `rounded` upward keeps its value. If you relied on `rounded-sm`
+being 2px, use `rounded-xs`, or pin the step explicitly:
+
+```css
+@theme {
+  --radius-sm: 2px; /* opt this one step out of the derived scale */
+}
+```
+
+**Popover surfaces are rounder.** Dropdown and Popover panels moved from
+`rounded-sm` (2px) to `rounded-xl` (12px), Listbox and menu items to
+`rounded-lg` (8px), and NotificationCard to `rounded-xl`. Select and
+Autocomplete inherit the change through Popover. This is a visual change only —
+no API moved. To go back to square-ish menus, set `--radius: 0`, or override the
+component classes via `@classes`.
+
+**Why:** The old scale was smaller than stock Tailwind at every step, which made
+`rounded-sm` a surprise for anyone reading the class name, and left popover
+surfaces visibly sharper than the Modal and Drawer they sit alongside. Deriving
+the scale from one value fixes the inconsistency and makes overall roundness a
+one-line theme decision.
+
+**Dialing it from the plugin config**, including per theme:
+
+```typescript
+module.exports = frontile({
+  layout: {
+    radius: { DEFAULT: '0.75rem' }
+  }
+});
+```
+
 ## Migration Steps
 
 ### Step 1: Update CSS Imports

@@ -42,7 +42,7 @@ Add customizations after importing the theme in your `app/styles/app.css`:
 
 Use CSS variables to customize:
 
-- **Border radius** - `--radius`, `--radius-xl`, `--radius-pill`
+- **Border radius** - `--radius` (one knob; the whole `rounded-*` scale is derived from it), plus `--radius-pill` and individual steps as escape hatches
 - **Border widths** - `--border-width-thin`, `--border-width-heavy`
 - **Icon sizes** - `--size-icon-sm`, `--size-icon-md`, `--size-icon-lg`
 - **Shadows** - `--shadow-elevation-1`, `--shadow-elevation-2`
@@ -152,7 +152,7 @@ For minor adjustments to existing tokens, use CSS variables:
 
 ```css
 @theme {
-  --radius: 6px;
+  --radius: 6px; /* scales every rounded-* step down proportionally */
   --opacity-hover: .9;
 }
 ```

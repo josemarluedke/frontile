@@ -21,15 +21,32 @@ export interface LayoutTheme {
   /**
    * Border radius configuration for components.
    * Values can be any valid CSS length unit (px, rem, em, etc.)
+   *
+   * `DEFAULT` is the single knob for the whole system: every other step is
+   * derived from it via `calc()`, so setting it alone scales all component
+   * radii proportionally.
+   *
+   * ```ts
+   * frontile({ layout: { radius: { DEFAULT: '0.75rem' } } }) // softer overall
+   * frontile({ layout: { radius: { DEFAULT: '0' } } })       // fully squared off
+   * ```
+   *
+   * The individual steps are escape hatches — set one only to break a single
+   * step out of the derived scale. `none` and `pill` are absolutes and are not
+   * affected by `DEFAULT`.
    */
   radius?: {
+    /** Base unit the scale is derived from. Defaults to `0.5rem` (8px). */
+    DEFAULT?: string;
+    none?: string;
     xs?: string;
     sm?: string;
     md?: string;
     lg?: string;
-    DEFAULT?: string;
     xl?: string;
     '2xl'?: string;
+    '3xl'?: string;
+    '4xl'?: string;
     full?: string;
     pill?: string;
   };

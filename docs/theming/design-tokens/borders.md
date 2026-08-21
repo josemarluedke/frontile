@@ -76,6 +76,10 @@ Control border thickness with semantic width tokens. These tokens provide meanin
 
 Control corner rounding with radius tokens that range from sharp edges to fully rounded elements.
 
+Every step is a multiple of a single `--radius` base (`0.5rem` by default), so
+the scale is proportional rather than arbitrary. Changing `--radius` alone
+re-rounds the entire library — see [Scaling the whole system](#scaling-the-whole-system) below.
+
 ### Available Radii
 
 ```gts preview
@@ -83,6 +87,9 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
   <div class='grid grid-cols-2 md:grid-cols-4 gap-4'>
     <div class='rounded-none bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>None</span>
+    </div>
+    <div class='rounded-xs bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
+      <span class='text-label-sm'>XS</span>
     </div>
     <div class='rounded-sm bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>SM</span>
@@ -93,11 +100,20 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
     <div class='rounded bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Default</span>
     </div>
+    <div class='rounded-lg bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
+      <span class='text-label-sm'>LG</span>
+    </div>
     <div class='rounded-xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>XL</span>
     </div>
     <div class='rounded-2xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>2XL</span>
+    </div>
+    <div class='rounded-3xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
+      <span class='text-label-sm'>3XL</span>
+    </div>
+    <div class='rounded-4xl bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
+      <span class='text-label-sm'>4XL</span>
     </div>
     <div class='rounded-default bg-primary-subtle p-4 flex items-center justify-center min-h-24'>
       <span class='text-label-sm'>Default (Custom)</span>
@@ -109,16 +125,23 @@ Control corner rounding with radius tokens that range from sharp edges to fully 
 </template>
 ```
 
-| Radius | Utility | Common Uses |
-|--------|---------|-------------|
-| None | `rounded-none` | Sharp corners, technical interfaces, no rounding |
-| SM | `rounded-sm` | Subtle rounding, tight layouts |
-| MD | `rounded-md` | Medium rounding, cards with more visual softness |
-| Default | `rounded` | Standard UI elements, buttons, inputs |
-| XL | `rounded-xl` | Large cards, prominent panels |
-| 2XL | `rounded-2xl` | Hero sections, feature cards |
-| Default (Custom) | `rounded-default` | Custom default radius value, soft friendly corners |
-| Pill | `rounded-pill` | Pills, badges, fully rounded buttons |
+| Radius | Utility | Multiplier | Default | Common Uses |
+|--------|---------|-----------|---------|-------------|
+| None | `rounded-none` | — | 0px | Sharp corners, technical interfaces, no rounding |
+| XS | `rounded-xs` | 0.25x | 2px | Hairline rounding on very small marks |
+| SM | `rounded-sm` | 0.5x | 4px | Keyboard shortcuts, checkboxes, tight layouts |
+| MD | `rounded-md` | 0.75x | 6px | Compact controls, inline chips |
+| Default | `rounded` | 1x | 8px | The base unit itself |
+| LG | `rounded-lg` | 1x | 8px | Menu items nested inside a popover |
+| XL | `rounded-xl` | 1.5x | 12px | Inputs, selects, popovers, dropdowns, notifications |
+| 2XL | `rounded-2xl` | 2x | 16px | Modals, drawers |
+| Default (Custom) | `rounded-default` | 2.5x | 20px | Tables, skeletons, soft friendly corners |
+| 3XL | `rounded-3xl` | 3x | 24px | Oversized surfaces |
+| 4XL | `rounded-4xl` | 4x | 32px | Hero-scale surfaces |
+| Pill | `rounded-pill` | — | 9999px | Pills, badges, fully rounded buttons |
+
+`rounded-none` and `rounded-pill` are absolutes: they stay 0 and 9999px no
+matter what `--radius` is set to.
 
 ## Combining Borders and Radius
 
@@ -190,11 +213,42 @@ Override border widths and radius using CSS variables:
   --border-width-default: 1.5px;
   --border-width-heavy: 3px;
 
-  /* Customize border radius */
-  --radius: 6px;
-  --radius-xl: 16px;
-  --radius-default: 8px;
-  --radius-pill: 9999px;
+  /* Customize border radius — one knob for the whole scale */
+  --radius: 0.75rem;
+}
+```
+
+### Scaling the whole system
+
+Because every step is `calc(var(--radius) * n)`, one value controls how round
+the entire library looks. Nothing else has to change:
+
+| `--radius` | Menus / inputs | Menu items | Modals |
+|-----------|----------------|-----------|--------|
+| `0` | 0px | 0px | 0px |
+| `0.25rem` | 6px | 4px | 8px |
+| `0.5rem` (default) | 12px | 8px | 16px |
+| `0.75rem` | 18px | 12px | 24px |
+| `1rem` | 24px | 16px | 32px |
+
+The same knob is available from the JavaScript plugin config, where it can also
+differ per theme:
+
+```js
+frontile({
+  layout: {
+    radius: { DEFAULT: '0.75rem' }
+  }
+});
+```
+
+Individual steps remain overridable when you need to break one out of the
+proportional scale:
+
+```css
+@theme {
+  --radius: 0.5rem;
+  --radius-2xl: 28px; /* modals rounder than the scale would give */
 }
 ```
 
