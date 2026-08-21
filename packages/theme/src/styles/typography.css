@@ -205,7 +205,9 @@
 
 
   /* strong text styles — Open Sans bold, emphasis for numerics/prices.
-     Shares the header size/tracking/leading matrix. */
+     Sizes follow the Facet button label ramp (sm..3xl map to typescale
+     11/13/16/18/22/25); the smaller steps are unused by Button and keep their
+     original mapping. */
   --text-strong-4xs: var(--font-size-3);
   --text-strong-4xs--font-weight: var(--font-weight-bold);
   --text-strong-4xs--letter-spacing: var(--letter-spacing-default);
@@ -226,32 +228,32 @@
   --text-strong-xs--letter-spacing: var(--letter-spacing-default);
   --text-strong-xs--line-height: var(--line-height-easy);
 
-  --text-strong-sm: var(--font-size-12);
+  --text-strong-sm: var(--font-size-11);
   --text-strong-sm--font-weight: var(--font-weight-bold);
   --text-strong-sm--letter-spacing: var(--letter-spacing-default);
   --text-strong-sm--line-height: var(--line-height-easy);
 
-  --text-strong-md: var(--font-size-14);
+  --text-strong-md: var(--font-size-13);
   --text-strong-md--font-weight: var(--font-weight-bold);
   --text-strong-md--letter-spacing: var(--letter-spacing-tight);
   --text-strong-md--line-height: var(--line-height-easy);
 
-  --text-strong-lg: var(--font-size-17);
+  --text-strong-lg: var(--font-size-16);
   --text-strong-lg--font-weight: var(--font-weight-bold);
   --text-strong-lg--letter-spacing: var(--letter-spacing-tight);
   --text-strong-lg--line-height: var(--line-height-default);
 
-  --text-strong-xl: var(--font-size-19);
+  --text-strong-xl: var(--font-size-18);
   --text-strong-xl--font-weight: var(--font-weight-bold);
   --text-strong-xl--letter-spacing: var(--letter-spacing-tight);
   --text-strong-xl--line-height: var(--line-height-default);
 
-  --text-strong-2xl: var(--font-size-23);
+  --text-strong-2xl: var(--font-size-22);
   --text-strong-2xl--font-weight: var(--font-weight-bold);
   --text-strong-2xl--letter-spacing: var(--letter-spacing-tight);
   --text-strong-2xl--line-height: var(--line-height-default);
 
-  --text-strong-3xl: var(--font-size-26);
+  --text-strong-3xl: var(--font-size-25);
   --text-strong-3xl--font-weight: var(--font-weight-bold);
   --text-strong-3xl--letter-spacing: var(--letter-spacing-tight);
   --text-strong-3xl--line-height: var(--line-height-default);
