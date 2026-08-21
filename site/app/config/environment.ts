@@ -23,10 +23,15 @@ assert(
   'APP was not detected on your config',
   'APP' in config && typeof config.APP === 'object'
 );
+assert(
+  'siteURL was not detected on your config',
+  'siteURL' in config && typeof config.siteURL === 'string'
+);
 
 export default config as {
   modulePrefix: string;
   locationType: string;
   rootURL: string;
+  siteURL: string;
   APP: Record<string, unknown>;
 } & Record<string, unknown>;

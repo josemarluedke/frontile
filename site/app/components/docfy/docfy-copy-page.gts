@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { ButtonGroup, Dropdown } from 'frontile';
 import type { TOC } from '@ember/component/template-only';
+import { currentOrigin } from 'site/utils/origin';
 
 export interface DocfyCopyPageSignature {
   Args: {
@@ -45,7 +46,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
   resetTimer?: ReturnType<typeof setTimeout>;
 
   get mdUrl(): string {
-    return `${window.location.origin}${markdownPathForPageUrl(this.args.url)}`;
+    return `${currentOrigin()}${markdownPathForPageUrl(this.args.url)}`;
   }
 
   buildPrompt(): string {

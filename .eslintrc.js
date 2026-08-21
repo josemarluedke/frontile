@@ -69,23 +69,19 @@ module.exports = {
       rules: {}
     },
 
-    // .mjs Node config/tooling files: these always run in Node, never a
-    // browser, so they need the Node global env (process, __dirname, etc.)
-    // and no-console relaxed - but unlike the .js files above, they aren't
-    // routed through @underline/eslint-config-node's `plugin:node/recommended`,
-    // since that reintroduces import-resolution rules (node/no-missing-import,
+    // .mjs files in this repo are all Node config/tooling — rollup, vite,
+    // eslint, prettier, docfy, scripts/, site/ssr/ — and none are shipped to a
+    // browser. So they need the Node global env (process, __dirname, etc.) and
+    // no-console relaxed. This used to enumerate them one by one, which meant
+    // every new tooling file failed with confusing `no-undef` on `process`
+    // until someone remembered to come back here.
+    //
+    // Unlike the .js files above, these aren't routed through
+    // @underline/eslint-config-node's `plugin:node/recommended`, since that
+    // reintroduces import-resolution rules (node/no-missing-import,
     // node/no-unpublished-import) that the root config deliberately disables.
     {
-      files: [
-        'site/lib/*.mjs',
-        'site/vite.config.mjs',
-        'site/docfy.config.mjs',
-        'site/eslint.config.mjs',
-        'test-app/eslint.config.mjs',
-        'packages/*/rollup.config.mjs',
-        'scripts/**/*.mjs',
-        '.claude/skills/**/*.mjs'
-      ],
+      files: ['**/*.mjs'],
       env: {
         node: true
       },

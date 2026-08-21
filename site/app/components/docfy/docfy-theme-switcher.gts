@@ -25,6 +25,13 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
     const root = document.documentElement;
     this.prefersDark = root.classList.value.includes(DARK_MODE_CLASS);
 
+    // `matchMedia` has no counterpart while the site is prerendered in Node.
+    // Following the OS preference only means anything in a live browser, so skip
+    // the subscription there rather than making the prerenderer shim it.
+    if (typeof window.matchMedia !== 'function') {
+      return;
+    }
+
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQueryList.onchange = ({ matches }): void => {
       if (!localStorage.getItem('prefersMode')) {

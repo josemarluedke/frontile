@@ -12,6 +12,7 @@ site/ember-cli-build.js
 /packages/*/tmp/
 
 /site/dist/
+/site/dist-ssr/
 /site/tmp/
 /test-app/dist/
 /test-app/tmp/

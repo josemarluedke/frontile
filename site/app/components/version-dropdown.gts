@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
+import { currentDomain, stripScheme } from 'site/utils/origin';
 
 interface VersionDropdownSignature {
   Element: HTMLDivElement;
@@ -23,10 +24,10 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
   ];
 
   get versions() {
-    const currentDomain = window.location.origin.replace(/^https?:\/\//, '');
+    const domain = currentDomain();
 
     // Only add the Next version if we're on the next subdomain
-    if (currentDomain.includes('next')) {
+    if (domain.includes('next')) {
       return [
         ...this.baseVersions,
         {
@@ -46,10 +47,10 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
   }
 
   get currentVersion() {
-    const currentDomain = window.location.origin.replace(/^https?:\/\//, '');
+    const domain = currentDomain();
 
     // Check if domain contains "next" and return the Next version
-    if (currentDomain.includes('next')) {
+    if (domain.includes('next')) {
       const nextVersion = this.versions.find((v) => v.key === 'next');
       if (nextVersion) {
         return nextVersion;
@@ -62,10 +63,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
       if (version.url === '/') {
         return false;
       }
-      const versionDomain = version.url
-        .replace(/^https?:\/\//, '')
-        .replace(/\/$/, '');
-      return currentDomain === versionDomain;
+      return domain === stripScheme(version.url);
     });
 
     // Return matched version or latest version as fallback
