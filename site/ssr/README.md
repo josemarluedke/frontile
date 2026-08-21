@@ -170,8 +170,18 @@ been destroyed`. The HTML is complete either way, but the errors fail the build.
 
 `render()` therefore snapshots the HTML and awaits `settled()` before returning,
 which yields until the run loop, timers and pending requests are quiet — long
-enough for those already-resolved imports to finish. The upstream fix is a
-destroy guard on that continuation.
+enough for those already-resolved imports to finish.
+
+Settling is the right layer, not a workaround for a missing one-line guard.
+`registerBundle` already grew an `isDestroying` check (embroider `ac3bd92c`,
+"Protect against early destruction"), and that check is precisely what leaves
+this exposed: it returns early without setting `entry.loaded`, while the promise
+still resolves, so the continuation runs `original(name)` against a destroyed
+owner. Adding the same guard to the continuation does not work — returning
+`undefined` from `getRoute` breaks router_js, which does
+`route._internalName = this.name` on the resolved value. An upstream fix has to
+abort the chain rather than resolve it to nothing. Until then, an owner with
+in-flight route loads must not be destroyed, which is what `settled()` ensures.
 
 Importing `@ember/test-helpers` for `settled()` costs ~376 KB in the Node bundle
 (never shipped) and one shim: it reads `document.location.search` at module
