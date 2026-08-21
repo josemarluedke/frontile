@@ -135,6 +135,25 @@ const urls = JSON.parse(
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 const routes = only.length ? only : ['/', ...urls];
 
+/**
+ * Where a route's HTML goes.
+ *
+ * Flat `<path>.html`, not `<path>/index.html`. Every link the site renders is
+ * extensionless and without a trailing slash (`/docs/components/buttons/button`,
+ * and notably that holds for Docfy index pages too, whose URLs *do* carry a
+ * slash). Netlify's Pretty URLs serve `/foo` straight from `foo.html`, whereas
+ * `foo/index.html` is only reachable at `/foo/` — so directory output would put
+ * a 301 in front of every cold page load and quietly move the site's canonical
+ * URLs. Flat files keep today's URLs exactly as they are.
+ */
+function outputPathForUrl(url) {
+  const relative = url.replace(/^\/+/, '').replace(/\/+$/, '');
+
+  return relative === ''
+    ? join(distDir, 'index.html')
+    : join(distDir, `${relative}.html`);
+}
+
 for (const url of routes) {
   const started = performance.now();
   try {
@@ -149,7 +168,7 @@ for (const url of routes) {
 
     const result = await render(url, fresh.document);
 
-    const outPath = join(distDir, url.replace(/^\//, ''), 'index.html');
+    const outPath = outputPathForUrl(url);
     await mkdir(dirname(outPath), { recursive: true });
     await writeFile(outPath, result.html, 'utf8');
 

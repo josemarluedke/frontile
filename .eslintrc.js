@@ -78,7 +78,9 @@ module.exports = {
     {
       files: [
         'site/lib/*.mjs',
+        'site/ssr/*.mjs',
         'site/vite.config.mjs',
+        'site/vite.config.ssr.mjs',
         'site/docfy.config.mjs',
         'site/eslint.config.mjs',
         'test-app/eslint.config.mjs',

@@ -53,7 +53,7 @@ directly.
 build        → build:client && build:ssr && prerender
 build:client → vite build                                # dist/
 build:ssr    → vite build --config vite.config.ssr.mjs    # dist-ssr/
-prerender    → node ssr/prerender.mjs                     # 68 × index.html into dist/
+prerender    → node ssr/prerender.mjs                     # 68 × <route>.html into dist/
 ```
 
 For a fast iteration loop, `prerender.mjs` takes route arguments:
@@ -141,13 +141,18 @@ you can't shadow a URL that actually exists within the site" — a non-forced
 prerendered pages win, and the SPA fallback still covers everything else,
 including the `not-found` catch-all route.
 
+Routes are written as flat `<route>.html` files, not `<route>/index.html`. Every
+link the site renders is extensionless and slash-free
+(`/docs/components/buttons/button` — and that holds for Docfy index pages too,
+whose URLs _do_ carry a trailing slash). Netlify's Pretty URLs serve `/foo`
+straight from `foo.html`, whereas `foo/index.html` is only reachable at `/foo/`.
+Directory output therefore put a 301 in front of every cold page load and quietly
+moved the site's canonical URLs — verified on the deploy preview for #500 before
+switching to flat files.
+
 `app-shell.html` (the pristine template snapshot, needed because prerendering `/`
 overwrites `dist/index.html`) is written to `dist-ssr/`, not `dist/`, so it is
 never deployed.
-
-Worth confirming on a deploy preview: trailing-slash resolution, i.e. that
-`/docs/components/buttons/button` serves
-`/docs/components/buttons/button/index.html`.
 
 ## Known gaps
 
