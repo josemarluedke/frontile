@@ -33,7 +33,7 @@
     "lint:types": "glint",
     "start": "vite",
     "test": "vite build --mode development && testem ci",
-    "test:node": "node --test lib/**/*.test.mjs"
+    "test:node": "node --test 'lib/**/*.test.mjs' 'ssr/**/*.test.mjs'"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

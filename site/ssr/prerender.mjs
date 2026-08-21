@@ -1,12 +1,9 @@
-// Prerender every Docfy route to static HTML. See ssr/README.md.
+// Render every Docfy route to static HTML. See ssr/README.md.
 //
-// Run as part of `pnpm --filter site build`, or by hand:
+// Needs both builds present: `pnpm build:client` (dist/) and `pnpm build:ssr`
+// (dist-ssr/). `pnpm --filter site build` runs all three in order.
 //
-//   pnpm build:client   # client bundle -> dist/
-//   pnpm build:ssr      # node bundle   -> dist-ssr/
-//   pnpm prerender      # 68 x <route>.html into dist/
-//
-// Takes route arguments for a fast iteration loop:
+// Accepts route arguments to render a subset:
 //
 //   node ssr/prerender.mjs / /docs/components/forms/input
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -14,14 +11,16 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseHTML } from 'linkedom';
 
-// Not `import.meta.dirname` — that lands in Node 20.11, and site/package.json
-// still declares `node >= 18`.
+import { outputPathForUrl } from './output-path.mjs';
+
+// `import.meta.dirname` needs Node 20.11; package.json declares `node >= 18`.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(root, 'dist');
 
-// Snapshot the untouched shell outside dist/, so it isn't deployed: prerendering
-// "/" overwrites dist/index.html, and a second run would otherwise use its own
-// output as the template.
+// Every page is rendered into a copy of the client build's shell. Rendering "/"
+// overwrites dist/index.html, so the pristine shell is snapshotted outside dist/
+// — otherwise the next run would template off its own output, and the snapshot
+// would ship.
 const shellPath = join(root, 'dist-ssr', 'app-shell.html');
 let shell;
 try {
@@ -31,21 +30,23 @@ try {
   await writeFile(shellPath, shell, 'utf8');
 }
 
-// The flag index.html boots on: present means "this HTML was serialized by a
-// server render, rehydrate it" (see the boot script in index.html). It is a
-// build-wide constant, so it goes into the template once rather than being
-// appended to each route's document. Injected after the snapshot is written, so
-// the snapshot on disk stays a clean copy of the client build's output.
+// Tells index.html's boot script to rehydrate rather than render fresh. Added to
+// the template once rather than per document, and after the snapshot is written
+// so the file on disk stays a clean copy of the client build.
 shell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
 
-/** A linkedom document that is close enough to a browser one for Glimmer. */
+/**
+ * A document Glimmer can render into, paired with its own `window`.
+ *
+ * Parsed per call rather than cloned: each route needs an isolated document, and
+ * `parseHTML` is what mints the paired `window`. Parsing the 4KB shell 68 times
+ * costs 12ms of a ~2s pass.
+ */
 function createDocument() {
-  // Re-parsing the 4KB shell per route measured at 12ms across all 68 — 0.6% of
-  // the pass — and `parseHTML` is what mints the paired `window` each document
-  // needs. Don't "optimize" this into a shared clone; isolation is the point.
   const { window, document } = parseHTML(shell);
 
-  // Glimmer still reaches for this SimpleDOM-era API for `{{{html}}}`.
+  // Glimmer calls this for `{{{html}}}`; it is a SimpleDOM-era API that no
+  // standard DOM implements.
   document.createRawHTMLSection = (html) => {
     const el = document.createElement('div');
     el.innerHTML = html;
@@ -58,10 +59,11 @@ function createDocument() {
 }
 
 /**
- * Make a fresh document the ambient one, and hand it back.
+ * Make a fresh document the ambient one and return it.
  *
- * Ember reads `globalThis.document` in places that don't take an explicit
- * document, so the global has to track whichever document we're rendering into.
+ * Render-time code reads bare `document` (docfy-theme-switcher takes
+ * `document.documentElement`), so the global must point at the document being
+ * rendered into — not just the one passed to `render()`.
  */
 function installDocument() {
   const { window, document } = createDocument();
@@ -72,37 +74,33 @@ function installDocument() {
   return { window, document };
 }
 
-// --- install browser-ish globals BEFORE importing the app bundle -------------
-// The ordering is load-bearing: app/config/environment.ts calls
-// loadConfigFromMeta() at *module scope*, so a document holding the shell's
-// `<meta name="site/config/environment">` has to be in place before the dynamic
-// import below.
+// --- browser globals, installed before the app bundle is imported ------------
+// The order matters. app/config/environment.ts calls loadConfigFromMeta() at
+// module scope, so the shell's `<meta name="site/config/environment">` must be
+// reachable through the ambient document before the dynamic import below runs.
 const bootstrap = installDocument();
 
-// Ember's deprecation-workflow module assigns to `self` at import time.
+// Ember's deprecation-workflow module assigns to `self` when imported.
 globalThis.self = globalThis;
 
-// The DOM globals the app actually reaches for during a render. Deliberately
-// minimal: each one here was verified necessary by removing it and watching the
-// build fail, and the full 68-route output is byte-for-byte identical to a run
-// with a much larger shim list. Anything missing fails loudly with a
-// ReferenceError at build time, so this list can stay honest rather than
-// defensive.
+// The only DOM globals render-time code reaches for. They come from linkedom
+// rather than Node's built-ins because linkedom's `dispatchEvent` writes
+// `event.eventPhase`, which is getter-only on a native Event — so a
+// `new CustomEvent()` resolving to Node's class throws on dispatch. linkedom's
+// `window` inherits from globalThis, so these also answer `window.foo` in app
+// code.
 //
-// They have to come from linkedom rather than Node's built-ins: linkedom's
-// `dispatchEvent` writes `event.eventPhase`, which is getter-only on a native
-// Event, so a `new CustomEvent()` resolving to Node's version throws on dispatch.
-// (linkedom's `window` inherits from globalThis, so assigning here is also what
-// makes `window.foo` resolve inside the app.)
+// Keep this list minimal. A global that is missing raises a ReferenceError and
+// fails the build; a global that is present but wrong produces subtly bad HTML.
+// Prefer guarding the call site (see ssr/README.md) over adding a shim.
 globalThis.CustomEvent = bootstrap.window.CustomEvent; // focus-visible polyfill
 globalThis.Node = bootstrap.window.Node; // focus-visible polyfill
 globalThis.Element = bootstrap.window.Element; // Glimmer
 
-// Mirrors what @embroider/virtual/vendor.js sets in the browser. Read out of the
-// config meta tag rather than restated, so the prerender can't boot Ember under
-// different feature flags than the client bundle that rehydrates its output.
-// Ember's current defaults happen to match, so dropping this changes nothing
-// today — but it would diverge silently, unlike everything above.
+// What @embroider/virtual/vendor.js sets in the browser. Taken from the config
+// meta tag rather than restated here, so a flag change in config/environment.js
+// cannot leave the prerender booting Ember differently from the client that
+// rehydrates its output.
 const appConfig = JSON.parse(
   decodeURIComponent(
     bootstrap.document
@@ -115,46 +113,27 @@ globalThis.runningTests = false;
 
 const { render } = await import(join(root, 'dist-ssr/ssr-entry.mjs'));
 
-// --- routes -----------------------------------------------------------------
+// --- render ------------------------------------------------------------------
 const urls = JSON.parse(
   await readFile(join(distDir, 'docfy-urls.json'), 'utf8'),
 );
 const args = process.argv.slice(2);
 const routes = args.length ? args : ['/', ...urls];
 
-/**
- * Where a route's HTML goes.
- *
- * Flat `<path>.html`, not `<path>/index.html`. Every link the site renders is
- * extensionless and without a trailing slash (`/docs/components/buttons/button`,
- * and notably that holds for Docfy index pages too, whose URLs *do* carry a
- * slash). Netlify's Pretty URLs serve `/foo` straight from `foo.html`, whereas
- * `foo/index.html` is only reachable at `/foo/` — so directory output would put
- * a 301 in front of every cold page load and quietly move the site's canonical
- * URLs. Flat files keep today's URLs exactly as they are.
- */
-function outputPathForUrl(url) {
-  const relative = url.replace(/^\/+/, '').replace(/\/+$/, '');
-
-  return relative === ''
-    ? join(distDir, 'index.html')
-    : join(distDir, `${relative}.html`);
-}
-
 let ok = 0;
 let failed = 0;
 
-// A ReferenceError thrown from inside Glimmer's render escapes the per-route
-// try/catch via the run loop, so keep the process alive for the remaining
-// routes — but still count it, so the build fails.
+// Errors thrown inside Glimmer's render reach the run loop, not the try/catch
+// below. Counting them here keeps the remaining routes running while still
+// failing the build — without this, a broken render reports success and ships
+// near-empty pages.
 process.on('uncaughtException', (error) => {
   console.error(`  ! uncaught: ${error.message}`);
   failed++;
 });
 
-// Sequential by necessity, not by oversight: every render shares one Ember
-// Application, one run loop, and the ambient `globalThis.document`, so two
-// in-flight renders would read each other's document.
+// Sequential by necessity: renders share one Ember Application, one run loop and
+// one ambient document, so concurrent ones would read each other's state.
 for (const url of routes) {
   const started = performance.now();
   try {
@@ -162,7 +141,7 @@ for (const url of routes) {
 
     const { html, title } = await render(url, document);
 
-    const outPath = outputPathForUrl(url);
+    const outPath = outputPathForUrl(distDir, url);
     await mkdir(dirname(outPath), { recursive: true });
     await writeFile(outPath, html, 'utf8');
 
@@ -181,7 +160,7 @@ for (const url of routes) {
 
 console.log(`\n${ok} rendered, ${failed} failed`);
 
-// Fail the build rather than silently letting the SPA fallback cover the gap.
+// Fail the build rather than let the SPA fallback quietly cover a missing page.
 if (failed > 0) {
   process.exitCode = 1;
 }
