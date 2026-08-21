@@ -22,6 +22,7 @@ them is optional for the whole 0.18 line.
 | `--frontile-*` variable references | The declaration is dropped | **Silently** |
 | Nested `LayoutTheme` config | Build or type error | Loudly, and only if you customize the theme |
 | `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
+| Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
 resolve produces no error, no warning, and no CSS — the element just renders

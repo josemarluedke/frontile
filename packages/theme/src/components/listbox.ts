@@ -18,7 +18,7 @@ const listboxItem = tv({
       'w-full',
       'h-full',
       'box-border',
-      'rounded-sm',
+      'rounded-lg',
       'subpixel-antialiased',
       'outline-hidden',
       'cursor-pointer',

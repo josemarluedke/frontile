@@ -85,20 +85,45 @@ See [Typography documentation](../design-tokens/typography.md) for detailed info
 
 ### Border Radius
 
+Every step is derived from a single `--radius` base, so you can dial the
+roundness of the whole library with one value:
+
 ```css
 @theme {
+  --radius: 0.5rem;                          /* 8px — the one knob */
   --radius-none: 0px;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius: 8px;          /* Default */
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-default: 20px;
+  --radius-xs: calc(var(--radius) * 0.25);   /* 2px */
+  --radius-sm: calc(var(--radius) * 0.5);    /* 4px */
+  --radius-md: calc(var(--radius) * 0.75);   /* 6px */
+  --radius-lg: calc(var(--radius) * 1);      /* 8px */
+  --radius-xl: calc(var(--radius) * 1.5);    /* 12px */
+  --radius-2xl: calc(var(--radius) * 2);     /* 16px */
+  --radius-3xl: calc(var(--radius) * 3);     /* 24px */
+  --radius-4xl: calc(var(--radius) * 4);     /* 32px */
+  --radius-default: calc(var(--radius) * 2.5); /* 20px */
   --radius-pill: 9999px;
 }
 ```
 
-**Generated utilities:** `rounded-none`, `rounded-sm`, `rounded-md`, `rounded`, `rounded-xl`, `rounded-2xl`, `rounded-default`, `rounded-pill`
+**Generated utilities:** `rounded-none`, `rounded-xs`, `rounded-sm`, `rounded-md`, `rounded`, `rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, `rounded-4xl`, `rounded-default`, `rounded-pill`
+
+To make every component softer or sharper, override `--radius` alone — the rest
+of the scale follows:
+
+```css
+@theme {
+  --radius: 0.75rem; /* menus 18px, list items 12px, modals 24px */
+}
+```
+
+```css
+@theme {
+  --radius: 0; /* square everything off */
+}
+```
+
+`--radius-none` and `--radius-pill` are absolutes and deliberately do not scale,
+so `rounded-full` buttons stay pills at any base value.
 
 ### Icon Sizes
 

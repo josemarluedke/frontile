@@ -313,8 +313,8 @@ Add your customizations in your `app/styles/app.css` after importing the theme:
 /* Override Tailwind theme utilities */
 @theme {
   /* Custom border radius values */
-  --radius: 0.75rem;        /* Change default radius */
-  --radius-pill: 2rem;      /* Custom pill radius */
+  --radius: 0.75rem;        /* One knob: scales the whole rounded-* scale */
+  --radius-pill: 2rem;      /* Custom pill radius (absolute, does not scale) */
 
   /* Custom opacity values */
   --opacity-hover: .9;

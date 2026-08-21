@@ -28,15 +28,26 @@
   --border-width-aggressive: 4px; /* Default border width. */
 
   /* ==================== Border Radius ==================== */
+  /*
+    One knob for the whole system. Every step below is a multiple of `--radius`,
+    so overriding that single value (in CSS, or via `layout.radius.DEFAULT` in
+    the plugin config) dials the roundness of every component up or down
+    proportionally — `--radius: 0` squares everything off, `--radius: 0.75rem`
+    makes it noticeably softer. `none` and `pill` are absolutes by design and
+    deliberately do not scale.
+  */
+  --radius: 0.5rem; /* 8px — base unit the entire scale is derived from. */
   --radius-none: 0px; /* No border radius (sharp corners). */
-  --radius-xs: 1px; /* Extra small border radius for minimal rounding. */
-  --radius-sm: 2px; /* Small border radius for subtle rounding. */
-  --radius-md: 4px; /* Medium border radius for standard elements. */
-  --radius-xl: 12px; /* Extra large border radius for emphasized elements. */
-  --radius-2xl: 16px; /* Double extra large border radius for very soft corners. */
-  --radius-default: 20px; /* Default border radius for friendly, approachable UI elements. Aligns with TailwindCSS &#x27;rounded&#x27; class. */
+  --radius-xs: calc(var(--radius) * 0.25); /* 2px — hairline rounding. */
+  --radius-sm: calc(var(--radius) * 0.5); /* 4px — small inline elements. */
+  --radius-md: calc(var(--radius) * 0.75); /* 6px — compact controls. */
+  --radius-lg: calc(var(--radius) * 1); /* 8px — nested list items, cards. */
+  --radius-xl: calc(var(--radius) * 1.5); /* 12px — inputs, menus, popovers. */
+  --radius-2xl: calc(var(--radius) * 2); /* 16px — modals, drawers. */
+  --radius-3xl: calc(var(--radius) * 3); /* 24px — oversized surfaces. */
+  --radius-4xl: calc(var(--radius) * 4); /* 32px — hero-scale surfaces. */
+  --radius-default: calc(var(--radius) * 2.5); /* 20px — friendly, approachable UI elements. */
   --radius-pill: 9999px; /* Pill-shaped border radius (fully rounded sides) for buttons and tags. */
-  --radius: 8px; /* Large border radius for more prominent rounding. - DEFAULT */
 
   /* ==================== Elevation Shadows ==================== */
   --shadow-elevation-0: 0px 0px 0px 0px rgb(0 0 0 / 0.01);
