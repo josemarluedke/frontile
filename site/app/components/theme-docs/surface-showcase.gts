@@ -34,7 +34,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
   }
 
   get surfaceRoles() {
-    return ['app', 'canvas', 'card', 'modal', 'input'];
+    return ['app', 'canvas', 'card', 'card-solid', 'modal', 'input'];
   }
 
   private overlayClasses: Record<string, string> = {
@@ -57,6 +57,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     app: 'bg-surface-app',
     canvas: 'bg-surface-canvas',
     card: 'bg-surface-card',
+    'card-solid': 'bg-surface-card-solid',
     modal: 'bg-surface-modal',
     input: 'bg-surface-input',
   };
@@ -65,6 +66,7 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     app: 'App',
     canvas: 'Canvas',
     card: 'Card',
+    'card-solid': 'Card, solid',
     modal: 'Modal',
     input: 'Input',
   };
@@ -73,6 +75,8 @@ export default class SurfaceShowcase extends Component<SurfaceShowcaseSignature>
     app: 'Root application background, base layer',
     canvas: 'Component contrast baseline, may cover app',
     card: 'Elevated content containers, article cards',
+    'card-solid':
+      'Opaque twin of Card — sticky headers, rows and pinned columns',
     modal: 'Modals, drawers, popovers, dropdowns — highest elevation',
     input: 'Form controls: inputs, checkboxes, radios',
   };

@@ -750,6 +750,134 @@ module(
       assert.dom('[data-test-id="table-row"][data-key="1"]').hasClass('sticky');
     });
 
+    test('sticky surfaces are opaque so scrolled content cannot show through', async function (assert) {
+      // A sticky cell paints over the rows and columns that scroll beneath it,
+      // so its background has to be fully opaque. In dark mode `surface-card`
+      // is a translucent veil, which used to let the scrolled content read
+      // straight through every sticky header, row, and column.
+      const columns = [
+        { key: 'id', name: 'ID', isSticky: true, stickyPosition: 'left' },
+        { key: 'name', name: 'Name' },
+        {
+          key: 'actions',
+          name: 'Actions',
+          isSticky: true,
+          stickyPosition: 'right'
+        }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          {{! the veil only exists in the dark theme }}
+          <div class="dark">
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isScrollable={{true}}
+              @isStickyHeader={{true}}
+              @isStickyFooter={{true}}
+              @footerColumns={{columns}}
+              @stickyKeys={{array "1"}}
+            />
+          </div>
+        </template>
+      );
+
+      const alphaOf = (el: Element) => {
+        const color = getComputedStyle(el).backgroundColor;
+        const parts = color.match(/[\d.]+/g) ?? [];
+        // rgb()/oklch() without an alpha component is fully opaque
+        return parts.length > 3 ? Number(parts[3]) : 1;
+      };
+
+      const stickyElements = [
+        ...document.querySelectorAll<HTMLElement>(
+          '[data-component="table-wrapper"] .sticky'
+        )
+      ].filter((el) => el.tagName !== 'TR' || el.children.length > 0);
+
+      assert.ok(
+        stickyElements.length >= 4,
+        `found sticky elements to check (${stickyElements.length})`
+      );
+
+      for (const el of stickyElements) {
+        assert.strictEqual(
+          alphaOf(el),
+          1,
+          `sticky ${el.tagName.toLowerCase()}${
+            el.dataset.key ? `[data-key=${el.dataset.key}]` : ''
+          } has an opaque background`
+        );
+      }
+    });
+
+    test('row tints layer over the sticky fill instead of replacing it', async function (assert) {
+      // The translucent tints — striping, and the `default` selection colour —
+      // go on as a background image so the row keeps the opaque fill
+      // underneath. Painting them as the background colour instead is what let
+      // a striped or selected sticky row turn see-through.
+      const columns = [
+        { key: 'id', name: 'ID', isSticky: true, stickyPosition: 'left' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <div class="dark">
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @isStriped={{true}}
+              @isScrollable={{true}}
+              @selectionMode="multiple"
+              @selectionColor="default"
+              @selectedKeys={{array "1"}}
+              @stickyKeys={{array "1"}}
+            />
+          </div>
+        </template>
+      );
+
+      const row = document.querySelector<HTMLElement>(
+        '[data-test-id="table-row"][data-key="1"]'
+      )!;
+      const cell = row.querySelector<HTMLElement>('[data-column="id"]')!;
+
+      const rowStyle = getComputedStyle(row);
+      assert.notStrictEqual(
+        rowStyle.backgroundImage,
+        'none',
+        'the selected row carries its tint as a background image'
+      );
+      assert.notOk(
+        rowStyle.backgroundColor.includes('/'),
+        `the fill under that tint is opaque (${rowStyle.backgroundColor})`
+      );
+
+      const cellStyle = getComputedStyle(cell);
+      assert.strictEqual(
+        cellStyle.backgroundColor,
+        rowStyle.backgroundColor,
+        'the pinned cell takes its fill from the row'
+      );
+      assert.strictEqual(
+        cellStyle.backgroundImage,
+        rowStyle.backgroundImage,
+        'and the row tint with it, so selection is not masked'
+      );
+    });
+
     test('it renders footer with footerColumns', async function (assert) {
       const columns = [
         { key: 'id', name: 'ID' },

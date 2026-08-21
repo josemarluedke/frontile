@@ -11,6 +11,7 @@ import {
   type ColumnConfig,
   type SortItem,
 } from 'frontile';
+import { hash } from '@ember/helper';
 import {
   SearchIcon,
   FilterIcon,
@@ -201,7 +202,12 @@ export default class AppSpecimen extends Component {
       {{! Table: selectable, pre-sorted, with an icon action group per row.
           Inset to the same 20px gutter as the header, toolbar, and footer, so
           the rows read as bands inside the panel rather than running into its
-          border. }}
+          border.
+          The panel is an "app" surface, so the table's surface is pointed at
+          the same token: the selection column is sticky because the table
+          scrolls, and a sticky column paints an opaque patch of that surface
+          over whatever scrolls past it. Left at its "card" default the patch
+          would sit a step lighter than the panel it lives in. }}
       <div class="px-5 py-2">
         <Table
           @columns={{this.columns}}
@@ -211,6 +217,7 @@ export default class AppSpecimen extends Component {
           @initialSort={{this.initialSort}}
           @onSort={{this.sortItems}}
           @isScrollable={{true}}
+          @classes={{hash wrapper="[--table-surface:var(--color-surface-app)]"}}
         >
           <:cell as |c|>
             <c.For @key="workerId">
