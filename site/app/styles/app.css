@@ -19,6 +19,15 @@
   --color-code-ink: #c9d1d9; /* highlight.js base ink */
   --color-code-prompt: #7ce0e1; /* palette teal-200 */
 
+  /* Motion. The category's default `ease-in-out` reads as software; these are
+     the asymmetric curves that make a movement feel like it has mass — a fast
+     departure settling slowly into place. Used for load-in and hover only:
+     scroll-driven animations must stay `linear`, because there the scroll
+     position *is* the progress, and easing it makes the reveal lurch as you
+     scroll at a constant rate. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-settle: cubic-bezier(0.32, 0.72, 0, 1);
+
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
@@ -255,7 +264,10 @@
     border: 1px solid var(--color-neutral-soft);
     background: var(--color-surface-app);
     overflow: hidden;
-    transition: border-color 150ms ease, transform 150ms ease;
+    transition:
+      border-color 260ms var(--ease-settle),
+      box-shadow 260ms var(--ease-settle),
+      transform 260ms var(--ease-settle);
   }
 
   /* The link covers the card instead of wrapping it — an anchor may not contain
@@ -269,7 +281,19 @@
 
   .specimen-tile:hover {
     border-color: var(--color-primary-mild);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    /* Tinted rather than black: a neutral drop shadow on a teal-washed ground
+       reads as dirt. `primary-soft` is translucent teal, so the cast picks up
+       the accent and stays correct in both schemes. */
+    box-shadow:
+      0 12px 24px -14px var(--color-primary-soft),
+      0 2px 6px -4px var(--color-surface-overlay-soft);
+  }
+
+  /* The card is a link; a press should feel like one. */
+  .specimen-tile:active {
+    transform: translateY(-1px) scale(0.995);
+    transition-duration: 90ms;
   }
 
   .specimen-tile:has(.specimen-tile__link:focus-visible) {
@@ -429,16 +453,242 @@
     color: var(--color-neutral-firm);
     font-family: var(--font-body);
     font-size: var(--text-body-xs);
+    transition:
+      background-color 180ms var(--ease-settle),
+      color 180ms var(--ease-settle),
+      translate 180ms var(--ease-settle);
   }
 
   .inventory-list__link:hover {
     background: var(--color-primary-subtle);
     color: var(--color-primary-firm);
+    translate: 0.1875rem 0;
   }
 
   .inventory-list__link:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 1px;
+  }
+
+  /* Section eyebrow. The page previously jumped straight from a section's
+     ground color to a 40px header, so every band opened identically. This adds
+     the missing top rung of the hierarchy — a label-role line at the smallest
+     step, in the accent, with a short rule that anchors it to the left margin.
+     It is the only place `label` is used at page scale, which is what keeps it
+     reading as a tier rather than as decoration. */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-label);
+    font-size: var(--text-label-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary-firm);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    flex: none;
+    background: var(--color-primary-mild);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Ambient grounds
+   *
+   * Sections were flat fills, which is what made the page read as
+   * documentation rather than as a product. These add depth without adding
+   * a single literal color: every layer is one of the `*-soft` tokens, which
+   * are *translucent* by definition in `semantic.ts` (teal-600 at 10% in
+   * light, teal-300 at 25% in dark). Because they carry alpha, they
+   * composite over whatever surface sits beneath and re-resolve per scheme
+   * on their own — a light-mode wash and a dark-mode glow from one
+   * declaration, with no `dark:` variant and no second set of values to
+   * keep in sync.
+   *
+   * They are `background-image` only, so the `bg-*` utility on the same
+   * element still owns `background-color` and nothing is overridden.
+   *
+   * Offset, overlapping ellipses rather than one centered stop: an even
+   * gradient reads as a UI default, an uneven field reads as light falling
+   * across a surface.
+   * ------------------------------------------------------------------ */
+
+  .ambient {
+    /* The wash colors are indirected through two custom properties so the
+       geometry below is written once per band and never duplicated per scheme.
+       Why the indirection is needed at all: the `*-soft` tokens do not carry
+       comparable weight across schemes. `primary-soft` is teal-600 at 10% in
+       light but teal-300 at 25% in dark — 2.5x the alpha over a far lighter
+       hue — so the same declaration that glows on black is almost invisible on
+       white. `primary-muted` (teal-100, opaque) is the light-scheme member of
+       the same ramp with equivalent presence, and it fades to transparent just
+       as cleanly. Still one ramp, still no literal color, and the geometry
+       stays scheme-agnostic. */
+    --wash-cool: var(--color-primary-soft);
+    --wash-warm: var(--color-tertiary-soft);
+    --wash-amber: var(--color-secondary-soft);
+
+    background-repeat: no-repeat;
+
+    /* Off-center so the field has a direction. A radial with its focus in the
+       middle of the section is the flat gradient's cousin. */
+    background-image:
+      radial-gradient(86rem 46rem at 6% -14%, var(--wash-cool), transparent 74%),
+      /* Stacked on the first, tighter and offset, so the field has a hot core
+         rather than one even falloff. */
+      radial-gradient(40rem 24rem at 16% -4%, var(--wash-cool), transparent 66%),
+      radial-gradient(66rem 42rem at 98% -6%, var(--wash-warm), transparent 70%);
+  }
+
+  .light .ambient {
+    --wash-cool: var(--color-primary-muted);
+  }
+
+  /* The specimen wall already carries a teal tint as its fill, so its field
+     leans on the opposite accent to keep the band from going monochrome. */
+  .ambient--wall {
+    background-image:
+      radial-gradient(72rem 38rem at 96% -6%, var(--wash-warm), transparent 72%),
+      radial-gradient(34rem 20rem at 92% 4%, var(--wash-warm), transparent 64%),
+      radial-gradient(58rem 34rem at -4% 104%, var(--wash-cool), transparent 68%);
+  }
+
+  .ambient--lab {
+    background-image:
+      radial-gradient(74rem 40rem at 2% -6%, var(--wash-cool), transparent 70%),
+      radial-gradient(60rem 36rem at 102% 96%, var(--wash-warm), transparent 68%);
+  }
+
+  /* The two mid-page bands. Cooler and teal-led, so the page alternates warm
+     and cool rather than repeating one field five times. */
+  .ambient--proof {
+    background-image:
+      radial-gradient(70rem 40rem at 100% -8%, var(--wash-cool), transparent 70%),
+      radial-gradient(36rem 22rem at 96% 0%, var(--wash-cool), transparent 62%),
+      radial-gradient(52rem 32rem at -6% 92%, var(--wash-warm), transparent 66%);
+  }
+
+  .ambient--inventory {
+    background-image:
+      radial-gradient(66rem 38rem at -8% 4%, var(--wash-cool), transparent 70%),
+      radial-gradient(34rem 20rem at 2% 10%, var(--wash-cool), transparent 62%),
+      radial-gradient(50rem 30rem at 104% 90%, var(--wash-amber), transparent 66%);
+  }
+
+  /* The page should resolve into the accent rather than stop on a flat ground. */
+  .ambient--close {
+    background-image:
+      radial-gradient(84rem 30rem at 50% 100%, var(--wash-cool), transparent 74%),
+      radial-gradient(40rem 18rem at 50% 100%, var(--wash-cool), transparent 66%),
+      radial-gradient(52rem 22rem at 14% 100%, var(--wash-warm), transparent 66%);
+  }
+
+  /* Film grain. Flat vector surfaces are the tell of a screen-only design;
+     a little tooth makes the grounds above read as a material. The texture is
+     generated, not an asset, and the layer is fixed and pointer-transparent so
+     it never repaints while the page scrolls. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Entrance choreography
+   *
+   * Two mechanisms, deliberately different:
+   *
+   * `.rise` runs once on load, for the first viewport only. It is eased,
+   * because it is a real animation over real time.
+   *
+   * `.reveal` is scroll-driven via `animation-timeline: view()` — no
+   * IntersectionObserver, no scroll listener, no JavaScript at all, and it
+   * runs on the compositor. It must stay `linear`: the scroll offset *is*
+   * the progress, so an easing curve here would make the element lurch while
+   * the visitor scrolls at a constant speed.
+   *
+   * Both animate only `opacity`, `translate`, and `filter` — never a
+   * property that triggers layout.
+   * ------------------------------------------------------------------ */
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 1.75rem;
+    }
+  }
+
+  /* Text can afford the defocus; it is what makes the movement read as
+     depth-of-field rather than as a slide. Kept off containers, where a
+     lingering `filter` would create a compositing layer around live
+     components for the rest of the session. */
+  @keyframes rise-text {
+    from {
+      opacity: 0;
+      translate: 0 1.75rem;
+      filter: blur(6px);
+    }
+
+    /* Explicitly `none` rather than an implicit end value: `blur(0px)` would
+       otherwise persist and keep a compositing layer — and its subpixel text
+       rendering — around the headline for the rest of the session. */
+    to {
+      filter: none;
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      translate: 0 2rem;
+    }
+  }
+
+  /* Stagger steps. Named rather than set inline: the template linter forbids
+     inline styles, and a fixed ladder keeps the cascade consistent between the
+     hero and anything added later. Steps are ~110ms — close enough to read as
+     one gesture, far enough apart to read as a sequence. */
+  .rise-step-1 {
+    --rise-delay: 90ms;
+  }
+
+  .rise-step-2 {
+    --rise-delay: 200ms;
+  }
+
+  .rise-step-3 {
+    --rise-delay: 310ms;
+  }
+
+  .rise-step-4 {
+    --rise-delay: 420ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rise,
+    .rise-text {
+      animation: rise 900ms var(--ease-entrance) both;
+      animation-delay: var(--rise-delay, 0ms);
+    }
+
+    .rise-text {
+      animation-name: rise-text;
+    }
+
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 4% cover 26%;
+      }
+    }
   }
 
   /* Reduced motion */
@@ -447,8 +697,17 @@
       transition: none;
     }
 
-    .specimen-tile:hover {
+    .specimen-tile:hover,
+    .specimen-tile:active {
       transform: none;
+    }
+
+    .inventory-list__link {
+      transition: none;
+    }
+
+    .inventory-list__link:hover {
+      translate: none;
     }
   }
 }

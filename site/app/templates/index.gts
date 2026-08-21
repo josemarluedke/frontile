@@ -147,26 +147,29 @@ export default class IndexPage extends Component {
   }
 
   <template>
-    <div class="bg-surface-app">
+    <div class="bg-surface-app relative">
 
       {{! ------------------------------------------------------------------ }}
       {{! The seam — one UI, both themes, at once }}
       {{! ------------------------------------------------------------------ }}
-      <section class="pt-16 pb-20 sm:pt-20 sm:pb-24">
+      <section class="ambient pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="max-w-3xl">
+            <p class="eyebrow rise-text">Ember component library</p>
             <h1
-              class="font-marquee text-marquee-lg sm:text-marquee-xl lg:text-marquee-2xl text-neutral-strong"
+              class="mt-5 font-marquee text-marquee-lg sm:text-marquee-xl lg:text-marquee-3xl text-neutral-bolder text-balance rise-text rise-step-1"
             >
               Beautiful, production-ready components for Ember.js.
             </h1>
             <p
-              class="mt-5 font-body text-body-xs sm:text-body-sm text-neutral-firm max-w-xl"
+              class="mt-6 font-body text-body-sm sm:text-body-md text-neutral-firm text-pretty max-w-xl rise-text rise-step-2"
             >
               Accessible by construction, typed all the way into your templates
               with TypeScript and Glint, and styled with Tailwind Variants.
             </p>
-            <div class="mt-8 flex flex-wrap items-center gap-3">
+            <div
+              class="mt-9 flex flex-wrap items-center gap-3 rise rise-step-3"
+            >
               <LinkButton
                 @to="/docs/components/buttons/button"
                 @intent="primary"
@@ -181,7 +184,9 @@ export default class IndexPage extends Component {
           </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 rise rise-step-4"
+        >
           <ThemeSeam
             @description="A workspace members panel built from Frontile's Avatar,
               Button, Chip, Divider, Input, Table, and ProgressBar components,
@@ -205,13 +210,14 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Specimen wall — breadth, as doors }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-primary-subtle">
+      <section class="ambient ambient--wall py-24 sm:py-28 bg-primary-subtle">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-12">
+          <div class="max-w-2xl mb-14 reveal">
+            <p class="eyebrow mb-4">The library</p>
             <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
+              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
             >Start anywhere</h2>
-            <p class="mt-3 font-body text-body-md text-neutral-firm">
+            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
               Every tile below is the real component, rendered by the library, and a
               link straight into its documentation.
             </p>
@@ -382,16 +388,17 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Overlays — the things a specimen tile cannot show }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24">
+      <section class="py-24 sm:py-28">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             class="grid grid-cols-1 lg:grid-cols-[minmax(0,26rem)_1fr] gap-10 items-start"
           >
-            <div>
+            <div class="reveal">
+              <p class="eyebrow mb-4">Overlays</p>
               <h2
-                class="font-header text-header-2xl text-neutral-strong"
+                class="font-header text-header-2xl text-neutral-bolder text-balance"
               >The parts you have to open</h2>
-              <p class="mt-3 font-body text-body-md text-neutral-firm">
+              <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
                 Overlays are where component libraries usually leak: focus
                 escapes, the background scrolls, Escape does nothing. Open these
                 and try to break them, then read how the focus trap is built.
@@ -413,7 +420,7 @@ export default class IndexPage extends Component {
             </div>
 
             <div
-              class="rounded-xl border border-neutral-soft bg-surface-canvas p-6"
+              class="rounded-xl border border-neutral-soft bg-surface-canvas p-6 reveal"
             >
               <Dropdown as |d|>
                 <d.Trigger @intent="primary" @size="sm">
@@ -529,22 +536,27 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Theming laboratory }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-tertiary-subtle">
+      <section
+        class="ambient ambient--lab py-24 sm:py-28 bg-secondary-subtle dark:bg-surface-canvas"
+      >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-12">
+          <div class="max-w-2xl mb-14 reveal">
+            <p class="eyebrow mb-4">Theming</p>
             <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
+              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
             >Make it look like your product</h2>
-            <p class="mt-3 font-body text-body-md text-neutral-firm">
+            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
               Frontile's colors are semantic roles at named levels, not a numbered
               scale. Swap the ramp and every component follows, in both
               themes, with no rebuild.
             </p>
           </div>
 
-          <ThemeLab />
+          <div class="reveal">
+            <ThemeLab />
+          </div>
 
-          <div class="mt-10 flex flex-wrap gap-3">
+          <div class="mt-10 flex flex-wrap gap-3 reveal">
             <LinkButton
               @to="/docs/theming/design-tokens/colors"
               @appearance="outlined"
@@ -564,23 +576,24 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Prove the two claims that matter }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24 bg-surface-canvas">
+      <section class="ambient ambient--proof py-24 sm:py-28 bg-surface-canvas">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-12">
+          <div class="max-w-2xl mb-14 reveal">
+            <p class="eyebrow mb-4">Built in</p>
             <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
+              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
             >The work you don't have to do</h2>
-            <p class="mt-3 font-body text-body-md text-neutral-firm">
+            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
               Keyboard behaviour, ARIA state, and template types arrive with the
               components. Both of these are running right now, so try them rather
               than take our word for it.
             </p>
           </div>
 
-          <div class="space-y-12">
-            <div>
+          <div class="space-y-14">
+            <div class="reveal">
               <h3
-                class="font-header text-header-lg text-neutral-strong mb-2"
+                class="font-header text-header-lg text-neutral-bolder mb-2"
               >Keyboard and ARIA, already wired</h3>
               <p class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl">
                 Tab into the list and use the arrow keys, Home, End, or type a
@@ -591,9 +604,9 @@ export default class IndexPage extends Component {
 
             <Divider />
 
-            <div>
+            <div class="reveal">
               <h3
-                class="font-header text-header-lg text-neutral-strong mb-2"
+                class="font-header text-header-lg text-neutral-bolder mb-2"
               >Type errors, before runtime</h3>
               <p class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl">
                 Glint checks component arguments inside the template, so a
@@ -619,13 +632,14 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Full inventory — every door, counted honestly }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24">
+      <section class="ambient ambient--inventory py-24 sm:py-28">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl mb-12">
+          <div class="max-w-2xl mb-14 reveal">
+            <p class="eyebrow mb-4">Every component</p>
             <h2
-              class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
+              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
             >Grouped by the job</h2>
-            <p class="mt-3 font-body text-body-md text-neutral-firm">
+            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
               Everything Frontile documents today, with the deprecated legacy
               packages left out. Every name is a link.
             </p>
@@ -633,9 +647,9 @@ export default class IndexPage extends Component {
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
             {{#each this.inventory as |category|}}
-              <div>
+              <div class="reveal">
                 <h3
-                  class="font-header text-header-md text-neutral-strong mb-1"
+                  class="font-header text-header-md text-neutral-bolder mb-1"
                 >{{category.name}}</h3>
                 <p
                   class="font-caption text-caption-sm text-neutral-firm mb-4"
@@ -658,19 +672,22 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       {{! Close — every door, one more time }}
       {{! ------------------------------------------------------------------ }}
-      <section class="py-20 sm:py-24">
+      <section class="ambient ambient--close py-24 sm:py-28">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2
-            class="font-header text-header-2xl sm:text-header-3xl text-neutral-strong"
-          >Pick a component and start reading.</h2>
-          <p class="mt-4 font-body text-body-md text-neutral-firm">
-            Every component's documentation is built around live, interactive
-            demos of the component itself: the same ones running on this page, with
-            the source beside each of them. Start wherever your interface is
-            thinnest.
-          </p>
+          <div class="reveal">
+            <p class="eyebrow mb-4">Start here</p>
+            <h2
+              class="font-header text-header-2xl sm:text-header-3xl text-neutral-bolder text-balance"
+            >Pick a component and start reading.</h2>
+            <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
+              Every component's documentation is built around live, interactive
+              demos of the component itself: the same ones running on this page,
+              with the source beside each of them. Start wherever your interface
+              is thinnest.
+            </p>
+          </div>
 
-          <div class="mt-8 flex flex-wrap items-center gap-3">
+          <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
             <LinkButton
               @route="docs.get-started"
               @intent="primary"
@@ -684,10 +701,10 @@ export default class IndexPage extends Component {
           </div>
 
           <div
-            class="mt-10 rounded-xl border border-neutral-soft bg-surface-canvas p-6"
+            class="mt-10 rounded-xl border border-neutral-soft bg-surface-canvas p-6 reveal"
           >
             <h3
-              class="font-header text-header-md text-neutral-strong mb-2"
+              class="font-header text-header-md text-neutral-bolder mb-2"
             >Readable by your agent, too</h3>
             <p class="font-body text-body-sm text-neutral-firm">
               Frontile publishes
@@ -708,7 +725,7 @@ export default class IndexPage extends Component {
             </p>
           </div>
 
-          <div class="mt-10">
+          <div class="mt-10 reveal">
             <CodePanel
               @code="pnpm install frontile @frontile/theme"
               @isTerminal={{true}}
@@ -726,6 +743,12 @@ export default class IndexPage extends Component {
           </div>
         </div>
       </section>
+
+      {{! A fixed, pointer-transparent grain layer. Last in the DOM and above
+          the bands so it actually reads on them; Frontile's overlays portal out
+          to the document body at a far higher stacking level, so modals and
+          drawers are unaffected. }}
+      <div class="grain" aria-hidden="true"></div>
 
     </div>
   </template>
