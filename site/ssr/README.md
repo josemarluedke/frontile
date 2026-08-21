@@ -152,6 +152,31 @@ Three things in `prerender.mjs` look incidental and are not:
 - No `<html>` class is baked in, so the inline theme script still chooses
   light/dark at runtime.
 
+## Route splitting
+
+`site/ember-cli-build.js` passes `splitAtRoutes` to `compatBuild`, so everything
+under `app/templates/docs/**` loads lazily and the homepage ships without it.
+Prerendering and splitting compose: the route bundle is an ordinary dynamic
+import that `app.visit()` awaits, and the serialize markers are intact by the
+time rehydration walks them.
+
+One interaction needs handling. Rendering a page's sidebar pulls route handlers
+for every split route it links to, and `@embroider/router` answers those with
+`registerBundle(bundle).then(() => original(name))` — a continuation with no
+`isDestroying` guard, unlike `registerBundle` itself. Those chains are not part
+of the transition, so `visit()` resolves without them and destroying the instance
+immediately makes them throw `Cannot call .lookup('route:…') after the owner has
+been destroyed`. The HTML is complete either way, but the errors fail the build.
+
+`render()` therefore snapshots the HTML and awaits `settled()` before returning,
+which yields until the run loop, timers and pending requests are quiet — long
+enough for those already-resolved imports to finish. The upstream fix is a
+destroy guard on that continuation.
+
+Importing `@ember/test-helpers` for `settled()` costs ~376 KB in the Node bundle
+(never shipped) and one shim: it reads `document.location.search` at module
+scope, and linkedom supplies no location.
+
 ## Prior art: vite-ember-ssr
 
 [evoactivity/vite-ember-ssr](https://github.com/evoactivity/vite-ember-ssr) (npm
@@ -182,10 +207,11 @@ Two notes for a future revisit:
   on Netlify (see [Output layout](#output-layout)). Ember's `LinkTo` emits
   slash-free hrefs, so this likely affects any Ember app deployed there — worth
   raising upstream rather than rediscovering.
-- `settled()` from `@ember/test-helpers` is how it waits for a render to finish:
-  run loop, pending timers and registered test-waiters. That is the principled
-  answer wherever we need to know a render is done, and `@ember/test-helpers` is
-  already a devDependency here.
+- `settled()` from `@ember/test-helpers` is how it waits for a render to finish.
+  We now do the same — see [Route splitting](#route-splitting). Worth knowing that
+  test waiters compile to no-ops outside a development build, so in a production
+  SSR bundle `settled()` is waiting on the run loop, timers and requests, not on
+  waiters.
 
 ## Gaps
 

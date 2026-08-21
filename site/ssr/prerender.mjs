@@ -45,6 +45,12 @@ shell = shell.replace('</head>', '<meta name="x-prerendered"></head>');
 function createDocument() {
   const { window, document } = parseHTML(shell);
 
+  // @ember/test-helpers (imported by app/ssr-entry.ts for `settled()`) reads
+  // `document.location.search` at module scope, and linkedom supplies no
+  // location. Rendering uses `location: 'none'`, so the router never consults
+  // this — it only has to exist.
+  document.location = { search: '', pathname: '/', href: 'http://localhost/' };
+
   // Glimmer calls this for `{{{html}}}`; it is a SimpleDOM-era API that no
   // standard DOM implements.
   document.createRawHTMLSection = (html) => {
