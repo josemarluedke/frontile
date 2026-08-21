@@ -989,17 +989,17 @@ importers:
         specifier: ^7.28.2
         version: 7.28.2
       '@docfy/core':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.12.1
+        version: 0.12.1
       '@docfy/ember':
-        specifier: ^0.12.0
-        version: 0.12.0(@babel/core@7.28.0)(@glint/template@1.8.0)(ember-source@6.6.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
+        specifier: ^0.12.1
+        version: 0.12.1(@babel/core@7.28.0)(@glint/template@1.8.0)(ember-source@6.6.0(@glimmer/component@2.1.1)(rsvp@4.8.5))
       '@docfy/ember-vite':
-        specifier: ^0.12.0
-        version: 0.12.0(@embroider/vite@1.7.9(@embroider/core@4.1.3(@glint/template@1.8.0))(@glint/template@1.8.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0)))(rollup@4.62.4)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0))
+        specifier: ^0.12.1
+        version: 0.12.1(@embroider/vite@1.7.9(@embroider/core@4.1.3(@glint/template@1.8.0))(@glint/template@1.8.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0)))(rollup@4.62.4)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0))
       '@docfy/plugin-with-prose':
-        specifier: ^0.12.0
-        version: 0.12.0
+        specifier: ^0.12.1
+        version: 0.12.1
       '@ember/app-tsconfig':
         specifier: ^2.0.0
         version: 2.0.0
@@ -2626,13 +2626,6 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^7.1.1
 
-  '@docfy/core@0.11.0':
-    resolution:
-      {
-        integrity: sha512-vv7h1ws7nxM2PO7WIhyGgvbki4ppYSCkh0jzjd0QeGaVpbK75k3C9uwizMcgo/YQgv99hckPRWxW1kPgq5f+4Q==
-      }
-    engines: { node: '>= 12.*' }
-
   '@docfy/core@0.12.0':
     resolution:
       {
@@ -2640,28 +2633,35 @@ packages:
       }
     engines: { node: '>= 12.*' }
 
-  '@docfy/ember-vite@0.12.0':
+  '@docfy/core@0.12.1':
     resolution:
       {
-        integrity: sha512-o2zcIKawUL8Si7wUuhdnqWld8ULhR0HgThTBgJLxBnWeV3LJ24TzBs95tMYkNul8rPKqT4UVdBUkpgPfqSWHxg==
+        integrity: sha512-ekoeiMUdFovKcKrtvuSlpmhn55k60tthMh99MZiy208+DsWhAhNzps8YWYmTaD1Vsjf20wzhSpZZCGDFyKOcHw==
+      }
+    engines: { node: '>= 12.*' }
+
+  '@docfy/ember-vite@0.12.1':
+    resolution:
+      {
+        integrity: sha512-mJ+Fmk1SgY4FL6X9dkIImoYAkRcg3wAe81sSy2buOX1e3qOD3VJWgGpnRVsS4pokRWfLMGMjF++2QGI9QTVaJQ==
       }
     engines: { node: '>= 16' }
     peerDependencies:
       '@embroider/vite': ^1.0.0
       vite: '>= 6.0.0'
 
-  '@docfy/ember@0.12.0':
+  '@docfy/ember@0.12.1':
     resolution:
       {
-        integrity: sha512-dwPJ+1JTPqP4IMuePGcMmXF7TXPpU5ePZyTJjh4Rn+XvzZ3CU6lZTdl2oV0BcOfwtsPowpqnswCuPZksNj9row==
+        integrity: sha512-fdk0zCC+/1Uwhl4/tPfQojWzH10WPOHmCpd5043FxXmbfD/bQ3vNxlmcUlo10oicqVlyP1WECrtbEsxI42WVlg==
       }
     peerDependencies:
       ember-source: '>= 6.5.0'
 
-  '@docfy/plugin-with-prose@0.12.0':
+  '@docfy/plugin-with-prose@0.12.1':
     resolution:
       {
-        integrity: sha512-GBvJLRUsf1RkLZUbWVQucgjyXkrTppC0sMm9XSLMBhEGHNLBFycHKIyWLVTTWzw7C+vxJ1l7V3P0taXhcgOeCA==
+        integrity: sha512-s9ObOQcVzp4zJu7me6F+sapyNSj04umKsZWlV/ucEc5a8HEuHKfL7x8+OaeUGihfxBRdAE3WdEQTwQ5dnmWUJg==
       }
     engines: { node: '>= 12.*' }
 
@@ -4758,18 +4758,6 @@ packages:
     resolution:
       {
         integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==
-      }
-    engines: { node: '>=14.0.0' }
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
-  '@rollup/pluginutils@5.3.0':
-    resolution:
-      {
-        integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==
       }
     engines: { node: '>=14.0.0' }
     peerDependencies:
@@ -17841,14 +17829,6 @@ packages:
     peerDependencies:
       yaml: ^2.3.0
 
-  yaml@2.8.2:
-    resolution:
-      {
-        integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==
-      }
-    engines: { node: '>= 14.6' }
-    hasBin: true
-
   yaml@2.9.0:
     resolution:
       {
@@ -19838,31 +19818,6 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.5
 
-  '@docfy/core@0.11.0':
-    dependencies:
-      debug: 4.4.3(supports-color@8.1.1)
-      fast-glob: 3.3.3
-      git-repo-info: 2.1.1
-      github-slugger: 1.5.0
-      hosted-git-info: 3.0.8
-      mdast-util-to-string: 2.0.0
-      mdast-util-toc: 5.1.0
-      rehype-stringify: 8.0.0
-      remark-extract-frontmatter: 3.2.0
-      remark-frontmatter: 3.0.0
-      remark-gfm: 1.0.0
-      remark-normalize-headings: 2.0.0
-      remark-parse: 9.0.0
-      remark-rehype: 8.1.0
-      remark-slug: 6.1.0
-      to-vfile: 6.1.0
-      trough: 1.0.5
-      unified: 9.2.2
-      unist-util-visit: 2.0.3
-      yaml: 2.8.2
-    transitivePeerDependencies:
-      - supports-color
-
   '@docfy/core@0.12.0':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
@@ -19884,15 +19839,40 @@ snapshots:
       trough: 1.0.5
       unified: 9.2.2
       unist-util-visit: 2.0.3
-      yaml: 2.8.2
+      yaml: 2.9.0
     transitivePeerDependencies:
       - supports-color
 
-  '@docfy/ember-vite@0.12.0(@embroider/vite@1.7.9(@embroider/core@4.1.3(@glint/template@1.8.0))(@glint/template@1.8.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0)))(rollup@4.62.4)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0))':
+  '@docfy/core@0.12.1':
     dependencies:
-      '@docfy/core': 0.11.0
+      debug: 4.4.3(supports-color@8.1.1)
+      fast-glob: 3.3.3
+      git-repo-info: 2.1.1
+      github-slugger: 1.5.0
+      hosted-git-info: 3.0.8
+      mdast-util-to-string: 2.0.0
+      mdast-util-toc: 5.1.0
+      rehype-stringify: 8.0.0
+      remark-extract-frontmatter: 3.2.0
+      remark-frontmatter: 3.0.0
+      remark-gfm: 1.0.0
+      remark-normalize-headings: 2.0.0
+      remark-parse: 9.0.0
+      remark-rehype: 8.1.0
+      remark-slug: 6.1.0
+      to-vfile: 6.1.0
+      trough: 1.0.5
+      unified: 9.2.2
+      unist-util-visit: 2.0.3
+      yaml: 2.9.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@docfy/ember-vite@0.12.1(@embroider/vite@1.7.9(@embroider/core@4.1.3(@glint/template@1.8.0))(@glint/template@1.8.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0)))(rollup@4.62.4)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0))':
+    dependencies:
+      '@docfy/core': 0.12.0
       '@embroider/vite': 1.7.9(@embroider/core@4.1.3(@glint/template@1.8.0))(@glint/template@1.8.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)(terser@5.49.2)(yaml@2.9.0))
-      '@rollup/pluginutils': 5.3.0(rollup@4.62.4)
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       debug: 4.4.3(supports-color@8.1.1)
       fast-glob: 3.3.3
       mdast-util-to-string: 2.0.0
@@ -19905,9 +19885,9 @@ snapshots:
       - rollup
       - supports-color
 
-  '@docfy/ember@0.12.0(@babel/core@7.28.0)(@glint/template@1.8.0)(ember-source@6.6.0(@glimmer/component@2.1.1)(rsvp@4.8.5))':
+  '@docfy/ember@0.12.1(@babel/core@7.28.0)(@glint/template@1.8.0)(ember-source@6.6.0(@glimmer/component@2.1.1)(rsvp@4.8.5))':
     dependencies:
-      '@docfy/core': 0.11.0
+      '@docfy/core': 0.12.0
       '@embroider/addon-shim': 1.10.3
       '@embroider/macros': 1.20.6(@babel/core@7.28.0)(@glint/template@1.8.0)
       decorator-transforms: 2.4.0(@babel/core@7.28.0)
@@ -19917,9 +19897,9 @@ snapshots:
       - '@glint/template'
       - supports-color
 
-  '@docfy/plugin-with-prose@0.12.0':
+  '@docfy/plugin-with-prose@0.12.1':
     dependencies:
-      '@docfy/core': 0.11.0
+      '@docfy/core': 0.12.0
     transitivePeerDependencies:
       - supports-color
 
@@ -20301,7 +20281,7 @@ snapshots:
   '@embroider/shared-internals@2.9.1':
     dependencies:
       babel-import-util: 2.1.1
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       ember-rfc176-data: 0.3.18
       fs-extra: 9.1.0
       is-subdir: 1.2.0
@@ -20318,7 +20298,7 @@ snapshots:
   '@embroider/shared-internals@2.9.2(supports-color@8.1.1)':
     dependencies:
       babel-import-util: 2.1.1
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       ember-rfc176-data: 0.3.18
       fs-extra: 9.1.0
       is-subdir: 1.2.0
@@ -20546,7 +20526,7 @@ snapshots:
   '@eslint/eslintrc@2.1.4':
     dependencies:
       ajv: 6.12.6
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       espree: 9.6.1
       globals: 13.24.0
       ignore: 5.3.2
@@ -20938,7 +20918,7 @@ snapshots:
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -21721,14 +21701,6 @@ snapshots:
       rollup: 4.62.4
 
   '@rollup/pluginutils@5.2.0(rollup@4.62.4)':
-    dependencies:
-      '@types/estree': 1.0.9
-      estree-walker: 2.0.2
-      picomatch: 4.0.3
-    optionalDependencies:
-      rollup: 4.62.4
-
-  '@rollup/pluginutils@5.3.0(rollup@4.62.4)':
     dependencies:
       '@types/estree': 1.0.9
       estree-walker: 2.0.2
@@ -22706,7 +22678,7 @@ snapshots:
 
   async-disk-cache@2.1.0:
     dependencies:
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       heimdalljs: 0.2.6
       istextorbinary: 2.6.0
       mkdirp: 0.5.6
@@ -26793,7 +26765,7 @@ snapshots:
   http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -26815,7 +26787,7 @@ snapshots:
   https-proxy-agent@7.0.6(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -28952,7 +28924,7 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.5.6):
     dependencies:
       lilconfig: 3.1.3
-      yaml: 2.8.2
+      yaml: 2.9.0
     optionalDependencies:
       postcss: 8.5.6
 
@@ -30301,7 +30273,7 @@ snapshots:
 
   sync-disk-cache@2.1.0:
     dependencies:
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       heimdalljs: 0.2.6
       mkdirp: 0.5.6
       rimraf: 3.0.2
@@ -31364,8 +31336,6 @@ snapshots:
   yaml-types@0.4.0(yaml@2.9.0):
     dependencies:
       yaml: 2.9.0
-
-  yaml@2.8.2: {}
 
   yaml@2.9.0: {}
 

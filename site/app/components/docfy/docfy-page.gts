@@ -6,8 +6,7 @@ import PageHeadings from './docfy-page-headings';
 import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
 import DocfyCopyPage from './docfy-copy-page';
-import { DocfyPreviousAndNextPage, DocfyOutput } from '@docfy/ember';
-import DocsLink from '../docs-link';
+import { DocfyLink, DocfyOutput, DocfyPreviousAndNextPage } from '@docfy/ember';
 
 interface Signature {
   Args: {
@@ -93,22 +92,22 @@ export default class DocfyPage extends Component<Signature> {
                     ></path>
                   </svg>
 
-                  <DocsLink
+                  <DocfyLink
                     @to={{previous.url}}
                     class="text-lg text-primary hover:text-primary-strong"
                   >
                     {{previous.title}}
-                  </DocsLink>
+                  </DocfyLink>
                 {{/if}}
               </div>
               <div class="flex items-center pt-6 pl-2">
                 {{#if next}}
-                  <DocsLink
+                  <DocfyLink
                     @to={{next.url}}
                     class="text-lg text-primary hover:text-primary-strong"
                   >
                     {{next.title}}
-                  </DocsLink>
+                  </DocfyLink>
 
                   <svg class="h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
                     <path

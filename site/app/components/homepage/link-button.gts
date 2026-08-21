@@ -1,6 +1,6 @@
 import type { TOC } from '@ember/component/template-only';
-import DocsLink from '../docs-link';
 import { Button, type ButtonArgs } from 'frontile';
+import { DocfyLink } from '@docfy/ember';
 
 export interface Signature {
   Args: {
@@ -36,7 +36,7 @@ const LinkButton: TOC<Signature> = <template>
     as |b|
   >
     {{#if @to}}
-      <DocsLink @to={{@to}} class={{b.classNames}}>{{yield}}</DocsLink>
+      <DocfyLink @to={{@to}} class={{b.classNames}}>{{yield}}</DocfyLink>
     {{else}}
       <a
         href={{@href}}

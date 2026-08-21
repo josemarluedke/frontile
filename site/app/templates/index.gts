@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
-import DocsLink from '../components/docs-link';
 import { NotificationCard, Notification } from 'frontile/notifications';
 import {
   Avatar,
@@ -39,6 +38,7 @@ import SpecimenTile from '../components/homepage/specimen-tile';
 import CodePanel from '../components/homepage/code-panel';
 import LinkButton from '../components/homepage/link-button';
 import OverlayDoor from '../components/homepage/overlay-door';
+import { DocfyLink } from '@docfy/ember';
 import SectionIntro from '../components/homepage/section-intro';
 import onceInView from '../modifiers/once-in-view';
 import { inventory } from '../components/homepage/component-inventory';
@@ -417,10 +417,10 @@ export default class IndexPage extends Component {
                 portal.
               </SectionIntro>
               <p class="reveal font-body text-body-sm text-neutral-firm">
-                <DocsLink
+                <DocfyLink
                   @to="/docs/accessibility/focus-management"
                   class="text-primary-firm underline"
-                >Read the focus management guide</DocsLink>
+                >Read the focus management guide</DocfyLink>
               </p>
             </div>
 
@@ -785,12 +785,12 @@ export default class IndexPage extends Component {
                 <ul class="flex flex-col gap-0.5">
                   {{#each category.items as |item|}}
                     <li>
-                      <DocsLink
+                      <DocfyLink
                         @to={{item.path}}
                         class="block -ml-2 px-2 py-[0.3125rem] rounded-md font-body text-body-xs text-neutral-firm transition-[color,background-color,translate] duration-180 ease-settle hover:bg-primary-subtle hover:text-primary-firm hover:translate-x-[0.1875rem] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
                       >
                         {{item.name}}
-                      </DocsLink>
+                      </DocfyLink>
                     </li>
                   {{/each}}
                 </ul>
@@ -863,10 +863,10 @@ export default class IndexPage extends Component {
                 class="font-code text-code-sm text-primary-firm"
               >@source</code>
               line so Tailwind stops purging Frontile's classes. The
-              <DocsLink
+              <DocfyLink
                 @to="/docs/get-started/installation"
                 class="text-primary-firm underline"
-              >installation guide</DocsLink>
+              >installation guide</DocfyLink>
               has the exact paths.
             </p>
           </div>

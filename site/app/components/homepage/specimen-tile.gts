@@ -1,5 +1,5 @@
 import type { TOC } from '@ember/component/template-only';
-import DocsLink from '../docs-link';
+import { DocfyLink } from '@docfy/ember';
 
 export interface Signature {
   Args: {
@@ -47,9 +47,10 @@ const SpecimenTile: TOC<Signature> = <template>
   >
     {{! The name is carried by the link's own text rather than an aria-label:
         with both, the label wins and the span is unreachable markup. }}
-    <DocsLink @to={{@path}} class="absolute inset-0 z-1 rounded-[inherit]"><span
-        class="sr-only"
-      >{{@name}} documentation</span></DocsLink>
+    <DocfyLink
+      @to={{@path}}
+      class="absolute inset-0 z-1 rounded-[inherit]"
+    ><span class="sr-only">{{@name}} documentation</span></DocfyLink>
 
     <span
       class="flex flex-auto items-center justify-center overflow-hidden p-5"

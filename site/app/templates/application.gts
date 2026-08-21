@@ -1,4 +1,3 @@
-import DocsLink from '../components/docs-link';
 import Logo from '../components/logo';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
@@ -6,6 +5,7 @@ import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import VersionDropdown from '../components/version-dropdown';
 import { VisuallyHidden } from 'frontile';
 import { PortalTarget } from 'frontile';
+import { DocfyLink } from '@docfy/ember';
 
 <template>
   {{pageTitle "Frontile"}}
@@ -22,13 +22,13 @@ import { PortalTarget } from 'frontile';
     </:left>
 
     <:right as |linkClass linkClassActive|>
-      <DocsLink
+      <DocfyLink
         @to="/docs/get-started"
         class="{{linkClass}} hidden sm:block"
         @activeClass={{linkClassActive}}
       >
         Docs
-      </DocsLink>
+      </DocfyLink>
 
       <VersionDropdown class="hidden sm:block" />
     </:right>

@@ -4,12 +4,11 @@ import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
-import { DocfyService } from '@docfy/ember';
+import { DocfyLink, DocfyService } from '@docfy/ember';
 import type { PageMetadata } from '@docfy/core/lib/types';
 import type Fuse from 'fuse.js';
 import { Overlay } from 'frontile';
 import { VisuallyHidden } from 'frontile';
-import DocsLink from '../docs-link';
 
 interface DocfyJumpToArgs {}
 
@@ -221,7 +220,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
 
           <div class="space-y-2 max-h-96 overflow-y-scroll">
             {{#each this.results as |result index|}}
-              <DocsLink
+              <DocfyLink
                 @to={{result.item.url}}
                 class="flex items-center p-4 outline-none focus-visible:ring ring-inset
                   {{if
@@ -254,7 +253,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
                 <span class="text-neutral-strong">
                   {{result.item.title}}
                 </span>
-              </DocsLink>
+              </DocfyLink>
             {{/each}}
           </div>
         </div>
