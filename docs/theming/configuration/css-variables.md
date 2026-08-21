@@ -186,11 +186,11 @@ These variables are used by specific Frontile components and should be defined i
 
 ```css
 :root {
-  --modal-xs: 20rem;
-  --modal-sm: 24rem;
-  --modal-md: 28rem;
-  --modal-lg: 32rem;
-  --modal-xl: 36rem;
+  --modal-xs: 22rem;
+  --modal-sm: 30rem;
+  --modal-md: 35rem;
+  --modal-lg: 48rem;
+  --modal-xl: 60rem;
   --modal-full: 100%;
 }
 ```
@@ -199,11 +199,11 @@ These variables are used by specific Frontile components and should be defined i
 
 ```css
 :root {
-  --drawer-xs: 20rem;
-  --drawer-sm: 24rem;
-  --drawer-md: 28rem;
-  --drawer-lg: 32rem;
-  --drawer-xl: 36rem;
+  --drawer-xs: 22rem;
+  --drawer-sm: 30rem;
+  --drawer-md: 48rem;
+  --drawer-lg: 64rem;
+  --drawer-xl: 80rem;
   --drawer-full: 100%;
 }
 ```
