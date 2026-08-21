@@ -170,7 +170,10 @@ const LabPanel: TOC<{
     fieldName: string;
   };
 }> = <template>
-  <div class="theme-lab__panel theme-lab-scope bg-surface-app text-neutral-firm">
+  <div
+    class="theme-lab-scope rounded-xl border border-neutral-soft bg-surface-app
+      p-5 text-neutral-firm"
+  >
     <p
       class="field-label mb-4"
     >{{@scheme}}</p>
@@ -285,7 +288,7 @@ ${toConfigObject(darkRamp(f), '          ')}
                 @onChange={{fn this.selectPreset item}}
               >
                 <span
-                  class="theme-lab__swatch"
+                  class="inline-block size-3 rounded-full mr-2 align-[-1px]"
                   style={{item.swatchStyle}}
                   aria-hidden="true"
                 ></span>

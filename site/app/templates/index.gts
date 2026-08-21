@@ -217,7 +217,13 @@ export default class IndexPage extends Component {
               link straight into its documentation.
           </SectionIntro>
 
-          <div class="specimen-wall">
+          {{! The Table spans two columns and two rows and the rest sit at one unit
+              each: a uniform auto-fill grid sized every row to the tallest cell,
+              which left every other tile with a large empty stage. }}
+          <div
+            class="grid grid-cols-1 gap-4 [grid-auto-rows:minmax(10.5rem,auto)]
+              sm:grid-cols-2 lg:grid-cols-4"
+          >
             <SpecimenTile
               @name="Button"
               @path="/docs/components/buttons/button"
@@ -756,10 +762,22 @@ export default class IndexPage extends Component {
                 <p
                   class="font-caption text-caption-sm text-neutral-firm mb-4"
                 >{{category.summary}}</p>
-                <ul class="inventory-list">
+                <ul class="flex flex-col gap-0.5">
                   {{#each category.items as |item|}}
                     <li>
-                      <DocfyLink @to={{item.path}} class="inventory-list__link">
+                      <DocfyLink
+                        @to={{item.path}}
+                        class="block -ml-2 px-2 py-[0.3125rem] rounded-md
+                          font-body text-body-xs text-neutral-firm
+                          transition-[color,background-color,translate]
+                          duration-180 ease-settle
+                          hover:bg-primary-subtle hover:text-primary-firm
+                          hover:translate-x-[0.1875rem]
+                          focus-visible:outline-2 focus-visible:outline-primary
+                          focus-visible:outline-offset-1
+                          motion-reduce:transition-none
+                          motion-reduce:hover:translate-x-0"
+                      >
                         {{item.name}}
                       </DocfyLink>
                     </li>

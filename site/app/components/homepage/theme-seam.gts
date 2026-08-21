@@ -143,18 +143,26 @@ export default class ThemeSeam extends Component<Signature> {
   }
 
   <template>
-    <div class="theme-seam" style={{this.splitStyle}} ...attributes>
+    {{! --seam-handle-size and --seam-split are read by the positioning
+        rules in app.css. The specimen is a picture, so select-none stops a
+        drag from turning into a text selection. }}
+    <div
+      class="theme-seam relative isolate overflow-hidden rounded-xl touch-pan-y
+        select-none [--seam-handle-size:2.75rem]"
+      style={{this.splitStyle}}
+      ...attributes
+    >
       <VisuallyHidden>{{@description}}</VisuallyHidden>
 
       {{! Ambient theme }}
       <div inert>
-        <span class="theme-seam__label" aria-hidden="true">Your theme</span>
+        <span class="theme-seam__label field-label" aria-hidden="true">Your theme</span>
         {{yield to="specimen"}}
       </div>
 
       {{! Opposite theme, clipped to the right of the seam }}
       <div class="theme-seam__inverse theme-inverse" aria-hidden="true" inert>
-        <span class="theme-seam__label" aria-hidden="true">Inverted</span>
+        <span class="theme-seam__label field-label" aria-hidden="true">Inverted</span>
         {{yield to="specimen"}}
       </div>
 
