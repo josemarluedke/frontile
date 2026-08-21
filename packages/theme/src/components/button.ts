@@ -327,48 +327,63 @@ const toggleButton = tv({
       true: ''
     }
   },
+  // Selected is a *filled* state, so every color has to be restated here —
+  // fill, border and ink, for the resting, hover and active steps. The
+  // unselected `outlined` rules in `baseButton` set their own
+  // `hover:text-*`/`active:*` colors, and anything we leave out keeps leaking
+  // through: an unselected ink color over a selected fill is what produced the
+  // unreadable label on hover. The ramp matches the filled button
+  // (`appearance: 'default'`) — one step deeper on hover, another on active —
+  // and pairs each fill with its generated `on-*` contrast ink.
   compoundVariants: [
     {
       appearance: 'outlined',
       intent: 'default',
       isSelected: true,
-      class: 'bg-neutral-bolder text-on-neutral-bolder hover:bg-neutral-bolder'
+      class:
+        'bg-neutral-bolder border-neutral-bolder text-on-neutral-bolder hover:bg-neutral-strong hover:border-neutral-strong hover:text-on-neutral-strong active:bg-neutral-firm active:border-neutral-firm active:text-on-neutral-firm'
     },
     {
       appearance: 'outlined',
       intent: 'primary',
       isSelected: true,
-      class: 'bg-primary text-on-primary hover:bg-primary-soft'
+      class:
+        'bg-primary border-primary text-on-primary hover:bg-primary-mild hover:border-primary-mild hover:text-on-primary-mild active:bg-primary-firm active:border-primary-firm active:text-on-primary-firm'
     },
     {
       appearance: 'outlined',
       intent: 'secondary',
       isSelected: true,
-      class: 'bg-secondary text-on-secondary hover:bg-secondary-soft'
+      class:
+        'bg-secondary border-secondary text-on-secondary hover:bg-secondary-mild hover:border-secondary-mild hover:text-on-secondary-mild active:bg-secondary-firm active:border-secondary-firm active:text-on-secondary-firm'
     },
     {
       appearance: 'outlined',
       intent: 'tertiary',
       isSelected: true,
-      class: 'bg-tertiary text-on-tertiary hover:bg-tertiary-soft'
+      class:
+        'bg-tertiary border-tertiary text-on-tertiary hover:bg-tertiary-mild hover:border-tertiary-mild hover:text-on-tertiary-mild active:bg-tertiary-firm active:border-tertiary-firm active:text-on-tertiary-firm'
     },
     {
       appearance: 'outlined',
       intent: 'success',
       isSelected: true,
-      class: 'bg-success text-on-success hover:bg-success-soft'
+      class:
+        'bg-success border-success text-on-success hover:bg-success-mild hover:border-success-mild hover:text-on-success-mild active:bg-success-firm active:border-success-firm active:text-on-success-firm'
     },
     {
       appearance: 'outlined',
       intent: 'warning',
       isSelected: true,
-      class: 'bg-warning text-on-warning hover:bg-warning-soft'
+      class:
+        'bg-warning border-warning text-on-warning hover:bg-warning-mild hover:border-warning-mild hover:text-on-warning-mild active:bg-warning-firm active:border-warning-firm active:text-on-warning-firm'
     },
     {
       appearance: 'outlined',
       intent: 'danger',
       isSelected: true,
-      class: 'bg-danger text-on-danger hover:bg-danger-soft'
+      class:
+        'bg-danger border-danger text-on-danger hover:bg-danger-mild hover:border-danger-mild hover:text-on-danger-mild active:bg-danger-firm active:border-danger-firm active:text-on-danger-firm'
     }
   ]
 });
