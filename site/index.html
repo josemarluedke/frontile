@@ -71,7 +71,20 @@
       import Application from './app/app';
       import environment from './app/config/environment';
 
-      Application.create(environment.APP);
+      const prerendered = document.querySelector('meta[name="x-prerendered"]');
+
+      if (prerendered) {
+        const app = Application.create({ ...environment.APP, autoboot: false });
+        const url = location.pathname + location.search + location.hash;
+        app.visit(url, {
+          rootElement: document.body,
+          _renderMode: 'rehydrate',
+        }).catch((error) => {
+          console.error('[rehydrate] failed', error);
+        });
+      } else {
+        Application.create(environment.APP);
+      }
     </script>
 
     {{content-for "body-footer"}}

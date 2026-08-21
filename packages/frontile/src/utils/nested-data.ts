@@ -4,6 +4,18 @@
  */
 
 /**
+ * `File` and `FileList` are browser globals. `FileList` in particular has no
+ * counterpart in Node, so a bare `value instanceof FileList` is a hard
+ * `ReferenceError` rather than `false` when a Form is server-rendered.
+ */
+function isFileLike(value: object): boolean {
+  return (
+    (typeof File !== 'undefined' && value instanceof File) ||
+    (typeof FileList !== 'undefined' && value instanceof FileList)
+  );
+}
+
+/**
  * Type guard to check if a value is a plain object (not an array, Date, File, etc.)
  */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -12,8 +24,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
     typeof value === 'object' &&
     !Array.isArray(value) &&
     !(value instanceof Date) &&
-    !(value instanceof File) &&
-    !(value instanceof FileList)
+    !isFileLike(value)
   );
 }
 

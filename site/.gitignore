@@ -24,3 +24,4 @@
 
 # broccoli-debug
 /DEBUG/
+/dist-ssr/

@@ -6,6 +6,10 @@ module.exports = function (environment) {
     environment,
     rootURL: '/',
     locationType: 'history',
+
+    // Canonical origin, used as the fallback when `window.location` isn't
+    // available — i.e. while prerendering in Node. See app/utils/origin.ts.
+    siteURL: process.env.SITE_URL || 'https://frontile.dev',
     EmberENV: {
       EXTEND_PROTOTYPES: false,
       FEATURES: {
