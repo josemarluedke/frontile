@@ -160,8 +160,13 @@ Prerendering and splitting compose: the route bundle is an ordinary dynamic
 import that `app.visit()` awaits, and the serialize markers are intact by the
 time rehydration walks them.
 
-One interaction needs handling. Rendering a page's sidebar pulls route handlers
-for every split route it links to, and `@embroider/router` answers those with
+One interaction needs handling. Rendering a link to a docs page resolves that
+page's route — `<DocfyLink>` is addressed by URL, so it calls
+`RouterService#recognize()`, which resolves the matched handlers. (Plain
+`<LinkTo @route="...">` does not; see `app/components/docs-link.gts`.) That is
+what `DocsLink` exists to avoid in the browser, and during a prerender the same
+resolution leaves promise chains outliving the owner: `@embroider/router` answers
+handler requests for unloaded bundles with
 `registerBundle(bundle).then(() => original(name))` — a continuation with no
 `isDestroying` guard, unlike `registerBundle` itself. Those chains are not part
 of the transition, so `visit()` resolves without them and destroying the instance

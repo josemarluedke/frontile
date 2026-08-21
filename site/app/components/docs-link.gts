@@ -23,15 +23,20 @@ export interface Signature {
  * A link to a documentation page that does not pull the page's bundle in
  * order to render itself.
  *
- * Docfy's own `<DocfyLink>` (and `<LinkTo>`) build their `href` through
- * `router.urlFor`, which resolves the target route — and resolving a route
- * inside a `splitAtRoutes` bundle is what makes `@embroider/router` fetch that
- * bundle. The homepage links to roughly forty docs pages spread across every
- * section, so rendering it downloaded the entire documentation site up front,
- * which is exactly what the split was meant to avoid.
+ * `<DocfyLink>` is addressed by URL, so its `href` getter reads `routeName`,
+ * which calls `RouterService#recognize()` to map the URL to a route. Recognising
+ * resolves the matched route handlers, and resolving a route inside a
+ * `splitAtRoutes` bundle is what makes `@embroider/router` fetch that bundle.
+ * The homepage links to roughly forty docs pages spread across every section,
+ * so rendering it downloaded the entire documentation site up front — exactly
+ * what the split was meant to avoid.
  *
- * Docfy URLs are already the router's paths, so the `href` needs no route
- * resolution, and the transition can wait for an actual click.
+ * Plain `<LinkTo @route="...">` is *not* affected: it is addressed by route
+ * name, needs no `recognize()`, and renders without loading anything. The
+ * trouble is specific to resolving a URL, which is how Docfy pages are known.
+ *
+ * Docfy URLs already are the router's paths, so `href` needs no resolution at
+ * all here, and the recognise-and-transition can wait for an actual click.
  */
 export default class DocsLink extends Component<Signature> {
   @service declare router: RouterService;
