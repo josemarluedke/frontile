@@ -72,13 +72,33 @@ build instead of silently falling through to the SPA shell.
 `linkedom` (fast, no layout engine), plus one shim: Glimmer still calls the
 SimpleDOM-era `document.createRawHTMLSection` for `{{{html}}}`.
 
-Every DOM constructor is taken from linkedom's `window`, _not_ Node's globals.
-Mixing them breaks: linkedom's `dispatchEvent` writes `event.eventPhase`, which
-is getter-only on a native `Event`, so a `new CustomEvent(...)` that resolves to
-Node's built-in throws on dispatch. `navigator` needs `defineProperty` because
-Node's is getter-only; `matchMedia` and the frame callbacks are shimmed because
-linkedom has no counterpart (docfy-theme-switcher reads `matchMedia` from its
-constructor, i.e. during render).
+The shim list is deliberately tiny — `self`, and `CustomEvent` / `Node` /
+`Element` taken from linkedom. Each was verified necessary by removing it and
+watching the build fail, and the resulting 68-page output is byte-for-byte
+identical (modulo asset hashes) to a run with a much longer list. Everything else
+that was once shimmed here — `navigator`, `localStorage`, `sessionStorage`,
+`Event`, `HTMLElement`, `Text`, `Comment`, `DocumentFragment`, `MutationObserver`,
+`requestAnimationFrame`, `matchMedia` — turned out to be unnecessary, and a
+missing global fails loudly with a `ReferenceError` at build time rather than
+producing subtly wrong HTML. So the list can stay honest instead of defensive.
+
+They must come from linkedom rather than Node's built-ins: linkedom's
+`dispatchEvent` writes `event.eventPhase`, which is getter-only on a native
+`Event`, so a `new CustomEvent(...)` resolving to Node's version throws on
+dispatch. linkedom's `window` inherits from `globalThis`, which is why assigning
+here is also what makes a bare `window.foo` resolve inside the app.
+
+`matchMedia` used to be shimmed for `docfy-theme-switcher`, which called
+`window.matchMedia` from its constructor — i.e. during render. It now guards that
+call instead: following the OS colour-scheme preference only means anything in a
+live browser, so the subscription is skipped server-side. Same pattern as the
+`FileList` and `window.location` fixes — fix the render-time code, drop the shim.
+
+`installDocument()` is called again for every route, and that reassignment of
+`globalThis.document` _is_ load-bearing: `docfy-theme-switcher` reads a bare
+`document.documentElement`, so without it every page would be rendered against
+the bootstrap document instead of its own. Verified by removing it — the output
+changes.
 
 The route loop is sequential by necessity: every render shares one Ember
 `Application`, one run loop, and the ambient `globalThis.document`, so two

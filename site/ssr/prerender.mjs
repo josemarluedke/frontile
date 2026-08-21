@@ -79,54 +79,30 @@ function installDocument() {
 // import below.
 const bootstrap = installDocument();
 
+// Ember's deprecation-workflow module assigns to `self` at import time.
 globalThis.self = globalThis;
 
-// Take the DOM constructors from linkedom rather than letting Node's built-ins
-// leak in: linkedom's dispatchEvent writes `eventPhase`, which is getter-only on
-// a native Event, so a `new CustomEvent()` resolving to Node's version throws on
-// dispatch. Only names linkedom actually defines are listed — anything else
-// belongs in the fallbacks below.
-for (const name of [
-  'Event',
-  'CustomEvent',
-  'Node',
-  'Element',
-  'HTMLElement',
-  'DocumentFragment',
-  'Text',
-  'Comment',
-  'MutationObserver',
-  'localStorage',
-  'sessionStorage',
-]) {
-  globalThis[name] = bootstrap.window[name];
-}
-
-// `navigator` is a getter-only global in Node, so it needs defineProperty
-// rather than assignment. linkedom supplies a full userAgent.
-Object.defineProperty(globalThis, 'navigator', {
-  value: bootstrap.window.navigator,
-  writable: true,
-  configurable: true,
-});
-
-// linkedom has no counterpart for these. `matchMedia` is genuinely reached
-// during render (docfy-theme-switcher reads it in its constructor); the frame
-// callbacks are here because a component could schedule one from a getter.
-globalThis.matchMedia ??= () => ({
-  matches: false,
-  addEventListener() {},
-  removeEventListener() {},
-  addListener() {},
-  removeListener() {},
-});
-globalThis.requestAnimationFrame ??= (cb) =>
-  setTimeout(() => cb(Date.now()), 0);
-globalThis.cancelAnimationFrame ??= (id) => clearTimeout(id);
+// The DOM globals the app actually reaches for during a render. Deliberately
+// minimal: each one here was verified necessary by removing it and watching the
+// build fail, and the full 68-route output is byte-for-byte identical to a run
+// with a much larger shim list. Anything missing fails loudly with a
+// ReferenceError at build time, so this list can stay honest rather than
+// defensive.
+//
+// They have to come from linkedom rather than Node's built-ins: linkedom's
+// `dispatchEvent` writes `event.eventPhase`, which is getter-only on a native
+// Event, so a `new CustomEvent()` resolving to Node's version throws on dispatch.
+// (linkedom's `window` inherits from globalThis, so assigning here is also what
+// makes `window.foo` resolve inside the app.)
+globalThis.CustomEvent = bootstrap.window.CustomEvent; // focus-visible polyfill
+globalThis.Node = bootstrap.window.Node; // focus-visible polyfill
+globalThis.Element = bootstrap.window.Element; // Glimmer
 
 // Mirrors what @embroider/virtual/vendor.js sets in the browser. Read out of the
 // config meta tag rather than restated, so the prerender can't boot Ember under
 // different feature flags than the client bundle that rehydrates its output.
+// Ember's current defaults happen to match, so dropping this changes nothing
+// today — but it would diverge silently, unlike everything above.
 const appConfig = JSON.parse(
   decodeURIComponent(
     bootstrap.document
