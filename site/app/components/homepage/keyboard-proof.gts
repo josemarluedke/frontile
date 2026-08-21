@@ -24,7 +24,7 @@ const items: string[] = [
   'Glimmer components',
   'Template tag (.gts)',
   'Glint type checking',
-  'Tailwind Variants'
+  'Tailwind Variants',
 ];
 
 const NAMED_KEYS: Record<string, string> = {
@@ -34,7 +34,7 @@ const NAMED_KEYS: Record<string, string> = {
   End: 'End → jump to last option',
   Enter: 'Enter → select the active option',
   ' ': 'Space → select the active option',
-  Escape: 'Escape → clear the active option'
+  Escape: 'Escape → clear the active option',
 };
 
 export default class KeyboardProof extends Component {
@@ -81,9 +81,7 @@ export default class KeyboardProof extends Component {
       </div>
 
       <div>
-        <p
-          class="field-label mb-2"
-        >What just happened</p>
+        <p class="field-label mb-2">What just happened</p>
         <p
           class="font-code text-code-sm text-neutral-strong min-h-12"
           aria-hidden="true"

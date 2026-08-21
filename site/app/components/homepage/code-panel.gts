@@ -57,14 +57,11 @@ export default class CodePanel extends Component<Signature> {
     {{! Dark in both schemes via the --color-code-* tokens, lifted by a real
         offset glow drawn from the accent rather than a zero-offset halo. }}
     <div
-      class="overflow-hidden rounded-xl border border-code-border
-        bg-code-surface
-        shadow-[0_18px_40px_-24px_var(--color-primary-soft),0_2px_10px_-6px_var(--color-surface-overlay-firm),inset_0_1px_0_rgb(255_255_255/0.04)]"
+      class="overflow-hidden rounded-xl border border-code-border bg-code-surface shadow-[0_18px_40px_-24px_var(--color-primary-soft),0_2px_10px_-6px_var(--color-surface-overlay-firm),inset_0_1px_0_rgb(255_255_255/0.04)]"
       ...attributes
     >
       <div
-        class="flex items-center gap-3 border-b border-code-border
-          bg-code-chrome px-3.5 py-2"
+        class="flex items-center gap-3 border-b border-code-border bg-code-chrome px-3.5 py-2"
       >
         {{! Traffic-light chrome. The status hues are used as *illustration*
             here — they depict a window's controls and report no state, which is
@@ -99,7 +96,10 @@ export default class CodePanel extends Component<Signature> {
       {{#if @isTerminal}}
         <pre
           class="m-0 overflow-x-auto px-5 py-[1.125rem] font-code text-code-md text-code-ink"
-        ><span class="select-none text-code-prompt" aria-hidden="true">$</span> {{@code}}</pre>
+        ><span
+            class="select-none text-code-prompt"
+            aria-hidden="true"
+          >$</span> {{@code}}</pre>
       {{else if @isCollapsible}}
         <Collapsible @isOpen={{this.isOpen}}>
           {{#if this.hasOpened}}

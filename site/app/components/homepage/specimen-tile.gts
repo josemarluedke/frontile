@@ -35,21 +35,15 @@ export interface Signature {
  * teal-washed ground reads as dirt, and `primary-soft` is translucent teal, so
  * the cast picks up the accent and stays correct in both schemes.
  */
+/** Two columns and two rows, for a specimen that needs the room. Named rather
+    than inline: `lint:hbs` wants double quotes inside a mustache and Prettier
+    wants single, so the literal cannot satisfy both. */
+const wideSpan = 'sm:col-span-2 sm:row-span-2';
+
 const SpecimenTile: TOC<Signature> = <template>
   <div
-    class="relative flex flex-col overflow-hidden rounded-xl border
-      border-neutral-soft bg-surface-app reveal
-      [animation-range:entry_2%_cover_22%]
-      transition-[border-color,box-shadow,translate,scale] duration-[260ms]
-      ease-settle
-      hover:border-primary-mild hover:-translate-y-[3px]
-      hover:[box-shadow:0_12px_24px_-14px_var(--color-primary-soft),0_2px_6px_-4px_var(--color-surface-overlay-soft)]
-      active:-translate-y-px active:scale-[0.995] active:duration-[90ms]
-      has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-primary
-      has-[a:focus-visible]:outline-offset-2
-      motion-reduce:transition-none motion-reduce:hover:translate-y-0
-      motion-reduce:active:translate-y-0 motion-reduce:active:scale-100
-      {{if @isWide 'sm:col-span-2 sm:row-span-2'}}"
+    class="relative flex flex-col overflow-hidden rounded-xl border border-neutral-soft bg-surface-app reveal [animation-range:entry_2%_cover_22%] transition-[border-color,box-shadow,translate,scale] duration-[260ms] ease-settle hover:border-primary-mild hover:-translate-y-[3px] hover:[box-shadow:0_12px_24px_-14px_var(--color-primary-soft),0_2px_6px_-4px_var(--color-surface-overlay-soft)] active:-translate-y-px active:scale-[0.995] active:duration-[90ms] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-primary has-[a:focus-visible]:outline-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:translate-y-0 motion-reduce:active:scale-100
+      {{if @isWide wideSpan}}"
   >
     {{! The name is carried by the link's own text rather than an aria-label:
         with both, the label wins and the span is unreachable markup. }}
@@ -67,8 +61,7 @@ const SpecimenTile: TOC<Signature> = <template>
     </span>
 
     <span
-      class="flex flex-col gap-0.5 border-t border-neutral-soft
-        bg-surface-canvas px-[1.125rem] pt-3.5 pb-4"
+      class="flex flex-col gap-0.5 border-t border-neutral-soft bg-surface-canvas px-[1.125rem] pt-3.5 pb-4"
     >
       <span
         class="font-header text-header-sm text-neutral-strong"

@@ -17,22 +17,20 @@ import { modifier } from 'ember-modifier';
  * Degrades to nothing: if the observer never fires, the element simply keeps
  * its initial state and its own trigger still works.
  */
-export default modifier(
-  (element: Element, [onInView]: [() => void]) => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          observer.disconnect();
-          onInView();
-        }
-      },
-      // A little inside the edge, so it fires as the section settles rather
-      // than the instant its first pixel appears.
-      { rootMargin: '0px 0px -20% 0px' }
-    );
+export default modifier((element: Element, [onInView]: [() => void]) => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        observer.disconnect();
+        onInView();
+      }
+    },
+    // A little inside the edge, so it fires as the section settles rather
+    // than the instant its first pixel appears.
+    { rootMargin: '0px 0px -20% 0px' }
+  );
 
-    observer.observe(element);
+  observer.observe(element);
 
-    return () => observer.disconnect();
-  }
-);
+  return (): void => observer.disconnect();
+});

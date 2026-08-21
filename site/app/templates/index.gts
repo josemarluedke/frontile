@@ -22,14 +22,14 @@ import {
   Spinner,
   Switch,
   Table,
-  type ColumnConfig
+  type ColumnConfig,
 } from 'frontile';
 import {
   ViewIcon,
   EditIcon,
   ShareIcon,
   ArchiveIcon,
-  DeleteIcon
+  DeleteIcon,
 } from '../components/icons';
 import AppSpecimen from '../components/homepage/app-specimen';
 import ThemeSeam from '../components/homepage/theme-seam';
@@ -83,7 +83,12 @@ const tableMembers: Member[] = [
   { id: '1', name: 'Ada Okonkwo', email: 'ada@example.com', role: 'Owner' },
   { id: '2', name: 'Bruno Salas', email: 'bruno@example.com', role: 'Editor' },
   { id: '3', name: 'Chen Wei', email: 'chen@example.com', role: 'Viewer' },
-  { id: '4', name: 'Dara Whitfield', email: 'dara@example.com', role: 'Editor' }
+  {
+    id: '4',
+    name: 'Dara Whitfield',
+    email: 'dara@example.com',
+    role: 'Editor',
+  },
 ];
 
 const signatureSnippet = `import { Table, type ColumnConfig } from 'frontile';
@@ -106,7 +111,7 @@ const templateSnippet = `<Table @columns={{columns}} @items={{members}} />
 
 const toast = new Notification({}, 'Invitation sent to ada@example.com', {
   appearance: 'success',
-  transitionDuration: 0
+  transitionDuration: 0,
 });
 
 export default class IndexPage extends Component {
@@ -114,11 +119,10 @@ export default class IndexPage extends Component {
   @tracked isDrawerOpen = false;
   @tracked notifyByEmail = true;
 
-
   columns = [
     { key: 'name', name: 'Member' },
     { key: 'email', name: 'Email' },
-    { key: 'role', name: 'Role' }
+    { key: 'role', name: 'Role' },
   ] as const satisfies ColumnConfig<Member>[];
 
   @action
@@ -184,9 +188,7 @@ export default class IndexPage extends Component {
           </div>
         </div>
 
-        <div
-          class="page-container mt-14 rise rise-step-4"
-        >
+        <div class="page-container mt-14 rise rise-step-4">
           <ThemeSeam
             @description="A workspace members panel built from Frontile's Avatar,
               Button, Chip, Divider, Input, Table, and ProgressBar components,
@@ -212,17 +214,20 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--wall py-24 sm:py-28 bg-primary-subtle">
         <div class="page-container">
-          <SectionIntro class="max-w-2xl mb-14" @eyebrow="The library" @title="Start anywhere">
-              Every tile below is the real component, rendered by the library, and a
-              link straight into its documentation.
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="The library"
+            @title="Start anywhere"
+          >
+            Every tile below is the real component, rendered by the library, and
+            a link straight into its documentation.
           </SectionIntro>
 
           {{! The Table spans two columns and two rows and the rest sit at one unit
               each: a uniform auto-fill grid sized every row to the tallest cell,
               which left every other tile with a large empty stage. }}
           <div
-            class="grid grid-cols-1 gap-4 [grid-auto-rows:minmax(10.5rem,auto)]
-              sm:grid-cols-2 lg:grid-cols-4"
+            class="grid grid-cols-1 gap-4 [grid-auto-rows:minmax(10.5rem,auto)] sm:grid-cols-2 lg:grid-cols-4"
           >
             <SpecimenTile
               @name="Button"
@@ -445,9 +450,7 @@ export default class IndexPage extends Component {
                   class="popover-stage rounded-xl border border-neutral-soft bg-surface-canvas p-6"
                   {{onceInView pop.open}}
                 >
-                  <p
-                    class="field-label mb-5"
-                  >Popover</p>
+                  <p class="field-label mb-5">Popover</p>
 
                   {{! Stacked, the trigger goes last: the panel is positioned
                       and pinned below it, so with the list underneath it landed
@@ -635,9 +638,8 @@ export default class IndexPage extends Component {
             <div class="flex items-center gap-3 mb-6">
               <Avatar @size="lg" @name="Bruno Salas" />
               <div>
-                <p
-                  class="font-header text-header-sm text-neutral-strong"
-                >Bruno Salas</p>
+                <p class="font-header text-header-sm text-neutral-strong">Bruno
+                  Salas</p>
                 <p
                   class="font-caption text-caption-sm text-neutral-firm"
                 >bruno@example.com</p>
@@ -666,10 +668,14 @@ export default class IndexPage extends Component {
         class="ambient ambient--lab py-24 sm:py-28 bg-secondary-subtle dark:bg-surface-canvas"
       >
         <div class="page-container">
-          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Theming" @title="Make it look like your product">
-              Frontile's colors are semantic roles at named levels, not a numbered
-              scale. Swap the ramp and every component follows, in both
-              themes, with no rebuild.
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Theming"
+            @title="Make it look like your product"
+          >
+            Frontile's colors are semantic roles at named levels, not a numbered
+            scale. Swap the ramp and every component follows, in both themes,
+            with no rebuild.
           </SectionIntro>
 
           <div class="reveal">
@@ -698,10 +704,14 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--proof py-24 sm:py-28 bg-surface-canvas">
         <div class="page-container">
-          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Built in" @title="The work you don't have to do">
-              Keyboard behaviour, ARIA state, and template types arrive with the
-              components. Both of these are running right now, so try them rather
-              than take our word for it.
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Built in"
+            @title="The work you don't have to do"
+          >
+            Keyboard behaviour, ARIA state, and template types arrive with the
+            components. Both of these are running right now, so try them rather
+            than take our word for it.
           </SectionIntro>
 
           <div class="space-y-14">
@@ -709,7 +719,9 @@ export default class IndexPage extends Component {
               <h3
                 class="font-header text-header-lg text-neutral-bolder mb-2"
               >Keyboard and ARIA, already wired</h3>
-              <p class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl">
+              <p
+                class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl"
+              >
                 Tab into the list and use the arrow keys, Home, End, or type a
                 letter.
               </p>
@@ -722,7 +734,9 @@ export default class IndexPage extends Component {
               <h3
                 class="font-header text-header-lg text-neutral-bolder mb-2"
               >Type errors, before runtime</h3>
-              <p class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl">
+              <p
+                class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl"
+              >
                 Glint checks component arguments inside the template, so a
                 mismatched collection is a build error rather than a blank cell.
               </p>
@@ -748,12 +762,18 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       <section class="ambient ambient--inventory py-24 sm:py-28">
         <div class="page-container">
-          <SectionIntro class="max-w-2xl mb-14" @eyebrow="Every component" @title="Grouped by the job">
-              Everything Frontile documents today, with the deprecated legacy
-              packages left out. Every name is a link.
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Every component"
+            @title="Grouped by the job"
+          >
+            Everything Frontile documents today, with the deprecated legacy
+            packages left out. Every name is a link.
           </SectionIntro>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10"
+          >
             {{#each inventory as |category|}}
               <div class="reveal">
                 <h3
@@ -767,16 +787,7 @@ export default class IndexPage extends Component {
                     <li>
                       <DocfyLink
                         @to={{item.path}}
-                        class="block -ml-2 px-2 py-[0.3125rem] rounded-md
-                          font-body text-body-xs text-neutral-firm
-                          transition-[color,background-color,translate]
-                          duration-180 ease-settle
-                          hover:bg-primary-subtle hover:text-primary-firm
-                          hover:translate-x-[0.1875rem]
-                          focus-visible:outline-2 focus-visible:outline-primary
-                          focus-visible:outline-offset-1
-                          motion-reduce:transition-none
-                          motion-reduce:hover:translate-x-0"
+                        class="block -ml-2 px-2 py-[0.3125rem] rounded-md font-body text-body-xs text-neutral-firm transition-[color,background-color,translate] duration-180 ease-settle hover:bg-primary-subtle hover:text-primary-firm hover:translate-x-[0.1875rem] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
                       >
                         {{item.name}}
                       </DocfyLink>
@@ -834,11 +845,10 @@ export default class IndexPage extends Component {
               >llms-full.txt</code>
               to the llms.txt standard, mirrors every page as plain Markdown at
               the same URL plus
-              <code
-                class="font-code text-code-sm text-primary-firm"
-              >.md</code>, and puts a one-click handoff to ChatGPT or Claude on
-              each one. Point your coding agent at a component's real
-              documentation instead of hoping it guessed the API.
+              <code class="font-code text-code-sm text-primary-firm">.md</code>,
+              and puts a one-click handoff to ChatGPT or Claude on each one.
+              Point your coding agent at a component's real documentation
+              instead of hoping it guessed the API.
             </p>
           </div>
 
@@ -849,7 +859,9 @@ export default class IndexPage extends Component {
             />
             <p class="mt-3 font-body text-body-sm text-neutral-firm">
               Two packages, a Tailwind v4 stylesheet, and one
-              <code class="font-code text-code-sm text-primary-firm">@source</code>
+              <code
+                class="font-code text-code-sm text-primary-firm"
+              >@source</code>
               line so Tailwind stops purging Frontile's classes. The
               <DocfyLink
                 @to="/docs/get-started/installation"

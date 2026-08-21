@@ -9,7 +9,7 @@ import {
   ProgressBar,
   Table,
   type ColumnConfig,
-  type SortItem
+  type SortItem,
 } from 'frontile';
 import {
   SearchIcon,
@@ -18,7 +18,7 @@ import {
   DuplicateIcon,
   ViewIcon,
   EditIcon,
-  DeleteIcon
+  DeleteIcon,
 } from '../icons';
 
 /**
@@ -61,7 +61,7 @@ const members: Member[] = [
     name: 'Kate Moore',
     email: 'kate@acme.com',
     role: 'Chief Executive Officer',
-    workerType: 'Employee'
+    workerType: 'Employee',
   },
   {
     id: '2',
@@ -69,7 +69,7 @@ const members: Member[] = [
     name: 'John Smith',
     email: 'john@acme.com',
     role: 'Chief Technology Officer',
-    workerType: 'Employee'
+    workerType: 'Employee',
   },
   {
     id: '3',
@@ -77,7 +77,7 @@ const members: Member[] = [
     name: 'Mike Wilson',
     email: 'mike@acme.com',
     role: 'VP of Engineering',
-    workerType: 'Employee'
+    workerType: 'Employee',
   },
   {
     id: '4',
@@ -85,7 +85,7 @@ const members: Member[] = [
     name: 'Alex Turner',
     email: 'alex@acme.com',
     role: 'Product Manager',
-    workerType: 'Contractor'
+    workerType: 'Contractor',
   },
   {
     id: '5',
@@ -93,8 +93,8 @@ const members: Member[] = [
     name: 'Emma Davis',
     email: 'emma@acme.com',
     role: 'Senior Designer',
-    workerType: 'Contractor'
-  }
+    workerType: 'Contractor',
+  },
 ];
 
 function isEmployee(workerType: string): boolean {
@@ -107,7 +107,7 @@ export default class AppSpecimen extends Component {
     { key: 'name', name: 'Member', isSortable: true },
     { key: 'role', name: 'Role', isSortable: true },
     { key: 'workerType', name: 'Type', isSortable: true },
-    { key: 'actions', name: 'Actions' }
+    { key: 'actions', name: 'Actions' },
   ] as const satisfies ColumnConfig<Member>[];
 
   /**
@@ -121,7 +121,7 @@ export default class AppSpecimen extends Component {
    */
   initialSort: SortItem<Member> = {
     property: 'name',
-    direction: 'ascending' as SortItem<Member>['direction']
+    direction: 'ascending' as SortItem<Member>['direction'],
   };
 
   /**
@@ -141,7 +141,6 @@ export default class AppSpecimen extends Component {
   /** Two rows chosen so the selected styling and the header's mixed-state
       select-all checkbox are both on show. */
   selectedKeys = ['1', '3'];
-
 
   <template>
     <div

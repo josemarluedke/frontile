@@ -33,12 +33,15 @@ export interface Signature {
  * block rather than three. Its measure is left to the call site, since the
  * page's headers sit in columns of three different widths.
  */
+/** The step the heading grows to on wide viewports, unless held compact. */
+const wideStep = 'sm:text-header-3xl';
+
 const SectionIntro: TOC<Signature> = <template>
   <div class="reveal" ...attributes>
     <p class="eyebrow mb-4">{{@eyebrow}}</p>
     <h2
       class="font-header text-header-2xl text-neutral-bolder text-balance
-        {{unless @isCompact 'sm:text-header-3xl'}}"
+        {{unless @isCompact wideStep}}"
     >{{@title}}</h2>
     <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
       {{yield}}

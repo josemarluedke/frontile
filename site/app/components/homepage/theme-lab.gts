@@ -33,16 +33,7 @@ import CodePanel from './code-panel';
 
 /** A palette family, by the step names `palette.ts` uses. */
 type Step =
-  | '50'
-  | '100'
-  | '200'
-  | '300'
-  | '400'
-  | '500'
-  | '600'
-  | '700'
-  | '900'
-  | '950';
+  '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '900' | '950';
 type Family = Record<Step, string>;
 
 interface Level {
@@ -75,7 +66,7 @@ function lightRamp(f: Family): Level[] {
     { name: 'DEFAULT', value: f['600'] },
     { name: 'firm', value: f['700'] },
     { name: 'strong', value: f['900'] },
-    { name: 'bolder', value: f['950'] }
+    { name: 'bolder', value: f['950'] },
   ];
 }
 
@@ -89,7 +80,7 @@ function darkRamp(f: Family): Level[] {
     { name: 'DEFAULT', value: f['300'] },
     { name: 'firm', value: f['200'] },
     { name: 'strong', value: f['100'] },
-    { name: 'bolder', value: f['50'] }
+    { name: 'bolder', value: f['50'] },
   ];
 }
 
@@ -106,9 +97,7 @@ function luminance(hex: string): number {
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
   });
 
-  return (
-    0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!
-  );
+  return 0.2126 * channels[0]! + 0.7152 * channels[1]! + 0.0722 * channels[2]!;
 }
 
 /**
@@ -133,7 +122,7 @@ function toCustomProperties(ramp: Level[]): string {
 
       return [
         `  --color-primary${suffix}: ${value};`,
-        `  --color-on-primary${suffix}: ${onColor(value)};`
+        `  --color-on-primary${suffix}: ${onColor(value)};`,
       ];
     })
     .join('\n');
@@ -149,7 +138,7 @@ const PRESETS: Preset[] = Object.entries(FAMILIES).map(([key, family]) => ({
   key,
   label: key.charAt(0).toUpperCase() + key.slice(1),
   family,
-  swatchStyle: htmlSafe(`background: ${family['600']}`)
+  swatchStyle: htmlSafe(`background: ${family['600']}`),
 }));
 
 /**
@@ -171,12 +160,9 @@ const LabPanel: TOC<{
   };
 }> = <template>
   <div
-    class="theme-lab-scope rounded-xl border border-neutral-soft bg-surface-app
-      p-5 text-neutral-firm"
+    class="theme-lab-scope rounded-xl border border-neutral-soft bg-surface-app p-5 text-neutral-firm"
   >
-    <p
-      class="field-label mb-4"
-    >{{@scheme}}</p>
+    <p class="field-label mb-4">{{@scheme}}</p>
 
     <div class="space-y-4">
       <div class="flex flex-wrap items-center gap-2">
@@ -206,7 +192,11 @@ const LabPanel: TOC<{
 
       <div class="flex flex-wrap gap-2">
         <Chip @intent="primary" @size="sm">Primary</Chip>
-        <Chip @intent="primary" @appearance="outlined" @size="sm">Outlined</Chip>
+        <Chip
+          @intent="primary"
+          @appearance="outlined"
+          @size="sm"
+        >Outlined</Chip>
         <Chip @intent="primary" @appearance="faded" @size="sm">Faded</Chip>
       </div>
     </div>
@@ -238,7 +228,7 @@ export default class ThemeLab extends Component {
       '}',
       '.dark .theme-lab-scope, .light .theme-inverse .theme-lab-scope {',
       toCustomProperties(darkRamp(f)),
-      '}'
+      '}',
     ].join('\n');
   }
 
@@ -271,15 +261,15 @@ ${toConfigObject(darkRamp(f), '          ')}
   <template>
     {{! This demonstration's own scoped ramp. }}
     {{! template-lint-disable no-forbidden-elements }}
-    <style>{{this.scopedCss}}</style>
+    <style>
+      {{this.scopedCss}}
+    </style>
     {{! template-lint-enable no-forbidden-elements }}
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8 items-start">
       <div class="lg:col-span-2">
         <fieldset>
-          <legend
-            class="field-label mb-3"
-          >Swap the primary ramp</legend>
+          <legend class="field-label mb-3">Swap the primary ramp</legend>
           <div class="flex flex-wrap gap-2">
             {{#each this.presets as |item|}}
               <ToggleButton
@@ -311,15 +301,14 @@ ${toConfigObject(darkRamp(f), '          ')}
       {{! The configuration that produces it }}
       <div>
         <p class="font-body text-body-sm text-neutral-firm mb-3">
-          One ramp per scheme, in a plain CommonJS file that Frontile compiles to
-          custom properties, generating the matching
+          One ramp per scheme, in a plain CommonJS file that Frontile compiles
+          to custom properties, generating the matching
           <code
             class="font-code text-code-sm text-primary-firm"
           >on-primary-*</code>
           contrast colors for you. Wire it up with
-          <code
-            class="font-code text-code-sm text-primary-firm"
-          >@plugin "./frontile.js"</code>
+          <code class="font-code text-code-sm text-primary-firm">@plugin
+            "./frontile.js"</code>
           in your stylesheet.
         </p>
         <CodePanel
