@@ -1,67 +1,129 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { LinkTo } from '@ember/routing';
+import { hash } from '@ember/helper';
 import { DocfyLink } from '@docfy/ember';
+import { NotificationCard, Notification } from 'frontile/notifications';
 import {
-  Button,
-  Input,
-  Select,
-  Field,
-  Checkbox,
-  Radio,
-  Switch,
-  ProgressBar,
-  Spinner,
   Avatar,
+  Button,
+  ButtonGroup,
+  Checkbox,
   Chip,
   Divider,
-  Modal,
   Drawer,
   Dropdown,
+  Field,
+  Modal,
+  Popover,
+  ProgressBar,
+  RadioGroup,
+  Skeleton,
+  Spinner,
+  Switch,
+  Table,
+  type ColumnConfig,
 } from 'frontile';
 import {
-  CheckIcon,
-  PaletteIcon,
-  MoonIcon,
-  BookIcon,
-  TargetIcon,
-  AccessibilityIcon,
-  ComponentIcon,
-  RocketIcon,
-  SparklesIcon,
-  UserIcon,
-  SettingsIcon,
-  LogoutIcon,
-  ChevronDownIcon,
   ViewIcon,
   EditIcon,
-  DuplicateIcon,
   ShareIcon,
-  DownloadIcon,
   ArchiveIcon,
   DeleteIcon,
 } from '../components/icons';
-import FeatureCard from '../components/homepage/feature-card';
-import ComponentPackageCard from '../components/homepage/component-package-card';
-import SectionHeader from '../components/homepage/section-header';
-import CodeBlock from '../components/homepage/code-block';
-import ComponentDemoCard from '../components/homepage/component-demo-card';
+import AppSpecimen from '../components/homepage/app-specimen';
+import ThemeSeam from '../components/homepage/theme-seam';
+import ThemeLab from '../components/homepage/theme-lab';
+import KeyboardProof from '../components/homepage/keyboard-proof';
+import SpecimenTile from '../components/homepage/specimen-tile';
+import CodePanel from '../components/homepage/code-panel';
+import LinkButton from '../components/homepage/link-button';
+import OverlayDoor from '../components/homepage/overlay-door';
+import SectionIntro from '../components/homepage/section-intro';
+import onceInView from '../modifiers/once-in-view';
+import { inventory } from '../components/homepage/component-inventory';
 
-class IndexPage extends Component {
+/**
+ * DIRECTION CONTRACT — Frontile homepage
+ *
+ * THESIS: A component set sold by showing it working, not by counting it.
+ * Refuses the category's icon-heading-text feature grid and its
+ * adoption-number proof bar — neither of which Frontile can honestly ship.
+ *
+ * OWN-WORLD: Frontile's own tokens, unmodified. Warm-neutral grounds stepping
+ * between surface-app and surface-canvas, low-chroma teal for every
+ * interaction, status hues only where they mean status. Domine for the single
+ * marquee moment, Open Sans for structure, Source Code Pro for specimens. No
+ * literal colors and no gradient text. The one deliberate flourish is the code
+ * window: dark in both schemes because the bundled syntax theme is, lifted by
+ * an offset teal glow drawn from primary-soft.
+ *
+ * STORY: A skeptical Ember developer sees real components working in both
+ * schemes at once, believes the default theme is finished, and goes exploring —
+ * into the specimen wall, the theming lab, and the docs.
+ *
+ * FIRST VIEWPORT: Left, a marquee headline claiming beautiful and
+ * production-ready, one sentence substantiating it with accessibility, typed
+ * templates, and Tailwind Variants, then two doors — components and theming.
+ * Below, the live app specimen bisected by a draggable theme seam.
+ *
+ * FORM: Split-theme page — candidate 4 of 7 on the ordered list, assigned by
+ * seed 9a7052ef (degraded roll: no challengers dealt). Staging: the seam runs
+ * through a composed product UI rather than through the page chrome.
+ */
+
+interface Member {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+const tableMembers: Member[] = [
+  { id: '1', name: 'Ada Okonkwo', email: 'ada@example.com', role: 'Owner' },
+  { id: '2', name: 'Bruno Salas', email: 'bruno@example.com', role: 'Editor' },
+  { id: '3', name: 'Chen Wei', email: 'chen@example.com', role: 'Viewer' },
+  {
+    id: '4',
+    name: 'Dara Whitfield',
+    email: 'dara@example.com',
+    role: 'Editor',
+  },
+];
+
+const signatureSnippet = `import { Table, type ColumnConfig } from 'frontile';
+
+interface Member { id: string; name: string; role: string }
+
+const columns = [
+  { key: 'name', name: 'Member' },
+  { key: 'role', name: 'Role' }
+] as const satisfies ColumnConfig<Member>[];`;
+
+// Written as a constant rather than inline in the template: a `{{...}}` inside
+// a quoted attribute is interpolated by Glimmer, which is how the previous
+// homepage silently rendered `@rows=` with no value in its own code sample.
+const templateSnippet = `<Table @columns={{columns}} @items={{members}} />
+
+{{! Glint checks this against ColumnConfig<Member>: }}
+<Table @columns={{columns}} @items={{projects}} />
+{{! ^ Type 'Project[]' is not assignable to 'Member[]' }}`;
+
+const toast = new Notification({}, 'Invitation sent to ada@example.com', {
+  appearance: 'success',
+  transitionDuration: 0,
+});
+
+export default class IndexPage extends Component {
   @tracked isModalOpen = false;
   @tracked isDrawerOpen = false;
-  @tracked selectedCountry: string | null = null;
-  @tracked email = '';
-  @tracked fullName = '';
+  @tracked notifyByEmail = true;
 
-  countries = [
-    { key: 'us', label: 'United States' },
-    { key: 'ca', label: 'Canada' },
-    { key: 'uk', label: 'United Kingdom' },
-    { key: 'au', label: 'Australia' },
-    { key: 'de', label: 'Germany' },
-  ];
+  columns = [
+    { key: 'name', name: 'Member' },
+    { key: 'email', name: 'Email' },
+    { key: 'role', name: 'Role' },
+  ] as const satisfies ColumnConfig<Member>[];
 
   @action
   openModal(): void {
@@ -84,992 +146,739 @@ class IndexPage extends Component {
   }
 
   @action
-  handleCountryChange(key: string | null): void {
-    this.selectedCountry = key;
-  }
-
-  @action
-  handleEmailChange(value: string): void {
-    this.email = value;
-  }
-
-  @action
-  handleNameChange(value: string): void {
-    this.fullName = value;
+  setNotifyByEmail(value: boolean): void {
+    this.notifyByEmail = value;
   }
 
   <template>
-    <div class="min-h-screen bg-surface-app">
-      {{! Hero Section }}
-      <section
-        class="relative overflow-hidden bg-surface-canvas pt-20 pb-24 sm:pt-24 sm:pb-32"
-      >
-        <div
-          class="hero-glow-orb hero-glow-orb--primary hidden sm:block"
-          aria-hidden="true"
-        ></div>
-        <div
-          class="hero-glow-orb hero-glow-orb--secondary hidden sm:block"
-          aria-hidden="true"
-        ></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center">
+    <div class="bg-surface-app relative">
+
+      {{! ------------------------------------------------------------------ }}
+      {{! The seam — one UI, both themes, at once }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="ambient pt-16 pb-20 sm:pt-24 sm:pb-28">
+        <div class="page-container">
+          <div class="max-w-3xl">
+            <p class="eyebrow rise-text">Ember component library</p>
             <h1
-              class="font-marquee text-marquee-xl sm:text-marquee-2xl lg:text-marquee-3xl text-neutral-bolder mb-6"
+              class="mt-5 font-marquee text-marquee-lg sm:text-marquee-xl lg:text-marquee-3xl text-neutral-bolder text-balance rise-text rise-step-1"
             >
-              Production-Ready UI Components
-              <span
-                class="block mt-2 bg-gradient-to-r from-primary-strong to-secondary-strong bg-clip-text text-transparent"
-              >for Ember.js</span>
+              Beautiful, production-ready components for Ember.js.
             </h1>
             <p
-              class="mt-6 font-body text-body-md sm:text-body-lg text-neutral-bolder max-w-4xl mx-auto"
+              class="mt-6 font-body text-body-sm sm:text-body-md text-neutral-firm text-pretty max-w-xl rise-text rise-step-2"
             >
-              Build accessible, beautiful applications with 30+ TypeScript-typed
-              components, Tailwind Variants theming, and built-in dark mode
-              support
+              Accessible by construction, typed all the way into your templates
+              with TypeScript and Glint, and styled with Tailwind Variants.
             </p>
-            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <LinkTo @route="docs.get-started">
-                <Button @intent="primary" @size="lg" @class="flex items-center">
-                  Get Started
-                  <svg
-                    class="ml-2 w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </Button>
-              </LinkTo>
+            <div
+              class="mt-9 flex flex-wrap items-center gap-3 rise rise-step-3"
+            >
+              <LinkButton
+                @to="/docs/components/buttons/button"
+                @intent="primary"
+                @size="lg"
+              >Explore the components</LinkButton>
+              <LinkButton
+                @to="/docs/theming/overview"
+                @appearance="outlined"
+                @size="lg"
+              >How theming works</LinkButton>
             </div>
           </div>
         </div>
-      </section>
 
-      {{! Quick Install Section }}
-      <section class="py-16 bg-surface-canvas section-divider-gradient">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center">
-            <p
-              class="font-label text-label-2xs text-neutral-bolder uppercase tracking-wide mb-4"
-            >Quick Install</p>
-            <div class="install-terminal max-w-lg mx-auto">
-              <div class="install-terminal__dots" aria-hidden="true">
-                <span
-                  class="install-terminal__dot install-terminal__dot--red"
-                ></span>
-                <span
-                  class="install-terminal__dot install-terminal__dot--yellow"
-                ></span>
-                <span
-                  class="install-terminal__dot install-terminal__dot--green"
-                ></span>
-              </div>
-              <div class="install-terminal__command">
-                <span class="install-terminal__prompt">$</span>
-                pnpm install frontile @frontile/theme
-              </div>
-            </div>
-            <p class="mt-4 font-body text-body-2xs text-neutral-bolder">
-              Also available via npm and yarn
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {{! Key Features Grid }}
-      <section class="py-24 bg-surface-app section-divider-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            @title="Built for Modern Ember Development"
-            @subtitle="Everything you need to build production-ready applications"
-          />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard
-              @title="Modern Ember"
-              @description="Built with modern Ember standards. Full v2 addon format with template tags (GTS/GJS), Glimmer components, and type-safe templates powered by Glint."
-              @iconBg="bg-primary-subtle"
-            >
-              <:icon>
-                <SparklesIcon class="w-6 h-6 text-primary-strong" />
-              </:icon>
-            </FeatureCard>
-
-            <FeatureCard
-              @title="Accessibility First"
-              @description="WAI-ARIA compliant components with full keyboard navigation, screen reader optimization, and built-in focus management."
-              @iconBg="bg-success-subtle"
-            >
-              <:icon>
-                <AccessibilityIcon class="w-6 h-6 text-success-strong" />
-              </:icon>
-            </FeatureCard>
-
-            <FeatureCard
-              @title="Tailwind Variants Theming"
-              @description="Highly customizable styling system with class conflict resolution included. Replace default styles with your own styling without CSS-in-JS overhead."
-              @iconBg="bg-secondary-subtle"
-            >
-              <:icon>
-                <PaletteIcon class="w-6 h-6 text-secondary-strong" />
-              </:icon>
-            </FeatureCard>
-
-            <FeatureCard
-              @title="Dark Mode Ready"
-              @description="Built-in theme switching with all components supporting dark mode. Semantic color tokens with zero configuration needed."
-              @iconBg="bg-primary-subtle"
-            >
-              <:icon>
-                <MoonIcon class="w-6 h-6 text-primary-strong" />
-              </:icon>
-            </FeatureCard>
-
-            <FeatureCard
-              @title="TypeScript + Glint"
-              @description="Fully typed component signatures with type-safe templates. Generic type support for data structures with full IDE IntelliSense."
-              @iconBg="bg-primary-subtle"
-            >
-              <:icon>
-                <BookIcon class="w-6 h-6 text-primary-strong" />
-              </:icon>
-            </FeatureCard>
-
-            <FeatureCard
-              @title="Production Ready"
-              @description="30+ battle-tested components including an advanced data table with sorting/selection, comprehensive form system, and overlay management."
-              @iconBg="bg-success-subtle"
-            >
-              <:icon>
-                <RocketIcon class="w-6 h-6 text-success-strong" />
-              </:icon>
-            </FeatureCard>
-          </div>
-        </div>
-      </section>
-
-      {{! Component Showcase with Live Demos }}
-      <section class="py-24 bg-surface-canvas section-divider-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            @title="Components That Work Together"
-            @subtitle="From simple buttons to advanced data tables, every component is designed for real-world applications"
-          />
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {{! Buttons Demo }}
-            <ComponentDemoCard @title="Flexible Button System">
-              <div class="space-y-4">
-                <div class="flex flex-wrap gap-3">
-                  <Button @intent="default">Default</Button>
-                  <Button @intent="primary">Primary</Button>
-                  <Button @intent="success">Success</Button>
-                  <Button @intent="warning">Warning</Button>
-                  <Button @intent="danger">Danger</Button>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                  <Button
-                    @intent="primary"
-                    @appearance="outlined"
-                  >Outlined</Button>
-                  <Button
-                    @intent="primary"
-                    @appearance="minimal"
-                  >Minimal</Button>
-                </div>
-                <div class="">
-                  <Button @intent="primary" @size="xs">Extra Small</Button>
-                  <Button @intent="primary" @size="sm">Small</Button>
-                  <Button @intent="primary" @size="md">Medium</Button>
-                  <Button @intent="primary" @size="lg">Large</Button>
-                </div>
-              </div>
-            </ComponentDemoCard>
-
-            {{! Form Inputs Demo }}
-            <ComponentDemoCard
-              @title="Form Components"
-              @description="Complete form components with labels, validation, and consistent styling"
-            >
-              <div class="space-y-4">
-                <Field @name="email" as |field|>
-                  <field.Input
-                    @label="Email Address"
-                    @type="email"
-                    @placeholder="Enter your email"
-                    @value={{this.email}}
-                    @onInput={{this.handleEmailChange}}
-                  />
-                </Field>
-                <Field @name="fullName" as |field|>
-                  <field.Input
-                    @label="Full Name"
-                    @placeholder="John Doe"
-                    @value={{this.fullName}}
-                    @onInput={{this.handleNameChange}}
-                  />
-                </Field>
-                <Field @name="country" as |field|>
-                  <field.SingleSelect
-                    @label="Country"
-                    @placeholder="Select your country"
-                    @items={{this.countries}}
-                    @selectedKey={{this.selectedCountry}}
-                    @onSelectionChange={{this.handleCountryChange}}
-                  />
-                </Field>
-                <div class="flex items-center gap-6 pt-2">
-                  <Checkbox>Remember me</Checkbox>
-                  <Switch />
-                </div>
-              </div>
-            </ComponentDemoCard>
-
-            {{! Chips & Avatars }}
-            <ComponentDemoCard @title="Chips & Avatars">
-              <div class="space-y-4">
-                <div class="flex flex-wrap gap-2">
-                  <Chip>Default Chip</Chip>
-                  <Chip @intent="primary">Primary</Chip>
-                  <Chip @intent="success">Success</Chip>
-                  <Chip @intent="warning">Warning</Chip>
-                  <Chip @intent="danger">Danger</Chip>
-                </div>
-                <div class="flex flex-wrap gap-3 items-center">
-                  <Avatar @size="xs" @name="John Doe" />
-                  <Avatar @size="sm" @name="Jane Smith" />
-                  <Avatar @size="md" @name="Bob Wilson" />
-                  <Avatar @size="lg" @name="Alice Brown" />
-                </div>
-              </div>
-            </ComponentDemoCard>
-
-            {{! Progress & Loading States }}
-            <ComponentDemoCard @title="Status Indicators">
-              <div class="space-y-4">
-                <div>
-                  <p
-                    class="font-body text-body-2xs text-neutral-bolder mb-2"
-                  >Progress Bar</p>
-                  <ProgressBar
-                    @intent="primary"
-                    @progress={{75}}
-                    @max={{100}}
-                  />
-                </div>
-                <div>
-                  <p
-                    class="font-body text-body-2xs text-neutral-bolder mb-2"
-                  >Loading States</p>
-                  <div class="flex gap-3 items-center">
-                    <Spinner @size="sm" />
-                    <Spinner @size="md" />
-                    <Spinner @size="lg" />
-                  </div>
-                </div>
-                <Divider />
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Visual feedback for user actions and system processes
-                </p>
-              </div>
-            </ComponentDemoCard>
-
-            {{! Dropdown Menu Demo }}
-            <ComponentDemoCard
-              @title="Dropdown Menu"
-              @description="Context menus with keyboard navigation and accessibility"
-            >
-              <div class="flex justify-center">
-                <Dropdown as |d|>
-                  <d.Trigger @intent="primary" @size="sm">
-                    Dropdown
-                  </d.Trigger>
-
-                  <d.Menu as |Item|>
-                    <Item
-                      @key="view"
-                      @description="Open in read-only mode"
-                      @shortcut="⌘O"
-                    >
-                      <:start><ViewIcon /></:start>
-                      <:default>View Details</:default>
-                    </Item>
-                    <Item
-                      @key="edit"
-                      @description="Make changes to project"
-                      @shortcut="⌘E"
-                    >
-                      <:start><EditIcon /></:start>
-                      <:default>Edit Project</:default>
-                    </Item>
-                    <Item
-                      @key="duplicate"
-                      @description="Create a copy"
-                      @shortcut="⌘D"
-                      @withDivider={{true}}
-                    >
-                      <:start><DuplicateIcon /></:start>
-                      <:default>Duplicate</:default>
-                    </Item>
-                    <Item
-                      @key="share"
-                      @intent="primary"
-                      @description="Invite team members"
-                      @shortcut="⌘⇧S"
-                    >
-                      <:start><ShareIcon /></:start>
-                      <:default>Share</:default>
-                    </Item>
-                    <Item
-                      @key="export"
-                      @intent="success"
-                      @description="Download as file"
-                    >
-                      <:start><DownloadIcon /></:start>
-                      <:default>Export</:default>
-                    </Item>
-                    <Item
-                      @key="archive"
-                      @intent="warning"
-                      @description="Move to archived projects"
-                      @withDivider={{true}}
-                    >
-                      <:start><ArchiveIcon /></:start>
-                      <:default>Archive Project</:default>
-                    </Item>
-                    <Item
-                      @key="delete"
-                      @intent="danger"
-                      @description="Permanently delete"
-                      @class="text-danger"
-                      @shortcut="⌘⌫"
-                    >
-                      <:start><DeleteIcon /></:start>
-                      <:default>Delete Project</:default>
-                    </Item>
-                  </d.Menu>
-                </Dropdown>
-              </div>
-            </ComponentDemoCard>
-
-            {{! Modal Demo }}
-            <ComponentDemoCard
-              @title="Modal Dialog"
-              @description="Accessible modal overlays with backdrop and focus trap"
-            >
-              <div class="flex justify-center">
-                <Button @intent="primary" @onPress={{this.openModal}}>
-                  Open Modal
-                </Button>
-              </div>
-              <Modal
-                @isOpen={{this.isModalOpen}}
-                @onClose={{this.closeModal}}
-                @size="md"
-                as |modal|
-              >
-                <modal.Header>
-                  Welcome to Frontile
-                </modal.Header>
-                <modal.Body>
-                  <p class="text-neutral-bolder">
-                    This is a fully accessible modal dialog with keyboard
-                    navigation, focus trapping, and backdrop click-to-close
-                    functionality.
-                  </p>
-                  <p class="text-neutral-bolder mt-4">
-                    Try pressing
-                    <kbd
-                      class="px-2 py-1 bg-surface-overlay-subtle rounded font-code text-code-sm"
-                    >Escape</kbd>
-                    to close!
-                  </p>
-                </modal.Body>
-                <modal.Footer class="flex justify-end gap-3">
-                  <Button @intent="default" @onPress={{this.closeModal}}>
-                    Cancel
-                  </Button>
-                  <Button @intent="primary" @onPress={{this.closeModal}}>
-                    Got it
-                  </Button>
-                </modal.Footer>
-              </Modal>
-            </ComponentDemoCard>
-
-            {{! Drawer Demo }}
-            <ComponentDemoCard
-              @title="Drawer / Side Panel"
-              @description="Slide-out panels for navigation or additional content"
-            >
-              <div class="flex justify-center">
-                <Button @intent="primary" @onPress={{this.openDrawer}}>
-                  Open Drawer
-                </Button>
-              </div>
-              <Drawer
-                @isOpen={{this.isDrawerOpen}}
-                @onClose={{this.closeDrawer}}
-                @placement="right"
-                @size="md"
-                as |drawer|
-              >
-                <drawer.Header>
-                  Navigation Menu
-                </drawer.Header>
-                <drawer.Body>
-                  <div class="space-y-4">
-                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
-                      <h4
-                        class="font-header text-header-sm text-neutral-bolder mb-2"
-                      >Components</h4>
-                      <p
-                        class="font-body text-body-2xs text-neutral-bolder"
-                      >Browse all 30+ components</p>
-                    </div>
-                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
-                      <h4
-                        class="font-header text-header-sm text-neutral-bolder mb-2"
-                      >Documentation</h4>
-                      <p
-                        class="font-body text-body-2xs text-neutral-bolder"
-                      >Learn how to use Frontile</p>
-                    </div>
-                    <div class="p-4 bg-surface-overlay-subtle rounded-lg">
-                      <h4
-                        class="font-header text-header-sm text-neutral-bolder mb-2"
-                      >Examples</h4>
-                      <p class="font-body text-body-2xs text-neutral-bolder">See
-                        components in action</p>
-                    </div>
-                  </div>
-                </drawer.Body>
-                <drawer.Footer class="flex justify-end">
-                  <Button @intent="default" @onPress={{this.closeDrawer}}>
-                    Close
-                  </Button>
-                </drawer.Footer>
-              </Drawer>
-            </ComponentDemoCard>
-          </div>
-
-        </div>
-      </section>
-
-      {{! Component Inventory }}
-      <section class="py-24 bg-surface-app section-divider-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader @title="30+ Components, Organized by Purpose" />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ComponentPackageCard
-              @name="Buttons"
-              @count={{5}}
-              @description="Button, ButtonGroup, Chip, CloseButton, ToggleButton"
-              @gradient="bg-primary-subtle"
-              @borderColor="border-primary-soft"
-              @countColor="text-primary-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-primary-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Forms"
-              @count={{10}}
-              @description="Input, Select, Textarea, Checkbox, Radio, Switch, Field, Label & more"
-              @gradient="bg-success-subtle"
-              @borderColor="border-success-soft"
-              @countColor="text-success-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-success-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Collections"
-              @count={{3}}
-              @description="Table, Listbox, Dropdown"
-              @gradient="bg-secondary-subtle"
-              @borderColor="border-secondary-soft"
-              @countColor="text-secondary-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-secondary-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Overlays"
-              @count={{5}}
-              @description="Modal, Drawer, Popover, Overlay, Portal"
-              @gradient="bg-warning-subtle"
-              @borderColor="border-warning-soft"
-              @countColor="text-warning-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-warning-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Notifications"
-              @count={{1}}
-              @description="NotificationCard + Container"
-              @gradient="bg-warning-subtle"
-              @borderColor="border-warning-soft"
-              @countColor="text-warning-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-warning-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Status"
-              @count={{1}}
-              @description="ProgressBar"
-              @gradient="bg-success-subtle"
-              @borderColor="border-success-soft"
-              @countColor="text-success-strong"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-success-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Utilities"
-              @count={{5}}
-              @description="Avatar, Collapsible, Divider, Spinner, VisuallyHidden"
-              @gradient="bg-neutral-subtle"
-              @borderColor="border-neutral-soft"
-              @countColor="text-neutral-firm"
-            >
-              <:icon>
-                <ComponentIcon class="w-5 h-5 text-neutral-firm mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-
-            <ComponentPackageCard
-              @name="Theme"
-              @count={{16}}
-              @description="Styling system with Tailwind Variants"
-              @gradient="bg-secondary-subtle"
-              @borderColor="border-secondary-soft"
-              @countColor="text-secondary-strong"
-            >
-              <:icon>
-                <PaletteIcon class="w-5 h-5 text-secondary-strong mr-2" />
-              </:icon>
-            </ComponentPackageCard>
-          </div>
-        </div>
-      </section>
-
-      {{! Accessibility Section }}
-      <section class="py-24 bg-success-subtle">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            @title="Accessible by Default"
-            @subtitle="Not as an afterthought, but built into every component from the ground up"
-            @iconBg="bg-success-subtle"
+        <div class="page-container mt-14 rise rise-step-4">
+          <ThemeSeam
+            @description="A workspace members panel built from Frontile's Avatar,
+              Button, Chip, Divider, Input, Table, and ProgressBar components,
+              rendered simultaneously in the light and dark themes and divided by
+              a draggable seam."
           >
-            <:icon>
-              <AccessibilityIcon class="w-8 h-8 text-success-strong" />
-            </:icon>
-          </SectionHeader>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >Keyboard Navigation</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Full keyboard support for all interactive components
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >Screen Reader Support</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Proper ARIA labels and live regions
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >Focus Management</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Visible focus indicators and logical tab order
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >WAI-ARIA Compliant</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Follows authoring practices guidelines
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >High Contrast</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Works with OS high contrast modes
-                </p>
-              </div>
-            </div>
-
-            <div
-              class="flex items-start p-6 bg-surface-overlay-subtle rounded-lg shadow-md border border-success-soft hover:border-success transition-colors duration-200"
-            >
-              <CheckIcon
-                class="w-6 h-6 text-success-strong mr-3 mt-1 flex-shrink-0"
-              />
-              <div>
-                <h3
-                  class="font-header text-header-md text-neutral-bolder mb-2"
-                >Motion Preferences</h3>
-                <p class="font-body text-body-2xs text-neutral-bolder">
-                  Respects prefers-reduced-motion
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {{! TypeScript Excellence }}
-      <section class="py-24 bg-surface-canvas">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            @title="Type Safety from Components to Templates"
-            @subtitle="Catch errors at compile-time, not runtime"
-            @iconBg="bg-primary-subtle"
-          >
-            <:icon>
-              <BookIcon class="w-8 h-8 text-primary-strong" />
-            </:icon>
-          </SectionHeader>
-
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
-            >
-              <h3
-                class="font-header text-header-md text-neutral-bolder mb-4"
-              >Component Signatures</h3>
-              <CodeBlock
-                @code="interface Signature {
-  Args: {
-    rows: T[];
-    columns: Column<T>[];
-    onSort?: (col: Column<T>) => void;
-  };
-}"
-              />
-            </div>
-
-            <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
-            >
-              <h3
-                class="font-header text-header-md text-neutral-bolder mb-4"
-              >Template Type Checking</h3>
-              <CodeBlock
-                @code="<Table
-  @rows={{this.users}}
-  @columns={{this.columns}}
-/>
-// ✅ Glint validates args
-// ❌ Type errors at build"
-              />
-            </div>
-
-            <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl border border-primary-soft"
-            >
-              <h3
-                class="font-header text-header-md text-neutral-bolder mb-4"
-              >Generic Support</h3>
-              <CodeBlock
-                @code="Table<User>
-Listbox<Country>
-
-// Full type inference
-// for your data"
-              />
-            </div>
-          </div>
-
-          <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div
-                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
-              >100%</div>
-              <div
-                class="font-body text-body-2xs text-neutral-bolder"
-              >TypeScript Coverage</div>
-            </div>
-            <div>
-              <div
-                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
-              >Glint</div>
-              <div class="font-body text-body-2xs text-neutral-bolder">Template
-                Types</div>
-            </div>
-            <div>
-              <div
-                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
-              >30+</div>
-              <div class="font-body text-body-2xs text-neutral-bolder">Typed
-                Components</div>
-            </div>
-            <div>
-              <div
-                class="font-header text-strong-2xl text-primary-strong mb-2 stat-glow"
-              >Full</div>
-              <div class="font-body text-body-2xs text-neutral-bolder">IDE
-                IntelliSense</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {{! Theming Section }}
-      <section class="py-24 bg-secondary-subtle">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            @title="Flexible Theming System"
-            @subtitle="Semantic color tokens with built-in light and dark mode support"
-            @iconBg="bg-secondary-subtle"
-          >
-            <:icon>
-              <PaletteIcon class="w-8 h-8 text-secondary-strong" />
-            </:icon>
-          </SectionHeader>
-
-          <div class="max-w-4xl mx-auto">
-            <div
-              class="p-8 bg-surface-overlay-subtle rounded-xl shadow-lg border border-secondary-soft"
-            >
-              <h3
-                class="font-header text-header-lg text-neutral-bolder mb-6"
-              >Semantic Theme System</h3>
-              <CodeBlock
-                @code="const { frontile } = require('@frontile/theme/plugin');
-
-module.exports = frontile({
-  defaultTheme: 'light',
-  themes: {
-    light: {
-      colors: {
-        primary: {
-          subtle: '#eff6ff',
-          soft: '#93c5fd',
-          DEFAULT: '#3b82f6',
-          strong: '#1e40af'
-        },
-        neutral: {
-          subtle: '#f5f5f5',
-          soft: '#a3a3a3',
-          DEFAULT: '#525252',
-          strong: '#171717'
-        }
-      }
-    },
-    dark: {
-      colors: {
-        primary: {
-          subtle: '#1e3a8a',
-          soft: '#3b82f6',
-          DEFAULT: '#60a5fa',
-          strong: '#dbeafe'
-        }
-      }
-    }
-  }
-});
-
-// Note: on-{color}-{level} classes are automatically generated"
-                @language="javascript"
-              />
-              <p class="text-neutral-bolder mt-6 mb-6">
-                Customize light and dark themes with semantic colors that adapt
-                automatically. Use tokens like
-                <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
-                >bg-primary</code>,
-                <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
-                >text-danger-strong</code>, and
-                <code
-                  class="px-1 py-0.5 bg-surface-overlay-soft rounded font-code text-code-sm"
-                >text-neutral-strong</code>
-                for consistent theming across your application.
-              </p>
-              <div class="flex justify-center">
-                <DocfyLink @to="/docs/theming/overview">
-                  <Button
-                    @intent="primary"
-                    @size="md"
-                    @class="flex items-center"
-                  >
-                    Learn More About Theming
-                    <svg
-                      class="ml-2 w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                      />
-                    </svg>
-                  </Button>
-                </DocfyLink>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {{! Get Started / CTA Section }}
-      <section class="py-24 cta-gradient-bg">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="font-header text-header-3xl text-white mb-6">
-            Ready to Build?
-          </h2>
+            <:specimen>
+              <AppSpecimen />
+            </:specimen>
+          </ThemeSeam>
           <p
-            class="font-body text-body-md text-white/80 mb-10 max-w-2xl mx-auto"
+            class="mt-4 font-caption text-caption-sm text-neutral-firm max-w-2xl"
           >
-            Join the growing community of developers building accessible,
-            beautiful Ember.js applications with Frontile
+            <span class="hidden sm:inline">Drag the seam.</span>
+            Both sides are the same markup. Nothing was restyled, duplicated, or
+            patched up for dark mode.
           </p>
+        </div>
+      </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Specimen wall — breadth, as doors }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="ambient ambient--wall py-24 sm:py-28 bg-primary-subtle">
+        <div class="page-container">
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="The library"
+            @title="Start anywhere"
+          >
+            Every tile below is the real component, rendered by the library, and
+            a link straight into its documentation.
+          </SectionIntro>
+
+          {{! The Table spans two columns and two rows and the rest sit at one unit
+              each: a uniform auto-fill grid sized every row to the tallest cell,
+              which left every other tile with a large empty stage. }}
+          <div
+            class="grid grid-cols-1 gap-4 [grid-auto-rows:minmax(10.5rem,auto)] sm:grid-cols-2 lg:grid-cols-4"
+          >
+            <SpecimenTile
+              @name="Button"
+              @path="/docs/components/buttons/button"
+              @note="Five intents, three appearances, four sizes"
+            >
+              <div class="flex flex-wrap gap-2 justify-center">
+                <Button @intent="primary" @size="sm">Primary</Button>
+                <Button @appearance="outlined" @size="sm">Outlined</Button>
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Table"
+              @path="/docs/components/collections/table"
+              @note="Sorting, selection, sticky headers, typed columns"
+              @isWide={{true}}
+            >
+              <Table @columns={{this.columns}} @items={{tableMembers}} />
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Field"
+              @path="/docs/components/forms/field"
+              @note="Labels, hints, and validation wired together"
+            >
+              <Field @name="tile-email" as |field|>
+                <field.Input
+                  @label="Email"
+                  @size="sm"
+                  @value="ada@example.com"
+                />
+              </Field>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Switch"
+              @path="/docs/components/forms/switch"
+              @note="Labelled by the component, not by you"
+            >
+              <div class="flex flex-col gap-3">
+                <Switch @label="Email digest" @isSelected={{true}} />
+                <Switch @label="Push alerts" @isSelected={{false}} />
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Chip"
+              @path="/docs/components/buttons/chip"
+              @note="Status, filters, and removable tags"
+            >
+              <div class="flex flex-wrap gap-2 justify-center">
+                <Chip @intent="primary" @size="sm">Active</Chip>
+                <Chip @intent="success" @size="sm" @withDot={{true}}>Live</Chip>
+                <Chip @intent="danger" @size="sm">Failed</Chip>
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Avatar"
+              @path="/docs/components/utilities/avatar"
+              @note="Initials, images, and shape variants"
+            >
+              <div class="flex gap-2 justify-center">
+                <Avatar @size="sm" @name="Ada Okonkwo" />
+                <Avatar @size="md" @name="Bruno Salas" />
+                <Avatar @size="lg" @name="Chen Wei" />
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="ProgressBar"
+              @path="/docs/components/status/progress-bar"
+              @note="Determinate, indeterminate, and labelled"
+            >
+              <div class="w-full space-y-3">
+                <ProgressBar
+                  @intent="primary"
+                  @label="Upload"
+                  @progress={{72}}
+                />
+                <ProgressBar @intent="success" @progress={{100}} @size="sm" />
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Skeleton"
+              @path="/docs/components/utilities/skeleton"
+              @note="Shapes that match the content they stand in for"
+            >
+              <div class="w-full flex items-center gap-3">
+                <Skeleton @shape="circle" @size="md" />
+                <div class="flex-1 space-y-2">
+                  <Skeleton @shape="text" @size="sm" />
+                  <Skeleton @shape="text" @size="sm" />
+                </div>
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="ButtonGroup"
+              @path="/docs/components/buttons/button-group"
+              @note="Segmented and toggling groups"
+            >
+              <ButtonGroup @size="sm" as |g|>
+                <g.ToggleButton @isSelected={{true}}>Day</g.ToggleButton>
+                <g.ToggleButton>Week</g.ToggleButton>
+                <g.ToggleButton>Month</g.ToggleButton>
+              </ButtonGroup>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Checkbox"
+              @path="/docs/components/forms/checkbox"
+              @note="Grouped, indeterminate, and validated"
+            >
+              <div class="flex flex-col gap-2">
+                <Checkbox @label="Ship weekly report" @checked={{true}} />
+                <Checkbox @label="Include drafts" @checked={{false}} />
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Spinner"
+              @path="/docs/components/utilities/spinner"
+              @note="Four sizes, inherits the current intent"
+            >
+              <div class="flex items-center gap-4">
+                <Spinner @size="sm" />
+                <Spinner @size="md" />
+                <Spinner @size="lg" />
+              </div>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="RadioGroup"
+              @path="/docs/components/forms/radio"
+              @note="Grouped, labelled, and keyboard-navigable"
+            >
+              <RadioGroup @name="tile-theme" @value="dark" as |Radio|>
+                <Radio @label="Light mode" @value="light" />
+                <Radio @label="Dark mode" @value="dark" />
+              </RadioGroup>
+            </SpecimenTile>
+
+            <SpecimenTile
+              @name="Notifications"
+              @path="/docs/components/notifications/notifications"
+              @note="Toasts with live regions and auto-dismiss"
+            >
+              <div class="w-full">
+                <NotificationCard
+                  @notification={{toast}}
+                  @placement="top-right"
+                />
+              </div>
+            </SpecimenTile>
+
+          </div>
+        </div>
+      </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Overlays — the things a specimen tile cannot show }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="py-24 sm:py-28">
+        <div class="page-container">
+          {{! The column ratio used to be inverted: 416px of heading and copy
+              beside 760px holding one button and one sentence, which left a
+              760x274 hole under the card. The argument now sits in the narrow
+              column and the demonstrations own the wide one. }}
+          <div
+            class="grid grid-cols-1 lg:grid-cols-[minmax(0,22rem)_1fr] gap-x-16 gap-y-12 items-start"
+          >
+            <div>
+              {{! Compact: this header sits in a 22rem column, so the heading
+                  holds one step down rather than growing at the sm breakpoint. }}
+              <SectionIntro
+                @eyebrow="Overlays"
+                @title="The parts you have to open"
+                @isCompact={{true}}
+                class="mb-5"
+              >
+                Overlays are where component libraries usually leak: focus
+                escapes, the background scrolls, Escape does nothing. Every
+                layer here shares one focus trap, one scroll lock, and one
+                portal.
+              </SectionIntro>
+              <p class="reveal font-body text-body-sm text-neutral-firm">
+                <DocfyLink
+                  @to="/docs/accessibility/focus-management"
+                  class="text-primary-firm underline"
+                >Read the focus management guide</DocfyLink>
+              </p>
+            </div>
+
+            <div class="reveal">
+              {{! Popover leads because it is the only overlay that can be
+                  open at rest without taking the page hostage: Modal and
+                  Drawer cover everything behind them. It is genuinely live,
+                  not a picture of one, and the trigger closes and reopens it. }}
+              {{! It opens itself on arrival through the yielded open function
+                  rather than a controlled isOpen argument. See once-in-view.ts
+                  for why the argument cannot do this. }}
+              {{! The block param is pop rather than the conventional p. This
+                  block contains real paragraph elements, and a single-letter
+                  param named p collides with them in a strict-mode template,
+                  which takes down the whole section. }}
+              {{! The stage reserves height so the panel has somewhere to land.
+                  It is pinned below its trigger: the flip middleware measures
+                  the viewport rather than this stage, so where the trigger sat
+                  low the panel flipped upward and escaped the box into the
+                  section above, which reads as a rendering fault in a demo. }}
+              <Popover
+                @placement="bottom-start"
+                @flipOptions={{hash mainAxis=false}}
+                as |pop|
+              >
+                <div
+                  class="popover-stage rounded-xl border border-neutral-soft bg-surface-canvas p-6"
+                  {{onceInView pop.open}}
+                >
+                  <p class="field-label mb-5">Popover</p>
+
+                  {{! Stacked, the trigger goes last: the panel is positioned
+                      and pinned below it, so with the list underneath it landed
+                      on top of the text. Ordered this way the panel opens into
+                      the height reserved at the bottom of the stage. }}
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="order-2 sm:order-1">
+                      <Button
+                        {{pop.trigger}}
+                        {{pop.anchor}}
+                        @intent="primary"
+                        @size="sm"
+                      >
+                        Seat details
+                      </Button>
+                    </div>
+
+                    {{! The stage is as wide as the column, and the panel is
+                        not. Rather than pad the remainder, it carries what the
+                        component is doing while you look at it. }}
+                    <ul class="order-1 sm:order-2 space-y-2">
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Anchored to its trigger, and stays anchored as the page
+                        scrolls.
+                      </li>
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Escape closes it, and so does a click anywhere outside
+                        it.
+                      </li>
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Opened itself when this section scrolled into view — the
+                        trigger still owns it.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <pop.Content @class="p-4 w-72">
+                    <div class="flex items-center gap-3">
+                      <Avatar @size="sm" @name="Dara Whitfield" />
+                      <div class="min-w-0">
+                        <p
+                          class="font-label text-label-xs text-neutral-strong truncate"
+                        >Dara Whitfield</p>
+                        <p
+                          class="font-caption text-caption-sm text-neutral-firm truncate"
+                        >dara@example.com</p>
+                      </div>
+                    </div>
+                    <div class="mt-4">
+                      <ProgressBar
+                        @intent="primary"
+                        @label="Storage used"
+                        @progress={{61}}
+                        @size="sm"
+                      />
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      <Chip @size="sm" @appearance="faded">Editor</Chip>
+                      <Chip
+                        @size="sm"
+                        @appearance="faded"
+                        @intent="success"
+                        @withDot={{true}}
+                      >Active</Chip>
+                    </div>
+                  </pop.Content>
+                </div>
+              </Popover>
+
+              <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8">
+                <OverlayDoor
+                  @name="Modal"
+                  @note="Tab to the end — focus wraps instead of escaping."
+                >
+                  <Button
+                    @intent="primary"
+                    @size="sm"
+                    @onPress={{this.openModal}}
+                  >
+                    Open a modal
+                  </Button>
+                </OverlayDoor>
+
+                <OverlayDoor
+                  @name="Drawer"
+                  @note="Scroll the page behind it. It will not move."
+                >
+                  <Button
+                    @appearance="outlined"
+                    @size="sm"
+                    @onPress={{this.openDrawer}}
+                  >
+                    Open a drawer
+                  </Button>
+                </OverlayDoor>
+
+                <OverlayDoor
+                  @name="Dropdown"
+                  @note="Arrow keys move, typeahead jumps, Escape restores focus."
+                >
+                  <Dropdown as |d|>
+                    <d.Trigger @appearance="outlined" @size="sm">
+                      Row actions
+                    </d.Trigger>
+                    <d.Menu as |Item|>
+                      <Item @key="view" @description="Open in read-only mode">
+                        <:start><ViewIcon /></:start>
+                        <:default>View details</:default>
+                      </Item>
+                      <Item @key="edit" @description="Change roles and seats">
+                        <:start><EditIcon /></:start>
+                        <:default>Edit member</:default>
+                      </Item>
+                      <Item
+                        @key="share"
+                        @description="Send an invitation"
+                        @withDivider={{true}}
+                      >
+                        <:start><ShareIcon /></:start>
+                        <:default>Share</:default>
+                      </Item>
+                      <Item
+                        @key="archive"
+                        @description="Keep the record, revoke access"
+                      >
+                        <:start><ArchiveIcon /></:start>
+                        <:default>Archive</:default>
+                      </Item>
+                      <Item
+                        @key="remove"
+                        @intent="danger"
+                        @description="Permanently remove"
+                      >
+                        <:start><DeleteIcon /></:start>
+                        <:default>Remove member</:default>
+                      </Item>
+                    </d.Menu>
+                  </Dropdown>
+                </OverlayDoor>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Modal
+          @isOpen={{this.isModalOpen}}
+          @onClose={{this.closeModal}}
+          @size="md"
+          as |modal|
+        >
+          <modal.Header>Invite a member</modal.Header>
+          <modal.Body>
+            <p class="font-body text-body-sm text-neutral-firm mb-4">
+              Focus is trapped inside this dialog, the page behind it will not
+              scroll, and Escape closes it. Tab around and see.
+            </p>
+            <Field @name="invite-email" as |field|>
+              <field.Input @label="Email address" @type="email" />
+            </Field>
+            <div class="mt-4">
+              <Switch
+                @label="Notify by email"
+                @isSelected={{this.notifyByEmail}}
+                @onChange={{this.setNotifyByEmail}}
+              />
+            </div>
+          </modal.Body>
+          <modal.Footer class="flex justify-end gap-3">
+            <Button @onPress={{this.closeModal}}>Cancel</Button>
+            <Button @intent="primary" @onPress={{this.closeModal}}>
+              Send invite
+            </Button>
+          </modal.Footer>
+        </Modal>
+
+        <Drawer
+          @isOpen={{this.isDrawerOpen}}
+          @onClose={{this.closeDrawer}}
+          @placement="right"
+          @size="md"
+          as |drawer|
+        >
+          <drawer.Header>Member details</drawer.Header>
+          <drawer.Body>
+            <div class="flex items-center gap-3 mb-6">
+              <Avatar @size="lg" @name="Bruno Salas" />
+              <div>
+                <p class="font-header text-header-sm text-neutral-strong">Bruno
+                  Salas</p>
+                <p
+                  class="font-caption text-caption-sm text-neutral-firm"
+                >bruno@example.com</p>
+              </div>
+            </div>
+            <ProgressBar
+              @intent="primary"
+              @label="Storage used"
+              @progress={{42}}
+            />
+            <div class="mt-6 flex flex-wrap gap-2">
+              <Chip @size="sm">Editor</Chip>
+              <Chip @size="sm" @intent="success" @withDot={{true}}>Active</Chip>
+            </div>
+          </drawer.Body>
+          <drawer.Footer class="flex justify-end">
+            <Button @onPress={{this.closeDrawer}}>Close</Button>
+          </drawer.Footer>
+        </Drawer>
+      </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Theming laboratory }}
+      {{! ------------------------------------------------------------------ }}
+      <section
+        class="ambient ambient--lab py-24 sm:py-28 bg-secondary-subtle dark:bg-surface-canvas"
+      >
+        <div class="page-container">
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Theming"
+            @title="Make it look like your product"
+          >
+            Frontile's colors are semantic roles at named levels, not a numbered
+            scale. Swap the ramp and every component follows, in both themes,
+            with no rebuild.
+          </SectionIntro>
+
+          <div class="reveal">
+            <ThemeLab />
+          </div>
+
+          <div class="mt-10 flex flex-wrap gap-3 reveal">
+            <LinkButton
+              @to="/docs/theming/design-tokens/colors"
+              @appearance="outlined"
+            >Color tokens</LinkButton>
+            <LinkButton
+              @to="/docs/theming/component-styles"
+              @appearance="outlined"
+            >Restyle a component</LinkButton>
+            <LinkButton
+              @to="/docs/theming/configuration/theme-switching"
+              @appearance="outlined"
+            >Theme switching</LinkButton>
+          </div>
+        </div>
+      </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Prove the two claims that matter }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="ambient ambient--proof py-24 sm:py-28 bg-surface-canvas">
+        <div class="page-container">
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Built in"
+            @title="The work you don't have to do"
+          >
+            Keyboard behaviour, ARIA state, and template types arrive with the
+            components. Both of these are running right now, so try them rather
+            than take our word for it.
+          </SectionIntro>
+
+          <div class="space-y-14">
+            <div class="reveal">
+              <h3
+                class="font-header text-header-lg text-neutral-bolder mb-2"
+              >Keyboard and ARIA, already wired</h3>
+              <p
+                class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl"
+              >
+                Tab into the list and use the arrow keys, Home, End, or type a
+                letter.
+              </p>
+              <KeyboardProof />
+            </div>
+
+            <Divider />
+
+            <div class="reveal">
+              <h3
+                class="font-header text-header-lg text-neutral-bolder mb-2"
+              >Type errors, before runtime</h3>
+              <p
+                class="font-body text-body-sm text-neutral-firm mb-6 max-w-2xl"
+              >
+                Glint checks component arguments inside the template, so a
+                mismatched collection is a build error rather than a blank cell.
+              </p>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+                <CodePanel
+                  @code={{signatureSnippet}}
+                  @language="typescript"
+                  @label="columns.ts"
+                />
+                <CodePanel
+                  @code={{templateSnippet}}
+                  @language="handlebars"
+                  @label="members.gts"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Full inventory — every door, counted honestly }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="ambient ambient--inventory py-24 sm:py-28">
+        <div class="page-container">
+          <SectionIntro
+            class="max-w-2xl mb-14"
+            @eyebrow="Every component"
+            @title="Grouped by the job"
+          >
+            Everything Frontile documents today, with the deprecated legacy
+            packages left out. Every name is a link.
+          </SectionIntro>
 
           <div
-            class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-10"
           >
-            <LinkTo @route="docs.get-started">
-              <Button @intent="default" @size="lg" @class="flex items-center">
-                Get Started
-                <svg
-                  class="ml-2 w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </Button>
-            </LinkTo>
-            <a
-              href="https://github.com/josemarluedke/frontile"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button @intent="primary" @size="lg" @class="flex items-center">
-                <svg
-                  class="mr-2 w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                View on GitHub
-              </Button>
-            </a>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="cta-card">
-              <h3 class="font-header text-header-md mb-2 text-white">Quick Start</h3>
-              <p class="font-body text-body-2xs text-white/80">
-                Installation, setup, and your first component in minutes
-              </p>
-            </div>
-            <div class="cta-card">
-              <h3 class="font-header text-header-md mb-2 text-white">Browse
-                Components</h3>
-              <p class="font-body text-body-2xs text-white/80">
-                Interactive examples and API documentation
-              </p>
-            </div>
-            <div class="cta-card">
-              <h3 class="font-header text-header-md mb-2 text-white">Join
-                Community</h3>
-              <p class="font-body text-body-2xs text-white/80">
-                GitHub discussions and issue tracker
-              </p>
-            </div>
+            {{#each inventory as |category|}}
+              <div class="reveal">
+                <h3
+                  class="font-header text-header-md text-neutral-bolder mb-1"
+                >{{category.name}}</h3>
+                <p
+                  class="font-caption text-caption-sm text-neutral-firm mb-4"
+                >{{category.summary}}</p>
+                <ul class="flex flex-col gap-0.5">
+                  {{#each category.items as |item|}}
+                    <li>
+                      <DocfyLink
+                        @to={{item.path}}
+                        class="block -ml-2 px-2 py-[0.3125rem] rounded-md font-body text-body-xs text-neutral-firm transition-[color,background-color,translate] duration-180 ease-settle hover:bg-primary-subtle hover:text-primary-firm hover:translate-x-[0.1875rem] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-1 motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+                      >
+                        {{item.name}}
+                      </DocfyLink>
+                    </li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{/each}}
           </div>
         </div>
       </section>
+
+      {{! ------------------------------------------------------------------ }}
+      {{! Close — every door, one more time }}
+      {{! ------------------------------------------------------------------ }}
+      <section class="ambient ambient--close py-24 sm:py-28">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionIntro
+            @eyebrow="Start here"
+            @title="Pick a component and start reading."
+          >
+            Every component's documentation is built around live, interactive
+            demos of the component itself: the same ones running on this page,
+            with the source beside each of them. Start wherever your interface
+            is thinnest.
+          </SectionIntro>
+
+          <div class="mt-8 flex flex-wrap items-center gap-3 reveal">
+            <LinkButton
+              @route="docs.get-started"
+              @intent="primary"
+              @size="lg"
+            >Read the docs</LinkButton>
+            <LinkButton
+              @href="https://github.com/josemarluedke/frontile"
+              @appearance="outlined"
+              @size="lg"
+            >GitHub</LinkButton>
+          </div>
+
+          <div
+            class="mt-10 rounded-xl border border-neutral-soft bg-surface-canvas p-6 reveal"
+          >
+            <h3
+              class="font-header text-header-md text-neutral-bolder mb-2"
+            >Readable by your agent, too</h3>
+            <p class="font-body text-body-sm text-neutral-firm">
+              Frontile publishes
+              <code
+                class="font-code text-code-sm text-primary-firm"
+              >llms.txt</code>
+              and
+              <code
+                class="font-code text-code-sm text-primary-firm"
+              >llms-full.txt</code>
+              to the llms.txt standard, mirrors every page as plain Markdown at
+              the same URL plus
+              <code class="font-code text-code-sm text-primary-firm">.md</code>,
+              and puts a one-click handoff to ChatGPT or Claude on each one.
+              Point your coding agent at a component's real documentation
+              instead of hoping it guessed the API.
+            </p>
+          </div>
+
+          <div class="mt-10 reveal">
+            <CodePanel
+              @code="pnpm install frontile @frontile/theme"
+              @isTerminal={{true}}
+            />
+            <p class="mt-3 font-body text-body-sm text-neutral-firm">
+              Two packages, a Tailwind v4 stylesheet, and one
+              <code
+                class="font-code text-code-sm text-primary-firm"
+              >@source</code>
+              line so Tailwind stops purging Frontile's classes. The
+              <DocfyLink
+                @to="/docs/get-started/installation"
+                class="text-primary-firm underline"
+              >installation guide</DocfyLink>
+              has the exact paths.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {{! A fixed, pointer-transparent grain layer. Last in the DOM and above
+          the bands so it actually reads on them; Frontile's overlays portal out
+          to the document body at a far higher stacking level, so modals and
+          drawers are unaffected. }}
+      <div class="grain" aria-hidden="true"></div>
 
     </div>
   </template>
 }
-
-export default IndexPage;

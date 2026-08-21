@@ -8,22 +8,98 @@
   /* Site defaults to the Frontile body/header face (Open Sans); code uses Source Code Pro */
   --font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* The bundled highlight.js theme (highlight.css) is GitHub Dark with fixed
+     token colors, so code panels stay dark in BOTH schemes. The theme's own
+     neutrals invert between light and dark and cannot express that, so these
+     are named tokens taken from the palette's dark end — defined once here so
+     no literal color appears at a use site. */
+  --color-code-surface: #140b06; /* palette gray-950 */
+  --color-code-chrome: #241c17; /* palette gray-900 */
+  --color-code-border: #39332e; /* palette gray-800 */
+  --color-code-ink: #c9d1d9; /* highlight.js base ink */
+  --color-code-prompt: #7ce0e1; /* palette teal-200 */
+
+  /* Motion. The category's default `ease-in-out` reads as software; these are
+     the asymmetric curves that make a movement feel like it has mass — a fast
+     departure settling slowly into place. Used for load-in and hover only:
+     scroll-driven animations must stay `linear`, because there the scroll
+     position *is* the progress, and easing it makes the reveal lurch as you
+     scroll at a constant rate. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-settle: cubic-bezier(0.32, 0.72, 0, 1);
+
   --z-index-1: 1;
   --max-height-screen-16: calc(100vh - 4rem);
   --max-height-screen-28: calc(100vh - 7rem);
-
-  --animate-hero-glow: hero-glow 8s ease-in-out infinite;
-  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
 }
 
-@keyframes hero-glow {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.15); opacity: 0.8; }
+/* ------------------------------------------------------------------ *
+ * Homepage utilities
+ *
+ * These are `@utility` rather than plain classes so they behave like the rest
+ * of Tailwind — they compose with variants and take part in the same cascade
+ * layer. Each exists because the utility string it replaces was repeated at
+ * six or seven call sites, where it had already drifted.
+ * ------------------------------------------------------------------ */
+
+/* The page's content column. */
+@utility page-container {
+  max-width: var(--container-7xl);
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+
+  @variant lg {
+    padding-inline: 2rem;
+  }
 }
 
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+/* The small uppercase tier that labels a control or a demo stage. */
+@utility field-label {
+  font-family: var(--font-label);
+  font-size: var(--text-label-2xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-neutral-firm);
+}
+
+/* Section eyebrow. The page used to jump straight from a section's ground
+   colour to a 40px header, so every band opened identically. This is the
+   missing top rung: a label-role line at the smallest step, in the accent,
+   with a short rule anchoring it to the left margin. It is the only
+   page-scale use of the `label` role, which is what keeps it reading as a
+   tier rather than as decoration. */
+@utility eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-label);
+  font-size: var(--text-label-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-firm);
+
+  &::before {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    flex: none;
+    background: var(--color-primary-mild);
+  }
+}
+
+/* Reserves room for the overlays section's popover panel. The height is
+   coupled to that panel's content, so it is named here rather than inline. */
+@utility popover-stage {
+  min-height: 30rem;
+
+  @variant sm {
+    min-height: 19rem;
+  }
 }
 
 @layer components {
@@ -90,164 +166,321 @@
     @apply text-neutral-soft;
   }
 
-  /* Hero glow orbs */
-  .hero-glow-orb {
-    position: absolute;
-    border-radius: 9999px;
-    pointer-events: none;
-    filter: blur(80px);
-    animation: var(--animate-hero-glow);
-  }
+  /* ------------------------------------------------------------------ *
+   * Homepage
+   *
+   * Every value here resolves through a Frontile token. The previous
+   * homepage styled its hero orbs, install terminal, CTA gradient, stat
+   * glow, and section dividers with literal blue/violet oklch() values,
+   * which appear nowhere in the palette — Frontile's primary is teal and
+   * its secondary is orange. Those rules are gone rather than recolored.
+   * ------------------------------------------------------------------ */
 
-  .hero-glow-orb--primary {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, oklch(0.55 0.2 250 / 0.35) 0%, transparent 70%);
-    top: -100px;
-    left: 50%;
-    transform: translateX(-70%);
-  }
+  /* The theme seam. What stays here rather than moving to the templates is a
+     coordinated positioning system: five elements read one `--seam-split`
+     custom property, and a media query restacks all of them. Written as
+     utilities that would mean arbitrary `clip-path` values and `max-sm:`
+     variants scattered across five elements, which is strictly worse than one
+     block. The plain box — radius, overflow, isolation — lives on the
+     component. */
 
-  .hero-glow-orb--secondary {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, oklch(0.55 0.2 290 / 0.3) 0%, transparent 70%);
-    top: -50px;
-    left: 50%;
-    transform: translateX(-20%);
-    animation-delay: -4s;
-  }
-
-  /* Install terminal */
-  .install-terminal {
-    position: relative;
-    background: oklch(0.15 0.005 270);
-    border-radius: 0.75rem;
-    padding: 1.25rem 1.5rem;
-    overflow: hidden;
-    border: 1px solid oklch(0.3 0.02 270);
-  }
-
-  .install-terminal::before {
-    content: '';
+  .theme-seam__inverse {
     position: absolute;
     inset: 0;
-    border-radius: 0.75rem;
-    padding: 1px;
-    background: linear-gradient(135deg, oklch(0.6 0.2 250 / 0.5), oklch(0.6 0.2 290 / 0.5));
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    pointer-events: none;
+    /* inset(top right bottom left) — reveal only what sits right of the seam. */
+    clip-path: inset(0 0 0 var(--seam-split, 50%));
   }
 
-  .install-terminal::after {
-    content: '';
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 40px;
-    background: oklch(0.55 0.2 250 / 0.15);
-    filter: blur(20px);
-    pointer-events: none;
+  /* The label only exists for the stacked mobile layout, where the two copies
+     are no longer self-evidently "the same panel, two themes". */
+  .theme-seam__label {
+    display: none;
   }
 
-  .install-terminal__dots {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 0.75rem;
-  }
-
-  .install-terminal__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 9999px;
-  }
-
-  .install-terminal__dot--red { background: oklch(0.63 0.2 25); }
-  .install-terminal__dot--yellow { background: oklch(0.8 0.15 85); }
-  .install-terminal__dot--green { background: oklch(0.72 0.19 145); }
-
-  .install-terminal__command {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.9375rem;
-    color: oklch(0.85 0 none);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .install-terminal__prompt {
-    color: oklch(0.7 0.15 145);
-    user-select: none;
-  }
-
-  /* Code block - always dark background */
-  .code-block-glow {
-    position: relative;
-    background: oklch(0.15 0.005 270) !important;
-    border: 1px solid oklch(0.25 0.01 270 / 0.5);
-    box-shadow: inset 0 1px 0 oklch(1 0 none / 0.03);
-  }
-
-  /* Feature card glow hover */
-  .feature-card-glow {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-
-  .feature-card-glow:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 40px -10px oklch(0.55 0.2 250 / 0.15), 0 4px 6px -4px oklch(0 0 none / 0.1);
-    border-color: oklch(0.7 0.1 250 / 0.3);
-  }
-
-  /* Section divider gradient */
-  .section-divider-gradient {
-    position: relative;
-  }
-
-  .section-divider-gradient::before {
-    content: '';
+  .theme-seam__line {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(80%, 600px);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, oklch(0.6 0.2 250 / 0.4), oklch(0.6 0.2 290 / 0.4), transparent);
+    bottom: 0;
+    left: var(--seam-split, 50%);
+    width: 4px;
+    margin-left: -2px;
+    background: var(--color-primary);
+    pointer-events: none;
+    z-index: 2;
   }
 
-  /* CTA gradient background */
-  .cta-gradient-bg {
-    background: linear-gradient(135deg, oklch(0.45 0.2 250), oklch(0.4 0.18 280), oklch(0.42 0.2 290));
+  .theme-seam__handle,
+  .theme-seam__grip-wrap {
+    position: absolute;
+    top: 50%;
+    left: var(--seam-split, 50%);
+    width: var(--seam-handle-size);
+    height: var(--seam-handle-size);
+    margin: calc(var(--seam-handle-size) / -2) 0 0
+      calc(var(--seam-handle-size) / -2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* CTA frosted glass cards */
-  .cta-card {
-    padding: 1.5rem;
-    background: oklch(1 0 none / 0.1);
-    backdrop-filter: blur(12px);
-    border-radius: 0.75rem;
-    border: 1px solid oklch(1 0 none / 0.15);
-    transition: border-color 0.2s ease;
+  .theme-seam__handle {
+    z-index: 3;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border: 2px solid var(--color-surface-app);
+    box-shadow: 0 2px 8px -2px var(--color-surface-overlay-firm);
+    cursor: ew-resize;
+    touch-action: none;
   }
 
-  .cta-card:hover {
-    border-color: oklch(1 0 none / 0.3);
+  .theme-seam__handle:focus-visible {
+    outline: 2px solid var(--color-primary-firm);
+    outline-offset: 3px;
   }
 
-  /* Stat number glow */
-  .stat-glow {
-    text-shadow: 0 0 20px oklch(0.6 0.2 250 / 0.3);
+  /* The icon overlays the handle rather than living inside it, so the handle
+     keeps a clean role="separator" with no semantic descendants. It must never
+     swallow the drag. */
+  .theme-seam__grip-wrap {
+    z-index: 4;
+    pointer-events: none;
+    color: var(--color-on-primary);
   }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .hero-glow-orb {
-      animation: none;
+  .theme-seam__grip {
+    width: 1.125rem;
+    height: 1.125rem;
+    flex: none;
+  }
+
+  /* Below `sm` a vertical seam cuts through a 375px-wide table mid-row, which
+     reads as a rendering fault rather than a comparison. Stack the two copies
+     instead and label them. Declared after the rules it overrides, so plain
+     single-class selectors win on source order — an earlier version doubled the
+     selectors and forced the clip off with `!important`, both of which the
+     `--seam-split` indirection made unnecessary. */
+  @media (width < 640px) {
+    .theme-seam {
+      overflow: visible;
+    }
+
+    .theme-seam__inverse {
+      position: static;
+      inset: auto;
+      clip-path: none;
+      margin-top: 1.25rem;
+    }
+
+    .theme-seam__line,
+    .theme-seam__handle,
+    .theme-seam__grip-wrap {
+      display: none;
+    }
+
+    .theme-seam__label {
+      display: block;
+      margin-bottom: 0.5rem;
     }
   }
+
+  /* ------------------------------------------------------------------ *
+   * Ambient grounds
+   *
+   * Sections were flat fills, which is what made the page read as
+   * documentation rather than as a product. These add depth without adding
+   * a single literal color: every layer is one of the `*-soft` tokens, which
+   * are *translucent* by definition in `semantic.ts` (teal-600 at 10% in
+   * light, teal-300 at 25% in dark). Because they carry alpha, they
+   * composite over whatever surface sits beneath and re-resolve per scheme
+   * on their own — a light-mode wash and a dark-mode glow from one
+   * declaration, with no `dark:` variant and no second set of values to
+   * keep in sync.
+   *
+   * They are `background-image` only, so the `bg-*` utility on the same
+   * element still owns `background-color` and nothing is overridden.
+   *
+   * Offset, overlapping ellipses rather than one centered stop: an even
+   * gradient reads as a UI default, an uneven field reads as light falling
+   * across a surface.
+   * ------------------------------------------------------------------ */
+
+  .ambient {
+    /* The wash colors are indirected through two custom properties so the
+       geometry below is written once per band and never duplicated per scheme.
+       Why the indirection is needed at all: the `*-soft` tokens do not carry
+       comparable weight across schemes. `primary-soft` is teal-600 at 10% in
+       light but teal-300 at 25% in dark — 2.5x the alpha over a far lighter
+       hue — so the same declaration that glows on black is almost invisible on
+       white. `primary-muted` (teal-100, opaque) is the light-scheme member of
+       the same ramp with equivalent presence, and it fades to transparent just
+       as cleanly. Still one ramp, still no literal color, and the geometry
+       stays scheme-agnostic. */
+    --wash-cool: var(--color-primary-soft);
+    --wash-warm: var(--color-tertiary-soft);
+    --wash-amber: var(--color-secondary-soft);
+
+    background-repeat: no-repeat;
+
+    /* Off-center so the field has a direction. A radial with its focus in the
+       middle of the section is the flat gradient's cousin. */
+    background-image:
+      radial-gradient(86rem 46rem at 6% -14%, var(--wash-cool), transparent 74%),
+      /* Stacked on the first, tighter and offset, so the field has a hot core
+         rather than one even falloff. */
+      radial-gradient(40rem 24rem at 16% -4%, var(--wash-cool), transparent 66%),
+      radial-gradient(66rem 42rem at 98% -6%, var(--wash-warm), transparent 70%);
+  }
+
+  .light .ambient {
+    --wash-cool: var(--color-primary-muted);
+  }
+
+  /* The specimen wall already carries a teal tint as its fill, so its field
+     leans on the opposite accent to keep the band from going monochrome. */
+  .ambient--wall {
+    background-image:
+      radial-gradient(72rem 38rem at 96% -6%, var(--wash-warm), transparent 72%),
+      radial-gradient(34rem 20rem at 92% 4%, var(--wash-warm), transparent 64%),
+      radial-gradient(58rem 34rem at -4% 104%, var(--wash-cool), transparent 68%);
+  }
+
+  .ambient--lab {
+    background-image:
+      radial-gradient(74rem 40rem at 2% -6%, var(--wash-cool), transparent 70%),
+      radial-gradient(60rem 36rem at 102% 96%, var(--wash-warm), transparent 68%);
+  }
+
+  /* The two mid-page bands. Cooler and teal-led, so the page alternates warm
+     and cool rather than repeating one field five times. */
+  .ambient--proof {
+    background-image:
+      radial-gradient(70rem 40rem at 100% -8%, var(--wash-cool), transparent 70%),
+      radial-gradient(36rem 22rem at 96% 0%, var(--wash-cool), transparent 62%),
+      radial-gradient(52rem 32rem at -6% 92%, var(--wash-warm), transparent 66%);
+  }
+
+  .ambient--inventory {
+    background-image:
+      radial-gradient(66rem 38rem at -8% 4%, var(--wash-cool), transparent 70%),
+      radial-gradient(34rem 20rem at 2% 10%, var(--wash-cool), transparent 62%),
+      radial-gradient(50rem 30rem at 104% 90%, var(--wash-amber), transparent 66%);
+  }
+
+  /* The page should resolve into the accent rather than stop on a flat ground. */
+  .ambient--close {
+    background-image:
+      radial-gradient(84rem 30rem at 50% 100%, var(--wash-cool), transparent 74%),
+      radial-gradient(40rem 18rem at 50% 100%, var(--wash-cool), transparent 66%),
+      radial-gradient(52rem 22rem at 14% 100%, var(--wash-warm), transparent 66%);
+  }
+
+  /* Film grain. Flat vector surfaces are the tell of a screen-only design;
+     a little tooth makes the grounds above read as a material. The texture is
+     generated, not an asset, and the layer is fixed and pointer-transparent so
+     it never repaints while the page scrolls. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Entrance choreography
+   *
+   * Two mechanisms, deliberately different:
+   *
+   * `.rise` runs once on load, for the first viewport only. It is eased,
+   * because it is a real animation over real time.
+   *
+   * `.reveal` is scroll-driven via `animation-timeline: view()` — no
+   * IntersectionObserver, no scroll listener, no JavaScript at all, and it
+   * runs on the compositor. It must stay `linear`: the scroll offset *is*
+   * the progress, so an easing curve here would make the element lurch while
+   * the visitor scrolls at a constant speed.
+   *
+   * Both animate only `opacity`, `translate`, and `filter`, so neither
+   * triggers layout. `filter` is not free, though: an animating blur
+   * re-rasterizes the text each frame, which is why it is confined to the
+   * three lines of the first viewport and never used on a container.
+   * ------------------------------------------------------------------ */
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 1.75rem;
+    }
+  }
+
+  /* Text can afford the defocus; it is what makes the movement read as
+     depth-of-field rather than as a slide. Kept off containers, where a
+     lingering `filter` would create a compositing layer around live
+     components for the rest of the session. */
+  @keyframes rise-text {
+    from {
+      opacity: 0;
+      translate: 0 1.75rem;
+      filter: blur(6px);
+    }
+
+    /* Explicitly `none` rather than an implicit end value: `blur(0px)` would
+       otherwise persist and keep a compositing layer — and its subpixel text
+       rendering — around the headline for the rest of the session. */
+    to {
+      filter: none;
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      translate: 0 2rem;
+    }
+  }
+
+  /* Stagger steps. Named rather than set inline: the template linter forbids
+     inline styles, and a fixed ladder keeps the cascade consistent between the
+     hero and anything added later. Steps are ~110ms — close enough to read as
+     one gesture, far enough apart to read as a sequence. */
+  .rise-step-1 {
+    --rise-delay: 90ms;
+  }
+
+  .rise-step-2 {
+    --rise-delay: 200ms;
+  }
+
+  .rise-step-3 {
+    --rise-delay: 310ms;
+  }
+
+  .rise-step-4 {
+    --rise-delay: 420ms;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .rise,
+    .rise-text {
+      animation: rise 900ms var(--ease-entrance) both;
+      animation-delay: var(--rise-delay, 0ms);
+    }
+
+    .rise-text {
+      animation-name: rise-text;
+    }
+
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 4% cover 26%;
+      }
+    }
+  }
+
 }
 
 @import './highlight.css';
