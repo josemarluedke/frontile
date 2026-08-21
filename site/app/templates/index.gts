@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { hash } from '@ember/helper';
 import { DocfyLink } from '@docfy/ember';
 import { NotificationCard, Notification } from 'frontile/notifications';
 import {
@@ -14,6 +15,7 @@ import {
   Dropdown,
   Field,
   Modal,
+  Popover,
   ProgressBar,
   RadioGroup,
   Skeleton,
@@ -36,6 +38,8 @@ import KeyboardProof from '../components/homepage/keyboard-proof';
 import SpecimenTile from '../components/homepage/specimen-tile';
 import CodePanel from '../components/homepage/code-panel';
 import LinkButton from '../components/homepage/link-button';
+import OverlayDoor from '../components/homepage/overlay-door';
+import onceInView from '../modifiers/once-in-view';
 import { inventory } from '../components/homepage/component-inventory';
 
 /**
@@ -390,8 +394,12 @@ export default class IndexPage extends Component {
       {{! ------------------------------------------------------------------ }}
       <section class="py-24 sm:py-28">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {{! The column ratio used to be inverted: 416px of heading and copy
+              beside 760px holding one button and one sentence, which left a
+              760x274 hole under the card. The argument now sits in the narrow
+              column and the demonstrations own the wide one. }}
           <div
-            class="grid grid-cols-1 lg:grid-cols-[minmax(0,26rem)_1fr] gap-10 items-start"
+            class="grid grid-cols-1 lg:grid-cols-[minmax(0,22rem)_1fr] gap-x-16 gap-y-12 items-start"
           >
             <div class="reveal">
               <p class="eyebrow mb-4">Overlays</p>
@@ -400,18 +408,11 @@ export default class IndexPage extends Component {
               >The parts you have to open</h2>
               <p class="mt-4 font-body text-body-sm text-neutral-firm text-pretty">
                 Overlays are where component libraries usually leak: focus
-                escapes, the background scrolls, Escape does nothing. Open these
-                and try to break them, then read how the focus trap is built.
+                escapes, the background scrolls, Escape does nothing. Every
+                layer here shares one focus trap, one scroll lock, and one
+                portal.
               </p>
-              <div class="mt-6 flex flex-wrap gap-3">
-                <Button @intent="primary" @onPress={{this.openModal}}>
-                  Open a modal
-                </Button>
-                <Button @appearance="outlined" @onPress={{this.openDrawer}}>
-                  Open a drawer
-                </Button>
-              </div>
-              <p class="mt-4 font-body text-body-sm text-neutral-firm">
+              <p class="mt-5 font-body text-body-sm text-neutral-firm">
                 <DocfyLink
                   @to="/docs/accessibility/focus-management"
                   class="text-primary-firm underline"
@@ -419,49 +420,180 @@ export default class IndexPage extends Component {
               </p>
             </div>
 
-            <div
-              class="rounded-xl border border-neutral-soft bg-surface-canvas p-6 reveal"
-            >
-              <Dropdown as |d|>
-                <d.Trigger @intent="primary" @size="sm">
-                  Row actions
-                </d.Trigger>
-                <d.Menu as |Item|>
-                  <Item @key="view" @description="Open in read-only mode">
-                    <:start><ViewIcon /></:start>
-                    <:default>View details</:default>
-                  </Item>
-                  <Item @key="edit" @description="Change roles and seats">
-                    <:start><EditIcon /></:start>
-                    <:default>Edit member</:default>
-                  </Item>
-                  <Item
-                    @key="share"
-                    @description="Send an invitation"
-                    @withDivider={{true}}
+            <div class="reveal">
+              {{! Popover leads because it is the only overlay that can be
+                  open at rest without taking the page hostage: Modal and
+                  Drawer cover everything behind them. It is genuinely live,
+                  not a picture of one, and the trigger closes and reopens it. }}
+              {{! It opens itself on arrival through the yielded open function
+                  rather than through a controlled isOpen argument. Popover
+                  cannot be born open, because its Content reads velcro.loop,
+                  which the anchor modifier has not installed on the first
+                  render pass; driving the argument from outside fails the same
+                  way even after mount and leaves the subtree dead. The yielded
+                  function is the supported path and keeps the component's own
+                  state authoritative. }}
+              {{! The block param is pop rather than the conventional p. This
+                  block contains real paragraph elements, and a single-letter
+                  param named p collides with them in a strict-mode template,
+                  which takes down the whole section. }}
+              {{! The stage reserves height so the panel has somewhere to land.
+                  It is pinned below its trigger: the flip middleware measures
+                  the viewport rather than this stage, so where the trigger sat
+                  low the panel flipped upward and escaped the box into the
+                  section above, which reads as a rendering fault in a demo. }}
+              <Popover
+                @placement="bottom-start"
+                @flipOptions={{hash mainAxis=false}}
+                as |pop|
+              >
+                <div
+                  class="rounded-xl border border-neutral-soft bg-surface-canvas p-6 min-h-[30rem] sm:min-h-[19rem]"
+                  {{onceInView pop.open}}
+                >
+                  <p
+                    class="font-label text-label-2xs text-neutral-firm uppercase mb-5"
+                  >Popover</p>
+
+                  {{! Stacked, the trigger goes last: the panel is positioned
+                      and pinned below it, so with the list underneath it landed
+                      on top of the text. Ordered this way the panel opens into
+                      the height reserved at the bottom of the stage. }}
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="order-2 sm:order-1">
+                      <Button
+                        {{pop.trigger}}
+                        {{pop.anchor}}
+                        @intent="primary"
+                        @size="sm"
+                      >
+                        Seat details
+                      </Button>
+                    </div>
+
+                    {{! The stage is as wide as the column, and the panel is
+                        not. Rather than pad the remainder, it carries what the
+                        component is doing while you look at it. }}
+                    <ul class="order-1 sm:order-2 space-y-2">
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Anchored to its trigger, and stays anchored as the page
+                        scrolls.
+                      </li>
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Escape closes it, and so does a click anywhere outside
+                        it.
+                      </li>
+                      <li class="font-body text-body-xs text-neutral-firm">
+                        Opened itself when this section scrolled into view — the
+                        trigger still owns it.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <pop.Content @class="p-4 w-72">
+                    <div class="flex items-center gap-3">
+                      <Avatar @size="sm" @name="Dara Whitfield" />
+                      <div class="min-w-0">
+                        <p
+                          class="font-label text-label-xs text-neutral-strong truncate"
+                        >Dara Whitfield</p>
+                        <p
+                          class="font-caption text-caption-sm text-neutral-firm truncate"
+                        >dara@example.com</p>
+                      </div>
+                    </div>
+                    <div class="mt-4">
+                      <ProgressBar
+                        @intent="primary"
+                        @label="Storage used"
+                        @progress={{61}}
+                        @size="sm"
+                      />
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      <Chip @size="sm" @appearance="faded">Editor</Chip>
+                      <Chip
+                        @size="sm"
+                        @appearance="faded"
+                        @intent="success"
+                        @withDot={{true}}
+                      >Active</Chip>
+                    </div>
+                  </pop.Content>
+                </div>
+              </Popover>
+
+              <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8">
+                <OverlayDoor
+                  @name="Modal"
+                  @note="Tab to the end — focus wraps instead of escaping."
+                >
+                  <Button
+                    @intent="primary"
+                    @size="sm"
+                    @onPress={{this.openModal}}
                   >
-                    <:start><ShareIcon /></:start>
-                    <:default>Share</:default>
-                  </Item>
-                  <Item @key="archive" @description="Keep the record, revoke access">
-                    <:start><ArchiveIcon /></:start>
-                    <:default>Archive</:default>
-                  </Item>
-                  <Item
-                    @key="remove"
-                    @intent="danger"
-                    @description="Permanently remove"
+                    Open a modal
+                  </Button>
+                </OverlayDoor>
+
+                <OverlayDoor
+                  @name="Drawer"
+                  @note="Scroll the page behind it. It will not move."
+                >
+                  <Button
+                    @appearance="outlined"
+                    @size="sm"
+                    @onPress={{this.openDrawer}}
                   >
-                    <:start><DeleteIcon /></:start>
-                    <:default>Remove member</:default>
-                  </Item>
-                </d.Menu>
-              </Dropdown>
-              <p class="mt-4 font-body text-body-sm text-neutral-firm">
-                Arrow keys move, typeahead jumps, Escape closes and returns focus
-                to the trigger. Descriptions and shortcuts are arguments, not
-                markup you assemble.
-              </p>
+                    Open a drawer
+                  </Button>
+                </OverlayDoor>
+
+                <OverlayDoor
+                  @name="Dropdown"
+                  @note="Arrow keys move, typeahead jumps, Escape restores focus."
+                >
+                  <Dropdown as |d|>
+                    <d.Trigger @appearance="outlined" @size="sm">
+                      Row actions
+                    </d.Trigger>
+                    <d.Menu as |Item|>
+                      <Item @key="view" @description="Open in read-only mode">
+                        <:start><ViewIcon /></:start>
+                        <:default>View details</:default>
+                      </Item>
+                      <Item @key="edit" @description="Change roles and seats">
+                        <:start><EditIcon /></:start>
+                        <:default>Edit member</:default>
+                      </Item>
+                      <Item
+                        @key="share"
+                        @description="Send an invitation"
+                        @withDivider={{true}}
+                      >
+                        <:start><ShareIcon /></:start>
+                        <:default>Share</:default>
+                      </Item>
+                      <Item
+                        @key="archive"
+                        @description="Keep the record, revoke access"
+                      >
+                        <:start><ArchiveIcon /></:start>
+                        <:default>Archive</:default>
+                      </Item>
+                      <Item
+                        @key="remove"
+                        @intent="danger"
+                        @description="Permanently remove"
+                      >
+                        <:start><DeleteIcon /></:start>
+                        <:default>Remove member</:default>
+                      </Item>
+                    </d.Menu>
+                  </Dropdown>
+                </OverlayDoor>
+              </div>
             </div>
           </div>
         </div>
