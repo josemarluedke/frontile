@@ -2,6 +2,7 @@ import { helper } from '@ember/component/helper';
 import { htmlSafe } from '@ember/template';
 import type { SafeString } from '@ember/template';
 import lowlight from 'site/utils/lowlight';
+import type { Root, RootContent } from 'hast';
 
 interface HighlightCodeSignature {
   Args: {
@@ -10,61 +11,22 @@ interface HighlightCodeSignature {
   Return: SafeString;
 }
 
-// HAST node types for lowlight
-interface HastText {
-  type: 'text';
-  value: string;
-}
-
-interface HastElement {
-  type: 'element';
-  tagName: string;
-  properties?: {
-    className?: string[];
-  };
-  children?: HastNode[];
-}
-
-interface HastRoot {
-  type: 'root';
-  children: HastNode[];
-}
-
-interface HastLowlightResult {
-  value: HastNode[];
-}
-
-type HastNode = HastText | HastElement | HastRoot | HastLowlightResult;
-
-// Map gjs/gts to their base languages
-const languageMap: Record<string, string> = {
-  gjs: 'javascript',
-  gts: 'typescript',
-};
-
 // Simple HAST to HTML converter for lowlight results
-function hastToHtml(node: HastNode): string {
-  // Handle lowlight result format which has a 'value' array at the root
-  if ('value' in node && Array.isArray(node.value)) {
-    return node.value.map(hastToHtml).join('');
-  }
-
-  // Handle text nodes
-  if ('type' in node && node.type === 'text') {
+function hastToHtml(node: RootContent | Root): string {
+  if (node.type === 'text') {
     return escapeHtml(node.value);
   }
 
-  // Handle element nodes
-  if ('type' in node && node.type === 'element') {
-    const className = node.properties?.className
-      ? ` class="${node.properties.className.join(' ')}"`
+  if (node.type === 'element') {
+    const classNames = node.properties?.['className'];
+    const className = Array.isArray(classNames)
+      ? ` class="${classNames.join(' ')}"`
       : '';
-    const children = node.children?.map(hastToHtml).join('') || '';
+    const children = node.children.map(hastToHtml).join('');
     return `<${node.tagName}${className}>${children}</${node.tagName}>`;
   }
 
-  // Handle root nodes
-  if ('type' in node && node.type === 'root') {
+  if (node.type === 'root') {
     return node.children.map(hastToHtml).join('');
   }
 
@@ -93,10 +55,8 @@ function highlightCode([code, language = 'javascript']: [
       );
     }
 
-    // Map gjs/gts to their base languages
-    const actualLanguage = languageMap[language] || language;
-    const result = lowlight.highlight(actualLanguage, code) as HastNode;
-    const html = hastToHtml(result);
+    // gjs/gts/hbs are aliases of the glimmer grammars; see site/utils/lowlight.
+    const html = hastToHtml(lowlight.highlight(language, code));
 
     return htmlSafe(`<code class="hljs language-${language}">${html}</code>`);
   } catch (error) {

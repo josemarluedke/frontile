@@ -1,13 +1,19 @@
-const docgen = require('glimmer-docgen-typescript');
-const fs = require('fs');
-const path = require('path');
-const lowlight = require('lowlight');
-const unified = require('unified');
-const rehypeStringify = require('rehype-stringify');
-const remarkParse = require('remark-parse');
-const remarkRehype = require('remark-rehype');
-const { collectBoundArgs, applyBoundArgs } = require('./bound-args');
+// ESM, not CJS: unified 11 and the remark/rehype packages @docfy/core 0.13
+// pulled us up to ship as ES modules only.
+import docgen from 'glimmer-docgen-typescript';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { common, createLowlight } from 'lowlight';
+import { unified } from 'unified';
+import rehypeStringify from 'rehype-stringify';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import { collectBoundArgs, applyBoundArgs } from './bound-args.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const lowlight = createLowlight(common);
 const processor = unified().use(rehypeStringify);
 
 // JSDoc descriptions are markdown — inline code especially, which 130+ of the
@@ -50,7 +56,7 @@ const components = docgen.parse([{ root, pattern }]);
 // See ./bound-args.js.
 const boundArgs = collectBoundArgs(
   [...new Set(components.map((c) => path.join(root, c.fileName)))],
-  root
+  root,
 );
 const applyTally = components.reduce(
   (total, component) => {
@@ -60,14 +66,14 @@ const applyTally = components.reduce(
       applied: total.applied + applied,
     };
   },
-  { expected: 0, applied: 0 }
+  { expected: 0, applied: 0 },
 );
 
 if (applyTally.applied !== applyTally.expected) {
   throw new Error(
     `bound-args: resolved ${applyTally.expected} bound components but only rewrote ` +
       `${applyTally.applied}. glimmer-docgen-typescript's output shape likely changed — ` +
-      `the unrewritten entries are rendering as \`never\`.`
+      `the unrewritten entries are rendering as \`never\`.`,
   );
 }
 
@@ -76,10 +82,8 @@ function highlight(property) {
     return;
   }
   if (property.type) {
-    let type = property.type.type;
-
-    type = property.type.type.replace(/"/g, "'");
-    const typeTree = lowlight.highlight('ts', type).value;
+    const type = property.type.type.replace(/"/g, "'");
+    const typeTree = lowlight.highlight('ts', type).children;
     const typeHTML = processor
       .stringify({ type: 'root', children: typeTree })
       .toString();
@@ -88,7 +92,7 @@ function highlight(property) {
 
     if (property.type.raw) {
       const raw = property.type.raw.replace(/"/g, "'");
-      const rawTree = lowlight.highlight('ts', raw).value;
+      const rawTree = lowlight.highlight('ts', raw).children;
       const rawHTML = processor
         .stringify({ type: 'root', children: rawTree })
         .toString();
@@ -104,8 +108,8 @@ function highlight(property) {
   if (property.defaultValue) {
     const defaultValueTree = lowlight.highlight(
       'ts',
-      property.defaultValue
-    ).value;
+      property.defaultValue,
+    ).children;
     const defaultValueHTML = processor
       .stringify({ type: 'root', children: defaultValueTree })
       .toString();
@@ -132,5 +136,5 @@ fs.writeFileSync(
   `import type { ComponentDoc } from 'glimmer-docgen-typescript';
 const data: ComponentDoc[] = ${JSON.stringify(components)};
 export type { ComponentDoc };
-export default data;`
+export default data;`,
 );
