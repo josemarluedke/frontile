@@ -1,8 +1,10 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import autolinkHeadings from 'remark-autolink-headings';
+import autolinkHeadings from 'rehype-autolink-headings';
 import highlight from 'rehype-highlight';
 import codeImport from 'remark-code-import';
+import { glimmer, glimmerJavascript } from 'highlightjs-glimmer';
+import { common } from 'lowlight';
 import withProse from '@docfy/plugin-with-prose';
 import docfyPluginSignatureMarkdown, {
   loadSignatureData,
@@ -10,6 +12,18 @@ import docfyPluginSignatureMarkdown, {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// gts is gjs with TypeScript inside; the grammar takes the sublanguage to
+// delegate to as its second argument, so the TS flavour is a thin wrapper.
+// Registering it under its own name (rather than through `registerInjections`)
+// leaves plain js/ts fences on the stock grammars.
+function glimmerTypescript(hljs) {
+  return {
+    ...glimmerJavascript(hljs, 'typescript'),
+    name: 'glimmer-typescript',
+    aliases: ['glimmer-ts', 'gts'],
+  };
+}
 
 const signatureData = loadSignatureData(
   path.resolve(__dirname, 'app/components/signature-data.ts'),
@@ -28,12 +42,31 @@ export default {
     withProse({ className: 'prose max-w-none dark:prose-invert' }),
     docfyPluginSignatureMarkdown(signatureData),
   ],
-  remarkPlugins: [autolinkHeadings, codeImport],
+  remarkPlugins: [
+    // Every source below lives outside this app (../docs, ../packages/*), and
+    // remark-code-import v1 refuses to read anything outside `rootDir`
+    // (default: cwd), so point it at the repo root.
+    [codeImport, { rootDir: path.resolve(__dirname, '..') }],
+  ],
   rehypePlugins: [
+    autolinkHeadings,
     [
       highlight,
       {
-        aliases: { javascript: 'gjs', typescript: 'gts' },
+        // `languages` replaces rehype-highlight's default set, so lowlight's
+        // `common` has to be spread back in or every other language stops
+        // highlighting. highlightjs-glimmer is what finally highlights the
+        // fences the docs are actually written in: `glimmer` claims hbs and
+        // htmlbars, and the two glimmer-javascript grammars claim gjs/gts —
+        // `<template>` tags and hbs`` literals included, instead of the plain
+        // js/ts they used to fall back to.
+        languages: {
+          ...common,
+          glimmer,
+          'glimmer-javascript': glimmerJavascript,
+          'glimmer-typescript': glimmerTypescript,
+        },
+        aliases: { glimmer: ['handlebars'] },
       },
     ],
   ],

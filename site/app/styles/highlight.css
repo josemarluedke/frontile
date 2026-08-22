@@ -18,6 +18,9 @@
 .hljs-template-tag,
 .hljs-template-variable,
 .hljs-type,
+/* highlightjs-glimmer scopes `this` inside a mustache as `class`, which this
+   theme (written for stock highlight.js scopes) has no rule for. */
+.hljs-class,
 .hljs-variable.language_ {
   /* prettylights-syntax-keyword */
   color: #ff7b72;
@@ -139,6 +142,8 @@
     .hljs-template-tag,
     .hljs-template-variable,
     .hljs-type,
+    /* See the dark rule above: glimmer's `this` scope. */
+    .hljs-class,
     .hljs-variable.language_ {
       /* prettylights-syntax-keyword */
       color: #d73a49;
