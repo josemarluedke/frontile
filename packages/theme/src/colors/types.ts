@@ -273,8 +273,9 @@ export interface SurfaceColors {
    *
    * Light: Pure white, creating lifted appearance against gray canvas
    * Dark: A translucent veil (white @ 7%, the same value as `overlay-subtle`),
-   * so content behind it shows through faintly. Use an opaque role such as
-   * `surface-canvas` where it must not — a sticky table header, for instance.
+   * so content behind it shows through faintly. Where it must not — a sticky
+   * table cell, which paints over the rows scrolling beneath it — use
+   * `surface-card-solid`, the opaque twin of this role.
    *
    * @example
    * // Product card
@@ -288,6 +289,25 @@ export interface SurfaceColors {
    * <div className="bg-surface-card hover:bg-surface-overlay-subtle">
    */
   card: string;
+
+  /**
+   * Opaque twin of `card` (hierarchy level 1).
+   *
+   * Same role and same rendered colour as `surface-card`, but never
+   * translucent. Anything that paints over content which scrolls beneath it —
+   * a sticky table header, row, or column — must use this instead of `card`,
+   * or that content reads straight through the veil.
+   *
+   * Light: Pure white, identical to `card`
+   * Dark: The exact composite of the `card` veil over `surface-canvas`
+   * (white @ 7% over `gray-950` is `gray-900`), so swapping one for the other
+   * on a canvas-backed page is invisible
+   *
+   * @example
+   * // Sticky table header, which the rows scroll under
+   * <thead className="sticky top-0 bg-surface-card-solid">
+   */
+  'card-solid': string;
 
   /**
    * Form control surface for inputs, checkboxes, radios, and similar controls

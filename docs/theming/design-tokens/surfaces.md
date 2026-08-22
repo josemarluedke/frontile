@@ -15,7 +15,7 @@ The Surface system provides a flexible way to create depth and hierarchy in your
 
 The Surface system consists of three types:
 
-- **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, modal, input)
+- **Surface Roles** - Semantic, opaque surface tokens for specific UI contexts (app, canvas, card, card-solid, modal, input)
 - **Surface Overlay** (subtle, soft, mild, firm, strong) - Translucent layers that push an element _into_ its background
 - **Surface Lift** (subtle, soft, mild, firm, strong) - Translucent layers that pull an element _up off_ its background
 
@@ -76,9 +76,9 @@ Component contrast baseline (hierarchy level 1).
 
 Elevated card container surface (hierarchy level 1). Opaque white in light mode;
 in dark mode it is a translucent veil (white @ 7%, the same value as
-`overlay-subtle`), so whatever sits behind it shows through faintly. Reach for an
-opaque role such as `surface-canvas` when content must be fully hidden behind it
-— a sticky table header, for instance.
+`overlay-subtle`), so whatever sits behind it shows through faintly. Where
+content must be fully hidden behind it — a sticky table header, for instance —
+reach for `surface-card-solid` (below) instead.
 
 **When to use:**
 
@@ -96,6 +96,40 @@ opaque role such as `surface-canvas` when content must be fully hidden behind it
       <p class='text-neutral-strong'>This card is elevated off the canvas
         background</p>
     </article>
+  </div>
+</template>
+```
+
+#### Card, solid (`bg-surface-card-solid`)
+
+The same role and the same rendered colour as `surface-card`, but never
+translucent: in dark mode it is the `card` veil already flattened against
+`surface-canvas` (white @ 7% over `gray-950` composites to exactly `gray-900`),
+so on a canvas-backed page the two are indistinguishable.
+
+**When to use:**
+
+- Anything that paints over content scrolling beneath it: sticky table headers,
+  sticky rows, pinned columns
+- Any patch that has to occlude rather than tint
+
+Swapping in `surface-canvas` for these cases also occludes, but it is a
+different colour from the card it interrupts, which shows up as a seam where the
+sticky part meets the rest.
+
+```gts preview
+<template>
+  <div class='bg-surface-canvas p-6'>
+    <div class='bg-surface-card rounded-lg h-32 overflow-auto'>
+      <div class='bg-surface-card-solid sticky top-0 px-4 py-2'>
+        <p class='text-neutral-bolder'>Sticky header — rows pass under it</p>
+      </div>
+      <div class='px-4 py-2 text-neutral-strong'>Row one</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row two</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row three</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row four</div>
+      <div class='px-4 py-2 text-neutral-strong'>Row five</div>
+    </div>
   </div>
 </template>
 ```
@@ -164,7 +198,7 @@ Surface roles are designed to create visual depth through a hierarchy system:
 | ----- | ------------ | -------------------------------------------------------- |
 | -1    | Input        | Recessed below canvas                                    |
 | 0     | App          | Root application background                              |
-| 1     | Canvas, Card | Component contrast baseline and first level of elevation |
+| 1     | Canvas, Card, Card&nbsp;solid | Component contrast baseline and first level of elevation |
 | 3     | Modal        | Highest elevation (modals, drawers, popovers, dropdowns) |
 
 In **light mode**, elevated surfaces appear brighter (white) against gray backgrounds following the elevation-luminance principle.
@@ -325,7 +359,7 @@ The same nesting, one family each — overlay recedes, lift advances:
 Follow this decision flow:
 
 1. **Does this match a specific UI context?**
-   - If yes → Use `surface-{role}` (app, canvas, card, modal, input)
+   - If yes → Use `surface-{role}` (app, canvas, card, card-solid, modal, input)
    - Surface roles provide semantic meaning and automatically adapt to themes.
 
 2. **Is this the base container and no role matches?**

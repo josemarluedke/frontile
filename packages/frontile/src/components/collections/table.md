@@ -183,6 +183,25 @@ export default class DemoComponent extends Component {
 
 ## Sticky Elements
 
+A sticky header, row, or column paints over whatever scrolls beneath it, so it
+needs an opaque fill — and one that matches the rest of the table, or the pinned
+part reads as a patch. Both come from a single custom property on the wrapper,
+`--table-surface`, which defaults to `surface-card-solid`. Point it somewhere
+else when the table sits on a different background:
+
+```gts
+<Table
+  @columns={{this.columns}}
+  @items={{this.items}}
+  @isScrollable={{true}}
+  @classes={{hash wrapper='[--table-surface:var(--color-surface-app)]'}}
+/>
+```
+
+Row tints — striping, hover, selection — layer over that fill rather than
+replacing it, and pinned body cells inherit both from their row, so a sticky
+column keeps showing selection and hover instead of masking them.
+
 ### Sticky Header
 
 Keep the header visible while scrolling:
