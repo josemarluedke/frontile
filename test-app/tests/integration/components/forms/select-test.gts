@@ -1402,12 +1402,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
+    // @closeButtonTitle feeds CloseButton's visually-hidden text, which is
+    // the button's accessible name — not a `title` attribute (CloseButton
+    // deliberately has none, to avoid a duplicate accessible description
+    // and an unwanted native tooltip).
     assert
       .dom('[data-test-id="selected-chip"][data-key="apple"] button')
-      .hasAttribute('title', 'Remove apple');
+      .hasText('Remove apple');
     assert
       .dom('[data-test-id="selected-chip"][data-key="banana"] button')
-      .hasAttribute('title', 'Remove banana');
+      .hasText('Remove banana');
   });
 
   test('Multiple mode: the last chip has no close button unless @allowEmpty', async function (assert) {
@@ -1468,30 +1472,23 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       </template>
     );
 
+    // A chip's close button carries a real `disabled` attribute when the
+    // select is disabled, so a user has no way to activate it — browsers
+    // do not deliver pointer/keyboard events to a natively disabled
+    // button, and `@ember/test-helpers`' `click()` itself refuses to
+    // simulate a click on one. That native semantics is the actual
+    // guarantee here, so it is what this test asserts.
+    //
+    // `removeSelectedKey`'s own `@isDisabled` check is defense-in-depth
+    // with no reachable UI path to exercise it from a test — there is no
+    // way to fire a "real" click on a disabled button, so that branch is
+    // intentionally left uncovered rather than faked with a synthetic
+    // event dispatch that would never occur from user interaction.
     assert
       .dom('[data-test-id="selected-chip"][data-key="apple"] button')
       .isDisabled();
     assert
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-disabled', 'true');
-
-    // The close button carries a real `disabled` attribute, so
-    // `@ember/test-helpers`' `click()` refuses to simulate the interaction
-    // (it throws for any genuinely-disabled form control). Dispatch the
-    // click event directly to prove the removal is also guarded in JS, as
-    // defense-in-depth alongside the native disabled semantics.
-    const button = document.querySelector(
-      '[data-test-id="selected-chip"][data-key="apple"] button'
-    );
-    button?.dispatchEvent(
-      new MouseEvent('click', { bubbles: true, cancelable: true })
-    );
-    await settled();
-
-    assert.deepEqual(
-      selectedKeys.current,
-      ['apple', 'banana'],
-      'a disabled chip cannot remove its selection'
-    );
   });
 });

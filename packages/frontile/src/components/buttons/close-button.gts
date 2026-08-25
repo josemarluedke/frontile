@@ -107,7 +107,6 @@ class CloseButton extends Component<CloseButtonSignature> {
       type="button"
       class={{this.classes.base}}
       data-pressed={{if this.isPressed "true"}}
-      title={{if @title @title "Close"}}
       ...attributes
       {{press this.handlePress onPressChange=this.handlePressChange}}
       {{on "click" this.handleClick}}

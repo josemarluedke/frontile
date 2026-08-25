@@ -661,7 +661,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * chip renders without a close button rather than with a dead one.
    */
   get chipsRemovable(): boolean {
-    return this.args.allowEmpty === true || this.selectedKeys.length > 1;
+    // Counts `selectedItems` — the same collection the chips render from —
+    // rather than `selectedKeys`, so this decision can never disagree with
+    // what is actually on screen (a selected key with no remembered item
+    // would otherwise be counted here but never render a chip at all).
+    return this.args.allowEmpty === true || this.selectedItems.length > 1;
   }
 
   /**
