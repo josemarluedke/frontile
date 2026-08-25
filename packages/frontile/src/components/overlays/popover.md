@@ -227,6 +227,17 @@ const sizes = ['sm', 'md', 'lg', 'xl'];
 </template>
 ```
 
+### Matching a different element's width
+
+`@size='trigger'` sizes the content from `--trigger-width`, which is the width of
+whatever element carries the `trigger` modifier. That is what you want while the
+toggle and the box the content should line up with are the same element. When
+they are not — a field where the toggle is one of several things sitting inside
+it, and the content should match the whole field — put the `measureWidth`
+modifier on the element to match. It takes precedence over the `trigger`
+element's own width for as long as it is installed, so the two never race, and
+you do not need it at all in the usual case.
+
 ## Controlled
 
 You can use the `isOpen` and `onOpenChange` arguments to control whether the

@@ -269,24 +269,25 @@ const select = tv({
     input: '[button]:cursor-default',
     emptyContent: 'p-2',
     // The wrapper around the trigger. It is rendered in every mode; the
-    // `hasChips` variant below decides whether it is the field shell or is
-    // layout-transparent. Authored here rather than as a literal class in the
-    // component template because Tailwind does not scan `packages/frontile/src`.
+    // `hasChips` variant below decides whether it is the field shell or a
+    // transparent passthrough. Authored here rather than as literal classes in
+    // the component template because Tailwind does not scan
+    // `packages/frontile/src`.
     chipsField: '',
     chipsContainer: 'flex flex-wrap items-center gap-1 min-w-0',
     chip: ''
   },
   variants: {
     size: {
-      // Inert under `display: contents`, so it is safe to apply unconditionally.
-      sm: { chipsField: 'p-1 gap-1' },
-      md: { chipsField: 'p-1.5 gap-1' },
-      lg: { chipsField: 'p-2 gap-1.5' }
+      sm: {},
+      md: {},
+      lg: {}
     },
     // When chips render, `chipsField` becomes the field shell in place of the
-    // trigger's own border (see the `hasChips` variant on `input`). Otherwise it
-    // is `display: contents`, so the trigger lays out exactly as it did before
-    // the wrapper existed.
+    // trigger's own border (see the `hasChips` variant on `input`), and owns the
+    // padding. Otherwise it is a transparent, full-width flex passthrough: the
+    // shell stays on the trigger, but the wrapper is still a real box, so it can
+    // be measured as the popover's width reference in both modes.
     //
     // `data-invalid` / `data-disabled` are set by the component because
     // `aria-invalid:` and `disabled:` only match the element carrying them.
@@ -309,18 +310,26 @@ const select = tv({
           'data-[disabled=true]:text-neutral-soft'
         ]
       },
-      false: { chipsField: 'contents' }
-    },
-    // `chipsField` is the padding box in chips mode, so it has to clear the
-    // absolutely-positioned start/end content the same way the bare `input`
-    // does -- otherwise chips run underneath the chevron and clear button.
-    hasStartContent: {
-      true: { chipsField: 'ps-8' }
-    },
-    hasEndContent: {
-      true: { chipsField: 'pe-10' }
+      false: { chipsField: 'flex w-full min-w-0' }
     }
   },
+  compoundVariants: [
+    // Padding belongs to whichever element is the field shell, so it is applied
+    // to `chipsField` only in chips mode -- in passthrough mode the wrapper has
+    // to add no geometry of its own.
+    { hasChips: true, size: 'sm', class: { chipsField: 'p-1 gap-1' } },
+    { hasChips: true, size: 'md', class: { chipsField: 'p-1.5 gap-1' } },
+    { hasChips: true, size: 'lg', class: { chipsField: 'p-2 gap-1.5' } },
+    // Chips have to clear the absolutely-positioned start/end content the same
+    // way a bare `input` does, otherwise they run underneath the chevron and the
+    // clear button.
+    { hasChips: true, hasStartContent: true, class: { chipsField: 'ps-8' } },
+    { hasChips: true, hasEndContent: true, class: { chipsField: 'pe-10' } },
+    // ...and once `chipsField` reserves that room, the bare trigger inside it
+    // must not reserve it a second time.
+    { hasChips: true, hasStartContent: true, class: { input: 'ps-0' } },
+    { hasChips: true, hasEndContent: true, class: { input: 'pe-0' } }
+  ],
   defaultVariants: {
     size: 'md'
   }

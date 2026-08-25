@@ -82,6 +82,12 @@ interface PopoverSignature {
     default: [
       {
         anchor: ModifierLike<{ Element: HTMLElement }>;
+
+        /**
+         * Nominates the element it is placed on as the width reference for
+         * `@size="trigger"` content, instead of the element carrying `trigger`.
+         */
+        measureWidth: ModifierLike<{ Element: HTMLElement }>;
         isOpen: boolean;
         toggle: () => void;
         open: () => void;
@@ -108,6 +114,14 @@ interface PopoverSignature {
 
 class Popover extends Component<PopoverSignature> {
   triggerEl?: HTMLElement;
+
+  /**
+   * The element `measureWidth` is watching, when a consumer opts into measuring
+   * something other than the trigger. Its presence is what gives `measureWidth`
+   * precedence over `trigger` as the source of `triggerWidth`.
+   */
+  widthEl?: HTMLElement;
+
   menuId = guidFor(this);
   @tracked _isOpen = false;
   @tracked isClosing = false;
@@ -167,14 +181,23 @@ class Popover extends Component<PopoverSignature> {
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       this.triggerEl = el as HTMLLIElement;
+      // The trigger is only the width reference when nothing more specific was
+      // nominated. `widthEl` is checked when the measurement happens rather than
+      // when the modifier installs, so the two modifiers can install in either
+      // order.
       requestAnimationFrame(() => {
-        this.triggerWidth = Math.round(el.offsetWidth);
+        if (!this.widthEl) {
+          this.triggerWidth = Math.round(el.offsetWidth);
+        }
       });
 
       let observer: ResizeObserver;
       if (eventType !== 'hover') {
         observer = new ResizeObserver((entries) => {
           for (let entry of entries) {
+            if (this.widthEl) {
+              continue;
+            }
             this.triggerWidth = Math.round(
               (entry.target as HTMLElement).offsetWidth
             );
@@ -246,6 +269,48 @@ class Popover extends Component<PopoverSignature> {
     }
   );
 
+  /**
+   * Nominates the element it is placed on as the popover's width reference,
+   * instead of the element carrying `trigger`.
+   *
+   * `@size="trigger"` content is sized from `--trigger-width`, which is normally
+   * the trigger's own width. That is only right while the toggle and the box the
+   * content should line up with are the same element. When they are not -- a
+   * field whose trigger is one of several things inside it, say -- put this on
+   * the element the content should match.
+   *
+   * It takes precedence over `trigger`'s own measurement for as long as it is
+   * installed, so the two never race.
+   */
+  measureWidth = modifier((el: HTMLElement) => {
+    this.widthEl = el;
+
+    requestAnimationFrame(() => {
+      if (this.widthEl === el) {
+        this.triggerWidth = Math.round(el.offsetWidth);
+      }
+    });
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (this.widthEl !== el) {
+          continue;
+        }
+        this.triggerWidth = Math.round(
+          (entry.target as HTMLElement).offsetWidth
+        );
+      }
+    });
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      if (this.widthEl === el) {
+        this.widthEl = undefined;
+      }
+    };
+  });
+
   updateAriaExtanded = modifier((_: HTMLElement) => {
     if (this.triggerEl) {
       this.triggerEl.setAttribute('aria-expanded', this.isOpen.toString());
@@ -271,6 +336,7 @@ class Popover extends Component<PopoverSignature> {
       {{yield
         (hash
           anchor=velcro.hook
+          measureWidth=this.measureWidth
           isOpen=this.isOpen
           open=this.open
           close=this.close

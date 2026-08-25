@@ -957,7 +957,13 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
+            {{! The wrapper, not the trigger, is the popover's width reference:
+            in chips mode the trigger is only as wide as the space left over
+            inside the field. The wrapper is a real full-width box in both
+            modes, so the dropdown matches the field either way. }}
             <div
+              {{p.anchor}}
+              {{p.measureWidth}}
               data-test-id={{if this.showChips "chips-field"}}
               data-has-chips={{this.showChips}}
               data-invalid={{c.isInvalid}}
@@ -990,7 +996,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 <input
                   type="text"
                   {{p.trigger}}
-                  {{p.anchor}}
                   {{this.triggerRef.setup}}
                   data-test-id="trigger"
                   data-component="select-trigger"
@@ -1011,7 +1016,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 <button
                   type="button"
                   {{p.trigger}}
-                  {{p.anchor}}
                   {{this.triggerRef.setup}}
                   data-test-id="trigger"
                   data-component="select-trigger"

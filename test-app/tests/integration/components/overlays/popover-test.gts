@@ -300,5 +300,150 @@ module(
 
       assert.dom('[data-test-id="content"]').exists();
     });
+    test('trigger width comes from the trigger element by default', async function (assert) {
+      await render(
+        <template>
+          <div style="width: 400px">
+            <Popover as |p|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                style="width: 120px"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
+                Trigger
+              </button>
+              <p.Content data-test-id="content" @size="trigger">
+                Content here
+              </p.Content>
+            </Popover>
+          </div>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      assert.strictEqual(
+        content.style.getPropertyValue('--trigger-width'),
+        '120px',
+        'the trigger element is the width reference'
+      );
+    });
+
+    test('p.measureWidth overrides the trigger as the width reference', async function (assert) {
+      await render(
+        <template>
+          <div style="width: 400px">
+            <Popover as |p|>
+              <div data-test-id="field" {{p.measureWidth}} style="width: 300px">
+                <button
+                  data-test-id="trigger"
+                  type="button"
+                  style="width: 120px"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                >
+                  Trigger
+                </button>
+              </div>
+              <p.Content data-test-id="content" @size="trigger">
+                Content here
+              </p.Content>
+            </Popover>
+          </div>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      assert.strictEqual(
+        content.style.getPropertyValue('--trigger-width'),
+        '300px',
+        'the measured element wins over the trigger, regardless of install order'
+      );
+    });
+
+    test('p.measureWidth keeps precedence when the trigger is resized', async function (assert) {
+      await render(
+        <template>
+          <div style="width: 400px">
+            <Popover as |p|>
+              <div data-test-id="field" {{p.measureWidth}} style="width: 300px">
+                <button
+                  data-test-id="trigger"
+                  type="button"
+                  style="width: 120px"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                >
+                  Trigger
+                </button>
+              </div>
+              <p.Content data-test-id="content" @size="trigger">
+                Content here
+              </p.Content>
+            </Popover>
+          </div>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      // Resizing the trigger must not steal the width back from the measured
+      // element: both modifiers observe their own element, so this would race
+      // without an explicit precedence rule.
+      (find('[data-test-id="trigger"]') as HTMLElement).style.width = '80px';
+      await settled();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settled();
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      assert.strictEqual(
+        content.style.getPropertyValue('--trigger-width'),
+        '300px',
+        'the trigger resize is ignored while measureWidth is installed'
+      );
+    });
+
+    test('p.measureWidth tracks its own element resizing', async function (assert) {
+      await render(
+        <template>
+          <div style="width: 400px">
+            <Popover as |p|>
+              <div data-test-id="field" {{p.measureWidth}} style="width: 300px">
+                <button
+                  data-test-id="trigger"
+                  type="button"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                >
+                  Trigger
+                </button>
+              </div>
+              <p.Content data-test-id="content" @size="trigger">
+                Content here
+              </p.Content>
+            </Popover>
+          </div>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      (find('[data-test-id="field"]') as HTMLElement).style.width = '250px';
+      await settled();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settled();
+
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      assert.strictEqual(
+        content.style.getPropertyValue('--trigger-width'),
+        '250px',
+        'the measured element is re-measured when it changes size'
+      );
+    });
   }
 );
