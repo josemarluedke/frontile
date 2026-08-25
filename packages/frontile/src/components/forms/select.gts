@@ -21,6 +21,7 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
+import { Chip } from '../buttons/chip';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
 import { action } from '@ember/object';
@@ -30,6 +31,9 @@ import { modifier } from 'ember-modifier';
 
 // Import helper function directly instead of using ember-truth-helpers
 const eq = (a: unknown, b: unknown) => a === b;
+const and = (a: unknown, b: unknown) => Boolean(a) && Boolean(b);
+const valueUnless = <T,>(condition: unknown, value: T): T | undefined =>
+  condition ? undefined : value;
 
 // Base interface for shared properties
 interface BaseSelectArgs<T>
@@ -123,6 +127,11 @@ interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * - 'single': Only one item can be selected at a time.
    */
   selectionMode: 'single';
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  selectedItemsDisplay?: never;
 }
 
 // Single selection mode interface (when selectionMode is omitted - default behavior)
@@ -133,6 +142,11 @@ interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * @defaultValue 'single'
    */
   selectionMode?: undefined;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  selectedItemsDisplay?: never;
 }
 
 // Multiple selection mode interface
@@ -142,6 +156,16 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * - 'multiple': Allows multiple selections.
    */
   selectionMode: 'multiple';
+
+  /**
+   * How the selected options are presented in the trigger.
+   *
+   * - `'chips'`: each selection renders as a removable {@link Chip}.
+   * - `'text'`: the selections render as a comma-joined string.
+   *
+   * @defaultValue 'chips'
+   */
+  selectedItemsDisplay?: 'chips' | 'text';
 
   /**
    * @deprecated Use selectedKeys for multiple selection mode
@@ -624,6 +648,33 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return this.selectedKeys?.join(', ');
   }
 
+  /**
+   * Whether selections render as chips. Chips are the default presentation for
+   * multiple selection mode; `@selectedItemsDisplay="text"` opts back out to the
+   * comma-joined string.
+   */
+  get showChips(): boolean {
+    return (
+      this.args.selectionMode === 'multiple' &&
+      this.args.selectedItemsDisplay !== 'text'
+    );
+  }
+
+  get hasSelection(): boolean {
+    return this.selectedKeys.length > 0;
+  }
+
+  /**
+   * The selected options in item order (not click order) so chips do not
+   * reorder underneath the user as they select.
+   */
+  get selectedItems(): { key: string; textValue: string }[] {
+    const keys = this.selectedKeys;
+    return this.nodes
+      .filter((node) => keys.includes(node.key))
+      .map((node) => ({ key: node.key, textValue: node.textValue }));
+  }
+
   get selectedTextValue(): string {
     let selectedTextValues: string[] = [];
     for (let node of this.nodes) {
@@ -833,56 +884,90 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
-            {{#if @isFilterable}}
-              <input
-                type="text"
-                {{p.trigger}}
-                {{p.anchor}}
-                {{this.triggerRef.setup}}
-                data-test-id="trigger"
-                data-component="select-trigger"
-                disabled={{@isDisabled}}
-                placeholder={{@placeholder}}
-                class={{this.classes.input
-                  class=@classes.input
-                  hasStartContent=(has-block "startContent")
-                  hasEndContent=true
-                }}
-                value={{this.filterFieldValue}}
-                {{on "input" this.onFilterChange}}
-                {{on "blur" this.handleBlur}}
-              />
-            {{else}}
-              <button
-                type="button"
-                {{p.trigger}}
-                {{p.anchor}}
-                {{this.triggerRef.setup}}
-                data-test-id="trigger"
-                data-component="select-trigger"
-                disabled={{@isDisabled}}
-                class={{this.classes.input
-                  class=@classes.input
-                  hasStartContent=(has-block "startContent")
-                  hasEndContent=true
-                }}
-                {{on "blur" this.handleBlur}}
-              >
-                {{#if this.selectedText}}
-                  <span>
-                    {{this.selectedTextValue}}
-                  </span>
-                {{else}}
-                  <span
-                    class={{this.classes.placeholder
-                      class=@classes.placeholder
-                    }}
-                  >
-                    {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
-                  </span>
-                {{/if}}
-              </button>
-            {{/if}}
+            <div
+              data-test-id={{if this.showChips "chips-field"}}
+              data-has-chips={{this.showChips}}
+              data-invalid={{c.isInvalid}}
+              data-disabled={{if @isDisabled "true" "false"}}
+              class={{if
+                this.showChips
+                (this.classes.chipsField class=@classes.chipsField)
+                "contents"
+              }}
+            >
+              {{#if (and this.showChips this.hasSelection)}}
+                <div
+                  data-test-id="selected-chips"
+                  class={{this.classes.chipsContainer
+                    class=@classes.chipsContainer
+                  }}
+                >
+                  {{#each this.selectedItems key="key" as |item|}}
+                    <Chip
+                      data-test-id="selected-chip"
+                      data-key={{item.key}}
+                      @class={{this.classes.chip class=@classes.chip}}
+                    >
+                      {{item.textValue}}
+                    </Chip>
+                  {{/each}}
+                </div>
+              {{/if}}
+              {{#if @isFilterable}}
+                <input
+                  type="text"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                  {{this.triggerRef.setup}}
+                  data-test-id="trigger"
+                  data-component="select-trigger"
+                  disabled={{@isDisabled}}
+                  placeholder={{valueUnless this.hasSelection @placeholder}}
+                  class={{this.classes.input
+                    class=@classes.input
+                    hasStartContent=(has-block "startContent")
+                    hasEndContent=true
+                    hasChips=this.showChips
+                  }}
+                  value={{this.filterFieldValue}}
+                  {{on "input" this.onFilterChange}}
+                  {{on "blur" this.handleBlur}}
+                />
+              {{else}}
+                <button
+                  type="button"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                  {{this.triggerRef.setup}}
+                  data-test-id="trigger"
+                  data-component="select-trigger"
+                  disabled={{@isDisabled}}
+                  class={{this.classes.input
+                    class=@classes.input
+                    hasStartContent=(has-block "startContent")
+                    hasEndContent=true
+                    hasChips=this.showChips
+                  }}
+                  {{on "blur" this.handleBlur}}
+                >
+                  {{#if this.hasSelection}}
+                    {{#unless this.showChips}}
+                      <span>
+                        {{this.selectedTextValue}}
+                      </span>
+                    {{/unless}}
+                  {{else}}
+                    <span
+                      class={{this.classes.placeholder
+                        class=@classes.placeholder
+                      }}
+                    >
+                      {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
+                    </span>
+                  {{/if}}
+                </button>
+              {{/if}}
+            </div>
             <div
               data-test-id="input-end-content"
               class={{this.classes.endContent

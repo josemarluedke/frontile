@@ -826,6 +826,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -961,6 +962,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1036,6 +1038,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1114,6 +1117,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1174,5 +1178,108 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       3,
       'callback should only be called for user clicks'
     );
+  });
+  test('Multiple mode: renders a chip per selected option by default', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="chips-field"]').exists('chips wrapper renders');
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasTextContaining('apple');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="cherry"]')
+      .hasTextContaining('cherry');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotIncludeText('apple, cherry', 'joined text is not rendered');
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="selected-chip"]')
+      .doesNotExist('chips must not be nested inside the trigger');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute('data-component', 'select-trigger');
+  });
+
+  test('Multiple mode: chips replace the placeholder only once something is selected', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('Select fruits');
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="apple"]');
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotIncludeText('Select fruits', 'placeholder hides once chips show');
+  });
+
+  test('Multiple mode: @selectedItemsDisplay="text" keeps the joined text', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-test-id="chips-field"]').doesNotExist();
+    assert.dom('[data-component="select-trigger"]').hasText('apple, cherry');
+  });
+
+  test('Single mode: is unaffected and renders no chips', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-test-id="chips-field"]').doesNotExist();
+    assert.dom('[data-component="select-trigger"]').hasText('apple');
   });
 });
