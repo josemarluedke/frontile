@@ -1491,4 +1491,102 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-disabled', 'true');
   });
+
+  test('Filterable multiple mode: the filter input stays empty so it can be typed in', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasValue('', 'the joined selection does not fill the filter input');
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'ban');
+    assert.dom('[data-component="listbox"] [data-key="banana"]').exists();
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('filtering still works with chips present');
+  });
+
+  test('Filterable multiple mode: Backspace on an empty filter removes the last chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(selectedKeys.current, ['apple', 'banana']);
+
+    // Backspace with text in the filter edits the text, it does not remove a chip
+    await fillIn('[data-component="select-trigger"]', 'ap');
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana'],
+      'Backspace while filtering leaves the selection alone'
+    );
+  });
+
+  test('Filterable multiple mode: Backspace does not remove the final chip unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the last required selection is not removed by Backspace, matching the chip close-button rule'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+  });
 });

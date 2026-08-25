@@ -575,6 +575,25 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   /**
+   * Backspace on an empty filter removes the last chip — the familiar tag-input
+   * gesture. With text in the filter, Backspace edits the text as usual.
+   */
+  handleFilterKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Backspace' || !this.showChips) {
+      return;
+    }
+    const target = event.target as HTMLInputElement;
+    if (target.value !== '') {
+      return;
+    }
+    const items = this.selectedItems;
+    const last = items[items.length - 1];
+    if (last) {
+      this.removeSelectedKey(last.key);
+    }
+  };
+
+  /**
    * Returns current selection as an array for template rendering.
    *
    * Normalizes both single and multiple selection modes to a consistent array interface:
@@ -807,6 +826,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get filterFieldValue() {
     if (this.filterValue !== undefined) {
       return this.filterValue;
+    }
+    // With chips, the selection is already visible beside the input. Echoing
+    // the joined text here would fill the box and block typing.
+    if (this.showChips) {
+      return '';
     }
     return this.selectedTextValue;
   }
@@ -1042,6 +1066,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   }}
                   value={{this.filterFieldValue}}
                   {{on "input" this.onFilterChange}}
+                  {{on "keydown" this.handleFilterKeydown}}
                   {{on "blur" this.handleBlur}}
                 />
               {{else}}
