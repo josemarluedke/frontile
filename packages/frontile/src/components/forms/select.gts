@@ -649,12 +649,41 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     if (target.value !== '') {
       return;
     }
+    this.removeLastSelectedKey();
+  };
+
+  /**
+   * The non-filterable counterpart of {@link handleFilterKeydown}.
+   *
+   * Chip close buttons are deliberately outside the tab order (they would
+   * otherwise cost a Tab stop each before the combobox is reached), so
+   * Backspace/Delete on the trigger is the *only* keyboard route to removing a
+   * chip here. There is no text to edit on a button trigger, so both keys act
+   * immediately; `preventDefault` keeps Backspace from navigating back.
+   */
+  handleTriggerKeydown = (event: KeyboardEvent) => {
+    if (!this.showChips || this.args.isDisabled) {
+      return;
+    }
+    if (event.key !== 'Backspace' && event.key !== 'Delete') {
+      return;
+    }
+    event.preventDefault();
+    this.removeLastSelectedKey();
+  };
+
+  /**
+   * Removes the trailing chip. `removeSelectedKey` applies the same
+   * `@allowEmpty` rule the chip close buttons follow, so the last required
+   * selection stays put.
+   */
+  removeLastSelectedKey(): void {
     const items = this.selectedItems;
     const last = items[items.length - 1];
     if (last) {
       this.removeSelectedKey(last.key);
     }
-  };
+  }
 
   /**
    * Returns current selection as an array for template rendering.
@@ -1163,6 +1192,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                       @withDot={{this.chipOptions.withDot}}
                       @isDisabled={{@isDisabled}}
                       @closeButtonTitle={{concat "Remove " item.textValue}}
+                      @closeButtonTabIndex="-1"
                       @onClose={{if
                         this.chipsRemovable
                         (fn this.removeSelectedKey item.key)
@@ -1209,6 +1239,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                     hasEndContent=true
                     hasChips=this.showChips
                   }}
+                  {{on "keydown" this.handleTriggerKeydown}}
                   {{on "blur" this.handleBlur}}
                 >
                   {{#if this.hasSelection}}

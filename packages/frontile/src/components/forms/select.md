@@ -842,7 +842,7 @@ several pieces:
 | Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                                                                                                              |
 | Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                          |
 | Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                               |
-| Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox |
+| Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
 
 Keyboard handling comes from the listbox:
 
@@ -853,7 +853,28 @@ Keyboard handling comes from the listbox:
 | `Enter`, `Space`                      | Select the active option    |
 | `Escape`                              | Closes the dropdown         |
 
-With `@isFilterable` and chips, `Backspace` on an empty filter removes the last chip.
+### The chips keyboard model
+
+Chip close buttons are **pointer affordances**: they are set to `tabindex="-1"` and are not
+tab stops. This is deliberate. A field holding five selections would otherwise put five Tab
+stops in front of the combobox, so a keyboard user Tabbing into the control would land on
+"Remove ..." rather than on the field itself.
+
+Keyboard removal is on the field instead, in **both** modes:
+
+| Context                                 | Key                    | Behavior                                       |
+| --------------------------------------- | ---------------------- | ---------------------------------------------- |
+| Chips, `@isFilterable={{true}}`         | `Backspace`            | Removes the last chip **when the filter is empty**; with text in the filter it edits the text as usual |
+| Chips, non-filterable (button trigger)  | `Backspace` or `Delete`| Removes the last chip                          |
+| Either                                  | `Enter` / `Space` on an option | Toggles that selection off from the dropdown |
+
+The `@allowEmpty` rule applies throughout: with the default `@allowEmpty={{false}}` the final
+selection cannot be removed, so its chip renders without a close button and `Backspace` leaves
+it alone.
+
+If you set `@chip` or restyle the chips, do not re-enable the close buttons as tab stops
+without also removing this keyboard path — a visual order that disagrees with focus order is
+its own WCAG 2.4.3 problem.
 
 ## API
 

@@ -1661,6 +1661,142 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
   });
 
+  /**
+   * Tab order, not merely "is there a button". A keyboard user reaching a
+   * chips field expects the combobox first; per-chip close buttons are pointer
+   * affordances and must not each cost a Tab stop on the way in.
+   */
+  test('Multiple mode: the trigger is reached before any chip close button', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    const field = document.querySelector(
+      '[data-test-id="chips-field"]'
+    ) as HTMLElement;
+    assert.ok(field, 'the chips field renders');
+
+    const isTabbable = (el: Element) => {
+      const tabindex = el.getAttribute('tabindex');
+      if (tabindex !== null && Number(tabindex) < 0) return false;
+      return !(el as HTMLButtonElement).disabled;
+    };
+
+    const tabbable = [
+      ...field.querySelectorAll('button, input, [tabindex]')
+    ].filter(isTabbable);
+
+    assert.deepEqual(
+      tabbable.map((el) => el.getAttribute('data-component')),
+      ['select-trigger'],
+      'the trigger is the only tab stop inside the chips field'
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"] button')
+      .exists({ count: 3 }, 'chips still have pointer-reachable close buttons');
+
+    document
+      .querySelectorAll('[data-test-id="selected-chip"] button')
+      .forEach((button) => {
+        assert.strictEqual(
+          button.getAttribute('tabindex'),
+          '-1',
+          'each chip close button is out of the tab order'
+        );
+      });
+  });
+
+  /**
+   * Taking the close buttons out of the tab order is only acceptable because
+   * Backspace removes the last chip. That has to hold for the non-filterable
+   * trigger too, otherwise keyboard users lose chip removal entirely.
+   */
+  test('Multiple mode: Backspace on the non-filterable trigger removes the last chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('button[data-component="select-trigger"]')
+      .exists('this select uses the button trigger, not a filter input');
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana'],
+      'Backspace removes the last chip from a non-filterable chips field'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    checkSelected(assert, '[data-key="cherry"]', false);
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Delete'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'Delete removes the last chip too'
+    );
+  });
+
+  test('Multiple mode: Backspace does not remove the final chip unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the final required selection survives Backspace on the button trigger'
+    );
+  });
+
   test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);

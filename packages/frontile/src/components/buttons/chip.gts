@@ -54,6 +54,18 @@ interface ChipSignature {
     closeButtonTitle?: string;
 
     /**
+     * `tabindex` for the close button.
+     *
+     * Set to `-1` when chips sit inside another control (a multi-select field,
+     * say) and the close button should stay a pointer affordance: every chip
+     * would otherwise cost a Tab stop before the control itself is reached.
+     * Whoever does this owes keyboard users another way to remove a chip.
+     *
+     * @defaultValue undefined (the close button is a normal tab stop)
+     */
+    closeButtonTabIndex?: number | string;
+
+    /**
      * Disables the clip and disables the close button if any.
      */
     isDisabled?: boolean;
@@ -102,6 +114,7 @@ class Chip extends Component<ChipSignature> {
           @class={{this.classNames.closeButton}}
           @title={{@closeButtonTitle}}
           @onPress={{@onClose}}
+          tabindex={{@closeButtonTabIndex}}
           disabled={{@isDisabled}}
         />
       {{/if}}
