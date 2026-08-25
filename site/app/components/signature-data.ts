@@ -8072,9 +8072,100 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-literal">true</span>',
       },
       {
+        identifier: 'chip',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'appearance',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
+                items: ["'default'", "'outlined'", "'faded'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {
+                defaultValue: { name: 'defaultValue', value: "'faded'" },
+              },
+              defaultValue: '<span class="hljs-string">\'faded\'</span>',
+            },
+            {
+              identifier: 'intent',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'secondary\'</span> | <span class="hljs-string">\'tertiary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+                items: [
+                  "'default'",
+                  "'primary'",
+                  "'secondary'",
+                  "'tertiary'",
+                  "'success'",
+                  "'warning'",
+                  "'danger'",
+                ],
+              },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Defaults to the Select\'s own `@intent`, so `@intent="primary"` colors the\nlistbox items and the chips together.',
+              tags: {},
+            },
+            {
+              identifier: 'size',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+                items: ["'sm'", "'md'", "'lg'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: { defaultValue: { name: 'defaultValue', value: "'sm'" } },
+              defaultValue: '<span class="hljs-string">\'sm\'</span>',
+            },
+            {
+              identifier: 'radius',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'lg\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'full\'</span>',
+                items: ["'sm'", "'lg'", "'none'", "'full'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'The corner radius of the chip.',
+              tags: {},
+            },
+            {
+              identifier: 'withDot',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: false,
+              isInternal: false,
+              description:
+                'Whether the chip renders a leading dot before its label.',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Not applicable in single selection mode.\nAppearance of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).",
+        tags: {
+          example: { name: 'example', value: '```gts\n<Select' },
+          selectionMode: { name: 'selectionMode', value: '="multiple"' },
+          chip: {
+            name: 'chip',
+            value:
+              '={{hash appearance="outlined" size="md" radius="full"}}\n/>\n```',
+          },
+        },
+      },
+      {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span> | <span class="hljs-string">\'placeholder\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'innerContainer\'</span> | <span class="hljs-string">\'startContent\'</span> | <span class="hljs-string">\'endContent\'</span> | <span class="hljs-string">\'listbox\'</span> | <span class="hljs-string">\'icon\'</span> | <span class="hljs-string">\'clearButton\'</span> | <span class="hljs-string">\'emptyContent\'</span> | <span class="hljs-string">\'placeholder\'</span> | <span class="hljs-string">\'chipsField\'</span> | <span class="hljs-string">\'chipsContainer\'</span> | <span class="hljs-string">\'chip\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -8503,6 +8594,20 @@ const data: ComponentDoc[] = [
           'Whether to render in place or in the specified/default destination',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'selectedItemsDisplay',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'chips\'</span> | <span class="hljs-string">\'text\'</span>',
+          items: ["'chips'", "'text'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Not applicable in single selection mode.\nHow the selected options are presented in the trigger.</p>\n<ul>\n<li><code>'chips'</code>: each selection renders as a removable {@link Chip }.</li>\n<li><code>'text'</code>: the selections render as a comma-joined string.</li>\n</ul>",
+        tags: { defaultValue: { name: 'defaultValue', value: "'chips'" } },
+        defaultValue: '<span class="hljs-string">\'chips\'</span>',
       },
       {
         identifier: 'selectedKey',
@@ -11230,7 +11335,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-attr">anchor</span>: <span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; }>; <span class="hljs-attr">isOpen</span>: <span class="hljs-built_in">boolean</span>; <span class="hljs-attr">toggle</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">open</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">close</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">trigger</span>: <span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; <span class="hljs-title class_">Args</span>: { <span class="hljs-title class_">Positional</span>: [<span class="hljs-attr">eventType</span>?: <span class="hljs-string">\'click\'</span> | <span class="hljs-string">\'hover\'</span>]; }; }>; <span class="hljs-title class_">Content</span>: <span class="hljs-title class_">Content</span> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound); }]',
+          raw: '[{ <span class="hljs-attr">anchor</span>: <span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; }>; <span class="hljs-attr">measureWidth</span>: <span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; }>; <span class="hljs-attr">isOpen</span>: <span class="hljs-built_in">boolean</span>; <span class="hljs-attr">toggle</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">open</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">close</span>: <span class="hljs-function">() =></span> <span class="hljs-built_in">void</span>; <span class="hljs-attr">trigger</span>: <span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; <span class="hljs-title class_">Args</span>: { <span class="hljs-title class_">Positional</span>: [<span class="hljs-attr">eventType</span>?: <span class="hljs-string">\'click\'</span> | <span class="hljs-string">\'hover\'</span>]; }; }>; <span class="hljs-title class_">Content</span>: <span class="hljs-title class_">Content</span> (loop, isOpen, id, toggle, internalDidClose, blockScroll, backdrop, triggerWidth bound); }]',
           items: [
             {
               identifier: '0',
@@ -11245,6 +11350,17 @@ const data: ComponentDoc[] = [
                     isRequired: true,
                     isInternal: false,
                     description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'measureWidth',
+                    type: {
+                      type: '<span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLElement</span>; }>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'Nominates the element it is placed on as the width reference for\n`@size="trigger"` content, instead of the element carrying `trigger`.',
                     tags: {},
                   },
                   {
@@ -12401,8 +12517,8 @@ const data: ComponentDoc[] = [
         identifier: 'shape',
         type: {
           type: '<span class="hljs-keyword">enum</span>',
-          raw: '<span class="hljs-string">\'rounded\'</span> | <span class="hljs-string">\'square\'</span> | <span class="hljs-string">\'circle\'</span> | <span class="hljs-string">\'text\'</span> | <span class="hljs-string">\'rect\'</span>',
-          items: ["'rounded'", "'square'", "'circle'", "'text'", "'rect'"],
+          raw: '<span class="hljs-string">\'rounded\'</span> | <span class="hljs-string">\'text\'</span> | <span class="hljs-string">\'square\'</span> | <span class="hljs-string">\'circle\'</span> | <span class="hljs-string">\'rect\'</span>',
+          items: ["'rounded'", "'text'", "'square'", "'circle'", "'rect'"],
         },
         isRequired: false,
         isInternal: false,
