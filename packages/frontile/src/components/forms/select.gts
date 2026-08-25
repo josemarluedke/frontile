@@ -35,6 +35,14 @@ const and = (a: unknown, b: unknown) => Boolean(a) && Boolean(b);
 const valueUnless = <T,>(condition: unknown, value: T): T | undefined =>
   condition ? undefined : value;
 
+/**
+ * A selected option reduced to what a chip needs to render.
+ */
+interface SelectedItem {
+  key: string;
+  textValue: string;
+}
+
 // Base interface for shared properties
 interface BaseSelectArgs<T>
   extends
@@ -419,6 +427,19 @@ interface SelectSignature<T> {
  */
 class Select<T = unknown> extends Component<SelectSignature<T>> {
   @tracked nodes: ListItem[] = [];
+
+  /**
+   * Every item that has registered so far, in item order.
+   *
+   * `nodes` only ever holds the items currently rendered, which is the
+   * *filtered* set. Chips have to reflect the selection rather than the filter,
+   * so a selected item's label has to survive that item being filtered out.
+   */
+  @tracked knownItems: SelectedItem[] = [];
+
+  /** Untracked backing store for `knownItems`. See `onItemsChange`. */
+  private itemOrder: string[] = [];
+  private textValues = new Map<string, string>();
   @tracked isOpen = false;
   /**
    * Internal tracked state for single selection mode.
@@ -634,8 +655,45 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
+    // `rememberItems` and the two fields it maintains are deliberately
+    // untracked. `onItemsChange` runs while a modifier installs, i.e. inside a
+    // render pass, and reading a tracked field there and then writing it in the
+    // same computation trips Glimmer's read-then-write assertion. Keeping the
+    // bookkeeping untracked makes `knownItems` and `nodes` write-only here.
+    this.rememberItems(nodes);
+    this.knownItems = this.itemOrder.map((key) => ({
+      key,
+      textValue: this.textValues.get(key) ?? key
+    }));
     this.nodes = nodes;
   };
+
+  /**
+   * Records the label and the position of every item that registers.
+   *
+   * A batch that still covers every key we already knew about is an unfiltered
+   * registration, and is therefore the authoritative item order. A batch that
+   * covers only some of them is a filter narrowing the list, so the order we
+   * already have is kept and only genuinely new keys are appended.
+   */
+  private rememberItems(nodes: ListItem[]): void {
+    const incomingKeys = new Set<string>();
+    for (const node of nodes) {
+      incomingKeys.add(node.key);
+      this.textValues.set(node.key, node.textValue);
+    }
+
+    if (this.itemOrder.every((key) => incomingKeys.has(key))) {
+      this.itemOrder = nodes.map((node) => node.key);
+      return;
+    }
+
+    for (const node of nodes) {
+      if (!this.itemOrder.includes(node.key)) {
+        this.itemOrder.push(node.key);
+      }
+    }
+  }
 
   didClose = () => {
     this.filterValue = undefined;
@@ -665,14 +723,28 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   /**
+   * The accessible name for the trigger while chips are shown.
+   *
+   * In every other mode the trigger names itself from its own text -- the
+   * selected label, or the placeholder. In chips mode it renders nothing (the
+   * chips are its siblings, so they are read separately), which would leave the
+   * combobox announced as an unnamed button. This names the *control*, never the
+   * selection.
+   */
+  get triggerAccessibleName(): string {
+    return this.args.label || this.args.placeholder || 'Select options';
+  }
+
+  /**
    * The selected options in item order (not click order) so chips do not
    * reorder underneath the user as they select.
+   *
+   * Resolved against `knownItems` rather than `nodes`, so a chip stays put while
+   * a filter hides the item it came from.
    */
-  get selectedItems(): { key: string; textValue: string }[] {
+  get selectedItems(): SelectedItem[] {
     const keys = this.selectedKeys;
-    return this.nodes
-      .filter((node) => keys.includes(node.key))
-      .map((node) => ({ key: node.key, textValue: node.textValue }));
+    return this.knownItems.filter((item) => keys.includes(item.key));
   }
 
   get selectedTextValue(): string {
@@ -890,7 +962,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               data-has-chips={{this.showChips}}
               data-invalid={{c.isInvalid}}
               data-disabled={{if @isDisabled "true" "false"}}
-              class={{this.classes.chipsField class=@classes.chipsField}}
+              class={{this.classes.chipsField
+                class=@classes.chipsField
+                hasStartContent=(has-block "startContent")
+                hasEndContent=true
+              }}
             >
               {{#if (and this.showChips this.hasSelection)}}
                 <div
@@ -919,6 +995,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   data-test-id="trigger"
                   data-component="select-trigger"
                   disabled={{@isDisabled}}
+                  aria-label={{if this.showChips this.triggerAccessibleName}}
                   placeholder={{valueUnless this.hasSelection @placeholder}}
                   class={{this.classes.input
                     class=@classes.input
@@ -939,6 +1016,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   data-test-id="trigger"
                   data-component="select-trigger"
                   disabled={{@isDisabled}}
+                  aria-label={{if this.showChips this.triggerAccessibleName}}
                   class={{this.classes.input
                     class=@classes.input
                     hasStartContent=(has-block "startContent")

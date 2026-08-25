@@ -310,6 +310,15 @@ const select = tv({
         ]
       },
       false: { chipsField: 'contents' }
+    },
+    // `chipsField` is the padding box in chips mode, so it has to clear the
+    // absolutely-positioned start/end content the same way the bare `input`
+    // does -- otherwise chips run underneath the chevron and clear button.
+    hasStartContent: {
+      true: { chipsField: 'ps-8' }
+    },
+    hasEndContent: {
+      true: { chipsField: 'pe-10' }
     }
   },
   defaultVariants: {

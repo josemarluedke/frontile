@@ -1282,4 +1282,80 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-test-id="chips-field"]').doesNotExist();
     assert.dom('[data-component="select-trigger"]').hasText('apple');
   });
+  test('Multiple mode: a selected chip survives a filter that excludes its item', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('the chip renders before filtering');
+
+    await fillIn('[data-component="select-trigger"]', 'ban');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('apple is filtered out of the listbox');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('the chip for the filtered-out selection is still rendered');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasTextContaining('apple', 'and it keeps its label');
+  });
+
+  test('Multiple mode: the trigger has an accessible name while chips are shown', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @label="Fruits"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute('aria-label', 'Fruits');
+  });
+
+  test('Single mode: the trigger is named by its own text, not an aria-label', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @label="Fruit"
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('apple');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotHaveAttribute('aria-label');
+  });
 });
