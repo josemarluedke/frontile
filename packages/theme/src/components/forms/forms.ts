@@ -61,6 +61,17 @@ const formFeedback = tv({
   }
 });
 
+// The visual shell of a form field: background, border, radius, and the
+// invalid/disabled treatments. Shared by the `input` slot and by `select`'s
+// `chipsField`, which becomes the shell when chips render beside the trigger.
+const fieldShell = [
+  'bg-surface-input',
+  'border',
+  'border-neutral-soft',
+  'rounded-xl',
+  'selection:bg-surface-overlay-soft'
+];
+
 const input = tv({
   slots: {
     base: '',
@@ -71,20 +82,16 @@ const input = tv({
       'appearance-none',
       'flex-1',
       'w-full',
-      'bg-surface-input',
+      ...fieldShell,
       'text-neutral-strong',
       'placeholder-neutral',
       // body role family; single-line controls keep tight leading (not the body relaxed leading)
       'font-body text-base text-left',
-      'border',
-      'border-neutral-soft',
-      'rounded-xl',
       'leading-tight',
       'focus:ring-3',
       'focus:ring-focus',
       'focus:outline-hidden',
       'focus:border-primary-soft',
-      'selection:bg-surface-overlay-soft',
       'disabled:border-neutral-subtle disabled:text-neutral-soft',
       'aria-invalid:border-danger-soft',
       'aria-invalid:focus:ring-danger-soft'
@@ -101,6 +108,22 @@ const input = tv({
     },
     hasEndContent: {
       true: { input: 'pe-10' }
+    },
+    // When chips render beside the trigger, `chipsField` owns the field shell
+    // and the trigger itself must be visually bare.
+    hasChips: {
+      true: {
+        input: [
+          'border-0',
+          'bg-transparent',
+          'p-0',
+          'w-auto',
+          'flex-1',
+          'min-w-16',
+          'focus:ring-0',
+          'focus:border-transparent'
+        ]
+      }
     },
     startContentPointerEvents: {
       auto: { startContent: 'pointer-events-auto' },
@@ -244,13 +267,34 @@ const select = tv({
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
-    emptyContent: 'p-2'
+    emptyContent: 'p-2',
+    // Field shell used in place of the trigger's own border when chips render.
+    // `data-invalid` / `data-disabled` are set by the component because
+    // `aria-invalid:` and `disabled:` only match the element carrying them.
+    chipsField: [
+      ...fieldShell,
+      'flex',
+      'flex-wrap',
+      'items-center',
+      'gap-1',
+      'w-full',
+      'cursor-default',
+      'focus-within:ring-3',
+      'focus-within:ring-focus',
+      'focus-within:border-primary-soft',
+      'data-[invalid=true]:border-danger-soft',
+      'data-[invalid=true]:focus-within:ring-danger-soft',
+      'data-[disabled=true]:border-neutral-subtle',
+      'data-[disabled=true]:text-neutral-soft'
+    ],
+    chipsContainer: 'flex flex-wrap items-center gap-1 min-w-0',
+    chip: ''
   },
   variants: {
     size: {
-      sm: {},
-      md: {},
-      lg: {}
+      sm: { chipsField: 'p-1 gap-1' },
+      md: { chipsField: 'p-1.5 gap-1' },
+      lg: { chipsField: 'p-2 gap-1.5' }
     }
   },
   defaultVariants: {
