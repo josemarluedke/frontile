@@ -10,7 +10,7 @@ import {
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Select } from 'frontile';
-import { array } from '@ember/helper';
+import { array, hash } from '@ember/helper';
 import { selectOptionByKey } from 'frontile/test-support';
 
 // Simple equality helper
@@ -1588,5 +1588,92 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       'the last required selection is not removed by Backspace, matching the chip close-button rule'
     );
     assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+  });
+
+  test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @intent="primary"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    // The chip theme's real 'faded' + 'primary' compound variant resolves to
+    // `bg-primary-subtle` (see packages/theme/src/components/chip.ts), but the
+    // test suite globally overrides the `chip` theme via `registerCustomStyles`
+    // in chip-test.gts with stub classnames per variant (no compound
+    // resolution), so `hasClass('bg-primary-subtle')` can never pass here.
+    // Assert against the variant stubs instead, matching the convention used
+    // by chip-test.gts / buttons-test.gts elsewhere in this suite.
+    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('chip-faded', 'defaults to appearance faded');
+    assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
+  });
+
+  test('Multiple mode: @chip overrides appearance, intent, size and dot', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @intent="primary"
+          @chip={{hash
+            appearance="outlined"
+            intent="danger"
+            size="lg"
+            radius="full"
+            withDot=true
+          }}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('radius-full', '@chip.radius applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass(
+        'intent-primary',
+        '@chip.intent overrides the inherited @intent'
+      );
+    assert.dom(chip).hasClass('intent-danger', '@chip.intent applies');
+    assert.dom(`${chip} span:first-child`).exists('withDot renders the dot');
+  });
+
+  test('Multiple mode: @classes.chip is merged onto every chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @classes={{hash chip="test-chip-class" chipsField="test-field-class"}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasClass('test-chip-class');
+    assert.dom('[data-test-id="chips-field"]').hasClass('test-field-class');
   });
 });

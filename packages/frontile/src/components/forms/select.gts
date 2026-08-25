@@ -44,6 +44,39 @@ interface SelectedItem {
   textValue: string;
 }
 
+/**
+ * Appearance options forwarded to the {@link Chip} rendered for each selected
+ * option in multiple selection mode.
+ */
+interface SelectChipOptions {
+  /**
+   * @defaultValue 'faded'
+   */
+  appearance?: 'default' | 'outlined' | 'faded';
+
+  /**
+   * Defaults to the Select's own `@intent`, so `@intent="primary"` colors the
+   * listbox items and the chips together.
+   */
+  intent?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'success'
+    | 'warning'
+    | 'danger';
+
+  /**
+   * @defaultValue 'sm'
+   */
+  size?: 'sm' | 'md' | 'lg';
+
+  radius?: 'none' | 'sm' | 'lg' | 'full';
+
+  withDot?: boolean;
+}
+
 // Base interface for shared properties
 interface BaseSelectArgs<T>
   extends
@@ -141,6 +174,11 @@ interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * Not applicable in single selection mode.
    */
   selectedItemsDisplay?: never;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  chip?: never;
 }
 
 // Single selection mode interface (when selectionMode is omitted - default behavior)
@@ -156,6 +194,11 @@ interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * Not applicable in single selection mode.
    */
   selectedItemsDisplay?: never;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  chip?: never;
 }
 
 // Multiple selection mode interface
@@ -175,6 +218,20 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * @defaultValue 'chips'
    */
   selectedItemsDisplay?: 'chips' | 'text';
+
+  /**
+   * Appearance of the chips rendered for each selected option.
+   * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
+   *
+   * @example
+   * ```gts
+   * <Select
+   *   @selectionMode="multiple"
+   *   @chip={{hash appearance="outlined" size="md" radius="full"}}
+   * />
+   * ```
+   */
+  chip?: SelectChipOptions;
 
   /**
    * @deprecated Use selectedKeys for multiple selection mode
@@ -679,6 +736,28 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * false — the default — the final selection cannot be deselected, so its
    * chip renders without a close button rather than with a dead one.
    */
+  /**
+   * Resolved chip appearance: `@chip` wins, then the Select's own `@intent`,
+   * then chip defaults tuned for sitting inside a field.
+   */
+  get chipOptions(): {
+    appearance: NonNullable<SelectChipOptions['appearance']>;
+    intent: NonNullable<SelectChipOptions['intent']>;
+    size: NonNullable<SelectChipOptions['size']>;
+    radius: SelectChipOptions['radius'];
+    withDot: boolean;
+  } {
+    const chip =
+      this.args.selectionMode === 'multiple' ? this.args.chip : undefined;
+    return {
+      appearance: chip?.appearance ?? 'faded',
+      intent: chip?.intent ?? this.args.intent ?? 'default',
+      size: chip?.size ?? 'sm',
+      radius: chip?.radius,
+      withDot: chip?.withDot ?? false
+    };
+  }
+
   get chipsRemovable(): boolean {
     // Counts `selectedItems` — the same collection the chips render from —
     // rather than `selectedKeys`, so this decision can never disagree with
@@ -1036,6 +1115,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                       data-test-id="selected-chip"
                       data-key={{item.key}}
                       @class={{this.classes.chip class=@classes.chip}}
+                      @appearance={{this.chipOptions.appearance}}
+                      @intent={{this.chipOptions.intent}}
+                      @size={{this.chipOptions.size}}
+                      @radius={{this.chipOptions.radius}}
+                      @withDot={{this.chipOptions.withDot}}
                       @isDisabled={{@isDisabled}}
                       @closeButtonTitle={{concat "Remove " item.textValue}}
                       @onClose={{if
@@ -1207,5 +1291,5 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
 const isSm = (size: SelectVariants['size']) => size === 'sm';
 
-export { Select, type SelectSignature };
+export { Select, type SelectSignature, type SelectChipOptions };
 export default Select;
