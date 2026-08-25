@@ -1358,4 +1358,140 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="select-trigger"]')
       .doesNotHaveAttribute('aria-label');
   });
+
+  test('Multiple mode: a chip close button removes just that selection', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+
+    await click('[data-test-id="selected-chip"][data-key="banana"] button');
+
+    assert.deepEqual(selectedKeys.current, ['apple', 'cherry']);
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="banana"]')
+      .doesNotExist();
+    isNotSelected(assert, '[value="banana"]');
+    isSelected(assert, '[value="apple"]');
+  });
+
+  test('Multiple mode: chip close buttons are individually labelled', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .hasAttribute('title', 'Remove apple');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="banana"] button')
+      .hasAttribute('title', 'Remove banana');
+  });
+
+  test('Multiple mode: the last chip has no close button unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .doesNotExist('no dead close button on the last required selection');
+  });
+
+  test('Multiple mode: @allowEmpty lets the last chip be removed', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-test-id="selected-chip"][data-key="apple"] button');
+
+    assert.deepEqual(selectedKeys.current, []);
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+  });
+
+  test('Multiple mode: chips are disabled when the select is disabled', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isDisabled={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .isDisabled();
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-disabled', 'true');
+
+    // The close button carries a real `disabled` attribute, so
+    // `@ember/test-helpers`' `click()` refuses to simulate the interaction
+    // (it throws for any genuinely-disabled form control). Dispatch the
+    // click event directly to prove the removal is also guarded in JS, as
+    // defense-in-depth alongside the native disabled semantics.
+    const button = document.querySelector(
+      '[data-test-id="selected-chip"][data-key="apple"] button'
+    );
+    button?.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, cancelable: true })
+    );
+    await settled();
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana'],
+      'a disabled chip cannot remove its selection'
+    );
+  });
 });

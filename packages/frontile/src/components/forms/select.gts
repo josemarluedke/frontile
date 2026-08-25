@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
+import { concat, fn } from '@ember/helper';
 import type Owner from '@ember/owner';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '../collections/listbox';
@@ -654,6 +655,27 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     this.onSelectionChange([]);
   };
 
+  /**
+   * Whether chips may be removed. Mirrors the listbox: with `@allowEmpty`
+   * false — the default — the final selection cannot be deselected, so its
+   * chip renders without a close button rather than with a dead one.
+   */
+  get chipsRemovable(): boolean {
+    return this.args.allowEmpty === true || this.selectedKeys.length > 1;
+  }
+
+  /**
+   * Removes a single selection from a chip's close button. Routes through
+   * `onSelectionChange`, which already syncs internal state, notifies the
+   * parent and dispatches the form input event.
+   */
+  removeSelectedKey = (key: string) => {
+    if (this.args.isDisabled || !this.chipsRemovable) {
+      return;
+    }
+    this.onSelectionChange(this.selectedKeys.filter((k) => k !== key));
+  };
+
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
     // `rememberItems` and the two fields it maintains are deliberately
     // untracked. `onItemsChange` runs while a modifier installs, i.e. inside a
@@ -986,6 +1008,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                       data-test-id="selected-chip"
                       data-key={{item.key}}
                       @class={{this.classes.chip class=@classes.chip}}
+                      @isDisabled={{@isDisabled}}
+                      @closeButtonTitle={{concat "Remove " item.textValue}}
+                      @onClose={{if
+                        this.chipsRemovable
+                        (fn this.removeSelectedKey item.key)
+                      }}
                     >
                       {{item.textValue}}
                     </Chip>
