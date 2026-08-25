@@ -268,33 +268,48 @@ const select = tv({
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
     emptyContent: 'p-2',
-    // Field shell used in place of the trigger's own border when chips render.
-    // `data-invalid` / `data-disabled` are set by the component because
-    // `aria-invalid:` and `disabled:` only match the element carrying them.
-    chipsField: [
-      ...fieldShell,
-      'flex',
-      'flex-wrap',
-      'items-center',
-      'gap-1',
-      'w-full',
-      'cursor-default',
-      'focus-within:ring-3',
-      'focus-within:ring-focus',
-      'focus-within:border-primary-soft',
-      'data-[invalid=true]:border-danger-soft',
-      'data-[invalid=true]:focus-within:ring-danger-soft',
-      'data-[disabled=true]:border-neutral-subtle',
-      'data-[disabled=true]:text-neutral-soft'
-    ],
+    // The wrapper around the trigger. It is rendered in every mode; the
+    // `hasChips` variant below decides whether it is the field shell or is
+    // layout-transparent. Authored here rather than as a literal class in the
+    // component template because Tailwind does not scan `packages/frontile/src`.
+    chipsField: '',
     chipsContainer: 'flex flex-wrap items-center gap-1 min-w-0',
     chip: ''
   },
   variants: {
     size: {
+      // Inert under `display: contents`, so it is safe to apply unconditionally.
       sm: { chipsField: 'p-1 gap-1' },
       md: { chipsField: 'p-1.5 gap-1' },
       lg: { chipsField: 'p-2 gap-1.5' }
+    },
+    // When chips render, `chipsField` becomes the field shell in place of the
+    // trigger's own border (see the `hasChips` variant on `input`). Otherwise it
+    // is `display: contents`, so the trigger lays out exactly as it did before
+    // the wrapper existed.
+    //
+    // `data-invalid` / `data-disabled` are set by the component because
+    // `aria-invalid:` and `disabled:` only match the element carrying them.
+    hasChips: {
+      true: {
+        chipsField: [
+          ...fieldShell,
+          'flex',
+          'flex-wrap',
+          'items-center',
+          'gap-1',
+          'w-full',
+          'cursor-default',
+          'focus-within:ring-3',
+          'focus-within:ring-focus',
+          'focus-within:border-primary-soft',
+          'data-[invalid=true]:border-danger-soft',
+          'data-[invalid=true]:focus-within:ring-danger-soft',
+          'data-[disabled=true]:border-neutral-subtle',
+          'data-[disabled=true]:text-neutral-soft'
+        ]
+      },
+      false: { chipsField: 'contents' }
     }
   },
   defaultVariants: {

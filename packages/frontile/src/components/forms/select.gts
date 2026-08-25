@@ -695,7 +695,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get classes() {
     const { select } = useStyles();
     return select({
-      size: this.args.inputSize
+      size: this.args.inputSize,
+      hasChips: this.showChips
     });
   }
 
@@ -889,11 +890,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               data-has-chips={{this.showChips}}
               data-invalid={{c.isInvalid}}
               data-disabled={{if @isDisabled "true" "false"}}
-              class={{if
-                this.showChips
-                (this.classes.chipsField class=@classes.chipsField)
-                "contents"
-              }}
+              class={{this.classes.chipsField class=@classes.chipsField}}
             >
               {{#if (and this.showChips this.hasSelection)}}
                 <div
