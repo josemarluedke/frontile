@@ -1875,6 +1875,124 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
   });
 
+  /**
+   * The second of the two layout bugs the user reported: "larger spacing below
+   * the chip to the input bottom when in one line".
+   *
+   * The `min-w-16` floor the chips-mode trigger used to carry pushed it onto a
+   * second flex line whenever the room left beside the chips was tighter than
+   * the floor. That line was zero-height, but the field's `gap` still paid for
+   * it, so a single row of chips sat with dead space underneath.
+   *
+   * `triggerRect.height >= chipRect.height` — asserted by the hittable-box test
+   * above — does NOT catch this: a wrapped trigger that has since gained a
+   * `min-h` satisfies it while the dead space is back, and worse than before,
+   * because the wrapped line is now tall rather than empty. What has to be
+   * pinned is that the trigger *shares the chips' line*.
+   *
+   * The fixture is sized so the chips very nearly fill the row (~26px of real
+   * room left beside them, well under the old 64px floor). That is the case the
+   * user hit, and the case the old floor got wrong.
+   */
+  test('Multiple mode: the trigger shares the chips line instead of wrapping below them', async function (assert) {
+    const selectedKeys = cell<string[]>([
+      'strawberry',
+      'blackberry',
+      'raspberry'
+    ]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    // Explicit widths: the assertion is about how much room is left beside the
+    // chips, so it must not depend on the harness viewport.
+    await render(
+      <template>
+        <div style="width: 320px">
+          <Select
+            @items={{array "strawberry" "blackberry" "raspberry"}}
+            @selectionMode="multiple"
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onChange}}
+          />
+        </div>
+        <div style="width: 320px">
+          <Select
+            @items={{array "strawberry" "blackberry" "raspberry"}}
+            @placeholder="Pick one"
+          />
+        </div>
+      </template>
+    );
+
+    const field = document.querySelector(
+      '[data-test-id="chips-field"]'
+    ) as HTMLElement;
+    const trigger = field.querySelector(
+      '[data-component="select-trigger"]'
+    ) as HTMLElement;
+    const chips = [
+      ...field.querySelectorAll('[data-test-id="selected-chip"]')
+    ] as HTMLElement[];
+
+    assert.strictEqual(chips.length, 3, 'all three chips render');
+
+    const fieldRect = field.getBoundingClientRect();
+    const triggerRect = trigger.getBoundingClientRect();
+
+    // Every chip is on one row: this is the "in one line" case, not a field
+    // that is legitimately wrapping.
+    const firstChipRect = (chips[0] as HTMLElement).getBoundingClientRect();
+    chips.forEach((chip, i) => {
+      const rect = chip.getBoundingClientRect();
+      assert.ok(
+        Math.abs(rect.top - firstChipRect.top) < 1,
+        `chip ${i} shares the first chip's row (top ${rect.top} vs ${firstChipRect.top})`
+      );
+    });
+
+    const lastChipRect = (
+      chips[chips.length - 1] as HTMLElement
+    ).getBoundingClientRect();
+
+    assert.ok(
+      triggerRect.top < lastChipRect.bottom &&
+        triggerRect.bottom > lastChipRect.top,
+      `the trigger must share the chips' line, not wrap below them: trigger ` +
+        `[${triggerRect.top}, ${triggerRect.bottom}] vs last chip ` +
+        `[${lastChipRect.top}, ${lastChipRect.bottom}]`
+    );
+
+    assert.ok(
+      triggerRect.left >= lastChipRect.right - 1,
+      `the trigger sits after the last chip on that line (trigger left ` +
+        `${triggerRect.left}, last chip right ${lastChipRect.right})`
+    );
+
+    // ...and the field is no taller than a single-select field of the same
+    // @inputSize. That equivalence is what the geometry fix established, and it
+    // is what "extra spacing below the chip" violates: unexplained height in
+    // the field beyond one row of chips.
+    const singleTrigger = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    )[1] as HTMLElement;
+    const singleRect = singleTrigger.getBoundingClientRect();
+
+    assert.ok(
+      Math.abs(fieldRect.height - singleRect.height) <= 1,
+      `a chips field must be the same height as a same-size single select: ` +
+        `chips ${fieldRect.height} vs single ${singleRect.height}`
+    );
+
+    // The chips must be centred in that height rather than pinned to the top
+    // with the slack underneath, which is what the user actually saw.
+    const spaceAbove = firstChipRect.top - fieldRect.top;
+    const spaceBelow = fieldRect.bottom - firstChipRect.bottom;
+    assert.ok(
+      Math.abs(spaceAbove - spaceBelow) <= 1,
+      `the row of chips must sit centred in the field, not with the slack ` +
+        `below it: ${spaceAbove} above vs ${spaceBelow} below`
+    );
+  });
+
   test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
