@@ -1651,7 +1651,22 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
         '@chip.intent overrides the inherited @intent'
       );
     assert.dom(chip).hasClass('intent-danger', '@chip.intent applies');
-    assert.dom(`${chip} span:first-child`).exists('withDot renders the dot');
+    assert.dom(chip).hasClass('chip-outlined', '@chip.appearance applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass(
+        'chip-faded',
+        '@chip.appearance overrides the faded default'
+      );
+    assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass('chip-sm', '@chip.size overrides the sm default');
+    // `span:first-child` would pass regardless of @withDot, because
+    // chip.gts renders the content span as the first child when there is no
+    // dot. Target the dot's own stub class instead (chip-test.gts registers
+    // `dot: ['chip-dot']` on the mocked chip theme).
+    assert.dom(`${chip} .chip-dot`).exists('@chip.withDot renders the dot');
   });
 
   test('Multiple mode: @classes.chip is merged onto every chip', async function (assert) {

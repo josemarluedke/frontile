@@ -72,8 +72,14 @@ interface SelectChipOptions {
    */
   size?: 'sm' | 'md' | 'lg';
 
+  /**
+   * The corner radius of the chip.
+   */
   radius?: 'none' | 'sm' | 'lg' | 'full';
 
+  /**
+   * Whether the chip renders a leading dot before its label.
+   */
   withDot?: boolean;
 }
 
@@ -732,11 +738,6 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   /**
-   * Whether chips may be removed. Mirrors the listbox: with `@allowEmpty`
-   * false — the default — the final selection cannot be deselected, so its
-   * chip renders without a close button rather than with a dead one.
-   */
-  /**
    * Resolved chip appearance: `@chip` wins, then the Select's own `@intent`,
    * then chip defaults tuned for sitting inside a field.
    */
@@ -758,6 +759,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     };
   }
 
+  /**
+   * Whether chips may be removed. Mirrors the listbox: with `@allowEmpty`
+   * false — the default — the final selection cannot be deselected, so its
+   * chip renders without a close button rather than with a dead one.
+   */
   get chipsRemovable(): boolean {
     // Counts `selectedItems` — the same collection the chips render from —
     // rather than `selectedKeys`, so this decision can never disagree with
