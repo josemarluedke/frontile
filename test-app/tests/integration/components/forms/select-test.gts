@@ -1214,6 +1214,77 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .hasAttribute('data-component', 'select-trigger');
   });
 
+  test('Multiple mode: the chips-mode trigger keeps a hittable box beside the chips', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    const trigger = document.querySelector(
+      '[data-component="select-trigger"]'
+    ) as HTMLElement;
+    const chip = document.querySelector(
+      '[data-test-id="selected-chip"]'
+    ) as HTMLElement;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const chipRect = chip.getBoundingClientRect();
+
+    assert.ok(
+      triggerRect.height > 0,
+      `the trigger must have a box to click, height was ${triggerRect.height}`
+    );
+    assert.ok(
+      triggerRect.width > 0,
+      `the trigger must have a box to click, width was ${triggerRect.width}`
+    );
+    assert.ok(
+      triggerRect.height >= chipRect.height,
+      `trigger height (${triggerRect.height}) should be at least the chip height (${chipRect.height})`
+    );
+
+    // Hit test rather than `click(trigger)`: `@ember/test-helpers` dispatches at
+    // the element whether or not it occupies any space, which is exactly how a
+    // zero-height trigger passed the suite while being unusable in a browser.
+    const x = triggerRect.left + triggerRect.width / 2;
+    const y = triggerRect.top + triggerRect.height / 2;
+    const hit = document.elementFromPoint(x, y);
+
+    assert.ok(
+      !!hit && (hit === trigger || trigger.contains(hit)),
+      `the empty area of the field must hit the trigger, got ${
+        hit
+          ? (hit as HTMLElement).tagName + '.' + (hit as HTMLElement).className
+          : 'null'
+      }`
+    );
+
+    hit?.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y
+      })
+    );
+    await settled();
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('clicking the empty area of the field opens the listbox');
+    assert.dom(trigger).hasAttribute('aria-expanded', 'true');
+  });
+
   test('Multiple mode: chips replace the placeholder only once something is selected', async function (assert) {
     const selectedKeys = cell<string[]>([]);
     const onChange = (keys: string[]) => (selectedKeys.current = keys);

@@ -119,7 +119,16 @@ const input = tv({
           'p-0',
           'w-auto',
           'flex-1',
-          'min-w-16',
+          // Once chips show the selection the trigger renders nothing at all, so
+          // it has no content to give it a height -- it collapsed to a 0px box
+          // that could not be clicked. Stretching makes it as tall as the chips
+          // sitting next to it, which is the box a pointer needs to hit.
+          'self-stretch',
+          // No horizontal floor by default: a bare (non-filterable) trigger has
+          // no content of its own, so a floor would only push it onto a second
+          // flex line. `select` puts the floor back for the filterable trigger,
+          // which does need room to type.
+          'min-w-0',
           'focus:ring-0',
           'focus:border-transparent'
         ]
@@ -311,15 +320,41 @@ const select = tv({
         ]
       },
       false: { chipsField: 'flex w-full min-w-0' }
+    },
+    // Whether the trigger is a filterable text input rather than a bare button.
+    // Only affects how much horizontal room the trigger reserves in chips mode.
+    isFilterable: {
+      true: {},
+      false: {}
     }
   },
   compoundVariants: [
     // Padding belongs to whichever element is the field shell, so it is applied
     // to `chipsField` only in chips mode -- in passthrough mode the wrapper has
     // to add no geometry of its own.
-    { hasChips: true, size: 'sm', class: { chipsField: 'p-1 gap-1' } },
-    { hasChips: true, size: 'md', class: { chipsField: 'p-1.5 gap-1' } },
-    { hasChips: true, size: 'lg', class: { chipsField: 'p-2 gap-1.5' } },
+    // The `min-h-*` values are the height of the same-size text field
+    // (padding + line box + border), so a chips field is exactly as tall as a
+    // single-select one, does not change height as the first chip arrives, and
+    // absorbs the flex gap when the trigger wraps below the chips.
+    // No gap between the chips and the trigger: the chips carry their own gap,
+    // and a gap here is space the trigger has to fit into before it is allowed
+    // to stay on the chips' line. With `gap-0` a trigger that does have to wrap
+    // (the chips already fill the row) costs no vertical space at all.
+    {
+      hasChips: true,
+      size: 'sm',
+      class: { chipsField: 'p-1 gap-0 min-h-9.5' }
+    },
+    {
+      hasChips: true,
+      size: 'md',
+      class: { chipsField: 'p-1.5 gap-0 min-h-11.5' }
+    },
+    {
+      hasChips: true,
+      size: 'lg',
+      class: { chipsField: 'p-2 gap-0 min-h-13.5' }
+    },
     // Chips have to clear the absolutely-positioned start/end content the same
     // way a bare `input` does, otherwise they run underneath the chevron and the
     // clear button.
@@ -328,7 +363,15 @@ const select = tv({
     // ...and once `chipsField` reserves that room, the bare trigger inside it
     // must not reserve it a second time.
     { hasChips: true, hasStartContent: true, class: { input: 'ps-0' } },
-    { hasChips: true, hasEndContent: true, class: { input: 'pe-0' } }
+    { hasChips: true, hasEndContent: true, class: { input: 'pe-0' } },
+    // Only the filterable trigger needs typing room -- and, since the field
+    // itself no longer sets a gap, its own separation from the last chip.
+    // See `min-w-0` and `gap-0` above.
+    {
+      hasChips: true,
+      isFilterable: true,
+      class: { input: 'min-w-16 ms-1' }
+    }
   ],
   defaultVariants: {
     size: 'md'

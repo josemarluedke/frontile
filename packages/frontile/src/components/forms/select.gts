@@ -733,6 +733,39 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }, 150);
   }
 
+  /**
+   * In chips mode the trigger is only as wide as the room left over beside the
+   * chips, so the field's padding -- and the strip under the chevron -- are not
+   * part of it. Without this, clicking those areas would do nothing, while the
+   * same click anywhere on a non-chips field opens the dropdown (there the
+   * trigger *is* the whole field). Forwards such a click to the trigger, leaving
+   * clicks on a chip (its close button) and on the trigger itself alone.
+   */
+  handleFieldClick = (event: MouseEvent): void => {
+    if (!this.showChips || this.args.isDisabled) {
+      return;
+    }
+
+    const trigger = this.triggerRef.current;
+    const target = event.target;
+
+    if (!trigger || !(target instanceof Element)) {
+      return;
+    }
+
+    // The trigger handles its own clicks; this listener also sees them bubble.
+    if (trigger === target || trigger.contains(target)) {
+      return;
+    }
+
+    if (target.closest('[data-test-id="selected-chip"]')) {
+      return;
+    }
+
+    trigger.focus();
+    trigger.click();
+  };
+
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
   };
@@ -898,7 +931,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const { select } = useStyles();
     return select({
       size: this.args.inputSize,
-      hasChips: this.showChips
+      hasChips: this.showChips,
+      isFilterable: !!this.args.isFilterable
     });
   }
 
@@ -1099,6 +1133,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             <div
               {{p.anchor}}
               {{p.measureWidth}}
+              {{on "click" this.handleFieldClick}}
               data-test-id={{if this.showChips "chips-field"}}
               data-has-chips={{this.showChips}}
               data-invalid={{c.isInvalid}}
