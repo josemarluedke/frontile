@@ -1797,6 +1797,84 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     );
   });
 
+  /**
+   * Bug B. Driven through a real keypress on the trigger — the event the
+   * Listbox actually listens to for Enter — rather than by calling internals.
+   */
+  test('Filterable multiple mode: Enter on a filtered option adds to the selection', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'cherry');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="cherry"]')
+      .exists('only the filtered option is listed');
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('the already-selected option is filtered out of the list');
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keypress',
+      'Enter'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana', 'cherry'],
+      'Enter adds the active option without dropping the filtered-out selections'
+    );
+
+    checkSelected(assert, '[data-key="apple"]', true);
+    checkSelected(assert, '[data-key="banana"]', true);
+    checkSelected(assert, '[data-key="cherry"]', true);
+  });
+
+  /**
+   * Bug B, mouse path — proof the data loss is not Enter-specific.
+   */
+  test('Filterable multiple mode: clicking a filtered option keeps the filtered-out selections', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'cherry');
+    await click('[data-component="listbox"] [data-key="cherry"]');
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana', 'cherry'],
+      'clicking a filtered option adds to the selection'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+  });
+
   test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
