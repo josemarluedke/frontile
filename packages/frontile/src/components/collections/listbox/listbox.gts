@@ -13,6 +13,10 @@ import { modifier } from 'ember-modifier';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
+type ItemCompBoundedWithItem = WithBoundArgs<
+  typeof ListboxItem,
+  'manager' | 'item'
+>;
 
 interface ListboxSignature<T> {
   Args: {
@@ -65,7 +69,9 @@ interface ListboxSignature<T> {
   };
   Element: HTMLUListElement;
   Blocks: {
-    item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
+    item: [
+      { item: T; key: string; label: string; Item: ItemCompBoundedWithItem }
+    ];
     default: [{ Item: ItemCompBounded }];
   };
 }
@@ -241,6 +247,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   intent=@intent
                   type=this.role
                   key=keyLabel.key
+                  item=item
                 )
               )
               to="item"
@@ -249,6 +256,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             <ListboxItem
               @manager={{this.listManager}}
               @key={{keyLabel.key}}
+              @item={{item}}
               @appearance={{@appearance}}
               @intent={{@intent}}
               @type={{this.role}}

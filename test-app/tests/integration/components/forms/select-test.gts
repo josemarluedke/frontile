@@ -366,8 +366,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template><Select @items={{animals}} @isDisabled={{true}} /></template>
     );
     assert.dom('[data-component="native-select"]').exists();
-    assert.dom('[data-component="native-select"]').isDisabled;
-    assert.dom('[data-component="select-trigger"]').isDisabled;
+    assert.dom('[data-component="native-select"]').isDisabled();
+    assert.dom('[data-component="select-trigger"]').isDisabled();
   });
 
   test('it renders select with placeholder', async function (assert) {
@@ -2401,5 +2401,60 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-test-id="selected-chip"][data-key="apple"]')
       .hasClass('test-chip-class');
     assert.dom('[data-test-id="chips-field"]').hasClass('test-field-class');
+  });
+  test('the chips wrapper reflects the invalid state as data-invalid', async function (assert) {
+    // `data-invalid` is load-bearing, not decorative: the theme keys
+    // `data-[invalid=true]:border-danger-soft` off it, because an `aria-invalid:`
+    // variant cannot match this plain `div`.
+    const isInvalid = cell<boolean>(false);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{array "apple"}}
+          @isInvalid={{isInvalid.current}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-invalid', 'false', 'valid by default');
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-has-chips', 'true', 'chips mode is reported');
+
+    isInvalid.current = true;
+    await settled();
+
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-invalid', 'true', '@isInvalid marks the wrapper');
+
+    isInvalid.current = false;
+    await settled();
+
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-invalid', 'false', 'and it goes back');
+  });
+
+  test('@errors mark the chips wrapper as data-invalid', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{array "apple"}}
+          @errors={{array "Pick something else"}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-invalid', 'true');
   });
 });

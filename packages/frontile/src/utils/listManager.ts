@@ -13,12 +13,36 @@ interface ListItemArgs {
   isSelected?: boolean;
   isDisabled?: boolean;
   isActive?: boolean;
+
+  /**
+   * The entry of the collection this item was rendered from, so consumers of a
+   * selection can reach their own object rather than only its key and text.
+   *
+   * Undefined when there is no such object: an item written out in block form
+   * is not backed by a collection entry, so nothing is invented for it.
+   */
+  item?: unknown;
 }
+
+/**
+ * What `register` needs: every display flag resolved, and the source item
+ * carried along if the caller has one.
+ */
+type ListItemRegistration = Required<Omit<ListItemArgs, 'item'>> &
+  Pick<ListItemArgs, 'item'>;
 
 class ListItem {
   el: HTMLLIElement | HTMLOptionElement;
   key: string;
   textValue: string;
+
+  // Not tracked, and deliberately so. This is fixed at registration: the
+  // element and its source entry arrive together, and a change to either
+  // re-runs `setupItem`, which unregisters this item and registers a fresh
+  // one. Making it tracked would add a settable tag to a class whose every
+  // other field needs the mirror guards below to stay clear of Glimmer's
+  // read-then-write assertion, for a value that is never written again.
+  item?: unknown;
 
   // Ember's tracked setter dirties a tag unconditionally — it never compares
   // against the current value. That makes a redundant write more than wasted
@@ -83,11 +107,12 @@ class ListItem {
 
   constructor(
     el: HTMLLIElement | HTMLOptionElement,
-    args: Required<ListItemArgs>
+    args: ListItemRegistration
   ) {
     this.el = el;
     this.key = args.key;
     this.textValue = args.textValue;
+    this.item = args.item;
     this._isSelected = this.isSelectedMirror = args.isSelected;
     this._isDisabled = this.isDisabledMirror = args.isDisabled;
     this._isActive = this.isActiveMirror = args.isActive;
@@ -172,7 +197,7 @@ class ListManager {
 
   register(
     el: HTMLLIElement | HTMLOptionElement,
-    args: Required<ListItemArgs>
+    args: ListItemRegistration
   ): void {
     const newItem = new ListItem(el, args);
     if (
@@ -402,8 +427,12 @@ class ListManager {
     return items.indexOf(item);
   }
 
-  #toggleSelectedItem(item: ListItem): string[] {
-    let selectedKeys: string[] = [];
+  /**
+   * The selection `#toggleSelectedItem` starts from: the keys that are
+   * selected right now, ordered the way it rebuilds them.
+   */
+  #selectionSnapshot(): string[] {
+    const selectedKeys: string[] = [];
 
     const items = this.#orderedItems;
 
@@ -419,7 +448,8 @@ class ListManager {
     //
     // `multiple` only. Single mode replaces the selection outright, so it
     // never lost anything here, and carrying a key over would change what
-    // counts as "the last selection" for the `allowEmpty` rule below.
+    // counts as "the last selection" for the `allowEmpty` rule
+    // (`canDeselectKey`).
     if (this.args.selectionMode === 'multiple') {
       const renderedKeys = new Set(items.map((_item) => _item.key));
       for (const key of this.args.selectedKeys || []) {
@@ -436,11 +466,13 @@ class ListManager {
       }
     }
 
-    if (
-      selectedKeys.includes(item.key) &&
-      ((this.args.allowEmpty && selectedKeys.length == 1) ||
-        selectedKeys.length > 1)
-    ) {
+    return selectedKeys;
+  }
+
+  #toggleSelectedItem(item: ListItem): string[] {
+    let selectedKeys = this.#selectionSnapshot();
+
+    if (canDeselectKey(selectedKeys, item.key, this.args.allowEmpty)) {
       const indexToRemove = selectedKeys.indexOf(item.key);
       selectedKeys.splice(indexToRemove, 1);
     } else {
@@ -491,7 +523,7 @@ class ListManager {
     (
       el: HTMLLIElement | HTMLOptionElement,
       _: unknown[],
-      args: Pick<ListItemArgs, 'key' | 'textValue'> & {
+      args: Pick<ListItemArgs, 'key' | 'textValue' | 'item'> & {
         onRegister?: (item: ListItem) => void;
         disableEvents?: boolean;
       }
@@ -516,6 +548,7 @@ class ListManager {
       this.register(el as HTMLLIElement, {
         key: args.key,
         textValue: textValue || '',
+        item: args.item,
         isActive: false,
         isDisabled: this.isKeyDisabled(args.key),
         isSelected: this.isKeySelected(args.key)
@@ -577,6 +610,27 @@ class ListManager {
   );
 }
 
+/**
+ * The `allowEmpty` deselect rule, in one place.
+ *
+ * Given the keys that make up a selection, whether `key` may be taken out of
+ * it: a key that is not in the selection has nothing to remove, and the last
+ * remaining key only goes when emptying the selection is allowed.
+ *
+ * `selectionMode` deliberately plays no part. It decides how a selection is
+ * built, not whether it may shrink -- see `#selectionSnapshot`.
+ */
+function canDeselectKey(
+  selectedKeys: string[],
+  key: string,
+  allowEmpty: boolean = false
+): boolean {
+  if (!selectedKeys.includes(key)) {
+    return false;
+  }
+  return (allowEmpty && selectedKeys.length == 1) || selectedKeys.length > 1;
+}
+
 function keyAndLabelForItem(item: unknown): { key: string; label: string } {
   // Handle primitive types directly
   if (typeof item === 'string' || typeof item === 'number') {
@@ -617,5 +671,11 @@ function defaultFilter(itemValue: string, filterValue: string): boolean {
   return itemValue.toLowerCase().includes(filterValue.toLowerCase());
 }
 
-export type { ListItem, ListItemArgs, SelectionMode, AutoActivateMode };
-export { ListManager, keyAndLabelForItem, defaultFilter };
+export type {
+  ListItem,
+  ListItemArgs,
+  ListItemRegistration,
+  SelectionMode,
+  AutoActivateMode
+};
+export { ListManager, canDeselectKey, keyAndLabelForItem, defaultFilter };

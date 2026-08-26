@@ -21,6 +21,10 @@ import { IconChevronUpDown } from './icons';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof NativeSelectItem, 'manager'>;
+type ItemCompBoundedWithItem = WithBoundArgs<
+  typeof NativeSelectItem,
+  'manager' | 'item'
+>;
 
 // Base interface for shared properties
 interface BaseArgs<T> extends FormControlSharedArgs {
@@ -167,7 +171,9 @@ interface NativeSelectSignature<T> {
   Args: Args<T>;
   Element: HTMLSelectElement;
   Blocks: {
-    item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
+    item: [
+      { item: T; key: string; label: string; Item: ItemCompBoundedWithItem }
+    ];
     default: [{ Item: ItemCompBounded }];
     startContent: [];
     endContent: [];
@@ -340,7 +346,9 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
                     item=item
                     key=keyLabel.key
                     label=keyLabel.label
-                    Item=(component NativeSelectItem manager=this.listManager)
+                    Item=(component
+                      NativeSelectItem manager=this.listManager item=item
+                    )
                   )
                   to="item"
                 }}
@@ -348,6 +356,7 @@ class NativeSelect<T = unknown> extends Component<NativeSelectSignature<T>> {
                 <NativeSelectItem
                   @manager={{this.listManager}}
                   @key={{keyLabel.key}}
+                  @item={{item}}
                 >
                   {{keyLabel.label}}
                 </NativeSelectItem>
@@ -397,6 +406,13 @@ export interface SelectItemSignature {
      * option's rendered text content.
      */
     textValue?: string;
+
+    /**
+     * The entry of `@items` this option renders, remembered on the registered
+     * list item so a selection can hand it back. Bound for you on the Item
+     * yielded from the `:item` block; block-form options have no such entry.
+     */
+    item?: unknown;
   };
   Element: HTMLOptionElement;
   Blocks: {
@@ -440,6 +456,7 @@ class NativeSelectItem extends Component<SelectItemSignature> {
       {{this.manager.setupItem
         key=this.key
         textValue=@textValue
+        item=@item
         onRegister=this.onRegister
       }}
       data-selected="{{this.listItem.isSelected}}"
