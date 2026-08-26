@@ -432,14 +432,21 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     // with no remembered item would otherwise be counted but never render a
     // chip at all). Every chip's key is in that collection by construction, so
     // the rule's answer is the same for all of them; it is asked of the last
-    // chip, the one Backspace removes. With no chips there is nothing to
-    // remove and nothing that reads this.
+    // chip, the one Backspace removes.
     const keys = this.selectedItems.map((item) => item.key);
     const lastKey = keys[keys.length - 1];
-    return (
-      lastKey !== undefined &&
-      canDeselectKey(keys, lastKey, this.args.allowEmpty)
-    );
+
+    // With nothing selected there is no chip, so nothing reads this today --
+    // but the answer is deliberately `@allowEmpty`, not `false`. That is what
+    // this getter has always returned for an empty selection, and keeping it
+    // means the answer never depends on whether a chip happens to exist right
+    // now. `canDeselectKey` cannot be asked here (it needs a key), so the
+    // empty case is answered directly. Do not "simplify" this away.
+    if (lastKey === undefined) {
+      return this.args.allowEmpty === true;
+    }
+
+    return canDeselectKey(keys, lastKey, this.args.allowEmpty);
   }
 
   /**
