@@ -14,6 +14,14 @@ export interface ListboxItemSignature {
     manager: ListManager;
     key: string;
     textValue?: string;
+
+    /**
+     * The entry of `@items` this option renders, remembered on the registered
+     * list item so a selection can hand it back. Bound for you on the Item
+     * yielded from the `:item` block; block-form options have no such entry.
+     */
+    item?: unknown;
+
     description?: string;
     shortcut?: string;
     onClick?: () => void;
@@ -154,6 +162,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{this.manager.setupItem
         key=this.key
         textValue=@textValue
+        item=@item
         onRegister=this.onRegister
       }}
       {{on "click" this.onClick}}

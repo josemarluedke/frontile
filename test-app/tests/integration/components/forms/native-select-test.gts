@@ -4,6 +4,7 @@ import { render } from '@ember/test-helpers';
 import { selectOptionByKey, toggleOptionByKey } from 'frontile/test-support';
 import { cell } from 'ember-resources';
 import { NativeSelect } from 'frontile';
+import type { ListItem } from 'frontile/utils/listManager';
 import { array } from '@ember/helper';
 import { settled } from '@ember/test-helpers';
 
@@ -231,6 +232,82 @@ module(
 
       assert.dom('.input-container div:last-child').exists();
       assert.dom('.input-container div:last-child').hasTextContaining('End');
+    });
+    test('registered items remember the entry of @items they came from', async function (assert) {
+      const animals = [
+        { key: 'tiger', label: 'Tiger' },
+        { key: 'crocodile', label: 'Crocodile' }
+      ];
+      let registered: ListItem[] = [];
+      const onItemsChange = (items: ListItem[]) => {
+        registered = items;
+      };
+
+      await render(
+        <template>
+          <NativeSelect @items={{animals}} @onItemsChange={{onItemsChange}} />
+        </template>
+      );
+
+      assert.strictEqual(
+        registered.find((item) => item.key === 'tiger')?.item,
+        animals[0],
+        'the source object itself is remembered, not a copy of it'
+      );
+      assert.strictEqual(
+        registered.find((item) => item.key === 'crocodile')?.item,
+        animals[1]
+      );
+    });
+
+    test('the :item block binds the source entry on the yielded Item', async function (assert) {
+      const animals = [{ key: 'tiger', label: 'Tiger' }];
+      let registered: ListItem[] = [];
+      const onItemsChange = (items: ListItem[]) => {
+        registered = items;
+      };
+
+      await render(
+        <template>
+          <NativeSelect @items={{animals}} @onItemsChange={{onItemsChange}}>
+            <:item as |o|>
+              <o.Item @key={{o.key}}>{{o.label}}</o.Item>
+            </:item>
+          </NativeSelect>
+        </template>
+      );
+
+      assert.strictEqual(
+        registered[0]?.item,
+        animals[0],
+        'a consumer rendering its own option still gets the entry recorded'
+      );
+    });
+
+    test('a block-form item has no source entry', async function (assert) {
+      let registered: ListItem[] = [];
+      const onItemsChange = (items: ListItem[]) => {
+        registered = items;
+      };
+
+      await render(
+        <template>
+          <NativeSelect @onItemsChange={{onItemsChange}} as |o|>
+            <o.Item @key="tiger">Tiger</o.Item>
+          </NativeSelect>
+        </template>
+      );
+
+      assert.strictEqual(
+        registered.length,
+        1,
+        'the declarative option registered'
+      );
+      assert.strictEqual(
+        registered[0]?.item,
+        undefined,
+        'there is no collection entry behind it, and none is invented'
+      );
     });
   }
 );

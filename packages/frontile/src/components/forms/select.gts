@@ -41,11 +41,22 @@ const valueUnless = <T,>(condition: unknown, value: T): T | undefined =>
   condition ? undefined : value;
 
 /**
- * A selected option reduced to what a chip needs to render.
+ * One selected option: the single description of a selection every
+ * presentation of it reads -- the chips, the comma-joined text, and any custom
+ * content a consumer renders per selection.
  */
 interface SelectedItem {
   key: string;
   textValue: string;
+
+  /**
+   * The entry of `@items` this selection came from, so a consumer can reach
+   * their own object and not just its key and label.
+   *
+   * Undefined when the option was written out in block form rather than
+   * rendered from `@items`: there is no collection entry behind it.
+   */
+  item?: unknown;
 }
 
 /**
@@ -931,7 +942,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const keys = this.selectedKeys;
     return this.nodes
       .filter((node) => keys.includes(node.key))
-      .map((node) => ({ key: node.key, textValue: node.textValue }));
+      .map((node) => ({
+        key: node.key,
+        textValue: node.textValue,
+        item: node.item
+      }));
   }
 
   /**
@@ -1363,5 +1378,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
 const isSm = (size: SelectVariants['size']) => size === 'sm';
 
-export { Select, type SelectSignature, type SelectChipOptions };
+export {
+  Select,
+  type SelectSignature,
+  type SelectChipOptions,
+  type SelectedItem
+};
 export default Select;
