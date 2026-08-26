@@ -27,7 +27,10 @@ const table = tv({
       // inherit`. Row tints layer on top of this, and any tint that replaces it
       // has to be opaque too — see `striped` and the selection variants.
       '[&>tr]:bg-surface-table',
-      '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-neutral-subtle',
+      // `muted`, not `subtle`: in dark `neutral-subtle` is gray-900, the same
+      // value `surface-table` carries, so a `subtle` hover reads as no hover at
+      // all. This stays a background *colour* so `transition-colors` animates it.
+      '[&>tr]:data-[selectable=true]:data-[selected=false]:hover:bg-neutral-muted',
       '[&>tr]:data-[selectable=true]:transition-colors'
     ],
     // Footer rows take the surface for the same reason body rows do: a sticky
@@ -361,8 +364,13 @@ const table = tv({
         // Half-opacity, so it layers over the row's fill rather than replacing
         // it — a selected sticky row still has to occlude what scrolls under.
         // The other selection colours are opaque and can stay plain fills.
+        //
+        // `soft` rather than `subtle`, which in dark is the same value as
+        // `surface-table` and so tints nothing. At 50% this lands on the weight
+        // the colour variants carry (1.4:1 against the surface, against
+        // `primary-subtle`'s 1.38:1).
         tbody:
-          '[&>tr]:data-[selected=true]:[background-image:linear-gradient(color-mix(in_oklab,var(--color-neutral-subtle)_50%,transparent),color-mix(in_oklab,var(--color-neutral-subtle)_50%,transparent))]',
+          '[&>tr]:data-[selected=true]:[background-image:linear-gradient(color-mix(in_oklab,var(--color-neutral-soft)_50%,transparent),color-mix(in_oklab,var(--color-neutral-soft)_50%,transparent))]',
         tr: ['data-[selectable=true]:focus-visible:ring-default']
       }
     },

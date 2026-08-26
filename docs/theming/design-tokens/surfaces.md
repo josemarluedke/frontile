@@ -102,9 +102,7 @@ transparency.
 
 #### Table (`bg-surface-table`)
 
-Data table surface (hierarchy level 1). The same colour as a card, guaranteed
-opaque: pure white in light mode, and in dark mode `gray-900` — what
-`surface-card` renders over `surface-canvas`.
+Data table surface (hierarchy level 1). Usually the same color as a card, but must be opaque.
 
 Tables need that guarantee. A sticky header, a frozen row, or a pinned column
 paints over the rows and columns scrolling beneath it, and anything translucent
@@ -113,26 +111,6 @@ lets them show through.
 **When to use:**
 
 - Data table containers, and the sticky parts inside them
-- Any surface at card elevation that has to stay opaque
-
-Recolour it for the whole app the way you would any semantic colour:
-
-```js
-module.exports = frontile({
-  themes: {
-    dark: {
-      colors: {
-        surface: { table: '#1c1c1c' }
-      }
-    }
-  }
-});
-```
-
-For one table that sits on a different background, set `--color-surface-table` on
-it instead — it is a plain custom property, and it applies to everything below
-it. The Table component takes it as a wrapper class; see
-[Table](/docs/components/collections/table).
 
 ```gts preview
 <template>
