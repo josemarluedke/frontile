@@ -1178,7 +1178,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   data-component="select-trigger"
                   disabled={{@isDisabled}}
                   aria-label={{if this.showChips this.triggerAccessibleName}}
-                  placeholder={{valueUnless this.hasSelection @placeholder}}
+                  placeholder={{valueUnless
+                    (and this.showChips this.hasSelection)
+                    @placeholder
+                  }}
                   class={{this.classes.input
                     class=@classes.input
                     hasStartContent=(has-block "startContent")

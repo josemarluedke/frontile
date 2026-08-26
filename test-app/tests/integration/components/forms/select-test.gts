@@ -1389,6 +1389,49 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .hasTextContaining('apple', 'and it keeps its label');
   });
 
+  test('Multiple mode: the hidden native select keeps the whole selection while a filter is active', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @name="fruits"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    // The hidden native <select> is what a form submit reads, so its
+    // selectedOptions are the submitted value.
+    const submittedValues = () =>
+      Array.from((getNativeSelect() as HTMLSelectElement).selectedOptions).map(
+        (option) => option.value
+      );
+
+    assert.deepEqual(
+      submittedValues(),
+      ['apple', 'cherry'],
+      'both selections submit before filtering'
+    );
+
+    await fillIn('[data-component="select-trigger"]', 'ban');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('the filter really is narrowing the listbox');
+    assert.deepEqual(
+      submittedValues(),
+      ['apple', 'cherry'],
+      'an active filter must not truncate the submitted value'
+    );
+  });
+
   test('Multiple mode: the trigger has an accessible name while chips are shown', async function (assert) {
     const selectedKeys = cell<string[]>(['apple']);
     const onChange = (keys: string[]) => (selectedKeys.current = keys);
