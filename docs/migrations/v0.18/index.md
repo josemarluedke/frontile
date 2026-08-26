@@ -23,6 +23,7 @@ them is optional for the whole 0.18 line.
 | Nested `LayoutTheme` config | Build or type error | Loudly, and only if you customize the theme |
 | `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
 | Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
+| Multi-select renders chips | Multi-selects look different — selections become removable chips | Visual only — nothing to fix |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
 resolve produces no error, no warning, and no CSS — the element just renders
@@ -83,6 +84,35 @@ you can't read — which matters precisely because those changes fail silently.
 
 **See:** [Package Consolidation](./package-consolidation.md)
 
+### 4. Multi-select renders chips — visual only
+
+`Select` with `@selectionMode="multiple"` used to show its selections as a
+comma-joined string inside the trigger. It now renders each selection as a
+removable [Chip](https://frontile.dev/docs/buttons/chip), so users can drop one
+selection without reopening the dropdown. The control grows taller as chips
+wrap, and a chips field is deliberately the same height as a same-size single
+select (46px at `md`).
+
+Nothing breaks, but the field is taller and looks different. If a layout
+depends on the old fixed-height appearance, opt back out per-select:
+
+```gts
+<Select @selectionMode='multiple' @selectedItemsDisplay='text' />
+```
+
+Chips inherit the Select's `@intent` and default to the `faded` appearance;
+`@chip={{hash appearance='outlined' size='md'}}` tunes appearance, intent,
+size, radius and `withDot`. `@allowEmpty` defaults to `false`, so the final
+selection's chip renders with no close button; `@isClearable` clears
+everything and ignores `@allowEmpty`. Chip close buttons are deliberately not
+in the tab order — the combobox is the single tab stop, and `Backspace` on
+the field removes the last chip in both filterable and non-filterable modes.
+See the [Select docs](https://frontile.dev/docs/forms/select#multiple-selection)
+for the full section.
+
+**Impact:** visual only. **Time:** none required; a few minutes if you want to
+opt out.
+
 ## Checklist
 
 - [ ] `@import "@frontile/theme"` added to `app.css`
@@ -94,6 +124,7 @@ you can't read — which matters precisely because those changes fail silently.
 - [ ] `{color}-foreground` / `contrast-*` replaced with `on-{color}-{level}`
 - [ ] **Looked at the running app**, not just the diff
 - [ ] Imports moved to `frontile` (optional until 0.19)
+- [ ] Looked at any multi-selects — they now render chips and are taller
 
 ## New projects
 

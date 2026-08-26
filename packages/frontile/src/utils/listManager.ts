@@ -406,6 +406,29 @@ class ListManager {
     let selectedKeys: string[] = [];
 
     const items = this.#orderedItems;
+
+    // A selection is not the rendered list's to discard. Rebuilding purely
+    // from `#orderedItems` drops every selected key whose item is not on
+    // screen right now -- filtered out, most obviously -- so toggling one
+    // option in a filtered multi-select used to wipe the rest of the
+    // selection. Carry those keys over from the authoritative list instead.
+    //
+    // They go first so the rebuilt array keeps the shape it always had: when
+    // nothing is hidden this set is empty and the result is exactly the DOM
+    // -ordered scan below, unchanged.
+    //
+    // `multiple` only. Single mode replaces the selection outright, so it
+    // never lost anything here, and carrying a key over would change what
+    // counts as "the last selection" for the `allowEmpty` rule below.
+    if (this.args.selectionMode === 'multiple') {
+      const renderedKeys = new Set(items.map((_item) => _item.key));
+      for (const key of this.args.selectedKeys || []) {
+        if (!renderedKeys.has(key)) {
+          selectedKeys.push(key);
+        }
+      }
+    }
+
     for (let i = 0; i < items.length; i++) {
       const _item = items[i] as ListItem;
       if (_item.isSelected) {

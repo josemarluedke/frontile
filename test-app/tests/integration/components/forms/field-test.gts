@@ -380,6 +380,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             @label="Choose Fruits"
             @items={{items}}
             @selectionMode="multiple"
+            @selectedItemsDisplay="text"
             data-test-multi-select
           />
         </Field>
@@ -444,6 +445,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             @label="Choose Fruits"
             @items={{items}}
             @selectionMode="multiple"
+            @selectedItemsDisplay="text"
             data-test-multi-select
           />
         </Field>
@@ -538,6 +540,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             @label="Choose Fruits"
             @items={{items}}
             @selectionMode="multiple"
+            @selectedItemsDisplay="text"
             @onSelectionChange={{onChange}}
             data-test-multi-select
           />
@@ -602,6 +605,7 @@ module('Integration | Component | @frontile/forms/Field', function (hooks) {
             @label="Choose Fruits"
             @items={{items}}
             @selectionMode="multiple"
+            @selectedItemsDisplay="text"
             @onSelectionChange={{onChange}}
             data-test-multi-select
           />

@@ -788,5 +788,152 @@ module(
           .doesNotHaveAttribute('aria-multiselectable');
       });
     });
+
+    /**
+     * Regression coverage for a pre-existing ListManager bug: the new
+     * selection was rebuilt purely from the *rendered* items, so any selected
+     * key whose item was not currently in the list — filtered out, paginated
+     * away, or simply never passed in @items — was silently dropped on the
+     * next toggle.
+     *
+     * Driven by plain clicks: the defect is in selection, not in key handling.
+     */
+    module('selections outside the rendered item set', function () {
+      test('toggling keeps selected keys whose items are not rendered', async function (assert) {
+        const animals = ['crocodile', 'elephant'];
+        // 'cheetah' is selected but deliberately absent from @items.
+        const selectedKeys = cell<string[]>(['cheetah', 'crocodile']);
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-key="cheetah"]')
+          .doesNotExist('the selected item is not in the rendered list');
+
+        await click('[data-key="elephant"]');
+
+        assert.deepEqual(
+          [...selectedKeys.current].sort(),
+          ['cheetah', 'crocodile', 'elephant'],
+          'selecting a rendered item does not drop the unrendered selection'
+        );
+      });
+
+      test('deselecting a rendered item keeps unrendered selections', async function (assert) {
+        const animals = ['crocodile', 'elephant'];
+        const selectedKeys = cell<string[]>(['cheetah', 'crocodile']);
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        await click('[data-key="crocodile"]');
+
+        assert.deepEqual(
+          [...selectedKeys.current].sort(),
+          ['cheetah'],
+          'deselecting removes only the clicked key'
+        );
+      });
+
+      /**
+       * The no-op guarantee. With every selected item rendered there is
+       * nothing to union back in, so the emitted array must be byte-for-byte
+       * what the unfixed code produced — including its quirk of appending a
+       * newly selected key last rather than in DOM order.
+       *
+       * Unlike its three neighbours this test is green BEFORE the fix as well
+       * as after: staying green across the change is precisely what it
+       * asserts. It was written against the unfixed code's real output.
+       */
+      test('is a no-op when every selected item is rendered', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant'];
+        const selectedKeys = cell<string[]>(['crocodile']);
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        await click('[data-key="elephant"]');
+        assert.deepEqual(
+          selectedKeys.current,
+          ['crocodile', 'elephant'],
+          'DOM order preserved, no duplicates'
+        );
+
+        await click('[data-key="cheetah"]');
+        assert.deepEqual(
+          selectedKeys.current,
+          ['crocodile', 'elephant', 'cheetah'],
+          'a newly selected key is appended last, exactly as before the fix'
+        );
+
+        await click('[data-key="crocodile"]');
+        assert.deepEqual(
+          selectedKeys.current,
+          ['cheetah', 'elephant'],
+          'the array is re-derived in DOM order on each toggle, as before the fix'
+        );
+      });
+
+      test('single mode is unaffected by unrendered selections', async function (assert) {
+        const animals = ['crocodile', 'elephant'];
+        const selectedKeys = cell<string[]>(['cheetah']);
+        const onSelectionChange = (keys: string[]) => {
+          selectedKeys.current = keys;
+        };
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="single"
+              @items={{animals}}
+              @selectedKeys={{selectedKeys.current}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </template>
+        );
+
+        await click('[data-key="elephant"]');
+
+        assert.deepEqual(
+          selectedKeys.current,
+          ['elephant'],
+          'single selection still replaces, it does not accumulate'
+        );
+      });
+    });
   }
 );

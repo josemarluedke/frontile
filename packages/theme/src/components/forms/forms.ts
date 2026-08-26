@@ -61,6 +61,17 @@ const formFeedback = tv({
   }
 });
 
+// The visual shell of a form field: background, border, radius, and the
+// invalid/disabled treatments. Shared by the `input` slot and by `select`'s
+// `chipsField`, which becomes the shell when chips render beside the trigger.
+const fieldShell = [
+  'bg-surface-input',
+  'border',
+  'border-neutral-soft',
+  'rounded-xl',
+  'selection:bg-surface-overlay-soft'
+];
+
 const input = tv({
   slots: {
     base: '',
@@ -71,20 +82,16 @@ const input = tv({
       'appearance-none',
       'flex-1',
       'w-full',
-      'bg-surface-input',
+      ...fieldShell,
       'text-neutral-strong',
       'placeholder-neutral',
       // body role family; single-line controls keep tight leading (not the body relaxed leading)
       'font-body text-base text-left',
-      'border',
-      'border-neutral-soft',
-      'rounded-xl',
       'leading-tight',
       'focus:ring-3',
       'focus:ring-focus',
       'focus:outline-hidden',
       'focus:border-primary-soft',
-      'selection:bg-surface-overlay-soft',
       'disabled:border-neutral-subtle disabled:text-neutral-soft',
       'aria-invalid:border-danger-soft',
       'aria-invalid:focus:ring-danger-soft'
@@ -101,6 +108,31 @@ const input = tv({
     },
     hasEndContent: {
       true: { input: 'pe-10' }
+    },
+    // When chips render beside the trigger, `chipsField` owns the field shell
+    // and the trigger itself must be visually bare.
+    hasChips: {
+      true: {
+        input: [
+          'border-0',
+          'bg-transparent',
+          'p-0',
+          'w-auto',
+          'flex-1',
+          // Once chips show the selection the trigger renders nothing at all, so
+          // it has no content to give it a height -- it collapsed to a 0px box
+          // that could not be clicked. Stretching makes it as tall as the chips
+          // sitting next to it, which is the box a pointer needs to hit.
+          'self-stretch',
+          // No horizontal floor by default: a bare (non-filterable) trigger has
+          // no content of its own, so a floor would only push it onto a second
+          // flex line. `select` puts the floor back for the filterable trigger,
+          // which does need room to type.
+          'min-w-0',
+          'focus:ring-0',
+          'focus:border-transparent'
+        ]
+      }
     },
     startContentPointerEvents: {
       auto: { startContent: 'pointer-events-auto' },
@@ -244,15 +276,103 @@ const select = tv({
     icon: 'w-5 h-5',
     clearButton: 'pointer-events-auto',
     input: '[button]:cursor-default',
-    emptyContent: 'p-2'
+    emptyContent: 'p-2',
+    // The wrapper around the trigger. It is rendered in every mode; the
+    // `hasChips` variant below decides whether it is the field shell or a
+    // transparent passthrough. Authored here rather than as literal classes in
+    // the component template because Tailwind does not scan
+    // `packages/frontile/src`.
+    chipsField: '',
+    chipsContainer: 'flex flex-wrap items-center gap-1 min-w-0',
+    chip: ''
   },
   variants: {
     size: {
       sm: {},
       md: {},
       lg: {}
+    },
+    // When chips render, `chipsField` becomes the field shell in place of the
+    // trigger's own border (see the `hasChips` variant on `input`), and owns the
+    // padding. Otherwise it is a transparent, full-width flex passthrough: the
+    // shell stays on the trigger, but the wrapper is still a real box, so it can
+    // be measured as the popover's width reference in both modes.
+    //
+    // `data-invalid` / `data-disabled` are set by the component because
+    // `aria-invalid:` and `disabled:` only match the element carrying them.
+    hasChips: {
+      true: {
+        chipsField: [
+          ...fieldShell,
+          'flex',
+          'flex-wrap',
+          'items-center',
+          'gap-1',
+          'w-full',
+          'cursor-default',
+          'focus-within:ring-3',
+          'focus-within:ring-focus',
+          'focus-within:border-primary-soft',
+          'data-[invalid=true]:border-danger-soft',
+          'data-[invalid=true]:focus-within:ring-danger-soft',
+          'data-[disabled=true]:border-neutral-subtle',
+          'data-[disabled=true]:text-neutral-soft'
+        ]
+      },
+      false: { chipsField: 'flex w-full min-w-0' }
+    },
+    // Whether the trigger is a filterable text input rather than a bare button.
+    // Only affects how much horizontal room the trigger reserves in chips mode.
+    isFilterable: {
+      true: {},
+      false: {}
     }
   },
+  compoundVariants: [
+    // Padding belongs to whichever element is the field shell, so it is applied
+    // to `chipsField` only in chips mode -- in passthrough mode the wrapper has
+    // to add no geometry of its own.
+    // The `min-h-*` values are the height of the same-size text field
+    // (padding + line box + border), so a chips field is exactly as tall as a
+    // single-select one, does not change height as the first chip arrives, and
+    // absorbs the flex gap when the trigger wraps below the chips.
+    // No gap between the chips and the trigger: the chips carry their own gap,
+    // and a gap here is space the trigger has to fit into before it is allowed
+    // to stay on the chips' line. With `gap-0` a trigger that does have to wrap
+    // (the chips already fill the row) costs no vertical space at all.
+    {
+      hasChips: true,
+      size: 'sm',
+      class: { chipsField: 'p-1 gap-0 min-h-9.5' }
+    },
+    {
+      hasChips: true,
+      size: 'md',
+      class: { chipsField: 'p-1.5 gap-0 min-h-11.5' }
+    },
+    {
+      hasChips: true,
+      size: 'lg',
+      class: { chipsField: 'p-2 gap-0 min-h-13.5' }
+    },
+    // Chips have to clear the absolutely-positioned start/end content the same
+    // way a bare `input` does, otherwise they run underneath the chevron and the
+    // clear button.
+    { hasChips: true, hasStartContent: true, class: { chipsField: 'ps-8' } },
+    { hasChips: true, hasEndContent: true, class: { chipsField: 'pe-10' } },
+    // ...and once `chipsField` reserves that room, the bare trigger inside it
+    // must not reserve it a second time.
+    { hasChips: true, hasStartContent: true, class: { input: 'ps-0' } },
+    { hasChips: true, hasEndContent: true, class: { input: 'pe-0' } },
+    // Only the filterable trigger needs typing room -- and, since the field
+    // itself no longer sets a gap, its own separation from the last chip.
+    // See `min-w-0` and `gap-0` above.
+    {
+      hasChips: true,
+      isFilterable: true,
+      class: { input: 'min-w-16 ms-1' }
+    }
+  ],
   defaultVariants: {
     size: 'md'
   }

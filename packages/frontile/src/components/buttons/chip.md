@@ -235,6 +235,15 @@ export default class Example extends Component {
 }
 ```
 
+### Keeping the close button out of the tab order
+
+`@closeButtonTabIndex="-1"` makes a chip's close button a pointer-only affordance.
+Reach for it when chips sit _inside_ another control — a multi-select field, say —
+where each chip would otherwise cost a Tab stop before the control itself is
+reachable. `Select` does exactly this in chips mode. If you do it, you owe keyboard
+users another way to remove a chip (`Select` uses `Backspace` on the field); leaving
+them with no route at all is worse than the extra tab stops.
+
 ## Accessibility
 
 A `Chip` is a `<div>` holding text — it has no role of its own, because a chip is

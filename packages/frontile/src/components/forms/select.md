@@ -6,7 +6,7 @@ imports:
 
 # Select
 
-The `Select` component is a powerful and flexible dropdown component. It supports both **single** and **multiple** selection modes, provides built‐in filtering capabilities, and renders a hidden native `<select>` element to ensure full accessibility. Under the hood, it leverages the [Listbox](https://frontile.dev/docs/collections/listbox) and [Popover](https://frontile.dev/docs/overlays/popover) components to power its interactive behavior.
+The `Select` component is a powerful and flexible dropdown component. It supports both **single** and **multiple** selection modes — multiple selections render as removable chips — provides built‐in filtering capabilities, and renders a hidden native `<select>` element to ensure full accessibility. Under the hood, it leverages the [Listbox](https://frontile.dev/docs/collections/listbox) and [Popover](https://frontile.dev/docs/overlays/popover) components to power its interactive behavior.
 
 ## Import
 
@@ -97,6 +97,8 @@ export default class DataBoundSingleSelect extends Component {
 ### Form Validation
 
 The Select component integrates seamlessly with form validation by automatically displaying error messages and updating ARIA attributes. This example demonstrates both single and multiple select validation using Valibot schemas with the Form component. The example uses `@validateOn` to trigger validation on both change and submit events, providing immediate feedback as users make selections.
+
+The multiple select here is shown in a validation context; see [Multiple Selection](#multiple-selection) for the full reference on chips, removal and the arguments that configure them.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -542,17 +544,309 @@ export default class NativeSelectExample extends Component {
 }
 ```
 
+## Multiple Selection
+
+Set `@selectionMode='multiple'` to let the user pick more than one option. The selection is
+an array: pass it as `@selectedKeys`, and `@onSelectionChange` hands you the new array back.
+
+Every selection renders as a removable [Chip](../buttons/chip) beside the trigger — that is the
+default, with no extra configuration. Use `@selectedItemsDisplay='text'` to opt back out to a
+comma-joined string.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Select } from 'frontile';
+
+const languages = [
+  { key: 'en', label: 'English' },
+  { key: 'pt', label: 'Portuguese' },
+  { key: 'es', label: 'Spanish' },
+  { key: 'de', label: 'German' },
+  { key: 'ja', label: 'Japanese' }
+];
+
+export default class BasicMultipleSelect extends Component {
+  @tracked selectedKeys: string[] = ['en', 'pt'];
+
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Select
+      @selectionMode='multiple'
+      @label='Languages'
+      @placeholder='Select languages'
+      @items={{languages}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+    />
+    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+  </template>
+}
+```
+
+Chips render in item order rather than click order, so they do not reorder underneath the
+user as the selection grows.
+
+Clicking anywhere in the field opens the dropdown, including a chip's own body — with a
+single selection the trigger next to the chips can be a narrow sliver, so the whole field is a
+click target. The one exception is a chip's close button, which removes that chip instead.
+
+### Removing Selections
+
+Each chip carries its own close button. `@allowEmpty` defaults to `false`, which means the
+last remaining selection cannot be removed — its chip renders with **no close button at all**
+rather than a dead one. Set `@allowEmpty={{true}}` to allow emptying the selection one chip
+at a time.
+
+`@isClearable` adds a clear button to the field that removes everything at once. It
+deliberately ignores `@allowEmpty`, so a clearable Select can always be emptied even though
+its last chip has no close button.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Select } from 'frontile';
+
+const toppings = ['Basil', 'Mushroom', 'Olive', 'Onion', 'Pepper'];
+
+export default class RemovableChipsSelect extends Component {
+  @tracked required: string[] = ['Basil', 'Olive'];
+  @tracked optional: string[] = ['Basil', 'Olive'];
+
+  onRequiredChange = (keys: string[]) => {
+    this.required = keys;
+  };
+
+  onOptionalChange = (keys: string[]) => {
+    this.optional = keys;
+  };
+
+  <template>
+    <div class='grid gap-4 md:grid-cols-2'>
+      <Select
+        @selectionMode='multiple'
+        @label='At least one topping'
+        @placeholder='Select toppings'
+        @items={{toppings}}
+        @selectedKeys={{this.required}}
+        @onSelectionChange={{this.onRequiredChange}}
+      />
+      <Select
+        @selectionMode='multiple'
+        @label='Any number of toppings'
+        @placeholder='Select toppings'
+        @items={{toppings}}
+        @selectedKeys={{this.optional}}
+        @onSelectionChange={{this.onOptionalChange}}
+        @allowEmpty={{true}}
+        @isClearable={{true}}
+      />
+    </div>
+  </template>
+}
+```
+
+### Customizing the Chips
+
+`@chip` forwards appearance options to every chip: `appearance` (defaults to `faded`),
+`intent`, `size` (defaults to `sm`), `radius` and `withDot`.
+
+`@chip.intent` defaults to the Select's own `@intent`, so `@intent='primary'` colors the
+listbox options and the chips together and you only set `@chip.intent` when you want them to
+differ.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { hash } from '@ember/helper';
+import { Select } from 'frontile';
+
+const tags = ['Accessibility', 'Design', 'Performance', 'Testing'];
+
+export default class ChipOptionsSelect extends Component {
+  @tracked inherited: string[] = ['Design', 'Testing'];
+  @tracked customized: string[] = ['Design', 'Testing'];
+
+  onInheritedChange = (keys: string[]) => {
+    this.inherited = keys;
+  };
+
+  onCustomizedChange = (keys: string[]) => {
+    this.customized = keys;
+  };
+
+  <template>
+    <div class='grid gap-4 md:grid-cols-2'>
+      <Select
+        @selectionMode='multiple'
+        @intent='primary'
+        @label='Inherits @intent'
+        @placeholder='Select tags'
+        @items={{tags}}
+        @selectedKeys={{this.inherited}}
+        @onSelectionChange={{this.onInheritedChange}}
+      />
+      <Select
+        @selectionMode='multiple'
+        @label='Custom @chip'
+        @placeholder='Select tags'
+        @items={{tags}}
+        @selectedKeys={{this.customized}}
+        @onSelectionChange={{this.onCustomizedChange}}
+        @chip={{hash
+          appearance='outlined'
+          intent='success'
+          size='md'
+          radius='full'
+          withDot=true
+        }}
+      />
+    </div>
+  </template>
+}
+```
+
+### Text Display
+
+`@selectedItemsDisplay='text'` renders the selection as a comma-joined string inside the
+trigger instead of as chips. This was the only presentation before `0.18`, and it is worth
+keeping for a dense field where a growing stack of chips would push the layout around.
+Nothing is individually removable in this mode — use `@isClearable` or reopen the dropdown.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Select } from 'frontile';
+
+const permissions = ['Read', 'Write', 'Deploy', 'Administer'];
+
+export default class TextDisplayMultipleSelect extends Component {
+  @tracked selectedKeys: string[] = ['Read', 'Write'];
+
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Select
+      @selectionMode='multiple'
+      @selectedItemsDisplay='text'
+      @label='Permissions'
+      @placeholder='Select permissions'
+      @items={{permissions}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+    />
+  </template>
+}
+```
+
+### Filterable Multiple Selection
+
+`@isFilterable={{true}}` turns the trigger into a text input that sits alongside the chips,
+the familiar tag-input shape. The filter never echoes the selection, so there is always room
+to type, and the chips reflect the selection rather than the filter — a chip stays put even
+when its option is filtered out of the list.
+
+Pressing `Backspace` while the filter is empty removes the last chip. With text in the
+filter, `Backspace` edits the text as usual, and the final chip is still protected by
+`@allowEmpty`.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Select } from 'frontile';
+
+const countries = [
+  'Argentina',
+  'Brazil',
+  'Canada',
+  'Denmark',
+  'Egypt',
+  'France',
+  'Germany',
+  'Italy',
+  'Japan',
+  'Mexico'
+];
+
+export default class FilterableMultipleSelect extends Component {
+  @tracked selectedKeys: string[] = ['Brazil', 'Japan'];
+
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Select
+      @selectionMode='multiple'
+      @isFilterable={{true}}
+      @allowEmpty={{true}}
+      @label='Countries'
+      @placeholder='Search countries'
+      @items={{countries}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+    />
+  </template>
+}
+```
+
+### Styling the Chips Area
+
+Three `@classes` keys cover the chips: `chipsField` is the field shell that wraps the chips
+and the trigger together, `chipsContainer` is the flex row holding the chips, and `chip` is
+merged onto every individual chip.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { hash } from '@ember/helper';
+import { Select } from 'frontile';
+
+const teams = ['Design', 'Engineering', 'Marketing', 'Support'];
+
+export default class StyledChipsSelect extends Component {
+  @tracked selectedKeys: string[] = ['Design', 'Engineering'];
+
+  onSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Select
+      @selectionMode='multiple'
+      @label='Teams'
+      @placeholder='Select teams'
+      @items={{teams}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onSelectionChange}}
+      @allowEmpty={{true}}
+      @classes={{hash
+        chipsField='border-primary-soft'
+        chipsContainer='gap-2'
+        chip='bg-primary-subtle text-primary-strong'
+      }}
+    />
+  </template>
+}
+```
+
 ## Accessibility
 
 Select is a custom listbox, not a native `<select>`, so its semantics are assembled from
 several pieces:
 
-| Element    | What it exposes                                                                                                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Trigger    | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier |
-| Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                         |
-| Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                     |
-| Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                          |
+| Element    | What it exposes                                                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Trigger    | `aria-haspopup="true"`, `aria-controls` pointing at the dropdown, and `aria-expanded` kept in sync — supplied by Popover's `trigger` modifier                                                                                      |
+| Dropdown   | `role="listbox"`, plus `aria-multiselectable="true"` when `@selectionMode="multiple"`                                                                                                                                              |
+| Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                          |
+| Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                               |
+| Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
 
 Keyboard handling comes from the listbox:
 
@@ -562,6 +856,29 @@ Keyboard handling comes from the listbox:
 | `Home` / `PageUp`, `End` / `PageDown` | Jump to first / last option |
 | `Enter`, `Space`                      | Select the active option    |
 | `Escape`                              | Closes the dropdown         |
+
+### The chips keyboard model
+
+Chip close buttons are **pointer affordances**: they are set to `tabindex="-1"` and are not
+tab stops. This is deliberate. A field holding five selections would otherwise put five Tab
+stops in front of the combobox, so a keyboard user Tabbing into the control would land on
+"Remove ..." rather than on the field itself.
+
+Keyboard removal is on the field instead, in **both** modes:
+
+| Context                                 | Key                    | Behavior                                       |
+| --------------------------------------- | ---------------------- | ---------------------------------------------- |
+| Chips, `@isFilterable={{true}}`         | `Backspace`            | Removes the last chip **when the filter is empty**; with text in the filter it edits the text as usual |
+| Chips, non-filterable (button trigger)  | `Backspace` or `Delete`| Removes the last chip                          |
+| Either                                  | `Enter` / `Space` on an option | Toggles that selection off from the dropdown |
+
+The `@allowEmpty` rule applies throughout: with the default `@allowEmpty={{false}}` the final
+selection cannot be removed, so its chip renders without a close button and `Backspace` leaves
+it alone.
+
+If you set `@chip` or restyle the chips, do not re-enable the close buttons as tab stops
+without also removing this keyboard path — a visual order that disagrees with focus order is
+its own WCAG 2.4.3 problem.
 
 ## API
 

@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
+import { concat, fn } from '@ember/helper';
 import type Owner from '@ember/owner';
 import { NativeSelect, type ListItem } from './native-select';
 import { Listbox, type ListboxSignature } from '../collections/listbox';
@@ -21,6 +22,7 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
+import { Chip, type ChipSignature } from '../buttons/chip';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
 import { action } from '@ember/object';
@@ -30,6 +32,47 @@ import { modifier } from 'ember-modifier';
 
 // Import helper function directly instead of using ember-truth-helpers
 const eq = (a: unknown, b: unknown) => a === b;
+const and = (a: unknown, b: unknown) => Boolean(a) && Boolean(b);
+const valueUnless = <T,>(condition: unknown, value: T): T | undefined =>
+  condition ? undefined : value;
+
+/**
+ * A selected option reduced to what a chip needs to render.
+ */
+interface SelectedItem {
+  key: string;
+  textValue: string;
+}
+
+/**
+ * Appearance options forwarded to the {@link Chip} rendered for each selected
+ * option in multiple selection mode. Derived from {@link ChipSignature} so the
+ * two can never drift apart; see {@link MultipleSelectArgs.chip} for the
+ * Select-specific defaults applied on top of Chip's own.
+ */
+interface SelectChipOptions extends Pick<
+  ChipSignature['Args'],
+  'radius' | 'withDot'
+> {
+  /**
+   * The chip appearance.
+   *
+   * @defaultValue 'faded'
+   */
+  appearance?: ChipSignature['Args']['appearance'];
+
+  /**
+   * The intent of the chip. Defaults to the Select's own `@intent`.
+   */
+  intent?: ChipSignature['Args']['intent'];
+
+  /**
+   * The size of the chip.
+   *
+   * @defaultValue 'sm'
+   */
+  size?: ChipSignature['Args']['size'];
+}
 
 // Base interface for shared properties
 interface BaseSelectArgs<T>
@@ -123,6 +166,16 @@ interface ExplicitSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * - 'single': Only one item can be selected at a time.
    */
   selectionMode: 'single';
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  selectedItemsDisplay?: never;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  chip?: never;
 }
 
 // Single selection mode interface (when selectionMode is omitted - default behavior)
@@ -133,6 +186,16 @@ interface DefaultSingleSelectArgs<T> extends BaseSingleSelectArgs<T> {
    * @defaultValue 'single'
    */
   selectionMode?: undefined;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  selectedItemsDisplay?: never;
+
+  /**
+   * Not applicable in single selection mode.
+   */
+  chip?: never;
 }
 
 // Multiple selection mode interface
@@ -142,6 +205,39 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
    * - 'multiple': Allows multiple selections.
    */
   selectionMode: 'multiple';
+
+  /**
+   * How the selected options are presented in the trigger.
+   *
+   * - `'chips'`: each selection renders as a removable {@link Chip}.
+   * - `'text'`: the selections render as a comma-joined string.
+   *
+   * @defaultValue 'chips'
+   */
+  selectedItemsDisplay?: 'chips' | 'text';
+
+  /**
+   * Appearance of the chips rendered for each selected option.
+   * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
+   *
+   * Options are the same ones {@link Chip} itself accepts (`appearance`,
+   * `intent`, `size`, `radius`, `withDot`), but Select applies its own
+   * defaults tuned for sitting inside a field, rather than Chip's:
+   * - `appearance` defaults to `'faded'`
+   * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
+   *   colors the listbox items and the chips together
+   * - `size` defaults to `'sm'`
+   * - `radius` and `withDot` fall back to Chip's own defaults
+   *
+   * @example
+   * ```gts
+   * <Select
+   *   @selectionMode="multiple"
+   *   @chip={{hash appearance="outlined" size="md" radius="full"}}
+   * />
+   * ```
+   */
+  chip?: SelectChipOptions;
 
   /**
    * @deprecated Use selectedKeys for multiple selection mode
@@ -394,7 +490,16 @@ interface SelectSignature<T> {
  * `@onSelectionChange`, or left uncontrolled.
  */
 class Select<T = unknown> extends Component<SelectSignature<T>> {
+  /**
+   * Every item registered by the hidden native `<select>`, in item order.
+   *
+   * The hidden select is deliberately given the *unfiltered* `@items` — it
+   * carries the form value, which must not shrink to the filter — so this
+   * covers the whole list even while the listbox is filtered down. Chips and
+   * the joined text value can therefore be resolved straight from it.
+   */
   @tracked nodes: ListItem[] = [];
+
   @tracked isOpen = false;
   /**
    * Internal tracked state for single selection mode.
@@ -462,6 +567,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   containerRef = ref<HTMLDivElement>();
   triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
+  chipsContainerRef = ref<HTMLDivElement>();
 
   /**
    * Handles selection changes from the Listbox component.
@@ -527,6 +633,54 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const target = event.target as HTMLInputElement;
     this.filterValue = target.value;
   };
+
+  /**
+   * Backspace on an empty filter removes the last chip — the familiar tag-input
+   * gesture. With text in the filter, Backspace edits the text as usual.
+   */
+  handleFilterKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Backspace' || !this.showChips) {
+      return;
+    }
+    const target = event.target as HTMLInputElement;
+    if (target.value !== '') {
+      return;
+    }
+    this.removeLastSelectedKey();
+  };
+
+  /**
+   * The non-filterable counterpart of {@link handleFilterKeydown}.
+   *
+   * Chip close buttons are deliberately outside the tab order (they would
+   * otherwise cost a Tab stop each before the combobox is reached), so
+   * Backspace/Delete on the trigger is the *only* keyboard route to removing a
+   * chip here. There is no text to edit on a button trigger, so both keys act
+   * immediately; `preventDefault` keeps Backspace from navigating back.
+   */
+  handleTriggerKeydown = (event: KeyboardEvent) => {
+    if (!this.showChips || this.args.isDisabled) {
+      return;
+    }
+    if (event.key !== 'Backspace' && event.key !== 'Delete') {
+      return;
+    }
+    event.preventDefault();
+    this.removeLastSelectedKey();
+  };
+
+  /**
+   * Removes the trailing chip. `removeSelectedKey` applies the same
+   * `@allowEmpty` rule the chip close buttons follow, so the last required
+   * selection stays put.
+   */
+  removeLastSelectedKey(): void {
+    const items = this.selectedItems;
+    const last = items[items.length - 1];
+    if (last) {
+      this.removeSelectedKey(last.key);
+    }
+  }
 
   /**
    * Returns current selection as an array for template rendering.
@@ -605,11 +759,107 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     }, 150);
   }
 
+  /**
+   * In chips mode the trigger is only as wide as the room left over beside the
+   * chips, so the field's padding -- and the strip under the chevron -- are not
+   * part of it, and with a single selection the trigger can be a narrow sliver.
+   * Without this, clicking anywhere else in the field would do nothing, while
+   * the same click anywhere on a non-chips field opens the dropdown (there the
+   * trigger *is* the whole field). Forwards such a click to the trigger,
+   * including clicks on a chip's own body, so the whole field is a click
+   * target. The one exception is a chip's close button: within the chips
+   * container the only `<button>` elements a chip ever renders are its close
+   * button (see chip.gts / close-button.gts), so `closest('button')` combined
+   * with containment against `chipsContainerRef` identifies it without relying
+   * on any test-only attribute. Clicks on the trigger itself are left alone
+   * too, since it already handles its own clicks.
+   */
+  handleFieldClick = (event: MouseEvent): void => {
+    if (!this.showChips || this.args.isDisabled) {
+      return;
+    }
+
+    const trigger = this.triggerRef.current;
+    const target = event.target;
+
+    if (!trigger || !(target instanceof Element)) {
+      return;
+    }
+
+    // The trigger handles its own clicks; this listener also sees them bubble.
+    if (trigger === target || trigger.contains(target)) {
+      return;
+    }
+
+    const chipsContainer = this.chipsContainerRef.current;
+
+    if (chipsContainer && chipsContainer.contains(target)) {
+      const closeButton = target.closest('button');
+      if (closeButton && chipsContainer.contains(closeButton)) {
+        return;
+      }
+    }
+
+    trigger.focus();
+    trigger.click();
+  };
+
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
   };
 
+  /**
+   * Resolved chip appearance: `@chip` wins, then the Select's own `@intent`,
+   * then chip defaults tuned for sitting inside a field.
+   */
+  get chipOptions(): {
+    appearance: NonNullable<SelectChipOptions['appearance']>;
+    intent: NonNullable<SelectChipOptions['intent']>;
+    size: NonNullable<SelectChipOptions['size']>;
+    radius: SelectChipOptions['radius'];
+    withDot: boolean;
+  } {
+    const chip =
+      this.args.selectionMode === 'multiple' ? this.args.chip : undefined;
+    return {
+      appearance: chip?.appearance ?? 'faded',
+      intent: chip?.intent ?? this.args.intent ?? 'default',
+      size: chip?.size ?? 'sm',
+      radius: chip?.radius,
+      withDot: chip?.withDot ?? false
+    };
+  }
+
+  /**
+   * Whether chips may be removed. Mirrors the listbox: with `@allowEmpty`
+   * false — the default — the final selection cannot be deselected, so its
+   * chip renders without a close button rather than with a dead one.
+   */
+  get chipsRemovable(): boolean {
+    // Counts `selectedItems` — the same collection the chips render from —
+    // rather than `selectedKeys`, so this decision can never disagree with
+    // what is actually on screen (a selected key with no remembered item
+    // would otherwise be counted here but never render a chip at all).
+    return this.args.allowEmpty === true || this.selectedItems.length > 1;
+  }
+
+  /**
+   * Removes a single selection from a chip's close button. Routes through
+   * `onSelectionChange`, which already syncs internal state, notifies the
+   * parent and dispatches the form input event.
+   */
+  removeSelectedKey = (key: string) => {
+    if (this.args.isDisabled || !this.chipsRemovable) {
+      return;
+    }
+    this.onSelectionChange(this.selectedKeys.filter((k) => k !== key));
+  };
+
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
+    // `onItemsChange` runs while a modifier installs, i.e. inside a render
+    // pass. Reading a tracked field here and writing it in the same
+    // computation would trip Glimmer's read-then-write assertion, so `nodes`
+    // is only ever written, never read, in this callback.
     this.nodes = nodes;
   };
 
@@ -622,6 +872,50 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   get selectedText() {
     return this.selectedKeys?.join(', ');
+  }
+
+  /**
+   * Whether selections render as chips. Chips are the default presentation for
+   * multiple selection mode; `@selectedItemsDisplay="text"` opts back out to the
+   * comma-joined string.
+   */
+  get showChips(): boolean {
+    return (
+      this.args.selectionMode === 'multiple' &&
+      this.args.selectedItemsDisplay !== 'text'
+    );
+  }
+
+  get hasSelection(): boolean {
+    return this.selectedKeys.length > 0;
+  }
+
+  /**
+   * The accessible name for the trigger while chips are shown.
+   *
+   * In every other mode the trigger names itself from its own text -- the
+   * selected label, or the placeholder. In chips mode it renders nothing (the
+   * chips are its siblings, so they are read separately), which would leave the
+   * combobox announced as an unnamed button. This names the *control*, never the
+   * selection.
+   */
+  get triggerAccessibleName(): string {
+    return this.args.label || this.args.placeholder || 'Select options';
+  }
+
+  /**
+   * The selected options in item order (not click order) so chips do not
+   * reorder underneath the user as they select.
+   *
+   * Resolved against `nodes`, which the hidden native `<select>` populates from
+   * the unfiltered `@items`, so a chip stays put while a filter hides the item
+   * it came from.
+   */
+  get selectedItems(): SelectedItem[] {
+    const keys = this.selectedKeys;
+    return this.nodes
+      .filter((node) => keys.includes(node.key))
+      .map((node) => ({ key: node.key, textValue: node.textValue }));
   }
 
   get selectedTextValue(): string {
@@ -644,7 +938,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get classes() {
     const { select } = useStyles();
     return select({
-      size: this.args.inputSize
+      size: this.args.inputSize,
+      hasChips: this.showChips,
+      isFilterable: !!this.args.isFilterable
     });
   }
 
@@ -657,6 +953,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   get filterFieldValue() {
     if (this.filterValue !== undefined) {
       return this.filterValue;
+    }
+    // With chips, the selection is already visible beside the input. Echoing
+    // the joined text here would fill the box and block typing.
+    if (this.showChips) {
+      return '';
     }
     return this.selectedTextValue;
   }
@@ -754,7 +1055,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           <VisuallyHidden>
             {{#if (eq @selectionMode "multiple")}}
               <NativeSelect
-                @items={{this.filteredItems}}
+                @items={{@items}}
                 @allowEmpty={{@allowEmpty}}
                 @disabledKeys={{@disabledKeys}}
                 @onSelectionChange={{this.onSelectionChange}}
@@ -785,7 +1086,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               </NativeSelect>
             {{else}}
               <NativeSelect
-                @items={{this.filteredItems}}
+                @items={{@items}}
                 @allowEmpty={{@allowEmpty}}
                 @disabledKeys={{@disabledKeys}}
                 @onSelectionChange={{this.onSingleSelectionChange}}
@@ -833,56 +1134,115 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 {{yield to="startContent"}}
               </div>
             {{/if}}
-            {{#if @isFilterable}}
-              <input
-                type="text"
-                {{p.trigger}}
-                {{p.anchor}}
-                {{this.triggerRef.setup}}
-                data-test-id="trigger"
-                data-component="select-trigger"
-                disabled={{@isDisabled}}
-                placeholder={{@placeholder}}
-                class={{this.classes.input
-                  class=@classes.input
-                  hasStartContent=(has-block "startContent")
-                  hasEndContent=true
-                }}
-                value={{this.filterFieldValue}}
-                {{on "input" this.onFilterChange}}
-                {{on "blur" this.handleBlur}}
-              />
-            {{else}}
-              <button
-                type="button"
-                {{p.trigger}}
-                {{p.anchor}}
-                {{this.triggerRef.setup}}
-                data-test-id="trigger"
-                data-component="select-trigger"
-                disabled={{@isDisabled}}
-                class={{this.classes.input
-                  class=@classes.input
-                  hasStartContent=(has-block "startContent")
-                  hasEndContent=true
-                }}
-                {{on "blur" this.handleBlur}}
-              >
-                {{#if this.selectedText}}
-                  <span>
-                    {{this.selectedTextValue}}
-                  </span>
-                {{else}}
-                  <span
-                    class={{this.classes.placeholder
-                      class=@classes.placeholder
-                    }}
-                  >
-                    {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
-                  </span>
-                {{/if}}
-              </button>
-            {{/if}}
+            {{! The wrapper, not the trigger, is the popover's width reference:
+            in chips mode the trigger is only as wide as the space left over
+            inside the field. The wrapper is a real full-width box in both
+            modes, so the dropdown matches the field either way. }}
+            <div
+              {{p.anchor}}
+              {{p.measureWidth}}
+              {{on "click" this.handleFieldClick}}
+              data-test-id={{if this.showChips "chips-field"}}
+              data-has-chips={{this.showChips}}
+              data-invalid={{c.isInvalid}}
+              data-disabled={{if @isDisabled "true" "false"}}
+              class={{this.classes.chipsField
+                class=@classes.chipsField
+                hasStartContent=(has-block "startContent")
+                hasEndContent=true
+              }}
+            >
+              {{#if (and this.showChips this.hasSelection)}}
+                <div
+                  {{this.chipsContainerRef.setup}}
+                  data-test-id="selected-chips"
+                  class={{this.classes.chipsContainer
+                    class=@classes.chipsContainer
+                  }}
+                >
+                  {{#each this.selectedItems key="key" as |item|}}
+                    <Chip
+                      data-test-id="selected-chip"
+                      data-key={{item.key}}
+                      @class={{this.classes.chip class=@classes.chip}}
+                      @appearance={{this.chipOptions.appearance}}
+                      @intent={{this.chipOptions.intent}}
+                      @size={{this.chipOptions.size}}
+                      @radius={{this.chipOptions.radius}}
+                      @withDot={{this.chipOptions.withDot}}
+                      @isDisabled={{@isDisabled}}
+                      @closeButtonTitle={{concat "Remove " item.textValue}}
+                      @closeButtonTabIndex="-1"
+                      @onClose={{if
+                        this.chipsRemovable
+                        (fn this.removeSelectedKey item.key)
+                      }}
+                    >
+                      {{item.textValue}}
+                    </Chip>
+                  {{/each}}
+                </div>
+              {{/if}}
+              {{#if @isFilterable}}
+                <input
+                  type="text"
+                  {{p.trigger}}
+                  {{this.triggerRef.setup}}
+                  data-test-id="trigger"
+                  data-component="select-trigger"
+                  disabled={{@isDisabled}}
+                  aria-label={{if this.showChips this.triggerAccessibleName}}
+                  placeholder={{valueUnless
+                    (and this.showChips this.hasSelection)
+                    @placeholder
+                  }}
+                  class={{this.classes.input
+                    class=@classes.input
+                    hasStartContent=(has-block "startContent")
+                    hasEndContent=true
+                    hasChips=this.showChips
+                  }}
+                  value={{this.filterFieldValue}}
+                  {{on "input" this.onFilterChange}}
+                  {{on "keydown" this.handleFilterKeydown}}
+                  {{on "blur" this.handleBlur}}
+                />
+              {{else}}
+                <button
+                  type="button"
+                  {{p.trigger}}
+                  {{this.triggerRef.setup}}
+                  data-test-id="trigger"
+                  data-component="select-trigger"
+                  disabled={{@isDisabled}}
+                  aria-label={{if this.showChips this.triggerAccessibleName}}
+                  class={{this.classes.input
+                    class=@classes.input
+                    hasStartContent=(has-block "startContent")
+                    hasEndContent=true
+                    hasChips=this.showChips
+                  }}
+                  {{on "keydown" this.handleTriggerKeydown}}
+                  {{on "blur" this.handleBlur}}
+                >
+                  {{#if this.hasSelection}}
+                    {{#unless this.showChips}}
+                      <span>
+                        {{this.selectedTextValue}}
+                      </span>
+                    {{/unless}}
+                  {{else}}
+                    <span
+                      class={{this.classes.placeholder
+                        class=@classes.placeholder
+                      }}
+                    >
+                      {{#if @placeholder}}{{@placeholder}}{{else}}&nbsp;{{/if}}
+                    </span>
+                  {{/if}}
+                </button>
+              {{/if}}
+            </div>
             <div
               data-test-id="input-end-content"
               class={{this.classes.endContent
@@ -986,5 +1346,5 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
 const isSm = (size: SelectVariants['size']) => size === 'sm';
 
-export { Select, type SelectSignature };
+export { Select, type SelectSignature, type SelectChipOptions };
 export default Select;

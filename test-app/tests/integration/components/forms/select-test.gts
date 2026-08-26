@@ -10,7 +10,7 @@ import {
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Select } from 'frontile';
-import { array } from '@ember/helper';
+import { array, hash } from '@ember/helper';
 import { selectOptionByKey } from 'frontile/test-support';
 
 // Simple equality helper
@@ -456,14 +456,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-component="listbox"]').exists();
 
     await fillIn('[data-test-id="trigger"]', 'App');
-    assert.dom('[data-key="Apple"]').exists();
-    assert.dom('[data-key="Banana"]').doesNotExist();
-    assert.dom('[data-key="Cherry"]').doesNotExist();
+    // Scoped to the listbox: the hidden native <select> deliberately keeps
+    // every option so the submitted value is never truncated by the filter.
+    assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Banana"]').doesNotExist();
+    assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
 
     await fillIn('[data-test-id="trigger"]', 'a');
-    assert.dom('[data-key="Apple"]').exists();
-    assert.dom('[data-key="Banana"]').exists();
-    assert.dom('[data-key="Cherry"]').doesNotExist();
+    assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Banana"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
   });
 
   test('it shows empty content when no options match the filter', async function (assert) {
@@ -826,6 +828,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -961,6 +964,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1036,6 +1040,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1114,6 +1119,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template>
         <Select
           @selectionMode="multiple"
+          @selectedItemsDisplay="text"
           @items={{items}}
           @selectedKeys={{selectedKeys.current}}
           @onSelectionChange={{onSelectionChange}}
@@ -1174,5 +1180,1226 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       3,
       'callback should only be called for user clicks'
     );
+  });
+  test('Multiple mode: renders a chip per selected option by default', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="chips-field"]').exists('chips wrapper renders');
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasTextContaining('apple');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="cherry"]')
+      .hasTextContaining('cherry');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotIncludeText('apple, cherry', 'joined text is not rendered');
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="selected-chip"]')
+      .doesNotExist('chips must not be nested inside the trigger');
+    assert
+      .dom('[data-test-id="chips-field"] [data-component="select-trigger"]')
+      .exists('the trigger is a sibling of the chips inside the chips field');
+  });
+
+  test('Multiple mode: the chips-mode trigger keeps a hittable box beside the chips', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    const trigger = document.querySelector(
+      '[data-component="select-trigger"]'
+    ) as HTMLElement;
+    const chip = document.querySelector(
+      '[data-test-id="selected-chip"]'
+    ) as HTMLElement;
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const chipRect = chip.getBoundingClientRect();
+
+    assert.ok(
+      triggerRect.height > 0,
+      `the trigger must have a box to click, height was ${triggerRect.height}`
+    );
+    assert.ok(
+      triggerRect.width > 0,
+      `the trigger must have a box to click, width was ${triggerRect.width}`
+    );
+    assert.ok(
+      triggerRect.height >= chipRect.height,
+      `trigger height (${triggerRect.height}) should be at least the chip height (${chipRect.height})`
+    );
+
+    // Hit test rather than `click(trigger)`: `@ember/test-helpers` dispatches at
+    // the element whether or not it occupies any space, which is exactly how a
+    // zero-height trigger passed the suite while being unusable in a browser.
+    const x = triggerRect.left + triggerRect.width / 2;
+    const y = triggerRect.top + triggerRect.height / 2;
+    const hit = document.elementFromPoint(x, y);
+
+    assert.ok(
+      !!hit && (hit === trigger || trigger.contains(hit)),
+      `the empty area of the field must hit the trigger, got ${
+        hit
+          ? (hit as HTMLElement).tagName + '.' + (hit as HTMLElement).className
+          : 'null'
+      }`
+    );
+
+    hit?.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y
+      })
+    );
+    await settled();
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('clicking the empty area of the field opens the listbox');
+    assert.dom(trigger).hasAttribute('aria-expanded', 'true');
+  });
+
+  test('Multiple mode: chips replace the placeholder only once something is selected', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('Select fruits');
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="apple"]');
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotIncludeText('Select fruits', 'placeholder hides once chips show');
+  });
+
+  test('Multiple mode: @selectedItemsDisplay="text" keeps the joined text', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-test-id="chips-field"]').doesNotExist();
+    assert.dom('[data-component="select-trigger"]').hasText('apple, cherry');
+  });
+
+  test('Single mode: is unaffected and renders no chips', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert.dom('[data-test-id="chips-field"]').doesNotExist();
+    assert.dom('[data-component="select-trigger"]').hasText('apple');
+  });
+  test('Multiple mode: a selected chip survives a filter that excludes its item', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('the chip renders before filtering');
+
+    await fillIn('[data-component="select-trigger"]', 'ban');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('apple is filtered out of the listbox');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('the chip for the filtered-out selection is still rendered');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasTextContaining('apple', 'and it keeps its label');
+  });
+
+  test('Multiple mode: the hidden native select keeps the whole selection while a filter is active', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @name="fruits"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Select fruits"
+        />
+      </template>
+    );
+
+    // The hidden native <select> is what a form submit reads, so its
+    // selectedOptions are the submitted value.
+    const submittedValues = () =>
+      Array.from((getNativeSelect() as HTMLSelectElement).selectedOptions).map(
+        (option) => option.value
+      );
+
+    assert.deepEqual(
+      submittedValues(),
+      ['apple', 'cherry'],
+      'both selections submit before filtering'
+    );
+
+    await fillIn('[data-component="select-trigger"]', 'ban');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('the filter really is narrowing the listbox');
+    assert.deepEqual(
+      submittedValues(),
+      ['apple', 'cherry'],
+      'an active filter must not truncate the submitted value'
+    );
+  });
+
+  test('Single mode: the filterable trigger keeps its placeholder once the filter is cleared', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isFilterable={{true}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'single mode keeps its placeholder with a selection'
+      );
+
+    await fillIn('[data-component="select-trigger"]', '');
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasValue('', 'the filter box is empty');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'so the placeholder is what the user sees'
+      );
+  });
+
+  test('Multiple mode: @selectedItemsDisplay="text" keeps the filterable placeholder', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    await fillIn('[data-component="select-trigger"]', '');
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'text mode is not chips mode, so the placeholder stays'
+      );
+  });
+
+  test('Multiple mode: chips mode drops the filterable placeholder once something is selected', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'with nothing selected the placeholder is the only prompt'
+      );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="apple"]');
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('a chip now occupies the field');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotHaveAttribute(
+        'placeholder',
+        'so the placeholder is suppressed beside it'
+      );
+  });
+
+  test('Multiple mode: the trigger has an accessible name while chips are shown', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @label="Fruits"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute('aria-label', 'Fruits');
+  });
+
+  test('Single mode: the trigger is named by its own text, not an aria-label', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @label="Fruit"
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="select-trigger"]').hasText('apple');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotHaveAttribute('aria-label');
+  });
+
+  test('Multiple mode: a chip close button removes just that selection', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+
+    await click('[data-test-id="selected-chip"][data-key="banana"] button');
+
+    assert.deepEqual(selectedKeys.current, ['apple', 'cherry']);
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="banana"]')
+      .doesNotExist();
+    isNotSelected(assert, '[value="banana"]');
+    isSelected(assert, '[value="apple"]');
+  });
+
+  test("Multiple mode: clicking a chip's body opens the dropdown", async function (assert) {
+    // A narrow single-chip trigger is hard to hit directly, so
+    // `handleFieldClick` forwards a click landing on a chip's body to the
+    // trigger -- the same way it already forwards clicks on the field's
+    // empty area. Only the chip's own close button is excluded from this
+    // (covered separately below).
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="listbox"]').doesNotExist();
+
+    await click('[data-test-id="selected-chip"][data-key="apple"]');
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists("clicking a chip's body opens the dropdown");
+    assert
+      .dom('[data-test-id="trigger"]')
+      .hasAttribute('aria-expanded', 'true');
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the selection is unchanged by the click'
+    );
+  });
+
+  test('Multiple mode: a chip close button works with no runtime dependency on data-test-id', async function (assert) {
+    // `handleFieldClick` must tell a chip's close button apart from the
+    // rest of the chip (and the field) without keying off
+    // `data-test-id="selected-chip"` -- that attribute is only a test
+    // hook, and tools like ember-test-selectors strip `data-test-*` from
+    // production builds. If the click forwarder ever regresses to a
+    // selector-based check, this simulates a stripped build by removing
+    // the attributes from the rendered chips before clicking, which would
+    // make a selector-based `closest(...)` return null and the click fall
+    // through to `trigger.click()` -- popping the dropdown open even
+    // though a chip was removed. The real detection (an ancestor `<button>`
+    // inside the chips container) does not depend on the attribute at all.
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+
+    const closeButton = document.querySelector(
+      '[data-test-id="selected-chip"][data-key="banana"] button'
+    ) as HTMLButtonElement;
+    if (!closeButton) {
+      throw new Error('banana chip close button not found');
+    }
+
+    document
+      .querySelectorAll('[data-test-id="selected-chip"]')
+      .forEach((chip) => chip.removeAttribute('data-test-id'));
+
+    // `@ember/test-helpers`' `click()` awaits `settled()` between the
+    // simulated `mousedown`/`mouseup`/`click` events. `onPress` fires
+    // synchronously off `mouseup` here and removes the chip, so that
+    // `settled()` lets Ember's render runloop flush and detach the chip
+    // from the DOM *before* the simulated `click` event is dispatched --
+    // a detached node cannot bubble its click to the field, so the click
+    // forwarder never runs regardless of what it checks, and the test
+    // would pass for the wrong reason. A real physical click fires
+    // mousedown/mouseup/click back-to-back with no render flush in
+    // between, so this dispatches all three synchronously (no `await`
+    // between them) to match that and actually exercise the forwarder.
+    const mouseEventOptions = { bubbles: true, cancelable: true, button: 0 };
+    closeButton.dispatchEvent(new MouseEvent('mousedown', mouseEventOptions));
+    closeButton.dispatchEvent(new MouseEvent('mouseup', mouseEventOptions));
+    closeButton.dispatchEvent(new MouseEvent('click', mouseEventOptions));
+    await settled();
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'cherry'],
+      'the chip was still removed'
+    );
+    assert
+      .dom('[data-component="listbox"]')
+      .doesNotExist('the dropdown did not open');
+    assert.notEqual(
+      document
+        .querySelector('[data-test-id="trigger"]')
+        ?.getAttribute('aria-expanded'),
+      'true',
+      'the trigger does not report itself expanded'
+    );
+  });
+
+  test('Multiple mode: clicking the field empty area still opens the dropdown', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="listbox"]').doesNotExist();
+
+    await click('[data-test-id="chips-field"]');
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('clicking the empty field area opens the dropdown');
+  });
+
+  test('Multiple mode: chip close buttons are individually labelled', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    // @closeButtonTitle feeds CloseButton's visually-hidden text, which is
+    // the button's accessible name — not a `title` attribute (CloseButton
+    // deliberately has none, to avoid a duplicate accessible description
+    // and an unwanted native tooltip).
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .hasText('Remove apple');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="banana"] button')
+      .hasText('Remove banana');
+  });
+
+  test('Multiple mode: the last chip has no close button unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .doesNotExist('no dead close button on the last required selection');
+  });
+
+  test('Multiple mode: @allowEmpty lets the last chip be removed', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-test-id="selected-chip"][data-key="apple"] button');
+
+    assert.deepEqual(selectedKeys.current, []);
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+  });
+
+  test('Multiple mode: chips are disabled when the select is disabled', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isDisabled={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    // A chip's close button carries a real `disabled` attribute when the
+    // select is disabled, so a user has no way to activate it — browsers
+    // do not deliver pointer/keyboard events to a natively disabled
+    // button, and `@ember/test-helpers`' `click()` itself refuses to
+    // simulate a click on one. That native semantics is the actual
+    // guarantee here, so it is what this test asserts.
+    //
+    // `removeSelectedKey`'s own `@isDisabled` check is defense-in-depth
+    // with no reachable UI path to exercise it from a test — there is no
+    // way to fire a "real" click on a disabled button, so that branch is
+    // intentionally left uncovered rather than faked with a synthetic
+    // event dispatch that would never occur from user interaction.
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"] button')
+      .isDisabled();
+    assert
+      .dom('[data-test-id="chips-field"]')
+      .hasAttribute('data-disabled', 'true');
+  });
+
+  test('Filterable multiple mode: the filter input stays empty so it can be typed in', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasValue('', 'the joined selection does not fill the filter input');
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'ban');
+    assert.dom('[data-component="listbox"] [data-key="banana"]').exists();
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('filtering still works with chips present');
+  });
+
+  test('Filterable multiple mode: Backspace on an empty filter removes the last chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(selectedKeys.current, ['apple', 'banana']);
+
+    // Backspace with text in the filter edits the text, it does not remove a chip
+    await fillIn('[data-component="select-trigger"]', 'ap');
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana'],
+      'Backspace while filtering leaves the selection alone'
+    );
+  });
+
+  test('Filterable multiple mode: Backspace does not remove the final chip unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the last required selection is not removed by Backspace, matching the chip close-button rule'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 1 });
+  });
+
+  /**
+   * Tab order, not merely "is there a button". A keyboard user reaching a
+   * chips field expects the combobox first; per-chip close buttons are pointer
+   * affordances and must not each cost a Tab stop on the way in.
+   */
+  test('Multiple mode: the trigger is reached before any chip close button', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    const field = document.querySelector(
+      '[data-test-id="chips-field"]'
+    ) as HTMLElement;
+    assert.ok(field, 'the chips field renders');
+
+    const isTabbable = (el: Element) => {
+      const tabindex = el.getAttribute('tabindex');
+      if (tabindex !== null && Number(tabindex) < 0) return false;
+      return !(el as HTMLButtonElement).disabled;
+    };
+
+    const tabbable = [
+      ...field.querySelectorAll('button, input, [tabindex]')
+    ].filter(isTabbable);
+
+    assert.deepEqual(
+      tabbable.map((el) => el.getAttribute('data-component')),
+      ['select-trigger'],
+      'the trigger is the only tab stop inside the chips field'
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"] button')
+      .exists({ count: 3 }, 'chips still have pointer-reachable close buttons');
+
+    document
+      .querySelectorAll('[data-test-id="selected-chip"] button')
+      .forEach((button) => {
+        assert.strictEqual(
+          button.getAttribute('tabindex'),
+          '-1',
+          'each chip close button is out of the tab order'
+        );
+      });
+  });
+
+  /**
+   * Taking the close buttons out of the tab order is only acceptable because
+   * Backspace removes the last chip. That has to hold for the non-filterable
+   * trigger too, otherwise keyboard users lose chip removal entirely.
+   */
+  test('Multiple mode: Backspace on the non-filterable trigger removes the last chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('button[data-component="select-trigger"]')
+      .exists('this select uses the button trigger, not a filter input');
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana'],
+      'Backspace removes the last chip from a non-filterable chips field'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    checkSelected(assert, '[data-key="cherry"]', false);
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Delete'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'Delete removes the last chip too'
+    );
+  });
+
+  test('Multiple mode: Backspace does not remove the final chip unless @allowEmpty', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the final required selection survives Backspace on the button trigger'
+    );
+  });
+
+  /**
+   * Bug B. Driven through a real keypress on the trigger — the event the
+   * Listbox actually listens to for Enter — rather than by calling internals.
+   */
+  test('Filterable multiple mode: Enter on a filtered option adds to the selection', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'cherry');
+
+    assert
+      .dom('[data-component="listbox"] [data-key="cherry"]')
+      .exists('only the filtered option is listed');
+    assert
+      .dom('[data-component="listbox"] [data-key="apple"]')
+      .doesNotExist('the already-selected option is filtered out of the list');
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keypress',
+      'Enter'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana', 'cherry'],
+      'Enter adds the active option without dropping the filtered-out selections'
+    );
+
+    checkSelected(assert, '[data-key="apple"]', true);
+    checkSelected(assert, '[data-key="banana"]', true);
+    checkSelected(assert, '[data-key="cherry"]', true);
+  });
+
+  /**
+   * Bug B, mouse path — proof the data loss is not Enter-specific.
+   */
+  test('Filterable multiple mode: clicking a filtered option keeps the filtered-out selections', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'cherry');
+    await click('[data-component="listbox"] [data-key="cherry"]');
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'banana', 'cherry'],
+      'clicking a filtered option adds to the selection'
+    );
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+  });
+
+  /**
+   * The second of the two layout bugs the user reported: "larger spacing below
+   * the chip to the input bottom when in one line".
+   *
+   * The `min-w-16` floor the chips-mode trigger used to carry pushed it onto a
+   * second flex line whenever the room left beside the chips was tighter than
+   * the floor. That line was zero-height, but the field's `gap` still paid for
+   * it, so a single row of chips sat with dead space underneath.
+   *
+   * `triggerRect.height >= chipRect.height` — asserted by the hittable-box test
+   * above — does NOT catch this: a wrapped trigger that has since gained a
+   * `min-h` satisfies it while the dead space is back, and worse than before,
+   * because the wrapped line is now tall rather than empty. What has to be
+   * pinned is that the trigger *shares the chips' line*.
+   *
+   * The fixture has to leave less room beside the chips than that 64px floor,
+   * or it does not reproduce the case at all. How much room it actually leaves
+   * cannot be reasoned about from the production chip theme: `chip-test.gts`
+   * calls `registerCustomStyles` at module scope, which replaces the `chip`
+   * theme for the whole suite with padding-free stub classnames, so the chips
+   * here are narrower than production chips by their entire horizontal
+   * padding. The tightness is therefore measured at runtime and asserted below
+   * ("premise"), rather than assumed — if the chip theme (real or stubbed) ever
+   * changes enough that the row stops being tight, this test fails loudly
+   * instead of quietly guarding nothing.
+   */
+  test('Multiple mode: the trigger shares the chips line instead of wrapping below them', async function (assert) {
+    const selectedKeys = cell<string[]>([
+      'strawberry',
+      'blackberry',
+      'raspberry'
+    ]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    // Explicit widths: the assertion is about how much room is left beside the
+    // chips, so it must not depend on the harness viewport.
+    await render(
+      <template>
+        <div style="width: 320px">
+          <Select
+            @items={{array "strawberry" "blackberry" "raspberry"}}
+            @selectionMode="multiple"
+            @selectedKeys={{selectedKeys.current}}
+            @onSelectionChange={{onChange}}
+          />
+        </div>
+        <div style="width: 320px">
+          <Select
+            @items={{array "strawberry" "blackberry" "raspberry"}}
+            @placeholder="Pick one"
+          />
+        </div>
+      </template>
+    );
+
+    const field = document.querySelector(
+      '[data-test-id="chips-field"]'
+    ) as HTMLElement;
+    const trigger = field.querySelector(
+      '[data-component="select-trigger"]'
+    ) as HTMLElement;
+    const chips = [
+      ...field.querySelectorAll('[data-test-id="selected-chip"]')
+    ] as HTMLElement[];
+
+    assert.strictEqual(chips.length, 3, 'all three chips render');
+
+    const fieldRect = field.getBoundingClientRect();
+    const triggerRect = trigger.getBoundingClientRect();
+
+    // Every chip is on one row: this is the "in one line" case, not a field
+    // that is legitimately wrapping.
+    const firstChipRect = (chips[0] as HTMLElement).getBoundingClientRect();
+    chips.forEach((chip, i) => {
+      const rect = chip.getBoundingClientRect();
+      assert.ok(
+        Math.abs(rect.top - firstChipRect.top) < 1,
+        `chip ${i} shares the first chip's row (top ${rect.top} vs ${firstChipRect.top})`
+      );
+    });
+
+    const lastChipRect = (
+      chips[chips.length - 1] as HTMLElement
+    ).getBoundingClientRect();
+
+    // Premise check. The QUnit container is `transform: scale(.5)`, so
+    // getBoundingClientRect returns halved values while getComputedStyle does
+    // not; normalise back to CSS pixels before comparing against the 64px
+    // (`min-w-16`) floor this fix removed.
+    const scale = fieldRect.width / field.offsetWidth;
+    const roomBesideChips =
+      (fieldRect.right - lastChipRect.right) / scale -
+      parseFloat(getComputedStyle(field).paddingRight);
+
+    assert.ok(
+      roomBesideChips < 64,
+      `premise: the fixture must leave less room beside the chips than the ` +
+        `removed 64px min-width floor, or it is not reproducing the wrapping ` +
+        `case at all (measured ${roomBesideChips}px)`
+    );
+
+    assert.ok(
+      triggerRect.top < lastChipRect.bottom &&
+        triggerRect.bottom > lastChipRect.top,
+      `the trigger must share the chips' line, not wrap below them: trigger ` +
+        `[${triggerRect.top}, ${triggerRect.bottom}] vs last chip ` +
+        `[${lastChipRect.top}, ${lastChipRect.bottom}]`
+    );
+
+    assert.ok(
+      triggerRect.left >= lastChipRect.right - 1,
+      `the trigger sits after the last chip on that line (trigger left ` +
+        `${triggerRect.left}, last chip right ${lastChipRect.right})`
+    );
+
+    // ...and the field is no taller than a single-select field of the same
+    // @inputSize. That equivalence is what the geometry fix established, and it
+    // is what "extra spacing below the chip" violates: unexplained height in
+    // the field beyond one row of chips.
+    const singleTrigger = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    )[1] as HTMLElement;
+    const singleRect = singleTrigger.getBoundingClientRect();
+
+    assert.ok(
+      Math.abs(fieldRect.height - singleRect.height) <= 1,
+      `a chips field must be the same height as a same-size single select: ` +
+        `chips ${fieldRect.height} vs single ${singleRect.height}`
+    );
+
+    // The chips must be centred in that height rather than pinned to the top
+    // with the slack underneath, which is what the user actually saw.
+    const spaceAbove = firstChipRect.top - fieldRect.top;
+    const spaceBelow = fieldRect.bottom - firstChipRect.bottom;
+    assert.ok(
+      Math.abs(spaceAbove - spaceBelow) <= 1,
+      `the row of chips must sit centred in the field, not with the slack ` +
+        `below it: ${spaceAbove} above vs ${spaceBelow} below`
+    );
+  });
+
+  test('Multiple mode: chips default to the faded appearance and inherit @intent', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @intent="primary"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    // The chip theme's real 'faded' + 'primary' compound variant resolves to
+    // `bg-primary-subtle` (see packages/theme/src/components/chip.ts), but the
+    // test suite globally overrides the `chip` theme via `registerCustomStyles`
+    // in chip-test.gts with stub classnames per variant (no compound
+    // resolution), so `hasClass('bg-primary-subtle')` can never pass here.
+    // Assert against the variant stubs instead, matching the convention used
+    // by chip-test.gts / buttons-test.gts elsewhere in this suite.
+    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('chip-faded', 'defaults to appearance faded');
+    assert.dom(chip).hasClass('intent-primary', 'inherits @intent="primary"');
+  });
+
+  test('Multiple mode: @chip overrides appearance, intent, size and dot', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @intent="primary"
+          @chip={{hash
+            appearance="outlined"
+            intent="danger"
+            size="lg"
+            radius="full"
+            withDot=true
+          }}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    const chip = '[data-test-id="selected-chip"][data-key="apple"]';
+    assert.dom(chip).hasClass('radius-full', '@chip.radius applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass(
+        'intent-primary',
+        '@chip.intent overrides the inherited @intent'
+      );
+    assert.dom(chip).hasClass('intent-danger', '@chip.intent applies');
+    assert.dom(chip).hasClass('chip-outlined', '@chip.appearance applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass(
+        'chip-faded',
+        '@chip.appearance overrides the faded default'
+      );
+    assert.dom(chip).hasClass('chip-lg', '@chip.size applies');
+    assert
+      .dom(chip)
+      .doesNotHaveClass('chip-sm', '@chip.size overrides the sm default');
+    // `span:first-child` would pass regardless of @withDot, because
+    // chip.gts renders the content span as the first child when there is no
+    // dot. Target the dot's own stub class instead (chip-test.gts registers
+    // `dot: ['chip-dot']` on the mocked chip theme).
+    assert.dom(`${chip} .chip-dot`).exists('@chip.withDot renders the dot');
+  });
+
+  test('Multiple mode: @classes.chip is merged onto every chip', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @classes={{hash chip="test-chip-class" chipsField="test-field-class"}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .hasClass('test-chip-class');
+    assert.dom('[data-test-id="chips-field"]').hasClass('test-field-class');
   });
 });

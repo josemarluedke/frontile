@@ -680,5 +680,46 @@ module(
 
       assert.dom('[data-test-id="loading-spinner"]').exists();
     });
+
+    /**
+     * Guard, not a regression repro. Autocomplete pins the listbox to
+     * `@selectionMode="single"`, and single mode replaces the selection
+     * outright rather than rebuilding it from the rendered items, so it never
+     * hit the ListManager bug that Select and Listbox did. This test exists to
+     * keep the shared fix from changing Autocomplete's behaviour: selecting a
+     * filtered option must still yield exactly that one key.
+     */
+    test('selecting a filtered option replaces the selection, filtered-out items and all', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const selectedKey = cell<string | null>('Apple');
+      const onSelectionChange = (key: string | null) => {
+        selectedKey.current = key;
+      };
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
+      );
+
+      await click('[data-component="autocomplete-trigger"]');
+      await fillIn('[data-component="autocomplete-trigger"]', 'Cherry');
+
+      assert
+        .dom('[data-component="listbox"] [data-key="Apple"]')
+        .doesNotExist('the previously selected option is filtered out');
+
+      await click('[data-component="listbox"] [data-key="Cherry"]');
+
+      assert.strictEqual(
+        selectedKey.current,
+        'Cherry',
+        'single selection still replaces, it does not accumulate the filtered-out key'
+      );
+    });
   }
 );
