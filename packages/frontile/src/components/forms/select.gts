@@ -918,14 +918,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       .map((node) => ({ key: node.key, textValue: node.textValue }));
   }
 
+  /**
+   * The same selection `selectedItems` describes, rendered as text.
+   *
+   * Chips and this string are two presentations of one thing, so they read one
+   * projection: walking `nodes` a second time here is how a fix to the
+   * selection's contents once landed in the chips and not in the text.
+   */
   get selectedTextValue(): string {
-    let selectedTextValues: string[] = [];
-    for (let node of this.nodes) {
-      if (this.selectedKeys?.includes(node.key)) {
-        selectedTextValues.push(node.textValue);
-      }
-    }
-    return selectedTextValues.join(', ');
+    return this.selectedItems.map((item) => item.textValue).join(', ');
   }
 
   get backdrop() {
