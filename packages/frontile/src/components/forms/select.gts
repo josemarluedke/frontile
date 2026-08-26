@@ -50,10 +50,27 @@ interface SelectedItem {
  * two can never drift apart; see {@link MultipleSelectArgs.chip} for the
  * Select-specific defaults applied on top of Chip's own.
  */
-interface SelectChipOptions extends Pick<
-  ChipSignature['Args'],
-  'appearance' | 'intent' | 'size' | 'radius' | 'withDot'
-> {}
+interface SelectChipOptions
+  extends Pick<ChipSignature['Args'], 'radius' | 'withDot'> {
+  /**
+   * The chip appearance.
+   *
+   * @defaultValue 'faded'
+   */
+  appearance?: ChipSignature['Args']['appearance'];
+
+  /**
+   * The intent of the chip. Defaults to the Select's own `@intent`.
+   */
+  intent?: ChipSignature['Args']['intent'];
+
+  /**
+   * The size of the chip.
+   *
+   * @defaultValue 'sm'
+   */
+  size?: ChipSignature['Args']['size'];
+}
 
 // Base interface for shared properties
 interface BaseSelectArgs<T>

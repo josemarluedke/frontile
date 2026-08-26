@@ -8097,18 +8097,6 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-title class_">Object</span>',
           items: [
             {
-              identifier: 'size',
-              type: {
-                type: '<span class="hljs-keyword">enum</span>',
-                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
-                items: ["'sm'", "'md'", "'lg'"],
-              },
-              isRequired: false,
-              isInternal: false,
-              description: 'The size of the chip',
-              tags: {},
-            },
-            {
               identifier: 'appearance',
               type: {
                 type: '<span class="hljs-keyword">enum</span>',
@@ -8117,11 +8105,11 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'The chip appearance',
+              description: 'The chip appearance.',
               tags: {
-                defaultValue: { name: 'defaultValue', value: "'default'" },
+                defaultValue: { name: 'defaultValue', value: "'faded'" },
               },
-              defaultValue: '<span class="hljs-string">\'default\'</span>',
+              defaultValue: '<span class="hljs-string">\'faded\'</span>',
             },
             {
               identifier: 'intent',
@@ -8140,8 +8128,22 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'The intent of the chip',
+              description:
+                "The intent of the chip. Defaults to the Select's own `@intent`.",
               tags: {},
+            },
+            {
+              identifier: 'size',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+                items: ["'sm'", "'md'", "'lg'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'The size of the chip.',
+              tags: { defaultValue: { name: 'defaultValue', value: "'sm'" } },
+              defaultValue: '<span class="hljs-string">\'sm\'</span>',
             },
             {
               identifier: 'radius',
