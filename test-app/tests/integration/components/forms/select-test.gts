@@ -1212,8 +1212,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-component="select-trigger"] [data-test-id="selected-chip"]')
       .doesNotExist('chips must not be nested inside the trigger');
     assert
-      .dom('[data-component="select-trigger"]')
-      .hasAttribute('data-component', 'select-trigger');
+      .dom('[data-test-id="chips-field"] [data-component="select-trigger"]')
+      .exists('the trigger is a sibling of the chips inside the chips field');
   });
 
   test('Multiple mode: the chips-mode trigger keeps a hittable box beside the chips', async function (assert) {
@@ -1430,6 +1430,112 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ['apple', 'cherry'],
       'an active filter must not truncate the submitted value'
     );
+  });
+
+  test('Single mode: the filterable trigger keeps its placeholder once the filter is cleared', async function (assert) {
+    const selectedKey = cell<string | null>('apple');
+    const onChange = (key: string | null) => (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @isFilterable={{true}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'single mode keeps its placeholder with a selection'
+      );
+
+    await fillIn('[data-component="select-trigger"]', '');
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasValue('', 'the filter box is empty');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'so the placeholder is what the user sees'
+      );
+  });
+
+  test('Multiple mode: @selectedItemsDisplay="text" keeps the filterable placeholder', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    await fillIn('[data-component="select-trigger"]', '');
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'text mode is not chips mode, so the placeholder stays'
+      );
+  });
+
+  test('Multiple mode: chips mode drops the filterable placeholder once something is selected', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @isFilterable={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+          @placeholder="Search fruits"
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'placeholder',
+        'Search fruits',
+        'with nothing selected the placeholder is the only prompt'
+      );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="apple"]');
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="apple"]')
+      .exists('a chip now occupies the field');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .doesNotHaveAttribute(
+        'placeholder',
+        'so the placeholder is suppressed beside it'
+      );
   });
 
   test('Multiple mode: the trigger has an accessible name while chips are shown', async function (assert) {
@@ -1935,9 +2041,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
    * because the wrapped line is now tall rather than empty. What has to be
    * pinned is that the trigger *shares the chips' line*.
    *
-   * The fixture is sized so the chips very nearly fill the row (~26px of real
-   * room left beside them, well under the old 64px floor). That is the case the
-   * user hit, and the case the old floor got wrong.
+   * The fixture has to leave less room beside the chips than that 64px floor,
+   * or it does not reproduce the case at all. How much room it actually leaves
+   * cannot be reasoned about from the production chip theme: `chip-test.gts`
+   * calls `registerCustomStyles` at module scope, which replaces the `chip`
+   * theme for the whole suite with padding-free stub classnames, so the chips
+   * here are narrower than production chips by their entire horizontal
+   * padding. The tightness is therefore measured at runtime and asserted below
+   * ("premise"), rather than assumed — if the chip theme (real or stubbed) ever
+   * changes enough that the row stops being tight, this test fails loudly
+   * instead of quietly guarding nothing.
    */
   test('Multiple mode: the trigger shares the chips line instead of wrapping below them', async function (assert) {
     const selectedKeys = cell<string[]>([
@@ -1997,6 +2110,22 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     const lastChipRect = (
       chips[chips.length - 1] as HTMLElement
     ).getBoundingClientRect();
+
+    // Premise check. The QUnit container is `transform: scale(.5)`, so
+    // getBoundingClientRect returns halved values while getComputedStyle does
+    // not; normalise back to CSS pixels before comparing against the 64px
+    // (`min-w-16`) floor this fix removed.
+    const scale = fieldRect.width / field.offsetWidth;
+    const roomBesideChips =
+      (fieldRect.right - lastChipRect.right) / scale -
+      parseFloat(getComputedStyle(field).paddingRight);
+
+    assert.ok(
+      roomBesideChips < 64,
+      `premise: the fixture must leave less room beside the chips than the ` +
+        `removed 64px min-width floor, or it is not reproducing the wrapping ` +
+        `case at all (measured ${roomBesideChips}px)`
+    );
 
     assert.ok(
       triggerRect.top < lastChipRect.bottom &&
