@@ -366,8 +366,8 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       <template><Select @items={{animals}} @isDisabled={{true}} /></template>
     );
     assert.dom('[data-component="native-select"]').exists();
-    assert.dom('[data-component="native-select"]').isDisabled;
-    assert.dom('[data-component="select-trigger"]').isDisabled;
+    assert.dom('[data-component="native-select"]').isDisabled();
+    assert.dom('[data-component="select-trigger"]').isDisabled();
   });
 
   test('it renders select with placeholder', async function (assert) {
