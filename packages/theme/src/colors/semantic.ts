@@ -101,7 +101,7 @@ const themeColorsLight: ThemeColors = {
       soft: `${absolute.black}0d`, // absolute.black @ 5%
       mild: `${absolute.black}1a`, // absolute.black @ 10%
       firm: `${absolute.black}24`, // absolute.black @ 14%
-      strong: `${absolute.black}bf` // absolute.black @ 75% — the scrim in this scheme
+      strong: `${absolute.black}bf` // absolute.black @ 75%
     },
     lift: {
       subtle: `${absolute.white}4c`, // absolute.white @ 30%
@@ -113,7 +113,6 @@ const themeColorsLight: ThemeColors = {
     app: absolute.white,
     canvas: palette.gray['50'],
     card: absolute.white,
-    // `card` is already opaque in this scheme, so the table matches it exactly.
     table: absolute.white,
     input: absolute.white,
     modal: absolute.white
@@ -210,23 +209,16 @@ const themeColorsDark: ThemeColors = {
       firm: `${absolute.white}40`, // absolute.white @ 25%
       strong: `${absolute.white}f2` // absolute.white @ 95%
     },
-    // The two families are mirrored, so the black scrim lives in `lift` here
-    // rather than in `overlay`. Components wanting a backdrop in both schemes
-    // pair `overlay-strong` with `dark:lift-strong` — see the Overlay theme.
     lift: {
       subtle: `${absolute.black}1a`, // absolute.black @ 10%
       soft: `${absolute.black}33`, // absolute.black @ 20%
       mild: `${absolute.black}4c`, // absolute.black @ 30%
       firm: `${absolute.black}66`, // absolute.black @ 40%
-      strong: `${absolute.black}bf` // absolute.black @ 75% — the scrim in this scheme
+      strong: `${absolute.black}bf` // absolute.black @ 75%
     },
     app: absolute.black,
     canvas: palette.gray['950'],
-    // Beacon aliases dark `card` to `surface.overlay.subtle`, i.e. a
-    // translucent veil rather than an opaque step.
     card: `${absolute.white}12`, // absolute.white @ 7%
-    // What `card` renders: white @ 7% over `canvas` (gray-950) composites to
-    // exactly gray-900 — the same colour, opaque.
     table: palette.gray['900'],
     input: absolute.black,
     modal: palette.gray['950']
