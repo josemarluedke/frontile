@@ -3457,6 +3457,26 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'closeButtonTabIndex',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>',
+          items: ['string', 'number'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p><code>tabindex</code> for the close button.</p>\n<p>Set to <code>-1</code> when chips sit inside another control (a multi-select field,\nsay) and the close button should stay a pointer affordance: every chip\nwould otherwise cost a Tab stop before the control itself is reached.\nWhoever does this owes keyboard users another way to remove a chip.</p>',
+        tags: {
+          defaultValue: {
+            name: 'defaultValue',
+            value: 'undefined (the close button is a normal tab stop)',
+          },
+        },
+        defaultValue:
+          '<span class="hljs-title function_">undefined</span> (the close button is a normal tab stop)',
+      },
+      {
         identifier: 'closeButtonTitle',
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
