@@ -5,13 +5,34 @@ import {
   render,
   triggerEvent,
   find,
-  settled
+  settled,
+  waitUntil
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Popover } from 'frontile/overlays';
 import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
+
+/**
+ * `Popover` measures width inside a `requestAnimationFrame`, which does not
+ * reliably land within `settled()` on a slow CI runner. Poll for the expected
+ * value, then assert — the assertion still runs after a timeout so a genuine
+ * mismatch reports a readable diff rather than a bare timeout.
+ */
+async function waitForTriggerWidth(
+  content: HTMLElement,
+  expected: string
+): Promise<void> {
+  try {
+    await waitUntil(
+      () => content.style.getPropertyValue('--trigger-width') === expected,
+      { timeout: 2000 }
+    );
+  } catch {
+    // fall through to the assertion for a readable failure
+  }
+}
 
 module(
   'Integration | Component | Popover | @frontile/overlays',
@@ -325,6 +346,7 @@ module(
       await click('[data-test-id="trigger"]');
 
       const content = find('[data-test-id="content"]') as HTMLElement;
+      await waitForTriggerWidth(content, '120px');
       assert.strictEqual(
         content.style.getPropertyValue('--trigger-width'),
         '120px',
@@ -359,6 +381,7 @@ module(
       await click('[data-test-id="trigger"]');
 
       const content = find('[data-test-id="content"]') as HTMLElement;
+      await waitForTriggerWidth(content, '300px');
       assert.strictEqual(
         content.style.getPropertyValue('--trigger-width'),
         '300px',
@@ -439,6 +462,7 @@ module(
       await settled();
 
       const content = find('[data-test-id="content"]') as HTMLElement;
+      await waitForTriggerWidth(content, '250px');
       assert.strictEqual(
         content.style.getPropertyValue('--trigger-width'),
         '250px',
