@@ -707,8 +707,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               {{p.measureWidth}}
               {{on "click" this.handleFieldClick}}
               data-test-id={{if this.showChips "chips-field"}}
-              data-has-chips={{this.showChips}}
-              data-invalid={{c.isInvalid}}
+              {{! These flags are stringified rather than handed the boolean.
+              Glimmer renders a true boolean attribute as an empty value, so
+              passing isInvalid straight through produced an empty data-invalid
+              and the theme selector keyed on the value true never matched. }}
+              data-has-chips={{if this.showChips "true" "false"}}
+              data-invalid={{if c.isInvalid "true" "false"}}
               data-disabled={{if @isDisabled "true" "false"}}
               class={{this.classes.chipsField
                 class=@classes.chipsField
