@@ -428,18 +428,6 @@ class ListManager {
   }
 
   /**
-   * Whether `key` may be removed from the current selection, i.e. whether
-   * clicking an already-selected item deselects it or leaves it selected.
-   *
-   * This is the `allowEmpty` rule as `selectItem` applies it, exposed for
-   * consumers that offer a second route to the same deselection (Select's chip
-   * close buttons) and must agree with the list about whether it is allowed.
-   */
-  canDeselect(key: string): boolean {
-    return canDeselectKey(this.#selectionSnapshot(), key, this.args.allowEmpty);
-  }
-
-  /**
    * The selection `#toggleSelectedItem` starts from: the keys that are
    * selected right now, ordered the way it rebuilds them.
    */

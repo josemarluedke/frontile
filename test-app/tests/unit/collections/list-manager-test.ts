@@ -176,7 +176,16 @@ module('Unit | Utils | ListManager', function (hooks) {
       assert.false(canDeselectKey([], 'a', true), 'nothing to remove');
     });
 
-    test('canDeselect reports what selecting the item would do', function (assert) {
+    // Guards that the two call sites agree: the free `canDeselectKey` -- which
+    // Select's chip close buttons ask directly -- and the deselect decision
+    // `selectItem`/`#toggleSelectedItem` actually acts on. If one side is ever
+    // changed without the other, a chip and its option would disagree about
+    // the same removal, and this goes red.
+    //
+    // It does NOT check that the rule itself is right: both sides route through
+    // `canDeselectKey`, so an inverted rule would agree with itself here. The
+    // direct `canDeselectKey` assertions above are what pin the rule down.
+    test('canDeselectKey agrees with what toggling the item does', function (assert) {
       const cases = [
         {
           selectionMode: 'multiple' as const,
@@ -217,41 +226,39 @@ module('Unit | Utils | ListManager', function (hooks) {
         });
         const label = `${testCase.selectionMode}, allowEmpty=${testCase.allowEmpty}, selected=[${testCase.selectedKeys.join()}]`;
 
-        const canDeselect = manager.canDeselect('a');
+        // Every key of the selection is rendered here, so the manager's own
+        // selection snapshot is exactly `selectedKeys`.
+        const canDeselect = canDeselectKey(
+          testCase.selectedKeys,
+          'a',
+          testCase.allowEmpty
+        );
         manager.selectItem(manager.atKey('a'));
 
         assert.strictEqual(
           canDeselect,
           !reported[0]?.includes('a'),
-          `canDeselect matches the selection the list produces (${label})`
+          `canDeselectKey matches the selection the list produces (${label})`
         );
 
         container.replaceChildren();
       }
     });
 
-    test('canDeselect is false for a key that is not selected', function (assert) {
-      const { manager } = buildSelection({
-        selectionMode: 'multiple',
-        allowEmpty: true,
-        keys: ['a', 'b'],
-        selectedKeys: ['a']
-      });
-
-      assert.false(manager.canDeselect('b'));
-    });
-
-    test('canDeselect counts selections whose items are not rendered', function (assert) {
-      const { manager } = buildSelection({
+    test('the rule counts selections whose items are not rendered', function (assert) {
+      const { manager, reported } = buildSelection({
         selectionMode: 'multiple',
         allowEmpty: false,
         keys: ['a'],
         selectedKeys: ['a', 'filtered-out']
       });
 
-      assert.true(
-        manager.canDeselect('a'),
-        'a selection hidden by a filter still counts as a second selection'
+      manager.selectItem(manager.atKey('a'));
+
+      assert.deepEqual(
+        reported[0],
+        ['filtered-out'],
+        'a selection hidden by a filter still counts as a second selection, so `a` goes'
       );
     });
   });
