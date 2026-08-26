@@ -1609,16 +1609,55 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     isSelected(assert, '[value="apple"]');
   });
 
+  test("Multiple mode: clicking a chip's body opens the dropdown", async function (assert) {
+    // A narrow single-chip trigger is hard to hit directly, so
+    // `handleFieldClick` forwards a click landing on a chip's body to the
+    // trigger -- the same way it already forwards clicks on the field's
+    // empty area. Only the chip's own close button is excluded from this
+    // (covered separately below).
+    const selectedKeys = cell<string[]>(['apple']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="listbox"]').doesNotExist();
+
+    await click('[data-test-id="selected-chip"][data-key="apple"]');
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists("clicking a chip's body opens the dropdown");
+    assert
+      .dom('[data-test-id="trigger"]')
+      .hasAttribute('aria-expanded', 'true');
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple'],
+      'the selection is unchanged by the click'
+    );
+  });
+
   test('Multiple mode: a chip close button works with no runtime dependency on data-test-id', async function (assert) {
-    // `handleFieldClick` must tell "inside the chips" from "the field's
-    // empty area" without keying off `data-test-id="selected-chip"` --
-    // that attribute is only a test hook, and tools like
-    // ember-test-selectors strip `data-test-*` from production builds. If
-    // the click forwarder ever regresses to a selector-based check, this
-    // simulates a stripped build by removing the attributes from the
-    // rendered chips before clicking, which makes `closest(...)` return
-    // null and the click fall through to `trigger.click()` -- popping the
-    // dropdown open even though a chip was removed.
+    // `handleFieldClick` must tell a chip's close button apart from the
+    // rest of the chip (and the field) without keying off
+    // `data-test-id="selected-chip"` -- that attribute is only a test
+    // hook, and tools like ember-test-selectors strip `data-test-*` from
+    // production builds. If the click forwarder ever regresses to a
+    // selector-based check, this simulates a stripped build by removing
+    // the attributes from the rendered chips before clicking, which would
+    // make a selector-based `closest(...)` return null and the click fall
+    // through to `trigger.click()` -- popping the dropdown open even
+    // though a chip was removed. The real detection (an ancestor `<button>`
+    // inside the chips container) does not depend on the attribute at all.
     const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
 

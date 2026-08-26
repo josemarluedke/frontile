@@ -743,10 +743,17 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   /**
    * In chips mode the trigger is only as wide as the room left over beside the
    * chips, so the field's padding -- and the strip under the chevron -- are not
-   * part of it. Without this, clicking those areas would do nothing, while the
-   * same click anywhere on a non-chips field opens the dropdown (there the
-   * trigger *is* the whole field). Forwards such a click to the trigger, leaving
-   * clicks on a chip (its close button) and on the trigger itself alone.
+   * part of it, and with a single selection the trigger can be a narrow sliver.
+   * Without this, clicking anywhere else in the field would do nothing, while
+   * the same click anywhere on a non-chips field opens the dropdown (there the
+   * trigger *is* the whole field). Forwards such a click to the trigger,
+   * including clicks on a chip's own body, so the whole field is a click
+   * target. The one exception is a chip's close button: within the chips
+   * container the only `<button>` elements a chip ever renders are its close
+   * button (see chip.gts / close-button.gts), so `closest('button')` combined
+   * with containment against `chipsContainerRef` identifies it without relying
+   * on any test-only attribute. Clicks on the trigger itself are left alone
+   * too, since it already handles its own clicks.
    */
   handleFieldClick = (event: MouseEvent): void => {
     if (!this.showChips || this.args.isDisabled) {
@@ -768,7 +775,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     const chipsContainer = this.chipsContainerRef.current;
 
     if (chipsContainer && chipsContainer.contains(target)) {
-      return;
+      const closeButton = target.closest('button');
+      if (closeButton && chipsContainer.contains(closeButton)) {
+        return;
+      }
     }
 
     trigger.focus();

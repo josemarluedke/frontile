@@ -590,6 +590,10 @@ export default class BasicMultipleSelect extends Component {
 Chips render in item order rather than click order, so they do not reorder underneath the
 user as the selection grows.
 
+Clicking anywhere in the field opens the dropdown, including a chip's own body — with a
+single selection the trigger next to the chips can be a narrow sliver, so the whole field is a
+click target. The one exception is a chip's close button, which removes that chip instead.
+
 ### Removing Selections
 
 Each chip carries its own close button. `@allowEmpty` defaults to `false`, which means the
