@@ -1609,6 +1609,101 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     isSelected(assert, '[value="apple"]');
   });
 
+  test('Multiple mode: a chip close button works with no runtime dependency on data-test-id', async function (assert) {
+    // `handleFieldClick` must tell "inside the chips" from "the field's
+    // empty area" without keying off `data-test-id="selected-chip"` --
+    // that attribute is only a test hook, and tools like
+    // ember-test-selectors strip `data-test-*` from production builds. If
+    // the click forwarder ever regresses to a selector-based check, this
+    // simulates a stripped build by removing the attributes from the
+    // rendered chips before clicking, which makes `closest(...)` return
+    // null and the click fall through to `trigger.click()` -- popping the
+    // dropdown open even though a chip was removed.
+    const selectedKeys = cell<string[]>(['apple', 'banana', 'cherry']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 3 });
+
+    const closeButton = document.querySelector(
+      '[data-test-id="selected-chip"][data-key="banana"] button'
+    ) as HTMLButtonElement;
+    if (!closeButton) {
+      throw new Error('banana chip close button not found');
+    }
+
+    document
+      .querySelectorAll('[data-test-id="selected-chip"]')
+      .forEach((chip) => chip.removeAttribute('data-test-id'));
+
+    // `@ember/test-helpers`' `click()` awaits `settled()` between the
+    // simulated `mousedown`/`mouseup`/`click` events. `onPress` fires
+    // synchronously off `mouseup` here and removes the chip, so that
+    // `settled()` lets Ember's render runloop flush and detach the chip
+    // from the DOM *before* the simulated `click` event is dispatched --
+    // a detached node cannot bubble its click to the field, so the click
+    // forwarder never runs regardless of what it checks, and the test
+    // would pass for the wrong reason. A real physical click fires
+    // mousedown/mouseup/click back-to-back with no render flush in
+    // between, so this dispatches all three synchronously (no `await`
+    // between them) to match that and actually exercise the forwarder.
+    const mouseEventOptions = { bubbles: true, cancelable: true, button: 0 };
+    closeButton.dispatchEvent(new MouseEvent('mousedown', mouseEventOptions));
+    closeButton.dispatchEvent(new MouseEvent('mouseup', mouseEventOptions));
+    closeButton.dispatchEvent(new MouseEvent('click', mouseEventOptions));
+    await settled();
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['apple', 'cherry'],
+      'the chip was still removed'
+    );
+    assert
+      .dom('[data-component="listbox"]')
+      .doesNotExist('the dropdown did not open');
+    assert.notEqual(
+      document
+        .querySelector('[data-test-id="trigger"]')
+        ?.getAttribute('aria-expanded'),
+      'true',
+      'the trigger does not report itself expanded'
+    );
+  });
+
+  test('Multiple mode: clicking the field empty area still opens the dropdown', async function (assert) {
+    const selectedKeys = cell<string[]>(['apple', 'banana']);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{array "apple" "banana" "cherry"}}
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="listbox"]').doesNotExist();
+
+    await click('[data-test-id="chips-field"]');
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('clicking the empty field area opens the dropdown');
+  });
+
   test('Multiple mode: chip close buttons are individually labelled', async function (assert) {
     const selectedKeys = cell<string[]>(['apple', 'banana']);
     const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);

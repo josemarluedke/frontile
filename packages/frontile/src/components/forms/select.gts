@@ -567,6 +567,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
 
   containerRef = ref<HTMLDivElement>();
   triggerRef = ref<HTMLInputElement | HTMLButtonElement>();
+  chipsContainerRef = ref<HTMLDivElement>();
 
   /**
    * Handles selection changes from the Listbox component.
@@ -783,7 +784,9 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       return;
     }
 
-    if (target.closest('[data-test-id="selected-chip"]')) {
+    const chipsContainer = this.chipsContainerRef.current;
+
+    if (chipsContainer && chipsContainer.contains(target)) {
       return;
     }
 
@@ -1141,6 +1144,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
             >
               {{#if (and this.showChips this.hasSelection)}}
                 <div
+                  {{this.chipsContainerRef.setup}}
                   data-test-id="selected-chips"
                   class={{this.classes.chipsContainer
                     class=@classes.chipsContainer
