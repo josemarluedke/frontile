@@ -8097,6 +8097,18 @@ const data: ComponentDoc[] = [
           type: '<span class="hljs-title class_">Object</span>',
           items: [
             {
+              identifier: 'size',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+                items: ["'sm'", "'md'", "'lg'"],
+              },
+              isRequired: false,
+              isInternal: false,
+              description: 'The size of the chip',
+              tags: {},
+            },
+            {
               identifier: 'appearance',
               type: {
                 type: '<span class="hljs-keyword">enum</span>',
@@ -8105,11 +8117,11 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: '',
+              description: 'The chip appearance',
               tags: {
-                defaultValue: { name: 'defaultValue', value: "'faded'" },
+                defaultValue: { name: 'defaultValue', value: "'default'" },
               },
-              defaultValue: '<span class="hljs-string">\'faded\'</span>',
+              defaultValue: '<span class="hljs-string">\'default\'</span>',
             },
             {
               identifier: 'intent',
@@ -8128,22 +8140,8 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description:
-                'Defaults to the Select\'s own `@intent`, so `@intent="primary"` colors the\nlistbox items and the chips together.',
+              description: 'The intent of the chip',
               tags: {},
-            },
-            {
-              identifier: 'size',
-              type: {
-                type: '<span class="hljs-keyword">enum</span>',
-                raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
-                items: ["'sm'", "'md'", "'lg'"],
-              },
-              isRequired: false,
-              isInternal: false,
-              description: '',
-              tags: { defaultValue: { name: 'defaultValue', value: "'sm'" } },
-              defaultValue: '<span class="hljs-string">\'sm\'</span>',
             },
             {
               identifier: 'radius',
@@ -8154,7 +8152,7 @@ const data: ComponentDoc[] = [
               },
               isRequired: false,
               isInternal: false,
-              description: 'The corner radius of the chip.',
+              description: 'The radius the chip',
               tags: {},
             },
             {
@@ -8162,8 +8160,7 @@ const data: ComponentDoc[] = [
               type: { type: '<span class="hljs-built_in">boolean</span>' },
               isRequired: false,
               isInternal: false,
-              description:
-                'Whether the chip renders a leading dot before its label.',
+              description: 'Option to add dot to the chip',
               tags: {},
             },
           ],
@@ -8171,7 +8168,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "Not applicable in single selection mode.\nAppearance of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).",
+          "<p>Not applicable in single selection mode.\nAppearance of the chips rendered for each selected option.\nOnly applies when <code>@selectedItemsDisplay</code> is <code>'chips'</code> (the default).</p>\n<p>Options are the same ones {@link Chip } itself accepts (<code>appearance</code>,\n<code>intent</code>, <code>size</code>, <code>radius</code>, <code>withDot</code>), but Select applies its own\ndefaults tuned for sitting inside a field, rather than Chip's:</p>\n<ul>\n<li><code>appearance</code> defaults to <code>'faded'</code></li>\n<li><code>intent</code> defaults to the Select's own <code>@intent</code>, so <code>@intent=\"primary\"</code>\ncolors the listbox items and the chips together</li>\n<li><code>size</code> defaults to <code>'sm'</code></li>\n<li><code>radius</code> and <code>withDot</code> fall back to Chip's own defaults</li>\n</ul>",
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           selectionMode: { name: 'selectionMode', value: '="multiple"' },

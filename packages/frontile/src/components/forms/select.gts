@@ -22,7 +22,7 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
-import { Chip } from '../buttons/chip';
+import { Chip, type ChipSignature } from '../buttons/chip';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
 import { action } from '@ember/object';
@@ -46,42 +46,14 @@ interface SelectedItem {
 
 /**
  * Appearance options forwarded to the {@link Chip} rendered for each selected
- * option in multiple selection mode.
+ * option in multiple selection mode. Derived from {@link ChipSignature} so the
+ * two can never drift apart; see {@link MultipleSelectArgs.chip} for the
+ * Select-specific defaults applied on top of Chip's own.
  */
-interface SelectChipOptions {
-  /**
-   * @defaultValue 'faded'
-   */
-  appearance?: 'default' | 'outlined' | 'faded';
-
-  /**
-   * Defaults to the Select's own `@intent`, so `@intent="primary"` colors the
-   * listbox items and the chips together.
-   */
-  intent?:
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'tertiary'
-    | 'success'
-    | 'warning'
-    | 'danger';
-
-  /**
-   * @defaultValue 'sm'
-   */
-  size?: 'sm' | 'md' | 'lg';
-
-  /**
-   * The corner radius of the chip.
-   */
-  radius?: 'none' | 'sm' | 'lg' | 'full';
-
-  /**
-   * Whether the chip renders a leading dot before its label.
-   */
-  withDot?: boolean;
-}
+interface SelectChipOptions extends Pick<
+  ChipSignature['Args'],
+  'appearance' | 'intent' | 'size' | 'radius' | 'withDot'
+> {}
 
 // Base interface for shared properties
 interface BaseSelectArgs<T>
@@ -228,6 +200,15 @@ interface MultipleSelectArgs<T> extends BaseSelectArgs<T> {
   /**
    * Appearance of the chips rendered for each selected option.
    * Only applies when `@selectedItemsDisplay` is `'chips'` (the default).
+   *
+   * Options are the same ones {@link Chip} itself accepts (`appearance`,
+   * `intent`, `size`, `radius`, `withDot`), but Select applies its own
+   * defaults tuned for sitting inside a field, rather than Chip's:
+   * - `appearance` defaults to `'faded'`
+   * - `intent` defaults to the Select's own `@intent`, so `@intent="primary"`
+   *   colors the listbox items and the chips together
+   * - `size` defaults to `'sm'`
+   * - `radius` and `withDot` fall back to Chip's own defaults
    *
    * @example
    * ```gts
