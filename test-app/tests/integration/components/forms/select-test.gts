@@ -456,14 +456,16 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-component="listbox"]').exists();
 
     await fillIn('[data-test-id="trigger"]', 'App');
-    assert.dom('[data-key="Apple"]').exists();
-    assert.dom('[data-key="Banana"]').doesNotExist();
-    assert.dom('[data-key="Cherry"]').doesNotExist();
+    // Scoped to the listbox: the hidden native <select> deliberately keeps
+    // every option so the submitted value is never truncated by the filter.
+    assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Banana"]').doesNotExist();
+    assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
 
     await fillIn('[data-test-id="trigger"]', 'a');
-    assert.dom('[data-key="Apple"]').exists();
-    assert.dom('[data-key="Banana"]').exists();
-    assert.dom('[data-key="Cherry"]').doesNotExist();
+    assert.dom('[data-component="listbox"] [data-key="Apple"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Banana"]').exists();
+    assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
   });
 
   test('it shows empty content when no options match the filter', async function (assert) {

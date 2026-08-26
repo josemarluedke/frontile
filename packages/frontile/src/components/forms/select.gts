@@ -490,20 +490,16 @@ interface SelectSignature<T> {
  * `@onSelectionChange`, or left uncontrolled.
  */
 class Select<T = unknown> extends Component<SelectSignature<T>> {
+  /**
+   * Every item registered by the hidden native `<select>`, in item order.
+   *
+   * The hidden select is deliberately given the *unfiltered* `@items` — it
+   * carries the form value, which must not shrink to the filter — so this
+   * covers the whole list even while the listbox is filtered down. Chips and
+   * the joined text value can therefore be resolved straight from it.
+   */
   @tracked nodes: ListItem[] = [];
 
-  /**
-   * Every item that has registered so far, in item order.
-   *
-   * `nodes` only ever holds the items currently rendered, which is the
-   * *filtered* set. Chips have to reflect the selection rather than the filter,
-   * so a selected item's label has to survive that item being filtered out.
-   */
-  @tracked knownItems: SelectedItem[] = [];
-
-  /** Untracked backing store for `knownItems`. See `onItemsChange`. */
-  private itemOrder: string[] = [];
-  private textValues = new Map<string, string>();
   @tracked isOpen = false;
   /**
    * Internal tracked state for single selection mode.
@@ -847,45 +843,12 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   };
 
   onItemsChange = (nodes: ListItem[], _: 'add' | 'remove') => {
-    // `rememberItems` and the two fields it maintains are deliberately
-    // untracked. `onItemsChange` runs while a modifier installs, i.e. inside a
-    // render pass, and reading a tracked field there and then writing it in the
-    // same computation trips Glimmer's read-then-write assertion. Keeping the
-    // bookkeeping untracked makes `knownItems` and `nodes` write-only here.
-    this.rememberItems(nodes);
-    this.knownItems = this.itemOrder.map((key) => ({
-      key,
-      textValue: this.textValues.get(key) ?? key
-    }));
+    // `onItemsChange` runs while a modifier installs, i.e. inside a render
+    // pass. Reading a tracked field here and writing it in the same
+    // computation would trip Glimmer's read-then-write assertion, so `nodes`
+    // is only ever written, never read, in this callback.
     this.nodes = nodes;
   };
-
-  /**
-   * Records the label and the position of every item that registers.
-   *
-   * A batch that still covers every key we already knew about is an unfiltered
-   * registration, and is therefore the authoritative item order. A batch that
-   * covers only some of them is a filter narrowing the list, so the order we
-   * already have is kept and only genuinely new keys are appended.
-   */
-  private rememberItems(nodes: ListItem[]): void {
-    const incomingKeys = new Set<string>();
-    for (const node of nodes) {
-      incomingKeys.add(node.key);
-      this.textValues.set(node.key, node.textValue);
-    }
-
-    if (this.itemOrder.every((key) => incomingKeys.has(key))) {
-      this.itemOrder = nodes.map((node) => node.key);
-      return;
-    }
-
-    for (const node of nodes) {
-      if (!this.itemOrder.includes(node.key)) {
-        this.itemOrder.push(node.key);
-      }
-    }
-  }
 
   didClose = () => {
     this.filterValue = undefined;
@@ -931,12 +894,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * The selected options in item order (not click order) so chips do not
    * reorder underneath the user as they select.
    *
-   * Resolved against `knownItems` rather than `nodes`, so a chip stays put while
-   * a filter hides the item it came from.
+   * Resolved against `nodes`, which the hidden native `<select>` populates from
+   * the unfiltered `@items`, so a chip stays put while a filter hides the item
+   * it came from.
    */
   get selectedItems(): SelectedItem[] {
     const keys = this.selectedKeys;
-    return this.knownItems.filter((item) => keys.includes(item.key));
+    return this.nodes
+      .filter((node) => keys.includes(node.key))
+      .map((node) => ({ key: node.key, textValue: node.textValue }));
   }
 
   get selectedTextValue(): string {
@@ -1076,7 +1042,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
           <VisuallyHidden>
             {{#if (eq @selectionMode "multiple")}}
               <NativeSelect
-                @items={{this.filteredItems}}
+                @items={{@items}}
                 @allowEmpty={{@allowEmpty}}
                 @disabledKeys={{@disabledKeys}}
                 @onSelectionChange={{this.onSelectionChange}}
@@ -1107,7 +1073,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               </NativeSelect>
             {{else}}
               <NativeSelect
-                @items={{this.filteredItems}}
+                @items={{@items}}
                 @allowEmpty={{@allowEmpty}}
                 @disabledKeys={{@disabledKeys}}
                 @onSelectionChange={{this.onSingleSelectionChange}}
