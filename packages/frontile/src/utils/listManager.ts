@@ -402,8 +402,24 @@ class ListManager {
     return items.indexOf(item);
   }
 
-  #toggleSelectedItem(item: ListItem): string[] {
-    let selectedKeys: string[] = [];
+  /**
+   * Whether `key` may be removed from the current selection, i.e. whether
+   * clicking an already-selected item deselects it or leaves it selected.
+   *
+   * This is the `allowEmpty` rule as `selectItem` applies it, exposed for
+   * consumers that offer a second route to the same deselection (Select's chip
+   * close buttons) and must agree with the list about whether it is allowed.
+   */
+  canDeselect(key: string): boolean {
+    return canDeselectKey(this.#selectionSnapshot(), key, this.args.allowEmpty);
+  }
+
+  /**
+   * The selection `#toggleSelectedItem` starts from: the keys that are
+   * selected right now, ordered the way it rebuilds them.
+   */
+  #selectionSnapshot(): string[] {
+    const selectedKeys: string[] = [];
 
     const items = this.#orderedItems;
 
@@ -419,7 +435,8 @@ class ListManager {
     //
     // `multiple` only. Single mode replaces the selection outright, so it
     // never lost anything here, and carrying a key over would change what
-    // counts as "the last selection" for the `allowEmpty` rule below.
+    // counts as "the last selection" for the `allowEmpty` rule
+    // (`canDeselectKey`).
     if (this.args.selectionMode === 'multiple') {
       const renderedKeys = new Set(items.map((_item) => _item.key));
       for (const key of this.args.selectedKeys || []) {
@@ -436,11 +453,13 @@ class ListManager {
       }
     }
 
-    if (
-      selectedKeys.includes(item.key) &&
-      ((this.args.allowEmpty && selectedKeys.length == 1) ||
-        selectedKeys.length > 1)
-    ) {
+    return selectedKeys;
+  }
+
+  #toggleSelectedItem(item: ListItem): string[] {
+    let selectedKeys = this.#selectionSnapshot();
+
+    if (canDeselectKey(selectedKeys, item.key, this.args.allowEmpty)) {
       const indexToRemove = selectedKeys.indexOf(item.key);
       selectedKeys.splice(indexToRemove, 1);
     } else {
@@ -577,6 +596,27 @@ class ListManager {
   );
 }
 
+/**
+ * The `allowEmpty` deselect rule, in one place.
+ *
+ * Given the keys that make up a selection, whether `key` may be taken out of
+ * it: a key that is not in the selection has nothing to remove, and the last
+ * remaining key only goes when emptying the selection is allowed.
+ *
+ * `selectionMode` deliberately plays no part. It decides how a selection is
+ * built, not whether it may shrink -- see `#selectionSnapshot`.
+ */
+function canDeselectKey(
+  selectedKeys: string[],
+  key: string,
+  allowEmpty: boolean = false
+): boolean {
+  if (!selectedKeys.includes(key)) {
+    return false;
+  }
+  return (allowEmpty && selectedKeys.length == 1) || selectedKeys.length > 1;
+}
+
 function keyAndLabelForItem(item: unknown): { key: string; label: string } {
   // Handle primitive types directly
   if (typeof item === 'string' || typeof item === 'number') {
@@ -618,4 +658,4 @@ function defaultFilter(itemValue: string, filterValue: string): boolean {
 }
 
 export type { ListItem, ListItemArgs, SelectionMode, AutoActivateMode };
-export { ListManager, keyAndLabelForItem, defaultFilter };
+export { ListManager, canDeselectKey, keyAndLabelForItem, defaultFilter };

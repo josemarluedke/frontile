@@ -24,7 +24,11 @@ import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { Chip, type ChipSignature } from '../buttons/chip';
 import { IconChevronUpDown } from './icons';
-import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
+import {
+  canDeselectKey,
+  keyAndLabelForItem,
+  defaultFilter
+} from '../../utils/listManager';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 
@@ -836,11 +840,23 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    * chip renders without a close button rather than with a dead one.
    */
   get chipsRemovable(): boolean {
-    // Counts `selectedItems` — the same collection the chips render from —
-    // rather than `selectedKeys`, so this decision can never disagree with
-    // what is actually on screen (a selected key with no remembered item
-    // would otherwise be counted here but never render a chip at all).
-    return this.args.allowEmpty === true || this.selectedItems.length > 1;
+    // Asks `canDeselectKey` — the rule the listbox itself applies when an
+    // already-selected option is clicked — rather than restating it, so a chip
+    // and its option can never disagree about the same removal.
+    //
+    // Asked of `selectedItems`, the collection the chips render from, so the
+    // decision cannot disagree with what is on screen either (a selected key
+    // with no remembered item would otherwise be counted but never render a
+    // chip at all). Every chip's key is in that collection by construction, so
+    // the rule's answer is the same for all of them; it is asked of the last
+    // chip, the one Backspace removes. With no chips there is nothing to
+    // remove and nothing that reads this.
+    const keys = this.selectedItems.map((item) => item.key);
+    const lastKey = keys[keys.length - 1];
+    return (
+      lastKey !== undefined &&
+      canDeselectKey(keys, lastKey, this.args.allowEmpty)
+    );
   }
 
   /**
