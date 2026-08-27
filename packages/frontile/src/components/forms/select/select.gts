@@ -31,7 +31,8 @@ import type {
   SelectArgs,
   SelectChipOptions,
   SelectSignature,
-  SelectedItem
+  SelectedItem,
+  SelectedItemBlockArg
 } from './types';
 
 // Import helper function directly instead of using ember-truth-helpers
@@ -493,16 +494,47 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
   }
 
   /**
-   * The accessible name for the trigger while chips are shown.
+   * The accessible name for the trigger when its own text cannot supply one.
    *
-   * In every other mode the trigger names itself from its own text -- the
-   * selected label, or the placeholder. In chips mode it renders nothing (the
-   * chips are its siblings, so they are read separately), which would leave the
-   * combobox announced as an unnamed button. This names the *control*, never the
-   * selection.
+   * Left to itself the trigger names itself from its own text -- the selected
+   * label, or the placeholder -- and that is still what happens in the plain
+   * case; see the trigger, which only applies this when it has to.
+   *
+   * Two cases need it:
+   *
+   * - **Chips mode.** The trigger renders nothing; the chips are its siblings
+   *   and are read separately. Naming the *control* is both enough and
+   *   correct here -- appending the selection would have it read twice -- so
+   *   this returns the bare name.
+   * - **A `:selectedItem` block.** The block owns the trigger's content and may
+   *   render nothing readable at all (an avatar, an icon), which would leave
+   *   the combobox announced as an unnamed button. The selection is not
+   *   readable anywhere else in that case, so the name carries it: the control
+   *   name *and* the selected options' text.
+   *
+   * The two halves are composed so that the separator only appears when both
+   * are there. A selected key with no registered option behind it resolves to
+   * no text at all, and `"Owner, "` is announced as "Owner comma"; and with
+   * neither `@label` nor `@placeholder` the only control name available is the
+   * hardcoded, unlocalizable `Select options`, so the selected text is left to
+   * name the control on its own rather than be prefixed by English.
    */
   get triggerAccessibleName(): string {
-    return this.args.label || this.args.placeholder || 'Select options';
+    const name = this.args.label || this.args.placeholder;
+
+    // Chips mode names the *control* only -- the chips are read separately --
+    // and has no better fallback than the literal.
+    if (this.showChips) {
+      return name || 'Select options';
+    }
+
+    const selectedText = this.hasSelection ? this.selectedTextValue : '';
+
+    if (!name) {
+      return selectedText || 'Select options';
+    }
+
+    return selectedText ? `${name}, ${selectedText}` : name;
   }
 
   /**
@@ -721,6 +753,10 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
               }}
             >
               {{#if (and this.showChips this.hasSelection)}}
+                {{! A block cannot be passed conditionally in Glimmer, so the
+                :item block below is always supplied and the branch lives
+                inside it: with no :selectedItem block from the consumer, both
+                it and the trigger render exactly what they rendered before. }}
                 <SelectedChips
                   @containerRef={{this.chipsContainerRef.setup}}
                   @items={{this.selectedItems}}
@@ -730,7 +766,15 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                   @isDisabled={{@isDisabled}}
                   @isRemovable={{this.chipsRemovable}}
                   @onRemove={{this.removeSelectedKey}}
-                />
+                >
+                  <:item as |selected|>
+                    {{~#if (has-block "selectedItem")~}}
+                      {{~yield selected to="selectedItem"~}}
+                    {{~else~}}
+                      {{~selected.label~}}
+                    {{~/if~}}
+                  </:item>
+                </SelectedChips>
               {{/if}}
               <SelectTrigger
                 @isFilterable={{@isFilterable}}
@@ -750,7 +794,16 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 @onFilterKeydown={{this.handleFilterKeydown}}
                 @onKeydown={{this.handleTriggerKeydown}}
                 @onBlur={{this.handleBlur}}
-              />
+                @hasCustomContent={{has-block "selectedItem"}}
+              >
+                <:selectedItem as |selected|>
+                  {{~#if (has-block "selectedItem")~}}
+                    {{~yield selected to="selectedItem"~}}
+                  {{~else~}}
+                    {{~selected.label~}}
+                  {{~/if~}}
+                </:selectedItem>
+              </SelectTrigger>
             </div>
             <SelectEndContent
               @classes={{this.classes}}
@@ -837,6 +890,7 @@ export {
   Select,
   type SelectSignature,
   type SelectChipOptions,
-  type SelectedItem
+  type SelectedItem,
+  type SelectedItemBlockArg
 };
 export default Select;

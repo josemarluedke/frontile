@@ -32,6 +32,30 @@ interface SelectedItem {
 }
 
 /**
+ * What the `:selectedItem` block is handed for one selected option.
+ *
+ * Deliberately the same `{ item, key, label }` shape the `:item` block yields,
+ * so markup can move between the two blocks without being renamed. It is the
+ * public face of {@link SelectedItem}: `label` is that projection's
+ * `textValue`.
+ */
+interface SelectedItemBlockArg<T = unknown> {
+  /**
+   * The entry of `@items` this selection came from.
+   *
+   * Undefined for an option written out in block form rather than rendered
+   * from `@items` -- there is no collection entry behind it, so only `key` and
+   * `label` are available there.
+   */
+  item?: T;
+
+  key: string;
+
+  /** The option's text, i.e. what would be rendered without this block. */
+  label: string;
+}
+
+/**
  * Appearance options forwarded to the {@link Chip} rendered for each selected
  * option in multiple selection mode. Derived from {@link ChipSignature} so the
  * two can never drift apart; see {@link MultipleSelectArgs.chip} for the
@@ -428,6 +452,42 @@ interface SelectSignature<T> {
      * If `hideEmptyContent` argument is true, this content will not be shown.
      */
     emptyContent: [];
+
+    /**
+     * Custom content for each *selected* option, in place of its plain text.
+     *
+     * Renders wherever the selection is drawn as markup: inside the
+     * single-mode trigger, inside each chip in multiple mode (the chip chrome,
+     * `@chip` options and close button are kept), and once per selection --
+     * comma-separated -- under `@selectedItemsDisplay="text"`.
+     *
+     * **Not** inside a filterable trigger: that is an `<input>`, which cannot
+     * hold markup, so a filterable Select still shows the selection as plain
+     * text there. The chips beside the input do use the block.
+     *
+     * Yields the same `{ item, key, label }` the `:item` block does, so the
+     * same markup works in both. `item` is undefined for options written in
+     * block form rather than rendered from `@items`.
+     *
+     * Because a block rendering only graphics would otherwise leave the
+     * single-mode trigger with no accessible name, supplying this block also
+     * gives that (button) trigger an `aria-label` composed from the field
+     * label and the selected options' text. That name replaces what the block
+     * renders, so a block whose visible text is not the option's `label`
+     * should carry the label too, or set `@label`/`@placeholder` to the
+     * wording that is visible -- see the guide.
+     *
+     * @example
+     * ```gts
+     * <Select @items={{this.users}} as |s|>
+     *   <:selectedItem as |selected|>
+     *     <Avatar @src={{selected.item.avatar}} />
+     *     {{selected.label}}
+     *   </:selectedItem>
+     * </Select>
+     * ```
+     */
+    selectedItem: [SelectedItemBlockArg<T>];
   };
 }
 
@@ -454,6 +514,7 @@ export {
   type SelectClasses,
   type ResolvedSelectChipOptions,
   type SelectedItem,
+  type SelectedItemBlockArg,
   type SelectChipOptions,
   type BaseSelectArgs,
   type ExplicitSingleSelectArgs,

@@ -2457,4 +2457,611 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .dom('[data-test-id="chips-field"]')
       .hasAttribute('data-invalid', 'true');
   });
+
+  // --- `:selectedItem` block -------------------------------------------------
+
+  interface DemoUser {
+    key: string;
+    label: string;
+    email: string;
+  }
+
+  const demoUsers: DemoUser[] = [
+    { key: 'ana', label: 'Ana', email: 'ana@example.com' },
+    { key: 'bruno', label: 'Bruno', email: 'bruno@example.com' },
+    { key: 'cleo', label: 'Cleo', email: 'cleo@example.com' }
+  ];
+
+  const noop = (_key: string | null): void => {};
+  const noopKeys = (_keys: string[]): void => {};
+
+  // `selected.item` is `unknown` at the block boundary and is genuinely absent
+  // for block-form options, so the test reads it the way a consumer has to.
+  const emailOf = (item: unknown): string =>
+    (item as DemoUser | undefined)?.email ?? 'no-item';
+
+  test('`:selectedItem` renders custom content inside the single-mode trigger', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected" data-key={{selected.key}}>
+              {{selected.label}}
+            </span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .exists('the block renders inside the trigger');
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .hasAttribute('data-key', 'bruno', 'the block is handed the option key');
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .hasText('Bruno', '`label` is the option text');
+  });
+
+  test('`:selectedItem` renders inside each chip, keeping the chip chrome', async function (assert) {
+    const selectedKeys = cell<string[]>(['ana', 'cleo']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').exists({ count: 2 });
+    assert
+      .dom(
+        '[data-test-id="selected-chip"][data-key="ana"] [data-test-id="custom-selected"]'
+      )
+      .hasText('Ana', 'the block renders inside the chip');
+    assert
+      .dom(
+        '[data-test-id="selected-chip"][data-key="cleo"] [data-test-id="custom-selected"]'
+      )
+      .hasText('Cleo');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .exists('the chip keeps its close button');
+    // CloseButton renders its @title as visually hidden *text*, not a `title`
+    // attribute -- so this reads the accessible text, which is what a screen
+    // reader announces.
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .hasText(
+        'Remove Ana',
+        'the close button is still labelled from the option text'
+      );
+  });
+
+  test('`:selectedItem` renders once per selection in @selectedItemsDisplay="text"', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @selectedKeys={{array "ana" "cleo"}}
+          @onSelectionChange={{noopKeys}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert.dom('[data-test-id="selected-chip"]').doesNotExist();
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .exists({ count: 2 }, 'the block renders once per selection');
+    // The plain presentation deliberately keeps one text node; the block
+    // branch renders many, so assert on the text, not the node shape. The
+    // separator is matched loosely because the whitespace around it belongs to
+    // the consumer's own block markup, not to the Select.
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText(/Ana\s*,\s*Cleo/, 'the selections stay comma-separated');
+  });
+
+  test('without `:selectedItem`, every presentation is unchanged', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        />
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @selectionMode="multiple"
+          @selectedItemsDisplay="text"
+          @selectedKeys={{array "ana" "cleo"}}
+          @onSelectionChange={{noopKeys}}
+        />
+        <Select
+          @items={{demoUsers}}
+          @label="Reviewers"
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{array "ana" "cleo"}}
+          @onSelectionChange={{noopKeys}}
+        />
+        <Select
+          @items={{demoUsers}}
+          @label="Filterable owner"
+          @isFilterable={{true}}
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        />
+      </template>
+    );
+
+    const triggers = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    );
+
+    assert.dom(triggers[0]).hasText('Bruno', 'single mode renders the label');
+    assert
+      .dom(triggers[0])
+      .doesNotHaveAttribute(
+        'aria-label',
+        'the trigger is still named by its own text'
+      );
+    assert
+      .dom(triggers[1])
+      .hasText('Ana, Cleo', 'text mode still renders the joined string');
+    assert
+      .dom(triggers[1])
+      .doesNotHaveAttribute('aria-label', 'and is still named by that text');
+
+    // The chip body is the markup this feature actually replaced
+    // (`{{item.textValue}}` became a yielded block with a fallback), so it is
+    // the presentation most worth pinning. Matched from the start of the chip
+    // so the close button's visually hidden `Remove Ana` cannot stand in for
+    // the body, and case-sensitively so the key (`ana`) cannot either.
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="ana"]')
+      .hasText(/^\s*Ana\b/, 'the chip body is still the option label');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="cleo"]')
+      .hasText(/^\s*Cleo\b/);
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .hasText(
+        'Remove Ana',
+        'and the close button is still named from the option'
+      );
+
+    assert
+      .dom(triggers[3])
+      .hasTagName('input', 'a filterable trigger is an input');
+    assert
+      .dom(triggers[3])
+      .hasValue('Bruno', 'which still shows the selection as its own value');
+    assert
+      .dom(triggers[3])
+      .doesNotHaveAttribute(
+        'aria-label',
+        'and is still named by that value alone'
+      );
+  });
+
+  test('a filterable trigger is not given an `aria-label` by `:selectedItem`', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @isFilterable={{true}}
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    const triggers = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    );
+
+    // The block cannot render into an `<input>`, so the input is never left
+    // unnamed: its own value is its accessible text. An `aria-label` here
+    // would both duplicate that value and change as the user types.
+    assert.dom(triggers[0]).hasTagName('input');
+    assert
+      .dom(triggers[0])
+      .hasValue('Bruno', 'the input still shows the selection as text');
+    assert
+      .dom(triggers[0])
+      .doesNotHaveAttribute(
+        'aria-label',
+        'the filterable trigger keeps its value as its only name'
+      );
+
+    // The `<button>` trigger does hand its content to the block, so it still
+    // needs the explicit name.
+    assert.dom(triggers[1]).hasTagName('button');
+    assert
+      .dom(triggers[1])
+      .hasAttribute(
+        'aria-label',
+        'Owner, Bruno',
+        'the non-filterable trigger is still named explicitly'
+      );
+  });
+
+  test('a filterable trigger in chips mode keeps its `aria-label`', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @isFilterable={{true}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{array "ana"}}
+          @onSelectionChange={{noopKeys}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+        <Select
+          @items={{demoUsers}}
+          @label="Reviewers"
+          @isFilterable={{true}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{array "ana"}}
+          @onSelectionChange={{noopKeys}}
+        />
+      </template>
+    );
+
+    const triggers = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    );
+
+    // In chips mode the input shows nothing of the selection, so it has no
+    // text of its own -- the control name is still required there, block or
+    // no block.
+    assert.dom(triggers[0]).hasAttribute('aria-label', 'Owners');
+    assert.dom(triggers[1]).hasAttribute('aria-label', 'Reviewers');
+  });
+
+  test('the composed name never ends in a dangling separator', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="nobody"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    // A key with no registered option behind it counts as a selection but
+    // resolves to no text, and `Owner, ` is announced as "Owner comma".
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="custom-selected"]')
+      .doesNotExist('there is no option behind the key, so nothing renders');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'aria-label',
+        'Owner',
+        'the separator only appears between two non-empty halves'
+      );
+  });
+
+  test('with no label or placeholder the name is the selected text alone', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @selectedKey="ana"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+        <Select
+          @items={{demoUsers}}
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{array "ana"}}
+          @onSelectionChange={{noopKeys}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    const triggers = document.querySelectorAll(
+      '[data-component="select-trigger"]'
+    );
+
+    // `Select options` is a hardcoded English literal; prefixing the selected
+    // text with it names the control no better and localizes worse.
+    assert
+      .dom(triggers[0])
+      .hasAttribute(
+        'aria-label',
+        'Ana',
+        'the selection names the control on its own'
+      );
+
+    // Chips mode has no selected text inside the trigger to fall back to, so
+    // the literal is still the only answer there -- unchanged.
+    assert
+      .dom(triggers[1])
+      .hasAttribute(
+        'aria-label',
+        'Select options',
+        'chips mode is untouched by that fallback'
+      );
+  });
+
+  test('an `aria-label` on the Select does not reach the trigger', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="ana"
+          @onSelectionChange={{noop}}
+          aria-label="Pick an owner"
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    // `...attributes` on `<Select>` land on the wrapper element, not on the
+    // combobox, so a consumer cannot override the composed name this way.
+    // The docs say so rather than promising an override that does not exist.
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasAttribute(
+        'aria-label',
+        'Owner, Ana',
+        'the composed name still wins on the trigger'
+      );
+  });
+
+  test('`selected.item` is the `@items` entry the selection came from', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="cleo"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-email">{{emailOf selected.item}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="custom-email"]')
+      .hasText(
+        'cleo@example.com',
+        'the block can reach the consumer’s own object'
+      );
+  });
+
+  test('`selected.item` is undefined for options written in block form', async function (assert) {
+    await render(
+      <template>
+        <Select @label="Owner" @selectedKey="ana" @onSelectionChange={{noop}}>
+          <:default as |l|>
+            <l.Item @key="ana">Ana</l.Item>
+            <l.Item @key="bruno">Bruno</l.Item>
+          </:default>
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-email">{{emailOf selected.item}}</span>
+            <span data-test-id="custom-label">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="custom-email"]')
+      .hasText('no-item', 'there is no collection entry behind a block option');
+    assert
+      .dom('[data-test-id="custom-label"]')
+      .hasText('Ana', 'the label is still available');
+  });
+
+  test('a `:selectedItem` block rendering no text still leaves the trigger named', async function (assert) {
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owner"
+          @selectedKey="bruno"
+          @onSelectionChange={{noop}}
+        >
+          <:selectedItem as |selected|>
+            <span
+              data-test-id="graphic-only"
+              data-key={{selected.key}}
+              aria-hidden="true"
+            ></span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-component="select-trigger"] [data-test-id="graphic-only"]')
+      .exists('the block rendered, and rendered nothing readable');
+    assert
+      .dom('[data-component="select-trigger"]')
+      .hasText('', 'the trigger has no text of its own to be named by');
+
+    const trigger = document.querySelector(
+      '[data-component="select-trigger"]'
+    ) as HTMLElement;
+    const ariaLabel = trigger.getAttribute('aria-label');
+
+    assert.ok(
+      ariaLabel && ariaLabel.trim() !== '',
+      `the trigger carries a non-empty aria-label (got ${JSON.stringify(ariaLabel)})`
+    );
+    assert.strictEqual(
+      ariaLabel,
+      'Owner, Bruno',
+      'built from the field label and the selected option text'
+    );
+  });
+
+  test('chips carrying custom content are still removable, tabbable-past and Backspace-able', async function (assert) {
+    const selectedKeys = cell<string[]>(['ana', 'bruno', 'cleo']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @selectionMode="multiple"
+          @allowEmpty={{true}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="bruno"] button')
+      .hasAttribute(
+        'tabindex',
+        '-1',
+        'close buttons stay out of the tab order'
+      );
+
+    await click('[data-test-id="selected-chip"][data-key="bruno"] button');
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['ana', 'cleo'],
+      'the close button removed just that selection'
+    );
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="bruno"]')
+      .doesNotExist();
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['ana'],
+      'Backspace on the trigger still removes the last chip'
+    );
+  });
+
+  test('@allowEmpty still governs chips carrying custom content', async function (assert) {
+    const selectedKeys = cell<string[]>(['ana']);
+    const onChange = (keys: string[]) => (selectedKeys.current = keys);
+
+    await render(
+      <template>
+        <Select
+          @items={{demoUsers}}
+          @label="Owners"
+          @selectionMode="multiple"
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onChange}}
+        >
+          <:selectedItem as |selected|>
+            <span data-test-id="custom-selected">{{selected.label}}</span>
+          </:selectedItem>
+        </Select>
+      </template>
+    );
+
+    assert
+      .dom(
+        '[data-test-id="selected-chip"][data-key="ana"] [data-test-id="custom-selected"]'
+      )
+      .exists('the chip carries the custom content');
+    assert
+      .dom('[data-test-id="selected-chip"][data-key="ana"] button')
+      .doesNotExist(
+        'the last selection cannot be removed without @allowEmpty, so no dead close button'
+      );
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Backspace'
+    );
+
+    assert.deepEqual(
+      selectedKeys.current,
+      ['ana'],
+      'and Backspace cannot remove it either'
+    );
+  });
 });
