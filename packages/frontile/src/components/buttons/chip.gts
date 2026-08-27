@@ -12,7 +12,9 @@ interface ChipSignature {
     appearance?: 'default' | 'outlined' | 'faded';
 
     /**
-     * The intent of the chip
+     * The intent of the chip, which drives its color
+     *
+     * @defaultValue 'default'
      */
     intent?:
       | 'default'
@@ -25,16 +27,24 @@ interface ChipSignature {
 
     /**
      * The size of the chip
+     *
+     * @defaultValue 'md'
      */
     size?: 'sm' | 'md' | 'lg';
 
     /**
-     * The radius the chip
+     * The border radius of the chip
+     *
+     * @defaultValue 'full'
      */
     radius?: 'none' | 'sm' | 'lg' | 'full';
 
     /**
-     * Option to add dot to the chip
+     * Adds a dot before the content, colored by `@intent`. On the `default`
+     * appearance the dot takes the chip's text color, since the chip's
+     * background is already the intent color.
+     *
+     * @defaultValue false
      */
     withDot?: boolean;
 
@@ -66,7 +76,9 @@ interface ChipSignature {
     closeButtonTabIndex?: number | string;
 
     /**
-     * Disables the clip and disables the close button if any.
+     * Dims the chip and disables its close button, if any.
+     *
+     * @defaultValue false
      */
     isDisabled?: boolean;
 
