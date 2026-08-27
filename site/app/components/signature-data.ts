@@ -17330,6 +17330,71 @@ const data: ComponentDoc[] = [
           'The content to display when there are no available options.\nIf <code>hideEmptyContent</code> argument is true, this content will not be shown.',
         tags: {},
       },
+      {
+        identifier: 'selectedItem',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">SelectedItemBlockArg</span>&#x3C;T>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: 'T' },
+                    isRequired: false,
+                    isInternal: false,
+                    description:
+                      'The entry of `@items` this selection came from.\n\nUndefined for an option written out in block form rather than rendered\nfrom `@items` -- there is no collection entry behind it, so only `key` and\n`label` are available there.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      "The option's text, i.e. what would be rendered without this block.",
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "What the `:selectedItem` block is handed for one selected option.\n\nDeliberately the same `{ item, key, label }` shape the `:item` block yields,\nso markup can move between the two blocks without being renamed. It is the\npublic face of {@link SelectedItem}: `label` is that projection's\n`textValue`.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          '<p>Custom content for each <em>selected</em> option, in place of its plain text.</p>\n<p>Renders in every presentation of the selection: inside the single-mode\ntrigger, inside each chip in multiple mode (the chip chrome, <code>@chip</code>\noptions and close button are kept), and once per selection --\ncomma-separated -- under <code>@selectedItemsDisplay="text"</code>.</p>\n<p>Yields the same <code>{ item, key, label }</code> the <code>:item</code> block does, so the\nsame markup works in both. <code>item</code> is undefined for options written in\nblock form rather than rendered from <code>@items</code>.</p>\n<p>Because a block rendering only graphics would otherwise leave the\nsingle-mode trigger with no accessible name, supplying this block also\ngives the trigger a guaranteed <code>aria-label</code> built from the field label\nand the selected options\' text.</p>',
+        tags: {
+          example: { name: 'example', value: '```gts\n<Select' },
+          items: {
+            name: 'items',
+            value:
+              '={{this.users}} as |s|>\n<:selectedItem as |selected|>\n<Avatar',
+          },
+          src: {
+            name: 'src',
+            value:
+              '={{selected.item.avatar}} />\n{{selected.label}}\n</:selectedItem>\n</Select>\n```',
+          },
+        },
+      },
     ],
     Element: {
       identifier: 'Element',
@@ -17359,8 +17424,70 @@ const data: ComponentDoc[] = [
         description: 'The selection, in item order.',
         tags: {},
       },
+      {
+        identifier: 'hasCustomContent',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether the <code>:item</code> block is the consumer's own content rather than the\nfallback the Select fills it with.</p>\n<p>A block cannot be passed conditionally in Glimmer, so the Select always\nsupplies one; this is how the plain presentation stays <em>exactly</em> what it\nwas -- the whole selection as one joined string in a single text node --\ninstead of becoming a per-item loop that merely renders the same\ncharacters.</p>",
+        tags: {},
+      },
     ],
-    Blocks: [],
+    Blocks: [
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">SelectedItemBlockArg</span>&#x3C;<span class="hljs-built_in">never</span>>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: false,
+                    isInternal: false,
+                    description:
+                      'The entry of `@items` this selection came from.\n\nUndefined for an option written out in block form rather than rendered\nfrom `@items` -- there is no collection entry behind it, so only `key` and\n`label` are available there.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      "The option's text, i.e. what would be rendered without this block.",
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "What the `:selectedItem` block is handed for one selected option.\n\nDeliberately the same `{ item, key, label }` shape the `:item` block yields,\nso markup can move between the two blocks without being renamed. It is the\npublic face of {@link SelectedItem}: `label` is that projection's\n`textValue`.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'Content for one selected option, in place of its text.',
+        tags: {},
+      },
+    ],
     Element: {
       identifier: 'Element',
       type: { type: '<span class="hljs-title class_">HTMLSpanElement</span>' },
@@ -17526,7 +17653,61 @@ const data: ComponentDoc[] = [
         tags: {},
       },
     ],
-    Blocks: [],
+    Blocks: [
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">SelectedItemBlockArg</span>&#x3C;<span class="hljs-built_in">never</span>>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: false,
+                    isInternal: false,
+                    description:
+                      'The entry of `@items` this selection came from.\n\nUndefined for an option written out in block form rather than rendered\nfrom `@items` -- there is no collection entry behind it, so only `key` and\n`label` are available there.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      "The option's text, i.e. what would be rendered without this block.",
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "What the `:selectedItem` block is handed for one selected option.\n\nDeliberately the same `{ item, key, label }` shape the `:item` block yields,\nso markup can move between the two blocks without being renamed. It is the\npublic face of {@link SelectedItem}: `label` is that projection's\n`textValue`.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The body of one chip, in place of the option's text. The chip chrome --\nits appearance, its dot and its close button -- is not the block's to\nreplace, so it stays put around whatever is rendered here.",
+        tags: {},
+      },
+    ],
     Element: {
       identifier: 'Element',
       type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
@@ -17534,7 +17715,7 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description:
-      '<p>The selection presented as a row of removable {@link Chip }s beside the\ntrigger.</p>\n<p>The close buttons are deliberately outside the tab order\n(<code>@closeButtonTabIndex="-1"</code>) so the trigger keeps the first Tab stop in the\nfield; Backspace on the field is the keyboard route to removal.</p>',
+      '<p>The selection presented as a row of removable {@link Chip }s beside the\ntrigger.</p>\n<p>The close buttons are deliberately outside the tab order\n(<code>@closeButtonTabIndex="-1"</code>) so the trigger keeps the first Tab stop in the\nfield; Backspace on the field is the keyboard route to removal.</p>\n<p>The close button\'s title is built from <code>textValue</code>, never from the block, so\na chip whose body is purely graphical is still announced as "Remove ".</p>',
     tags: {},
   },
   {
@@ -17550,7 +17731,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          'Names the <em>control</em> while chips are shown. In chips mode the trigger\nrenders no text of its own, so without this the combobox would be\nannounced unnamed.',
+          '<p>Names the trigger when its own text cannot.</p>\n<p>In chips mode the trigger renders no text of its own (the chips are its\nsiblings and are read separately), so without this the combobox would be\nannounced unnamed. The same is true whenever <code>@hasCustomContent</code> is set:\nthe block may render nothing readable at all.</p>',
         tags: {},
       },
       {
@@ -17674,6 +17855,15 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'hasCustomContent',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>Whether the consumer supplied a <code>:selectedItem</code> block, i.e. whether the\ntext inside the trigger is theirs rather than the option's label.</p>\n<p>Two things hang off this: the trigger stops trusting its own text\ncontent for its accessible name, and {@link SelectedText } switches from\nthe joined string to a per-selection loop.</p>",
+        tags: {},
+      },
+      {
         identifier: 'isDisabled',
         type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
@@ -17709,7 +17899,61 @@ const data: ComponentDoc[] = [
         tags: {},
       },
     ],
-    Blocks: [],
+    Blocks: [
+      {
+        identifier: 'selectedItem',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">SelectedItemBlockArg</span>&#x3C;<span class="hljs-built_in">never</span>>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: '<span class="hljs-built_in">never</span>' },
+                    isRequired: false,
+                    isInternal: false,
+                    description:
+                      'The entry of `@items` this selection came from.\n\nUndefined for an option written out in block form rather than rendered\nfrom `@items` -- there is no collection entry behind it, so only `key` and\n`label` are available there.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      "The option's text, i.e. what would be rendered without this block.",
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "What the `:selectedItem` block is handed for one selected option.\n\nDeliberately the same `{ item, key, label }` shape the `:item` block yields,\nso markup can move between the two blocks without being renamed. It is the\npublic face of {@link SelectedItem}: `label` is that projection's\n`textValue`.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "Content for one selected option, forwarded straight through to\n{@link SelectedText }. Always supplied by the Select -- a block cannot be\npassed conditionally -- so <code>@hasCustomContent</code> is what says whether it\nholds the consumer's markup or the plain-label fallback.",
+        tags: {},
+      },
+    ],
     description:
       '<p>The Select\'s trigger: a filter <code>&#x3C;input></code> when <code>@isFilterable</code>, otherwise a\n<code>&#x3C;button></code>.</p>\n<p>Both carry <code>data-component="select-trigger"</code> and the same <code>input</code> slot, whose\n<code>hasChips</code> variant is what gives the trigger a hittable box when it has to\nshare a flex line with the chips instead of being the whole field.</p>',
     tags: {},

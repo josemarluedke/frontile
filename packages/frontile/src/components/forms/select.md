@@ -363,6 +363,134 @@ const users = [
 ];
 ```
 
+### Custom Selected Item Content
+
+`<:item>` styles an option **in the dropdown**. To style it once it is **selected**, add a
+`<:selectedItem>` block. It yields the same `{ item, key, label }` the `<:item>` block does,
+so markup moves between the two without being renamed, and it renders in every presentation
+of the selection: inside the single-mode trigger, inside each chip in multiple mode, and once
+per selection under `@selectedItemsDisplay="text"`.
+
+Typically the dropdown row is the rich one — avatar, name and email — while the trigger keeps
+a compact version of it.
+
+> **Note:** `selected.item` is your own entry from `@items`. It is `undefined` for options
+> written out with `<:default>` block syntax, because there is no collection entry behind
+> them; only `key` and `label` are available in that case.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Select } from 'frontile';
+
+export default class CustomSelectedItem extends Component {
+  @tracked selectedKey: string | null = 'john-doe';
+  @tracked selectedKeys: string[] = ['john-doe', 'jane-smith'];
+
+  onSelectionChange = (key: string | null) => {
+    this.selectedKey = key;
+  };
+
+  onMultipleSelectionChange = (keys: string[]) => {
+    this.selectedKeys = keys;
+  };
+
+  <template>
+    <Select
+      @label='Assignee'
+      @placeholder='Select a user'
+      @items={{people}}
+      @selectedKey={{this.selectedKey}}
+      @onSelectionChange={{this.onSelectionChange}}
+    >
+      <:item as |o|>
+        <o.Item>
+          <div class='flex items-center space-x-4'>
+            <img
+              src='{{o.item.avatar}}'
+              alt=''
+              class='w-10 h-10 rounded-full'
+            />
+            <div>
+              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+            </div>
+          </div>
+        </o.Item>
+      </:item>
+      <:selectedItem as |selected|>
+        <span class='flex items-center space-x-2'>
+          <img src='{{selected.item.avatar}}' alt='' class='w-5 h-5 rounded-full' />
+          <span>{{selected.label}}</span>
+        </span>
+      </:selectedItem>
+    </Select>
+
+    <Select
+      @label='Reviewers'
+      @selectionMode='multiple'
+      @allowEmpty={{true}}
+      @placeholder='Select reviewers'
+      @items={{people}}
+      @selectedKeys={{this.selectedKeys}}
+      @onSelectionChange={{this.onMultipleSelectionChange}}
+      class='mt-6'
+    >
+      <:item as |o|>
+        <o.Item>
+          <div class='flex items-center space-x-4'>
+            <img
+              src='{{o.item.avatar}}'
+              alt=''
+              class='w-10 h-10 rounded-full'
+            />
+            <div>
+              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+            </div>
+          </div>
+        </o.Item>
+      </:item>
+      <:selectedItem as |selected|>
+        <span class='flex items-center space-x-1'>
+          <img src='{{selected.item.avatar}}' alt='' class='w-4 h-4 rounded-full' />
+          <span>{{selected.label}}</span>
+        </span>
+      </:selectedItem>
+    </Select>
+  </template>
+}
+
+const people = [
+  {
+    id: 'john-doe',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=1'
+  },
+  {
+    id: 'jane-smith',
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=2'
+  },
+  {
+    id: 'alice-johnson',
+    name: 'Alice Johnson',
+    email: 'alice.johnson@example.com',
+    avatar: 'https://i.pravatar.cc/150?img=3'
+  }
+];
+```
+
+In multiple mode the chip chrome is kept around your content — the appearance, `@chip`
+options and the close button are still the Select's, so removal, `@allowEmpty` and the
+`Backspace` keyboard path keep working unchanged.
+
+The block is not applied to a filterable trigger's own text: an `<input>` cannot hold markup,
+so a filterable Select still shows the selection as text inside the input (the chips beside it
+do use the block).
+
 ### Declarative Items with Named Blocks
 
 You can also define options directly inside the component using block syntax (referred to here as declarative items). In this case, filtering is not available. This example also demonstrates the use of the `@disabledKeys` and `@allowEmpty` options. When `@allowEmpty` is enabled, clicking a selected item will toggle its selection state (i.e. deselect it).
@@ -847,6 +975,7 @@ several pieces:
 | Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                          |
 | Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                               |
 | Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
+| `<:selectedItem>` | Supplying the block gives the trigger an explicit `aria-label` — see below |
 
 Keyboard handling comes from the listbox:
 
@@ -879,6 +1008,23 @@ it alone.
 If you set `@chip` or restyle the chips, do not re-enable the close buttons as tab stops
 without also removing this keyboard path — a visual order that disagrees with focus order is
 its own WCAG 2.4.3 problem.
+
+### Naming the trigger with `<:selectedItem>`
+
+Left alone, the single-mode trigger takes its accessible name from its own text — the selected
+label, or the placeholder. A `<:selectedItem>` block owns that text and may render nothing
+readable at all (an avatar, an icon), which would leave the combobox announced as an unnamed
+button.
+
+So whenever the block is supplied, the trigger carries an explicit `aria-label` built from the
+field label (falling back to `@placeholder`, then to `Select options`) and the selected
+options' own text — `Assignee, John Doe` for the example above. You do not have to add
+anything; hiding decorative images from assistive technology (`alt=''`) is enough.
+
+Chips mode is unaffected: the trigger there is already named by `aria-label`, and the chips
+are its siblings, so they are read on their own. Chip close buttons keep taking their
+`Remove <label>` text from the option, never from your block, so a purely graphical chip is
+still removable by name.
 
 ## API
 

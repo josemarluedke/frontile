@@ -6,7 +6,8 @@ import { Chip } from '../../buttons/chip';
 import type {
   ResolvedSelectChipOptions,
   SelectClasses,
-  SelectedItem
+  SelectedItem,
+  SelectedItemBlockArg
 } from './types';
 
 /**
@@ -16,10 +17,46 @@ import type {
 const joinTextValues = (items: SelectedItem[]): string =>
   items.map((item) => item.textValue).join(', ');
 
+/**
+ * Maps the internal {@link SelectedItem} projection onto what the `:item`
+ * block here -- and, through it, the Select's `:selectedItem` block -- is
+ * handed: `{ item, key, label }`, the same shape the `:item` block of the
+ * listbox yields, so markup moves between the two unchanged.
+ *
+ * `item` is `unknown` at this level (it comes off the registered option
+ * nodes), so it is typed `never` to stay assignable to the consumer's own `T`
+ * when Select re-yields it. It is optional either way: an option written in
+ * block form has no collection entry behind it.
+ */
+const toBlockArg = (item: SelectedItem): SelectedItemBlockArg<never> => ({
+  item: item.item as never,
+  key: item.key,
+  label: item.textValue
+});
+
+/** Whether a comma separator is needed before this selection. */
+const isNotFirst = (index: number): boolean => index > 0;
+
 interface SelectedTextSignature {
   Args: {
     /** The selection, in item order. */
     items: SelectedItem[];
+
+    /**
+     * Whether the `:item` block is the consumer's own content rather than the
+     * fallback the Select fills it with.
+     *
+     * A block cannot be passed conditionally in Glimmer, so the Select always
+     * supplies one; this is how the plain presentation stays *exactly* what it
+     * was -- the whole selection as one joined string in a single text node --
+     * instead of becoming a per-item loop that merely renders the same
+     * characters.
+     */
+    hasCustomContent?: boolean;
+  };
+  Blocks: {
+    /** Content for one selected option, in place of its text. */
+    item: [SelectedItemBlockArg<never>];
   };
   Element: HTMLSpanElement;
 }
@@ -33,7 +70,14 @@ interface SelectedTextSignature {
  */
 const SelectedText: TOC<SelectedTextSignature> = <template>
   <span ...attributes>
-    {{joinTextValues @items}}
+    {{#if @hasCustomContent}}
+      {{#each @items key="key" as |item index|}}
+        {{~#if (isNotFirst index)}}, {{/if~}}
+        {{~yield (toBlockArg item) to="item"~}}
+      {{/each}}
+    {{else}}
+      {{joinTextValues @items}}
+    {{/if}}
   </span>
 </template>;
 
@@ -62,6 +106,14 @@ interface SelectedChipsSignature {
 
     onRemove: (key: string) => void;
   };
+  Blocks: {
+    /**
+     * The body of one chip, in place of the option's text. The chip chrome --
+     * its appearance, its dot and its close button -- is not the block's to
+     * replace, so it stays put around whatever is rendered here.
+     */
+    item: [SelectedItemBlockArg<never>];
+  };
   Element: HTMLDivElement;
 }
 
@@ -72,6 +124,9 @@ interface SelectedChipsSignature {
  * The close buttons are deliberately outside the tab order
  * (`@closeButtonTabIndex="-1"`) so the trigger keeps the first Tab stop in the
  * field; Backspace on the field is the keyboard route to removal.
+ *
+ * The close button's title is built from `textValue`, never from the block, so
+ * a chip whose body is purely graphical is still announced as "Remove <label>".
  */
 const SelectedChips: TOC<SelectedChipsSignature> = <template>
   <div
@@ -95,7 +150,7 @@ const SelectedChips: TOC<SelectedChipsSignature> = <template>
         @closeButtonTabIndex="-1"
         @onClose={{if @isRemovable (fn @onRemove item.key)}}
       >
-        {{item.textValue}}
+        {{yield (toBlockArg item) to="item"}}
       </Chip>
     {{/each}}
   </div>

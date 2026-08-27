@@ -3,9 +3,14 @@ import type { TOC } from '@ember/component/template-only';
 import type { ModifierLike } from '@glint/template';
 import type { SlotsToClasses, SelectSlots } from '@frontile/theme';
 import { SelectedText } from './selected-items';
-import type { SelectClasses, SelectedItem } from './types';
+import type {
+  SelectClasses,
+  SelectedItem,
+  SelectedItemBlockArg
+} from './types';
 
 const and = (a: unknown, b: unknown) => Boolean(a) && Boolean(b);
+const or = (a: unknown, b: unknown) => Boolean(a) || Boolean(b);
 const valueUnless = <T,>(condition: unknown, value: T): T | undefined =>
   condition ? undefined : value;
 
@@ -29,11 +34,24 @@ interface SelectTriggerSignature {
     showChips: boolean;
 
     /**
-     * Names the *control* while chips are shown. In chips mode the trigger
-     * renders no text of its own, so without this the combobox would be
-     * announced unnamed.
+     * Names the trigger when its own text cannot.
+     *
+     * In chips mode the trigger renders no text of its own (the chips are its
+     * siblings and are read separately), so without this the combobox would be
+     * announced unnamed. The same is true whenever `@hasCustomContent` is set:
+     * the block may render nothing readable at all.
      */
     accessibleName: string;
+
+    /**
+     * Whether the consumer supplied a `:selectedItem` block, i.e. whether the
+     * text inside the trigger is theirs rather than the option's label.
+     *
+     * Two things hang off this: the trigger stops trusting its own text
+     * content for its accessible name, and {@link SelectedText} switches from
+     * the joined string to a per-selection loop.
+     */
+    hasCustomContent?: boolean;
 
     placeholder?: string;
     hasSelection: boolean;
@@ -51,6 +69,15 @@ interface SelectTriggerSignature {
     onFilterKeydown: (event: KeyboardEvent) => void;
     onKeydown: (event: KeyboardEvent) => void;
     onBlur: () => void;
+  };
+  Blocks: {
+    /**
+     * Content for one selected option, forwarded straight through to
+     * {@link SelectedText}. Always supplied by the Select -- a block cannot be
+     * passed conditionally -- so `@hasCustomContent` is what says whether it
+     * holds the consumer's markup or the plain-label fallback.
+     */
+    selectedItem: [SelectedItemBlockArg<never>];
   };
 }
 
@@ -71,7 +98,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       data-test-id="trigger"
       data-component="select-trigger"
       disabled={{@isDisabled}}
-      aria-label={{if @showChips @accessibleName}}
+      aria-label={{if (or @showChips @hasCustomContent) @accessibleName}}
       placeholder={{valueUnless (and @showChips @hasSelection) @placeholder}}
       class={{@classes.input
         class=@userClasses.input
@@ -92,7 +119,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       data-test-id="trigger"
       data-component="select-trigger"
       disabled={{@isDisabled}}
-      aria-label={{if @showChips @accessibleName}}
+      aria-label={{if (or @showChips @hasCustomContent) @accessibleName}}
       class={{@classes.input
         class=@userClasses.input
         hasStartContent=@hasStartContent
@@ -104,7 +131,12 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
     >
       {{#if @hasSelection}}
         {{#unless @showChips}}
-          <SelectedText @items={{@items}} />
+          <SelectedText
+            @items={{@items}}
+            @hasCustomContent={{@hasCustomContent}}
+          >
+            <:item as |selected|>{{yield selected to="selectedItem"}}</:item>
+          </SelectedText>
         {{/unless}}
       {{else}}
         <span class={{@classes.placeholder class=@userClasses.placeholder}}>
