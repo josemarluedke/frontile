@@ -6,7 +6,9 @@ imports:
 
 # Chip
 
-Chips are compact elements that represent an input, attribute, or action.
+Chips are compact elements that represent an input, attribute, or action — a
+filter that has been applied, a tag on a record, a value selected in a
+multi-select field.
 
 ## Import
 
@@ -26,11 +28,14 @@ import { Chip } from 'frontile';
 
 ## Chip Appearances
 
+`default` is a filled chip, `outlined` draws the intent color as a border on the
+page background, and `faded` is a tinted surface with intent-colored text.
+
 ```gts preview
 import { Chip } from 'frontile';
 
 <template>
-  <div>
+  <div class='flex flex-wrap items-center gap-3'>
     <Chip @appearance='default'>Default</Chip>
     <Chip @appearance='outlined'>Outlined</Chip>
     <Chip @appearance='faded'>Faded</Chip>
@@ -40,112 +45,41 @@ import { Chip } from 'frontile';
 
 ## Chip Intents
 
+Every intent is available in every appearance. The label on each row is the
+`@appearance` value; the chip labels are the `@intent` values.
+
 ```gts preview
 import { Chip } from 'frontile';
+import { array } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
 
 <template>
-  <div>
-    <Chip @intent='default'>Chip</Chip>
-    <Chip @intent='primary'>Primary</Chip>
-    <Chip @intent='secondary'>Secondary</Chip>
-    <Chip @intent='tertiary'>Tertiary</Chip>
-    <Chip @intent='success'>Success</Chip>
-    <Chip @intent='warning'>Warning</Chip>
-    <Chip @intent='danger'>Danger</Chip>
-  </div>
-  <div class='mt-6'>
-    <Chip @appearance='outlined' @intent='default'>Chip</Chip>
-    <Chip @appearance='outlined' @intent='primary'>Primary</Chip>
-    <Chip @appearance='outlined' @intent='secondary'>Secondary</Chip>
-    <Chip @appearance='outlined' @intent='tertiary'>Tertiary</Chip>
-    <Chip @appearance='outlined' @intent='success'>Success</Chip>
-    <Chip @appearance='outlined' @intent='warning'>Warning</Chip>
-    <Chip @appearance='outlined' @intent='danger'>Danger</Chip>
-  </div>
-  <div class='mt-6'>
-    <Chip @appearance='faded' @intent='default'>Chip</Chip>
-    <Chip @appearance='faded' @intent='primary'>Primary</Chip>
-    <Chip @appearance='faded' @intent='secondary'>Secondary</Chip>
-    <Chip @appearance='faded' @intent='tertiary'>Tertiary</Chip>
-    <Chip @appearance='faded' @intent='success'>Success</Chip>
-    <Chip @appearance='faded' @intent='warning'>Warning</Chip>
-    <Chip @appearance='faded' @intent='danger'>Danger</Chip>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Chip @appearance={{appearance}} @intent={{intent}}>
+              {{intent}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
   </div>
 </template>
-```
-
-## Chip with Dots
-
-```gts preview
-import { Chip } from 'frontile';
-
-<template>
-  <div>
-    <Chip @appearance='outlined' @intent='default' @withDot={{true}}>Chip</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='primary'
-      @withDot={{true}}
-    >Primary</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='secondary'
-      @withDot={{true}}
-    >Secondary</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='tertiary'
-      @withDot={{true}}
-    >Tertiary</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='success'
-      @withDot={{true}}
-    >Success</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='warning'
-      @withDot={{true}}
-    >Warning</Chip>
-    <Chip
-      @appearance='outlined'
-      @intent='danger'
-      @withDot={{true}}
-    >Danger</Chip>
-  </div>
-</template>
-```
-
-## Close Button
-
-If you pass the `@onClose` argument, the close button will be visible.
-
-```gts preview
-import Component from '@glimmer/component';
-import { action } from '@ember/object';
-import { Chip } from 'frontile';
-
-export default class DemoComponent extends Component {
-  @action
-  onClose() {
-    console.log('close');
-  }
-
-  <template>
-    <Chip @appearance='faded' @onClose={{this.onClose}}>My Chip</Chip>
-    <Chip @appearance='faded' @intent='primary' @onClose={{this.onClose}}>My
-      Chip</Chip>
-    <Chip @appearance='faded' @intent='secondary' @onClose={{this.onClose}}>My
-      Chip</Chip>
-    <Chip @appearance='faded' @intent='tertiary' @onClose={{this.onClose}}>My
-      Chip</Chip>
-    <Chip @appearance='faded' @intent='success' @onClose={{this.onClose}}>My
-      Chip</Chip>
-    <Chip @appearance='faded' @intent='warning' @onClose={{this.onClose}}>My
-      Chip</Chip>
-    <Chip @appearance='faded' @intent='danger' @onClose={{this.onClose}}>My Chip</Chip>
-  </template>
-}
 ```
 
 ## Chip Sizes
@@ -154,47 +88,201 @@ export default class DemoComponent extends Component {
 import { Chip } from 'frontile';
 
 <template>
-  <Chip @size='sm'>Chip</Chip>
-  <Chip @size='md'>Chip</Chip>
-  <Chip @size='lg'>Chip</Chip>
-</template>
-```
-
-## Disabled
-
-You can pass the argument `@isDisabled` to represent a disabled chip.
-
-```gts preview
-import { Chip } from 'frontile';
-
-<template>
-  <div>
-    <Chip @intent='default' @isDisabled={{true}}>Chip</Chip>
-    <Chip @intent='primary' @isDisabled={{true}}>Primary</Chip>
-    <Chip @intent='secondary' @isDisabled={{true}}>Secondary</Chip>
-    <Chip @intent='tertiary' @isDisabled={{true}}>Tertiary</Chip>
-    <Chip @intent='success' @isDisabled={{true}}>Success</Chip>
-    <Chip @intent='warning' @isDisabled={{true}}>Warning</Chip>
-    <Chip @intent='danger' @isDisabled={{true}}>Danger</Chip>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Chip @size='sm'>Chip sm</Chip>
+    <Chip @size='md'>Chip md</Chip>
+    <Chip @size='lg'>Chip lg</Chip>
   </div>
 </template>
 ```
 
-You can also use TailwindCSS classes to customize even further.
+The dot and the close button scale with the chip, so a size change does not need
+any other adjustment.
 
 ```gts preview
 import { Chip } from 'frontile';
+import { array } from '@ember/helper';
+
+const noop = (): void => {};
 
 <template>
-  <Chip @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
-    Chip
-  </Chip>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each (array 'sm' 'md' 'lg') as |size|}}
+            <Chip
+              @appearance={{appearance}}
+              @intent='primary'
+              @size={{size}}
+              @withDot={{true}}
+              @onClose={{noop}}
+              @closeButtonTitle='Remove {{size}} chip'
+            >
+              {{size}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
 </template>
 ```
 
-Note that here we used the HTML attribute `class`, instead of the argument `@class`.
-Using the class attribute will just append the class names passed in, while the
-argument `@class` will override and merge TailwindCSS class names.
+## Chip Radius
+
+`full` is the default. Use a smaller radius when chips sit alongside other
+squared-off controls.
+
+```gts preview
+import { Chip } from 'frontile';
+import { array } from '@ember/helper';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    {{#each (array 'none' 'sm' 'lg' 'full') as |radius|}}
+      <Chip @appearance='outlined' @intent='primary' @radius={{radius}}>
+        {{radius}}
+      </Chip>
+    {{/each}}
+  </div>
+</template>
+```
+
+## Chip with Dots
+
+`@withDot` adds a small intent-colored dot before the content — useful when the
+chip stands for a status and the color needs to read at a glance.
+
+```gts preview
+import { Chip } from 'frontile';
+import { array } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
+
+<template>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Chip
+              @appearance={{appearance}}
+              @intent={{intent}}
+              @withDot={{true}}
+            >
+              {{intent}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>
+```
+
+## Close Button
+
+Passing `@onClose` makes the close button visible.
+
+```gts preview
+import { Chip } from 'frontile';
+import { array, concat } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
+
+const noop = (): void => {};
+
+<template>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Chip
+              @appearance={{appearance}}
+              @intent={{intent}}
+              @onClose={{noop}}
+              @closeButtonTitle={{concat 'Remove ' intent}}
+            >
+              {{intent}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>
+```
+
+### Dot and Close Button Together
+
+```gts preview
+import { Chip } from 'frontile';
+import { array, concat } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
+
+const noop = (): void => {};
+
+<template>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Chip
+              @appearance={{appearance}}
+              @intent={{intent}}
+              @withDot={{true}}
+              @onClose={{noop}}
+              @closeButtonTitle={{concat 'Remove ' intent}}
+            >
+              {{intent}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>
+```
 
 ### Naming the close button
 
@@ -244,6 +332,70 @@ reachable. `Select` does exactly this in chips mode. If you do it, you owe keybo
 users another way to remove a chip (`Select` uses `Backspace` on the field); leaving
 them with no route at all is worse than the extra tab stops.
 
+## Disabled
+
+`@isDisabled` dims the chip and disables its close button, so the value can no
+longer be removed.
+
+```gts preview
+import { Chip } from 'frontile';
+import { array } from '@ember/helper';
+
+const intents = [
+  'default',
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'danger'
+];
+
+const noop = (): void => {};
+
+<template>
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'default' 'outlined' 'faded') as |appearance|}}
+      <div>
+        <p class='font-code text-code-sm text-neutral-strong mb-2'>
+          @appearance='{{appearance}}'
+        </p>
+        <div class='flex flex-wrap items-center gap-3'>
+          {{#each intents as |intent|}}
+            <Chip
+              @appearance={{appearance}}
+              @intent={{intent}}
+              @withDot={{true}}
+              @onClose={{noop}}
+              @isDisabled={{true}}
+            >
+              {{intent}}
+            </Chip>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</template>
+```
+
+## Customizing
+
+You can also use TailwindCSS classes to customize even further.
+
+```gts preview
+import { Chip } from 'frontile';
+
+<template>
+  <Chip @appearance='outlined' @intent='primary' @class='px-20 py-2 italic'>
+    Chip
+  </Chip>
+</template>
+```
+
+The argument `@class` overrides and merges TailwindCSS class names, while the HTML
+attribute `class` just appends the class names passed in.
+
 ## Accessibility
 
 A `Chip` is a `<div>` holding text — it has no role of its own, because a chip is
@@ -251,9 +403,9 @@ not one thing. What it means depends on what you are using it for, and that
 determines what you owe it:
 
 - **As a label or attribute** (a status, a tag, a count) it is ordinary text.
-  Nothing extra is needed. Do not rely on `@intent` alone to carry the meaning:
-  `@intent='danger'` reads as "failed" to a sighted user and as nothing at all to
-  a screen reader, so keep the word in the content.
+  Nothing extra is needed. Do not rely on `@intent` or `@withDot` alone to carry
+  the meaning: `@intent='danger'` reads as "failed" to a sighted user and as
+  nothing at all to a screen reader, so keep the word in the content.
 - **As a removable value** — with `@onClose` — the close button is the only
   interactive part. It is a real `<button>`, reached with `Tab` and activated
   with `Enter` or `Space`, and it needs a name that identifies the chip; see
@@ -301,10 +453,9 @@ export default class Example extends Component {
 }
 ```
 
-`@isDisabled` styles the chip as disabled and disables its close button, so the
-value can no longer be removed. It does not hide the chip from assistive
-technology — the text is still read, which is usually what you want for a value
-that is present but locked.
+`@isDisabled` does not hide the chip from assistive technology — the text is
+still read, which is usually what you want for a value that is present but
+locked.
 
 ## API
 
