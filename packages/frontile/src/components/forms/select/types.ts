@@ -456,10 +456,14 @@ interface SelectSignature<T> {
     /**
      * Custom content for each *selected* option, in place of its plain text.
      *
-     * Renders in every presentation of the selection: inside the single-mode
-     * trigger, inside each chip in multiple mode (the chip chrome, `@chip`
-     * options and close button are kept), and once per selection --
+     * Renders wherever the selection is drawn as markup: inside the
+     * single-mode trigger, inside each chip in multiple mode (the chip chrome,
+     * `@chip` options and close button are kept), and once per selection --
      * comma-separated -- under `@selectedItemsDisplay="text"`.
+     *
+     * **Not** inside a filterable trigger: that is an `<input>`, which cannot
+     * hold markup, so a filterable Select still shows the selection as plain
+     * text there. The chips beside the input do use the block.
      *
      * Yields the same `{ item, key, label }` the `:item` block does, so the
      * same markup works in both. `item` is undefined for options written in
@@ -467,8 +471,11 @@ interface SelectSignature<T> {
      *
      * Because a block rendering only graphics would otherwise leave the
      * single-mode trigger with no accessible name, supplying this block also
-     * gives the trigger a guaranteed `aria-label` built from the field label
-     * and the selected options' text.
+     * gives that (button) trigger an `aria-label` composed from the field
+     * label and the selected options' text. That name replaces what the block
+     * renders, so a block whose visible text is not the option's `label`
+     * should carry the label too, or set `@label`/`@placeholder` to the
+     * wording that is visible -- see the guide.
      *
      * @example
      * ```gts

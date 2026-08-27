@@ -367,16 +367,21 @@ const users = [
 
 `<:item>` styles an option **in the dropdown**. To style it once it is **selected**, add a
 `<:selectedItem>` block. It yields the same `{ item, key, label }` the `<:item>` block does,
-so markup moves between the two without being renamed, and it renders in every presentation
-of the selection: inside the single-mode trigger, inside each chip in multiple mode, and once
-per selection under `@selectedItemsDisplay="text"`.
+so markup moves between the two without being renamed, and it renders wherever the selection
+is drawn as markup: inside the single-mode trigger, inside each chip in multiple mode, and
+once per selection under `@selectedItemsDisplay="text"`.
 
 Typically the dropdown row is the rich one — avatar, name and email — while the trigger keeps
 a compact version of it.
 
 > **Note:** `selected.item` is your own entry from `@items`. It is `undefined` for options
 > written out with `<:default>` block syntax, because there is no collection entry behind
-> them; only `key` and `label` are available in that case.
+> them; only `key` and `label` are available in that case — so guard on it, as the demo
+> below does, before reaching into your own object.
+
+> **Note:** A **filterable** Select's trigger is an `<input>`, which cannot hold markup, so
+> the block does not render there: a filterable Select still shows the selection as plain
+> text inside the input. The chips beside that input do use the block.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -420,7 +425,13 @@ export default class CustomSelectedItem extends Component {
       </:item>
       <:selectedItem as |selected|>
         <span class='flex items-center space-x-2'>
-          <img src='{{selected.item.avatar}}' alt='' class='w-5 h-5 rounded-full' />
+          {{#if selected.item}}
+            <img
+              src='{{selected.item.avatar}}'
+              alt=''
+              class='w-5 h-5 rounded-full'
+            />
+          {{/if}}
           <span>{{selected.label}}</span>
         </span>
       </:selectedItem>
@@ -453,7 +464,13 @@ export default class CustomSelectedItem extends Component {
       </:item>
       <:selectedItem as |selected|>
         <span class='flex items-center space-x-1'>
-          <img src='{{selected.item.avatar}}' alt='' class='w-4 h-4 rounded-full' />
+          {{#if selected.item}}
+            <img
+              src='{{selected.item.avatar}}'
+              alt=''
+              class='w-4 h-4 rounded-full'
+            />
+          {{/if}}
           <span>{{selected.label}}</span>
         </span>
       </:selectedItem>
@@ -486,10 +503,6 @@ const people = [
 In multiple mode the chip chrome is kept around your content — the appearance, `@chip`
 options and the close button are still the Select's, so removal, `@allowEmpty` and the
 `Backspace` keyboard path keep working unchanged.
-
-The block is not applied to a filterable trigger's own text: an `<input>` cannot hold markup,
-so a filterable Select still shows the selection as text inside the input (the chips beside it
-do use the block).
 
 ### Declarative Items with Named Blocks
 
@@ -975,7 +988,7 @@ several pieces:
 | Options    | `role="option"` with `aria-labelledby`, `aria-selected` reflecting selection, and `aria-disabled="true"` on disabled keys                                                                                                          |
 | Form value | A visually hidden native `<select>` mirrors the options, so `@name` submits normally                                                                                                                                               |
 | Chips      | Each chip's close button is named `Remove <label>` with visually hidden text, so the buttons are announced distinctly. The chips sit beside the trigger rather than inside it, so no interactive element is nested in the combobox. The close buttons carry `tabindex="-1"` — see the keyboard model below |
-| `<:selectedItem>` | Supplying the block gives the trigger an explicit `aria-label` — see below |
+| `<:selectedItem>` | Supplying the block gives the **button** trigger an explicit `aria-label` composed from the field label and the option's text — see below |
 
 Keyboard handling comes from the listbox:
 
@@ -1016,10 +1029,27 @@ label, or the placeholder. A `<:selectedItem>` block owns that text and may rend
 readable at all (an avatar, an icon), which would leave the combobox announced as an unnamed
 button.
 
-So whenever the block is supplied, the trigger carries an explicit `aria-label` built from the
-field label (falling back to `@placeholder`, then to `Select options`) and the selected
-options' own text — `Assignee, John Doe` for the example above. You do not have to add
-anything; hiding decorative images from assistive technology (`alt=''`) is enough.
+So whenever the block is supplied, the **button** trigger carries an explicit `aria-label`
+composed from two halves: the field label (falling back to `@placeholder`) and the selected
+options' own text — `Assignee, John Doe` for the example above. Either half on its own is used
+alone when the other is missing, so the name is never `Assignee, ` and never prefixes the
+selection with the untranslatable `Select options`.
+
+**This name replaces whatever your block renders, so keep the two in agreement.** If your
+block's visible text is the option's `label`, they already agree and there is nothing to do —
+hiding decorative images from assistive technology (`alt=''`) is enough. If your block shows
+something *else* — an email address, an abbreviation, an initial — then the announced name and
+the visible text disagree, which fails WCAG 2.5.3 *Label in Name* and leaves speech-input
+users unable to say what they see. In that case, render the option's `label` somewhere in the
+block, or set `@label` / `@placeholder` to the wording that is actually visible.
+
+> **Note:** `aria-label` passed to `<Select>` itself does **not** override this. Attributes on
+> `<Select>` land on the field's wrapper element, not on the combobox, so the composed name is
+> what the trigger announces either way. The block's own text is the lever you have.
+
+A **filterable** Select is not affected at all: its trigger is an `<input>` whose value is the
+selection as text, so it is already named by that value and gets no `aria-label` — one that
+duplicated the value would also change as the user typed.
 
 Chips mode is unaffected: the trigger there is already named by `aria-label`, and the chips
 are its siblings, so they are read on their own. Chip close buttons keep taking their

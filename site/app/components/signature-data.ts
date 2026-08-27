@@ -17380,7 +17380,7 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description:
-          '<p>Custom content for each <em>selected</em> option, in place of its plain text.</p>\n<p>Renders in every presentation of the selection: inside the single-mode\ntrigger, inside each chip in multiple mode (the chip chrome, <code>@chip</code>\noptions and close button are kept), and once per selection --\ncomma-separated -- under <code>@selectedItemsDisplay="text"</code>.</p>\n<p>Yields the same <code>{ item, key, label }</code> the <code>:item</code> block does, so the\nsame markup works in both. <code>item</code> is undefined for options written in\nblock form rather than rendered from <code>@items</code>.</p>\n<p>Because a block rendering only graphics would otherwise leave the\nsingle-mode trigger with no accessible name, supplying this block also\ngives the trigger a guaranteed <code>aria-label</code> built from the field label\nand the selected options\' text.</p>',
+          '<p>Custom content for each <em>selected</em> option, in place of its plain text.</p>\n<p>Renders wherever the selection is drawn as markup: inside the\nsingle-mode trigger, inside each chip in multiple mode (the chip chrome,\n<code>@chip</code> options and close button are kept), and once per selection --\ncomma-separated -- under <code>@selectedItemsDisplay="text"</code>.</p>\n<p><strong>Not</strong> inside a filterable trigger: that is an <code>&#x3C;input></code>, which cannot\nhold markup, so a filterable Select still shows the selection as plain\ntext there. The chips beside the input do use the block.</p>\n<p>Yields the same <code>{ item, key, label }</code> the <code>:item</code> block does, so the\nsame markup works in both. <code>item</code> is undefined for options written in\nblock form rather than rendered from <code>@items</code>.</p>\n<p>Because a block rendering only graphics would otherwise leave the\nsingle-mode trigger with no accessible name, supplying this block also\ngives that (button) trigger an <code>aria-label</code> composed from the field\nlabel and the selected options\' text. That name replaces what the block\nrenders, so a block whose visible text is not the option\'s <code>label</code>\nshould carry the label too, or set <code>@label</code>/<code>@placeholder</code> to the\nwording that is visible -- see the guide.</p>',
         tags: {
           example: { name: 'example', value: '```gts\n<Select' },
           items: {
@@ -17860,7 +17860,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "<p>Whether the consumer supplied a <code>:selectedItem</code> block, i.e. whether the\ntext inside the trigger is theirs rather than the option's label.</p>\n<p>Two things hang off this: the trigger stops trusting its own text\ncontent for its accessible name, and {@link SelectedText } switches from\nthe joined string to a per-selection loop.</p>",
+          "<p>Whether the consumer supplied a <code>:selectedItem</code> block, i.e. whether the\ntext inside the trigger is theirs rather than the option's label.</p>\n<p>Two things hang off this: the <code>&#x3C;button></code> trigger stops trusting its own\ntext content for its accessible name, and {@link SelectedText } switches\nfrom the joined string to a per-selection loop. The filterable\n<code>&#x3C;input></code> trigger ignores it -- the block never renders there, so the\ninput's own value still names it.</p>",
         tags: {},
       },
       {
