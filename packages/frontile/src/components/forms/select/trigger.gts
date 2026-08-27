@@ -47,9 +47,11 @@ interface SelectTriggerSignature {
      * Whether the consumer supplied a `:selectedItem` block, i.e. whether the
      * text inside the trigger is theirs rather than the option's label.
      *
-     * Two things hang off this: the trigger stops trusting its own text
-     * content for its accessible name, and {@link SelectedText} switches from
-     * the joined string to a per-selection loop.
+     * Two things hang off this: the `<button>` trigger stops trusting its own
+     * text content for its accessible name, and {@link SelectedText} switches
+     * from the joined string to a per-selection loop. The filterable
+     * `<input>` trigger ignores it -- the block never renders there, so the
+     * input's own value still names it.
      */
     hasCustomContent?: boolean;
 
@@ -91,6 +93,11 @@ interface SelectTriggerSignature {
  */
 const SelectTrigger: TOC<SelectTriggerSignature> = <template>
   {{#if @isFilterable}}
+    {{! The filterable trigger is an input: the selectedItem block cannot
+    render here, so the input always has its own value as its accessible text.
+    Naming it from the selection as well would duplicate that value and make
+    the combobox name change as the user types, so only chips mode, where the
+    input shows nothing of the selection, names it. }}
     <input
       type="text"
       {{@trigger}}
@@ -98,7 +105,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       data-test-id="trigger"
       data-component="select-trigger"
       disabled={{@isDisabled}}
-      aria-label={{if (or @showChips @hasCustomContent) @accessibleName}}
+      aria-label={{if @showChips @accessibleName}}
       placeholder={{valueUnless (and @showChips @hasSelection) @placeholder}}
       class={{@classes.input
         class=@userClasses.input

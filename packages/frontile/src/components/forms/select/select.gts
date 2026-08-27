@@ -511,15 +511,30 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
    *   the combobox announced as an unnamed button. The selection is not
    *   readable anywhere else in that case, so the name carries it: the control
    *   name *and* the selected options' text.
+   *
+   * The two halves are composed so that the separator only appears when both
+   * are there. A selected key with no registered option behind it resolves to
+   * no text at all, and `"Owner, "` is announced as "Owner comma"; and with
+   * neither `@label` nor `@placeholder` the only control name available is the
+   * hardcoded, unlocalizable `Select options`, so the selected text is left to
+   * name the control on its own rather than be prefixed by English.
    */
   get triggerAccessibleName(): string {
-    const name = this.args.label || this.args.placeholder || 'Select options';
+    const name = this.args.label || this.args.placeholder;
 
-    if (this.showChips || !this.hasSelection) {
-      return name;
+    // Chips mode names the *control* only -- the chips are read separately --
+    // and has no better fallback than the literal.
+    if (this.showChips) {
+      return name || 'Select options';
     }
 
-    return `${name}, ${this.selectedTextValue}`;
+    const selectedText = this.hasSelection ? this.selectedTextValue : '';
+
+    if (!name) {
+      return selectedText || 'Select options';
+    }
+
+    return selectedText ? `${name}, ${selectedText}` : name;
   }
 
   /**
