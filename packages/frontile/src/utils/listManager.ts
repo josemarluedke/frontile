@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { debounce } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 import { later } from '@ember/runloop';
+import { getElementById } from '../-private/dom';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 type AutoActivateMode = 'none' | 'first' | 'selected';
@@ -534,13 +535,26 @@ class ListManager {
         textValue === '' ||
         textValue === null
       ) {
-        const labelId = el.getAttribute('aria-labelledby');
+        // `aria-labelledby` is not a selector: it holds a *space-separated
+        // list* of ids, and those ids are resolved against the whole
+        // document, not against this element's subtree. Treating the raw
+        // value as `#id` therefore turned a multi-id label into a descendant
+        // selector that matches nothing, missed labels living outside the
+        // item — leaving `textValue` empty and type-ahead search broken — and
+        // threw outright on any id that is not a valid CSS identifier.
+        const labelledBy = el.getAttribute('aria-labelledby');
+        const labelId = labelledBy?.trim().split(/\s+/)[0];
+
         if (labelId) {
-          const labelElement = el.querySelector(`#${labelId}`);
+          const labelElement = getElementById(el.ownerDocument, labelId);
           if (labelElement) {
             textValue = labelElement.textContent?.trim() || '';
           }
-        } else {
+        }
+
+        // Still nothing — either there was no label, or the id it named is
+        // not in the document — so fall back to the item's own text.
+        if (!textValue) {
           textValue = el.textContent?.trim() || '';
         }
       }

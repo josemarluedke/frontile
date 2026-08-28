@@ -115,8 +115,10 @@ import { PortalTarget } from 'frontile';
 
 1. `@renderInPlace={{true}}` — no portal at all, the content stays where it is written.
 2. `@target` as an `Element` — that element.
-3. `@target` as a string beginning with `#` — the element with that id.
-4. `@target` as any other string — the nearest `PortalTarget` with a matching `@for`.
+3. `@target` as a string beginning with `#` — the element with that id. Any id HTML allows
+   works, including ones that are not valid CSS identifiers (`#1foo`, `#my.target`).
+4. `@target` as any other string — the nearest `PortalTarget` with a matching `@for`. The
+   name is compared literally, so it too may contain characters a selector would choke on.
 5. Otherwise, the nearest parent portal, unless `@appendToParentPortal={{false}}`.
 6. Otherwise, the nearest **unnamed** `PortalTarget`.
 7. Otherwise, `document.body`.
