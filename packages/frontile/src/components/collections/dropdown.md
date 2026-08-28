@@ -641,13 +641,13 @@ menu is a list of commands rather than a set of choices.
 
 Keys are handled in two places, which is worth knowing when debugging one that doesn't fire:
 
-| Focus is on the trigger | Behavior                                        |
-| ----------------------- | ----------------------------------------------- |
-| `Enter` / `Space`       | Opens the menu, on key release                  |
-| `ArrowDown` / `ArrowUp` | Opens the menu                                  |
-| any letter              | Opens the menu                                  |
-| `Escape`                | Closes                                          |
-| `Tab`                   | Closes and moves on, without pulling focus back |
+| Focus is on the trigger | Behavior                                          |
+| ----------------------- | ------------------------------------------------- |
+| `Enter` / `Space`       | Opens the menu, on key release                    |
+| `ArrowDown` / `ArrowUp` | Opens the menu                                    |
+| any letter              | Opens the menu (not with `Cmd`/`Ctrl`/`Alt` held) |
+| `Escape`                | Closes                                            |
+| `Tab`                   | Closes and moves on, without pulling focus back   |
 
 Once open, focus moves into the menu and the list takes over:
 

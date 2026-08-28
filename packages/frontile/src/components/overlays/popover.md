@@ -358,7 +358,17 @@ With the default `click` trigger type, the trigger handles:
 | `Escape`                | Closes when open                                               |
 | `Tab`                   | Closes and moves on, without pulling focus back to the trigger |
 
+A letter pressed with <kbd>Cmd</kbd>, <kbd>Ctrl</kbd> or <kbd>Alt</kbd> held is left alone —
+those combinations belong to the browser or the OS, so <kbd>Cmd</kbd>+<kbd>R</kbd> reloads
+without the popover opening over the page. <kbd>Shift</kbd>+letter still opens, since a
+capital letter is legitimate type-ahead.
+
 Focus moves into the content when it opens and returns to the trigger when it closes.
+
+`@didClose` fires once the content has finished leaving, exit transition included — not at
+the moment the popover is asked to close. That makes it the right place to unmount or reset
+whatever the content was showing, and it will not fire at all for a `close()` on a popover
+that was not open.
 
 **`{{p.trigger "hover"}}` is mouse-only.** The hover branch attaches `mouseenter` and
 `mouseleave` and no key handling at all, so none of the keys above work and focus is not

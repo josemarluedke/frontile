@@ -113,8 +113,6 @@ interface PopoverSignature {
 }
 
 class Popover extends Component<PopoverSignature> {
-  triggerEl?: HTMLElement;
-
   /**
    * The element `measureWidth` is watching, when a consumer opts into measuring
    * something other than the trigger. Its presence is what gives `measureWidth`
@@ -123,6 +121,14 @@ class Popover extends Component<PopoverSignature> {
   widthEl?: HTMLElement;
 
   menuId = guidFor(this);
+
+  /**
+   * Whether the consumer is still owed a `@didClose`. Set by `close()` when a
+   * popover that was actually open was closed, cleared by whoever fires the
+   * callback, so it can only ever fire once per close.
+   */
+  isDidClosePending = false;
+
   @tracked _isOpen = false;
   @tracked isClosing = false;
   @tracked preventFocusRestore = false;
@@ -164,6 +170,12 @@ class Popover extends Component<PopoverSignature> {
   };
 
   close = () => {
+    // Only a popover that was actually open has a close to finish, and so a
+    // `@didClose` to owe. `close()` is reachable with nothing open -- a stray
+    // `mouseleave`, a consumer calling the yielded `close` -- and firing the
+    // callback for those would be a lie.
+    const wasOpen = this.isOpen;
+
     this.isClosing = true;
     if (typeof this.args.onOpenChange === 'function') {
       this.args.onOpenChange(false);
@@ -171,16 +183,15 @@ class Popover extends Component<PopoverSignature> {
       this._isOpen = false;
     }
 
-    if (typeof this.args.didClose === 'function') {
-      this.args.didClose();
+    if (wasOpen) {
+      this.isDidClosePending = true;
     }
 
-    debounce(this, this.didClose, 90);
+    debounce(this, this.resetIsClosing, 90);
   };
 
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
-      this.triggerEl = el as HTMLLIElement;
       // The trigger is only the width reference when nothing more specific was
       // nominated. `widthEl` is checked when the measurement happens rather than
       // when the modifier installs, so the two modifiers can install in either
@@ -234,8 +245,18 @@ class Popover extends Component<PopoverSignature> {
           this.close();
         }
 
-        // Open when a letter is pressed
-        if (!this.isOpen && event.code === `Key${event.key.toUpperCase()}`) {
+        // Open when a letter is pressed, so the content can be typed into.
+        // Modifier combos belong to the browser or the OS (Cmd+R, Ctrl+F,
+        // Alt+C) and still deliver a letter `key`, so without this check the
+        // popover would pop open over whatever the shortcut does. Shift stays
+        // allowed: a capital letter is legitimate type-ahead.
+        if (
+          !this.isOpen &&
+          !event.metaKey &&
+          !event.ctrlKey &&
+          !event.altKey &&
+          event.code === `Key${event.key.toUpperCase()}`
+        ) {
           this.open();
         }
       };
@@ -251,6 +272,13 @@ class Popover extends Component<PopoverSignature> {
 
       el.setAttribute('aria-haspopup', 'true');
       el.setAttribute('aria-controls', this.menuId);
+      // Reading `this.isOpen` here is what keeps `aria-expanded` in sync: the
+      // modifier consumes the tracked state, so its whole body re-runs on every
+      // open and close. That is more work than one attribute needs -- the
+      // listeners and the ResizeObserver are rebuilt too -- but it is also the
+      // only mechanism that covers `@isOpen` being flipped from outside in
+      // controlled mode, which an imperative update from `open()`/`close()`
+      // would miss. Correctness over the rebuild.
       el.setAttribute('aria-expanded', this.isOpen.toString());
 
       return () => {
@@ -264,7 +292,6 @@ class Popover extends Component<PopoverSignature> {
         if (observer) {
           observer.disconnect();
         }
-        this.triggerEl = undefined;
       };
     }
   );
@@ -311,15 +338,41 @@ class Popover extends Component<PopoverSignature> {
     };
   });
 
-  updateAriaExtanded = modifier((_: HTMLElement) => {
-    if (this.triggerEl) {
-      this.triggerEl.setAttribute('aria-expanded', this.isOpen.toString());
-    }
-  });
-
-  didClose = () => {
-    if (!this.isDestroyed || !this.isDestroying) {
+  /**
+   * Clears the short window during which `open()` refuses to re-open.
+   *
+   * The 90ms this is debounced by is deliberately not the transition duration
+   * (200ms): the window exists to absorb a single event cascade -- the Overlay's
+   * outside-click handler closing while the trigger's own click handler is
+   * about to re-open -- not to wait for the animation out. Stretching it to the
+   * transition would leave the trigger feeling dead for a fifth of a second
+   * after every close, which is far more noticeable than a re-click inside 90ms
+   * being dropped.
+   */
+  resetIsClosing = () => {
+    if (!this.isDestroyed && !this.isDestroying) {
       this.isClosing = false;
+    }
+  };
+
+  /**
+   * Passed to `Content` as `internalDidClose`, so it runs once the Overlay has
+   * finished tearing down -- that is, after the exit transition. That is the
+   * moment `@didClose` documents, which is why the consumer's callback is fired
+   * from here and not from `close()`.
+   *
+   * A popover whose `Content` never mounted never gets here, and never owes the
+   * callback: there was no overlay, so there was no close to finish.
+   */
+  didClose = () => {
+    this.resetIsClosing();
+
+    if (this.isDidClosePending) {
+      this.isDidClosePending = false;
+
+      if (typeof this.args.didClose === 'function') {
+        this.args.didClose();
+      }
     }
   };
 
