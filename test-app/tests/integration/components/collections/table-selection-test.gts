@@ -1,6 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, triggerKeyEvent } from '@ember/test-helpers';
+import {
+  render,
+  settled,
+  click,
+  focus,
+  triggerKeyEvent
+} from '@ember/test-helpers';
+import { on } from '@ember/modifier';
 import { Table, type ColumnConfig } from 'frontile';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -942,6 +949,334 @@ module(
         row2,
         'Second row should be focused after ArrowUp'
       );
+    });
+
+    test('it does not hijack Enter or Space from a button inside a cell', async function (assert) {
+      const columns = [
+        { key: 'name', name: 'Name' },
+        { key: 'email', name: 'Email' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+      ];
+
+      let clicks = 0;
+      const handleClick = () => {
+        clicks += 1;
+      };
+
+      await render(
+        <template>
+          <TestHelper as |selectedKeys onSelectionChange|>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            >
+              <:cell as |c|>
+                <c.For @key="name">
+                  <button
+                    type="button"
+                    data-test-id="cell-button"
+                    {{on "click" handleClick}}
+                  >{{c.value}}</button>
+                </c.For>
+                <c.Default>{{c.value}}</c.Default>
+              </:cell>
+            </Table>
+          </TestHelper>
+        </template>
+      );
+
+      // The keydown bubbles past the <tr> up to here, so `defaultPrevented`
+      // tells us whether the row handler swallowed the key. A prevented Enter
+      // or Space would stop the browser from activating the button.
+      const prevented: boolean[] = [];
+      this.element.addEventListener('keydown', (event) => {
+        prevented.push((event as KeyboardEvent).defaultPrevented);
+      });
+
+      await focus('[data-test-id="cell-button"]');
+      await triggerKeyEvent('[data-test-id="cell-button"]', 'keydown', 'Enter');
+      await triggerKeyEvent('[data-test-id="cell-button"]', 'keydown', ' ');
+
+      assert.deepEqual(
+        prevented,
+        [false, false],
+        'Enter and Space are left for the button to handle'
+      );
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .hasAttribute(
+          'data-selected',
+          'false',
+          'row selection is not toggled by Enter/Space on the button'
+        );
+
+      // The button itself still works.
+      await click('[data-test-id="cell-button"]');
+      assert.strictEqual(clicks, 1, "the button's own handler fires on click");
+    });
+
+    test('it does not hijack arrow keys from an input inside a cell', async function (assert) {
+      const columns = [
+        { key: 'name', name: 'Name' },
+        { key: 'email', name: 'Email' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        {
+          id: '2',
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'user'
+        },
+        { id: '3', name: 'Bob Wilson', email: 'bob@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <TestHelper as |selectedKeys onSelectionChange|>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            >
+              <:cell as |c|>
+                <c.For @key="name">
+                  <input data-test-id="cell-input" value={{c.value}} />
+                </c.For>
+                <c.Default>{{c.value}}</c.Default>
+              </:cell>
+            </Table>
+          </TestHelper>
+        </template>
+      );
+
+      const prevented: boolean[] = [];
+      this.element.addEventListener('keydown', (event) => {
+        prevented.push((event as KeyboardEvent).defaultPrevented);
+      });
+
+      // Focus the input in the SECOND row, so a buggy handler that jumps to the
+      // first row is unmistakable.
+      const cellInput = this.element.querySelectorAll<HTMLInputElement>(
+        '[data-test-id="cell-input"]'
+      )[1];
+      cellInput?.focus();
+
+      await triggerKeyEvent(cellInput!, 'keydown', 'ArrowDown');
+      await triggerKeyEvent(cellInput!, 'keydown', 'ArrowUp');
+
+      assert.strictEqual(
+        document.activeElement,
+        cellInput,
+        'focus stays in the input instead of jumping to a row'
+      );
+
+      assert.deepEqual(
+        prevented,
+        [false, false],
+        'arrow keys are left for the input caret'
+      );
+    });
+
+    test('it uses a roving tabindex so the table has a single tab stop', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        {
+          id: '2',
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'user'
+        },
+        { id: '3', name: 'Bob Wilson', email: 'bob@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template>
+          <TestHelper as |selectedKeys onSelectionChange|>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </TestHelper>
+        </template>
+      );
+
+      const tabbableKeys = () =>
+        Array.from(
+          this.element.querySelectorAll<HTMLElement>(
+            '[data-test-id="table-row"][tabindex="0"]'
+          )
+        ).map((row) => row.dataset.key);
+
+      assert.dom('[data-test-id="table-row"]').exists({ count: 3 });
+      assert.deepEqual(
+        tabbableKeys(),
+        ['1'],
+        'only the first row is tabbable initially'
+      );
+      assert
+        .dom('[data-test-id="table-row"][data-key="2"]')
+        .hasAttribute(
+          'tabindex',
+          '-1',
+          'other rows are removed from tab order'
+        );
+
+      const row1 = this.element.querySelector<HTMLElement>(
+        '[data-test-id="table-row"][data-key="1"]'
+      );
+      row1?.focus();
+
+      await triggerKeyEvent(
+        '[data-test-id="table-row"][data-key="1"]',
+        'keydown',
+        'ArrowDown'
+      );
+
+      assert.deepEqual(
+        tabbableKeys(),
+        ['2'],
+        'the tab stop moves with focus on ArrowDown'
+      );
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .hasAttribute(
+          'tabindex',
+          '-1',
+          'the previous row leaves the tab order'
+        );
+    });
+
+    test('it puts the roving tabindex on the first selected row', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        {
+          id: '2',
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'user'
+        },
+        { id: '3', name: 'Bob Wilson', email: 'bob@example.com', role: 'user' }
+      ];
+
+      const initialKeys = new Set(['2']);
+
+      await render(
+        <template>
+          <TestHelper
+            @initialKeys={{initialKeys}}
+            as |selectedKeys onSelectionChange|
+          >
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </TestHelper>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="2"]')
+        .hasAttribute('tabindex', '0', 'the selected row owns the tab stop');
+      assert
+        .dom('[data-test-id="table-row"][tabindex="0"]')
+        .exists({ count: 1 });
+    });
+
+    test('it does not add row tab stops when selection is disabled', async function (assert) {
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<TestItem>[];
+
+      const items: TestItem[] = [
+        { id: '1', name: 'John Doe', email: 'john@example.com', role: 'admin' },
+        { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'user' }
+      ];
+
+      await render(
+        <template><Table @columns={{columns}} @items={{items}} /></template>
+      );
+
+      assert
+        .dom('[data-test-id="table-row"][tabindex="0"]')
+        .doesNotExist('no row is tabbable without selection');
+    });
+
+    test('it derives keys correctly for items that have their own `data` property', async function (assert) {
+      interface PayloadItem {
+        id: string;
+        name: string;
+        data: string;
+        table: string;
+      }
+
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<PayloadItem>[];
+
+      const items: PayloadItem[] = [
+        { id: '1', name: 'John Doe', data: 'payload-1', table: 'users' },
+        { id: '2', name: 'Jane Smith', data: 'payload-2', table: 'users' }
+      ];
+
+      await render(
+        <template>
+          <TestHelper as |selectedKeys onSelectionChange|>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </TestHelper>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .exists(
+          'a plain item with `data`/`table` properties still keys off `id`'
+        );
+      assert.dom('[data-test-id="table-row"][data-key="2"]').exists();
+
+      const checkboxes = document.querySelectorAll<HTMLInputElement>(
+        '[data-test-id="table-row"] input[type="checkbox"]'
+      );
+      await click(checkboxes[0]!);
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .hasAttribute('data-selected', 'true', 'selection uses the item key');
     });
   }
 );
