@@ -73,8 +73,11 @@ interface ProgressBarSignature {
     showValueLabel?: boolean;
 
     /**
-     * The display format of the value.
-     * Values are formatted as a percentage by default.
+     * The display format of the value, passed to `Intl.NumberFormat`.
+     *
+     * A `percent` style formats the position on the min/max scale as a
+     * fraction; every other style formats the raw `progress` value. With no
+     * format options, the value is displayed as a whole percentage.
      */
     formatOptions?: Intl.NumberFormatOptions;
 
@@ -116,21 +119,37 @@ class ProgressBar extends Component<ProgressBarSignature> {
   }
 
   get minValue(): number {
-    return this.args.minValue || 0;
+    return this.args.minValue ?? 0;
   }
 
   get maxValue(): number {
-    return this.args.maxValue || 100;
+    return this.args.maxValue ?? 100;
   }
 
+  /**
+   * `@progress={{0}}` is a legitimate value, so this falls back to `minValue`
+   * only when nothing was passed — a truthiness check would report the bar as
+   * already at the bottom of the scale instead of at zero.
+   */
   get progress(): number {
-    return this.args.progress || this.minValue;
+    return this.args.progress ?? this.minValue;
   }
 
+  /**
+   * The position on the scale as 0–100. Clamped, because the result drives an
+   * inline `width` — an out-of-range or `NaN` percentage is dropped by the CSS
+   * parser, which renders as a silently empty bar rather than as an error.
+   * A non-positive range has no meaningful position, so it reports 0.
+   */
   get percentage(): number {
-    return (
-      ((this.progress - this.minValue) / (this.maxValue - this.minValue)) * 100
-    );
+    const range = this.maxValue - this.minValue;
+    if (range <= 0) {
+      return 0;
+    }
+
+    const percentage = ((this.progress - this.minValue) / range) * 100;
+
+    return Math.min(100, Math.max(0, percentage));
   }
 
   get showValueLabel(): boolean {
@@ -158,10 +177,20 @@ class ProgressBar extends Component<ProgressBarSignature> {
         ...(this.args.formatOptions || {})
       };
 
-      return new Intl.NumberFormat(
-        navigator?.language || 'en-US',
-        options
-      ).format(this.progress);
+      // `Intl` scales a `percent` style by 100 itself, so it has to be handed
+      // the fraction of the min–max range — passing the already-scaled
+      // percentage announces `@progress={{50}}` as "5,000%". Every other style
+      // (`decimal`, `currency`, `unit`) formats the raw value on its own scale.
+      const value =
+        options.style === 'percent' ? this.percentage / 100 : this.progress;
+
+      // `navigator` is a browser global with no counterpart in Node, so a bare
+      // `navigator?.language` is a hard `ReferenceError` rather than
+      // `undefined` when a ProgressBar is server-rendered.
+      const locale =
+        typeof navigator !== 'undefined' ? navigator.language : undefined;
+
+      return new Intl.NumberFormat(locale || 'en-US', options).format(value);
     }
 
     return this.percentage.toFixed(0) + '%';
@@ -170,9 +199,19 @@ class ProgressBar extends Component<ProgressBarSignature> {
   /**
    * ARIA requires aria-valuenow to be absent when the value is unknown —
    * reporting a number would announce "0%" rather than "amount unknown".
+   *
+   * Otherwise it is clamped to the scale, because assistive technology
+   * announces a percentage computed from valuenow/valuemin/valuemax. Reporting
+   * a raw 150 on a 0–100 scale would say "150%" to a screen-reader user while
+   * the bar sits pinned at 100% for everyone else — the people who cannot see
+   * the bar would be the only ones given the wrong number.
    */
   get ariaValueNow(): number | undefined {
-    return this.args.isIndeterminate ? undefined : this.progress;
+    if (this.args.isIndeterminate) {
+      return undefined;
+    }
+
+    return Math.min(this.maxValue, Math.max(this.minValue, this.progress));
   }
 
   get progressWidth(): SafeString {

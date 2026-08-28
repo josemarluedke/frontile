@@ -231,6 +231,132 @@ module(
         assert.dom(selector).hasAria('valuemin', '10');
         assert.dom(selector).hasAria('valuemax', '30');
       });
+
+      test('it clamps progress above maxValue to 100%', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar data-test-id="progress-bar" @progress={{150}} />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.equal(
+          document.querySelector(selector)?.getAttribute('style'),
+          'width: 100%'
+        );
+        // Assistive technology derives the announced percentage from
+        // valuenow/valuemin/valuemax, so a raw 150 here would say "150%" while
+        // the bar is pinned at 100% for sighted users.
+        assert.dom(selector).hasAria('valuenow', '100');
+      });
+
+      test('it clamps progress below minValue to 0%', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{5}}
+              @minValue={{10}}
+              @maxValue={{30}}
+            />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.equal(
+          document.querySelector(selector)?.getAttribute('style'),
+          'width: 0%'
+        );
+        assert.dom(selector).hasAria('valuenow', '10');
+      });
+
+      test('it clamps a negative progress to 0%', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar data-test-id="progress-bar" @progress={{-20}} />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.equal(
+          document.querySelector(selector)?.getAttribute('style'),
+          'width: 0%'
+        );
+        assert.dom(selector).hasAria('valuenow', '0');
+      });
+
+      test('it renders a valid width when minValue equals maxValue', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{50}}
+              @minValue={{50}}
+              @maxValue={{50}}
+            />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        const element = document.querySelector(selector) as HTMLElement;
+
+        assert.equal(element.getAttribute('style'), 'width: 0%');
+        assert.notOk(
+          (element.getAttribute('style') || '').includes('NaN'),
+          'the inline width is never NaN%'
+        );
+        assert.equal(
+          element.style.width,
+          '0%',
+          'the CSS parser accepts the declared width'
+        );
+      });
+
+      // The bug here was `||` swallowing a legitimate 0: `@progress={{0}}` on a
+      // 10–30 scale used to compute as though progress were 10, giving a
+      // non-zero width. The reported value is a separate matter — 0 is below
+      // the scale, so `aria-valuenow` is clamped up to `minValue` rather than
+      // announcing a position that does not exist on the scale.
+      test('it treats a progress of 0 as 0, not as minValue', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{0}}
+              @minValue={{10}}
+              @maxValue={{30}}
+              @label="Progress"
+            />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.equal(
+          document.querySelector(selector)?.getAttribute('style'),
+          'width: 0%'
+        );
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-label > div')
+          .containsText('0%');
+        assert.dom(selector).hasAria('valuenow', '10');
+      });
+
+      test('it renders 50% width when indeterminate', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @isIndeterminate={{true}}
+            />
+          </template>
+        );
+
+        const selector = '[data-test-id="progress-bar"] div.pb-progress';
+        assert.equal(
+          document.querySelector(selector)?.getAttribute('style'),
+          'width: 50%'
+        );
+      });
     });
 
     module('indeterminate arias', () => {
@@ -328,6 +454,66 @@ module(
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
           .containsText('$20.00');
+      });
+
+      // Intl multiplies a `percent` style by 100, so it has to be fed the
+      // fraction of the min–max range, not the already-scaled percentage.
+      test('it formats a percent style value label without scaling it twice', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{50}}
+              @label="Progress"
+              @formatOptions={{(hash style="percent")}}
+            />
+          </template>
+        );
+        const selector = '[data-test-id="progress-bar"] div.pb-label > div';
+        assert.dom(selector).containsText('50%');
+        assert.dom(selector).doesNotContainText('5,000');
+      });
+
+      test('it formats a percent style value label against the min/max range', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{20}}
+              @label="Progress"
+              @minValue={{10}}
+              @maxValue={{30}}
+              @formatOptions={{(hash style="percent")}}
+            />
+          </template>
+        );
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-label > div')
+          .containsText('50%');
+      });
+
+      test('it shows the value label by default when a label is given', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar
+              data-test-id="progress-bar"
+              @progress={{40}}
+              @label="Progress"
+            />
+          </template>
+        );
+        assert
+          .dom('[data-test-id="progress-bar"] div.pb-label > div')
+          .containsText('40%');
+      });
+
+      test('it renders no label row when no label is given', async function (assert) {
+        await render(
+          <template>
+            <ProgressBar data-test-id="progress-bar" @progress={{40}} />
+          </template>
+        );
+        assert.dom('[data-test-id="progress-bar"] div.pb-label').doesNotExist();
       });
 
       test('it hides value label if showValueLabel false', async function (assert) {
