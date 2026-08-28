@@ -5,7 +5,7 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
 import { Listbox, type ListboxSignature } from 'frontile';
-import { array } from '@ember/helper';
+import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
 
@@ -1044,6 +1044,257 @@ module(
           selectedKeys.current,
           ['elephant'],
           'single selection still replaces, it does not accumulate'
+        );
+      });
+    });
+    /**
+     * `Listbox` builds its `ListManager` in a field initializer, so every
+     * callback it hands over is captured once, at construction. The `setup`
+     * modifier is the only thing that runs again when arguments change, so
+     * unless the callbacks travel through it too, a `Listbox` whose
+     * `@onAction` is rebuilt each render -- `{{fn this.pick group.id}}` inside
+     * an `{{#each}}`, the shape that makes this visible -- keeps calling the
+     * closure from the very first render, with the very first `group.id`.
+     */
+    module('callbacks replaced between renders', function () {
+      test('a replaced @onAction is the one invoked', async function (assert) {
+        const calls: string[] = [];
+        const handlers = {
+          first: (key: string) => calls.push(`first:${key}`),
+          second: (key: string) => calls.push(`second:${key}`)
+        };
+        const which = cell<'first' | 'second'>('first');
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="none"
+              @autoActivateMode="none"
+              @items={{array "cheetah"}}
+              @onAction={{get handlers which.current}}
+            />
+          </template>
+        );
+
+        await click('[data-key="cheetah"]');
+        assert.deepEqual(calls, ['first:cheetah'], 'the first closure ran');
+
+        which.current = 'second';
+        await settled();
+
+        await click('[data-key="cheetah"]');
+        assert.deepEqual(
+          calls,
+          ['first:cheetah', 'second:cheetah'],
+          'the replacement closure ran, not the captured original'
+        );
+      });
+
+      test('a replaced @onSelectionChange is the one invoked', async function (assert) {
+        const calls: string[] = [];
+        const handlers = {
+          first: (keys: string[]) => calls.push(`first:${keys.join()}`),
+          second: (keys: string[]) => calls.push(`second:${keys.join()}`)
+        };
+        const which = cell<'first' | 'second'>('first');
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @autoActivateMode="none"
+              @items={{array "cheetah"}}
+              @onSelectionChange={{get handlers which.current}}
+            />
+          </template>
+        );
+
+        await click('[data-key="cheetah"]');
+        assert.deepEqual(calls, ['first:cheetah'], 'the first closure ran');
+
+        which.current = 'second';
+        await settled();
+
+        await click('[data-key="cheetah"]');
+        assert.deepEqual(
+          calls,
+          ['first:cheetah', 'second:cheetah'],
+          'the replacement closure ran, not the captured original'
+        );
+      });
+
+      test('a replaced @onActiveItemChange is the one invoked', async function (assert) {
+        const calls: string[] = [];
+        const handlers = {
+          first: (key?: string) => calls.push(`first:${key}`),
+          second: (key?: string) => calls.push(`second:${key}`)
+        };
+        const which = cell<'first' | 'second'>('first');
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="none"
+              @autoActivateMode="none"
+              @isKeyboardEventsEnabled={{true}}
+              @items={{array "cheetah" "crocodile"}}
+              @onActiveItemChange={{get handlers which.current}}
+            />
+          </template>
+        );
+
+        await triggerKeyEvent(
+          '[data-test-id="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        assert.deepEqual(calls, ['first:cheetah'], 'the first closure ran');
+
+        which.current = 'second';
+        await settled();
+
+        await triggerKeyEvent(
+          '[data-test-id="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        assert.deepEqual(
+          calls,
+          ['first:cheetah', 'second:crocodile'],
+          'the replacement closure ran, not the captured original'
+        );
+      });
+    });
+
+    /**
+     * The WAI-ARIA listbox pattern allows exactly one tabbable option: the
+     * options form a composite the user steps *into* once and then navigates
+     * with the arrow keys. Handing `tabindex="0"` to every selected option
+     * turned an eight-selection multi-select into eight tab stops.
+     */
+    module('roving tabindex', function () {
+      const tabbableKeys = () =>
+        [
+          ...document.querySelectorAll(
+            '[data-component="listbox-item"][tabindex="0"]'
+          )
+        ].map((el) => (el as HTMLElement).dataset['key']);
+
+      test('several selected options still make a single tab stop', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant', 'flamingo'];
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @autoActivateMode="none"
+              @items={{animals}}
+              @selectedKeys={{array "crocodile" "elephant" "flamingo"}}
+            />
+          </template>
+        );
+
+        assert
+          .dom('[data-key="crocodile"]')
+          .hasAttribute('data-selected', 'true');
+        assert
+          .dom('[data-key="elephant"]')
+          .hasAttribute('data-selected', 'true');
+        assert
+          .dom('[data-key="flamingo"]')
+          .hasAttribute('data-selected', 'true');
+
+        assert.deepEqual(
+          tabbableKeys(),
+          ['crocodile'],
+          'only the first selected option is tabbable'
+        );
+      });
+
+      test('the tab stop follows the active option', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant'];
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="multiple"
+              @autoActivateMode="none"
+              @isKeyboardEventsEnabled={{true}}
+              @items={{animals}}
+              @selectedKeys={{array "crocodile"}}
+            />
+          </template>
+        );
+
+        assert.deepEqual(
+          tabbableKeys(),
+          ['crocodile'],
+          'the selection owns the tab stop while nothing is active, ahead of the first option'
+        );
+
+        // Navigation starts from the selection when nothing is active yet, so
+        // this steps onto the option after it.
+        await triggerKeyEvent(
+          '[data-test-id="listbox"]',
+          'keydown',
+          'ArrowDown'
+        );
+        assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'true');
+        assert.deepEqual(
+          tabbableKeys(),
+          ['elephant'],
+          'the active option takes the tab stop over from the selection'
+        );
+
+        await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowUp');
+        assert
+          .dom('[data-key="crocodile"]')
+          .hasAttribute('data-active', 'true');
+        assert.deepEqual(
+          tabbableKeys(),
+          ['crocodile'],
+          'the tab stop moves with the active option'
+        );
+      });
+
+      test('the first option owns the tab stop when nothing is active or selected', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant'];
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="none"
+              @autoActivateMode="none"
+              @items={{animals}}
+            />
+          </template>
+        );
+
+        assert.deepEqual(
+          tabbableKeys(),
+          ['cheetah'],
+          'a list nobody has touched yet is still reachable by Tab'
+        );
+      });
+
+      test('a disabled option is skipped by the tab stop fallback', async function (assert) {
+        const animals = ['cheetah', 'crocodile', 'elephant'];
+
+        await render(
+          <template>
+            <Listbox
+              @selectionMode="none"
+              @autoActivateMode="none"
+              @disabledKeys={{array "cheetah"}}
+              @items={{animals}}
+            />
+          </template>
+        );
+
+        assert.deepEqual(
+          tabbableKeys(),
+          ['crocodile'],
+          'the tab stop lands on the first option a user can actually act on'
         );
       });
     });

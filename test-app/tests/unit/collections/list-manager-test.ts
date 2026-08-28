@@ -1,5 +1,8 @@
 import { module, test } from 'qunit';
 import { ListManager, canDeselectKey } from 'frontile/utils/listManager';
+// eslint-disable-next-line ember/no-runloop
+import { run } from '@ember/runloop';
+import { settled, getSettledState } from '@ember/test-helpers';
 
 module('Unit | Utils | ListManager', function (hooks) {
   let container: HTMLUListElement;
@@ -260,6 +263,143 @@ module('Unit | Utils | ListManager', function (hooks) {
         ['filtered-out'],
         'a selection hidden by a filter still counts as a second selection, so `a` goes'
       );
+    });
+  });
+  /**
+   * Registration is per item, but the work that follows it -- ordering the
+   * list against the document and telling the consumer what the list now
+   * holds -- is per *batch*. Doing it once per registration made a 500-option
+   * Select order 500 nodes 500 times over and queue 500 timers, each ordering
+   * them again, none of them cancelled.
+   */
+  module('coalescing the work a batch of registrations causes', function () {
+    type Report = { count: number; action: string; keys: string[] };
+
+    const buildReporting = (
+      autoActivateMode: 'none' | 'first' | 'selected'
+    ): { manager: ListManager; reports: Report[] } => {
+      const reports: Report[] = [];
+      const manager = new ListManager({
+        selectionMode: 'single',
+        autoActivateMode,
+        onListItemsChange: (items, action): void => {
+          reports.push({
+            count: items.length,
+            action,
+            keys: items.map((item) => item.key)
+          });
+        }
+      });
+      return { manager, reports };
+    };
+
+    test('a batch of registrations reports the list once, in DOM order', async function (assert) {
+      const { manager, reports } = buildReporting('none');
+      const keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+      run(() => {
+        keys.forEach((key) => addItem(manager, key));
+      });
+      await settled();
+
+      assert.strictEqual(
+        reports.length,
+        1,
+        'eight registrations produced one report, not eight'
+      );
+      assert.deepEqual(reports[0]?.keys, keys, 'the report is in DOM order');
+      assert.strictEqual(reports[0]?.action, 'add');
+    });
+
+    test('a batch of unregistrations reports the remaining list once', async function (assert) {
+      const { manager, reports } = buildReporting('none');
+      const els = ['a', 'b', 'c', 'd'].map((key) => addItem(manager, key));
+      await settled();
+      reports.length = 0;
+
+      run(() => {
+        els.slice(0, 2).forEach((el) => {
+          el.remove();
+          manager.unregister(el);
+        });
+      });
+      await settled();
+
+      assert.strictEqual(reports.length, 1, 'one report for the whole batch');
+      assert.deepEqual(reports[0]?.keys, ['c', 'd']);
+      assert.strictEqual(reports[0]?.action, 'remove');
+    });
+
+    test('a batch that replaces the list reports it once', async function (assert) {
+      const { manager, reports } = buildReporting('none');
+      const oldEls = ['old-1', 'old-2'].map((key) => addItem(manager, key));
+      await settled();
+      reports.length = 0;
+
+      // The real shape of a Glimmer update: the new elements are inserted and
+      // their modifiers installed before the old ones are torn down.
+      run(() => {
+        oldEls.forEach((el) => el.remove());
+        ['new-1', 'new-2', 'new-3'].forEach((key) => addItem(manager, key));
+        oldEls.forEach((el) => manager.unregister(el));
+      });
+      await settled();
+
+      assert.strictEqual(reports.length, 1, 'one report for the whole batch');
+      assert.deepEqual(
+        reports[0]?.keys,
+        ['new-1', 'new-2', 'new-3'],
+        'and it holds only what is in the document once the batch has settled'
+      );
+    });
+
+    test('the deferred activation runs once for the whole batch', async function (assert) {
+      const activations: (string | undefined)[] = [];
+      const manager = new ListManager({
+        selectionMode: 'single',
+        autoActivateMode: 'first',
+        onActiveItemChange: (key): void => {
+          activations.push(key);
+        }
+      });
+
+      run(() => {
+        ['a', 'b', 'c', 'd'].forEach((key) => addItem(manager, key));
+      });
+      await settled();
+
+      assert.deepEqual(
+        activations,
+        ['a'],
+        'the first item was activated once, not once per registration'
+      );
+      assert.true(manager.atKey('a')?.isActive);
+    });
+
+    test('teardown drops the work a batch had queued', async function (assert) {
+      const { manager, reports } = buildReporting('first');
+
+      // `ListManager` is a plain class, so the only teardown hook it has is
+      // the destructor of the `setup` modifier that installed it. What that
+      // destructor calls is this.
+      run(() => {
+        ['a', 'b', 'c'].forEach((key) => addItem(manager, key));
+      });
+
+      assert.true(
+        getSettledState().hasPendingTimers,
+        'the batch queued work for after the render'
+      );
+
+      manager.teardown();
+
+      assert.false(
+        getSettledState().hasPendingTimers,
+        'teardown cancelled it rather than leaving it to fire against a torn-down tree'
+      );
+
+      await settled();
+      assert.deepEqual(reports, [], 'the cancelled work never ran');
     });
   });
 });

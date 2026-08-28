@@ -40,7 +40,7 @@ interface ListboxSignature<T> {
     elementToAddKeyboardEvents?: HTMLElement;
 
     /**
-     * @edefaultValue 'frist'
+     * @defaultValue 'first'
      */
     autoActivateMode?: 'none' | 'first' | 'selected';
 
@@ -106,7 +106,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       }
     } else {
       if (
-        ['Enter', ' ', 'Space'].includes(event.key) &&
+        ['Enter', ' '].includes(event.key) &&
         this.listManager.searchKeys == ''
       ) {
         this.listManager.selectActiveItem();
@@ -213,11 +213,17 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
       tabindex="0"
       role={{this.role}}
       aria-multiselectable={{this.ariaMultiselectable}}
+      {{! The callbacks travel through setup, not only through the manager's
+      field initializer above: that initializer runs once, so an onAction
+      rebuilt on a later render would otherwise never reach the manager. }}
       {{this.listManager.setup
         selectedKeys=@selectedKeys
         disabledKeys=@disabledKeys
         selectionMode=@selectionMode
         allowEmpty=@allowEmpty
+        onAction=@onAction
+        onSelectionChange=@onSelectionChange
+        onActiveItemChange=@onActiveItemChange
         autoActivateMode=(if
           (isUndefined @autoActivateMode) "first" @autoActivateMode
         )

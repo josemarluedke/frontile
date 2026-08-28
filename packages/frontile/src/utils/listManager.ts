@@ -1,8 +1,8 @@
 /* eslint-disable ember/no-runloop */
 import { tracked } from '@glimmer/tracking';
-import { debounce } from '@ember/runloop';
+import { cancel, debounce, later } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
-import { later } from '@ember/runloop';
+import type { Timer } from '@ember/runloop';
 import { getElementById } from '../-private/dom';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
@@ -101,9 +101,21 @@ class ListItem {
     }
   }
 
-  /** `isActive` read without consuming its tag, for write decisions. */
+  /**
+   * The three flags read without consuming their tags, for write decisions and
+   * for `ListManager`'s tab-stop bookkeeping -- which has to look at every
+   * sibling and must not drag every sibling's tag into the frame that does so.
+   */
   get isActiveUntracked(): boolean {
     return this.isActiveMirror;
+  }
+
+  get isSelectedUntracked(): boolean {
+    return this.isSelectedMirror;
+  }
+
+  get isDisabledUntracked(): boolean {
+    return this.isDisabledMirror;
   }
 
   constructor(
@@ -134,6 +146,59 @@ interface ListManagerArgs {
 
 class ListManager {
   #items: ListItem[] = [];
+
+  /**
+   * The one pending "the list changed" task, and what the batch behind it did.
+   *
+   * Registration is per item, but everything that follows it -- ordering the
+   * list against the document, telling the consumer what the list now holds,
+   * and moving the active item -- belongs to the *batch*. Doing it per
+   * registration made a 500-option Select order 500 nodes 500 times over and
+   * queue 500 timers, each ordering them again, none of them cancelled. One
+   * timer, replaced whenever another item registers or unregisters, does the
+   * work once against the finished DOM.
+   *
+   * Deferring is not only cheaper, it is more accurate: mid-batch the document
+   * still holds the elements Glimmer is about to tear down, so the orders
+   * computed then were partly garbage (see `#orderedItems`).
+   */
+  #pendingTimer?: Timer;
+  #pendingAdd = false;
+  #pendingRemove = false;
+  #pendingAction?: 'add' | 'remove';
+
+  /**
+   * Whether the `setup` modifier has been torn down without being re-installed.
+   *
+   * Destructors normally run children first, so every item has unregistered by
+   * the time `setup` tears down and cancelling there is enough. This flag
+   * covers the other order: once `setup` has gone, a late unregister records
+   * what it did but queues nothing, so no flush can fire against a tree that
+   * no longer exists. `setup` clears it, which is what makes a re-run -- where
+   * the destructor runs purely as a prelude to the body -- harmless.
+   */
+  #isTornDown = false;
+
+  /**
+   * The item that owns the composite's tab stop, by key.
+   *
+   * The ARIA listbox pattern allows exactly one tabbable option: the options
+   * are stepped *into* once and then navigated with the arrow keys. Every
+   * selected option carrying `tabindex="0"` turned an eight-selection
+   * multi-select into eight tab stops. The active item owns the stop, falling
+   * back to the first selection, then to the first option a user can act on --
+   * so a list nobody has touched yet is still reachable by Tab.
+   *
+   * Held as one tracked value rather than derived inside each option's getter:
+   * a getter that had to look at every sibling would consume every sibling's
+   * `isActive` tag, and the writes this class makes while Glimmer renders
+   * would then dirty tags the same frame had just consumed. `#refreshTabStop`
+   * reads the plain mirrors for the same reason, and this field is written
+   * through a mirror guard of its own -- see `ListItem` above for the whole
+   * story.
+   */
+  @tracked private _tabStopKey?: string;
+  private tabStopKeyMirror?: string;
 
   searchKeys: string = '';
   args: ListManagerArgs = {
@@ -176,24 +241,40 @@ class ListManager {
     return this.#items.some((item) => item.el.isConnected);
   }
 
-  /**
-   * The registered item that comes first in the document, found in a single
-   * pass so callers that need only one item do not pay to order the whole
-   * list.
-   */
-  get #firstVisibleItem(): ListItem | undefined {
-    let first: ListItem | undefined;
-    for (const item of this.#items) {
-      if (!item.el.isConnected) continue;
-      if (
-        !first ||
-        item.el.compareDocumentPosition(first.el) &
-          Node.DOCUMENT_POSITION_FOLLOWING
-      ) {
-        first = item;
-      }
+  /** Whether `key` is the single option that carries `tabindex="0"`. */
+  isTabStop(key: string): boolean {
+    return this._tabStopKey === key;
+  }
+
+  private set tabStopKey(value: string | undefined) {
+    if (this.tabStopKeyMirror !== value) {
+      this.tabStopKeyMirror = value;
+      this._tabStopKey = value;
     }
-    return first;
+  }
+
+  /**
+   * Work out which option owns the tab stop, reading only the untracked
+   * mirrors so nothing is consumed on a path that can run mid-render.
+   *
+   * Only called from places where the answer can actually have changed and
+   * where the DOM is worth ordering once: an activation, a selection update,
+   * and the batch flush. Notably *not* from `unregister` -- see there.
+   */
+  #refreshTabStop(): void {
+    let active: ListItem | undefined;
+    let selected: ListItem | undefined;
+    let first: ListItem | undefined;
+
+    for (const item of this.#orderedItems) {
+      if (item.isDisabledUntracked) continue;
+      if (!first) first = item;
+      if (!selected && item.isSelectedUntracked) selected = item;
+      if (!active && item.isActiveUntracked) active = item;
+      if (active) break;
+    }
+
+    this.tabStopKey = (active || selected || first)?.key;
   }
 
   register(
@@ -211,37 +292,109 @@ class ListManager {
     }
     this.#items.push(newItem);
 
-    if (typeof this.args.onListItemsChange === 'function') {
-      this.args.onListItemsChange(this.#orderedItems, 'add');
+    // A first, cheap guess at the tab stop, so a freshly rendered list has a
+    // tabbable option before the batch flush gets to work out the real answer.
+    // Deliberately no `#refreshTabStop()` here: that orders the document, and
+    // ordering it once per registration is the cost this batching removes.
+    if (typeof this.tabStopKeyMirror === 'undefined' && !args.isDisabled) {
+      this.tabStopKey = newItem.key;
     }
 
-    if (this.args.autoActivateMode != 'none' && this.#items.length > 1) {
-      later(() => {
-        if (this.args.autoActivateMode == 'first') {
-          this.setFirstOptionActive();
-        } else {
-          this.setSelectedOptionActive();
-        }
-      }, 1);
-    }
+    this.#scheduleListChange('add');
   }
 
   unregister(el: HTMLLIElement | HTMLOptionElement): void {
     this.#items = this.#items.filter((item) => item.el !== el);
 
-    if (this.args.autoActivateMode == 'first') {
-      // Deferred for the same reason as the activation in `register`: unregister
-      // runs while Glimmer tears down the elements it is replacing, which is the
-      // same render pass in which item templates have already consumed
-      // `isActive`. Activating synchronously here would write to that tracked
-      // state after it was read, tripping a backtracking-rerender assertion.
-      later(() => {
-        this.activateItem(this.#firstVisibleItem);
-      }, 1);
+    // The tab stop is left pointing at the item that just went, and the flush
+    // below corrects it a tick later. Clearing it here would write tracked
+    // state while Glimmer tears down the elements it is replacing -- the same
+    // render pass in which the surviving options have already read it for
+    // their `tabindex` -- which is exactly the backtracking-rerender hazard
+    // `ListItem` documents. For the tick in between, no option is tabbable;
+    // the alternative is an assertion.
+
+    this.#scheduleListChange('remove');
+  }
+
+  /**
+   * Note what the batch did and make sure exactly one flush is queued for it.
+   *
+   * Always queued, even with no `onListItemsChange` and no auto-activation:
+   * the tab stop has to be re-derived after any change to the membership, and
+   * the flush is the only place the document is ordered once per batch rather
+   * than once per item.
+   */
+  #scheduleListChange(action: 'add' | 'remove'): void {
+    if (action === 'add') {
+      this.#pendingAdd = true;
+    } else {
+      this.#pendingRemove = true;
+    }
+    this.#pendingAction = action;
+
+    if (this.#isTornDown) {
+      return;
     }
 
-    if (typeof this.args.onListItemsChange === 'function') {
-      this.args.onListItemsChange(this.#orderedItems, 'remove');
+    cancel(this.#pendingTimer);
+    this.#pendingTimer = later(this, this.#flushListChange, 1);
+  }
+
+  #flushListChange(): void {
+    this.#pendingTimer = undefined;
+
+    const added = this.#pendingAdd;
+    const removed = this.#pendingRemove;
+    const action = this.#pendingAction;
+    this.#pendingAdd = false;
+    this.#pendingRemove = false;
+    this.#pendingAction = undefined;
+
+    if (action && typeof this.args.onListItemsChange === 'function') {
+      this.args.onListItemsChange(this.#orderedItems, action);
+    }
+
+    if (this.args.autoActivateMode === 'none' || !this.#hasVisibleItems) {
+      this.#refreshTabStop();
+      return;
+    }
+
+    if (added) {
+      if (this.args.autoActivateMode === 'first') {
+        this.setFirstOptionActive();
+      } else {
+        this.setSelectedOptionActive();
+      }
+    } else if (removed && this.args.autoActivateMode === 'first') {
+      // The active item may have been the one that went.
+      this.setFirstOptionActive();
+    }
+
+    this.#refreshTabStop();
+  }
+
+  /**
+   * Drop whatever the current batch had queued.
+   *
+   * `ListManager` is a plain class, so the only teardown it can hook is the
+   * destructor of the `setup` modifier that installed it -- which is where
+   * this is called from. That destructor also runs when `setup`'s arguments
+   * change, so `setup` re-queues a flush that was still pending; only a real
+   * teardown never reaches the body again, and there the timer stays cancelled.
+   */
+  teardown(): void {
+    cancel(this.#pendingTimer);
+    this.#pendingTimer = undefined;
+    this.#isTornDown = true;
+  }
+
+  /** Re-queue a batch that `teardown` cancelled but that has not run yet. */
+  #resumePendingListChange(): void {
+    this.#isTornDown = false;
+
+    if (this.#pendingAction && !this.#pendingTimer) {
+      this.#pendingTimer = later(this, this.#flushListChange, 1);
     }
   }
 
@@ -269,21 +422,38 @@ class ListManager {
       this.args.selectionMode = args.selectionMode;
     }
 
-    if (args.onAction) {
+    // Callbacks are replaced whenever the caller *mentions* them, rather than
+    // whenever it passes a truthy one.
+    //
+    // A manager is built once, in a component's field initializer, and only
+    // `setup` runs again when arguments change -- so a callback that `setup`
+    // does not carry can never be refreshed, and a `Listbox` whose `@onAction`
+    // is rebuilt each render (`{{fn this.pick group.id}}` inside an
+    // `{{#each}}`) went on calling the closure from its first render forever.
+    //
+    // The key has to decide it, not the value: `setup` names every callback it
+    // owns, passing undefined when the consumer gave none, and that undefined
+    // must win. A caller that owns only some of them -- NativeSelect hands its
+    // own `onSelectionChange` to the constructor and only `onListItemsChange`
+    // to `setup` -- leaves the rest unmentioned, and those keep what they have.
+    if ('onAction' in args) {
       this.args.onAction = args.onAction;
     }
 
-    if (args.onSelectionChange) {
+    if ('onSelectionChange' in args) {
       this.args.onSelectionChange = args.onSelectionChange;
     }
 
-    if (args.onListItemsChange) {
+    if ('onListItemsChange' in args) {
       this.args.onListItemsChange = args.onListItemsChange;
     }
 
-    if (args.onActiveItemChange) {
+    if ('onActiveItemChange' in args) {
       this.args.onActiveItemChange = args.onActiveItemChange;
     }
+
+    // The selection this just wrote onto the items may have moved the tab stop.
+    this.#refreshTabStop();
   }
 
   selectActiveItem(): void {
@@ -318,11 +488,16 @@ class ListManager {
     if (item && !item.isActiveUntracked) {
       this.#clearActive();
       item.isActive = true;
+      this.#refreshTabStop();
       this.args.onActiveItemChange?.(item.key, item);
 
       // Ensure the item is scrolled into view
       requestAnimationFrame(() => {
-        item.el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        // The list may have been torn down between the write above and the
+        // frame; scrolling a detached element to nowhere is pointless.
+        if (item.el.isConnected) {
+          item.el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
       });
     }
   }
@@ -390,7 +565,7 @@ class ListManager {
   }
 
   search(key: string): void {
-    debounce(this, this.#clearSeaerch, 500);
+    debounce(this, this.#clearSearch, 500);
     this.searchKeys += key.toLowerCase();
 
     const items = this.#orderedItems;
@@ -491,7 +666,7 @@ class ListManager {
     return this.#orderedItems.find((item) => item.isActive);
   }
 
-  #clearSeaerch(): void {
+  #clearSearch(): void {
     this.searchKeys = '';
   }
 
@@ -510,13 +685,16 @@ class ListManager {
       _: unknown[],
       args: ListManagerArgs
     ) => {
-      this.updateArgs({
-        selectionMode: args.selectionMode,
-        disabledKeys: args.disabledKeys,
-        selectedKeys: args.selectedKeys,
-        allowEmpty: args.allowEmpty,
-        autoActivateMode: args.autoActivateMode
-      });
+      this.updateArgs(args);
+
+      // This modifier's destructor also runs before every re-invocation, so a
+      // flush it cancelled while the list was still very much alive has to be
+      // put back. Only a real teardown never reaches this line again.
+      this.#resumePendingListChange();
+
+      return (): void => {
+        this.teardown();
+      };
     }
   );
 

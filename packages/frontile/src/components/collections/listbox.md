@@ -546,6 +546,13 @@ export default class EmptySelection extends Component {
 | Items    | `role="option"` (or `menuitem`), `aria-labelledby` pointing at the item's label                |
 |          | `aria-selected` reflecting selection — options only, since it is invalid on a plain `menuitem` |
 |          | `aria-disabled="true"` for keys in `@disabledKeys`                                             |
+|          | a roving `tabindex` — exactly one option carries `0`, every other one `-1`                      |
+
+The options form a composite you step into once and then navigate with the arrow keys, so only
+one of them is ever in the tab order. That one is the active option; with nothing active it is
+the first selected option, and failing that the first option that is not disabled. A
+multiple-selection list with eight selections is therefore still a single stop for `Tab`, not
+eight.
 
 Keyboard, handled on the list itself:
 
