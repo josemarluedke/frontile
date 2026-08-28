@@ -391,7 +391,14 @@ type SelectArgs<T> = (
   /**
    * Whether to include a clear button in the select component.
    * If enabled, this allows users to clear the selection.
-   * This option ignores the `allowEmpty` setting.
+   *
+   * This option deliberately overrides `allowEmpty`: that argument governs
+   * deselecting an *option* (the listbox and the chips both refuse to remove
+   * the last one without it), while this is a separate affordance you opt into
+   * for exactly the purpose of emptying the field. Since `allowEmpty` defaults
+   * to false, honouring it here would render the button dead by default.
+   *
+   * No clear button is rendered on a disabled Select, or with nothing selected.
    *
    * @defaultValue false
    */
@@ -422,7 +429,16 @@ type SelectArgs<T> = (
   hideEmptyContent?: boolean;
 
   /**
-   * Callback fired when the select component loses focus.
+   * Callback fired when focus leaves the Select.
+   *
+   * "Leaves the Select" means the whole control: the field *and* its dropdown,
+   * which is rendered outside the field in the DOM. Moving focus between them
+   * -- which is what clicking an option does -- is not a blur, so this does not
+   * fire while the user is picking options, in either selection mode. It fires
+   * once, when focus lands somewhere outside the control (or nowhere, with the
+   * dropdown closed).
+   *
+   * This is what `Field` drives blur validation from.
    */
   onBlur?: () => void;
 };

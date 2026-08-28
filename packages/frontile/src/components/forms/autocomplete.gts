@@ -13,6 +13,7 @@ import {
 import { Spinner } from '../utilities/spinner';
 import { VisuallyHidden } from '../utilities/visually-hidden';
 import { ref } from '../../utils/ref';
+import { ControlBlurTracker } from '../../-private/control-blur';
 import {
   Popover,
   type PopoverSignature,
@@ -23,7 +24,7 @@ import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { IconChevronUpDown } from './icons';
 import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
-import { later, debounce, cancel } from '@ember/runloop';
+import { debounce, cancel } from '@ember/runloop';
 
 import { modifier } from 'ember-modifier';
 
@@ -216,7 +217,14 @@ interface AutocompleteArgs<T>
   /**
    * Whether to include a clear button in the autocomplete component.
    * If enabled, this allows users to clear the selection and input text.
-   * This option ignores the `allowEmpty` setting.
+   *
+   * This option deliberately overrides `allowEmpty`: that argument governs
+   * deselecting an *option* in the listbox, while this is a separate affordance
+   * you opt into for exactly the purpose of emptying the field. Since
+   * `allowEmpty` defaults to false, honouring it here would render the button
+   * dead by default.
+   *
+   * No clear button is rendered on a disabled Autocomplete.
    *
    * @defaultValue false
    */
@@ -255,7 +263,16 @@ interface AutocompleteArgs<T>
   searchMessage?: string;
 
   /**
-   * Callback fired when the autocomplete component loses focus.
+   * Callback fired when focus leaves the Autocomplete.
+   *
+   * "Leaves the Autocomplete" means the whole control: the input *and* its
+   * dropdown, which is rendered outside the input in the DOM. Moving focus
+   * between them -- which is what clicking an option does -- is not a blur, so
+   * this does not fire while the user is picking an option. It fires once, when
+   * focus lands somewhere outside the control (or nowhere, with the dropdown
+   * closed).
+   *
+   * This is what `Field` drives blur validation from.
    */
   onBlur?: () => void;
 }
@@ -355,6 +372,8 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     if (this.#pendingSearch) {
       cancel(this.#pendingSearch);
     }
+    // Nothing may resolve against a destroyed component.
+    this.blurTracker.cancel();
   }
 
   onSelectionChange = (keys: string[]) => {
@@ -477,17 +496,23 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       this.isOpen = false;
     }
 
-    this.handleBlur();
+    // Deliberately does not touch `@onBlur`. Picking an option is not focus
+    // leaving the control; `blurTracker` decides that from the input's own
+    // `focusout`.
   };
 
-  // wait a beat for any side effects to complete before calling onBlur
-  handleBlur = () => {
-    if (typeof this.args.onBlur === 'function') {
-      later(() => {
-        this.args.onBlur?.();
-      }, 150);
-    }
-  };
+  /**
+   * Reports focus leaving the *whole* control -- the input and its portaled
+   * dropdown -- rather than the input, which blurs on the way into the
+   * dropdown whenever an option is clicked. See `ControlBlurTracker`.
+   */
+  blurTracker = new ControlBlurTracker({
+    trigger: () => this.triggerRef.current,
+    container: () => this.containerRef.current,
+    isOpen: () => this.isOpen,
+    isDestroyed: () => this.isDestroyed || this.isDestroying,
+    onBlur: () => this.args.onBlur?.()
+  });
 
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
@@ -559,9 +584,22 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     });
   }
 
+  /**
+   * Whether the clear button takes the chevron's place: something to clear,
+   * and a control that can act on it.
+   *
+   * `@allowEmpty` is deliberately not consulted -- it governs deselecting an
+   * *option* in the listbox, while `@isClearable` is a separate affordance the
+   * consumer opts into for exactly this purpose (and `@allowEmpty` defaults to
+   * false, so honouring it here would leave the button dead by default). A
+   * disabled Autocomplete shows no clear button at all: it carries no disabled
+   * state of its own, so it would be a focusable button that clears a field
+   * the user is not allowed to change.
+   */
   get isClearable() {
     return (
       this.args.isClearable &&
+      !this.args.isDisabled &&
       (this.selectedKeys.length > 0 || this.isFiltering)
     );
   }
@@ -728,7 +766,7 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
               value={{this.inputValue}}
               {{on "input" this.onInput}}
               {{on "keydown" this.onKeyDown}}
-              {{on "blur" this.handleBlur}}
+              {{on "focusout" this.blurTracker.handleFocusOut}}
             />
             <div
               data-test-id="input-end-content"

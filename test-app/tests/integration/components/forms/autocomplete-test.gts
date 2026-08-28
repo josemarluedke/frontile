@@ -721,5 +721,164 @@ module(
         'single selection still replaces, it does not accumulate the filtered-out key'
       );
     });
+    // -----------------------------------------------------------------------
+    // @onBlur
+    //
+    // Same contract as Select: `@onBlur` reports focus leaving the control,
+    // not an option being picked. The trigger blurs on the way into the
+    // dropdown, so a selection must not be reported as a blur.
+    // -----------------------------------------------------------------------
+
+    test('@onBlur is not called when selecting an option', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const selectedKey = cell<string | null>(null);
+      const onSelectionChange = (key: string | null) =>
+        (selectedKey.current = key);
+      let blurCount = 0;
+      const onBlur = () => blurCount++;
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+            @onBlur={{onBlur}}
+          />
+        </template>
+      );
+
+      await fillIn('[data-test-id="trigger"]', 'Ban');
+      await click('[data-component="listbox"] [data-key="Banana"]');
+
+      assert.strictEqual(selectedKey.current, 'Banana');
+      assert.strictEqual(
+        blurCount,
+        0,
+        'picking an option is not focus leaving the control'
+      );
+    });
+
+    test('@onBlur is not called while the dropdown is open', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      let blurCount = 0;
+      const onBlur = () => blurCount++;
+
+      await render(
+        <template>
+          <Autocomplete @items={{items}} @onBlur={{onBlur}} />
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      await fillIn('[data-test-id="trigger"]', 'a');
+
+      assert.dom('[data-component="listbox"]').exists();
+      assert.strictEqual(blurCount, 0, 'still interacting with the control');
+    });
+
+    test('@onBlur is called exactly once when focus leaves the control', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const selectedKey = cell<string | null>(null);
+      const onSelectionChange = (key: string | null) =>
+        (selectedKey.current = key);
+      let blurCount = 0;
+      const onBlur = () => blurCount++;
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+            @onBlur={{onBlur}}
+          />
+          <button type="button" data-test-id="outside">Outside</button>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      await click('[data-component="listbox"] [data-key="Apple"]');
+      assert.strictEqual(blurCount, 0, 'selecting is not blurring');
+
+      await click('[data-test-id="outside"]');
+
+      assert.strictEqual(blurCount, 1, 'leaving the control reported one blur');
+    });
+
+    test('tearing the Autocomplete down right after a selection neither calls @onBlur nor asserts', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const isRendered = cell<boolean>(true);
+      let blurCount = 0;
+      const onBlur = () => blurCount++;
+      const onSelectionChange = (_key: string | null) => {
+        isRendered.current = false;
+      };
+
+      await render(
+        <template>
+          {{#if isRendered.current}}
+            <Autocomplete
+              @items={{items}}
+              @onSelectionChange={{onSelectionChange}}
+              @onBlur={{onBlur}}
+            />
+          {{/if}}
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      await click('[data-component="listbox"] [data-key="Apple"]');
+
+      assert.dom('[data-test-id="trigger"]').doesNotExist('torn down');
+      assert.strictEqual(
+        blurCount,
+        0,
+        'no callback fires after the component is gone'
+      );
+    });
+
+    test('@isClearable clears even with @allowEmpty false, and never renders disabled', async function (assert) {
+      const items = ['Apple', 'Banana'];
+      const selectedKey = cell<string | null>('Apple');
+      const isDisabled = cell<boolean>(false);
+      const onSelectionChange = (key: string | null) =>
+        (selectedKey.current = key);
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @allowEmpty={{false}}
+            @isClearable={{true}}
+            @isDisabled={{isDisabled.current}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="input-clear-button"]').exists();
+
+      isDisabled.current = true;
+      await settled();
+
+      assert
+        .dom('[data-test-id="input-clear-button"]')
+        .doesNotExist(
+          'a disabled control cannot be cleared, so no dead button'
+        );
+
+      isDisabled.current = false;
+      await settled();
+
+      await click('[data-test-id="input-clear-button"]');
+
+      assert.strictEqual(
+        selectedKey.current,
+        null,
+        '@isClearable is documented to override @allowEmpty'
+      );
+    });
   }
 );
