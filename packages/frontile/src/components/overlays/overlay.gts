@@ -33,6 +33,36 @@ function hasNestedPortals(element: HTMLElement): boolean {
   return false;
 }
 
+// Blocking the body scroll mutates global state, so it has to be reference
+// counted: nested overlays (a Drawer opened from a Modal, a Select inside a
+// Modal) each lock on open and unlock on close, and only the last one out is
+// allowed to restore the page. We also remember the inline value the app had
+// before the first lock, so restoring does not silently wipe an app-level
+// `body { overflow: ... }`.
+let bodyScrollLockCount = 0;
+let previousBodyOverflow = '';
+
+function lockBodyScroll(): void {
+  if (bodyScrollLockCount === 0) {
+    previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+  bodyScrollLockCount++;
+}
+
+function unlockBodyScroll(): void {
+  if (bodyScrollLockCount === 0) {
+    return;
+  }
+
+  bodyScrollLockCount--;
+
+  if (bodyScrollLockCount === 0) {
+    document.body.style.overflow = previousBodyOverflow;
+    previousBodyOverflow = '';
+  }
+}
+
 // finds if the el has a parent with the id `ember-basic-dropdown-wormhole` or a role of `alert`
 function hasWormholeOrAlertParentElement(el: HTMLElement) {
   let parent = el.parentElement;
@@ -193,6 +223,12 @@ class Overlay extends Component<OverlaySignature> {
   focusedElement: Element | null | undefined;
   mouseDownContentElement: EventTarget | null = null;
 
+  // Whether *this* overlay is holding a reference on the body scroll lock. We
+  // record the decision made when opening instead of re-deriving it at
+  // teardown, because the args can change while the overlay is open and an
+  // asymmetric lock/unlock would leak the reference count.
+  didLockBodyScroll = false;
+
   handleClose(): void {
     if (this.args.isOpen && typeof this.args.onClose === 'function') {
       this.args.onClose();
@@ -258,7 +294,8 @@ class Overlay extends Component<OverlaySignature> {
     this.focusedElement = document.activeElement;
 
     if (this.args.renderInPlace !== true && this.args.blockScroll !== false) {
-      document.body.style.overflow = 'hidden';
+      this.didLockBodyScroll = true;
+      lockBodyScroll();
     }
 
     if (typeof this.args.onOpen === 'function') {
@@ -267,8 +304,9 @@ class Overlay extends Component<OverlaySignature> {
     return () => {
       this.contentElement = undefined;
 
-      if (this.args.renderInPlace !== true && this.args.blockScroll !== false) {
-        document.body.style.overflow = '';
+      if (this.didLockBodyScroll) {
+        this.didLockBodyScroll = false;
+        unlockBodyScroll();
       }
 
       const { didClose } = this.args;

@@ -708,10 +708,23 @@ Drawer yields the pieces you assemble it from:
 
 ## Accessibility
 
-The drawer renders as `role="dialog"` with `tabindex="0"`, labelled by `aria-labelledby`
-pointing at the id yielded as `headerId` — which `<d.Header>` applies. **A drawer with no
-`Header` has a dangling label reference.** Render a `Header`, or put `headerId` on your own
-heading, so assistive technology has something to announce.
+The drawer renders as `role="dialog"` with `tabindex="0"` and `aria-modal="true"`, labelled
+by `aria-labelledby` pointing at the id yielded as `headerId` — which `<d.Header>` applies.
+`aria-labelledby` is only rendered while a `Header` is actually on the page, so a drawer
+without one has no dangling reference — but it also has **no accessible name**. Give it one:
+render a `Header`, or pass your own label through attributes.
+
+```gts
+<Drawer @isOpen={{this.isOpen}} @onClose={{this.close}} aria-label="Filters" as |d|>
+  <d.Body>Filter controls</d.Body>
+</Drawer>
+```
+
+If you label the drawer with a heading of your own rather than `<d.Header>`, set
+`aria-labelledby` yourself — the drawer only points at `headerId` for its own `Header`.
+
+`aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
+behind really is reachable, and claiming otherwise would mislead screen reader users.
 
 Behavior inherited from [Overlay](./overlay.md):
 
@@ -721,7 +734,7 @@ Behavior inherited from [Overlay](./overlay.md):
 | Focus on close | Returns to whatever was focused before opening         |
 | `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`           |
 | Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`        |
-| Body scroll    | Blocked while open                                     |
+| Body scroll    | Blocked while open (reference counted for nesting)     |
 
 The drawer needs at least one focusable element inside it, or the focus trap has nowhere to
 put focus. `@allowClosing={{false}}` disables Escape, backdrop click and the close button at
@@ -730,7 +743,7 @@ explicit footer actions for that reason.
 
 Note that `@placement` is purely visual: a drawer sliding in from the left is announced no
 differently from one on the right, and nothing about the placement reaches assistive
-technology. Frontile also does not set `aria-modal` or `aria-describedby`.
+technology. Frontile also does not set `aria-describedby`.
 
 ## API
 

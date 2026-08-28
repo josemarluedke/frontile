@@ -537,4 +537,162 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
       </template>
     );
   });
+
+  test('it renders aria-modal when the focus trap is active', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert.dom('[data-test-id="drawer"]').hasAttribute('aria-modal', 'true');
+  });
+
+  test('it does not render aria-modal when @disableFocusTrap={{true}}', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableFocusTrap={{true}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert.dom('[data-test-id="drawer"]').doesNotHaveAttribute('aria-modal');
+  });
+
+  test('it does not render aria-labelledby when no header is rendered', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'no dangling reference when there is no header'
+      );
+  });
+
+  test('it renders aria-labelledby pointing at the header when a header is rendered later', async function (assert) {
+    const isOpen = cell(true);
+    const showHeader = cell(false);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          {{#if showHeader.current}}
+            <m.Header>My Header</m.Header>
+          {{/if}}
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute('aria-labelledby');
+
+    showHeader.current = true;
+    await settled();
+
+    const labelledBy =
+      find('[data-test-id="drawer"]')?.getAttribute('aria-labelledby') || '';
+    assert.ok(labelledBy, 'aria-labelledby is applied once a header exists');
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header')
+      .hasAttribute('id', labelledBy);
+
+    showHeader.current = false;
+    await settled();
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'the reference is dropped again when the header is removed'
+      );
+  });
+
+  test('a consumer supplied aria-label is preserved when there is no header', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          aria-label="My Dialog"
+          as |m|
+        >
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute('aria-label', 'My Dialog');
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute('aria-labelledby');
+  });
+
+  test('a consumer supplied aria-labelledby wins over the header id', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <span id="my-own-label">My Own Label</span>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          aria-labelledby="my-own-label"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute('aria-labelledby', 'my-own-label');
+  });
 });

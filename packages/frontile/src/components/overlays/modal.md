@@ -811,11 +811,23 @@ Modal yields the pieces you assemble the dialog from:
 
 ## Accessibility
 
-The dialog element renders as `role="dialog"` with `tabindex="0"`, labelled by
-`aria-labelledby` pointing at the id yielded as `headerId` — which is applied by
-`<m.Header>`. **A modal with no `Header` therefore has a dangling label reference.** Either
-render a `Header`, or put `headerId` on your own heading element, so assistive technology
-has something to announce.
+The dialog element renders as `role="dialog"` with `tabindex="0"` and `aria-modal="true"`,
+labelled by `aria-labelledby` pointing at the id yielded as `headerId` — which is applied by
+`<m.Header>`. `aria-labelledby` is only rendered while a `Header` is actually on the page, so
+a modal without one has no dangling reference — but it also has **no accessible name**. Give
+it one: render a `Header`, or pass your own label through attributes.
+
+```gts
+<Modal @isOpen={{this.isOpen}} @onClose={{this.close}} aria-label="Delete account" as |m|>
+  <m.Body>This cannot be undone.</m.Body>
+</Modal>
+```
+
+If you label the dialog with a heading of your own rather than `<m.Header>`, set
+`aria-labelledby` yourself — the modal only points at `headerId` for its own `Header`.
+
+`aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
+behind really is reachable, and claiming otherwise would mislead screen reader users.
 
 Behavior inherited from [Overlay](./overlay.md):
 
@@ -825,15 +837,14 @@ Behavior inherited from [Overlay](./overlay.md):
 | Focus on close | Returns to whatever was focused before opening        |
 | `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`          |
 | Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`       |
-| Body scroll    | Blocked while open                                    |
+| Body scroll    | Blocked while open (reference counted for nesting)    |
 
 The modal needs at least one focusable element inside it, or the focus trap has nowhere to
 put focus. Note that `@allowClosing={{false}}` disables Escape, backdrop click and the close
 button together, which leaves a keyboard user no way out — reserve it for flows that provide
 their own explicit resolution.
 
-Frontile does not set `aria-modal` or `aria-describedby`. Add them yourself if your dialog
-needs them.
+Frontile does not set `aria-describedby`. Add it yourself if your dialog needs it.
 
 ## API
 

@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import Overlay, { type OverlaySignature } from './overlay';
@@ -94,7 +95,7 @@ export interface DrawerSignature {
         >;
         Header: WithBoundArgs<
           ComponentLike<DrawerHeaderSignature>,
-          'labelledById' | 'classFromParent'
+          'labelledById' | 'classFromParent' | 'registerSelf'
         >;
         Body: WithBoundArgs<
           ComponentLike<DrawerBodySignature>,
@@ -113,6 +114,41 @@ export interface DrawerSignature {
 
 export default class Drawer extends Component<DrawerSignature> {
   headerId = `${guidFor(this)}-header`;
+
+  // `aria-labelledby` is only useful if it points at an element that actually
+  // exists — a dangling reference leaves the dialog with no accessible name at
+  // all. The yielded `Header` reports when it is rendered and when it goes
+  // away, which keeps the reference correct even for a conditional header.
+  // The count itself is deliberately untracked: registration happens while the
+  // header's modifier is installing, and reading a tracked value there before
+  // writing it trips Glimmer's backtracking assertion. Only the derived flag is
+  // tracked, and it is always written, never read, from the callback.
+  renderedHeaders = 0;
+  @tracked hasHeader = false;
+
+  registerHeader = (isRendered: boolean): void => {
+    if (this.isDestroying || this.isDestroyed) {
+      return;
+    }
+
+    this.renderedHeaders += isRendered ? 1 : -1;
+    this.hasHeader = this.renderedHeaders > 0;
+  };
+
+  get labelledById(): string | undefined {
+    return this.hasHeader ? this.headerId : undefined;
+  }
+
+  /**
+   * `aria-modal="true"` promises assistive technology that the rest of the page
+   * is unreachable while this dialog is open. That promise only holds while the
+   * overlay's focus trap is active, so when the consumer turns the trap off we
+   * omit the attribute rather than lie about it — screen readers then keep
+   * exposing the page behind, which is what actually happens.
+   */
+  get ariaModal(): 'true' | undefined {
+    return this.args.disableFocusTrap === true ? undefined : 'true';
+  }
 
   get preventClosing(): boolean {
     return this.args.allowClosing === false;
@@ -171,7 +207,8 @@ export default class Drawer extends Component<DrawerSignature> {
         class={{this.classes.base class=@classes.base}}
         tabindex="0"
         role="dialog"
-        aria-labelledby={{this.headerId}}
+        aria-modal={{this.ariaModal}}
+        aria-labelledby={{this.labelledById}}
         ...attributes
       >
         {{#if this.showCloseButton}}
@@ -192,6 +229,7 @@ export default class Drawer extends Component<DrawerSignature> {
             Header=(component
               DrawerHeader
               labelledById=this.headerId
+              registerSelf=this.registerHeader
               classFromParent=(this.classes.header class=@classes.header)
             )
             Body=(component

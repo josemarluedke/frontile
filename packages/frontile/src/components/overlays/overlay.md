@@ -595,9 +595,15 @@ accessible name.
 | `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`                               |
 | Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`                            |
 | Body scroll    | Blocked while open, unless `@blockScroll={{false}}`                        |
+| Nested scroll  | Reference counted, so closing an inner overlay keeps the outer lock        |
 
 **The overlay needs at least one focusable element inside it.** A focus trap with nothing to
 focus leaves the keyboard stranded, and nothing warns you at runtime.
+
+Overlays that block scroll are reference counted, so a Modal that opens a Drawer stays
+locked until the last of them closes. Whatever inline `overflow` the page had before the
+first lock is restored, rather than blanked. Overlays rendered with `@renderInPlace={{true}}`
+or `@blockScroll={{false}}` never take part in that count.
 
 Frontile does not set `aria-modal`, `aria-labelledby` or `aria-describedby` at this level.
 
