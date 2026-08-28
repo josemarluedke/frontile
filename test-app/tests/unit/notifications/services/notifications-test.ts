@@ -2,7 +2,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { NotificationsService, Timer } from 'frontile/notifications';
-import { waitUntil } from '@ember/test-helpers';
+import { waitUntil, settled } from '@ember/test-helpers';
 
 module(
   'Unit | Service | @frontile/notifications/notifications',
@@ -150,6 +150,115 @@ module(
         },
         { timeout: 500 }
       );
+    });
+    test('removing the same notification twice only calls onRemove once', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      let calls = 0;
+      service.setOnRemoveCallback(() => {
+        calls++;
+      });
+
+      const notification = service.add('My Notification', {
+        duration: 1,
+        transitionDuration: 0,
+        preserve: true
+      });
+
+      service.remove(notification);
+      service.remove(notification);
+
+      await settled();
+
+      assert.equal(service.notifications.length, 0);
+      assert.equal(calls, 1, 'onRemove is called exactly once');
+    });
+
+    test('removeAll after remove does not call onRemove twice', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      let calls = 0;
+      service.setOnRemoveCallback(() => {
+        calls++;
+      });
+
+      const first = service.add('My Notification', {
+        transitionDuration: 0,
+        preserve: true
+      });
+      service.add('My Notification 2', {
+        transitionDuration: 0,
+        preserve: true
+      });
+
+      service.remove(first);
+      service.removeAll();
+
+      await settled();
+
+      assert.equal(service.notifications.length, 0);
+      assert.equal(calls, 2, 'onRemove is called once per notification');
+    });
+
+    test('it calls onRemove with the removed notification after auto removal', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      const removed: string[] = [];
+      service.setOnRemoveCallback((notification) => {
+        removed.push(notification.message);
+      });
+
+      service.add('My Notification', {
+        duration: 10,
+        transitionDuration: 0
+      });
+
+      await waitUntil(
+        () => {
+          return service.notifications.length === 0;
+        },
+        { timeout: 500 }
+      );
+      await settled();
+
+      assert.deepEqual(removed, ['My Notification']);
+    });
+    test('the skipTimer config option preserves notifications', async function (assert) {
+      const env = this.owner.resolveRegistration(
+        'config:environment'
+      ) as Record<string, unknown>;
+      const original = env['@frontile/notifications'];
+      env['@frontile/notifications'] = { skipTimer: true };
+
+      try {
+        const service = this.owner.lookup(
+          'service:notifications'
+        ) as NotificationsService;
+
+        const notification = service.add('My Notification', {
+          duration: 1,
+          transitionDuration: 0
+        });
+
+        assert.equal(
+          typeof notification.timer,
+          'undefined',
+          'no timer is created when skipTimer is configured'
+        );
+        assert.equal(service.notifications.length, 1);
+      } finally {
+        if (typeof original === 'undefined') {
+          delete env['@frontile/notifications'];
+        } else {
+          env['@frontile/notifications'] = original;
+        }
+      }
     });
   }
 );

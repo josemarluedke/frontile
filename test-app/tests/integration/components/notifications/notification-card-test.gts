@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerEvent } from '@ember/test-helpers';
+import { render, click, clearRender, triggerEvent } from '@ember/test-helpers';
 import { NotificationCard } from 'frontile';
 import {
   Notification,
@@ -258,6 +258,24 @@ module(
         1234567890,
         'timestamp should match'
       );
+    });
+
+    // NOTE: this is a smoke test. Ember does not raise on tracked writes to a
+    // destroyed component in this version, so it passes with or without the
+    // teardown cancellation in `transitionIn`; it guards against a future
+    // regression that does raise (or leaves a pending timer behind).
+    test('it can be destroyed while the enter transition is in flight', async function (assert) {
+      notification.current = new Notification({}, 'My message', {
+        transitionDuration: 300
+      });
+
+      await render(template);
+
+      assert.dom('[data-test-notification]').exists();
+
+      await clearRender();
+
+      assert.dom('[data-test-notification]').doesNotExist();
     });
   }
 );

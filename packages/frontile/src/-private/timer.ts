@@ -27,11 +27,22 @@ export default class Timer {
   }
 
   @action pause(): void {
+    // Pausing an already paused timer would subtract the elapsed time twice,
+    // eventually driving `remaining` to zero or below.
+    if (!this.isRunning) {
+      return;
+    }
+
     this.clear();
-    this.remaining -= Date.now() - this.start;
+    this.remaining = Math.max(0, this.remaining - (Date.now() - this.start));
   }
 
   @action resume(): void {
+    // Already counting down; resuming again would restart the remaining time.
+    if (this.isRunning) {
+      return;
+    }
+
     this.clear();
     this.setup();
   }
