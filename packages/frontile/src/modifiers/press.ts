@@ -234,14 +234,37 @@ const press = modifier<PressSignature>(
       return false;
     };
 
+    // The document listeners exist only as a fallback for releases that happen
+    // outside of the element (the pointer was dragged off before being
+    // released). They run in the capture phase, which is the very first node in
+    // the propagation path, so they must never handle - and never stop - an
+    // event that belongs to the element itself: the element's own listeners
+    // (including any registered by the consumer) still need to see it.
+    const isOnTarget = (event: Event): boolean =>
+      element.contains(event.target as Node);
+
+    const endFromDocument = (event: Event): void => {
+      if (isOnTarget(event)) {
+        return;
+      }
+      end(event);
+    };
+
+    const cancelFromDocument = (event: PointerEvent): void => {
+      if (isOnTarget(event)) {
+        return;
+      }
+      cancel(event);
+    };
+
     const addDocumentListeners = (): void => {
       if (documentListenersActive || !needsEndEvents) {
         return;
       }
       documentListenersActive = true;
-      document.addEventListener('pointerup', end, true);
-      document.addEventListener('mouseup', end, true);
-      document.addEventListener('pointercancel', cancel, true);
+      document.addEventListener('pointerup', endFromDocument, true);
+      document.addEventListener('mouseup', endFromDocument, true);
+      document.addEventListener('pointercancel', cancelFromDocument, true);
     };
 
     const removeDocumentListeners = (): void => {
@@ -249,9 +272,9 @@ const press = modifier<PressSignature>(
         return;
       }
       documentListenersActive = false;
-      document.removeEventListener('pointerup', end, true);
-      document.removeEventListener('mouseup', end, true);
-      document.removeEventListener('pointercancel', cancel, true);
+      document.removeEventListener('pointerup', endFromDocument, true);
+      document.removeEventListener('mouseup', endFromDocument, true);
+      document.removeEventListener('pointercancel', cancelFromDocument, true);
     };
 
     const start = (event: Event): void => {
@@ -287,6 +310,9 @@ const press = modifier<PressSignature>(
       removeDocumentListeners();
       named.onPressChange?.(false);
 
+      const onTarget = isOnTarget(event);
+      let shouldPropagate = false;
+
       const pressEndEvent = new PressEvent(
         'pressend',
         getPointerType(event),
@@ -294,8 +320,10 @@ const press = modifier<PressSignature>(
         element
       );
       named.onPressEnd?.(pressEndEvent);
+      shouldPropagate = shouldPropagate || pressEndEvent.shouldPropagate;
 
-      if (element.contains(event.target as Node)) {
+      // `press` and `pressup` only describe a release on the element itself.
+      if (onTarget) {
         const pressEvent = new PressEvent(
           'press',
           getPointerType(event),
@@ -303,20 +331,21 @@ const press = modifier<PressSignature>(
           element
         );
         onPress?.(pressEvent);
-        if (!pressEvent.shouldPropagate) {
-          event.stopPropagation();
-        }
+        shouldPropagate = shouldPropagate || pressEvent.shouldPropagate;
+
+        const pressUpEvent = new PressEvent(
+          'pressup',
+          getPointerType(event),
+          event,
+          element
+        );
+        named.onPressUp?.(pressUpEvent);
+        shouldPropagate = shouldPropagate || pressUpEvent.shouldPropagate;
       }
 
-      const pressUpEvent = new PressEvent(
-        'pressup',
-        getPointerType(event),
-        event,
-        element
-      );
-      named.onPressUp?.(pressUpEvent);
-
-      if (!pressEndEvent.shouldPropagate) {
+      // Only the element's own release is ours to stop. Stopping a release that
+      // happened elsewhere would hide it from the rest of the page.
+      if (onTarget && !shouldPropagate) {
         event.stopPropagation();
       }
     };
@@ -336,7 +365,7 @@ const press = modifier<PressSignature>(
         element
       );
       named.onPressEnd?.(pressEvent);
-      if (!pressEvent.shouldPropagate) {
+      if (isOnTarget(event) && !pressEvent.shouldPropagate) {
         event.stopPropagation();
       }
     };
@@ -381,8 +410,11 @@ const press = modifier<PressSignature>(
       });
     }
 
-    // Add pointer cancel only if we have onPressEnd (since cancel triggers onPressEnd)
-    if (named.onPressEnd) {
+    // Add pointer cancel whenever we track the end of an interaction: cancel
+    // resets the pressed state and triggers onPressEnd/onPressChange. It has to
+    // be on the element as well as on the document, because the document
+    // fallback deliberately ignores events targeting the element.
+    if (needsEndEvents) {
       element.addEventListener('pointercancel', cancel);
 
       cleanupFunctions.push(() => {
