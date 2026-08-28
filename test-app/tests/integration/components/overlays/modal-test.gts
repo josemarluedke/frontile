@@ -7,10 +7,41 @@ import {
   triggerKeyEvent,
   settled
 } from '@ember/test-helpers';
+import { registerWarnHandler } from '@ember/debug';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Modal } from 'frontile/overlays';
 import { cell } from 'ember-resources';
+
+/**
+ * Captures the ids of Frontile warnings raised while `callback` runs, instead of
+ * letting them print. Tests that deliberately render a dialog with no
+ * accessible name use this so the expected warning is asserted rather than
+ * spamming every run's output.
+ */
+async function captureFrontileWarnings(
+  callback: () => Promise<void>
+): Promise<string[]> {
+  const ids: string[] = [];
+
+  registerWarnHandler((message, options, next) => {
+    if (options?.id?.startsWith('frontile.')) {
+      ids.push(options.id);
+      return;
+    }
+
+    next(message, options);
+  });
+
+  try {
+    await callback();
+  } finally {
+    // Restore delegation to the default handler, which logs to the console.
+    registerWarnHandler((message, options, next) => next(message, options));
+  }
+
+  return ids;
+}
 
 module('Integration | Component | @frontile/overlays/modal', function (hooks) {
   setupRenderingTest(hooks);
@@ -475,21 +506,23 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
     assert.dom('[data-test-id="modal"]').doesNotHaveAttribute('aria-modal');
   });
 
-  test('it does not render aria-labelledby when no header is rendered', async function (assert) {
+  test('it does not render aria-labelledby when no header is rendered, and warns', async function (assert) {
     const isOpen = cell(true);
 
-    await render(
-      <template>
-        <Modal
-          @isOpen={{isOpen.current}}
-          @disableTransitions={{true}}
-          data-test-id="modal"
-          as |m|
-        >
-          <m.Body>My Content</m.Body>
-        </Modal>
-      </template>
-    );
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Modal
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="modal"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Modal>
+        </template>
+      );
+    });
 
     assert
       .dom('[data-test-id="modal"]')
@@ -497,6 +530,87 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
         'aria-labelledby',
         'no dangling reference when there is no header'
       );
+    assert.deepEqual(
+      warnings,
+      ['frontile.modal.missing-accessible-name'],
+      'the missing accessible name is warned about in development'
+    );
+  });
+
+  test('it does not warn when a header supplies the accessible name', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Modal
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="modal"
+            as |m|
+          >
+            <m.Header>My Header</m.Header>
+            <m.Body>My Content</m.Body>
+          </Modal>
+        </template>
+      );
+    });
+
+    assert.deepEqual(warnings, [], 'a header is an accessible name');
+  });
+
+  test('it warns when the yielded headerId is on your own heading but nothing points at it', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Modal
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="modal"
+            as |m|
+          >
+            <h2 id={{m.headerId}}>My Own Heading</h2>
+            <m.Body>My Content</m.Body>
+          </Modal>
+        </template>
+      );
+    });
+
+    assert
+      .dom('[data-test-id="modal"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'the dialog does not point at a heading it never registered'
+      );
+    assert.deepEqual(
+      warnings,
+      ['frontile.modal.missing-accessible-name'],
+      'a heading carrying headerId is not a name until aria-labelledby points at it'
+    );
+  });
+
+  test('it does not warn when a consumer supplies aria-label', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Modal
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="modal"
+            aria-label="My Dialog"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Modal>
+        </template>
+      );
+    });
+
+    assert.deepEqual(warnings, [], 'aria-label is an accessible name');
   });
 
   test('it renders aria-labelledby pointing at the header when a header is rendered later', async function (assert) {
@@ -509,6 +623,7 @@ module('Integration | Component | @frontile/overlays/modal', function (hooks) {
           @isOpen={{isOpen.current}}
           @disableTransitions={{true}}
           data-test-id="modal"
+          aria-label="My Dialog"
           as |m|
         >
           {{#if showHeader.current}}

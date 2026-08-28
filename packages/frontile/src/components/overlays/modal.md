@@ -823,8 +823,20 @@ it one: render a `Header`, or pass your own label through attributes.
 </Modal>
 ```
 
-If you label the dialog with a heading of your own rather than `<m.Header>`, set
-`aria-labelledby` yourself — the modal only points at `headerId` for its own `Header`.
+If you label the dialog with a heading of your own rather than `<m.Header>`, pass
+`aria-labelledby` yourself — putting the yielded `headerId` on a heading does not label the
+dialog by itself, because nothing points at it:
+
+```gts
+<Modal @isOpen={{this.isOpen}} @onClose={{this.close}} aria-labelledby={{this.titleId}} as |m|>
+  <h2 id={{this.titleId}}>My Title</h2>
+  <m.Body>My Content</m.Body>
+</Modal>
+```
+
+In development, a modal that ends up with no accessible name at all — no `Header`, no
+`aria-label` and no `aria-labelledby` — logs a warning with the id
+`frontile.modal.missing-accessible-name`. It is compiled out of production builds.
 
 `aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
 behind really is reachable, and claiming otherwise would mislead screen reader users.

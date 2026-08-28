@@ -720,8 +720,20 @@ render a `Header`, or pass your own label through attributes.
 </Drawer>
 ```
 
-If you label the drawer with a heading of your own rather than `<d.Header>`, set
-`aria-labelledby` yourself — the drawer only points at `headerId` for its own `Header`.
+If you label the drawer with a heading of your own rather than `<d.Header>`, pass
+`aria-labelledby` yourself — putting the yielded `headerId` on a heading does not label the
+dialog by itself, because nothing points at it:
+
+```gts
+<Drawer @isOpen={{this.isOpen}} @onClose={{this.close}} aria-labelledby={{this.titleId}} as |d|>
+  <h2 id={{this.titleId}}>My Title</h2>
+  <d.Body>My Content</d.Body>
+</Drawer>
+```
+
+In development, a drawer that ends up with no accessible name at all — no `Header`, no
+`aria-label` and no `aria-labelledby` — logs a warning with the id
+`frontile.drawer.missing-accessible-name`. It is compiled out of production builds.
 
 `aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
 behind really is reachable, and claiming otherwise would mislead screen reader users.

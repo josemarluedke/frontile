@@ -2,6 +2,8 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
+import { modifier } from 'ember-modifier';
+import { warnIfDialogHasNoAccessibleName } from '../../-private/dialog';
 import Overlay, { type OverlaySignature } from './overlay';
 import DrawerBody, { type DrawerBodySignature } from './drawer/body';
 import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
@@ -139,6 +141,16 @@ export default class Drawer extends Component<DrawerSignature> {
     return this.hasHeader ? this.headerId : undefined;
   }
 
+  // Reads `hasHeader` but never writes it, which is what makes this safe from
+  // the modifier: element modifiers install bottom-up, so the header's
+  // registration has already happened by the time we run, and a read after a
+  // write in the same commit is fine (it is the reverse order that trips
+  // Glimmer's backtracking assertion). Consumer-supplied names come through
+  // `...attributes`, which we cannot see in args, hence the element itself.
+  warnIfUnnamed = modifier((element: HTMLElement) => {
+    warnIfDialogHasNoAccessibleName(element, this.hasHeader, 'drawer');
+  });
+
   /**
    * `aria-modal="true"` promises assistive technology that the rest of the page
    * is unreachable while this dialog is open. That promise only holds while the
@@ -209,6 +221,7 @@ export default class Drawer extends Component<DrawerSignature> {
         role="dialog"
         aria-modal={{this.ariaModal}}
         aria-labelledby={{this.labelledById}}
+        {{this.warnIfUnnamed}}
         ...attributes
       >
         {{#if this.showCloseButton}}
