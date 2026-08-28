@@ -216,8 +216,8 @@ class StandardValidator {
    * Supports both simple field names and dotted notation for nested fields.
    *
    * @param issues The issues to filter.
-   * @param fieldName The name of the field to filter by (e.g., "email" or
-   *        "profile.contact.email").
+   * @param fieldName The name of the field to filter by (e.g., "email",
+   *        "profile.contact.email" or "items.0.name" for array elements).
    * @returns The issues related to the specified field, or undefined if
    *          there are none.
    */
@@ -230,10 +230,15 @@ class StandardValidator {
     const fieldIssues = issues.filter((issue) => {
       if (!issue.path) return false;
 
-      // Extract keys from path segments
+      // Extract keys from path segments.
+      // Segments are coerced to strings so numeric array indexes (including
+      // `0`) survive and can be compared against the dotted field name.
       const pathKeys = issue.path
-        .map((s) => (typeof s === 'object' && 'key' in s ? s.key : s))
-        .filter(Boolean);
+        .map((s) =>
+          typeof s === 'object' && s !== null && 'key' in s ? s.key : s
+        )
+        .filter((key) => key !== null && key !== undefined)
+        .map((key) => String(key));
 
       // For exact path matching:
       // The paths must be the same length and match exactly

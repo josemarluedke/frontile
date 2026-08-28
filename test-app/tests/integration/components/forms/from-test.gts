@@ -23,7 +23,8 @@ import {
   Select,
   type FormDataCompiled,
   type FormResultData,
-  type CustomValidatorReturn
+  type CustomValidatorReturn,
+  type FormErrors
 } from 'frontile';
 import { cell } from 'ember-resources';
 import * as v from 'valibot';
@@ -397,6 +398,54 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
    * 4. onSubmit is not called when either validation fails
    * 5. When valid data is submitted, both validations pass and onSubmit is called
    */
+  /**
+   * Multiple issues on the same field are collapsed into an array of messages
+   * by `validatorToFormErrors`, and the feedback element joins them.
+   */
+  test('it collects multiple issues for the same field into a list of messages', async function (assert) {
+    assert.expect(3);
+
+    const customValidator = (): CustomValidatorReturn => [
+      { message: 'Email is required', path: [{ key: 'email' }] },
+      { message: 'Email is invalid', path: [{ key: 'email' }] }
+    ];
+
+    const onSubmitSpy = sinon.spy();
+    let lastErrors: FormErrors | undefined;
+    const onError = (errors: FormErrors) => {
+      lastErrors = errors;
+    };
+
+    await render(
+      <template>
+        <Form
+          @validate={{customValidator}}
+          @onSubmit={{onSubmitSpy}}
+          @onError={{onError}}
+          as |form|
+        >
+          <form.Field @name="email" as |field|>
+            <field.Input data-test-email />
+          </form.Field>
+
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    await click('[data-test-submit]');
+
+    assert.deepEqual(
+      lastErrors?.['email'],
+      ['Email is required', 'Email is invalid'],
+      'both messages are collected under the same field name'
+    );
+    assert
+      .dom('[data-component="form-feedback"]')
+      .hasText('Email is required; Email is invalid');
+    assert.false(onSubmitSpy.called, 'submission is prevented');
+  });
+
   test('it validates form using both schema and custom validator function', async function (assert) {
     assert.expect(11);
 

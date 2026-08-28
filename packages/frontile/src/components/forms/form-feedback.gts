@@ -30,6 +30,16 @@ interface FormFeedbackSignature {
     size?: FormFeedbackVariants['size'];
 
     /**
+     * Whether the element is itself an `aria-live` region. Set this to `false`
+     * when something else (such as `FormControl`, which keeps a persistent
+     * live region in the DOM) already announces the messages, so they are not
+     * announced twice.
+     *
+     * @defaultValue true
+     */
+    announce?: boolean;
+
+    /**
      * Class names for the feedback element, merged with the theme's.
      */
     class?: string;
@@ -58,6 +68,17 @@ class FormFeedback extends Component<FormFeedbackSignature> {
     });
   }
 
+  get announce(): boolean {
+    return this.args.announce !== false;
+  }
+
+  get ariaLive(): string | undefined {
+    if (!this.announce) {
+      return undefined;
+    }
+    return this.isError ? 'assertive' : 'polite';
+  }
+
   get messageText(): string {
     if (!this.args.messages) return '';
 
@@ -73,7 +94,7 @@ class FormFeedback extends Component<FormFeedbackSignature> {
       id={{@id}}
       class={{this.classes}}
       data-component="form-feedback"
-      aria-live={{if this.isError "assertive" "polite"}}
+      aria-live={{this.ariaLive}}
       ...attributes
     >
       {{this.messageText}}

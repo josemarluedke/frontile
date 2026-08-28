@@ -520,6 +520,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
  *
  * For example, an issue with path `['email']` will be converted
  * to a form error for the field `email`, `{"email": "error message" }`.
+ * Numeric path segments are kept, so an issue with path
+ * `['items', 0, 'name']` becomes `{"items.0.name": "error message"}`.
  *
  * @param errors - The validation issues to convert.
  * @returns A mapping of field names to their validation error messages.
@@ -530,10 +532,17 @@ function validatorToFormErrors(errors: Issues): FormErrors {
   for (const issue of errors) {
     if (!issue.path || issue.path.length === 0) continue;
 
-    // Extract keys from path segments to build field name
+    // Extract keys from path segments to build field name.
+    // Segments are coerced to strings so numeric array indexes (including
+    // `0`) survive, producing the dotted name a consumer writes as `@name`
+    // (e.g. `items.0.name`). This must stay in sync with
+    // `StandardValidator.filterFieldIssues`.
     const pathKeys = issue.path
-      .map((s) => (typeof s === 'object' && 'key' in s ? s.key : s))
-      .filter(Boolean) as string[];
+      .map((s) =>
+        typeof s === 'object' && s !== null && 'key' in s ? s.key : s
+      )
+      .filter((key) => key !== null && key !== undefined)
+      .map((key) => String(key));
 
     const fieldName = pathKeys.join('.');
     const message = issue.message;

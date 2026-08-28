@@ -81,6 +81,17 @@ and drop the corresponding argument. They arrive with `for`, `id`, `size` and (f
 `@preventErrorFeedback` suppresses the automatic feedback at the bottom so `c.Feedback`
 is the only copy rendered.
 
+Either way, FormControl also renders a visually hidden `aria-live='assertive'` region that
+is always in the DOM and holds the error messages when there are any. That region is what
+screen readers announce, so the visible `FormFeedback` inside a FormControl is rendered with
+`@announce={{false}}` and the message is not announced twice. `@preventErrorFeedback` does
+not remove the live region.
+
+Because that region only ever carries the `@errors` text, `c.Feedback` with its own block
+content announces nothing. When you render custom content there and want it announced, turn
+announcing back on for that invocation with `@announce={{true}}` — an argument passed at the
+invocation site wins over the one FormControl bound.
+
 ```gts preview
 import { FormControl } from 'frontile';
 
