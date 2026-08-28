@@ -74,6 +74,9 @@ class Collapsible extends Component<CollapsibleSignature> {
     }
 
     if (this.isCurrentlyOpen !== !!isOpen) {
+      // A previous transition may still be in flight; end its token first so
+      // toggling faster than the animation cannot leak a test waiter.
+      this.endWaiter();
       this.waiterToken = waiter.beginAsync();
     }
 
@@ -84,7 +87,29 @@ class Collapsible extends Component<CollapsibleSignature> {
     }
   });
 
+  endWaiter(): void {
+    if (this.waiterToken) {
+      const token = this.waiterToken;
+      // Clear before ending so the same token can never be ended twice.
+      this.waiterToken = undefined;
+      waiter.endAsync(token);
+    }
+  }
+
+  willDestroy(): void {
+    super.willDestroy();
+    // Do not leave a waiter pending if we are torn down mid-transition.
+    this.endWaiter();
+  }
+
   onTransitionEnd = (event: TransitionEvent) => {
+    // `transitionend` bubbles, so ignore transitions of our own descendants.
+    // Otherwise any child that animates height/opacity would get our inline
+    // styles stamped onto it.
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
     if (
       (event.propertyName === 'height' || event.propertyName == 'opacity') &&
       this.args.isOpen
@@ -109,7 +134,7 @@ class Collapsible extends Component<CollapsibleSignature> {
           this.args.initialHeight &&
           event.propertyName === 'height')
       ) {
-        waiter.endAsync(this.waiterToken);
+        this.endWaiter();
       }
     }
   };
