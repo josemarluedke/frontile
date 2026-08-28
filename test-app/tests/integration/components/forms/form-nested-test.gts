@@ -768,5 +768,75 @@ module(
         'First name reset to initial value'
       );
     });
+
+    module('prototype pollution', function (hooks) {
+      // A regression here writes to a shared global, which would silently
+      // corrupt every test that runs afterwards. Scrub the targets.
+      hooks.afterEach(function () {
+        delete (Object.prototype as Record<string, unknown>)['isAdmin'];
+      });
+
+      test('a hostile field name cannot pollute Object.prototype', async function (assert) {
+        // Apps that render fields from a server-supplied schema, a CMS, or URL
+        // state let untrusted input choose the `name` attribute.
+        let lastData: Record<string, unknown> | undefined;
+
+        class TestComponent extends Component {
+          handleChange = (data: FormResultData<Record<string, unknown>>) => {
+            lastData = data.data;
+          };
+
+          handleSubmit = (data: FormResultData<Record<string, unknown>>) => {
+            lastData = data.data;
+          };
+
+          <template>
+            <Form
+              @onChange={{this.handleChange}}
+              @onSubmit={{this.handleSubmit}}
+              as |form|
+            >
+              <form.Field @name="__proto__.isAdmin" as |field|>
+                <field.Input data-test-hostile />
+              </form.Field>
+
+              <form.Field @name="email" as |field|>
+                <field.Input data-test-email />
+              </form.Field>
+
+              <button type="submit" data-test-submit>Submit</button>
+            </Form>
+          </template>
+        }
+
+        await render(<template><TestComponent /></template>);
+
+        await fillIn('[data-test-hostile]', 'true');
+        await fillIn('[data-test-email]', 'john@example.com');
+
+        assert.strictEqual(
+          ({} as Record<string, unknown>)['isAdmin'],
+          undefined,
+          'typing into the hostile field did not pollute Object.prototype'
+        );
+
+        await click('[data-test-submit]');
+
+        assert.strictEqual(
+          ({} as Record<string, unknown>)['isAdmin'],
+          undefined,
+          'submitting did not pollute Object.prototype'
+        );
+        assert.notOk(
+          Object.prototype.hasOwnProperty.call(lastData ?? {}, '__proto__'),
+          'no own __proto__ key reaches the consumer data'
+        );
+        assert.strictEqual(
+          lastData?.['email'],
+          'john@example.com',
+          'safe fields still come through'
+        );
+      });
+    });
   }
 );
