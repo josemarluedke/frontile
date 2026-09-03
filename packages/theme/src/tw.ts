@@ -28,6 +28,8 @@ const COMMON_UNITS = [
   'pico',
   'nano',
   'micro',
+  '5xs',
+  '4xs',
   '3xs',
   '2xs',
   'xs',
