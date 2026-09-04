@@ -209,6 +209,89 @@ module(
       assert.deepEqual(activated, ['B'], 'Enter activates the focused item');
     });
 
+    test('in RTL, horizontal arrows are swapped but vertical is unaffected', async function (assert) {
+      const horizontal = new RovingFocus(() => ({
+        orientation: 'horizontal' as const
+      }));
+      const vertical = new RovingFocus(() => ({
+        orientation: 'vertical' as const
+      }));
+
+      await render(
+        <template>
+          <div dir="rtl">
+            <div>
+              <button
+                type="button"
+                {{horizontal.setupItem true false}}
+              >A</button>
+              <button
+                type="button"
+                {{horizontal.setupItem false false}}
+              >B</button>
+              <button
+                type="button"
+                {{horizontal.setupItem false false}}
+              >C</button>
+            </div>
+            <div>
+              <button type="button" {{vertical.setupItem true false}}>D</button>
+              <button
+                type="button"
+                {{vertical.setupItem false false}}
+              >E</button>
+            </div>
+          </div>
+        </template>
+      );
+
+      const items = findAll('button') as HTMLButtonElement[];
+      const [a, b, , d] = items;
+
+      assert.strictEqual(
+        getComputedStyle(a!).direction,
+        'rtl',
+        'the computed direction on the item itself is rtl'
+      );
+
+      await focus(a!);
+      await triggerKeyEvent(a!, 'keydown', 'ArrowLeft');
+      assert.strictEqual(
+        document.activeElement,
+        b,
+        'ArrowLeft moves forward (to B) in RTL'
+      );
+
+      await triggerKeyEvent(b!, 'keydown', 'ArrowLeft');
+      assert.strictEqual(
+        document.activeElement,
+        items[2],
+        'ArrowLeft continues forward (to C) in RTL'
+      );
+
+      await triggerKeyEvent(items[2]!, 'keydown', 'ArrowLeft');
+      assert.strictEqual(
+        document.activeElement,
+        a,
+        'ArrowLeft wraps forward back to A in RTL'
+      );
+
+      await triggerKeyEvent(a!, 'keydown', 'ArrowRight');
+      assert.strictEqual(
+        document.activeElement,
+        items[2],
+        'ArrowRight moves backward, wrapping to C, in RTL'
+      );
+
+      await focus(d!);
+      await triggerKeyEvent(d!, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        items[4],
+        'vertical ArrowDown still moves forward in an RTL context'
+      );
+    });
+
     test('a group with every item disabled does not throw and has no tab stop', async function (assert) {
       const roving = new RovingFocus(() => ({}));
 

@@ -16,6 +16,11 @@ interface RovingFocusOptions {
    */
   activationMode?: RovingFocusActivationMode;
 
+  /**
+   * Called when an item becomes the active one: on every focus move when
+   * `activationMode` is `automatic`, or on Enter/Space when it is `manual`.
+   * Receives the element that was activated.
+   */
   onActivate?: (element: HTMLElement) => void;
 }
 
