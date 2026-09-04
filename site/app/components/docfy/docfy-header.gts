@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { LinkTo } from '@ember/routing';
+import DocfyRouteLoadingBar from './docfy-route-loading-bar';
 import DocfyThemeSwitcher from './docfy-theme-switcher';
 
 interface DocfyHeaderSignature {
@@ -18,6 +19,10 @@ interface DocfyHeaderSignature {
 
 export default class DocfyHeader extends Component<DocfyHeaderSignature> {
   <template>
+    {{! The sticky wrapper is a positioned element, so it is also the
+        containing block the loading hairline anchors to: the bar sits at
+        top-full, on the header's bottom border, and stays there as the header
+        sticks. }}
     <div class="sticky top-0 z-1">
       <div
         class="h-16 border-b border-neutral-subtle/50 bg-neutral-subtle/60 backdrop-blur-xl backdrop-saturate-150"
@@ -71,6 +76,8 @@ export default class DocfyHeader extends Component<DocfyHeaderSignature> {
           </div>
         </div>
       </div>
+
+      <DocfyRouteLoadingBar />
     </div>
   </template>
 }
