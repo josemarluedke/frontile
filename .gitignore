@@ -45,3 +45,4 @@ packages/docs/tmp/
 .playwright-cli/
 
 .superpowers/
+docs/superpowers/
