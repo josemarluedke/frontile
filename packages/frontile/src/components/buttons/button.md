@@ -175,7 +175,7 @@ change with `@size`:
 
 | `@size` | label (automatic) | unit              | wrapper gap |
 | ------- | ----------------- | ----------------- | ----------- |
-| `xs`    | `text-strong-sm`  | `text-body-micro` | `gap-0.5`   |
+| `xs`    | `text-strong-sm`  | `text-body-3xs`   | `gap-0.5`   |
 | `sm`    | `text-strong-md`  | `text-body-2xs`   | `gap-0.5`   |
 | `md`    | `text-strong-lg`  | `text-body-xs`    | `gap-1`     |
 | `lg`    | `text-strong-xl`  | `text-body-sm`    | `gap-1`     |

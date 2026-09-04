@@ -147,15 +147,15 @@ import { Skeleton } from 'frontile';
 <template>
   <div class='not-prose w-80 space-y-4'>
     <div>
-      <p class='mb-1 text-body-micro text-neutral-soft'>shimmer (default)</p>
+      <p class='mb-1 text-body-2xs text-neutral-soft'>shimmer (default)</p>
       <Skeleton @class='h-4' @animation='shimmer' />
     </div>
     <div>
-      <p class='mb-1 text-body-micro text-neutral-soft'>pulse</p>
+      <p class='mb-1 text-body-2xs text-neutral-soft'>pulse</p>
       <Skeleton @class='h-4' @animation='pulse' />
     </div>
     <div>
-      <p class='mb-1 text-body-micro text-neutral-soft'>none</p>
+      <p class='mb-1 text-body-2xs text-neutral-soft'>none</p>
       <Skeleton @class='h-4' @animation='none' />
     </div>
   </div>

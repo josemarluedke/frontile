@@ -260,21 +260,6 @@
 
 
   /* body text styles — Open Sans regular, relaxed leading */
-  --text-body-pico: var(--font-size-6);
-  --text-body-pico--font-weight: var(--font-weight-regular);
-  --text-body-pico--letter-spacing: var(--letter-spacing-default);
-  --text-body-pico--line-height: var(--line-height-relaxed);
-
-  --text-body-nano: var(--font-size-7);
-  --text-body-nano--font-weight: var(--font-weight-regular);
-  --text-body-nano--letter-spacing: var(--letter-spacing-default);
-  --text-body-nano--line-height: var(--line-height-relaxed);
-
-  --text-body-micro: var(--font-size-8);
-  --text-body-micro--font-weight: var(--font-weight-regular);
-  --text-body-micro--letter-spacing: var(--letter-spacing-default);
-  --text-body-micro--line-height: var(--line-height-relaxed);
-
   --text-body-5xs: var(--font-size-2);
   --text-body-5xs--font-weight: var(--font-weight-regular);
   --text-body-5xs--letter-spacing: var(--letter-spacing-default);

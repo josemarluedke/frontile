@@ -25,10 +25,10 @@ const label = tv({
 
 const formDescription = tv({
   // help/description text — body role
-  base: 'text-neutral font-body text-body-micro pb-1 last:pb-0',
+  base: 'text-neutral font-body text-body-2xs pb-1 last:pb-0',
   variants: {
     size: {
-      sm: 'text-body-micro',
+      sm: 'text-body-2xs',
       md: '',
       lg: 'text-body-sm'
     }
@@ -40,7 +40,7 @@ const formDescription = tv({
 
 const formFeedback = tv({
   // validation/feedback text — body role
-  base: 'font-body text-body-micro pt-1',
+  base: 'font-body text-body-2xs pt-1',
   variants: {
     intent: {
       primary: 'text-primary',
@@ -51,7 +51,7 @@ const formFeedback = tv({
       warning: 'text-warning'
     },
     size: {
-      sm: 'text-body-micro',
+      sm: 'text-body-2xs',
       md: '',
       lg: 'text-body-sm'
     }
