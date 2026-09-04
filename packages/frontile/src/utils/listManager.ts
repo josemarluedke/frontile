@@ -513,6 +513,13 @@ class ListManager {
       requestAnimationFrame(() => {
         // The list may have been torn down between the write above and the
         // frame; scrolling a detached element to nowhere is pointless.
+        //
+        // This guard is not part of the batching fix and nothing reported it:
+        // it is a latent bug this work made easy to see, because deferring
+        // the batch widened the window in which a list can be torn down
+        // between an activation and its frame. Kept here rather than left for
+        // later, since it is two lines and the alternative is a stray
+        // `scrollIntoView` on a detached node.
         if (item.el.isConnected) {
           item.el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         }
