@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, clearRender } from '@ember/test-helpers';
 import { NotificationCard } from 'frontile';
 import {
   Notification,
@@ -277,6 +277,32 @@ module(
         1234567890,
         'timestamp should match'
       );
+    });
+
+    test('cancels the pending enter animation frame when destroyed', async function (assert) {
+      const rafStub = sinon.stub(window, 'requestAnimationFrame').returns(4242);
+      const cafStub = sinon.stub(window, 'cancelAnimationFrame');
+
+      try {
+        notification.current = new Notification({}, 'My message');
+        await render(template);
+
+        assert.ok(
+          rafStub.calledOnce,
+          'requestAnimationFrame was scheduled by the enter modifier'
+        );
+
+        // Destroy the card before the stubbed frame ever "fires", simulating
+        // a card removed mid-enter-transition (e.g. rapid add/remove).
+        await clearRender();
+
+        assert.ok(
+          cafStub.calledWith(4242),
+          'cancelAnimationFrame was called with the pending frame id on teardown'
+        );
+      } finally {
+        sinon.restore();
+      }
     });
   }
 );
