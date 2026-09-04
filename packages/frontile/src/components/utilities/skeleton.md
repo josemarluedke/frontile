@@ -1,4 +1,5 @@
 ---
+label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
