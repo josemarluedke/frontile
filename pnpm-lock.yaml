@@ -1138,9 +1138,6 @@ importers:
       frontile:
         specifier: workspace:*
         version: link:../packages/frontile
-      fuse.js:
-        specifier: ^7.5.0
-        version: 7.5.0
       glimmer-docgen-typescript:
         specifier: ^0.4.0
         version: 0.4.0
@@ -10448,13 +10445,6 @@ packages:
       {
         integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
       }
-
-  fuse.js@7.5.0:
-    resolution:
-      {
-        integrity: sha512-sQtrEfA+ez/3G0cCZecF70oqpCRttCexYUG4mUrtWL49ULUzUyxokt5kyqwtKzj1270RaKih+hcP3qLcumccow==
-      }
-    engines: { node: '>=10' }
 
   fuzzysort@4.0.2:
     resolution:
@@ -26480,8 +26470,6 @@ snapshots:
       is-callable: 1.2.7
 
   functions-have-names@1.2.3: {}
-
-  fuse.js@7.5.0: {}
 
   fuzzysort@4.0.2: {}
 

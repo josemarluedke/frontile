@@ -1,170 +1,125 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
 import { on } from '@ember/modifier';
-import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
-import { DocfyLink, DocfyService } from '@docfy/ember';
+import { DocfyService } from '@docfy/ember';
+import { CommandDialog } from 'frontile';
+import type RouterService from '@ember/routing/router-service';
 import type { PageMetadata } from '@docfy/core/lib/types';
-import type Fuse from 'fuse.js';
-import { Overlay } from 'frontile';
-import { VisuallyHidden } from 'frontile';
 
 interface DocfyJumpToArgs {}
 
-interface ResultItem {
-  item: PageMetadata;
+/** One searchable documentation page. */
+interface PageRecord {
+  key: string;
+  label: string;
+  section: string;
+  url: string;
 }
 
-function eq(a: unknown, b: unknown): boolean {
-  return a === b;
+const RECENTS_KEY = 'frontile:docs:recent-pages';
+const MAX_RECENTS = 5;
+
+/**
+ * Recently visited pages, so an empty palette is useful rather than a wall of
+ * every page in the docs.
+ *
+ * Persistence is deliberately the app's concern rather than the component's:
+ * what counts as "recent", and whether to remember it at all, is a product
+ * decision, and `Command` supports it by simply receiving a different list
+ * while the query is blank.
+ */
+function readRecents(): string[] {
+  try {
+    const raw = window.localStorage.getItem(RECENTS_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    // Private browsing, disabled storage, or corrupt JSON — recents are a
+    // convenience, never a requirement.
+    return [];
+  }
+}
+
+function writeRecents(urls: string[]): void {
+  try {
+    window.localStorage.setItem(RECENTS_KEY, JSON.stringify(urls));
+  } catch {
+    // Ignore: see readRecents.
+  }
 }
 
 export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
-  @service docfy!: DocfyService;
+  @service declare docfy: DocfyService;
+  @service declare router: RouterService;
 
   @tracked isOpen = false;
+  @tracked query = '';
+  @tracked recentUrls: string[] = readRecents();
 
-  @tracked pattern?: string;
-  @tracked results?: ResultItem[];
-  @tracked selected?: number;
-  @tracked resultsContainerElement?: HTMLElement;
+  get pages(): PageRecord[] {
+    return this.docfy.flat.map((page: PageMetadata) => ({
+      key: page.url,
+      label: page.title,
+      section: page.parentLabel || 'Documentation',
+      url: page.url,
+    }));
+  }
 
   /**
-   * fuse.js plus the index built over every documentation page is ~50 kB of
-   * the initial payload, and nothing on the homepage can search until this
-   * dialog is opened. Building it on first open keeps it out of the bundle
-   * every visitor downloads.
+   * With no query, show recents (falling back to everything on a first visit).
+   * Once the user types, search the whole corpus.
    */
-  private fuse?: Promise<Fuse<PageMetadata>>;
-
-  private loadFuse(): Promise<Fuse<PageMetadata>> {
-    return (this.fuse ??= import('fuse.js').then(
-      ({ default: FuseImpl }) =>
-        new FuseImpl(this.docfy.flat, {
-          keys: ['title', 'parentLabel'],
-          threshold: 0.4,
-        })
-    ));
-  }
-
-  selectNext(): void {
-    if (!this.results) {
-      return;
+  get items(): PageRecord[] {
+    if (this.query.trim() || this.recentUrls.length === 0) {
+      return this.pages;
     }
 
-    if (typeof this.selected !== 'undefined') {
-      if (this.selected + 1 < this.results.length) {
-        this.selected += 1;
-      }
-    } else {
-      this.selected = 0;
-    }
+    const byUrl = new Map(this.pages.map((page) => [page.url, page]));
+
+    return this.recentUrls
+      .map((url) => byUrl.get(url))
+      .filter((page): page is PageRecord => Boolean(page));
   }
 
-  selectPrevious(): void {
-    if (!this.results) {
-      return;
-    }
-
-    if (typeof this.selected !== 'undefined') {
-      if (this.selected - 1 >= 0) {
-        this.selected -= 1;
-      }
-    }
+  get groupBy(): string | undefined {
+    // Recents are already in the order that matters; grouping them by section
+    // would scatter a list of five.
+    return this.query.trim() ? 'section' : undefined;
   }
 
-  setupShortcut = modifier(() => {
-    document.addEventListener('keydown', this.handleGlobalKeyDown);
+  open = () => {
+    this.isOpen = true;
+  };
 
-    return () => {
-      document.removeEventListener('keydown', this.handleGlobalKeyDown);
-    };
-  });
-
-  @action handleGlobalKeyDown(event: KeyboardEvent): void {
-    if (
-      !['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)
-    ) {
-      if (event.key === '/') {
-        this.isOpen = true;
-        void this.loadFuse();
-      }
-    }
-  }
-
-  registerContainerElement = modifier((element: HTMLElement) => {
-    this.resultsContainerElement = element;
-
-    return () => {
-      this.resultsContainerElement = undefined;
-    };
-  });
-
-  @action async search(event: Event): Promise<void> {
-    const pattern = (event.target as HTMLInputElement).value;
-    const fuse = await this.loadFuse();
-
-    this.results = fuse.search(pattern).map((item) => {
-      return {
-        item: item.item,
-      };
-    });
-    this.selected = undefined;
-    this.selectNext();
-  }
-
-  @action toggle(): void {
-    this.isOpen = !this.isOpen;
-
-    // Warm the index while the user is still reaching for the keyboard, so
-    // the first keystroke does not wait on a network round trip.
-    if (this.isOpen) {
-      void this.loadFuse();
-    }
-  }
-
-  @action didClose(): void {
-    this.results = undefined;
-  }
-
-  @action onItemClick(): void {
+  close = () => {
     this.isOpen = false;
-  }
+    this.query = '';
+  };
 
-  @action selectElement(event: MouseEvent): void {
-    const index = Number(
-      (event.target as HTMLElement).getAttribute('data-result')
-    );
-    this.selected = index;
-  }
+  updateQuery = (query: string) => {
+    this.query = query;
+  };
 
-  @action onInputKeyDown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowDown') {
-      this.selectNext();
-      event.preventDefault();
-    } else if (event.key === 'ArrowUp') {
-      this.selectPrevious();
-      event.preventDefault();
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      if (this.resultsContainerElement) {
-        const link = this.resultsContainerElement.querySelector(
-          `[data-result="${this.selected}"]`
-        ) as HTMLElement | undefined;
-        if (link) {
-          link.click();
-        }
-      }
+  select = (_key: string, item?: PageRecord) => {
+    if (!item) {
+      return;
     }
-  }
+
+    this.recentUrls = [
+      item.url,
+      ...this.recentUrls.filter((url) => url !== item.url),
+    ].slice(0, MAX_RECENTS);
+    writeRecents(this.recentUrls);
+
+    this.close();
+    this.router.transitionTo(item.url);
+  };
 
   <template>
     <button
       type="button"
       class="transition flex items-center rounded focus-visible:ring outline-none hover:text-neutral-strong"
-      {{on "click" this.toggle}}
-      {{this.setupShortcut}}
+      {{on "click" this.open}}
     >
       <svg
         class="w-4 h-4 mr-2"
@@ -172,6 +127,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
         stroke="currentColor"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
       ><path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -187,77 +143,31 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
       </code>
     </button>
 
-    <Overlay
+    <CommandDialog
       @isOpen={{this.isOpen}}
-      @onClose={{this.toggle}}
-      @didClose={{this.didClose}}
-      @backdrop="blur"
+      @onOpen={{this.open}}
+      @onClose={{this.close}}
+      @onSelect={{this.select}}
+      @shortcut="/"
+      @items={{this.items}}
+      @groupBy={{this.groupBy}}
+      @query={{this.query}}
+      @onQueryChange={{this.updateQuery}}
+      @label="Search documentation"
+      @placeholder="Search documentation…"
+      as |c|
     >
-      <div
-        class="p-4 mx-auto mt-20 max-w-md w-full"
-        {{this.registerContainerElement}}
-      >
-        <div
-          class="bg-neutral-subtle backdrop-blur bg-opacity-80 rounded overflow-hidden border border-neutral-soft"
-        >
-          {{!  template-lint-disable self-closing-void-elements  }}
-          <VisuallyHidden>
-            <label for="docfy-jump-to-input">
-              Search
-            </label>
-          </VisuallyHidden>
-          <input
-            id="docfy-jump-to-input"
-            autocomplete="off"
-            placeholder="Search..."
-            class="p-4 bg-transparent w-full focus:outline-none placeholder:text-neutral
-              {{if this.results.length 'border-b border-neutral-soft'}}
-              "
-            {{on "input" this.search}}
-            {{on "keydown" this.onInputKeyDown}}
-          />
-          {{!  template-lint-enable self-closing-void-elements  }}
-
-          <div class="space-y-2 max-h-96 overflow-y-scroll">
-            {{#each this.results as |result index|}}
-              <DocfyLink
-                @to={{result.item.url}}
-                class="flex items-center p-4 outline-none focus-visible:ring ring-inset
-                  {{if
-                    (eq this.selected index)
-                    'bg-primary-soft text-on-primary-soft'
-                  }}"
-                data-result={{index}}
-                {{on "click" this.onItemClick}}
-                {{on "mouseenter" this.selectElement}}
-              >
-                <span class="font-bold">
-                  {{result.item.parentLabel}}
-                </span>
-
-                <svg
-                  class="w-4 h-4 mx-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  ></path>
-                </svg>
-
-                <span class="text-neutral-strong">
-                  {{result.item.title}}
-                </span>
-              </DocfyLink>
-            {{/each}}
-          </div>
-        </div>
-      </div>
-    </Overlay>
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
+            {{ctx.label}}
+          </ctx.Item>
+        </:item>
+        <:empty>
+          No results for "{{c.query}}"
+        </:empty>
+      </c.List>
+    </CommandDialog>
   </template>
 }
