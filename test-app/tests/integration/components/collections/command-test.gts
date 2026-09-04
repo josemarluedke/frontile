@@ -7,7 +7,10 @@ import {
   triggerKeyEvent,
   settled
 } from '@ember/test-helpers';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { Command, CommandDialog } from 'frontile';
+import { filterAndRankItems } from 'frontile/utils/filter';
 import { cell } from 'ember-resources';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
@@ -635,6 +638,142 @@ module(
             'not "no results" before searching'
           );
         assert.dom('[data-test-id="command-empty"]').doesNotExist();
+      });
+    });
+
+    module('mixing static and remote results', function () {
+      // The recipe documented in command.md: @onSearch replaces @items, so a
+      // palette that needs both merges them itself, ranks the static half with
+      // the exported scorer, and sets @disableFiltering so the component does
+      // not re-filter the server's output.
+      interface Row {
+        key: string;
+        label: string;
+        section: string;
+      }
+
+      const NAV: Row[] = [
+        { key: 'nav:accounts', label: 'Accounts', section: 'Navigation' },
+        { key: 'nav:billing', label: 'Billing', section: 'Navigation' }
+      ];
+      const RECENTS: Row[] = [
+        { key: 'recent:acme', label: 'Acme Corp', section: 'Recent' }
+      ];
+      // The second row is the one that matters: the server matched it on a
+      // field the client never sees, so its label does not contain the query.
+      const REMOTE: Row[] = [
+        {
+          key: 'acct:1',
+          label: 'Wile E. Coyote Enterprises',
+          section: 'Accounts'
+        },
+        { key: 'acct:2', label: 'Acme Anvils LLC', section: 'Accounts' }
+      ];
+
+      class MixedHost extends Component {
+        @tracked query = '';
+        @tracked remote: Row[] = [];
+
+        updateQuery = (query: string) => {
+          this.query = query;
+          this.remote = query.trim() ? REMOTE : [];
+        };
+
+        get items(): Row[] {
+          const local =
+            filterAndRankItems(
+              [...RECENTS, ...NAV],
+              this.query,
+              (item: Row) => item.label
+            ) ?? [];
+
+          return [...local, ...this.remote];
+        }
+
+        <template>
+          <Command
+            @items={{this.items}}
+            @query={{this.query}}
+            @onQueryChange={{this.updateQuery}}
+            @disableFiltering={{true}}
+            @groupBy="section"
+            @groups={{array "Recent" "Navigation" "Accounts"}}
+            as |c|
+          >
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      }
+
+      test('static entries are ranked locally while remote ones pass through', async function (assert) {
+        await render(<template><MixedHost /></template>);
+
+        assert.deepEqual(
+          renderedKeys(),
+          ['recent:acme', 'nav:accounts', 'nav:billing'],
+          'a blank query shows only the static entries'
+        );
+
+        await fillIn('[data-test-id="command-input"]', 'acme');
+
+        assert.deepEqual(
+          groupTitles(),
+          ['Recent', 'Accounts'],
+          'Navigation drops out because no nav label matches'
+        );
+        assert.deepEqual(
+          renderedKeys(),
+          ['recent:acme', 'acct:1', 'acct:2'],
+          'the static half is filtered, and BOTH remote rows survive — including the one whose label does not contain "acme"'
+        );
+      });
+
+      test('without @disableFiltering the server-matched row would be discarded', async function (assert) {
+        // Guards the reason the recipe needs @disableFiltering: this is what a
+        // consumer gets wrong, and it fails silently.
+        class Naive extends Component {
+          @tracked query = '';
+          @tracked remote: Row[] = [];
+
+          updateQuery = (query: string) => {
+            this.query = query;
+            this.remote = query.trim() ? REMOTE : [];
+          };
+
+          get items(): Row[] {
+            return [...RECENTS, ...NAV, ...this.remote];
+          }
+
+          <template>
+            <Command
+              @items={{this.items}}
+              @query={{this.query}}
+              @onQueryChange={{this.updateQuery}}
+              @groupBy="section"
+              as |c|
+            >
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+            </Command>
+          </template>
+        }
+
+        await render(<template><Naive /></template>);
+        await fillIn('[data-test-id="command-input"]', 'acme');
+
+        assert.notOk(
+          renderedKeys().includes('acct:1'),
+          'the local filter drops the row the server matched on a hidden field'
+        );
       });
     });
 

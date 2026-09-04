@@ -111,6 +111,13 @@ export interface CommandSignature<T> {
      * are rendered and a loading state shows while pending. Stale responses are
      * discarded, so the latest query always wins. Built-in filtering is
      * disabled, and `@items` is the list shown before the first search.
+     *
+     * The resolved items **replace** `@items` — this is for a wholly remote
+     * list. To combine static entries (navigation, recents) with remote ones,
+     * do not use `@onSearch`: merge them yourself into `@items`, set
+     * `@disableFiltering`, and rank the static half with `filterAndRankItems`
+     * from `frontile/utils/filter`. See "Mixing static and remote results" in
+     * the docs.
      */
     onSearch?: (query: string) => Promise<T[]> | T[];
 

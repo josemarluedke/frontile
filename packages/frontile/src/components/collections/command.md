@@ -480,6 +480,112 @@ export default class AsyncCommandExample extends Component {
 To filter externally without `@onSearch` — against a store you already have, say — use
 `@disableFiltering` with `@query` and `@onQueryChange`.
 
+## Mixing static and remote results
+
+A real palette usually has both: navigation and recents you already hold, plus records that
+only the server can find. `@onSearch` alone does not cover this — when it is set, the resolved
+results **replace** `@items`, and local filtering is off, so static entries would disappear as
+soon as the first response landed.
+
+Instead, own the merge and reuse the library's own scorer, which is exported:
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { Command } from 'frontile';
+import { filterAndRankItems } from 'frontile/utils/filter';
+import { array } from '@ember/helper';
+
+const NAVIGATION = [
+  { key: 'nav:accounts', label: 'Accounts', section: 'Navigation' },
+  { key: 'nav:billing', label: 'Billing', section: 'Navigation' },
+  { key: 'nav:settings', label: 'Settings', section: 'Navigation' }
+];
+
+const RECENTS = [{ key: 'recent:acme', label: 'Acme Corp', section: 'Recent' }];
+
+// Stand-in for a server that matches fields the client never sees — here, a
+// trade name. Try "acme": the second row has no "acme" in its label at all.
+const REMOTE = [
+  { key: 'acct:1', label: 'Wile E. Coyote Enterprises', section: 'Accounts' },
+  { key: 'acct:2', label: 'Acme Anvils LLC', section: 'Accounts' }
+];
+
+export default class MixedCommandExample extends Component {
+  @tracked query = '';
+  @tracked remote = [];
+  @tracked isLoading = false;
+
+  updateQuery = async (query) => {
+    this.query = query;
+
+    if (!query.trim()) {
+      this.remote = [];
+      return;
+    }
+
+    this.isLoading = true;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    this.remote = REMOTE;
+    this.isLoading = false;
+  };
+
+  // Static entries are ranked with the same scorer the component would use.
+  // Remote entries are appended as-is: the server already decided.
+  get items() {
+    const local =
+      filterAndRankItems(
+        [...RECENTS, ...NAVIGATION],
+        this.query,
+        (item) => item.label
+      ) ?? [];
+
+    return [...local, ...this.remote];
+  }
+
+  <template>
+    <Command
+      @items={{this.items}}
+      @query={{this.query}}
+      @onQueryChange={{this.updateQuery}}
+      @isLoading={{this.isLoading}}
+      @disableFiltering={{true}}
+      @groupBy='section'
+      @groups={{array 'Recent' 'Navigation' 'Accounts'}}
+      @isBordered={{true}}
+      @placeholder="Try 'acme'…"
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
+            {{ctx.label}}
+          </ctx.Item>
+        </:item>
+        <:empty>No results for "{{c.query}}"</:empty>
+      </c.List>
+    </Command>
+  </template>
+}
+```
+
+Three things make this work:
+
+- **`@disableFiltering`** stops the component re-filtering your remote results. This is the
+  part that bites: the server often matches on fields the client cannot see, so running the
+  local fuzzy filter over its output silently discards legitimate hits — the
+  `Wile E. Coyote Enterprises` row above would score `0` against `acme` and vanish.
+- **`filterAndRankItems`**, exported from `frontile/utils/filter`, ranks the static half with
+  exactly the same scorer, so the two halves feel consistent. It takes the same
+  `labelFor`/`@filter` shapes the component does, including an array of fields.
+- **`@groups`** keeps the halves in separate, pinned sections, so you never have to decide
+  whether a remote hit should outrank a nav item. Groups with nothing left disappear on their
+  own — type `acme` and Navigation drops out.
+
+Debounce the fetch and discard stale responses yourself here; that is what `@onSearch` would
+otherwise have done for you.
+
 ## Sizes
 
 `@size` sets how tall the results area is. The list keeps a minimum height on purpose: without

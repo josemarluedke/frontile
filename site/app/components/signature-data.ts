@@ -13769,7 +13769,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.',
+          '<p>Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.</p>\n<p>The resolved items <strong>replace</strong> <code>@items</code> — this is for a wholly remote\nlist. To combine static entries (navigation, recents) with remote ones,\ndo not use <code>@onSearch</code>: merge them yourself into <code>@items</code>, set\n<code>@disableFiltering</code>, and rank the static half with <code>filterAndRankItems</code>\nfrom <code>frontile/utils/filter</code>. See "Mixing static and remote results" in\nthe docs.</p>',
         tags: {},
       },
       {
@@ -14134,7 +14134,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.',
+          '<p>Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.</p>\n<p>The resolved items <strong>replace</strong> <code>@items</code> — this is for a wholly remote\nlist. To combine static entries (navigation, recents) with remote ones,\ndo not use <code>@onSearch</code>: merge them yourself into <code>@items</code>, set\n<code>@disableFiltering</code>, and rank the static half with <code>filterAndRankItems</code>\nfrom <code>frontile/utils/filter</code>. See "Mixing static and remote results" in\nthe docs.</p>',
         tags: {},
       },
       {
