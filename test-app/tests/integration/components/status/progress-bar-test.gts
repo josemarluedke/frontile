@@ -312,19 +312,20 @@ module(
         );
       });
 
-      // The bug here was `||` swallowing a legitimate 0: `@progress={{0}}` on a
-      // 10–30 scale used to compute as though progress were 10, giving a
-      // non-zero width. The reported value is a separate matter — 0 is below
-      // the scale, so `aria-valuenow` is clamped up to `minValue` rather than
-      // announcing a position that does not exist on the scale.
+      // `||` swallowed a legitimate 0, substituting `minValue`. A 0-anchored
+      // scale cannot catch that — both readings land on the same width — so
+      // this straddles zero: on a -10–10 scale, a real 0 sits at the midpoint
+      // (50%), while the substituted -10 sits at the bottom (0%). The reported
+      // value is a separate matter: 0 is inside this scale, so `aria-valuenow`
+      // is 0, whereas the substituted -10 would be reported as -10.
       test('it treats a progress of 0 as 0, not as minValue', async function (assert) {
         await render(
           <template>
             <ProgressBar
               data-test-id="progress-bar"
               @progress={{0}}
-              @minValue={{10}}
-              @maxValue={{30}}
+              @minValue={{-10}}
+              @maxValue={{10}}
               @label="Progress"
             />
           </template>
@@ -333,12 +334,13 @@ module(
         const selector = '[data-test-id="progress-bar"] div.pb-progress';
         assert.equal(
           document.querySelector(selector)?.getAttribute('style'),
-          'width: 0%'
+          'width: 50%',
+          'a real 0 sits at the midpoint of a -10–10 scale, not at the bottom'
         );
         assert
           .dom('[data-test-id="progress-bar"] div.pb-label > div')
-          .containsText('0%');
-        assert.dom(selector).hasAria('valuenow', '10');
+          .containsText('50%');
+        assert.dom(selector).hasAria('valuenow', '0');
       });
 
       test('it renders 50% width when indeterminate', async function (assert) {
