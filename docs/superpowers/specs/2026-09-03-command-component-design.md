@@ -116,9 +116,41 @@ runtime dependency of the published `frontile` package (where `fuse.js` never wa
 sheds one. That is a deliberate trade — ranking is core to `Autocomplete` and `Select`, not just
 to the docs site.
 
-**To verify during implementation:** `fuzzysort` returns `null` for no match and a score in
-`0..1`. Our contract treats `0` as "no match". If a legitimate match can ever score exactly `0`,
-the `?? 0` coalesce would wrongly drop it. Pin this down with a test rather than assuming.
+**Verified during implementation.** Two findings, both now covered by tests:
+
+- `fuzzysort.single('', target)` returns `null`, so a **blank query would have filtered every item
+  out**, leaving a palette empty until the first keystroke. `defaultFilter` short-circuits an empty
+  query to `1`.
+- Scores asymptote well above `0` (a 3-character subsequence across an 1800-character target still
+  scores ~0.15), so the "legitimate match scoring exactly `0`" risk is theoretical. It is clamped to
+  `Number.EPSILON` anyway, since `0` is load-bearing in the contract.
+
+### 3.1 Match threshold — fuzzy is *looser*, not just better ordered
+
+Replacing `includes()` with fuzzy matching admits results the old filter never returned. Measured
+against a 30-item country list: `sa` went from **0 matches to 6** (only `South Africa` legitimate),
+`ia` from 4 to 11.
+
+fuzzysort cannot separate a useful abbreviation from noise — `btn` -> `Button` and `sa` -> `Spain`
+are the same shape, both scattered mid-word subsequences. What it *can* separate is
+contiguous/word-boundary matches from scattered ones, and it does so with a clean gap. Measured over
+2000 dictionary words x 12 queries:
+
+| | n | scores |
+| --- | --- | --- |
+| matches `includes()` also returned | 676 | **min 0.414**, p5 0.447, median 0.533 |
+| newly admitted by fuzzy | 758 | **max 0.358**, p95 0.355, median 0.338 |
+
+Zero overlap. `DEFAULT_MATCH_THRESHOLD = 0.4` sits in the gap and therefore:
+
+- **drops 0 of 676** results the old `includes()` filter returned — no silent loss for existing
+  `Autocomplete` / `Select` consumers;
+- **cuts 758 of 758** newly admitted scattered matches — no new noise;
+- still gains acronyms: `bg` -> `ButtonGroup` (0.722), `nz` -> `New Zealand` (0.732),
+  `prog` -> `ProgressBar` (0.875).
+
+The accepted cost is that `btn` -> `Button` (0.318) does not match. The threshold is configurable
+via `createFuzzyFilter({ threshold })` for callers that want recall over precision.
 
 ---
 
@@ -210,6 +242,10 @@ grouping pattern:
   </li>
 </ul>
 ```
+
+Implemented as `<l.Group @title="..." as |g|>` yielding a manager-bound `g.Item`, matching the
+`ListboxSection`-style `title` naming used elsewhere in this family of components rather than
+cmdk's `heading`.
 
 **No `ListManager` changes are required.** Navigation order is derived from the live DOM via
 `compareDocumentPosition`, not from registration order:
@@ -364,7 +400,7 @@ Per APG "Combobox with List Autocomplete":
 
 ```
 packages/frontile/src/
-  utils/filter.ts                       ← NEW: defaultFilter (fuzzysort), filterAndRankItems, scoreRecord
+  utils/filter.ts                       ← NEW: createFuzzyFilter, defaultFilter, filterAndRankItems
   utils/listManager.ts                  ← defaultFilter re-exported from utils/filter; widen FilterFn
   components/collections/
     listbox/listbox.gts, item.gts       ← NEW group/section support

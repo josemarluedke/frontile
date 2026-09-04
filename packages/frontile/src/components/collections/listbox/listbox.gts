@@ -9,10 +9,12 @@ import {
   type ListItem
 } from '../../../utils/listManager';
 import { ListboxItem, type ListboxItemSignature } from './item';
+import { ListboxGroup, type ListboxGroupSignature } from './group';
 import { modifier } from 'ember-modifier';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
+type GroupCompBounded = WithBoundArgs<typeof ListboxGroup, 'manager'>;
 type ItemCompBoundedWithItem = WithBoundArgs<
   typeof ListboxItem,
   'manager' | 'item'
@@ -72,7 +74,7 @@ interface ListboxSignature<T> {
     item: [
       { item: T; key: string; label: string; Item: ItemCompBoundedWithItem }
     ];
-    default: [{ Item: ItemCompBounded }];
+    default: [{ Item: ItemCompBounded; Group: GroupCompBounded }];
   };
 }
 
@@ -282,6 +284,13 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             intent=@intent
             type=this.role
           )
+          Group=(component
+            ListboxGroup
+            manager=this.listManager
+            appearance=@appearance
+            intent=@intent
+            type=this.role
+          )
         )
       }}
     </ul>
@@ -291,8 +300,10 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
 export {
   Listbox,
   ListboxItem,
+  ListboxGroup,
   type ListboxSignature,
   type ListboxItemSignature,
+  type ListboxGroupSignature,
   type ListItem
 };
 export default Listbox;

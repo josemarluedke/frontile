@@ -371,4 +371,18 @@ const listboxItem = tv({
   ]
 });
 
-export { listbox, listboxItem };
+const listboxGroup = tv({
+  slots: {
+    base: 'block',
+    title: [
+      'px-2',
+      'py-1.5',
+      'font-label text-label-2xs',
+      'text-neutral',
+      'select-none'
+    ],
+    list: 'flex flex-col gap-0.5'
+  }
+});
+
+export { listbox, listboxItem, listboxGroup };

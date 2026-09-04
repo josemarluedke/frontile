@@ -4,6 +4,7 @@ import { cancel, debounce, later } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 import type { Timer } from '@ember/runloop';
 import { getElementById } from '../-private/dom';
+import { defaultFilter, type FilterFn } from './filter';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 type AutoActivateMode = 'none' | 'first' | 'selected';
@@ -884,9 +885,6 @@ function keyAndLabelForItem(item: unknown): { key: string; label: string } {
  * Default option-matching used by Select and Autocomplete:
  * case-insensitive "contains".
  */
-function defaultFilter(itemValue: string, filterValue: string): boolean {
-  return itemValue.toLowerCase().includes(filterValue.toLowerCase());
-}
 
 export type {
   ListItem,
@@ -896,3 +894,4 @@ export type {
   AutoActivateMode
 };
 export { ListManager, canDeselectKey, keyAndLabelForItem, defaultFilter };
+export type { FilterFn };
