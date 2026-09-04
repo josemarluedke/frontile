@@ -3,6 +3,7 @@ import type {
   ButtonGroup,
   Chip,
   CloseButton,
+  SegmentedControl,
   ToggleButton
 } from './components/buttons';
 
@@ -53,6 +54,7 @@ export default interface Registry {
   ToggleButton: typeof ToggleButton;
   ButtonGroup: typeof ButtonGroup;
   CloseButton: typeof CloseButton;
+  SegmentedControl: typeof SegmentedControl;
 
   // Forms
   Form: typeof Form;
