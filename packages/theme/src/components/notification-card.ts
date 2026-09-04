@@ -1,99 +1,160 @@
 import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
 
-const btn = ['transition transition-200', ...focusVisibleRing];
-
 const notificationCard = tv({
   slots: {
-    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 font-body text-body-2xs rounded-xl shadow-sm transition-all transition-200 ease-in-out',
-    message: 'grow',
-    customActions: 'flex flex-nowrap',
-    customActionButton: [
-      ...btn,
-      'first:ml-4 last:-mr-2 font-label text-label-xs py-1 px-2 rounded-md hover:bg-surface-overlay-soft'
+    base: [
+      'pointer-events-auto w-full flex items-start gap-3 p-4',
+      'rounded-2xl border shadow-lg',
+      'font-body text-body-2xs',
+      'overflow-hidden',
+      'transition-[transform,opacity,height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
+      'motion-reduce:transition-[opacity] motion-reduce:duration-150'
     ],
+    icon: 'shrink-0 size-5 mt-px',
+    content: 'grow min-w-0 flex flex-col gap-1',
+    title: 'font-label text-label-xs',
+    description: 'text-body-2xs',
+    customActions: 'flex flex-nowrap shrink-0 items-center gap-2 self-center',
+    customActionButton: '',
     closeButton: [
-      ...btn,
-      'inline-block p-2 ml-2 -mr-2 rounded-full hover:bg-surface-overlay-soft'
+      'shrink-0 self-center -mr-1 inline-block p-1.5 rounded-full',
+      'transition duration-200',
+      'hover:bg-surface-overlay-soft',
+      ...focusVisibleRing
     ]
   },
 
   variants: {
-    appearance: {
-      info: {
-        base: 'bg-neutral-firm text-on-neutral-firm'
+    intent: {
+      info: {},
+      success: {},
+      warning: {},
+      danger: {}
+    },
+    variant: {
+      default: {
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        description: 'text-neutral'
       },
-      success: {
-        base: 'bg-success-soft text-on-success-soft'
+      tonal: {
+        description: 'text-neutral'
       },
-      warning: {
-        base: 'bg-warning-soft text-on-warning-soft'
-      },
-      error: {
-        base: 'bg-danger-soft text-on-danger-soft'
+      solid: {
+        base: 'border-transparent'
       }
     }
   },
+
+  compoundVariants: [
+    // default: neutral surface, colour carried by the icon and title.
+    {
+      variant: 'default',
+      intent: 'info',
+      class: { icon: 'text-primary', title: 'text-primary' }
+    },
+    {
+      variant: 'default',
+      intent: 'success',
+      class: { icon: 'text-success-firm', title: 'text-success-firm' }
+    },
+    {
+      variant: 'default',
+      intent: 'warning',
+      class: { icon: 'text-warning-firm', title: 'text-warning-firm' }
+    },
+    {
+      variant: 'default',
+      intent: 'danger',
+      class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
+    },
+
+    // tonal: opaque tinted surface. `subtle` is opaque in both themes; `soft`
+    // is translucent and must never be used on a floating toast.
+    {
+      variant: 'tonal',
+      intent: 'info',
+      class: {
+        base: 'bg-primary-subtle border-primary-muted',
+        icon: 'text-primary',
+        title: 'text-primary'
+      }
+    },
+    {
+      variant: 'tonal',
+      intent: 'success',
+      class: {
+        base: 'bg-success-subtle border-success-muted',
+        icon: 'text-success-firm',
+        title: 'text-success-firm'
+      }
+    },
+    {
+      variant: 'tonal',
+      intent: 'warning',
+      class: {
+        base: 'bg-warning-subtle border-warning-muted',
+        icon: 'text-warning-firm',
+        title: 'text-warning-firm'
+      }
+    },
+    {
+      variant: 'tonal',
+      intent: 'danger',
+      class: {
+        base: 'bg-danger-subtle border-danger-muted',
+        icon: 'text-danger-firm',
+        title: 'text-danger-firm'
+      }
+    },
+
+    // solid: filled surface, contrast text.
+    {
+      variant: 'solid',
+      intent: 'info',
+      class: {
+        base: 'bg-primary text-on-primary',
+        icon: 'text-on-primary',
+        title: 'text-on-primary',
+        description: 'text-on-primary/80'
+      }
+    },
+    {
+      variant: 'solid',
+      intent: 'success',
+      class: {
+        base: 'bg-success text-on-success',
+        icon: 'text-on-success',
+        title: 'text-on-success',
+        description: 'text-on-success/80'
+      }
+    },
+    {
+      variant: 'solid',
+      intent: 'warning',
+      class: {
+        base: 'bg-warning text-on-warning',
+        icon: 'text-on-warning',
+        title: 'text-on-warning',
+        description: 'text-on-warning/80'
+      }
+    },
+    {
+      variant: 'solid',
+      intent: 'danger',
+      class: {
+        base: 'bg-danger text-on-danger',
+        icon: 'text-on-danger',
+        title: 'text-on-danger',
+        description: 'text-on-danger/80'
+      }
+    }
+  ],
+
   defaultVariants: {
-    appearance: 'info'
+    intent: 'info',
+    variant: 'default'
   }
 });
 
-const zoomOut = {
-  leaveTo: {
-    transform: 'scale(0.80)',
-    opacity: '0'
-  },
-  leave: {
-    transform: 'translate3d(0,0,0)'
-  }
-};
-
-const notificationEnteringFrom = {
-  right: {
-    transform: 'translate3d(125%, 0, 0)'
-  },
-
-  left: {
-    transform: 'translate3d(-125%, 0, 0)'
-  },
-
-  top: {
-    transform: 'translate3d(0, -125%, 0)'
-  },
-
-  bottom: {
-    transform: 'translate3d(0, 125%, 0)'
-  }
-};
-
-const notificationTransitions = {
-  slideFromTopLeft: {
-    ...zoomOut,
-    enter: {
-      ...notificationEnteringFrom.left
-    }
-  },
-  slideFromTopCenter: {
-    ...zoomOut,
-    enter: notificationEnteringFrom.top
-  },
-  slideFromTopRight: {
-    ...zoomOut,
-    enter: notificationEnteringFrom.right
-  },
-  slideFromBottomLeft: {
-    ...zoomOut,
-    enter: notificationEnteringFrom.left
-  },
-  slideFromBottomCenter: {
-    ...zoomOut,
-    enter: notificationEnteringFrom.bottom
-  },
-  slideFromBottomRight: {
-    ...zoomOut,
-    enter: notificationEnteringFrom.right
-  }
-};
-
-export { notificationCard, notificationTransitions };
+export { notificationCard };
