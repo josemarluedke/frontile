@@ -11,6 +11,11 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Drawer } from 'frontile/overlays';
 import { cell } from 'ember-resources';
+import {
+  captureFrontileWarnings,
+  observeWarningsBelowCapture
+} from 'test-app/tests/helpers/frontile-warnings';
+import { warn } from '@ember/debug';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
@@ -535,6 +540,308 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
           <m.Footer>My Footer</m.Footer>
         </Drawer>
       </template>
+    );
+  });
+
+  test('it renders aria-modal when the focus trap is active', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert.dom('[data-test-id="drawer"]').hasAttribute('aria-modal', 'true');
+  });
+
+  test('it does not render aria-modal when @disableFocusTrap={{true}}', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableFocusTrap={{true}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert.dom('[data-test-id="drawer"]').doesNotHaveAttribute('aria-modal');
+  });
+
+  test('it does not render aria-labelledby when no header is rendered, and warns', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'no dangling reference when there is no header'
+      );
+    assert.deepEqual(
+      warnings,
+      ['frontile.drawer.missing-accessible-name'],
+      'the missing accessible name is warned about in development'
+    );
+  });
+
+  test('it does not warn when a header supplies the accessible name', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            as |m|
+          >
+            <m.Header>My Header</m.Header>
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert.deepEqual(warnings, [], 'a header is an accessible name');
+  });
+
+  test('it warns when the yielded headerId is on your own heading but nothing points at it', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            as |m|
+          >
+            <h2 id={{m.headerId}}>My Own Heading</h2>
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'the dialog does not point at a heading it never registered'
+      );
+    assert.deepEqual(
+      warnings,
+      ['frontile.drawer.missing-accessible-name'],
+      'a heading carrying headerId is not a name until aria-labelledby points at it'
+    );
+  });
+
+  test('it does not warn when a consumer supplies aria-label', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            aria-label="My Dialog"
+            as |m|
+          >
+            <m.Body>My Content</m.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert.deepEqual(warnings, [], 'aria-label is an accessible name');
+  });
+
+  test('it renders aria-labelledby pointing at the header when a header is rendered later', async function (assert) {
+    const isOpen = cell(true);
+    const showHeader = cell(false);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          aria-label="My Dialog"
+          as |m|
+        >
+          {{#if showHeader.current}}
+            <m.Header>My Header</m.Header>
+          {{/if}}
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute('aria-labelledby');
+
+    showHeader.current = true;
+    await settled();
+
+    const labelledBy =
+      find('[data-test-id="drawer"]')?.getAttribute('aria-labelledby') || '';
+    assert.ok(labelledBy, 'aria-labelledby is applied once a header exists');
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header')
+      .hasAttribute('id', labelledBy);
+
+    showHeader.current = false;
+    await settled();
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute(
+        'aria-labelledby',
+        'the reference is dropped again when the header is removed'
+      );
+  });
+
+  test('a consumer supplied aria-label is preserved when there is no header', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          aria-label="My Dialog"
+          as |m|
+        >
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute('aria-label', 'My Dialog');
+    assert
+      .dom('[data-test-id="drawer"]')
+      .doesNotHaveAttribute('aria-labelledby');
+  });
+
+  test('a consumer supplied aria-labelledby wins over the header id', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <span id="my-own-label">My Own Label</span>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          aria-labelledby="my-own-label"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute('aria-labelledby', 'my-own-label');
+  });
+
+  test('it does not warn when a consumer supplies aria-labelledby and there is no header', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <span id="my-own-label">My Own Label</span>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            aria-labelledby="my-own-label"
+            as |d|
+          >
+            <d.Body>My Content</d.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute(
+        'aria-labelledby',
+        'my-own-label',
+        'the consumer reference survives with no header to compete with'
+      );
+    assert.deepEqual(
+      warnings,
+      [],
+      'a consumer supplied aria-labelledby is an accessible name'
+    );
+  });
+
+  test('the warning capture window does not outlive the test that opened it', async function (assert) {
+    const inside = await captureFrontileWarnings(async () => {
+      warn('inside the window', false, {
+        id: 'frontile.drawer.missing-accessible-name'
+      });
+    });
+
+    assert.deepEqual(
+      inside,
+      ['frontile.drawer.missing-accessible-name'],
+      'the open window captures the warning'
+    );
+
+    const escaped = await observeWarningsBelowCapture(async () => {
+      warn('after the window closed', false, {
+        id: 'frontile.drawer.missing-accessible-name'
+      });
+    });
+
+    assert.deepEqual(
+      escaped,
+      ['frontile.drawer.missing-accessible-name'],
+      'a frontile.* warning raised after restore still reaches the handler below'
     );
   });
 });

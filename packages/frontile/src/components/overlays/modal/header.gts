@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { modifier } from 'ember-modifier';
 import { twMerge } from '@frontile/theme';
 
 export interface ModalHeaderArgs {
@@ -12,6 +13,14 @@ export interface ModalHeaderArgs {
    * @internal
    */
   classFromParent?: string;
+
+  /**
+   * Called with `true` when this header is rendered and `false` when it is
+   * removed, so the Modal knows whether it may point `aria-labelledby` at us.
+   *
+   * @internal
+   */
+  registerSelf?: (isRendered: boolean) => void;
 }
 
 export interface ModalHeaderSignature {
@@ -23,10 +32,19 @@ export interface ModalHeaderSignature {
 }
 
 export default class ModalHeader extends Component<ModalHeaderSignature> {
+  register = modifier(() => {
+    this.args.registerSelf?.(true);
+
+    return () => {
+      this.args.registerSelf?.(false);
+    };
+  });
+
   <template>
     <div
       id={{@labelledById}}
       class={{twMerge @classFromParent @class}}
+      {{this.register}}
       ...attributes
     >
       {{yield}}
