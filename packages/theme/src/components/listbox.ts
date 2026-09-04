@@ -374,7 +374,11 @@ const listboxItem = tv({
 const listboxGroup = tv({
   slots: {
     base: 'block',
+    // `block`: the heading is a <span>, and an inline box's vertical padding
+    // is painted without taking up space -- so without this the rows sit
+    // directly under the heading text whatever padding it is given.
     title: [
+      'block',
       'px-2',
       'py-1.5',
       'font-body text-body-2xs font-medium',

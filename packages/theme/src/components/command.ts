@@ -45,10 +45,15 @@ const command = tv({
     // inline palette so the page behind it cannot scroll. The dialog does not
     // need it either -- body scroll is locked while it is open.
     list: [
-      'mt-1',
+      // Vertical rhythm: 8px above the first heading, 4px between rows, a
+      // padded group above each divider, and room before the footer.
+      'mt-2',
       'overflow-y-auto overflow-x-hidden',
       'scroll-py-1',
-      'p-0',
+      'px-0 pt-0 pb-1',
+      'gap-1',
+      '[&_[data-component=listbox-group]]:pb-1',
+      '[&_[data-component=listbox-group]_ul]:gap-1',
       // rows
       '[&_[data-component=listbox-item]]:min-h-9',
       '[&_[data-component=listbox-item]]:rounded-md',
@@ -75,8 +80,8 @@ const command = tv({
       '[&_[data-component=listbox-item]_svg:not([class*=text-])]:text-neutral',
       // group headings
       '[&_[data-test-id=listbox-group-title]]:px-3',
-      '[&_[data-test-id=listbox-group-title]]:pt-2',
-      '[&_[data-test-id=listbox-group-title]]:pb-1'
+      '[&_[data-test-id=listbox-group-title]]:pt-1.5',
+      '[&_[data-test-id=listbox-group-title]]:pb-1.5'
     ],
     empty: ['py-6', 'text-center', 'font-body text-body-sm', 'text-neutral'],
     loading: [
