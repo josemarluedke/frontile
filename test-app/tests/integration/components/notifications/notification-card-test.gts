@@ -1,14 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  render,
-  click,
-  clearRender,
-  find,
-  getSettledState,
-  triggerEvent,
-  waitUntil
-} from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { NotificationCard } from 'frontile';
 import {
   Notification,
@@ -18,44 +10,35 @@ import sinon from 'sinon';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
-import { settled } from '@ember/test-helpers';
 
 registerCustomStyles({
   notificationCard: tv({
     slots: {
       base: '',
-      message: '',
+      icon: 'notification-card__icon',
+      content: '',
+      title: 'notification-card__title',
+      description: 'notification-card__description',
       customActions: '',
       customActionButton: 'notification-card__custom-action-btn',
       closeButton: 'notification-card__close-btn'
     },
-
     variants: {
-      appearance: {
-        info: {
-          base: 'notification-card--info',
-          closeButton: '',
-          customActionButton: ''
-        },
-        success: {
-          base: 'notification-card--success',
-          closeButton: '',
-          customActionButton: ''
-        },
-        warning: {
-          base: 'notification-card--warning',
-          closeButton: '',
-          customActionButton: ''
-        },
-        error: {
-          base: 'notification-card--error',
-          closeButton: '',
-          customActionButton: ''
-        }
+      intent: {
+        info: { base: 'notification-card--info' },
+        success: { base: 'notification-card--success' },
+        warning: { base: 'notification-card--warning' },
+        danger: { base: 'notification-card--danger' }
+      },
+      variant: {
+        default: { base: 'notification-card--default' },
+        tonal: { base: 'notification-card--tonal' },
+        solid: { base: 'notification-card--solid' }
       }
     },
     defaultVariants: {
-      appearance: 'info'
+      intent: 'info',
+      variant: 'default'
     }
   })
 });
@@ -85,41 +68,92 @@ module(
         .containsText('Close');
     });
 
-    test('it renders the correct appearance', async function (assert) {
+    test('it renders the title', async function (assert) {
       notification.current = new Notification({}, 'My message');
+      await render(template);
 
+      assert.dom('.notification-card__title').hasText('My message');
+      assert.dom('.notification-card__description').doesNotExist();
+    });
+
+    test('it renders the description when present', async function (assert) {
+      notification.current = new Notification({}, 'Event created', {
+        description: 'Starts at 8:00 AM.'
+      });
+      await render(template);
+
+      assert.dom('.notification-card__title').hasText('Event created');
+      assert
+        .dom('.notification-card__description')
+        .hasText('Starts at 8:00 AM.');
+    });
+
+    test('it applies the intent class', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        intent: 'danger'
+      });
+      await render(template);
+
+      assert.dom('.notification-card--danger').exists();
+    });
+
+    test('it renders an icon per intent', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        intent: 'success'
+      });
       await render(template);
 
       assert
-        .dom('[data-test-notification]')
-        .hasClass('notification-card--info');
+        .dom('.notification-card__icon')
+        .hasAttribute('data-test-icon', 'success');
+    });
 
-      notification.current = new Notification({}, 'My message', {
-        appearance: 'success'
+    test('it renders a spinner while loading', async function (assert) {
+      notification.current = new Notification({}, 'Saving…', {
+        isLoading: true
       });
-      await settled();
+      await render(template);
 
       assert
-        .dom('[data-test-notification]')
-        .hasClass('notification-card--success');
+        .dom('.notification-card__icon')
+        .hasAttribute('data-test-icon', 'loading');
+    });
 
-      notification.current = new Notification({}, 'My message', {
-        appearance: 'warning'
+    test('hideIcon removes the icon', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        hideIcon: true
       });
-      await settled();
+      await render(template);
 
-      assert
-        .dom('[data-test-notification]')
-        .hasClass('notification-card--warning');
+      assert.dom('.notification-card__icon').doesNotExist();
+    });
 
-      notification.current = new Notification({}, 'My message', {
-        appearance: 'error'
+    test('info and success use role=status', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        intent: 'success'
       });
-      await settled();
+      await render(template);
 
-      assert
-        .dom('[data-test-notification]')
-        .hasClass('notification-card--error');
+      assert.dom('[role="status"]').exists();
+      assert.dom('[role="alert"]').doesNotExist();
+    });
+
+    test('warning and danger use role=alert', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        intent: 'warning'
+      });
+      await render(template);
+
+      assert.dom('[role="alert"]').exists();
+    });
+
+    test('it hides the close button when closing is not allowed', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        allowClosing: false
+      });
+      await render(template);
+
+      assert.dom('.notification-card__close-btn').doesNotExist();
     });
 
     test('it does not render close button when allowClosing=false', async function (assert) {
@@ -210,29 +244,6 @@ module(
       sinon.restore();
     });
 
-    test('it pauses/resumes the timer on mouseenter/mouseleave', async function (assert) {
-      assert.expect(2);
-
-      notification.current = new Notification({}, 'My message', {
-        transitionDuration: 1
-      });
-
-      // @ts-ignore
-      notification.current.timer = {
-        pause() {
-          assert.ok('should have paused');
-        },
-        resume() {
-          assert.ok('should have resumed');
-        }
-      };
-
-      await render(template);
-
-      await triggerEvent('[data-test-notification]', 'mouseenter');
-      await triggerEvent('[data-test-notification]', 'mouseleave');
-    });
-
     test('notification can store metadata', async function (assert) {
       const metadata = {
         userId: 123,
@@ -265,70 +276,6 @@ module(
         notification.current.metadata?.timestamp,
         1234567890,
         'timestamp should match'
-      );
-    });
-
-    // `getSettledState().hasPendingTimers` cannot be used here: the card also
-    // renders `{{cssTransition}}`, and ember-css-transitions schedules its own
-    // runloop timer for the (transition-delay + transition-duration) window, so
-    // a timer is pending after teardown either way. Backburner's `cancel`
-    // counter is narrow enough to see only the card's own cancellation.
-    function backburnerCancelCount(): number {
-      const debugInfo = getSettledState().debugInfo as
-        { _debugInfo?: { counters?: { cancel?: number } } } | undefined;
-
-      return debugInfo?._debugInfo?.counters?.cancel ?? 0;
-    }
-
-    test('it cancels the in-flight enter transition when destroyed', async function (assert) {
-      notification.current = new Notification({}, 'My message', {
-        transitionDuration: 4000
-      });
-
-      const nativeCancelAnimationFrame = window.cancelAnimationFrame;
-      let cancelledFrames = 0;
-      window.cancelAnimationFrame = function (handle: number) {
-        cancelledFrames += 1;
-        return nativeCancelAnimationFrame.call(window, handle);
-      };
-
-      let cancelledTimers = 0;
-
-      try {
-        // Intentionally not awaited: the enter transition (the rAF pair and the
-        // `later` that flips `hasEntered`) has to still be in flight when the
-        // card is torn down.
-        const renderPromise = render(template);
-        await waitUntil(() => !!find('[data-test-notification]'));
-
-        cancelledFrames = 0;
-        const cancelsBeforeTeardown = backburnerCancelCount();
-
-        // Also not awaited: `clearRender()` only resolves once everything has
-        // settled, which waits out the very timers we are asserting on. Poll
-        // for the DOM going away instead — that is when the modifier
-        // destructor has run.
-        const clearRenderPromise = clearRender();
-        await waitUntil(() => !find('[data-test-notification]'));
-
-        cancelledTimers = backburnerCancelCount() - cancelsBeforeTeardown;
-
-        await clearRenderPromise;
-        await renderPromise;
-      } finally {
-        window.cancelAnimationFrame = nativeCancelAnimationFrame;
-      }
-
-      assert.ok(
-        cancelledTimers >= 1,
-        `teardown should cancel the pending enter timer; ${cancelledTimers} ` +
-          `runloop timer(s) were cancelled`
-      );
-
-      assert.ok(
-        cancelledFrames >= 1,
-        `teardown should cancel the pending animation frame(s) of the enter ` +
-          `transition; cancelAnimationFrame was called ${cancelledFrames} time(s)`
       );
     });
   }

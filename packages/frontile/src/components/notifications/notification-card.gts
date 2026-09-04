@@ -1,19 +1,41 @@
-/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
-import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
+import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
-import { later, cancel } from '@ember/runloop';
-import { on } from '@ember/modifier';
-import { fn, concat } from '@ember/helper';
+import { fn } from '@ember/helper';
 import { CloseButton } from '../buttons/close-button';
-import { cssTransition } from 'ember-css-transitions';
+import { Button } from '../buttons/button';
+import { Spinner } from '../utilities/spinner';
+import { IconInfo, IconSuccess, IconWarning, IconDanger } from './icons';
 import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../../services/notifications';
 import type Notification from '../../-private/notification';
-import type { CustomAction, containerPlacement } from '../../-private/types';
+import type { CardGeometry } from '../../-private/notification-stack';
+import type {
+  CustomAction,
+  containerPlacement,
+  NotificationIntent
+} from '../../-private/types';
+import type { SafeString } from '@ember/template';
+
+const ICONS = {
+  info: IconInfo,
+  success: IconSuccess,
+  warning: IconWarning,
+  danger: IconDanger
+};
+
+/**
+ * Button intent for the primary custom action, per notification intent.
+ */
+const ACTION_INTENT = {
+  info: 'primary',
+  success: 'success',
+  warning: 'warning',
+  danger: 'danger'
+} as const;
 
 interface NotificationCardSignature {
   Args: {
@@ -21,94 +43,148 @@ interface NotificationCardSignature {
     placement: containerPlacement;
 
     /**
-     * Spacing for each notification, in px.
+     * The visual style of the card.
      *
-     * @defaultValue 16
+     * @defaultValue 'default'
      */
-    spacing?: number;
+    variant?: 'default' | 'tonal' | 'solid';
+
+    /**
+     * Position, scale, and stacking supplied by the container. When omitted
+     * the card renders in place with no stack transform.
+     */
+    geometry?: CardGeometry;
+
+    /**
+     * Called with the card's measured height whenever it changes.
+     */
+    onMeasure?: (height: number) => void;
   };
   Element: HTMLDivElement;
 }
 
 class NotificationCard extends Component<NotificationCardSignature> {
   @service notifications!: NotificationsService;
+
+  /**
+   * False for the first frame so the card can transition in from the
+   * placement edge rather than appearing at its resting position.
+   */
   @tracked hasEntered = false;
 
-  get styles(): unknown {
-    const styles = [
-      `transition-duration: ${this.args.notification.transitionDuration}ms`
+  get isTopPlacement(): boolean {
+    return (this.args.placement || 'bottom-right').startsWith('top');
+  }
+
+  get intent(): NotificationIntent {
+    return this.args.notification.intent;
+  }
+
+  get icon() {
+    return ICONS[this.intent];
+  }
+
+  get actionIntent() {
+    return ACTION_INTENT[this.intent];
+  }
+
+  /**
+   * `alert` interrupts a screen reader, so it is reserved for the intents
+   * that warrant interrupting.
+   */
+  get role(): 'status' | 'alert' {
+    return this.intent === 'warning' || this.intent === 'danger'
+      ? 'alert'
+      : 'status';
+  }
+
+  get style(): SafeString {
+    const { geometry, notification } = this.args;
+    const declarations = [
+      `transition-duration: ${notification.transitionDuration}ms, ${notification.transitionDuration}ms, 400ms`
     ];
 
-    if (!this.hasEntered) {
-      styles.push(
-        `transition-delay: ${this.args.notification.transitionDuration}ms`
+    // Cards are pinned to the placement edge so the stack grows away from it.
+    // This lives here rather than on the container, because a `style`
+    // attribute passed through `...attributes` replaces the element's own
+    // `style` outright and would drop the transform below.
+    if (geometry) {
+      declarations.push(
+        'position: absolute',
+        'left: 0',
+        'right: 0',
+        this.isTopPlacement ? 'top: 0' : 'bottom: 0'
       );
     }
 
-    return htmlSafe(styles.join('; '));
+    if (!this.hasEntered || notification.isRemoving) {
+      // Enter from, and exit to, the placement edge.
+      const offset = this.isTopPlacement ? '-100%' : '100%';
+      declarations.push(
+        `opacity: 0`,
+        `transform: translateY(${offset}) scale(0.95)`
+      );
+
+      if (geometry) {
+        declarations.push(
+          `z-index: ${geometry.zIndex}`,
+          `transform-origin: ${geometry.transformOrigin}`
+        );
+      }
+
+      return htmlSafe(declarations.join('; '));
+    }
+
+    if (geometry) {
+      declarations.push(
+        `transform: ${geometry.transform}`,
+        `transform-origin: ${geometry.transformOrigin}`,
+        `z-index: ${geometry.zIndex}`,
+        `opacity: ${geometry.opacity}`,
+        geometry.height === null
+          ? `height: auto`
+          : `height: ${geometry.height}px`
+      );
+    }
+
+    return htmlSafe(declarations.join('; '));
   }
 
-  transitionIn = modifier((element: HTMLElement) => {
-    const spacing =
-      typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
-    const expectedHeight = element.offsetHeight + spacing;
-    const duration = this.args.notification.transitionDuration / 2;
-
-    let innerFrame: number | undefined;
-    const outerFrame = requestAnimationFrame(() => {
-      element.style.height = '0';
-      const transition = `height ${duration}ms ease-in ${duration}ms`;
-      element.style.transition = transition;
-
-      innerFrame = requestAnimationFrame(() => {
-        element.style.height = `${expectedHeight}px`;
-      });
+  /**
+   * Flip to the resting position on the frame after insertion, so the browser
+   * has a start value to transition from.
+   */
+  enter = modifier(() => {
+    const frame = requestAnimationFrame(() => {
+      this.hasEntered = true;
     });
 
-    const timer = later(
-      this,
-      () => {
-        this.hasEntered = true;
-      },
-      this.args.notification.transitionDuration
-    );
-
-    // The card can be destroyed while the enter transition is still in flight;
-    // cancel the pending work so we never touch the element or write tracked
-    // state after teardown.
-    return () => {
-      cancelAnimationFrame(outerFrame);
-
-      if (typeof innerFrame !== 'undefined') {
-        cancelAnimationFrame(innerFrame);
-      }
-
-      cancel(timer);
-    };
+    return () => cancelAnimationFrame(frame);
   });
 
-  transitionOut = modifier(
-    (element: HTMLElement, [isExiting, ..._]: boolean[]) => {
-      if (isExiting) {
-        element.style.height = '0';
-      }
+  /**
+   * Report the card's height to the container so the stack can lay itself
+   * out. Also fires when promise content swaps change the height.
+   */
+  measure = modifier((element: HTMLElement) => {
+    const { onMeasure } = this.args;
+
+    if (!onMeasure) {
+      return;
     }
-  );
+
+    const observer = new ResizeObserver(() => {
+      onMeasure(element.offsetHeight);
+    });
+
+    onMeasure(element.offsetHeight);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  });
 
   remove = () => {
     this.notifications.remove(this.args.notification);
-  };
-
-  pause = () => {
-    if (this.args.notification.timer) {
-      this.args.notification.timer.pause();
-    }
-  };
-
-  resume = () => {
-    if (this.args.notification.timer) {
-      this.args.notification.timer.resume();
-    }
   };
 
   handleClickCustomAction = (customAction: CustomAction) => {
@@ -119,14 +195,26 @@ class NotificationCard extends Component<NotificationCardSignature> {
   get classes() {
     const { notificationCard } = useStyles();
 
-    let { base, message, customActions, customActionButton, closeButton } =
-      notificationCard({
-        appearance: this.args.notification.appearance
-      });
+    const {
+      base,
+      icon,
+      content,
+      title,
+      description,
+      customActions,
+      customActionButton,
+      closeButton
+    } = notificationCard({
+      intent: this.intent,
+      variant: this.args.variant || 'default'
+    });
 
     return {
       base: base(),
-      message: message(),
+      icon: icon(),
+      content: content(),
+      title: title(),
+      description: description(),
       customActions: customActions(),
       customActionButton: customActionButton(),
       closeButton: closeButton()
@@ -134,50 +222,63 @@ class NotificationCard extends Component<NotificationCardSignature> {
   }
 
   <template>
-    {{! template-lint-disable no-invalid-interactive }}
-    {{! template-lint-disable no-unnecessary-concat }}
-    {{! template-lint-disable no-inline-styles }}
-    {{! template-lint-disable style-concatenation  }}
-    <div {{this.transitionIn}} {{this.transitionOut @notification.isRemoving}}>
-      {{#unless @notification.isRemoving}}
-        <div
-          {{on "mouseenter" this.pause}}
-          {{on "mouseleave" this.resume}}
-          {{cssTransition
-            (concat "notification-transition--slide-from-" @placement)
-            isEnabled=true
-          }}
-          class={{this.classes.base}}
-          style="{{this.styles}}"
-          ...attributes
-        >
-          <div class={{this.classes.message}}>
-            {{@notification.message}}
-          </div>
-
-          {{#if @notification.customActions}}
-            <div class={{this.classes.customActions}}>
-              {{#each @notification.customActions as |customAction|}}
-                <button
-                  type="button"
-                  class={{this.classes.customActionButton}}
-                  {{on "click" (fn this.handleClickCustomAction customAction)}}
-                >
-                  {{customAction.label}}
-                </button>
-              {{/each}}
-            </div>
-          {{/if}}
-
-          {{#if @notification.allowClosing}}
-            <CloseButton
-              @onPress={{this.remove}}
-              @size="sm"
-              @class={{this.classes.closeButton}}
-            />
-          {{/if}}
-        </div>
+    {{! template-lint-disable no-inline-styles style-concatenation }}
+    <div
+      class={{this.classes.base}}
+      style={{this.style}}
+      role={{this.role}}
+      data-test-notification-card
+      {{this.enter}}
+      {{this.measure}}
+      ...attributes
+    >
+      {{#unless @notification.hideIcon}}
+        {{#if @notification.isLoading}}
+          <Spinner
+            @class={{this.classes.icon}}
+            @size="sm"
+            data-test-icon="loading"
+          />
+        {{else}}
+          {{#let this.icon as |Icon|}}
+            <Icon class={{this.classes.icon}} />
+          {{/let}}
+        {{/if}}
       {{/unless}}
+
+      <div class={{this.classes.content}}>
+        <div class={{this.classes.title}}>{{@notification.title}}</div>
+
+        {{#if @notification.description}}
+          <div class={{this.classes.description}}>
+            {{@notification.description}}
+          </div>
+        {{/if}}
+      </div>
+
+      {{#if @notification.customActions}}
+        <div class={{this.classes.customActions}}>
+          {{#each @notification.customActions as |customAction index|}}
+            <Button
+              @size="xs"
+              @intent={{if index "default" this.actionIntent}}
+              @appearance={{if index "minimal" "default"}}
+              @class={{this.classes.customActionButton}}
+              @onPress={{fn this.handleClickCustomAction customAction}}
+            >
+              {{customAction.label}}
+            </Button>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if @notification.allowClosing}}
+        <CloseButton
+          @onPress={{this.remove}}
+          @size="sm"
+          @class={{this.classes.closeButton}}
+        />
+      {{/if}}
     </div>
   </template>
 }
