@@ -57,21 +57,21 @@ const commands = [
     label: 'Profile',
     section: 'Settings',
     Icon: UserIcon,
-    shortcut: '⌘P'
+    shortcut: 'mod+p'
   },
   {
     key: 'billing',
     label: 'Billing',
     section: 'Settings',
     Icon: CodeIcon,
-    shortcut: '⌘B'
+    shortcut: 'mod+b'
   },
   {
     key: 'settings',
     label: 'Settings',
     section: 'Settings',
     Icon: CodeIcon,
-    shortcut: '⌘S'
+    shortcut: 'mod+s'
   }
 ];
 
@@ -360,9 +360,9 @@ import { Command } from 'frontile';
 import { UserIcon, StarIcon, SearchIcon } from 'site/components/icons';
 
 const commands = [
-  { key: 'profile', label: 'Profile', shortcut: '⌘P', Icon: UserIcon },
-  { key: 'favorites', label: 'Favorites', shortcut: '⌘F', Icon: StarIcon },
-  { key: 'search', label: 'Search', shortcut: '⌘K', Icon: SearchIcon }
+  { key: 'profile', label: 'Profile', shortcut: 'mod+p', Icon: UserIcon },
+  { key: 'favorites', label: 'Favorites', shortcut: 'mod+f', Icon: StarIcon },
+  { key: 'search', label: 'Search', shortcut: 'mod+k', Icon: SearchIcon }
 ];
 
 <template>
@@ -403,8 +403,8 @@ const commands = [
       </:item>
     </c.List>
     <c.Footer as |f|>
-      <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
-      <f.Hint><f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd> Copy link</f.Hint>
+      <f.Hint><f.Kbd @keys='enter' /> Go to page</f.Hint>
+      <f.Hint><f.Kbd @keys='mod+c' /> Copy link</f.Hint>
     </c.Footer>
   </Command>
 </template>

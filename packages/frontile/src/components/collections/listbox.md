@@ -155,19 +155,19 @@ export default class StaticItems extends Component {
         <l.Item
           @key='view'
           @description='View in read-only mode'
-          @shortcut='⌘O'
+          @shortcut='mod+o'
         >
           <:start><ViewIcon /></:start>
           <:default>View Details</:default>
         </l.Item>
-        <l.Item @key='edit' @description='Make changes' @shortcut='⌘E'>
+        <l.Item @key='edit' @description='Make changes' @shortcut='mod+e'>
           <:start><EditIcon /></:start>
           <:default>Edit</:default>
         </l.Item>
         <l.Item
           @key='share'
           @description='Share with team'
-          @shortcut='⌘⇧S'
+          @shortcut='mod+shift+s'
           @withDivider={{true}}
         >
           <:start><ShareIcon /></:start>
@@ -178,7 +178,7 @@ export default class StaticItems extends Component {
           @description='Permanently delete'
           @intent='danger'
           @class='text-danger'
-          @shortcut='⌘⌫'
+          @shortcut='mod+backspace'
         >
           <:start><DeleteIcon /></:start>
           <:default>Delete</:default>
@@ -215,12 +215,12 @@ export default class ActionMenu extends Component {
       >
         <l.Item @key='new'>New File</l.Item>
         <l.Item @key='open'>Open...</l.Item>
-        <l.Item @key='save' @shortcut='⌘S'>Save</l.Item>
-        <l.Item @key='save-as' @shortcut='⌘⇧S' @withDivider={{true}}>
+        <l.Item @key='save' @shortcut='mod+s'>Save</l.Item>
+        <l.Item @key='save-as' @shortcut='mod+shift+s' @withDivider={{true}}>
           Save As...
         </l.Item>
         <l.Item @key='export'>Export</l.Item>
-        <l.Item @key='print' @shortcut='⌘P'>Print</l.Item>
+        <l.Item @key='print' @shortcut='mod+p'>Print</l.Item>
       </Listbox>
     </div>
   </template>
@@ -558,8 +558,8 @@ import { array } from '@ember/helper';
       <g.Item @key='calculator'>Calculator</g.Item>
     </l.Group>
     <l.Group @title='Settings' as |g|>
-      <g.Item @key='profile' @shortcut='⌘P'>Profile</g.Item>
-      <g.Item @key='billing' @shortcut='⌘B'>Billing</g.Item>
+      <g.Item @key='profile' @shortcut='mod+p'>Profile</g.Item>
+      <g.Item @key='billing' @shortcut='mod+b'>Billing</g.Item>
     </l.Group>
   </Listbox>
 </template>

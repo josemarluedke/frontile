@@ -48,18 +48,18 @@ export default class BasicDropdown extends Component {
       </d.Trigger>
 
       <d.Menu @onAction={{this.onAction}} as |Item|>
-        <Item @key='view' @description='Open in read-only mode' @shortcut='⌘O'>
+        <Item @key='view' @description='Open in read-only mode' @shortcut='mod+o'>
           <:start><ViewIcon /></:start>
           <:default>View Details</:default>
         </Item>
-        <Item @key='edit' @description='Make changes to project' @shortcut='⌘E'>
+        <Item @key='edit' @description='Make changes to project' @shortcut='mod+e'>
           <:start><EditIcon /></:start>
           <:default>Edit Project</:default>
         </Item>
         <Item
           @key='duplicate'
           @description='Create a copy'
-          @shortcut='⌘D'
+          @shortcut='mod+d'
           @withDivider={{true}}
         >
           <:start><DuplicateIcon /></:start>
@@ -69,7 +69,7 @@ export default class BasicDropdown extends Component {
           @key='share'
           @intent='primary'
           @description='Invite team members'
-          @shortcut='⌘⇧S'
+          @shortcut='mod+shift+s'
         >
           <:start><ShareIcon /></:start>
           <:default>Share</:default>
@@ -92,7 +92,7 @@ export default class BasicDropdown extends Component {
           @intent='danger'
           @description='Permanently delete'
           @class='text-danger'
-          @shortcut='⌘⌫'
+          @shortcut='mod+backspace'
         >
           <:start><DeleteIcon /></:start>
           <:default>Delete Project</:default>
@@ -129,7 +129,7 @@ export default class DropdownWithDetails extends Component {
         <Item @key='profile' @description='View and edit your profile'>
           My Profile
         </Item>
-        <Item @key='settings' @description='Manage preferences' @shortcut='⌘,'>
+        <Item @key='settings' @description='Manage preferences' @shortcut='mod+,'>
           Settings
         </Item>
         <Item @key='billing' @description='View billing details'>

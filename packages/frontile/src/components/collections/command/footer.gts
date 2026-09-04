@@ -109,20 +109,19 @@ class CommandFooter extends Component<CommandFooterSignature> {
           )
         }}
       {{else}}
+        {{! Named keys rather than literal glyphs: Kbd supplies the spoken
+            labels, so these no longer need hand-written aria-labels. }}
         <CommandHint @classes={{@classes}}>
-          <CommandKbd @classes={{@classes}} aria-label="Arrow up">↑</CommandKbd>
-          <CommandKbd
-            @classes={{@classes}}
-            aria-label="Arrow down"
-          >↓</CommandKbd>
+          <CommandKbd @keys="up" @classes={{@classes}} />
+          <CommandKbd @keys="down" @classes={{@classes}} />
           Navigate
         </CommandHint>
         <CommandHint @classes={{@classes}}>
-          <CommandKbd @classes={{@classes}} aria-label="Enter">↵</CommandKbd>
+          <CommandKbd @keys="enter" @classes={{@classes}} />
           Select
         </CommandHint>
         <CommandHint @classes={{@classes}}>
-          <CommandKbd @classes={{@classes}}>Esc</CommandKbd>
+          <CommandKbd @keys="esc" @classes={{@classes}} />
           Close
         </CommandHint>
       {{/if}}
