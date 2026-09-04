@@ -24,6 +24,8 @@ them is optional for the whole 0.18 line.
 | `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
 | Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
 | Multi-select renders chips | Multi-selects look different — selections become removable chips | Visual only — nothing to fix |
+| `text-body-pico`/`-nano`/`-micro` | Those elements render unstyled | **Silently** |
+| Body text-scale font sizes corrected | Body text (`xs` through `xl`) renders larger than intended | Visual only — nothing to fix |
 
 **The silent ones are the reason to take this in order.** A class Tailwind can't
 resolve produces no error, no warning, and no CSS — the element just renders
@@ -113,6 +115,31 @@ for the full section.
 **Impact:** visual only. **Time:** none required; a few minutes if you want to
 opt out.
 
+### 5. Body typography scale corrected
+
+The `--text-body-*` tokens were mapped to the wrong steps of the modular scale,
+so `xs` through `xl` rendered larger than the design spec (e.g. `md` shipped at
+20.74px instead of 16px). These now match spec, and the scale gained `4xs`,
+`5xs`, `2xl`, and `3xl` sizes to fill it out.
+
+The non-standard `text-body-pico`, `text-body-nano`, and `text-body-micro`
+tokens are gone — the body scale now uses the same `5xs`…`3xl` naming as every
+other text-style category. Replace them with the equivalent standard size,
+which renders at the same pixel value:
+
+| Removed | Use instead |
+| --- | --- |
+| `text-body-pico` | `text-body-4xs` |
+| `text-body-nano` | `text-body-3xs` |
+| `text-body-micro` | `text-body-2xs` |
+
+**Impact:** required only if you use `text-body-pico`/`-nano`/`-micro`
+directly (silent — the class stops resolving to any style); otherwise visual
+only, from the corrected sizes. **Time:** a few minutes; search your codebase
+for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
+
+**See:** [Typography](../../theming/design-tokens/typography.md)
+
 ## Checklist
 
 - [ ] `@import "@frontile/theme"` added to `app.css`
@@ -125,6 +152,7 @@ opt out.
 - [ ] **Looked at the running app**, not just the diff
 - [ ] Imports moved to `frontile` (optional until 0.19)
 - [ ] Looked at any multi-selects — they now render chips and are taller
+- [ ] Replaced `text-body-pico`/`-nano`/`-micro` with `text-body-4xs`/`-3xs`/`-2xs`
 
 ## New projects
 

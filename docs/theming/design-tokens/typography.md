@@ -90,6 +90,12 @@ Standard body text with spacious line height optimized for readability.
 ```gts preview
 <template>
   <div class='flex flex-col gap-6'>
+    <p class='font-body text-body-3xl'>
+      Body 3XL: The quick brown fox jumps over the lazy dog. This is 3XL body text with spacious line height for comfortable reading.
+    </p>
+    <p class='font-body text-body-2xl'>
+      Body 2XL: The quick brown fox jumps over the lazy dog. This is 2XL body text with spacious line height for comfortable reading.
+    </p>
     <p class='font-body text-body-xl'>
       Body XL: The quick brown fox jumps over the lazy dog. This is extra large body text with spacious line height for comfortable reading.
     </p>
@@ -111,20 +117,17 @@ Standard body text with spacious line height optimized for readability.
     <p class='font-body text-body-3xs'>
       Body 3XS: The quick brown fox jumps over the lazy dog. This is 3XS body text.
     </p>
-    <p class='font-body text-body-micro'>
-      Body Micro: The quick brown fox jumps over the lazy dog. This is micro body text.
+    <p class='font-body text-body-4xs'>
+      Body 4XS: The quick brown fox jumps over the lazy dog. This is 4XS body text.
     </p>
-    <p class='font-body text-body-nano'>
-      Body Nano: The quick brown fox jumps over the lazy dog. This is nano body text.
-    </p>
-    <p class='font-body text-body-pico'>
-      Body Pico: The quick brown fox jumps over the lazy dog. This is pico body text.
+    <p class='font-body text-body-5xs'>
+      Body 5XS: The quick brown fox jumps over the lazy dog. This is 5XS body text.
     </p>
   </div>
 </template>
 ```
 
-**Available sizes:** `pico`, `nano`, `micro`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`
+**Available sizes:** `5xs`, `4xs`, `3xs`, `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`
 **Best for:** Paragraphs, article content, descriptions, general text
 
 ### Code

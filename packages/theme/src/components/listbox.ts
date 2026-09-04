@@ -28,7 +28,7 @@ const listboxItem = tv({
     label: 'flex-1 font-body text-body-2xs truncate',
     description: [
       'w-full',
-      'font-body text-body-micro',
+      'font-body text-body-2xs',
       'text-neutral-firm',
       'group-hover:text-current'
     ],

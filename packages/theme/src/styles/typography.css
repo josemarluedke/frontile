@@ -260,55 +260,60 @@
 
 
   /* body text styles — Open Sans regular, relaxed leading */
-  --text-body-pico: var(--font-size-6);
-  --text-body-pico--font-weight: var(--font-weight-regular);
-  --text-body-pico--letter-spacing: var(--letter-spacing-default);
-  --text-body-pico--line-height: var(--line-height-relaxed);
+  --text-body-5xs: var(--font-size-2);
+  --text-body-5xs--font-weight: var(--font-weight-regular);
+  --text-body-5xs--letter-spacing: var(--letter-spacing-default);
+  --text-body-5xs--line-height: var(--line-height-relaxed);
 
-  --text-body-nano: var(--font-size-7);
-  --text-body-nano--font-weight: var(--font-weight-regular);
-  --text-body-nano--letter-spacing: var(--letter-spacing-default);
-  --text-body-nano--line-height: var(--line-height-relaxed);
+  --text-body-4xs: var(--font-size-6);
+  --text-body-4xs--font-weight: var(--font-weight-regular);
+  --text-body-4xs--letter-spacing: var(--letter-spacing-default);
+  --text-body-4xs--line-height: var(--line-height-relaxed);
 
-  --text-body-micro: var(--font-size-8);
-  --text-body-micro--font-weight: var(--font-weight-regular);
-  --text-body-micro--letter-spacing: var(--letter-spacing-default);
-  --text-body-micro--line-height: var(--line-height-relaxed);
-
-  --text-body-3xs: var(--font-size-9);
+  --text-body-3xs: var(--font-size-7);
   --text-body-3xs--font-weight: var(--font-weight-regular);
   --text-body-3xs--letter-spacing: var(--letter-spacing-default);
   --text-body-3xs--line-height: var(--line-height-relaxed);
 
-  --text-body-2xs: var(--font-size-10);
+  --text-body-2xs: var(--font-size-8);
   --text-body-2xs--font-weight: var(--font-weight-regular);
   --text-body-2xs--letter-spacing: var(--letter-spacing-default);
   --text-body-2xs--line-height: var(--line-height-relaxed);
 
-  --text-body-xs: var(--font-size-12);
+  --text-body-xs: var(--font-size-9);
   --text-body-xs--font-weight: var(--font-weight-regular);
   --text-body-xs--letter-spacing: var(--letter-spacing-default);
   --text-body-xs--line-height: var(--line-height-relaxed);
 
-  --text-body-sm: var(--font-size-14);
+  --text-body-sm: var(--font-size-10);
   --text-body-sm--font-weight: var(--font-weight-regular);
   --text-body-sm--letter-spacing: var(--letter-spacing-default);
   --text-body-sm--line-height: var(--line-height-relaxed);
 
-  --text-body-md: var(--font-size-16);
+  --text-body-md: var(--font-size-12);
   --text-body-md--font-weight: var(--font-weight-regular);
   --text-body-md--letter-spacing: var(--letter-spacing-default);
   --text-body-md--line-height: var(--line-height-relaxed);
 
-  --text-body-lg: var(--font-size-18);
+  --text-body-lg: var(--font-size-14);
   --text-body-lg--font-weight: var(--font-weight-regular);
   --text-body-lg--letter-spacing: var(--letter-spacing-default);
   --text-body-lg--line-height: var(--line-height-relaxed);
 
-  --text-body-xl: var(--font-size-21);
+  --text-body-xl: var(--font-size-16);
   --text-body-xl--font-weight: var(--font-weight-regular);
   --text-body-xl--letter-spacing: var(--letter-spacing-default);
   --text-body-xl--line-height: var(--line-height-relaxed);
+
+  --text-body-2xl: var(--font-size-18);
+  --text-body-2xl--font-weight: var(--font-weight-regular);
+  --text-body-2xl--letter-spacing: var(--letter-spacing-default);
+  --text-body-2xl--line-height: var(--line-height-relaxed);
+
+  --text-body-3xl: var(--font-size-21);
+  --text-body-3xl--font-weight: var(--font-weight-regular);
+  --text-body-3xl--letter-spacing: var(--letter-spacing-default);
+  --text-body-3xl--line-height: var(--line-height-relaxed);
 
 
   /* code text styles — Source Code Pro, relaxed leading */

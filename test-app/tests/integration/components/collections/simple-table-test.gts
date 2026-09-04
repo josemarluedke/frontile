@@ -296,12 +296,12 @@ module(
         </template>
       );
 
-      // The `sm` size variant sets `px-3 py-2 text-body-micro` on td; the md
-      // default sets `text-body-2xs`. `text-body-micro` comes only from the
-      // `sm` variant (no shorthand/longhand ambiguity like `p-4` vs `px`/`py`).
+      // The `sm` size variant sets `px-3 py-2` on td (no shorthand/longhand
+      // ambiguity like `p-4` vs `px`/`py`), distinguishing it from the `md`
+      // default's `p-4`.
       assert.dom('[data-test-id="nested-cell"]').hasClass('px-3');
       assert.dom('[data-test-id="nested-cell"]').hasClass('py-2');
-      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-micro');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-2xs');
     });
 
     test('a Cell yielded from Row respects table classes.td', async function (assert) {
@@ -333,12 +333,12 @@ module(
         </template>
       );
 
-      // The `sm` size variant sets `px-3 py-2 text-body-micro` on td; the md
-      // default sets `text-body-2xs`. `text-body-micro` comes only from the
-      // `sm` variant (no shorthand/longhand ambiguity like `p-4` vs `px`/`py`).
+      // The `sm` size variant sets `px-3 py-2` on td (no shorthand/longhand
+      // ambiguity like `p-4` vs `px`/`py`), distinguishing it from the `md`
+      // default's `p-4`.
       assert.dom('[data-test-id="nested-cell"]').hasClass('px-3');
       assert.dom('[data-test-id="nested-cell"]').hasClass('py-2');
-      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-micro');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-2xs');
     });
 
     test('a Row yielded from Body respects table classes.td', async function (assert) {
@@ -372,7 +372,7 @@ module(
 
       assert.dom('[data-test-id="nested-cell"]').hasClass('px-3');
       assert.dom('[data-test-id="nested-cell"]').hasClass('py-2');
-      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-micro');
+      assert.dom('[data-test-id="nested-cell"]').hasClass('text-body-2xs');
     });
 
     test('a Cell yielded from Body respects table classes.td', async function (assert) {

@@ -113,7 +113,7 @@ const table = tv({
     size: {
       sm: {
         th: 'h-10 px-3 py-2 text-label-2xs',
-        td: 'px-3 py-2 text-body-micro'
+        td: 'px-3 py-2 text-body-2xs'
       },
       md: {
         th: 'h-12 px-4 text-label-xs',
