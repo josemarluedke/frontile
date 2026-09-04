@@ -127,6 +127,33 @@ export interface NotificationOptions<
   metadata?: TMetadata;
 }
 
+/**
+ * A promise notification message: a fixed string, a fixed content object, or
+ * a function of the settled value.
+ */
+export type PromiseMessage<T> =
+  string | NotificationContent | ((value: T) => string | NotificationContent);
+
+export interface PromiseNotificationOptions<
+  T,
+  TMetadata extends Record<string, unknown> = Record<string, unknown>
+> extends Omit<NotificationOptions<TMetadata>, 'isLoading'> {
+  /**
+   * Shown with a spinner while the promise is pending.
+   */
+  loading: string | NotificationContent;
+
+  /**
+   * Shown when the promise resolves.
+   */
+  success: PromiseMessage<T>;
+
+  /**
+   * Shown when the promise rejects.
+   */
+  error: PromiseMessage<unknown>;
+}
+
 export interface DefaultConfig extends NotificationOptions {
   /**
    * If set to true, we will preserve the notification, therefore skiping the timer.
