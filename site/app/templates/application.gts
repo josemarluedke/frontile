@@ -1,6 +1,7 @@
 import Logo from '../components/logo';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
+import DocfyRouteLoadingBar from '../components/docfy/docfy-route-loading-bar';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import VersionDropdown from '../components/version-dropdown';
 import { VisuallyHidden } from 'frontile';
@@ -9,6 +10,7 @@ import { DocfyLink } from '@docfy/ember';
 
 <template>
   {{pageTitle "Frontile"}}
+  <DocfyRouteLoadingBar />
   <DocfyHeader
     @githubUrl="https://github.com/josemarluedke/frontile"
     class="overflow-x-scroll sm:overflow-x-auto"

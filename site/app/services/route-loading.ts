@@ -12,7 +12,7 @@ import type RouterService from '@ember/routing/router-service';
  * plenty of those: every `splitAtRoutes` entry in `ember-cli-build.js` is a
  * separate lazily loaded bundle fetched at transition time.
  */
-export const SHOW_DELAY = 120;
+export const SHOW_DELAY = 100;
 
 /**
  * Once shown, the indicator stays for at least this long.
@@ -24,13 +24,13 @@ export const MIN_VISIBLE = 320;
 
 /**
  * Tracks whether the router is mid-transition, so the site chrome can show a
- * hairline progress indicator instead of tearing the current page down.
+ * progress line instead of tearing the current page down.
  *
  * The site deliberately has no `loading` route templates: with lazily loaded
  * route bundles a loading substate would blank out the page the reader is
- * still looking at. Keeping the old page rendered and marking the wait in the
- * header is the same trade Table makes while it refreshes — the hairline under
- * its `thead` — so the two use the same swinging line.
+ * still looking at. Keeping the old page rendered and marking the wait at the
+ * top of the window is the same trade Table makes while it refreshes — the
+ * hairline under its `thead` — so the two use the same swinging line.
  */
 export default class RouteLoadingService extends Service {
   @service declare router: RouterService;
