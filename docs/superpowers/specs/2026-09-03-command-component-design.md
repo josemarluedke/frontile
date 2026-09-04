@@ -125,34 +125,41 @@ to the docs site.
   scores ~0.15), so the "legitimate match scoring exactly `0`" risk is theoretical. It is clamped to
   `Number.EPSILON` anyway, since `0` is load-bearing in the contract.
 
-### 3.1 Match threshold — fuzzy is *looser*, not just better ordered
+### 3.1 Match threshold and the substring floor
 
 Replacing `includes()` with fuzzy matching admits results the old filter never returned. Measured
 against a 30-item country list: `sa` went from **0 matches to 6** (only `South Africa` legitimate),
 `ia` from 4 to 11.
 
-fuzzysort cannot separate a useful abbreviation from noise — `btn` -> `Button` and `sa` -> `Spain`
-are the same shape, both scattered mid-word subsequences. What it *can* separate is
-contiguous/word-boundary matches from scattered ones, and it does so with a clean gap. Measured over
-2000 dictionary words x 12 queries:
+Two facts shape the fix:
 
-| | n | scores |
-| --- | --- | --- |
-| matches `includes()` also returned | 676 | **min 0.414**, p5 0.447, median 0.533 |
-| newly admitted by fuzzy | 758 | **max 0.358**, p95 0.355, median 0.338 |
+1. **`fuzzysort.single()` applies no threshold at all**, while `fuzzysort.go()` defaults to
+   `threshold: 0.5`. Scoring one item at a time — which the `@filter` contract requires — silently
+   opts out of the library's own quality bar. Verified: `go('sa', ['Spain'])` returns `[]` while
+   `single('sa', 'Spain')` returns `0.358`.
+2. **A threshold alone is not safe.** Genuine substring matches score *below* 0.5 —
+   `ma` -> `Guatemala` is 0.500, `an` -> `Netherlands` 0.462, `an` -> `Switzerland` 0.447 — so any
+   useful threshold would drop results the old filter returned.
 
-Zero overlap. `DEFAULT_MATCH_THRESHOLD = 0.4` sits in the gap and therefore:
+So the default combines a threshold at fuzzysort's own `0.5` with a **substring floor**: an item
+whose label contains the query is scored at no less than the threshold, whatever fuzzysort thought
+of it. That makes the filter a *strict superset* of the old `includes()` default **by construction
+rather than by measurement** — raising the threshold can never make an old result disappear, it can
+only remove matches that are new.
 
-- **drops 0 of 676** results the old `includes()` filter returned — no silent loss for existing
+Net effect:
+
+- every result `includes()` returned is still returned, so no silent loss for existing
   `Autocomplete` / `Select` consumers;
-- **cuts 758 of 758** newly admitted scattered matches — no new noise;
-- still gains acronyms: `bg` -> `ButtonGroup` (0.722), `nz` -> `New Zealand` (0.732),
-  `prog` -> `ProgressBar` (0.875).
+- scattered mid-word subsequences (`sa` -> `Spain` 0.358, `ra` -> `Argentina`, `xo` -> `Mexico`) are
+  cut;
+- acronyms are gained: `bg` -> `ButtonGroup` (0.722), `nz` -> `New Zealand` (0.732).
 
-The accepted cost is that `btn` -> `Button` (0.318) does not match. The threshold is configurable
-via `createFuzzyFilter({ threshold })` for callers that want recall over precision.
+The accepted cost is that `btn` -> `Button` (0.318) does not match: fuzzysort cannot distinguish it
+from `sa` -> `Spain`, since both are scattered mid-word subsequences. `createFuzzyFilter({ threshold })`
+trades precision for that recall.
 
----
+Covered by a property test asserting the superset guarantee over a corpus, not just on examples.
 
 ## 4. `@filter` widened to `boolean | number`
 
@@ -184,12 +191,24 @@ helper, so the ranking change lands in a single place:
 export function filterAndRankItems<T>(
   items: T[] | undefined,
   query: string,
+  labelFor: (item: T) => string,
   filter: FilterFn = defaultFilter
 ): T[] | undefined;
 ```
 
-Behavior: empty query returns `items` untouched; boolean results filter only; numeric results
-filter (`> 0`) then **stable**-sort descending, so equal scores preserve source order.
+`labelFor` is required rather than defaulting to `String(item)`: Frontile items are typically
+`{ key, label }` objects, where `String(item)` yields `"[object Object]"` and silently matches
+nothing.
+
+Behavior: a blank or whitespace-only query returns `items` untouched; results are normalized to a
+score (`true` -> `1`, `false` -> `0`, numbers as-is, anything `<= 0` or `NaN` dropped) and then
+**stable**-sorted descending.
+
+Normalizing `true` to a *full* match matters: recording it as `0` — as a first cut did — sorted
+every boolean match below every numeric one, including the very weakest. And because the sort is
+stable, a purely boolean filter scores every match identically and therefore preserves the order of
+`@items` exactly, so backwards compatibility falls out of the normalization instead of needing a
+separate "did anything return a number?" flag.
 
 Multi-field records score per-field and take a **weighted max, never a sum** — a sum lets three
 weak field hits beat one exact title match. `fuzzysort.go` supports weighted `keys` natively.
@@ -235,7 +254,7 @@ grouping pattern:
 ```html
 <ul role="listbox">
   <li role="group" aria-labelledby="grp-1">
-    <span id="grp-1" role="presentation">Suggestions</span>
+    <span id="grp-1">Suggestions</span>
     <ul role="none">
       <li role="option" aria-selected="false">…</li>
     </ul>
@@ -243,9 +262,13 @@ grouping pattern:
 </ul>
 ```
 
-Implemented as `<l.Group @title="..." as |g|>` yielding a manager-bound `g.Item`, matching the
-`ListboxSection`-style `title` naming used elsewhere in this family of components rather than
-cmdk's `heading`.
+Implemented as `<l.Group @title="..." @withDivider={{true}} as |g|>` yielding a manager-bound
+`g.Item`. `@title` follows the `ListboxSection`-style naming this component family mirrors, rather
+than cmdk's `heading`; note Frontile otherwise uses `@label` for visible text labels, but that is
+consistently a *form control* label, which a section heading is not.
+
+The heading `<span>` carries no ARIA role — a `span` has none to suppress, and `aria-labelledby`
+takes its accessible name from the text regardless.
 
 **No `ListManager` changes are required.** Navigation order is derived from the live DOM via
 `compareDocumentPosition`, not from registration order:
@@ -401,9 +424,10 @@ Per APG "Combobox with List Autocomplete":
 ```
 packages/frontile/src/
   utils/filter.ts                       ← NEW: createFuzzyFilter, defaultFilter, filterAndRankItems
+                                        ← scoreRecord (multi-field) still pending
   utils/listManager.ts                  ← defaultFilter re-exported from utils/filter; widen FilterFn
   components/collections/
-    listbox/listbox.gts, item.gts       ← NEW group/section support
+    listbox/listbox.gts                 ← yields Group
     listbox/group.gts                   ← NEW
     command/command.gts                 ← root: query state, ranking, grouping, async, context
     command/input.gts, list.gts, item.gts, group.gts, empty.gts, loading.gts, dialog.gts
@@ -444,5 +468,6 @@ Written in this order:
 | --- | --- |
 | `defaultFilter` change reorders results in shipped components | Documented in v0.18 migration guide; boolean `@filter` restores old behavior; regression tests |
 | `ListManager` `isActive` flake, aggravated by re-ranking | Explicit test early; fall back to a Command-local registry if it proves unstable |
-| `fuzzysort` legitimate `0` score dropped by `?? 0` | Pinned by test before relying on the coalesce |
+| Fuzzy matching is looser than `includes()`, admitting noise | Threshold at fuzzysort's own 0.5 **plus** a substring floor, so the filter is a superset of the old behavior by construction; property test over a corpus |
+| A `@filter` mixing booleans and numbers orders incoherently | `true` normalizes to a full match; single stable sort for every case |
 | Listbox group markup regresses existing `Listbox` a11y | Groups are opt-in; existing ungrouped markup path unchanged and still tested |

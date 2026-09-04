@@ -508,6 +508,9 @@ importers:
       form-data-utils:
         specifier: ^0.6.0
         version: 0.6.0
+      fuzzysort:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@babel/core':
         specifier: 7.26.7
@@ -10452,6 +10455,12 @@ packages:
         integrity: sha512-sQtrEfA+ez/3G0cCZecF70oqpCRttCexYUG4mUrtWL49ULUzUyxokt5kyqwtKzj1270RaKih+hcP3qLcumccow==
       }
     engines: { node: '>=10' }
+
+  fuzzysort@4.0.2:
+    resolution:
+      {
+        integrity: sha512-3c7yD6rK1EXIsqpcu1ZVzXJugODWNMzvUij6yTiziaAHrpNS8kzFOI9mJLE8pmG4K9JOaVgzQRgklfOEk8f4Tg==
+      }
 
   gensync@1.0.0-beta.2:
     resolution:
@@ -26473,6 +26482,8 @@ snapshots:
   functions-have-names@1.2.3: {}
 
   fuse.js@7.5.0: {}
+
+  fuzzysort@4.0.2: {}
 
   gensync@1.0.0-beta.2: {}
 

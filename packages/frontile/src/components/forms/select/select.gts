@@ -645,8 +645,8 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     return filterAndRankItems(
       this.args.items,
       this.filterValue || '',
-      this.args.filter,
-      (item) => keyAndLabelForItem(item).label
+      (item) => keyAndLabelForItem(item).label,
+      this.args.filter
     );
   }
 

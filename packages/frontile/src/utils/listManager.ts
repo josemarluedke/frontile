@@ -881,11 +881,6 @@ function keyAndLabelForItem(item: unknown): { key: string; label: string } {
   return { key: '', label: '' };
 }
 
-/**
- * Default option-matching used by Select and Autocomplete:
- * case-insensitive "contains".
- */
-
 export type {
   ListItem,
   ListItemArgs,

@@ -439,6 +439,12 @@ is mid-keyboard-navigation (cmdk's `disablePointerSelection`; the usual trick is
 
 ## 7. Ranking: a recommendation
 
+> **Superseded.** §7.3 below designs a hand-written tiered scorer. It was *not* implemented:
+> `match-sorter` and `fuzzysort` were measured against the motivating case and both already rank
+> `Button` first, so the correctness argument for a custom scorer did not survive. `fuzzysort` was
+> chosen — see spec §3. The analysis below is kept because §7.1 (why Fuse mis-ranks) and §7.4
+> (multi-field weighting) still hold.
+
 ### 7.1 Why not Fuse.js
 
 Fuse.js is a Bitap/approximate-string-match engine (<https://www.fusejs.io/>). Its model:

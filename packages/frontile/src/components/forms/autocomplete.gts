@@ -625,8 +625,8 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
     return filterAndRankItems(
       this.args.items,
       this.inputValue,
-      this.args.filter,
-      (item) => keyAndLabelForItem(item).label
+      (item) => keyAndLabelForItem(item).label,
+      this.args.filter
     );
   }
 

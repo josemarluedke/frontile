@@ -23,10 +23,10 @@ module(
       );
 
       assert.dom('[data-test-id="listbox-group"]').exists();
-      assert.dom('[data-test-id="listbox-group"]').hasAttribute('role', 'group');
       assert
-        .dom('[data-test-id="listbox-group-title"]')
-        .hasText('Suggestions');
+        .dom('[data-test-id="listbox-group"]')
+        .hasAttribute('role', 'group');
+      assert.dom('[data-test-id="listbox-group-title"]').hasText('Suggestions');
 
       // The group must be labelled by its own heading, so a screen reader
       // announces "Suggestions" when entering the group.
@@ -164,9 +164,7 @@ module(
       assert.dom('[data-key="profile"]').hasAttribute('aria-selected', 'true');
 
       // disabledKeys must still reach items nested inside a group.
-      assert
-        .dom('[data-key="billing"]')
-        .hasAttribute('aria-disabled', 'true');
+      assert.dom('[data-key="billing"]').hasAttribute('aria-disabled', 'true');
     });
   }
 );

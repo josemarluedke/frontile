@@ -25,15 +25,18 @@ const COMPONENTS = [
   'Tab'
 ];
 
+const identity = (value: string) => value;
+
 function rank(query: string): string[] {
-  return filterAndRankItems([...COMPONENTS], query) as string[];
+  return filterAndRankItems([...COMPONENTS], query, identity) as string[];
 }
 
 module('Unit | @frontile/collections/utils/filter', function () {
   module('defaultFilter', function () {
     test('an exact match outranks a longer name containing the query', function (assert) {
       assert.ok(
-        defaultFilter('Button', 'button') > defaultFilter('ButtonGroup', 'button'),
+        defaultFilter('Button', 'button') >
+          defaultFilter('ButtonGroup', 'button'),
         'Button scores above ButtonGroup for "button"'
       );
     });
@@ -63,13 +66,10 @@ module('Unit | @frontile/collections/utils/filter', function () {
       );
     });
 
-    test('a real match never scores exactly 0', function (assert) {
-      // 0 is reserved to mean "no match", so with the threshold disabled a
-      // legitimate but very poor match must stay strictly above it rather than
-      // being indistinguishable from no match at all.
-      const loose = createFuzzyFilter({ threshold: 0 });
-      const poor = loose(`a${'q'.repeat(900)}b${'q'.repeat(900)}c`, 'abc');
-      assert.ok(poor > 0, 'a weak subsequence match still scores above zero');
+    test('a whitespace-only query matches everything', function (assert) {
+      // fuzzysort returns null for a blank OR whitespace-only needle. Treating
+      // that as "no match" would empty the list when a user types a space.
+      assert.ok(defaultFilter('Button', '   ') > 0);
     });
   });
 
@@ -80,8 +80,16 @@ module('Unit | @frontile/collections/utils/filter', function () {
     // boundaries and contiguous runs -- so the default stays as precise as the
     // old `includes()` filter while gaining acronym matching.
     test('it cuts scattered mid-word subsequences', function (assert) {
-      assert.strictEqual(defaultFilter('Spain', 'sa'), 0, 'sa does not match Spain');
-      assert.strictEqual(defaultFilter('Italy', 'ia'), 0, 'ia does not match Italy');
+      assert.strictEqual(
+        defaultFilter('Spain', 'sa'),
+        0,
+        'sa does not match Spain'
+      );
+      assert.strictEqual(
+        defaultFilter('Italy', 'ia'),
+        0,
+        'ia does not match Italy'
+      );
       assert.strictEqual(
         defaultFilter('Argentina', 'an'),
         0,
@@ -90,21 +98,34 @@ module('Unit | @frontile/collections/utils/filter', function () {
     });
 
     test('it keeps word-boundary and camelCase acronyms', function (assert) {
-      assert.ok(defaultFilter('South Africa', 'sa') > 0, 'sa matches South Africa');
-      assert.ok(defaultFilter('ButtonGroup', 'bg') > 0, 'bg matches ButtonGroup');
-      assert.ok(defaultFilter('New Zealand', 'nz') > 0, 'nz matches New Zealand');
+      assert.ok(
+        defaultFilter('South Africa', 'sa') > 0,
+        'sa matches South Africa'
+      );
+      assert.ok(
+        defaultFilter('ButtonGroup', 'bg') > 0,
+        'bg matches ButtonGroup'
+      );
+      assert.ok(
+        defaultFilter('New Zealand', 'nz') > 0,
+        'nz matches New Zealand'
+      );
       assert.ok(
         defaultFilter('ProgressBar', 'prog') > 0,
         'prog matches ProgressBar'
       );
     });
 
-    test('it keeps every plain substring match', function (assert) {
-      // The old default was `includes()`. Nothing it matched may be lost.
+    test('every substring match survives, however badly it scores', function (assert) {
+      // The old default was `includes()`, and the filter must be a strict
+      // superset of it. These all score BELOW the threshold on their own
+      // (Guatemala/ma is 0.500, Switzerland/an is 0.447) and survive only
+      // because of the substring floor.
       for (const [target, query] of [
-        ['Canada', 'an'],
+        ['Guatemala', 'ma'],
         ['Netherlands', 'an'],
         ['Switzerland', 'an'],
+        ['Canada', 'an'],
         ['United Kingdom', 'united'],
         ['Germany', 'ger']
       ] as [string, string][]) {
@@ -113,6 +134,22 @@ module('Unit | @frontile/collections/utils/filter', function () {
           `"${query}" still matches ${target}`
         );
       }
+    });
+
+    test('the substring floor holds even at a punishing threshold', function (assert) {
+      // Raising the threshold must never make an old `includes()` result vanish
+      // — that is the property that lets us promise "same items, better order".
+      const strict = createFuzzyFilter({ threshold: 0.99 });
+
+      assert.ok(
+        strict('Switzerland', 'an') > 0,
+        'a substring match is immune to the threshold'
+      );
+      assert.strictEqual(
+        strict('ButtonGroup', 'bg'),
+        0,
+        'a non-substring match is not'
+      );
     });
 
     test('the threshold is configurable', function (assert) {
@@ -131,6 +168,91 @@ module('Unit | @frontile/collections/utils/filter', function () {
         DEFAULT_MATCH_THRESHOLD > 0,
         'the default threshold is documented as a constant'
       );
+    });
+  });
+
+  module('superset property', function () {
+    // The migration promise is "same items, better order, plus acronyms".
+    // Assert it as a property over a corpus rather than on hand-picked cases,
+    // so a future scorer swap cannot quietly break it.
+    const CORPUS = [
+      'Argentina',
+      'Australia',
+      'Austria',
+      'Belgium',
+      'Brazil',
+      'Canada',
+      'China',
+      'Denmark',
+      'Egypt',
+      'Finland',
+      'France',
+      'Germany',
+      'Guatemala',
+      'India',
+      'Italy',
+      'Japan',
+      'Kenya',
+      'Mexico',
+      'Morocco',
+      'Netherlands',
+      'New Zealand',
+      'Nigeria',
+      'Norway',
+      'Poland',
+      'Portugal',
+      'South Africa',
+      'Spain',
+      'Sweden',
+      'Switzerland',
+      'United Kingdom',
+      'United States'
+    ];
+    const QUERIES = [
+      'a',
+      'an',
+      'ia',
+      'ma',
+      'ra',
+      'sa',
+      'ge',
+      'united',
+      'ger',
+      'land',
+      'new',
+      'so',
+      'ne',
+      'ca',
+      'in'
+    ];
+
+    test('no result the old includes() filter returned is lost', function (assert) {
+      for (const query of QUERIES) {
+        const expected = CORPUS.filter((c) =>
+          c.toLowerCase().includes(query.toLowerCase())
+        );
+        const actual = filterAndRankItems([...CORPUS], query, identity) ?? [];
+
+        for (const item of expected) {
+          assert.ok(actual.includes(item), `"${query}" still returns ${item}`);
+        }
+      }
+    });
+
+    test('scattered subsequences below the threshold are dropped', function (assert) {
+      // The flip side: the filter must not have simply become permissive.
+      for (const [query, junk] of [
+        ['sa', 'Spain'],
+        ['ra', 'Argentina'],
+        ['ia', 'Italy'],
+        ['xo', 'Mexico']
+      ] as [string, string][]) {
+        const actual = filterAndRankItems([...CORPUS], query, identity) ?? [];
+        assert.notOk(
+          actual.includes(junk),
+          `"${query}" does not return ${junk}`
+        );
+      }
     });
   });
 
@@ -159,15 +281,18 @@ module('Unit | @frontile/collections/utils/filter', function () {
   module('filterAndRankItems', function () {
     test('an empty query returns the items untouched', function (assert) {
       const items = ['b', 'a', 'c'];
-      assert.deepEqual(
-        filterAndRankItems(items, ''),
+      assert.strictEqual(
+        filterAndRankItems(items, '', identity),
         items,
-        'no filtering and no reordering'
+        'the same array reference, untouched'
       );
     });
 
     test('undefined items pass through', function (assert) {
-      assert.strictEqual(filterAndRankItems(undefined, 'x'), undefined);
+      assert.strictEqual(
+        filterAndRankItems<string>(undefined, 'x', identity),
+        undefined
+      );
     });
 
     test('a boolean filter filters but preserves source order', function (assert) {
@@ -180,6 +305,7 @@ module('Unit | @frontile/collections/utils/filter', function () {
         filterAndRankItems(
           ['ButtonGroup', 'Button', 'Checkbox'],
           'button',
+          identity,
           contains
         ),
         ['ButtonGroup', 'Button'],
@@ -192,7 +318,7 @@ module('Unit | @frontile/collections/utils/filter', function () {
         itemValue.includes(input) ? itemValue.length : 0;
 
       assert.deepEqual(
-        filterAndRankItems(['aa', 'aaaa', 'b', 'aaa'], 'a', byLength),
+        filterAndRankItems(['aa', 'aaaa', 'b', 'aaa'], 'a', identity, byLength),
         ['aaaa', 'aaa', 'aa'],
         'higher scores first, non-matches dropped'
       );
@@ -202,9 +328,40 @@ module('Unit | @frontile/collections/utils/filter', function () {
       const constant = () => 5;
 
       assert.deepEqual(
-        filterAndRankItems(['x', 'y', 'z'], 'q', constant),
+        filterAndRankItems(['x', 'y', 'z'], 'q', identity, constant),
         ['x', 'y', 'z'],
         'ties do not get shuffled'
+      );
+    });
+
+    test('the ranked path drops non-matches', function (assert) {
+      assert.deepEqual(
+        filterAndRankItems(['Button', 'Checkbox'], 'zzzz', identity),
+        [],
+        'nothing matches, nothing is returned'
+      );
+    });
+
+    test('a whitespace-only query returns the items untouched', function (assert) {
+      const items = ['b', 'a', 'c'];
+      assert.strictEqual(filterAndRankItems(items, '   ', identity), items);
+    });
+
+    test('true outranks a weak numeric score, not the other way round', function (assert) {
+      // A filter mixing booleans and numbers used to sort every `true` BELOW
+      // every number, because `true` was recorded as score 0.
+      const mixed = (itemValue: string) =>
+        itemValue === 'boolean-match' ? true : 0.01;
+
+      assert.deepEqual(
+        filterAndRankItems(
+          ['weak-a', 'boolean-match', 'weak-b'],
+          'q',
+          identity,
+          mixed
+        ),
+        ['boolean-match', 'weak-a', 'weak-b'],
+        'true is a full match, so it sorts above a 0.01 score'
       );
     });
 
@@ -214,12 +371,7 @@ module('Unit | @frontile/collections/utils/filter', function () {
         { key: 'b', label: 'Button' }
       ];
 
-      const ranked = filterAndRankItems(
-        items,
-        'button',
-        defaultFilter,
-        (item) => item.label
-      );
+      const ranked = filterAndRankItems(items, 'button', (item) => item.label);
 
       assert.deepEqual(
         ranked?.map((i) => i.key),

@@ -3,14 +3,13 @@ import fuzzysort from 'fuzzysort';
 /**
  * Score or match an item against the current input text.
  *
- * Return a **number** to rank: higher sorts first and `0` means no match, so
- * the list is filtered *and* ordered by relevance. Return a **boolean** to
- * filter only, leaving the order of the source items untouched.
+ * Return a **number** to rank: higher sorts first and `0` (or any value at or
+ * below it) means no match. Return a **boolean** to match without expressing
+ * relevance — `true` normalizes to a full match (`1`) and `false` to `0`.
  *
- * The boolean form exists for backwards compatibility — it cannot express
- * relevance, which is why a filter that merely includes or excludes always
- * returned an exact match below a longer name that happened to contain the
- * query.
+ * Because a boolean filter scores every match identically, and the sort is
+ * stable, a purely boolean filter leaves the order of `@items` untouched. That
+ * is exactly the behavior filters had before scoring existed.
  */
 export type FilterFn = (
   itemValue: string,
@@ -18,34 +17,40 @@ export type FilterFn = (
 ) => boolean | number;
 
 /**
- * `0` is reserved to mean "no match", so a real but very poor match is clamped
- * to just above it rather than being silently dropped. In practice fuzzysort
- * scores asymptote well above zero, but the contract should not depend on that.
+ * Guarantees a match is distinguishable from no match. `0` is load-bearing in
+ * {@link FilterFn}, so a value that must count as a match is never allowed to
+ * land exactly on it.
  */
 const MIN_MATCH_SCORE = Number.EPSILON;
 
 /**
  * Scores at or above this count as a match; anything below is discarded.
  *
- * Fuzzy matching is looser than the `includes()` filter this replaced, and
- * fuzzysort cannot distinguish a useful abbreviation (`btn` -> `Button`) from
- * noise (`sa` -> `Spain`) — both are scattered mid-word subsequences. What it
- * *can* separate is contiguous and word-boundary matches from scattered ones,
- * and it does so with a clean gap: measured over 2000 words x 12 queries, every
- * substring match scored >= 0.414 while every non-substring match scored
- * <= 0.358.
+ * This is fuzzysort's own default: `fuzzysort.go()` applies `threshold: 0.5`,
+ * while `fuzzysort.single()` — which this filter uses, because it scores one
+ * item at a time — applies none at all. Taking the threshold on ourselves keeps
+ * us at the library's own quality bar rather than below it.
  *
- * Sitting the threshold in that gap keeps this filter at least as precise as
- * `includes()` — no result that used to match is lost — while additionally
- * matching acronyms (`bg` -> `ButtonGroup`, `nz` -> `New Zealand`). The cost is
- * that `btn` -> `Button` is not matched; lower the threshold to trade precision
- * for that recall.
+ * It matters because fuzzy matching is *looser* than the `includes()` filter
+ * this replaced, and fuzzysort cannot distinguish a useful abbreviation
+ * (`btn` -> `Button`) from noise (`sa` -> `Spain`) — both are scattered mid-word
+ * subsequences scoring ~0.32-0.36. Without a threshold, a two-letter query
+ * against a country list returns two to three times as many rows as before,
+ * most of them baffling.
+ *
+ * A threshold alone is not enough, though: genuine substring matches can score
+ * *below* it (`ma` -> `Guatemala` is 0.500, `an` -> `Switzerland` is 0.447), so
+ * see the substring floor in {@link createFuzzyFilter}.
  */
-export const DEFAULT_MATCH_THRESHOLD = 0.4;
+export const DEFAULT_MATCH_THRESHOLD = 0.5;
 
 export interface FuzzyFilterOptions {
   /**
-   * Minimum score to count as a match, between `0` and `1`.
+   * Minimum score to count as a match, between `0` and `1`. Lower it to trade
+   * precision for recall — at `0`, `btn` matches `Button`, and `sa` also
+   * matches `Spain`.
+   *
+   * Substring matches are never dropped regardless of this value.
    *
    * @defaultValue {@link DEFAULT_MATCH_THRESHOLD}
    */
@@ -55,6 +60,13 @@ export interface FuzzyFilterOptions {
 /**
  * Build a relevance filter backed by fuzzysort.
  *
+ * The filter is a strict superset of a case-insensitive "contains" match: every
+ * item `includes()` would have matched still matches, scored at no less than
+ * the threshold, so raising the threshold can never make a result disappear
+ * that used to be there. On top of that it matches acronyms and initialisms
+ * (`bg` -> `ButtonGroup`, `nz` -> `New Zealand`) and orders everything by
+ * relevance instead of by source position.
+ *
  * @param options - See {@link FuzzyFilterOptions}.
  */
 export function createFuzzyFilter(
@@ -63,10 +75,10 @@ export function createFuzzyFilter(
   const threshold = options.threshold ?? DEFAULT_MATCH_THRESHOLD;
 
   return function fuzzyFilter(itemValue: string, inputValue: string): number {
-    // An empty query matches everything. fuzzysort returns null for a blank
-    // needle, which would otherwise read as "no match" and empty the list
-    // before the user has typed anything.
-    if (!inputValue) {
+    // A blank query matches everything. fuzzysort returns null for a blank or
+    // whitespace-only needle, which would otherwise read as "no match" and
+    // empty the list rather than leaving it alone.
+    if (!inputValue.trim()) {
       return 1;
     }
 
@@ -74,70 +86,78 @@ export function createFuzzyFilter(
       return 0;
     }
 
-    const result = fuzzysort.single(inputValue, itemValue);
+    const score = fuzzysort.single(inputValue, itemValue)?.score ?? 0;
 
-    if (!result || result.score < threshold) {
-      return 0;
+    // The substring floor. This is what makes the filter a superset of the old
+    // `includes()` default: a substring match is always a match, whatever it
+    // scored, so the threshold only ever removes results that are new.
+    if (itemValue.toLowerCase().includes(inputValue.toLowerCase())) {
+      return Math.max(score, threshold, MIN_MATCH_SCORE);
     }
 
-    return Math.max(result.score, MIN_MATCH_SCORE);
+    return score >= threshold ? Math.max(score, MIN_MATCH_SCORE) : 0;
   };
 }
 
 /**
  * The default relevance filter: {@link createFuzzyFilter} at
  * {@link DEFAULT_MATCH_THRESHOLD}.
- *
- * @param itemValue - The label of an item in the list.
- * @param inputValue - The user's input text.
- * @returns A score above `0` when the item matches, `0` when it does not.
  */
 export const defaultFilter = createFuzzyFilter();
 
 /**
- * Filter `items` by `query`, ranking them when the filter returns scores.
+ * Normalize whatever a {@link FilterFn} returned into a score.
  *
- * A blank query returns the items untouched, so the caller can render a
- * default list (recents, suggestions) without special-casing.
+ * `true` is a full match rather than a zero one — without this, a filter that
+ * mixed booleans and numbers would sort its `true` results below every numeric
+ * match, including the very weakest.
+ *
+ * `NaN` falls through to `0`, since no comparison with it is true.
+ */
+function toScore(result: boolean | number): number {
+  if (typeof result === 'number') {
+    return result > 0 ? result : 0;
+  }
+
+  return result ? 1 : 0;
+}
+
+/**
+ * Filter `items` by `query`, ordering them by relevance.
+ *
+ * A blank query returns the items untouched, so a caller can render a default
+ * list (recents, suggestions) without special-casing it.
+ *
+ * The sort is stable, so items scoring equally keep the order they were given.
+ * A filter that only ever returns booleans scores every match identically and
+ * therefore preserves the order of `items` exactly.
  *
  * @param items - The items to filter.
  * @param query - The user's input text.
- * @param filter - Scores or matches one item; defaults to {@link defaultFilter}.
- * @param labelFor - Extracts the text to match against; defaults to `String`.
+ * @param labelFor - Extracts the text to match against.
+ * @param filter - Scores one item; defaults to {@link defaultFilter}.
  */
 export function filterAndRankItems<T>(
   items: T[] | undefined,
   query: string,
-  filter: FilterFn = defaultFilter,
-  labelFor: (item: T) => string = (item) => String(item)
+  labelFor: (item: T) => string,
+  filter: FilterFn = defaultFilter
 ): T[] | undefined {
-  if (!items || !query) {
+  if (!items || !query.trim()) {
     return items;
   }
 
   const matched: { item: T; score: number }[] = [];
-  let isRanked = false;
 
   for (const item of items) {
-    const result = filter(labelFor(item), query);
+    const score = toScore(filter(labelFor(item), query));
 
-    if (typeof result === 'number') {
-      isRanked = true;
-
-      if (result > 0) {
-        matched.push({ item, score: result });
-      }
-    } else if (result) {
-      matched.push({ item, score: 0 });
+    if (score > 0) {
+      matched.push({ item, score });
     }
   }
 
-  // Only reorder when the filter actually expressed relevance. A boolean filter
-  // says nothing about order, so the source order is the only meaningful one.
-  // Array.prototype.sort is stable (ES2019), so equal scores keep source order.
-  if (isRanked) {
-    matched.sort((a, b) => b.score - a.score);
-  }
+  matched.sort((a, b) => b.score - a.score);
 
   return matched.map((entry) => entry.item);
 }
