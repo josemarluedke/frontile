@@ -43,14 +43,23 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   constructor(owner: Owner, args: NotificationsContainerSignature['Args']) {
     super(owner, args);
 
-    // Set the onDismiss callback on the service
-    this.notifications.setOnRemoveCallback(this.args.onDismiss);
+    // Register a stable callback that delegates to the current `@onDismiss`,
+    // so a change to the argument is picked up without re-registering.
+    this.notifications.setOnRemoveCallback(this.handleDismiss);
 
-    // Clean up when component is destroyed
+    // Clean up when component is destroyed, but only if we are still the
+    // registered owner: the service holds a single callback slot, so another
+    // container might have taken it over in the meantime.
     registerDestructor(this, () => {
-      this.notifications.setOnRemoveCallback(undefined);
+      if (this.notifications.onRemoveCallback === this.handleDismiss) {
+        this.notifications.setOnRemoveCallback(undefined);
+      }
     });
   }
+
+  handleDismiss = (notification: Notification<Record<string, unknown>>) => {
+    this.args.onDismiss?.(notification);
+  };
 
   get isTopPlacement(): boolean {
     return !!(this.args.placement && this.args.placement.includes('top'));
@@ -76,9 +85,14 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   setupSpacing = modifier((element: HTMLElement) => {
     const spacing =
       typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
-    if (this.isTopPlacement) {
-      element.style.marginTop = `${spacing}px`;
-    }
+
+    // Always assign, so switching from a top to a bottom placement does not
+    // leave a stale margin behind.
+    element.style.marginTop = this.isTopPlacement ? `${spacing}px` : '';
+
+    return () => {
+      element.style.marginTop = '';
+    };
   });
 
   <template>

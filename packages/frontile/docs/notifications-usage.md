@@ -315,6 +315,8 @@ export default class PersistentExample extends Component {
 
 Track notification dismissals for analytics, backend updates, or cleanup. When using a global container, set up callbacks in your application template:
 
+`@onDismiss` is called **exactly once per notification**, after it has actually been removed — repeated dismissals of the same notification (e.g. a double-click on the close button) do not call it again. The callback is always read from the current `@onDismiss` argument, so changing it at runtime takes effect immediately.
+
 ```hbs
 {{! app/templates/application.hbs }}
 <NotificationsContainer
@@ -527,8 +529,12 @@ Options for the NotificationsContainer component:
   - `'top-left'` | `'top-center'` | `'top-right'`
   - `'bottom-left'` | `'bottom-center'` | `'bottom-right'`
 - **`spacing`**: Gap between notifications in pixels (default: `16`)
-- **`onDismiss`**: Callback function called when notifications are dismissed
+- **`onDismiss`**: Callback function called once per notification, after it is removed
 - **`class`**: Custom CSS classes for styling
+
+> **Note**: The notifications service holds a single `onDismiss` slot. If more than one
+> `NotificationsContainer` is rendered at the same time, the most recently rendered one
+> owns the callback — another reason to render a single global container.
 
 ## Accessibility
 

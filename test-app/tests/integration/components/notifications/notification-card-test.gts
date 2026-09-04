@@ -1,6 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, triggerEvent } from '@ember/test-helpers';
+import {
+  render,
+  click,
+  clearRender,
+  find,
+  getSettledState,
+  triggerEvent,
+  waitUntil
+} from '@ember/test-helpers';
 import { NotificationCard } from 'frontile';
 import {
   Notification,
@@ -257,6 +265,70 @@ module(
         notification.current.metadata?.timestamp,
         1234567890,
         'timestamp should match'
+      );
+    });
+
+    // `getSettledState().hasPendingTimers` cannot be used here: the card also
+    // renders `{{cssTransition}}`, and ember-css-transitions schedules its own
+    // runloop timer for the (transition-delay + transition-duration) window, so
+    // a timer is pending after teardown either way. Backburner's `cancel`
+    // counter is narrow enough to see only the card's own cancellation.
+    function backburnerCancelCount(): number {
+      const debugInfo = getSettledState().debugInfo as
+        { _debugInfo?: { counters?: { cancel?: number } } } | undefined;
+
+      return debugInfo?._debugInfo?.counters?.cancel ?? 0;
+    }
+
+    test('it cancels the in-flight enter transition when destroyed', async function (assert) {
+      notification.current = new Notification({}, 'My message', {
+        transitionDuration: 4000
+      });
+
+      const nativeCancelAnimationFrame = window.cancelAnimationFrame;
+      let cancelledFrames = 0;
+      window.cancelAnimationFrame = function (handle: number) {
+        cancelledFrames += 1;
+        return nativeCancelAnimationFrame.call(window, handle);
+      };
+
+      let cancelledTimers = 0;
+
+      try {
+        // Intentionally not awaited: the enter transition (the rAF pair and the
+        // `later` that flips `hasEntered`) has to still be in flight when the
+        // card is torn down.
+        const renderPromise = render(template);
+        await waitUntil(() => !!find('[data-test-notification]'));
+
+        cancelledFrames = 0;
+        const cancelsBeforeTeardown = backburnerCancelCount();
+
+        // Also not awaited: `clearRender()` only resolves once everything has
+        // settled, which waits out the very timers we are asserting on. Poll
+        // for the DOM going away instead — that is when the modifier
+        // destructor has run.
+        const clearRenderPromise = clearRender();
+        await waitUntil(() => !find('[data-test-notification]'));
+
+        cancelledTimers = backburnerCancelCount() - cancelsBeforeTeardown;
+
+        await clearRenderPromise;
+        await renderPromise;
+      } finally {
+        window.cancelAnimationFrame = nativeCancelAnimationFrame;
+      }
+
+      assert.ok(
+        cancelledTimers >= 1,
+        `teardown should cancel the pending enter timer; ${cancelledTimers} ` +
+          `runloop timer(s) were cancelled`
+      );
+
+      assert.ok(
+        cancelledFrames >= 1,
+        `teardown should cancel the pending animation frame(s) of the enter ` +
+          `transition; cancelAnimationFrame was called ${cancelledFrames} time(s)`
       );
     });
   }

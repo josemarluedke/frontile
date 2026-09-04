@@ -65,7 +65,9 @@ export default class NotificationsManager {
   }
 
   remove(notification?: Notification<Record<string, unknown>>): void {
-    if (!notification) {
+    // Removal is single-shot: a notification already on its way out must not
+    // schedule a second removal, otherwise `onRemove` is called twice for it.
+    if (!notification || notification.isRemoving) {
       return;
     }
 

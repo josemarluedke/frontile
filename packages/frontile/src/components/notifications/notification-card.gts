@@ -4,7 +4,7 @@ import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
-import { later } from '@ember/runloop';
+import { later, cancel } from '@ember/runloop';
 import { on } from '@ember/modifier';
 import { fn, concat } from '@ember/helper';
 import { CloseButton } from '../buttons/close-button';
@@ -54,23 +54,37 @@ class NotificationCard extends Component<NotificationCardSignature> {
     const expectedHeight = element.offsetHeight + spacing;
     const duration = this.args.notification.transitionDuration / 2;
 
-    requestAnimationFrame(() => {
+    let innerFrame: number | undefined;
+    const outerFrame = requestAnimationFrame(() => {
       element.style.height = '0';
       const transition = `height ${duration}ms ease-in ${duration}ms`;
       element.style.transition = transition;
 
-      requestAnimationFrame(() => {
+      innerFrame = requestAnimationFrame(() => {
         element.style.height = `${expectedHeight}px`;
       });
     });
 
-    later(
+    const timer = later(
       this,
       () => {
         this.hasEntered = true;
       },
       this.args.notification.transitionDuration
     );
+
+    // The card can be destroyed while the enter transition is still in flight;
+    // cancel the pending work so we never touch the element or write tracked
+    // state after teardown.
+    return () => {
+      cancelAnimationFrame(outerFrame);
+
+      if (typeof innerFrame !== 'undefined') {
+        cancelAnimationFrame(innerFrame);
+      }
+
+      cancel(timer);
+    };
   });
 
   transitionOut = modifier(
