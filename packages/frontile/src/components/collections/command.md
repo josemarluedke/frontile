@@ -420,8 +420,12 @@ arrows through results.
 
 Provided for you:
 
-- `role="combobox"`, `aria-autocomplete="list"`, `aria-expanded` and `aria-controls` on the
-  input, with `aria-activedescendant` pointing at the active option's id.
+- `role="combobox"` and `aria-autocomplete="list"` on the input, with `aria-activedescendant`
+  pointing at the active option's id. `aria-expanded` reflects whether the listbox is actually
+  rendered, and `aria-controls` is only set while it is — an empty result set replaces the
+  listbox, so neither is left claiming a popup that is not there.
+- A debounced `aria-live="polite"` region announcing "N results available" / "No results
+  found", so the result count is not silent to a screen reader.
 - `role="listbox"` on the list and `role="option"` with `aria-selected` on each row. Groups
   render as `role="group"` labelled by their heading, with the intervening list marked
   `role="none"` so the `listbox` → `option` ownership chain stays intact.

@@ -3,7 +3,9 @@ import { tracked, cached } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { debounce, cancel } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
+import { VisuallyHidden } from '../../utilities/visually-hidden';
 import { keyAndLabelForItem, type ListItem } from '../../../utils/listManager';
 import { filterAndRankItems, type FilterFn } from '../../../utils/filter';
 import { CommandInput } from './input';
@@ -258,6 +260,52 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
     return this.results.length;
   }
 
+  /**
+   * Whether the listbox is currently rendered. `CommandList` shows the empty or
+   * loading state in its place when there is nothing to list, so the combobox
+   * must report itself collapsed — and must not point `aria-controls` at an
+   * element that is no longer in the document.
+   */
+  get hasResults(): boolean {
+    return this.resultCount > 0;
+  }
+
+  @tracked announcement = '';
+
+  #pendingAnnouncement?: ReturnType<typeof debounce>;
+
+  setAnnouncement = (count: number) => {
+    this.announcement =
+      count === 0
+        ? 'No results found'
+        : `${count} result${count === 1 ? '' : 's'} available`;
+  };
+
+  /**
+   * Debounced so a burst of keystrokes announces once, at rest, rather than
+   * interrupting the screen reader on every character.
+   */
+  announceResults = modifier(
+    (_element: HTMLElement, [count, isLoading]: [number, boolean]) => {
+      if (isLoading) {
+        return;
+      }
+
+      this.#pendingAnnouncement = debounce(
+        this,
+        this.setAnnouncement,
+        count,
+        250
+      );
+
+      return () => {
+        if (this.#pendingAnnouncement) {
+          cancel(this.#pendingAnnouncement);
+        }
+      };
+    }
+  );
+
   groupTitleFor(item: T): string | undefined {
     const { groupBy } = this.args;
 
@@ -330,22 +378,32 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
     return groups;
   }
 
-  get classNames() {
+  get baseClass(): string {
     const { command } = useStyles();
-
-    return command({
+    const { base } = command({
       size: this.args.size || 'md',
       isBordered: this.args.isBordered
     });
+
+    return base({ class: [this.args.class, this.args.classes?.base] });
   }
 
   <template>
     <div
       data-test-id="command"
       data-component="command"
-      class={{this.classNames.base class=@classes.base}}
+      class={{this.baseClass}}
       ...attributes
     >
+      <VisuallyHidden>
+        <div
+          role="status"
+          aria-live="polite"
+          data-test-id="command-announcer"
+          {{this.announceResults this.resultCount this.isLoading}}
+        >{{this.announcement}}</div>
+      </VisuallyHidden>
+
       {{yield
         (hash
           query=this.query
@@ -356,6 +414,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
             value=this.query
             onInput=this.handleInput
             controlsId=this.listId
+            hasResults=this.hasResults
             activeDescendant=this.activeDescendant
             setup=this.setupInput
             label=@label

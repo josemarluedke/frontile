@@ -16,6 +16,8 @@ export interface CommandInputSignature {
     /** @internal bound by Command */
     controlsId?: string;
     /** @internal bound by Command */
+    hasResults?: boolean;
+    /** @internal bound by Command */
     activeDescendant?: string;
     /** @internal bound by Command */
     setup?: (element: HTMLInputElement) => void;
@@ -85,8 +87,9 @@ class CommandInput extends Component<CommandInputSignature> {
         type="text"
         role="combobox"
         aria-autocomplete="list"
-        aria-expanded="true"
-        aria-controls={{@controlsId}}
+        aria-expanded={{if @hasResults "true" "false"}}
+        {{! Only while the listbox exists -- otherwise this points at nothing. }}
+        aria-controls={{if @hasResults @controlsId}}
         aria-activedescendant={{@activeDescendant}}
         autocomplete="off"
         autocapitalize="off"

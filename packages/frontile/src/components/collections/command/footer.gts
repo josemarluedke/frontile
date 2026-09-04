@@ -17,7 +17,7 @@ export interface CommandKbdSignature {
 /** A keycap, for the footer's hints. */
 const CommandKbd: TOC<CommandKbdSignature> = <template>
   <kbd
-    class={{(kbdClass @classes)}}
+    class={{kbdClass @classes}}
     data-test-id="command-kbd"
     ...attributes
   >{{yield}}</kbd>

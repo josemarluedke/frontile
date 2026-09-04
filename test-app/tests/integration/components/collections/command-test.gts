@@ -238,6 +238,102 @@ module(
       );
     });
 
+    test('@class reaches the root element', async function (assert) {
+      // Regression: @class was declared and forwarded through CommandDialog but
+      // never read, so it shipped in the API table doing nothing.
+      await render(
+        <template>
+          <Command @items={{DOCS}} @class="my-palette" as |c|>
+            <c.Input />
+          </Command>
+        </template>
+      );
+
+      assert.dom('[data-test-id="command"]').hasClass('my-palette');
+      assert
+        .dom('[data-test-id="command"]')
+        .hasClass('flex', 'without dropping the theme classes');
+    });
+
+    test('aria-expanded and aria-controls track whether the listbox exists', async function (assert) {
+      // Regression: aria-expanded was hardcoded "true" -- the exact thing the
+      // spec called out as wrong in shadcn-ember -- and aria-controls pointed
+      // at an id that does not exist once results are empty.
+      await render(
+        <template>
+          <Command @items={{DOCS}} as |c|>
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+              <:empty>Nothing.</:empty>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      const input = document.querySelector(
+        '[data-test-id="command-input"]'
+      ) as HTMLInputElement;
+
+      assert.dom(input).hasAttribute('aria-expanded', 'true');
+      const controls = input.getAttribute('aria-controls');
+      assert.ok(controls, 'aria-controls is set while the listbox is rendered');
+      assert.ok(
+        document.getElementById(controls!),
+        'and it points at an element that exists'
+      );
+
+      await fillIn('[data-test-id="command-input"]', 'zzzzzz');
+
+      assert
+        .dom('[data-test-id="command-list"]')
+        .doesNotExist('the listbox is gone');
+      assert.dom(input).hasAttribute('aria-expanded', 'false');
+      assert.strictEqual(
+        input.getAttribute('aria-controls'),
+        null,
+        'aria-controls does not dangle at a removed element'
+      );
+    });
+
+    test('it announces the result count to screen readers', async function (assert) {
+      await render(
+        <template>
+          <Command @items={{DOCS}} as |c|>
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      const announcer = document.querySelector(
+        '[data-test-id="command-announcer"]'
+      ) as HTMLElement;
+
+      assert.ok(announcer, 'a live region is rendered');
+      assert.dom(announcer).hasAttribute('aria-live', 'polite');
+      assert.dom(announcer).hasAttribute('role', 'status');
+
+      await fillIn('[data-test-id="command-input"]', 'button');
+      await settled();
+      assert
+        .dom(announcer)
+        .hasText(
+          '3 results available',
+          'it reports how many matched (Button, ButtonGroup, ToggleButton)'
+        );
+
+      await fillIn('[data-test-id="command-input"]', 'zzzzzz');
+      await settled();
+      assert.dom(announcer).hasText('No results found');
+    });
+
     test('the input carries the combobox semantics', async function (assert) {
       await render(
         <template>
