@@ -66,7 +66,6 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
     <FormControl
       @size={{@size}}
       @isRequired={{@isRequired}}
-      @description={{@description}}
       @errors={{@errors}}
       @isInvalid={{@isInvalid}}
       @class={{this.classes.base class=@classes.base}}
@@ -76,6 +75,11 @@ class CheckboxGroup extends Component<CheckboxGroupSignature> {
       <c.Label @class={{this.classes.label class=@classes.label}}>
         {{@label}}
       </c.Label>
+
+      {{#if @description}}
+        <c.Description>{{@description}}</c.Description>
+      {{/if}}
+
       <div
         class={{this.classes.optionsContainer class=@classes.optionsContainer}}
         data-orientation={{if @orientation @orientation "vertical"}}

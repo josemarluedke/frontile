@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click } from '@ember/test-helpers';
+import { find, render, settled, click } from '@ember/test-helpers';
 
 import { RadioGroup, type RadioGroupSignature } from 'frontile';
 import { cell } from 'ember-resources';
@@ -90,6 +90,37 @@ module(
       assert.dom('.my-base-class').exists();
       assert.dom('.my-options-container').exists();
       assert.dom('.my-label-class').exists();
+    });
+
+    test('it renders the description after the label', async function (assert) {
+      await render(
+        <template>
+          <RadioGroup
+            @label="Interests"
+            @description="Choose one option"
+            as |Radio|
+          >
+            <Radio @value="music" @label="Music" />
+          </RadioGroup>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="form-description"]')
+        .hasText('Choose one option');
+
+      const label = find('[data-component="label"]') as HTMLElement;
+      const description = find(
+        '[data-component="form-description"]'
+      ) as HTMLElement;
+
+      assert.true(
+        !!(
+          label.compareDocumentPosition(description) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+        'description is rendered after the label'
+      );
     });
   }
 );
