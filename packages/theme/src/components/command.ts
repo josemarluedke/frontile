@@ -54,10 +54,11 @@ const command = tv({
       '[&_[data-component=listbox-item]]:rounded-md',
       '[&_[data-component=listbox-item]]:px-3',
       '[&_[data-component=listbox-item]]:py-0',
-      '[&_[data-component=listbox-item]]:border',
-      '[&_[data-component=listbox-item]]:border-transparent',
-      '[&_[data-component=listbox-item][data-active=true]]:border-neutral-soft',
-      '[&_[data-component=listbox-item][data-active=true]]:bg-neutral-subtle/80',
+      // Active row: a solid fill, no outline. `neutral-subtle` is too close to
+      // the panel surface in dark mode to read as a highlight, leaving only a
+      // hairline box; `neutral-muted` is one step up and visible in both schemes.
+      '[&_[data-component=listbox-item][data-active=true]]:bg-neutral-muted',
+      '[&_[data-component=listbox-item][data-active=true]]:text-neutral-bolder',
       // row text
       '[&_[data-test-id=listbox-item-label]]:text-body-sm',
       '[&_[data-test-id=listbox-item-label]]:font-medium',
@@ -65,6 +66,9 @@ const command = tv({
       '[&_[data-test-id=listbox-item-shortcut]]:border-transparent',
       '[&_[data-test-id=listbox-item-shortcut]]:px-0',
       '[&_[data-test-id=listbox-item-shortcut]]:tracking-widest',
+      // the shared item style boxes the shortcut on the active row; keep it flat here
+      '[&_[data-component=listbox-item][data-active=true]_[data-test-id=listbox-item-shortcut]]:border-transparent',
+      '[&_[data-component=listbox-item][data-active=true]_[data-test-id=listbox-item-shortcut]]:text-neutral',
       // leading icons are sized and muted unless the consumer says otherwise
       '[&_[data-component=listbox-item]_svg:not([class*=size-])]:size-4',
       '[&_[data-component=listbox-item]_svg]:shrink-0',
