@@ -298,6 +298,10 @@ export default class RoleInput extends Component {
 
 Pass `@isClearable={{true}}` to show a button that clears both the selection and the typed text.
 
+Like `Select`, this deliberately overrides `@allowEmpty` — that argument governs
+deselecting an option in the listbox, while the clear button is the affordance for
+emptying the field. No clear button renders on a disabled Autocomplete.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -327,6 +331,10 @@ export default class BrowserPicker extends Component {
 ### Sizes and validation
 
 `Autocomplete` accepts the same form control arguments as other Frontile inputs: `@label`, `@description`, `@errors`, `@isInvalid`, `@isRequired`, and `@inputSize`.
+
+`@onBlur` (and so `blur` in a Field's `@validateOn`) fires only once focus has left the
+whole control — the input and its dropdown. Picking an option moves focus into the
+dropdown, so a selection is never reported as a blur.
 
 ```gts preview
 import { Autocomplete } from 'frontile';

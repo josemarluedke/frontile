@@ -100,6 +100,18 @@ The Select component integrates seamlessly with form validation by automatically
 
 The multiple select here is shown in a validation context; see [Multiple Selection](#multiple-selection) for the full reference on chips, removal and the arguments that configure them.
 
+With `blur` in `@validateOn` (or your own `@onBlur`), the Select reports blur only once
+focus has left the **whole control** — the field and its dropdown. Clicking an option
+moves focus into the dropdown, and in multiple mode leaves it open, so selecting is never
+reported as a blur: validation waits until the user is actually done with the field.
+
+In multiple selection mode there is one extra step. The dropdown stays open across
+selections, so the click that takes the user away from the field is first spent closing
+it — and closing the dropdown returns focus to the trigger. Focus is therefore still
+inside the control at that point, and `@onBlur` does not fire; it fires on the next
+interaction, once focus genuinely leaves. Blur validation on a multiple Select runs one
+interaction later than on a single one.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -546,6 +558,12 @@ export default class DeclarativeItemsSelect extends Component {
 ### Clearable Select
 
 The built-in clear button can be enabled using the `@isClearable` flag. This allows users to reset the selection easily.
+
+It deliberately overrides `@allowEmpty`: that argument governs deselecting an *option*,
+while `@isClearable` is a separate affordance you add for exactly the purpose of emptying
+the field, and it would be dead in every default configuration otherwise (`@allowEmpty`
+defaults to `false`). No clear button renders on a disabled Select, or with nothing
+selected.
 
 > **Note:** This example demonstrates the clearable feature with direct state management. The `@isClearable` option also works with Form/Field integration.
 

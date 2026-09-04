@@ -6,6 +6,7 @@ import {
   render,
   triggerKeyEvent,
   fillIn,
+  focus,
   settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
@@ -3063,5 +3064,307 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       ['ana'],
       'and Backspace cannot remove it either'
     );
+  });
+  const blurAnimals = ['cheetah', 'crocodile', 'elephant'];
+
+  // ---------------------------------------------------------------------------
+  // @onBlur
+  //
+  // `@onBlur` means "focus left this control", which is not the same thing as
+  // "an option was clicked": the trigger blurs on the way *into* the dropdown,
+  // and in multiple mode the dropdown stays open across several clicks.
+  // ---------------------------------------------------------------------------
+
+  test('@onBlur is not called while selecting in multiple mode with the dropdown open', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @selectionMode="multiple"
+          @items={{blurAnimals}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+    await click('[data-component="listbox"] [data-key="crocodile"]');
+
+    assert
+      .dom('[data-component="listbox"]')
+      .exists('the dropdown is still open');
+    assert.deepEqual(selectedKeys.current, ['cheetah', 'crocodile']);
+    assert.strictEqual(
+      blurCount,
+      0,
+      'focus never left the control, so no blur was reported'
+    );
+  });
+
+  // In multiple mode the dropdown stays open across selections, so the first
+  // outside click is spent closing it -- and the Overlay restores focus to the
+  // trigger as it closes. Focus is therefore still *inside* the control when
+  // that click settles, and `ControlBlurTracker` correctly reports nothing. The
+  // blur comes on the next interaction, when focus genuinely leaves. This test
+  // pins both halves: changing the Overlay's focus-restore behaviour is a
+  // deliberate decision, not something that should drift silently.
+  test('in multiple mode the trigger keeps focus after an outside click, so no blur is reported until focus truly leaves', async function (assert) {
+    const selectedKeys = cell<string[]>([]);
+    const onSelectionChange = (keys: string[]) => (selectedKeys.current = keys);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @selectionMode="multiple"
+          @items={{blurAnimals}}
+          @selectedKeys={{selectedKeys.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+        <button type="button" data-test-id="outside">Outside</button>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+    await click('[data-component="listbox"] [data-key="crocodile"]');
+    assert.strictEqual(blurCount, 0, 'selecting is not blurring');
+
+    // Closes the dropdown; the Overlay hands focus back to the trigger.
+    await click('[data-test-id="outside"]');
+    assert
+      .dom('[data-component="listbox"]')
+      .doesNotExist('the outside click closed the dropdown');
+    assert.strictEqual(
+      blurCount,
+      0,
+      'focus was restored to the trigger, so focus never left the control'
+    );
+
+    // Now focus really does leave the trigger.
+    await click('[data-test-id="outside"]');
+    assert.strictEqual(
+      blurCount,
+      1,
+      'the second click moved focus out and reported exactly one blur'
+    );
+  });
+
+  test('@onBlur is not called when selecting in single mode', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @items={{blurAnimals}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+
+    assert.strictEqual(selectedKey.current, 'cheetah');
+    assert.strictEqual(
+      blurCount,
+      0,
+      'the dropdown closed and focus went back to the trigger, so no blur'
+    );
+  });
+
+  test('@onBlur is called exactly once when focus leaves the control', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @items={{blurAnimals}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+        <button type="button" data-test-id="outside">Outside</button>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+    assert.strictEqual(blurCount, 0, 'selecting is not blurring');
+
+    await click('[data-test-id="outside"]');
+
+    assert.strictEqual(blurCount, 1, 'leaving the control reported one blur');
+  });
+
+  // Every other exit test uses a click, which reaches the tracker through the
+  // targetless, deferred branch. Tab names its destination in `relatedTarget`,
+  // so it takes the synchronous branch instead -- covered here.
+  test('@onBlur is called exactly once when the user tabs out of the Select', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @items={{blurAnimals}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+        <button type="button" data-test-id="outside">Outside</button>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+    assert.strictEqual(blurCount, 0, 'selecting is not blurring');
+
+    await triggerKeyEvent(
+      '[data-component="select-trigger"]',
+      'keydown',
+      'Tab'
+    );
+    await focus('[data-test-id="outside"]');
+
+    assert.strictEqual(blurCount, 1, 'tabbing out reported exactly one blur');
+  });
+
+  test('@onBlur is not called while filtering, and once on leaving the filterable control', async function (assert) {
+    const selectedKey = cell<string | null>(null);
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+
+    await render(
+      <template>
+        <Select
+          @isFilterable={{true}}
+          @items={{blurAnimals}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+          @onBlur={{onBlur}}
+        />
+        <button type="button" data-test-id="outside">Outside</button>
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-component="select-trigger"]', 'cro');
+    await click('[data-component="listbox"] [data-key="crocodile"]');
+
+    assert.strictEqual(selectedKey.current, 'crocodile');
+    assert.strictEqual(blurCount, 0, 'typing and selecting is not blurring');
+
+    await click('[data-test-id="outside"]');
+
+    assert.strictEqual(blurCount, 1, 'leaving the control reported one blur');
+  });
+
+  test('tearing the Select down right after a selection neither calls @onBlur nor asserts', async function (assert) {
+    const isRendered = cell<boolean>(true);
+    let blurCount = 0;
+    const onBlur = () => blurCount++;
+    const onSelectionChange = (_key: string | null) => {
+      // Destroys the Select in the middle of the selection it is reacting to.
+      isRendered.current = false;
+    };
+
+    await render(
+      <template>
+        {{#if isRendered.current}}
+          <Select
+            @items={{blurAnimals}}
+            @onSelectionChange={{onSelectionChange}}
+            @onBlur={{onBlur}}
+          />
+        {{/if}}
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await click('[data-component="listbox"] [data-key="cheetah"]');
+
+    assert.dom('[data-component="select-trigger"]').doesNotExist('torn down');
+    assert.strictEqual(
+      blurCount,
+      0,
+      'no callback fires after the component is gone'
+    );
+  });
+
+  test('@isClearable clears the selection even with @allowEmpty false', async function (assert) {
+    const selectedKey = cell<string | null>('cheetah');
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{blurAnimals}}
+          @allowEmpty={{false}}
+          @isClearable={{true}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="input-clear-button"]')
+      .exists('the clear button is an explicit opt-in, so it renders');
+
+    await click('[data-test-id="input-clear-button"]');
+
+    assert.strictEqual(
+      selectedKey.current,
+      null,
+      '@isClearable is documented to override @allowEmpty'
+    );
+  });
+
+  test('@isClearable renders no clear button on a disabled Select', async function (assert) {
+    const selectedKey = cell<string | null>('cheetah');
+    const onSelectionChange = (key: string | null) =>
+      (selectedKey.current = key);
+
+    await render(
+      <template>
+        <Select
+          @items={{blurAnimals}}
+          @isClearable={{true}}
+          @isDisabled={{true}}
+          @selectedKey={{selectedKey.current}}
+          @onSelectionChange={{onSelectionChange}}
+        />
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="input-clear-button"]')
+      .doesNotExist('a disabled control cannot be cleared, so no dead button');
   });
 });

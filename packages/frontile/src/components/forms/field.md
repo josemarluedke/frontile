@@ -869,6 +869,15 @@ schema = v.object({
 
 These patterns ensure proper handling of select field validation, especially when fields start without a selected value.
 
+### Blur validation on selects
+
+With `blur` in `@validateOn`, a select-shaped field validates when focus leaves the
+**whole control** — the field and its dropdown. Picking an option is not a blur, even
+though the trigger does lose focus to the option: in `@selectionMode="multiple"` the
+dropdown stays open, and errors like "select at least three" would otherwise appear while
+the user is still on their first choice. `SingleSelect`, `MultipleSelect` and
+`Autocomplete` all report blur this way, once focus has actually landed outside.
+
 ## Where Errors Appear
 
 Field components automatically display errors, but you can customize the display:

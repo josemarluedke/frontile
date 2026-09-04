@@ -70,7 +70,13 @@ interface SelectTriggerSignature {
     onFilterInput: (event: Event) => void;
     onFilterKeydown: (event: KeyboardEvent) => void;
     onKeydown: (event: KeyboardEvent) => void;
-    onBlur: () => void;
+
+    /**
+     * Reports the trigger losing focus, as `focusout` rather than `blur`: the
+     * Select decides whether focus actually left the control from the event's
+     * `relatedTarget`, and browsers only guarantee that on `focusout`.
+     */
+    onFocusOut: (event: FocusEvent) => void;
   };
   Blocks: {
     /**
@@ -116,7 +122,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
       value={{@filterValue}}
       {{on "input" @onFilterInput}}
       {{on "keydown" @onFilterKeydown}}
-      {{on "blur" @onBlur}}
+      {{on "focusout" @onFocusOut}}
     />
   {{else}}
     <button
@@ -134,7 +140,7 @@ const SelectTrigger: TOC<SelectTriggerSignature> = <template>
         hasChips=@showChips
       }}
       {{on "keydown" @onKeydown}}
-      {{on "blur" @onBlur}}
+      {{on "focusout" @onFocusOut}}
     >
       {{#if @hasSelection}}
         {{#unless @showChips}}

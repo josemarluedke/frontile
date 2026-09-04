@@ -2,8 +2,6 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import type Owner from '@ember/owner';
 import { on } from '@ember/modifier';
-import { action } from '@ember/object';
-import { later } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 
@@ -13,6 +11,7 @@ import { VisuallyHidden } from '../../utilities/visually-hidden';
 import { Popover } from '../../overlays/popover';
 import { FormControl } from '../form-control';
 import { ref } from '../../../utils/ref';
+import { ControlBlurTracker } from '../../../-private/control-blur';
 import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
 import {
   canDeselectKey,
@@ -340,17 +339,29 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       this.isOpen = false;
     }
 
-    // wait a beat for any side effects to complete before calling onBlur
-    later(() => {
-      this.args.onBlur?.();
-    }, 150);
+    // Deliberately does not touch `@onBlur`. Selecting is not blurring: this
+    // runs on every option click, including the ones that leave the dropdown
+    // open in multiple selection mode. Focus loss is reported by
+    // `blurTracker` instead, from the trigger's own `focusout`.
   };
 
-  @action
-  handleBlur() {
-    later(() => {
-      this.args.onBlur?.();
-    }, 150);
+  /**
+   * Reports focus leaving the *whole* control -- the field and its portaled
+   * dropdown -- rather than the trigger, which blurs on the way into the
+   * dropdown and on every option click. See `ControlBlurTracker`.
+   */
+  blurTracker = new ControlBlurTracker({
+    trigger: () => this.triggerRef.current,
+    container: () => this.containerRef.current,
+    isOpen: () => this.isOpen,
+    isDestroyed: () => this.isDestroyed || this.isDestroying,
+    onBlur: () => this.args.onBlur?.()
+  });
+
+  willDestroy(): void {
+    super.willDestroy();
+    // Nothing may resolve against a destroyed component.
+    this.blurTracker.cancel();
   }
 
   /**
@@ -398,6 +409,21 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     trigger.click();
   };
 
+  /**
+   * Wipes the selection from the clear button.
+   *
+   * Unlike the chips and the listbox options, this deliberately does *not*
+   * consult `@allowEmpty`. `@allowEmpty` governs deselecting *an option* --
+   * the listbox refuses to let the last one be toggled off, and
+   * `chipsRemovable` mirrors that -- whereas `@isClearable` is a separate,
+   * explicit affordance the consumer opts into for exactly this purpose. It
+   * also defaults to `false`, so honouring it here would render the clear
+   * button dead in every default configuration. Documented as an override on
+   * `@isClearable` itself; the two must keep saying the same thing.
+   *
+   * A disabled Select renders no clear button at all (see `isClearable`), so
+   * there is nothing to guard here.
+   */
   clearSelectedKeys = () => {
     this.onSelectionChange([]);
   };
@@ -583,9 +609,19 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
     });
   }
 
+  /**
+   * Whether the clear button takes the chevron's place: something to clear,
+   * and a control that can act on it. A disabled Select never shows it -- the
+   * end-content cluster is not pointer-transparent to it and it carries no
+   * disabled state of its own, so it would otherwise be a focusable button
+   * that clears a field the user is not allowed to change.
+   */
   get isClearable() {
     return (
-      this.args.isClearable && this.selectedKeys && this.selectedKeys.length > 0
+      this.args.isClearable &&
+      !this.args.isDisabled &&
+      this.selectedKeys &&
+      this.selectedKeys.length > 0
     );
   }
 
@@ -793,7 +829,7 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
                 @onFilterInput={{this.onFilterChange}}
                 @onFilterKeydown={{this.handleFilterKeydown}}
                 @onKeydown={{this.handleTriggerKeydown}}
-                @onBlur={{this.handleBlur}}
+                @onFocusOut={{this.blurTracker.handleFocusOut}}
                 @hasCustomContent={{has-block "selectedItem"}}
               >
                 <:selectedItem as |selected|>
