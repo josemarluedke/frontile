@@ -5,7 +5,10 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { ref } from '../../utils/ref';
 import { dataFrom } from 'form-data-utils';
-import { StandardValidator } from '../../utils/standard-validator';
+import {
+  StandardValidator,
+  issuePathToFieldName
+} from '../../utils/standard-validator';
 import { flattenData, unflattenData, deepEqual } from '../../utils/nested-data';
 import { Field } from './field';
 
@@ -520,6 +523,8 @@ class Form<T = FormDataCompiled> extends Component<FormSignature<T>> {
  *
  * For example, an issue with path `['email']` will be converted
  * to a form error for the field `email`, `{"email": "error message" }`.
+ * Numeric path segments are kept, so an issue with path
+ * `['items', 0, 'name']` becomes `{"items.0.name": "error message"}`.
  *
  * @param errors - The validation issues to convert.
  * @returns A mapping of field names to their validation error messages.
@@ -530,12 +535,10 @@ function validatorToFormErrors(errors: Issues): FormErrors {
   for (const issue of errors) {
     if (!issue.path || issue.path.length === 0) continue;
 
-    // Extract keys from path segments to build field name
-    const pathKeys = issue.path
-      .map((s) => (typeof s === 'object' && 'key' in s ? s.key : s))
-      .filter(Boolean) as string[];
-
-    const fieldName = pathKeys.join('.');
+    // `issuePathToFieldName` is shared with
+    // `StandardValidator.filterFieldIssues`, so the keys written here are
+    // by construction the dotted names field lookup resolves against.
+    const fieldName = issuePathToFieldName(issue);
     const message = issue.message;
 
     // Add message to the field's errors

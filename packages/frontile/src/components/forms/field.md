@@ -10,6 +10,12 @@ A component wrapper that provides conveniences for form fields when using built-
 
 **Important:** The Field component is designed specifically for use with the Form component's built-in validation system (`@schema` or `@validate` props). It should only be used when implementing form validation.
 
+`@name` is looked up verbatim in the form's `errors` object and read out of the form data
+with Ember's `get`, so dotted paths work — including numeric segments for array elements.
+`@name='items.0.name'` picks up an issue whose path is `['items', 0, 'name']`; the index is
+part of the key, so `items.0.name` and `items.1.name` never collide, and neither collapses
+onto `items.name`.
+
 ## Import
 
 ```js

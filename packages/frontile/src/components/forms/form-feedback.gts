@@ -30,6 +30,16 @@ interface FormFeedbackSignature {
     size?: FormFeedbackVariants['size'];
 
     /**
+     * Whether the element is itself an `aria-live` region. Set this to `false`
+     * when something else (such as `FormControl`, which keeps a persistent
+     * live region in the DOM) already announces the messages, so they are not
+     * announced twice.
+     *
+     * @defaultValue true
+     */
+    announce?: boolean;
+
+    /**
      * Class names for the feedback element, merged with the theme's.
      */
     class?: string;
@@ -38,6 +48,21 @@ interface FormFeedbackSignature {
   Blocks: {
     default: [];
   };
+}
+
+/**
+ * Renders feedback messages as a single string. An array is joined with `; `.
+ *
+ * Shared with `FormControl`, whose persistent live region announces the same
+ * text, so both render an identical separator.
+ *
+ * @param messages A list of messages or a single message string.
+ * @returns The messages as one string, or an empty string when there are none.
+ */
+function feedbackMessageText(messages: string[] | string | undefined): string {
+  if (!messages) return '';
+
+  return typeof messages === 'string' ? messages : messages.join('; ');
 }
 
 class FormFeedback extends Component<FormFeedbackSignature> {
@@ -58,14 +83,19 @@ class FormFeedback extends Component<FormFeedbackSignature> {
     });
   }
 
-  get messageText(): string {
-    if (!this.args.messages) return '';
+  get announce(): boolean {
+    return this.args.announce !== false;
+  }
 
-    if (typeof this.args.messages === 'string') {
-      return this.args.messages;
-    } else {
-      return this.args.messages.join('; ');
+  get ariaLive(): string | undefined {
+    if (!this.announce) {
+      return undefined;
     }
+    return this.isError ? 'assertive' : 'polite';
+  }
+
+  get messageText(): string {
+    return feedbackMessageText(this.args.messages);
   }
 
   <template>
@@ -73,7 +103,7 @@ class FormFeedback extends Component<FormFeedbackSignature> {
       id={{@id}}
       class={{this.classes}}
       data-component="form-feedback"
-      aria-live={{if this.isError "assertive" "polite"}}
+      aria-live={{this.ariaLive}}
       ...attributes
     >
       {{this.messageText}}
@@ -82,5 +112,5 @@ class FormFeedback extends Component<FormFeedbackSignature> {
   </template>
 }
 
-export { FormFeedback, type FormFeedbackSignature };
+export { FormFeedback, feedbackMessageText, type FormFeedbackSignature };
 export default FormFeedback;

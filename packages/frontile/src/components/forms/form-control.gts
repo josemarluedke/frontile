@@ -1,9 +1,13 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import Feedback, { type FormFeedbackSignature } from './form-feedback';
+import Feedback, {
+  feedbackMessageText,
+  type FormFeedbackSignature
+} from './form-feedback';
 import Description, { type FormDescriptionSignature } from './form-description';
 import Label, { type LabelSignature } from './label';
+import VisuallyHidden from '../utilities/visually-hidden';
 import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 interface FormControlSharedArgs {
@@ -155,6 +159,14 @@ class FormControl extends Component<FormControlSignature> {
     }
   }
 
+  /**
+   * The error messages as a single string, used by the persistent live region.
+   * Uses `FormFeedback`'s own join, so both render the same separator.
+   */
+  get errorMessageText(): string {
+    return feedbackMessageText(this.args.errors);
+  }
+
   get showErrorFeedback(): boolean {
     if (!(this.args.preventErrorFeedback === true) && this.isInvalid) {
       return true;
@@ -191,6 +203,7 @@ class FormControl extends Component<FormControlSignature> {
             size=@size
             messages=@errors
             intent="danger"
+            announce=false
           )
         )
         to="default"
@@ -202,8 +215,22 @@ class FormControl extends Component<FormControlSignature> {
           @size={{@size}}
           @messages={{@errors}}
           @intent="danger"
+          @announce={{false}}
         />
       {{/if}}
+
+      {{!
+        The visible feedback is only rendered once the field is invalid, and a
+        live region that appears at the same moment as its content is not
+        reliably announced. This region is always in the DOM, visually hidden
+        and empty, so assistive technology is already observing it when the
+        messages arrive. It is intentionally not part of describedBy; the
+        visible feedback is what describes the control.
+      }}
+      <VisuallyHidden
+        aria-live="assertive"
+        data-component="form-feedback-live-region"
+      >{{this.errorMessageText}}</VisuallyHidden>
     </div>
   </template>
 }

@@ -3,7 +3,13 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, fillIn, settled } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { Form, type FormResultData, type FormErrors } from 'frontile';
+import {
+  Form,
+  type FormResultData,
+  type FormErrors,
+  type FormDataCompiled,
+  type CustomValidatorReturn
+} from 'frontile';
 import * as v from 'valibot';
 import Component from '@glimmer/component';
 
@@ -767,6 +773,190 @@ module(
         'John',
         'First name reset to initial value'
       );
+    });
+
+    /**
+     * Reads a dotted path out of the nested form data the Form hands to a
+     * custom validator.
+     */
+    function readPath(data: unknown, path: string): unknown {
+      return path
+        .split('.')
+        .reduce<unknown>(
+          (acc, key) =>
+            acc && typeof acc === 'object'
+              ? (acc as Record<string, unknown>)[key]
+              : undefined,
+          data
+        );
+    }
+
+    /**
+     * Issue paths that contain array indexes must produce (and match) the
+     * dotted field name a consumer writes, e.g. `items.0.name`. The custom
+     * validator path is used here because it hands the Form plain Standard
+     * Schema issues, which is exactly what `validatorToFormErrors` and
+     * `StandardValidator.filterFieldIssues` consume.
+     */
+    test('it surfaces array element errors on the indexed field name', async function (assert) {
+      assert.expect(6);
+
+      const validator = (data: FormDataCompiled): CustomValidatorReturn => {
+        const issues = [];
+
+        if (!readPath(data, 'items.0.name')) {
+          issues.push({
+            message: 'First name is required',
+            path: [{ key: 'items' }, { key: 0 }, { key: 'name' }]
+          });
+        }
+
+        if (!readPath(data, 'items.1.name')) {
+          issues.push({
+            message: 'Second name is required',
+            path: [{ key: 'items' }, { key: 1 }, { key: 'name' }]
+          });
+        }
+
+        return issues.length > 0 ? issues : undefined;
+      };
+
+      let lastErrors: FormErrors | undefined;
+      let submitted = false;
+
+      class TestComponent extends Component {
+        handleSubmit = () => {
+          submitted = true;
+        };
+
+        handleError = (errors: FormErrors) => {
+          lastErrors = errors;
+        };
+
+        <template>
+          <Form
+            @validate={{validator}}
+            @onSubmit={{this.handleSubmit}}
+            @onError={{this.handleError}}
+            as |form|
+          >
+            <div data-test-item-0>
+              <form.Field @name="items.0.name" as |field|>
+                <field.Input data-test-item-0-input />
+              </form.Field>
+            </div>
+
+            <div data-test-item-1>
+              <form.Field @name="items.1.name" as |field|>
+                <field.Input data-test-item-1-input />
+              </form.Field>
+            </div>
+
+            <button type="submit" data-test-submit>Submit</button>
+          </Form>
+        </template>
+      }
+
+      await render(<template><TestComponent /></template>);
+
+      await click('[data-test-submit]');
+
+      assert.false(submitted, 'submission is blocked by the validation errors');
+      assert.ok(
+        lastErrors?.['items.0.name'],
+        'the index 0 error is keyed by the name a consumer writes'
+      );
+      assert.notOk(
+        lastErrors?.['items.name'],
+        'the index 0 error is not misfiled onto the unindexed field name'
+      );
+
+      assert
+        .dom('[data-test-item-0] [data-component="form-feedback"]')
+        .hasText(
+          'First name is required',
+          'the first element displays its own error'
+        );
+      assert
+        .dom('[data-test-item-1] [data-component="form-feedback"]')
+        .hasText(
+          'Second name is required',
+          'the second element displays its own error'
+        );
+
+      // Per-field validation (on change) has to match the indexed path too.
+      await fillIn('[data-test-item-1-input]', 'Second');
+
+      assert
+        .dom('[data-test-item-1] [data-component="form-feedback"]')
+        .doesNotExist(
+          'the second element error clears once that element is valid'
+        );
+    });
+
+    test('it validates a non-zero array element on change', async function (assert) {
+      assert.expect(3);
+
+      const validator = (data: FormDataCompiled): CustomValidatorReturn => {
+        const value = (readPath(data, 'items.1.name') as string) ?? '';
+
+        if (value.length > 0 && value.length < 3) {
+          return [
+            {
+              message: 'Name must be at least 3 characters',
+              path: [{ key: 'items' }, { key: 1 }, { key: 'name' }]
+            }
+          ];
+        }
+
+        return undefined;
+      };
+
+      class TestComponent extends Component {
+        handleSubmit = () => {
+          // noop
+        };
+
+        <template>
+          <Form
+            @validate={{validator}}
+            @onSubmit={{this.handleSubmit}}
+            as |form|
+          >
+            <div data-test-item-0>
+              <form.Field @name="items.0.name" as |field|>
+                <field.Input data-test-item-0-input />
+              </form.Field>
+            </div>
+
+            <div data-test-item-1>
+              <form.Field @name="items.1.name" as |field|>
+                <field.Input data-test-item-1-input />
+              </form.Field>
+            </div>
+          </Form>
+        </template>
+      }
+
+      await render(<template><TestComponent /></template>);
+
+      await fillIn('[data-test-item-1-input]', 'ab');
+
+      assert
+        .dom('[data-test-item-1] [data-component="form-feedback"]')
+        .hasText(
+          'Name must be at least 3 characters',
+          'the second element shows its own error'
+        );
+      assert
+        .dom('[data-test-item-0] [data-component="form-feedback"]')
+        .doesNotExist('the first element is unaffected');
+
+      await fillIn('[data-test-item-1-input]', 'abcd');
+
+      assert
+        .dom('[data-test-item-1] [data-component="form-feedback"]')
+        .doesNotExist('the error clears once the element becomes valid');
     });
 
     module('prototype pollution', function (hooks) {

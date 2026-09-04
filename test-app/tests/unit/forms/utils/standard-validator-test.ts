@@ -1140,4 +1140,107 @@ module('Unit | Forms | StandardValidator', function (hooks) {
     );
     assert.strictEqual(nestedEmail?.[0]?.message, 'Email 3 invalid');
   });
+
+  test('filterFieldIssues matches array index path segments', function (assert) {
+    assert.expect(7);
+
+    const issues = [
+      // Numeric index as a bare path segment
+      { message: 'First name is required', path: ['items', 0, 'name'] },
+      // Numeric index wrapped in a path segment object
+      {
+        message: 'Third name is required',
+        path: [{ key: 'items' }, { key: 2 }, { key: 'name' }]
+      },
+      // A same-named field that is *not* under an index
+      {
+        message: 'Items name invalid',
+        path: [{ key: 'items' }, { key: 'name' }]
+      }
+    ];
+
+    const firstItem = StandardValidator.filterFieldIssues(
+      issues,
+      'items.0.name'
+    );
+    assert.strictEqual(
+      firstItem?.length,
+      1,
+      'index 0 is preserved and matched'
+    );
+    assert.strictEqual(firstItem?.[0]?.message, 'First name is required');
+
+    const thirdItem = StandardValidator.filterFieldIssues(
+      issues,
+      'items.2.name'
+    );
+    assert.strictEqual(thirdItem?.length, 1, 'a non-zero index is matched');
+    assert.strictEqual(thirdItem?.[0]?.message, 'Third name is required');
+
+    // The indexed issues must not leak onto the unindexed field name
+    const unindexed = StandardValidator.filterFieldIssues(issues, 'items.name');
+    assert.strictEqual(
+      unindexed?.length,
+      1,
+      'indexed issues are not misfiled onto items.name'
+    );
+    assert.strictEqual(unindexed?.[0]?.message, 'Items name invalid');
+
+    const missing = StandardValidator.filterFieldIssues(issues, 'items.1.name');
+    assert.notOk(missing, 'a valid element has no issues');
+  });
+
+  test('validateField works with array element field names', async function (assert) {
+    assert.expect(4);
+
+    const schema = v.object({
+      items: v.array(
+        v.object({
+          name: v.pipe(v.string(), v.nonEmpty('Name is required'))
+        })
+      )
+    });
+
+    const data = { items: [{ name: '' }, { name: 'ok' }, { name: '' }] };
+
+    const first = await StandardValidator.validateField(
+      data,
+      'items.0.name',
+      schema
+    );
+    assert.strictEqual(first?.length, 1, 'first element error is found');
+    assert.strictEqual(first?.[0]?.message, 'Name is required');
+
+    const second = await StandardValidator.validateField(
+      data,
+      'items.1.name',
+      schema
+    );
+    assert.notOk(second, 'valid element reports no errors');
+
+    const third = await StandardValidator.validateField(
+      data,
+      'items.2.name',
+      schema
+    );
+    assert.strictEqual(third?.length, 1, 'third element error is found');
+  });
+
+  test('filterFieldIssues ignores null and undefined path segments', function (assert) {
+    assert.expect(2);
+
+    const issues = [
+      {
+        message: 'Email invalid',
+        path: [{ key: 'profile' }, undefined, { key: 'email' }]
+      }
+    ];
+
+    const emailIssues = StandardValidator.filterFieldIssues(
+      issues as never,
+      'profile.email'
+    );
+    assert.ok(emailIssues, 'nullish segments are dropped from the path');
+    assert.strictEqual(emailIssues?.[0]?.message, 'Email invalid');
+  });
 });

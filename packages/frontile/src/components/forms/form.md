@@ -826,6 +826,18 @@ dotted path down to the leaf — `user.name.first`, never just `user`.
 segments is dropped from the form data rather than nested. Building those keys out of untrusted
 field names would let a form write onto `Object.prototype` and change every object in the
 application, so they are refused outright.
+Numeric segments are part of the path like any other, so a validation issue whose path is
+`['items', 0, 'name']` is keyed as `items.0.name` — exactly what you would write as
+`@name='items.0.name'`. Index `0` is not dropped, and per-field validation matches indexed
+names too.
+
+**Array schemas are not supported.** Form rebuilds nested data by splitting dotted names, and
+a numeric segment becomes an ordinary object key, so fields named `items.0.name` and
+`items.1.name` arrive at your validator as `{ items: { 0: … , 1: … } }` — an object, never an
+array. A schema that declares `items` as an array therefore fails on `items` itself with a
+type error, and no per-index issue is ever produced. Validate collections with `@validate`
+instead, reading the indexed paths off the object you are given. The same applies to the data
+handed to `@onChange` and `@onSubmit`.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1419,11 +1431,20 @@ export default class DisabledForm extends Component {
 ## Feedback Messages
 
 When a field fails validation, `Form`/`Field` render a `FormFeedback` with the `danger` intent
-and an assertive `aria-live` region — no wiring needed.
+— no wiring needed. The announcement comes from a separate, visually hidden `aria-live`
+region that `FormControl` always keeps in the DOM, so it is already being observed when the
+message arrives.
 
 For feedback that isn't a validation error — hints, confirmations, warnings — render
 `FormFeedback` yourself and pick an `@intent` from `primary`, `secondary`, `tertiary`,
 `success`, `warning`, or `danger`. Anything other than `danger` announces politely.
+
+A standalone `FormFeedback` is its own `aria-live` region. Pass `@announce={{false}}` when
+something else already announces the same text — that is exactly what `FormControl` does to
+the feedback it renders, since its persistent live region has already covered the message and
+announcing twice is worse than not at all. See
+[FormControl](/docs/components/forms/form-control) for the full explanation and the
+cases where you want to turn announcing back on.
 
 ```gts preview
 import { FormFeedback } from 'frontile';
@@ -1456,8 +1477,11 @@ Form renders a native `<form>`, so submission on <kbd>Enter</kbd>, field labelli
 
 - **Invalid fields** get `aria-invalid='true'` from `Field`, removed again once the field
   validates.
-- **Error messages** render in a `FormFeedback` with `aria-live='assertive'` and are associated
-  with the control, so a screen reader announces them as they appear.
+- **Error messages** render in a `FormFeedback` associated with the control through
+  `aria-describedby`, and are announced from a persistent, visually hidden
+  `aria-live='assertive'` region that `FormControl` renders whether or not the field is
+  currently invalid. A live region inserted at the same moment as its content is not
+  announced reliably, which is why the region is always present and merely filled.
 - **Disabled fields** carry the real `disabled` attribute rather than a styling-only state.
 - **Focus** is not managed or trapped by Form; it stays where the browser puts it. If you
   redirect focus to the first invalid field in `@onError`, see
