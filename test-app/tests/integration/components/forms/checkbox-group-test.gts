@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { find, render, settled } from '@ember/test-helpers';
 
 import { CheckboxGroup, type CheckboxGroupSignature } from 'frontile';
 import { cell } from 'ember-resources';
@@ -83,6 +83,37 @@ module(
       assert.dom('.my-base-class').exists();
       assert.dom('.my-options-container').exists();
       assert.dom('.my-label-class').exists();
+    });
+
+    test('it renders the description after the label', async function (assert) {
+      await render(
+        <template>
+          <CheckboxGroup
+            @label="Interests"
+            @description="Choose all that apply"
+            as |Checkbox|
+          >
+            <Checkbox @name="music" @label="Music" />
+          </CheckboxGroup>
+        </template>
+      );
+
+      assert
+        .dom('[data-component="form-description"]')
+        .hasText('Choose all that apply');
+
+      const label = find('[data-component="label"]') as HTMLElement;
+      const description = find(
+        '[data-component="form-description"]'
+      ) as HTMLElement;
+
+      assert.true(
+        !!(
+          label.compareDocumentPosition(description) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+        'description is rendered after the label'
+      );
     });
   }
 );
