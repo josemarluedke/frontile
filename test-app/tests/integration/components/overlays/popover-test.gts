@@ -4,8 +4,11 @@ import {
   click,
   render,
   triggerEvent,
+  triggerKeyEvent,
   find,
   settled,
+  setupOnerror,
+  resetOnerror,
   waitUntil
 } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
@@ -34,10 +37,31 @@ async function waitForTriggerWidth(
   }
 }
 
+/**
+ * `triggerKeyEvent` never populates `event.code`, and the trigger's type-ahead
+ * check is written against `code`. Dispatch the keydown directly so `code` and
+ * the modifier flags are both what a real browser would send.
+ */
+function pressLetter(
+  selector: string,
+  key: string,
+  options: Record<string, unknown> = {}
+): Promise<void> {
+  return triggerEvent(selector, 'keydown', {
+    key,
+    code: `Key${key.toUpperCase()}`,
+    ...options
+  });
+}
+
 module(
   'Integration | Component | Popover | @frontile/overlays',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    hooks.afterEach(function () {
+      resetOnerror();
+    });
 
     registerCustomStyles({
       backdrop: tv({ base: 'overlay__backdrop' }) as never,
@@ -321,6 +345,543 @@ module(
 
       assert.dom('[data-test-id="content"]').exists();
     });
+    test('Escape on the trigger closes the popover', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists();
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Escape');
+      assert.dom('[data-test-id="content"]').doesNotExist();
+    });
+
+    test('ArrowDown and ArrowUp open the popover', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'ArrowDown');
+      assert.dom('[data-test-id="content"]').exists('ArrowDown opens');
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Escape');
+      assert.dom('[data-test-id="content"]').doesNotExist();
+
+      // The `isClosing` window swallows a re-open for 90ms after a close.
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'ArrowUp');
+      assert.dom('[data-test-id="content"]').exists('ArrowUp opens');
+    });
+
+    test('Tab closes the popover without restoring focus to the trigger', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists();
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Tab');
+      assert.dom('[data-test-id="content"]').doesNotExist();
+      assert
+        .dom(document.activeElement)
+        .doesNotHaveAttribute(
+          'data-test-id',
+          'focus was not pulled back to the trigger'
+        );
+    });
+
+    test('a bare letter opens the popover, and Shift + letter still does', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await pressLetter('[data-test-id="trigger"]', 'r');
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('a bare letter opens for type-ahead');
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Escape');
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+      assert.dom('[data-test-id="content"]').doesNotExist();
+
+      // A capital letter is a legitimate type-ahead key, so Shift must not be
+      // treated like the other modifiers.
+      await pressLetter('[data-test-id="trigger"]', 'R', { shiftKey: true });
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('Shift + letter still opens');
+    });
+
+    test('a modifier + letter does not open the popover', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      // Cmd+R, Ctrl+F and Alt+C belong to the browser or the OS. They still
+      // deliver a letter `key`, and the popover must stay out of the way.
+      await pressLetter('[data-test-id="trigger"]', 'r', { metaKey: true });
+      assert.dom('[data-test-id="content"]').doesNotExist('Cmd + R is ignored');
+
+      await pressLetter('[data-test-id="trigger"]', 'f', { ctrlKey: true });
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist('Ctrl + F is ignored');
+
+      await pressLetter('[data-test-id="trigger"]', 'c', { altKey: true });
+      assert.dom('[data-test-id="content"]').doesNotExist('Alt + C is ignored');
+
+      // ...and the plain key still works, so the guard is not just disabling
+      // type-ahead altogether.
+      await pressLetter('[data-test-id="trigger"]', 'r');
+      assert.dom('[data-test-id="content"]').exists();
+    });
+
+    test('aria-expanded tracks the open state, including external @isOpen changes', async function (assert) {
+      const isOpen = cell(false);
+      const onOpenChange = (value: boolean) => {
+        isOpen.current = value;
+      };
+
+      await render(
+        <template>
+          <Popover
+            @isOpen={{isOpen.current}}
+            @onOpenChange={{onOpenChange}}
+            as |p|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      assert.dom('[data-test-id="trigger"]').hasAria('expanded', 'false');
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="trigger"]').hasAria('expanded', 'true');
+
+      // Flipped from outside rather than through the trigger: the attribute has
+      // to follow the arg, not just the interaction.
+      isOpen.current = false;
+      await settled();
+      assert.dom('[data-test-id="trigger"]').hasAria('expanded', 'false');
+
+      isOpen.current = true;
+      await settled();
+      assert.dom('[data-test-id="trigger"]').hasAria('expanded', 'true');
+    });
+
+    test('@didClose fires after the content is torn down, not synchronously on close', async function (assert) {
+      const contentPresentAtCallTime: boolean[] = [];
+      const didClose = () => {
+        contentPresentAtCallTime.push(
+          !!document.querySelector('[data-test-id="content"]')
+        );
+      };
+
+      await render(
+        <template>
+          <Popover @didClose={{didClose}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+
+            <p.Content data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists();
+
+      // Dispatch the closing click without settling, so we can see whether the
+      // callback ran inside the event handler. Transitions are disabled in
+      // tests (`Overlay.isAnimationEnabled` is false), so the exit is a
+      // zero-duration `later` -- but it is still a `later`, scheduled from the
+      // Overlay's teardown, and that ordering is what is under test.
+      (find('[data-test-id="trigger"]') as HTMLElement).click();
+      assert.deepEqual(
+        contentPresentAtCallTime,
+        [],
+        '@didClose did not fire synchronously on close'
+      );
+
+      await settled();
+      assert.strictEqual(
+        contentPresentAtCallTime.length,
+        1,
+        '@didClose fired exactly once'
+      );
+      assert.false(
+        contentPresentAtCallTime[0],
+        'the content was already gone when @didClose fired'
+      );
+    });
+
+    test('@didClose does not fire for a popover that was never open', async function (assert) {
+      let calls = 0;
+      const didClose = () => {
+        calls += 1;
+      };
+
+      await render(
+        <template>
+          <Popover @didClose={{didClose}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <button data-test-id="close" type="button" {{on "click" p.close}}>
+              Close
+            </button>
+
+            <p.Content @disableTransitions={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="close"]');
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+
+      assert.dom('[data-test-id="content"]').doesNotExist();
+      assert.strictEqual(calls, 0, 'closing a closed popover closes nothing');
+    });
+
+    test('a declined close in controlled mode does not leave @didClose armed', async function (assert) {
+      // In controlled mode `close()` only *asks* -- it calls `onOpenChange(false)`
+      // and the consumer decides. A consumer that declines keeps the content
+      // mounted, so the close never finishes and no `@didClose` is owed. The
+      // debt must not sit armed waiting for some unrelated later teardown to
+      // pay it out.
+      let calls = 0;
+      const didClose = () => {
+        calls += 1;
+      };
+
+      const isOpen = cell(false);
+      // Opens on request, but refuses every request to close.
+      const onOpenChange = (value: boolean) => {
+        if (value) {
+          isOpen.current = true;
+        }
+      };
+
+      await render(
+        <template>
+          <Popover
+            @isOpen={{isOpen.current}}
+            @onOpenChange={{onOpenChange}}
+            @didClose={{didClose}}
+            as |p|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <button data-test-id="open" type="button" {{on "click" p.open}}>
+              Open
+            </button>
+
+            <p.Content
+              @disableTransitions={{true}}
+              @closeOnOutsideClick={{false}}
+              data-test-id="content"
+            >
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists('the popover opened');
+
+      // Ask to close; the consumer declines, so nothing closes.
+      await click('[data-test-id="trigger"]');
+      // Past the 90ms `isClosing` window, so the popover will accept an open
+      // again -- the same as a person clicking twice rather than instantly.
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('the content is still mounted after the declined close');
+      assert.strictEqual(calls, 0, '@didClose did not fire while still open');
+
+      // Re-affirm that it is open. Nothing about the state changes, but any
+      // outstanding "close in progress" is definitively over.
+      await click('[data-test-id="open"]');
+      assert.dom('[data-test-id="content"]').exists('still open');
+
+      // Now tear the content down from outside, without going through
+      // `close()`. A popover closed this way owes no `@didClose` -- and it must
+      // not inherit one from the close the consumer declined earlier.
+      isOpen.current = false;
+      await settled();
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist('the content is gone');
+      assert.strictEqual(
+        calls,
+        0,
+        '@didClose did not fire for the close the consumer declined'
+      );
+    });
+
+    test('closing and unmounting in the same turn tears down cleanly', async function (assert) {
+      const show = cell(true);
+      const errors: unknown[] = [];
+      setupOnerror((error: unknown) => {
+        errors.push(error);
+      });
+
+      await render(
+        <template>
+          {{#if show.current}}
+            <Popover as |p|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
+                Trigger
+              </button>
+
+              <p.Content @disableTransitions={{true}} data-test-id="content">
+                Content here
+              </p.Content>
+            </Popover>
+          {{/if}}
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists();
+
+      // Close and unmount in the same turn, inside the 90ms `isClosing`
+      // debounce window.
+      (find('[data-test-id="trigger"]') as HTMLElement).click();
+      show.current = false;
+      await settled();
+
+      // The debounce is 90ms; make sure it really has run, whether or not
+      // `settled()` waited for it.
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+
+      assert.dom('[data-test-id="content"]').doesNotExist();
+      assert.deepEqual(
+        errors,
+        [],
+        'no error was raised while the popover tore down'
+      );
+    });
+
+    test('the closing callback does not write tracked state while the popover is tearing down', async function (assert) {
+      // `EmberGlimmerComponentManager#destroyComponent` flips the destroying
+      // flag and only *schedules* the destruction, so the rest of that runloop
+      // runs with `isDestroying === true` and `isDestroyed === false`. A
+      // `debounce`/`later` callback whose timer expires in the same tick lands
+      // right there, which is the case the guard in the closing callback exists
+      // for. `willDestroy` runs inside that same window, so it is a faithful
+      // place to run the callback from -- and Ember 6 does not throw for a
+      // tracked write on a destroying component, so the tracked setter is
+      // watched directly rather than waiting for an assertion that never comes.
+      const isClosingDescriptor = Object.getOwnPropertyDescriptor(
+        Popover.prototype,
+        'isClosing'
+      ) as PropertyDescriptor;
+      assert.ok(
+        typeof isClosingDescriptor?.set === 'function',
+        '`isClosing` is a tracked accessor on the prototype'
+      );
+
+      let writesWhileDestroying = 0;
+      let flagsInWindow:
+        { destroying: boolean; destroyed: boolean } | undefined;
+
+      Object.defineProperty(Popover.prototype, 'isClosing', {
+        ...isClosingDescriptor,
+        set(this: { isDestroying: boolean; isDestroyed: boolean }, value) {
+          if (this.isDestroying || this.isDestroyed) {
+            writesWhileDestroying += 1;
+          }
+          isClosingDescriptor.set?.call(this, value);
+        }
+      });
+
+      const originalWillDestroy = Popover.prototype.willDestroy;
+      Popover.prototype.willDestroy = function (this: Popover) {
+        flagsInWindow = {
+          destroying: this.isDestroying,
+          destroyed: this.isDestroyed
+        };
+        (this as unknown as { didClose: () => void }).didClose();
+        originalWillDestroy.call(this);
+      };
+
+      const show = cell(true);
+
+      try {
+        await render(
+          <template>
+            {{#if show.current}}
+              <Popover as |p|>
+                <button
+                  data-test-id="trigger"
+                  type="button"
+                  {{p.trigger}}
+                  {{p.anchor}}
+                >
+                  Trigger
+                </button>
+
+                <p.Content @disableTransitions={{true}} data-test-id="content">
+                  Content here
+                </p.Content>
+              </Popover>
+            {{/if}}
+          </template>
+        );
+
+        await click('[data-test-id="trigger"]');
+
+        // Close and unmount in the same turn.
+        (find('[data-test-id="trigger"]') as HTMLElement).click();
+        show.current = false;
+        await settled();
+      } finally {
+        Object.defineProperty(
+          Popover.prototype,
+          'isClosing',
+          isClosingDescriptor
+        );
+        Popover.prototype.willDestroy = originalWillDestroy;
+      }
+
+      assert.deepEqual(
+        flagsInWindow,
+        { destroying: true, destroyed: false },
+        'the callback really ran in the destroying-but-not-destroyed window'
+      );
+      assert.strictEqual(
+        writesWhileDestroying,
+        0,
+        'nothing was written to `isClosing` while destroying'
+      );
+    });
+
     test('trigger width comes from the trigger element by default', async function (assert) {
       await render(
         <template>
