@@ -1277,6 +1277,13 @@ module(
       assert
         .dom('[data-test-id="table-row"][data-key="1"]')
         .hasAttribute('data-selected', 'true', 'selection uses the item key');
+
+      assert
+        .dom('[data-test-id="table-row"][tabindex="0"]')
+        .exists(
+          { count: 1 },
+          'the table keeps exactly one tab stop for items shaped like rows'
+        );
     });
   }
 );

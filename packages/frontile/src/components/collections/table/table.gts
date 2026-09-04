@@ -313,9 +313,10 @@ class Table<
 
   // Get key from item or row - unified method
   getKey = (itemOrRow: T | Row<T>): string => {
-    // Extract the actual item from row if needed. `getRowData` already returns
-    // the argument untouched when it is not a table row, so a plain item that
-    // happens to have a `data` property is not mistaken for one.
+    // Extract the actual item from row if needed. Note `getRowData`'s check is
+    // structural, so a plain item carrying both `data` and `table` is still
+    // unwrapped as though it were a row — pass `Row` objects here wherever the
+    // keys have to line up with the rendered rows.
     const item = this.getRowData(itemOrRow as Row<T>);
 
     // Use provided getKey function if available
@@ -338,8 +339,11 @@ class Table<
   // selection - and to the first row when nothing is selected.
   @cached
   get rovingRowKey(): string | undefined {
-    // `sortedItems` is what feeds the headless table, so this is row order.
-    const keys = this.sortedItems.map((item) => this.getKey(item));
+    // Key off the same `Row` objects the template iterates, so this and
+    // `rowTabIndex` always agree. Mapping `sortedItems` instead would diverge
+    // for an item carrying both `data` and `table`, which `getRowData` unwraps
+    // — leaving the table with no tab stop at all.
+    const keys = [...this.headlessRows].map((row) => this.getKey(row));
 
     if (this.activeRowKey !== undefined && keys.includes(this.activeRowKey)) {
       return this.activeRowKey;
