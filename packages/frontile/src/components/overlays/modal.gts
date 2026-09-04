@@ -140,12 +140,21 @@ export default class Modal extends Component<ModalSignature> {
     return this.hasHeader ? this.headerId : undefined;
   }
 
-  // Reads `hasHeader` but never writes it, which is what makes this safe from
-  // the modifier: element modifiers install bottom-up, so the header's
-  // registration has already happened by the time we run, and a read after a
-  // write in the same commit is fine (it is the reverse order that trips
-  // Glimmer's backtracking assertion). Consumer-supplied names come through
-  // `...attributes`, which we cannot see in args, hence the element itself.
+  // What makes reading `hasHeader` here safe is *when* modifiers run, not in
+  // what order: modifier install happens after the render transaction has
+  // closed, so the template has already consumed `hasHeader` (through
+  // `labelledById`) before any modifier hook fires. The header's write during
+  // its own install therefore cannot invalidate a value still being rendered,
+  // which is what would trip Glimmer's backtracking assertion.
+  //
+  // Whether the header's registration precedes this modifier is a separate,
+  // unspecified Glimmer implementation detail. All it decides is whether this
+  // first-render check already sees a registered header; if that order ever
+  // inverted, the failure mode is a spurious development warning on a dialog
+  // that does have a `Header` — not a broken render.
+  //
+  // Consumer-supplied names come through `...attributes`, which we cannot see
+  // in args, hence inspecting the element itself.
   warnIfUnnamed = modifier((element: HTMLElement) => {
     warnIfDialogHasNoAccessibleName(element, this.hasHeader, 'modal');
   });
