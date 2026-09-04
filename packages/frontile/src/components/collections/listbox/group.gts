@@ -65,12 +65,13 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
 
   get classNames() {
     const { listboxGroup } = useStyles();
-    const { base, title, list } = listboxGroup();
+    const { base, title, list, divider } = listboxGroup();
 
     return {
       base: base({ class: [this.args.class, this.args.classes?.base] }),
       title: title({ class: this.args.classes?.title }),
-      list: list({ class: this.args.classes?.list })
+      list: list({ class: this.args.classes?.list }),
+      divider: divider()
     };
   }
 
@@ -107,7 +108,7 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
     </li>
 
     {{#if @withDivider}}
-      <Divider @as="li" @class="my-1" />
+      <Divider @as="li" @class={{this.classNames.divider}} />
     {{/if}}
   </template>
 }

@@ -938,6 +938,86 @@ module(
         assert.strictEqual(isOpen.current, true, 'and so does "/"');
       });
 
+      test('an explicit modifier matches on every platform', async function (assert) {
+        // Regression: `mod` was tested separately from `ctrl`/`cmd`, so an
+        // explicit `ctrl+…` was rejected wherever ctrl *is* the platform's mod
+        // key (Windows/Linux) — and `cmd+…` likewise on Apple. Asserting the
+        // cross-platform contract, so this fails on whichever platform is
+        // broken rather than only on the reviewer's.
+        const isOpen = cell(false);
+        const open = () => (isOpen.current = true);
+
+        await render(
+          <template>
+            <CommandDialog
+              @isOpen={{isOpen.current}}
+              @onOpen={{open}}
+              @shortcut="ctrl+shift+p"
+              @items={{DOCS}}
+              @disableTransitions={{true}}
+              as |c|
+            >
+              <c.Input />
+            </CommandDialog>
+          </template>
+        );
+
+        document.body.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'p',
+            ctrlKey: true,
+            shiftKey: true,
+            bubbles: true
+          })
+        );
+        await settled();
+
+        assert.strictEqual(
+          isOpen.current,
+          true,
+          'ctrl+shift+p opens the palette regardless of platform'
+        );
+      });
+
+      test('an explicit cmd shortcut matches too', async function (assert) {
+        // The mirror of the test above. Only one of the two can be broken on a
+        // given platform — ctrl on Windows/Linux, cmd on Apple — so both are
+        // needed for the pair to catch the regression wherever it runs.
+        const isOpen = cell(false);
+        const open = () => (isOpen.current = true);
+
+        await render(
+          <template>
+            <CommandDialog
+              @isOpen={{isOpen.current}}
+              @onOpen={{open}}
+              @shortcut="cmd+shift+p"
+              @items={{DOCS}}
+              @disableTransitions={{true}}
+              as |c|
+            >
+              <c.Input />
+            </CommandDialog>
+          </template>
+        );
+
+        document.body.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'p',
+            metaKey: true,
+            shiftKey: true,
+            bubbles: true
+          })
+        );
+        await settled();
+
+        assert.strictEqual(
+          isOpen.current,
+          true,
+          'cmd+shift+p opens the palette regardless of platform'
+        );
+      });
+
       test('an unmodified shortcut does not steal keystrokes from a field', async function (assert) {
         const isOpen = cell(false);
         const open = () => (isOpen.current = true);

@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { Listbox } from '../listbox/listbox';
@@ -58,6 +59,7 @@ export interface CommandListSignature<T> {
  * Glimmer handles natively.
  */
 class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
+  @cached
   get groups(): RenderableGroup<T>[] {
     const groups = this.args.groups ?? [];
 
@@ -77,9 +79,14 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
   }
 
   get classNames() {
-    const { command } = useStyles();
+    const { command, listboxGroup } = useStyles();
     // No size fallback: the theme's `defaultVariants` owns the default.
-    return command({ size: this.args.size });
+    return {
+      ...command({ size: this.args.size }),
+      // Same spacing a Group gives its own separator, so the ungrouped run
+      // does not drift from the grouped one.
+      divider: listboxGroup().divider()
+    };
   }
 
   <template>
@@ -169,7 +176,7 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
             {{! Ungrouped items render without a Group wrapper, so their
                 separator has to come from here or it goes missing. }}
             {{#if group.withDivider}}
-              <Divider @as="li" @class="my-1" />
+              <Divider @as="li" @class={{this.classNames.divider}} />
             {{/if}}
           {{/if}}
         {{/each}}

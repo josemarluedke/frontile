@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import { array } from '@ember/helper';
@@ -113,6 +113,7 @@ export default class DocfyJumpTo extends Component {
    * on — as jump targets. Same source as the site's own section nav, so the two
    * cannot drift apart.
    */
+  @cached
   get navigation(): PaletteRecord[] {
     const docs = this.docfy.findNestedChildrenByName('docs');
 
@@ -133,6 +134,7 @@ export default class DocfyJumpTo extends Component {
     }, []);
   }
 
+  @cached
   get pages(): PaletteRecord[] {
     return this.docfy.flat.map((page: PageMetadata) => ({
       key: page.url,
@@ -143,18 +145,17 @@ export default class DocfyJumpTo extends Component {
     }));
   }
 
+  /** Keyed once rather than rebuilt every time recents are resolved. */
+  @cached
+  get pagesByUrl(): Map<string, PaletteRecord> {
+    return new Map(this.pages.map((page) => [page.url, page]));
+  }
+
   get recents(): PaletteRecord[] {
-    const byUrl = new Map(this.pages.map((page) => [page.url, page]));
-
-    return this.recentUrls.reduce<PaletteRecord[]>((records, url) => {
-      const page = byUrl.get(url);
-
-      if (page) {
-        records.push({ ...page, section: RECENT });
-      }
-
-      return records;
-    }, []);
+    return this.recentUrls
+      .map((url) => this.pagesByUrl.get(url))
+      .filter((page): page is PaletteRecord => Boolean(page))
+      .map((page) => ({ ...page, section: RECENT }));
   }
 
   /**

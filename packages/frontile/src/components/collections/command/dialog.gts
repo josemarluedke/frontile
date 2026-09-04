@@ -13,33 +13,36 @@ import type { OverlaySignature } from '../../overlays/overlay';
  * `mod` is Cmd on Apple platforms and Ctrl elsewhere, which is what users of
  * either expect from a palette.
  */
+function isApplePlatform(): boolean {
+  const nav = globalThis.navigator;
+  // `platform` is deprecated but still the only synchronous signal in some
+  // browsers; userAgent covers the rest.
+  return /Mac|iPhone|iPad|iPod/i.test(nav?.platform || nav?.userAgent || '');
+}
+
 function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {
   const parts = shortcut.toLowerCase().split('+');
-  const key = parts[parts.length - 1]!;
 
-  if (event.key.toLowerCase() !== key) {
+  if (event.key.toLowerCase() !== parts[parts.length - 1]) {
     return false;
   }
 
   const wants = (name: string) => parts.includes(name);
-  const isApple = /Mac|iPhone|iPad|iPod/i.test(
-    globalThis.navigator?.platform ?? ''
+  const usesMod = wants('mod');
+
+  // Resolve `mod` to the concrete key it means on this platform, then compare
+  // all four modifiers uniformly. Testing `mod` separately used to reject an
+  // explicit `ctrl+k` on Windows and `cmd+k` on Apple, because there the
+  // spelled-out modifier *is* the platform's mod key.
+  const wantsCtrl = wants('ctrl') || (usesMod && !isApplePlatform());
+  const wantsMeta = wants('cmd') || (usesMod && isApplePlatform());
+
+  return (
+    wantsCtrl === event.ctrlKey &&
+    wantsMeta === event.metaKey &&
+    wants('shift') === event.shiftKey &&
+    wants('alt') === event.altKey
   );
-  const mod = isApple ? event.metaKey : event.ctrlKey;
-
-  if (wants('mod') !== mod) {
-    return false;
-  }
-
-  if (!wants('mod')) {
-    if (wants('ctrl') !== event.ctrlKey) return false;
-    if (wants('cmd') !== event.metaKey) return false;
-  }
-
-  if (wants('shift') !== event.shiftKey) return false;
-  if (wants('alt') !== event.altKey) return false;
-
-  return true;
 }
 
 const EDITABLE = ['INPUT', 'TEXTAREA', 'SELECT'];
@@ -173,16 +176,7 @@ class CommandDialog<T = unknown> extends Component<CommandDialogSignature<T>> {
             ...attributes
             as |c|
           >
-            {{yield
-              (hash
-                query=c.query
-                resultCount=c.resultCount
-                isLoading=c.isLoading
-                Input=c.Input
-                List=c.List
-                Footer=c.Footer
-              )
-            }}
+            {{yield c}}
           </Command>
         </div>
       </div>

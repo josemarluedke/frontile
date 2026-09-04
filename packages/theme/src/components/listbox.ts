@@ -374,6 +374,9 @@ const listboxItem = tv({
 const listboxGroup = tv({
   slots: {
     base: 'block',
+    // Spacing for the separator a group renders after itself, so the value
+    // lives here rather than being repeated at each call site.
+    divider: 'my-1',
     // `block`: the heading is a <span>, and an inline box's vertical padding
     // is painted without taking up space -- so without this the rows sit
     // directly under the heading text whatever padding it is given.

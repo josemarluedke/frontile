@@ -1,10 +1,10 @@
 import Component from '@glimmer/component';
 import { on } from '@ember/modifier';
-import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import { VisuallyHidden } from '../../utilities/visually-hidden';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
+import type { ModifierLike } from '@glint/template';
 import type { CommandSlots, SlotsToClasses } from '@frontile/theme';
 
 export interface CommandInputSignature {
@@ -19,8 +19,8 @@ export interface CommandInputSignature {
     hasResults?: boolean;
     /** @internal bound by Command */
     activeDescendant?: string;
-    /** @internal bound by Command */
-    setup?: (element: HTMLInputElement) => void;
+    /** @internal bound by Command: the `ref` modifier tracking this input. */
+    setup?: ModifierLike<{ Element: HTMLInputElement }>;
 
     /**
      * Accessible name for the input.
@@ -49,10 +49,6 @@ export interface CommandInputSignature {
  */
 class CommandInput extends Component<CommandInputSignature> {
   inputId = `${guidFor(this)}-input`;
-
-  registerInput = modifier((element: HTMLInputElement) => {
-    this.args.setup?.(element);
-  });
 
   handleInput = (event: Event) => {
     this.args.onInput?.((event.target as HTMLInputElement).value);
@@ -100,7 +96,7 @@ class CommandInput extends Component<CommandInputSignature> {
         data-test-id="command-input"
         data-component="command-input"
         class={{this.classNames.input class=@classes.input}}
-        {{this.registerInput}}
+        {{@setup}}
         {{on "input" this.handleInput}}
         ...attributes
       />

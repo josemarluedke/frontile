@@ -74,6 +74,11 @@ export function createFuzzyFilter(
 ): (itemValue: string, inputValue: string) => number {
   const threshold = options.threshold ?? DEFAULT_MATCH_THRESHOLD;
 
+  // The query is the same for every candidate in a pass, so its lowercased
+  // form is memoized rather than rebuilt once per item.
+  let lastQuery: string | undefined;
+  let lastQueryLower = '';
+
   return function fuzzyFilter(itemValue: string, inputValue: string): number {
     // A blank query matches everything. fuzzysort returns null for a blank or
     // whitespace-only needle, which would otherwise read as "no match" and
@@ -86,12 +91,17 @@ export function createFuzzyFilter(
       return 0;
     }
 
+    if (inputValue !== lastQuery) {
+      lastQuery = inputValue;
+      lastQueryLower = inputValue.toLowerCase();
+    }
+
     const score = fuzzysort.single(inputValue, itemValue)?.score ?? 0;
 
     // The substring floor. This is what makes the filter a superset of the old
     // `includes()` default: a substring match is always a match, whatever it
     // scored, so the threshold only ever removes results that are new.
-    if (itemValue.toLowerCase().includes(inputValue.toLowerCase())) {
+    if (itemValue.toLowerCase().includes(lastQueryLower)) {
       return Math.max(score, threshold, MIN_MATCH_SCORE);
     }
 

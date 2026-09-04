@@ -74,19 +74,14 @@ export interface CommandFooterSignature {
  * how to choose, how to leave. Renders sensible defaults when given no block.
  */
 class CommandFooter extends Component<CommandFooterSignature> {
-  get classNames() {
+  get footerClass(): string {
     const { command } = useStyles();
-    const { footer, footerHint } = command();
-
-    return {
-      footer: footer({ class: this.args.classes?.footer }),
-      hint: footerHint({ class: this.args.classes?.footerHint })
-    };
+    return command().footer({ class: this.args.classes?.footer });
   }
 
   <template>
     <div
-      class={{this.classNames.footer}}
+      class={{this.footerClass}}
       data-test-id="command-footer"
       data-component="command-footer"
       ...attributes
@@ -99,22 +94,22 @@ class CommandFooter extends Component<CommandFooterSignature> {
           )
         }}
       {{else}}
-        <span class={{this.classNames.hint}}>
+        <CommandHint @classes={{@classes}}>
           <CommandKbd @classes={{@classes}} aria-label="Arrow up">↑</CommandKbd>
           <CommandKbd
             @classes={{@classes}}
             aria-label="Arrow down"
           >↓</CommandKbd>
           Navigate
-        </span>
-        <span class={{this.classNames.hint}}>
+        </CommandHint>
+        <CommandHint @classes={{@classes}}>
           <CommandKbd @classes={{@classes}} aria-label="Enter">↵</CommandKbd>
           Select
-        </span>
-        <span class={{this.classNames.hint}}>
+        </CommandHint>
+        <CommandHint @classes={{@classes}}>
           <CommandKbd @classes={{@classes}}>Esc</CommandKbd>
           Close
-        </span>
+        </CommandHint>
       {{/if}}
     </div>
   </template>

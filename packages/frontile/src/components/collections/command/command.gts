@@ -7,6 +7,7 @@ import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import { VisuallyHidden } from '../../utilities/visually-hidden';
 import { keyAndLabelForItem, type ListItem } from '../../../utils/listManager';
+import { ref } from '../../../utils/ref';
 import { filterAndRankItems, type FilterFn } from '../../../utils/filter';
 import { CommandInput } from './input';
 import { CommandList } from './list';
@@ -32,6 +33,7 @@ export interface CommandApi<T> {
     | 'onInput'
     | 'value'
     | 'controlsId'
+    | 'hasResults'
     | 'activeDescendant'
     | 'classes'
     | 'setup'
@@ -91,7 +93,7 @@ export interface CommandSignature<T> {
      * by max, so a weak hit on a secondary field never outranks a strong hit on
      * the label.
      */
-    searchFields?: (item: T) => string[];
+    searchFields?: (item: T) => string | string[];
 
     /**
      * Render `@items` as given, without filtering or ranking. Use with
@@ -162,8 +164,6 @@ export interface CommandSignature<T> {
   };
 }
 
-const isUndefined = (value: unknown) => typeof value === 'undefined';
-
 /**
  * A command palette: a search input over a ranked, optionally grouped list.
  *
@@ -178,26 +178,27 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
   @tracked activeDescendant?: string;
   @tracked asyncItems?: T[];
   @tracked isSearchPending = false;
-  @tracked inputElement?: HTMLInputElement;
+  /**
+   * The search field, which `CommandList` hands to `Listbox` as the element to
+   * attach keyboard events to. `ref` rather than a hand-rolled modifier so the
+   * reference is cleared on teardown.
+   */
+  inputRef = ref<HTMLInputElement>();
 
   /** Discards out-of-order `@onSearch` resolutions; latest query wins. */
   #searchToken = 0;
   #pendingSearch?: ReturnType<typeof debounce>;
 
   get query(): string {
-    return isUndefined(this.args.query) ? this.internalQuery : this.args.query!;
+    return this.args.query ?? this.internalQuery;
   }
 
   get isLoading(): boolean {
     return this.args.isLoading === true || this.isSearchPending;
   }
 
-  setupInput = (element: HTMLInputElement) => {
-    this.inputElement = element;
-  };
-
   handleInput = (value: string) => {
-    if (isUndefined(this.args.query)) {
+    if (this.args.query === undefined) {
       this.internalQuery = value;
     }
 
@@ -218,7 +219,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
       this,
       this.runSearch,
       query,
-      isUndefined(this.args.searchDebounce) ? 250 : this.args.searchDebounce!
+      this.args.searchDebounce ?? 250
     );
   }
 
@@ -228,16 +229,39 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
     try {
       const result = await this.args.onSearch!(query);
 
-      // A slower earlier request must not overwrite a newer one's results.
-      if (token !== this.#searchToken) {
+      // A slower earlier request must not overwrite a newer one's results, and
+      // a resolution after teardown must not write to a destroyed component.
+      if (
+        token !== this.#searchToken ||
+        this.isDestroying ||
+        this.isDestroyed
+      ) {
         return;
       }
 
       this.asyncItems = result;
     } finally {
-      if (token === this.#searchToken) {
+      if (
+        token === this.#searchToken &&
+        !this.isDestroying &&
+        !this.isDestroyed
+      ) {
         this.isSearchPending = false;
       }
+    }
+  }
+
+  willDestroy(): void {
+    super.willDestroy();
+
+    // The copy of Autocomplete's async machinery dropped these; a pending
+    // debounce that fires after teardown writes to a destroyed component.
+    if (this.#pendingSearch) {
+      cancel(this.#pendingSearch);
+    }
+
+    if (this.#pendingAnnouncement) {
+      cancel(this.#pendingAnnouncement);
     }
   }
 
@@ -361,7 +385,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
    */
   @cached
   get groups(): CommandGroup<T>[] {
-    if (isUndefined(this.args.groupBy)) {
+    if (!this.args.groupBy) {
       return this.resultCount ? [{ items: this.results }] : [];
     }
 
@@ -371,7 +395,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
     for (const item of this.results) {
       const title = this.groupTitleFor(item);
 
-      if (isUndefined(title) || title === '') {
+      if (!title) {
         ungrouped.push(item);
         continue;
       }
@@ -449,7 +473,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
             controlsId=this.listId
             hasResults=this.hasResults
             activeDescendant=this.activeDescendant
-            setup=this.setupInput
+            setup=this.inputRef.setup
             label=@label
             placeholder=@placeholder
             classes=@classes
@@ -461,7 +485,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
             size=@size
             isLoading=this.isLoading
             isSearchPrompt=this.isSearchPrompt
-            inputElement=this.inputElement
+            inputElement=this.inputRef.current
             disabledKeys=@disabledKeys
             onSelect=this.handleSelect
             onActiveItemChange=this.handleActiveItemChange
