@@ -266,9 +266,9 @@ export default class DocfyJumpTo extends Component {
         </:empty>
       </c.List>
       <c.Footer as |f|>
-        <f.Hint><f.Kbd>↑</f.Kbd><f.Kbd>↓</f.Kbd> Navigate</f.Hint>
-        <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
-        <f.Hint><f.Kbd>Esc</f.Kbd> Close</f.Hint>
+        <f.Hint><f.Kbd @keys="up" /><f.Kbd @keys="down" /> Navigate</f.Hint>
+        <f.Hint><f.Kbd @keys="enter" /> Go to page</f.Hint>
+        <f.Hint><f.Kbd @keys="esc" /> Close</f.Hint>
       </c.Footer>
     </CommandDialog>
   </template>

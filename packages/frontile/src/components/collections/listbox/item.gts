@@ -5,6 +5,7 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import { Divider } from '../../utilities/divider';
+import { Kbd } from '../../utilities/kbd';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, ListItem } from '../../../utils/listManager';
@@ -23,7 +24,20 @@ export interface ListboxItemSignature {
     item?: unknown;
 
     description?: string;
+
+    /**
+     * A keyboard shortcut shown at the end of the option, rendered by `Kbd`.
+     * Accepts named keys (`"mod+k"`) or a literal string (`"⌘K"`).
+     */
     shortcut?: string;
+
+    /**
+     * The appearance of the rendered shortcut. Defaults to `inherit`, so the
+     * keycap follows the option's own colour on active and filled rows.
+     *
+     * @defaultValue 'inherit'
+     */
+    shortcutAppearance?: 'default' | 'outlined' | 'faded' | 'inherit' | 'plain';
     onClick?: () => void;
     class?: string;
     withDivider?: boolean;
@@ -114,30 +128,31 @@ class ListboxItem extends Component<ListboxItemSignature> {
   get classNames() {
     const { listboxItem } = useStyles();
 
-    const {
-      base,
-      descriptionWrapper,
-      label,
-      description,
-      selectedIcon,
-      shortcut
-    } = listboxItem({
-      appearance: this.args.appearance || 'default',
-      intent: this.args.intent || 'default',
-      isDisabled: this.listItem?.isDisabled,
-      isSelected: this.listItem?.isSelected,
-      isActive: this.listItem?.isActive,
-      withDivider: this.args.withDivider
-    });
+    const { base, descriptionWrapper, label, description, selectedIcon } =
+      listboxItem({
+        appearance: this.args.appearance || 'default',
+        intent: this.args.intent || 'default',
+        isDisabled: this.listItem?.isDisabled,
+        isSelected: this.listItem?.isSelected,
+        isActive: this.listItem?.isActive,
+        withDivider: this.args.withDivider
+      });
 
     return {
       base: base({ class: this.args.class }),
       descriptionWrapper: descriptionWrapper(),
       label: label(),
       description: description(),
-      selectedIcon: selectedIcon(),
-      shortcut: shortcut()
+      selectedIcon: selectedIcon()
     };
+  }
+
+  /**
+   * `inherit` by default so the keycap picks up the option's own colour rather
+   * than the theme having to repaint it for every intent on an active row.
+   */
+  get shortcutAppearance() {
+    return this.args.shortcutAppearance ?? 'inherit';
   }
 
   get role() {
@@ -206,10 +221,12 @@ class ListboxItem extends Component<ListboxItemSignature> {
       {{/if}}
 
       {{#if @shortcut}}
-        <kbd
+        <Kbd
+          @keys={{@shortcut}}
+          @size="sm"
+          @appearance={{this.shortcutAppearance}}
           data-test-id="listbox-item-shortcut"
-          class={{this.classNames.shortcut}}
-        >{{@shortcut}}</kbd>
+        />
       {{/if}}
 
       {{#if this.listItem.isSelected}}

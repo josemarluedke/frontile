@@ -1,12 +1,16 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
+import { Kbd } from '../../utilities/kbd';
 import type { TOC } from '@ember/component/template-only';
 import type { CommandSlots, SlotsToClasses } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
 export interface CommandKbdSignature {
   Args: {
+    /** A shortcut to render, e.g. `"up"` or `"mod+k"`. See `Kbd`. */
+    keys?: string;
+
     /** @internal bound by Command */
     classes?: SlotsToClasses<CommandSlots>;
   };
@@ -14,19 +18,30 @@ export interface CommandKbdSignature {
   Blocks: { default: [] };
 }
 
-/** A keycap, for the footer's hints. */
+/**
+ * A keycap, for the footer's hints. A thin binding over `Kbd` so the palette
+ * and the rest of the library render the same keycap.
+ */
 const CommandKbd: TOC<CommandKbdSignature> = <template>
-  <kbd
-    class={{kbdClass @classes}}
-    data-test-id="command-kbd"
-    ...attributes
-  >{{yield}}</kbd>
+  {{#if (has-block)}}
+    <Kbd
+      @size="sm"
+      @appearance="outlined"
+      @classes={{hash key=@classes.kbd}}
+      data-test-id="command-kbd"
+      ...attributes
+    >{{yield}}</Kbd>
+  {{else}}
+    <Kbd
+      @keys={{@keys}}
+      @size="sm"
+      @appearance="outlined"
+      @classes={{hash key=@classes.kbd}}
+      data-test-id="command-kbd"
+      ...attributes
+    />
+  {{/if}}
 </template>;
-
-function kbdClass(classes?: SlotsToClasses<CommandSlots>): string {
-  const { command } = useStyles();
-  return command().kbd({ class: classes?.kbd });
-}
 
 export interface CommandHintSignature {
   Args: {

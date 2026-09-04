@@ -67,13 +67,6 @@ const command = tv({
       // row text
       '[&_[data-test-id=listbox-item-label]]:text-body-sm',
       '[&_[data-test-id=listbox-item-label]]:font-medium',
-      // shortcuts read as plain muted text, not as keycaps -- the footer owns keycaps
-      '[&_[data-test-id=listbox-item-shortcut]]:border-transparent',
-      '[&_[data-test-id=listbox-item-shortcut]]:px-0',
-      '[&_[data-test-id=listbox-item-shortcut]]:tracking-widest',
-      // the shared item style boxes the shortcut on the active row; keep it flat here
-      '[&_[data-component=listbox-item][data-active=true]_[data-test-id=listbox-item-shortcut]]:border-transparent',
-      '[&_[data-component=listbox-item][data-active=true]_[data-test-id=listbox-item-shortcut]]:text-neutral',
       // leading icons are sized and muted unless the consumer says otherwise
       '[&_[data-component=listbox-item]_svg:not([class*=size-])]:size-4',
       '[&_[data-component=listbox-item]_svg]:shrink-0',
@@ -103,16 +96,7 @@ const command = tv({
       'select-none'
     ],
     footerHint: 'flex items-center gap-1.5',
-    kbd: [
-      'pointer-events-none select-none',
-      'flex h-5 min-w-5 items-center justify-center gap-1',
-      'rounded border border-neutral-soft',
-      'bg-surface-modal',
-      'px-1',
-      'font-body text-body-4xs font-medium',
-      'text-neutral',
-      '[&_svg]:size-3'
-    ]
+    kbd: ''
   },
   variants: {
     size: {
