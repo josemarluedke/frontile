@@ -40,9 +40,13 @@ const command = tv({
     // descendant utilities below apply that without forking `listboxItem`.
     // They must stay as literal strings: Tailwind finds classes by scanning
     // source text, so a class assembled with interpolation is never generated.
+    // No `overscroll-contain`: the list is a scroll container even when its
+    // items fit, and containing overscroll there swallows wheel events over an
+    // inline palette so the page behind it cannot scroll. The dialog does not
+    // need it either -- body scroll is locked while it is open.
     list: [
       'mt-1',
-      'overflow-y-auto overflow-x-hidden overscroll-contain',
+      'overflow-y-auto overflow-x-hidden',
       'scroll-py-1',
       'p-0',
       // rows
