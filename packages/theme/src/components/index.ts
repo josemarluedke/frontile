@@ -3,6 +3,7 @@ export * from './button';
 export * from './chip';
 export * from './progress-bar';
 export * from './close-button';
+export * from './command';
 export * from './listbox';
 export * from './dropdown';
 export * from './popover';
