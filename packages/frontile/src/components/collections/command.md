@@ -552,21 +552,7 @@ keyboard traversal, disabled rows, and the dialog's positioning.
 ## API
 
 <Signature @component="Command" />
-
-### Command::Input
-
 <Signature @component="CommandInput" />
-
-### Command::List
-
 <Signature @component="CommandList" />
-
-### Command::Footer
-
 <Signature @component="CommandFooter" />
-
-Yields `Kbd` (a keycap) and `Hint` (one hint's layout).
-
-### Command::Dialog
-
 <Signature @component="CommandDialog" />
