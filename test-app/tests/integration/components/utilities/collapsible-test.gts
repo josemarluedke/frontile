@@ -21,6 +21,23 @@ function isCollapsibleWaiterPending(): boolean {
   return WAITER_NAME in getPendingWaiterState().waiters;
 }
 
+function collapsibleElement(): HTMLElement {
+  const element = document.querySelector('[data-test-id=collapsible]');
+
+  if (!element) {
+    throw new Error('Could not find the collapsible element');
+  }
+
+  return element as HTMLElement;
+}
+
+// `expand`/`contract` apply their target styles inside nested rAF callbacks.
+async function flushAnimationFrames(count = 2): Promise<void> {
+  for (let i = 0; i < count; i++) {
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+  }
+}
+
 // Polls instead of `settled()` so a leaked waiter fails the assertion below
 // rather than hanging the test (and the whole suite) until QUnit times out.
 async function waitForCollapsibleWaiter(timeout = 3000): Promise<void> {
@@ -166,6 +183,59 @@ module(
       assert.dom('[data-test-id=collapsible]').hasStyle({ overflow: 'hidden' });
     });
 
+    test('keeps every legitimate @initialHeight value', async function (assert) {
+      // `''` would mean the value was rejected, so assert on the inline style
+      // the component actually wrote rather than the computed one. The CSSOM
+      // re-serialises the math functions (Chrome reorders `calc` operands), so
+      // those are matched loosely.
+      const cases: [input: string, expected: string | RegExp][] = [
+        ['10px', '10px'],
+        ['2rem', '2rem'],
+        ['50%', '50%'],
+        ['0', '0px'],
+        ['calc(1rem + 2px)', /^calc\(.*1rem.*\)$/],
+        ['min(10px, 2rem)', /^min\(.*2rem.*\)$/],
+        ['clamp(1px, 2rem, 3rem)', /^clamp\(.*2rem.*\)$/],
+        ['var(--collapsible-height, 4px)', 'var(--collapsible-height, 4px)']
+      ];
+
+      for (const [input, expected] of cases) {
+        const initialHeight = cell(input);
+
+        await render(
+          <template>
+            <Collapsible
+              @isOpen={{false}}
+              @initialHeight={{initialHeight.current}}
+              data-test-id="collapsible"
+            >
+              Content
+            </Collapsible>
+          </template>
+        );
+
+        const height = collapsibleElement().style.height;
+
+        if (typeof expected === 'string') {
+          assert.strictEqual(
+            height,
+            expected,
+            `@initialHeight="${input}" is applied`
+          );
+        } else {
+          assert.ok(
+            expected.test(height),
+            `@initialHeight="${input}" is applied (got "${height}")`
+          );
+        }
+        assert.strictEqual(
+          collapsibleElement().style.opacity,
+          '1',
+          `@initialHeight="${input}" counts as a real height, so content stays visible`
+        );
+      }
+    });
+
     test('does not modify descendants when a transitionend bubbles up from a child', async function (assert) {
       await render(
         <template>
@@ -175,9 +245,7 @@ module(
         </template>
       );
 
-      const collapsible = document.querySelector(
-        '[data-test-id=collapsible]'
-      ) as HTMLElement;
+      const collapsible = collapsibleElement();
       const child = document.querySelector(
         '[data-test-id=child]'
       ) as HTMLElement;
@@ -239,9 +307,7 @@ module(
       isOpen.current = true;
       await settled();
 
-      const collapsible = document.querySelector(
-        '[data-test-id=collapsible]'
-      ) as HTMLElement;
+      const collapsible = collapsibleElement();
 
       assert.strictEqual(collapsible.style.height, 'auto', 'height is auto');
       assert.strictEqual(collapsible.style.overflow, '', 'overflow is cleared');
@@ -299,19 +365,11 @@ module(
           </template>
         );
 
-        const collapsible = document.querySelector(
-          '[data-test-id=collapsible]'
-        ) as HTMLElement;
+        const collapsible = collapsibleElement();
 
         isOpen.current = true;
         await rerender();
-        // `expand` applies the target styles inside a rAF callback.
-        await new Promise((resolve) =>
-          requestAnimationFrame(() => resolve(null))
-        );
-        await new Promise((resolve) =>
-          requestAnimationFrame(() => resolve(null))
-        );
+        await flushAnimationFrames();
 
         assert.strictEqual(collapsible.style.opacity, '1', 'is expanding');
 

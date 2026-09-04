@@ -7,6 +7,39 @@ import type Owner from '@ember/owner';
 
 const waiter = buildWaiter('frontile:collapsible');
 
+/**
+ * Runs a caller-supplied height through the browser's own CSS parser.
+ *
+ * `@initialHeight` ends up in an inline `style` attribute, so a value such as
+ * `10px; position: fixed` would otherwise smuggle in a second declaration.
+ * Assigning it to a detached element's `style.height` lets the CSSOM decide:
+ * it accepts every real height (`10px`, `2rem`, `50%`, `0`,
+ * `calc(1rem + 2px)`, `var(--x)`, …) and drops anything it cannot parse as a
+ * single height value — a trailing declaration included. Returns the parsed
+ * value, or `undefined` when the input is unusable.
+ */
+function parseHeight(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  // Reject anything that could terminate the declaration up front. The CSSOM
+  // check below catches this too, but the explicit test keeps the guarantee
+  // even where `document` has no real CSS parser (SSR / prerender).
+  if (/[;}]/.test(value)) {
+    return undefined;
+  }
+
+  if (typeof document === 'undefined') {
+    return value;
+  }
+
+  const probe = document.createElement('div');
+  probe.style.height = value;
+
+  return probe.style.height || undefined;
+}
+
 interface CollapsibleArgs {
   /**
    * If true, the content will be visible
@@ -15,7 +48,9 @@ interface CollapsibleArgs {
 
   /**
    * The height for the content in it's collapsed state.
-   * The unit of the value should be included, eg. '10px'.
+   * The unit of the value should be included, eg. '10px'. Any CSS height is
+   * accepted (`2rem`, `50%`, `calc(1rem + 2px)`, …); a value the CSS parser
+   * rejects is ignored and the content collapses to `0`.
    *
    * @defaultValue 0
    */
@@ -44,18 +79,28 @@ class Collapsible extends Component<CollapsibleSignature> {
     }
   }
 
+  /**
+   * `@initialHeight`, validated by the CSS parser. `undefined` when it was not
+   * given or could not be parsed as a height, in which case the collapsed
+   * state falls back to `0`.
+   */
+  get initialHeight(): string | undefined {
+    return parseHeight(this.args.initialHeight);
+  }
+
   get styles(): ReturnType<typeof safeStyles> {
     let styles: Record<string, string | number> = {};
+    const initialHeight = this.initialHeight;
 
     if (!this.isInitiallyOpen) {
       styles = {
         ...styles,
-        height: this.args.initialHeight || 0,
-        opacity: this.args.initialHeight ? '1' : '0'
+        height: initialHeight || 0,
+        opacity: initialHeight ? '1' : '0'
       };
     }
 
-    if (this.args.initialHeight || !this.isInitiallyOpen) {
+    if (initialHeight || !this.isInitiallyOpen) {
       styles = {
         ...styles,
         overflow: 'hidden'
@@ -110,12 +155,14 @@ class Collapsible extends Component<CollapsibleSignature> {
       return;
     }
 
+    const element = event.currentTarget as HTMLElement;
+
     if (
       (event.propertyName === 'height' || event.propertyName == 'opacity') &&
       this.args.isOpen
     ) {
-      (event.target as HTMLElement).style.height = 'auto';
-      (event.target as HTMLElement).style.overflow = '';
+      element.style.height = 'auto';
+      element.style.overflow = '';
     }
     if (this.waiterToken) {
       // when is opened, wait for height transition to finish
@@ -126,12 +173,12 @@ class Collapsible extends Component<CollapsibleSignature> {
         (this.args.isOpen && event.propertyName === 'height') ||
         (!this.args.isOpen &&
           event.propertyName === 'opacity' &&
-          (event.target as HTMLElement).style.opacity == '0') ||
+          element.style.opacity == '0') ||
         (this.args.isOpen &&
           event.propertyName === 'opacity' &&
-          (event.target as HTMLElement).style.opacity == '1') ||
+          element.style.opacity == '1') ||
         (!this.args.isOpen &&
-          this.args.initialHeight &&
+          this.initialHeight &&
           event.propertyName === 'height')
       ) {
         this.endWaiter();
@@ -176,10 +223,12 @@ class Collapsible extends Component<CollapsibleSignature> {
       ].join(', ');
 
       window.requestAnimationFrame(() => {
-        if (!this.args.initialHeight) {
+        const initialHeight = this.initialHeight;
+
+        if (!initialHeight) {
           element.style.opacity = '0';
         }
-        element.style.height = this.args.initialHeight || '0';
+        element.style.height = initialHeight || '0';
       });
     });
   }
