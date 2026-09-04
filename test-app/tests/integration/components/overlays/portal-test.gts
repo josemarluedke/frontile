@@ -291,6 +291,38 @@ module('Integration | Component | @frontile/overlays/Portal', function (hooks) {
     assert.ok(portal, 'should have found a portal inside of named target');
   });
 
+  // A named target's name is arbitrary consumer text, so unlike an id it can
+  // carry whitespace — newlines included. A CSS string cannot carry a raw
+  // newline, so it has to be escaped as `\a `; replacing it with some other
+  // character instead would silently query for a *different* name and match
+  // the wrong target, or none at all, with no error to point at.
+  const newlineTargetName = 'target\nwith-newline';
+
+  test('it renders inside named portal target whose name contains a newline', async function (assert) {
+    await render(
+      <template>
+        <PortalTarget />
+        <PortalTarget data-test-id="decoy" @for="target with-newline" />
+        <PortalTarget data-test-id="real" @for={{newlineTargetName}} />
+
+        <Portal data-test-id="portal-1" @target={{newlineTargetName}}>
+          Portal
+        </Portal>
+      </template>
+    );
+
+    assert.ok(
+      find('[data-test-id="real"]')?.querySelector('[data-test-id="portal-1"]'),
+      'should have portaled into the target whose name contains the newline'
+    );
+    assert.notOk(
+      find('[data-test-id="decoy"]')?.querySelector(
+        '[data-test-id="portal-1"]'
+      ),
+      'should not have portaled into the target whose name has a space instead'
+    );
+  });
+
   test('it renders inside named portal target whose name is not a CSS identifier', async function (assert) {
     await render(
       <template>

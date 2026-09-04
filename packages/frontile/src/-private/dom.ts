@@ -33,6 +33,9 @@ function childNodesOfElement(
   return children;
 }
 
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/g;
+
 /**
  * Escapes a value for use inside a *quoted* attribute selector.
  *
@@ -44,17 +47,31 @@ function childNodesOfElement(
  * `x], [data-portal-target`, closes the predicate and matches something else
  * entirely.
  *
- * `CSS.escape` is the right tool, but it is a browser global and this module
- * also runs against the `-document` service when the app is prerendered. In a
- * quoted string only the quote itself, a backslash, and raw newlines actually
- * need escaping, so the fallback is both small and complete.
+ * `CSS.escape` would also work here, but it escapes for the *identifier*
+ * grammar while every call site interpolates into a *quoted string*
+ * (`[attr="…"]`). Two escapers for two grammars in one function is a trap
+ * even though both happen to round-trip, and `CSS.escape` is a browser global
+ * this module cannot rely on — it also runs against the `-document` service
+ * when the app is prerendered. So there is one hand-rolled escaper, complete
+ * for the quoted-string position and exercised by every caller on every
+ * platform:
+ *
+ * - `"` and `\` are escaped with a backslash; they are the only characters a
+ *   quoted string cannot carry literally.
+ * - Control characters — newline (`\a`), carriage return (`\d`), form feed
+ *   (`\c`) among them — cannot appear literally in a CSS string either, and
+ *   get the hex escape the grammar defines, always with the terminating space
+ *   so the following character is never absorbed into the escape. Substituting
+ *   a different character for them (a space, say) would silently query for a
+ *   *different* value and match the wrong element, or none, with no error.
  */
 function escapeAttributeValue(value: string): string {
-  if (typeof CSS !== 'undefined' && typeof CSS.escape === 'function') {
-    return CSS.escape(value);
-  }
-
-  return value.replace(/["\\]/g, '\\$&').replace(/[\n\r\f]/g, ' ');
+  return value
+    .replace(/["\\]/g, '\\$&')
+    .replace(
+      CONTROL_CHARACTERS,
+      (char) => `\\${char.charCodeAt(0).toString(16)} `
+    );
 }
 
 export function getElementById(
@@ -65,6 +82,13 @@ export function getElementById(
   // this without a selector at all, which sidesteps escaping entirely.
   // `Element` has no `getElementById`, so those callers keep the selector and
   // node-walking paths below.
+  //
+  // Intentional asymmetry with `getElementByAttribute`: an empty id is *no id*
+  // here (`@target="#"` must resolve to nothing rather than to whichever
+  // element happens to carry an `id` first), while an empty value passed to
+  // `getElementByAttribute` is a value like any other and is matched
+  // literally. Both receivers are reachable, so the two exports disagree by
+  // design, not by oversight.
   if (typeof (doc as Document).getElementById === 'function') {
     return id ? (doc as Document).getElementById(id) : null;
   }
