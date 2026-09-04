@@ -105,6 +105,13 @@ focus has left the **whole control** — the field and its dropdown. Clicking an
 moves focus into the dropdown, and in multiple mode leaves it open, so selecting is never
 reported as a blur: validation waits until the user is actually done with the field.
 
+In multiple selection mode there is one extra step. The dropdown stays open across
+selections, so the click that takes the user away from the field is first spent closing
+it — and closing the dropdown returns focus to the trigger. Focus is therefore still
+inside the control at that point, and `@onBlur` does not fire; it fires on the next
+interaction, once focus genuinely leaves. Blur validation on a multiple Select runs one
+interaction later than on a single one.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';

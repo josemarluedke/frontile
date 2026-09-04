@@ -5,6 +5,7 @@ import {
   render,
   triggerKeyEvent,
   fillIn,
+  focus,
   settled
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
@@ -804,6 +805,38 @@ module(
       await click('[data-test-id="outside"]');
 
       assert.strictEqual(blurCount, 1, 'leaving the control reported one blur');
+    });
+
+    // The click-away tests reach the tracker through its targetless, deferred
+    // branch. Tab names where focus went, taking the synchronous branch.
+    test('@onBlur is called exactly once when the user tabs out of the Autocomplete', async function (assert) {
+      const items = ['Apple', 'Banana', 'Cherry'];
+      const selectedKey = cell<string | null>(null);
+      const onSelectionChange = (key: string | null) =>
+        (selectedKey.current = key);
+      let blurCount = 0;
+      const onBlur = () => blurCount++;
+
+      await render(
+        <template>
+          <Autocomplete
+            @items={{items}}
+            @selectedKey={{selectedKey.current}}
+            @onSelectionChange={{onSelectionChange}}
+            @onBlur={{onBlur}}
+          />
+          <button type="button" data-test-id="outside">Outside</button>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      await click('[data-component="listbox"] [data-key="Apple"]');
+      assert.strictEqual(blurCount, 0, 'selecting is not blurring');
+
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Tab');
+      await focus('[data-test-id="outside"]');
+
+      assert.strictEqual(blurCount, 1, 'tabbing out reported exactly one blur');
     });
 
     test('tearing the Autocomplete down right after a selection neither calls @onBlur nor asserts', async function (assert) {
