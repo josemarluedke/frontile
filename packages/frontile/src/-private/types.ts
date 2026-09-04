@@ -18,6 +18,33 @@ export interface CustomAction {
   onClick: () => void;
 }
 
+export type NotificationIntent = 'info' | 'success' | 'warning' | 'danger';
+
+/**
+ * The deprecated intent names. `error` maps onto `danger`.
+ */
+export type NotificationAppearance = 'info' | 'success' | 'warning' | 'error';
+
+export interface NotificationContent {
+  /**
+   * The heading line of the notification.
+   */
+  title: string;
+
+  /**
+   * Optional supporting line rendered below the title.
+   */
+  description?: string;
+}
+
+export interface NotificationUpdate {
+  title?: string;
+  description?: string;
+  intent?: NotificationIntent;
+  allowClosing?: boolean;
+  isLoading?: boolean;
+}
+
 export interface NotificationOptions<
   TMetadata extends Record<string, unknown> = Record<string, unknown>
 > {
@@ -50,11 +77,40 @@ export interface NotificationOptions<
   transitionDuration?: number;
 
   /**
-   * The appearance of the notification
+   * Supporting text rendered below the title.
+   *
+   * @defaultValue undefined
+   */
+  description?: string;
+
+  /**
+   * The intent of the notification.
    *
    * @defaultValue 'info'
    */
-  appearance?: 'info' | 'success' | 'warning' | 'error';
+  intent?: NotificationIntent;
+
+  /**
+   * The appearance of the notification.
+   *
+   * @deprecated Use `intent` instead. `error` maps onto `danger`.
+   * @defaultValue undefined
+   */
+  appearance?: NotificationAppearance;
+
+  /**
+   * Hide the leading icon.
+   *
+   * @defaultValue false
+   */
+  hideIcon?: boolean;
+
+  /**
+   * Render a spinner in place of the intent icon. Set by `promise()`.
+   *
+   * @defaultValue false
+   */
+  isLoading?: boolean;
 
   /**
    * A list of custom actions

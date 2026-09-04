@@ -4,6 +4,9 @@ import NotificationsService from '../../services/notifications';
 import type {
   DefaultConfig,
   NotificationOptions,
+  NotificationContent,
+  NotificationIntent,
+  NotificationUpdate,
   CustomAction
 } from '../../-private/types';
 import { NotificationStack } from '../../-private/notification-stack';
@@ -14,7 +17,14 @@ import type {
 
 export { Notification, Timer, NotificationStack };
 export type { NotificationsService };
-export type { NotificationOptions, DefaultConfig, CustomAction };
+export type {
+  NotificationOptions,
+  DefaultConfig,
+  CustomAction,
+  NotificationContent,
+  NotificationIntent,
+  NotificationUpdate
+};
 export type { NotificationStackInput, CardGeometry };
 export * from './notification-card';
 export * from './notifications-container';
