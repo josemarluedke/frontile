@@ -1,6 +1,7 @@
 import Logo from '../components/logo';
 import pageTitle from 'ember-page-title/helpers/page-title';
 import DocfyHeader from '../components/docfy/docfy-header';
+import DocfyRouteLoadingBar from '../components/docfy/docfy-route-loading-bar';
 import DocfyJumpTo from '../components/docfy/docfy-jump-to';
 import VersionDropdown from '../components/version-dropdown';
 import { VisuallyHidden } from 'frontile';
@@ -9,6 +10,13 @@ import { DocfyLink } from '@docfy/ember';
 
 <template>
   {{pageTitle "Frontile"}}
+  {{! The site's stacking order, in one place, since Tailwind's z utilities are
+      set at four separate call sites and nothing else records it:
+      page content < header (z-1) < docs section nav (z-10) < portals (z-20)
+      < route-loading bar (z-50). The bar is deliberately last: it reports on a
+      navigation the reader just asked for, so it should stay visible even over
+      an open modal or drawer. }}
+  <DocfyRouteLoadingBar />
   <DocfyHeader
     @githubUrl="https://github.com/josemarluedke/frontile"
     class="overflow-x-scroll sm:overflow-x-auto"
