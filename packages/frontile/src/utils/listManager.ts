@@ -260,8 +260,23 @@ class ListManager {
    * Only called from places where the answer can actually have changed and
    * where the DOM is worth ordering once: an activation, a selection update,
    * and the batch flush. Notably *not* from `unregister` -- see there.
+   *
+   * Pass `activated` when the caller already knows which item just became
+   * active: the answer is then that item, with no need to order the document
+   * at all. `setNextOptionActive` and friends have already paid for one
+   * ordered scan to find it, and a second one would put the per-keypress cost
+   * of `compareDocumentPosition` over the whole list -- the very cost this
+   * batching removes from render -- straight back into arrow navigation.
    */
-  #refreshTabStop(): void {
+  #refreshTabStop(activated?: ListItem): void {
+    // The scan below settles on the active item whenever there is one, so a
+    // just-activated item *is* the answer -- unless it is disabled, which the
+    // scan skips, in which case fall through and work it out properly.
+    if (activated && !activated.isDisabledUntracked) {
+      this.tabStopKey = activated.key;
+      return;
+    }
+
     let active: ListItem | undefined;
     let selected: ListItem | undefined;
     let first: ListItem | undefined;
@@ -488,7 +503,10 @@ class ListManager {
     if (item && !item.isActiveUntracked) {
       this.#clearActive();
       item.isActive = true;
-      this.#refreshTabStop();
+      // The tab stop is this item, by definition -- named directly rather
+      // than re-derived, so an arrow keypress orders the list only the once
+      // its caller already did. See `#refreshTabStop`.
+      this.#refreshTabStop(item);
       this.args.onActiveItemChange?.(item.key, item);
 
       // Ensure the item is scrolled into view

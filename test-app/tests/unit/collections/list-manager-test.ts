@@ -402,4 +402,132 @@ module('Unit | Utils | ListManager', function (hooks) {
       assert.deepEqual(reports, [], 'the cancelled work never ran');
     });
   });
+
+  module('the cost of moving the active item', function () {
+    /**
+     * How many times `fn` ordered the list against the document.
+     *
+     * Ordering starts by filtering the registered items on
+     * `el.isConnected`, so one ordered scan reads `isConnected` exactly once
+     * per registered item -- an exact, engine-independent count, where the
+     * number of `compareDocumentPosition` calls a sort makes is not. Both are
+     * recorded; only the scan count is asserted on.
+     */
+    const measureOrderedScans = (
+      fn: () => void,
+      itemCount: number
+    ): { reads: number; comparisons: number; scans: number } => {
+      const descriptor = Object.getOwnPropertyDescriptor(
+        Node.prototype,
+        'isConnected'
+      ) as PropertyDescriptor;
+      const readIsConnected = descriptor.get as () => boolean;
+      const compare = Element.prototype.compareDocumentPosition;
+      let reads = 0;
+      let comparisons = 0;
+
+      Object.defineProperty(Node.prototype, 'isConnected', {
+        ...descriptor,
+        get(this: Node): boolean {
+          reads++;
+          return readIsConnected.call(this);
+        }
+      });
+      Element.prototype.compareDocumentPosition = function (
+        this: Element,
+        other: Node
+      ): number {
+        comparisons++;
+        return compare.call(this, other);
+      };
+
+      try {
+        fn();
+      } finally {
+        Object.defineProperty(Node.prototype, 'isConnected', descriptor);
+        Element.prototype.compareDocumentPosition = compare;
+      }
+
+      return { reads, comparisons, scans: reads / itemCount };
+    };
+
+    // `activateItem` schedules a frame to scroll the new item into view, and
+    // that callback reads `isConnected` too. Draining it before measuring
+    // keeps it out of the count; a frame queued *during* the measured window
+    // cannot pollute it, because rAF never runs synchronously.
+    const nextFrame = (): Promise<void> =>
+      new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+    test('an arrow keypress orders the document once, not twice', async function (assert) {
+      const manager = buildManager();
+      const itemCount = 50;
+      for (let i = 0; i < itemCount; i++) {
+        addItem(manager, `item-${i}`);
+      }
+      await settled();
+
+      // Get to steady-state navigation, so the measured keypress is a plain
+      // move rather than the first activation.
+      manager.setFirstOptionActive();
+      await settled();
+      await nextFrame();
+
+      const { reads, comparisons, scans } = measureOrderedScans(() => {
+        manager.setNextOptionActive();
+      }, itemCount);
+
+      assert.strictEqual(
+        scans,
+        1,
+        `one keypress ordered the list once (${reads} isConnected reads over ` +
+          `${itemCount} items, ${comparisons} compareDocumentPosition calls); ` +
+          `deriving the tab stop from the item being activated is what keeps ` +
+          `this off a second ordered scan`
+      );
+      assert.true(
+        manager.atKey('item-1')?.isActive,
+        'and the active item still moved'
+      );
+      assert.true(
+        manager.isTabStop('item-1'),
+        'and the tab stop still followed it'
+      );
+
+      await settled();
+      await nextFrame();
+    });
+
+    test('the tab stop still falls back to an ordered scan with nothing active', async function (assert) {
+      const manager = buildManager();
+      const itemCount = 20;
+      for (let i = 0; i < itemCount; i++) {
+        addItem(manager, `item-${i}`);
+      }
+      await settled();
+
+      // No active item, so the shortcut cannot apply and the ordered scan is
+      // genuinely needed to find the first option a user can act on.
+      assert.true(
+        manager.isTabStop('item-0'),
+        'the first option owns the stop while nothing is active'
+      );
+
+      const { scans } = measureOrderedScans(() => {
+        manager.updateArgs({ selectedKeys: ['item-3'] });
+      }, itemCount);
+
+      assert.strictEqual(
+        scans,
+        1,
+        'the fallback path still orders the list, once'
+      );
+      assert.true(
+        manager.isTabStop('item-3'),
+        'and the stop moved to the selection'
+      );
+
+      await settled();
+      await nextFrame();
+    });
+  });
 });
