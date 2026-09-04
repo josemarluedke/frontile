@@ -324,6 +324,118 @@ module(
       assert.dom('[data-key="elephant"]').hasAttribute('data-active', 'false');
     });
 
+    test('it derives textValue from a document-scoped aria-labelledby', async function (assert) {
+      // `aria-labelledby` points at ids anywhere in the document and holds a
+      // space-separated *list* of them — neither of which a scoped
+      // `#id` selector can express.
+      await render(
+        <template>
+          <span id="external.label">Zebra</span>
+          <span id="external-second">Yak</span>
+
+          <Listbox
+            @selectionMode="none"
+            @isKeyboardEventsEnabled={{true}}
+            @autoActivateMode="none"
+            as |l|
+          >
+            <l.Item @key="item-1" aria-labelledby="external.label">
+              Ignored one
+            </l.Item>
+            <l.Item @key="item-2" aria-labelledby="external-second another-id">
+              Ignored two
+            </l.Item>
+          </Listbox>
+        </template>
+      );
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      assert
+        .dom('[data-key="item-1"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'should have matched the external label text'
+        );
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      assert
+        .dom('[data-key="item-2"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'should have matched the first id of a multi-id aria-labelledby'
+        );
+    });
+
+    test('it falls back to the item text when aria-labelledby cannot be resolved', async function (assert) {
+      await render(
+        <template>
+          <Listbox
+            @selectionMode="none"
+            @isKeyboardEventsEnabled={{true}}
+            @autoActivateMode="none"
+            as |l|
+          >
+            <l.Item @key="item-1" aria-labelledby="does-not-exist">
+              Zebra
+            </l.Item>
+            <l.Item @key="item-2">Yak</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      // A search that matches nothing leaves the previously active item
+      // active, so match the other item first to make this discriminating.
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'true');
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      assert
+        .dom('[data-key="item-1"]')
+        .hasAttribute('data-active', 'true', 'should have used its own text');
+      assert.dom('[data-key="item-2"]').hasAttribute('data-active', 'false');
+    });
+
+    test('an explicit @textValue wins over aria-labelledby', async function (assert) {
+      await render(
+        <template>
+          <span id="external.label">Yak</span>
+
+          <Listbox
+            @selectionMode="none"
+            @isKeyboardEventsEnabled={{true}}
+            @autoActivateMode="none"
+            as |l|
+          >
+            <l.Item
+              @key="item-1"
+              @textValue="Zebra"
+              aria-labelledby="external.label"
+            >
+              Ignored
+            </l.Item>
+            <l.Item @key="item-2">Yak</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Z');
+      assert
+        .dom('[data-key="item-1"]')
+        .hasAttribute('data-active', 'true', 'should have used @textValue');
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Y');
+      assert
+        .dom('[data-key="item-2"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'the labelled text must not have won over @textValue'
+        );
+      assert.dom('[data-key="item-1"]').hasAttribute('data-active', 'false');
+    });
+
     test('keyboard navigation follows DOM order after items are inserted before a persisting item', async function (assert) {
       // Mimics an async (e.g. address) search: the previous match is still in
       // the new results, but closer matches are inserted before it. The
