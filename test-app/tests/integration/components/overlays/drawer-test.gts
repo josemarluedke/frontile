@@ -7,41 +7,15 @@ import {
   triggerKeyEvent,
   settled
 } from '@ember/test-helpers';
-import { registerWarnHandler } from '@ember/debug';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Drawer } from 'frontile/overlays';
 import { cell } from 'ember-resources';
-
-/**
- * Captures the ids of Frontile warnings raised while `callback` runs, instead of
- * letting them print. Tests that deliberately render a dialog with no
- * accessible name use this so the expected warning is asserted rather than
- * spamming every run's output.
- */
-async function captureFrontileWarnings(
-  callback: () => Promise<void>
-): Promise<string[]> {
-  const ids: string[] = [];
-
-  registerWarnHandler((message, options, next) => {
-    if (options?.id?.startsWith('frontile.')) {
-      ids.push(options.id);
-      return;
-    }
-
-    next(message, options);
-  });
-
-  try {
-    await callback();
-  } finally {
-    // Restore delegation to the default handler, which logs to the console.
-    registerWarnHandler((message, options, next) => next(message, options));
-  }
-
-  return ids;
-}
+import {
+  captureFrontileWarnings,
+  observeWarningsBelowCapture
+} from 'test-app/tests/helpers/frontile-warnings';
+import { warn } from '@ember/debug';
 
 module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
   setupRenderingTest(hooks);
@@ -809,5 +783,65 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     assert
       .dom('[data-test-id="drawer"]')
       .hasAttribute('aria-labelledby', 'my-own-label');
+  });
+
+  test('it does not warn when a consumer supplies aria-labelledby and there is no header', async function (assert) {
+    const isOpen = cell(true);
+
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <span id="my-own-label">My Own Label</span>
+          <Drawer
+            @isOpen={{isOpen.current}}
+            @disableTransitions={{true}}
+            data-test-id="drawer"
+            aria-labelledby="my-own-label"
+            as |d|
+          >
+            <d.Body>My Content</d.Body>
+          </Drawer>
+        </template>
+      );
+    });
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasAttribute(
+        'aria-labelledby',
+        'my-own-label',
+        'the consumer reference survives with no header to compete with'
+      );
+    assert.deepEqual(
+      warnings,
+      [],
+      'a consumer supplied aria-labelledby is an accessible name'
+    );
+  });
+
+  test('the warning capture window does not outlive the test that opened it', async function (assert) {
+    const inside = await captureFrontileWarnings(async () => {
+      warn('inside the window', false, {
+        id: 'frontile.drawer.missing-accessible-name'
+      });
+    });
+
+    assert.deepEqual(
+      inside,
+      ['frontile.drawer.missing-accessible-name'],
+      'the open window captures the warning'
+    );
+
+    const escaped = await observeWarningsBelowCapture(async () => {
+      warn('after the window closed', false, {
+        id: 'frontile.drawer.missing-accessible-name'
+      });
+    });
+
+    assert.deepEqual(
+      escaped,
+      ['frontile.drawer.missing-accessible-name'],
+      'a frontile.* warning raised after restore still reaches the handler below'
+    );
   });
 });
