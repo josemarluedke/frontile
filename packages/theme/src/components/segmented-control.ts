@@ -64,7 +64,23 @@ const segmentedControl = tv({
         // `bg-surface-overlay-soft` is the closest existing role and is the
         // one other components already use for a recessed track (see
         // packages/theme/src/components/progress-bar.ts).
-        base: 'bg-surface-overlay-soft',
+        //
+        // In dark mode `surface-overlay-soft` resolves to a *translucent*
+        // white wash (white @ 11%), same as the indicator's `surface-card`
+        // (white @ 7%, see the `intent.default.indicator` comment below) --
+        // two translucent veils stacked on an unknown page background give an
+        // unpredictable, washed-out composite (the pill was in fact the
+        // *less* opaque of the two, so it could read as no lighter than the
+        // track). `dark:bg-surface-table` swaps in the opaque dark
+        // container role (palette.gray['900']) for a solid, predictable
+        // recessed track -- the same "opaque role instead of a translucent
+        // surface-*" fix already used elsewhere in this codebase (see
+        // packages/theme/src/components/table.ts's own `surface-table`
+        // usage, and overlays.ts's `dark:bg-surface-lift-strong` override of
+        // `surface-overlay-strong` for the same reason). Light mode is
+        // untouched and already correct (black @ 5% over a white page reads
+        // as a subtle grey track).
+        base: 'bg-surface-overlay-soft dark:bg-surface-table',
         indicator: 'shadow-elevation-1'
       },
       ghost: {
@@ -75,7 +91,24 @@ const segmentedControl = tv({
 
     intent: {
       default: {
-        indicator: 'bg-surface-card',
+        // Light mode: `bg-surface-card` is opaque white (`absolute.white`) --
+        // a clean white pill on the (now opaque) grey track, exactly the
+        // reference look. Left unchanged.
+        //
+        // Dark mode: `surface-card` is translucent (white @ 7%) -- stacked on
+        // the track's own translucent wash this composited to only a few
+        // points of luminance difference, an almost invisible selected
+        // state. `packages/theme/src/plugin/resolve.ts`'s
+        // `shouldGenerateOnColor()` already refuses to generate `on-*`
+        // contrast colors for `surface-overlay-*`/`surface-lift-*` roles
+        // because their contrast depends on whatever shows through --
+        // stacking two such roles has the same problem. `dark:bg-neutral-soft`
+        // swaps in the opaque neutral role (palette.gray['700']) instead: a
+        // solid, clearly-lighter pill against the `surface-table`
+        // (palette.gray['900']) track now used above, and it keeps
+        // `aria-checked:text-neutral-bolder` below (palette.gray['100'] in
+        // dark mode) comfortably legible against it (~6.8:1 contrast).
+        indicator: 'bg-surface-card dark:bg-neutral-soft',
         item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-neutral-bolder'
       },
       primary: {
