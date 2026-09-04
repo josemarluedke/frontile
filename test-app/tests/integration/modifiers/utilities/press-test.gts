@@ -784,8 +784,8 @@ module(
       // Should capture start and end events
       assert.strictEqual(
         capturedEvents.length,
-        3,
-        'Should capture start, end, and up events'
+        2,
+        'Should capture start and end events'
       );
       assert.strictEqual(
         capturedEvents[0]!.type,
@@ -797,16 +797,18 @@ module(
         'end',
         'Second event should be end'
       );
-      assert.strictEqual(
-        capturedEvents[2]!.type,
-        'up',
-        'Third event should be up'
-      );
 
       // onPress should NOT trigger since the release wasn't on the element
       assert.ok(
         !capturedEvents.some((e) => e.type === 'press'),
         'onPress should not trigger when released outside element'
+      );
+
+      // onPressUp describes a release on the element, so it should not trigger
+      // either when the release happened elsewhere.
+      assert.ok(
+        !capturedEvents.some((e) => e.type === 'up'),
+        'onPressUp should not trigger when released outside element'
       );
     });
 
@@ -1456,6 +1458,316 @@ module(
         clickCount,
         0,
         'Click event should NOT fire on Enter key because type="button" gets preventDefault'
+      );
+    });
+
+    test('a release outside the element is not swallowed for other listeners', async function (assert) {
+      let pressCount = 0;
+
+      class OutsideReleaseComponent extends Component {
+        onPress = () => {
+          pressCount++;
+        };
+
+        <template>
+          <button
+            data-test-id="outside-release-target"
+            type="button"
+            {{press onPress=this.onPress}}
+          >
+            Outside Release Target
+          </button>
+          <div data-test-id="outside-release-other">Other element</div>
+        </template>
+      }
+
+      let documentPointerUpCount = 0;
+      let documentMouseUpCount = 0;
+      const onDocumentPointerUp = () => {
+        documentPointerUpCount++;
+      };
+      const onDocumentMouseUp = () => {
+        documentMouseUpCount++;
+      };
+
+      document.addEventListener('pointerup', onDocumentPointerUp);
+      document.addEventListener('mouseup', onDocumentMouseUp);
+
+      try {
+        await render(<template><OutsideReleaseComponent /></template>);
+
+        await triggerEvent(
+          '[data-test-id="outside-release-target"]',
+          'pointerdown'
+        );
+        await triggerEvent(
+          '[data-test-id="outside-release-other"]',
+          'pointerup'
+        );
+
+        assert.strictEqual(
+          documentPointerUpCount,
+          1,
+          'a document-level pointerup listener still receives a release that happened outside the pressed element'
+        );
+        assert.strictEqual(
+          pressCount,
+          0,
+          'onPress does not fire for a release outside the element'
+        );
+
+        await triggerEvent(
+          '[data-test-id="outside-release-target"]',
+          'mousedown'
+        );
+        await triggerEvent('[data-test-id="outside-release-other"]', 'mouseup');
+
+        assert.strictEqual(
+          documentMouseUpCount,
+          1,
+          'a document-level mouseup listener still receives a release that happened outside the pressed element'
+        );
+      } finally {
+        document.removeEventListener('pointerup', onDocumentPointerUp);
+        document.removeEventListener('mouseup', onDocumentMouseUp);
+      }
+    });
+
+    test('the pressed element own pointerup/mouseup listeners still fire', async function (assert) {
+      let pressCount = 0;
+      let elementPointerUpCount = 0;
+      let elementMouseUpCount = 0;
+
+      class OwnListenersComponent extends Component {
+        onPress = () => {
+          pressCount++;
+        };
+
+        onPointerUp = () => {
+          elementPointerUpCount++;
+        };
+
+        onMouseUp = () => {
+          elementMouseUpCount++;
+        };
+
+        <template>
+          <button
+            data-test-id="own-listeners-target"
+            type="button"
+            {{press onPress=this.onPress}}
+            {{on "pointerup" this.onPointerUp}}
+            {{on "mouseup" this.onMouseUp}}
+          >
+            Own Listeners
+          </button>
+        </template>
+      }
+
+      await render(<template><OwnListenersComponent /></template>);
+
+      await triggerEvent(
+        '[data-test-id="own-listeners-target"]',
+        'pointerdown'
+      );
+      await triggerEvent('[data-test-id="own-listeners-target"]', 'pointerup');
+
+      assert.strictEqual(pressCount, 1, 'onPress fired');
+      assert.strictEqual(
+        elementPointerUpCount,
+        1,
+        'the element own pointerup listener still fires'
+      );
+
+      await triggerEvent('[data-test-id="own-listeners-target"]', 'mousedown');
+      await triggerEvent('[data-test-id="own-listeners-target"]', 'mouseup');
+
+      assert.strictEqual(pressCount, 2, 'onPress fired for the mouse sequence');
+      assert.strictEqual(
+        elementMouseUpCount,
+        1,
+        'the element own mouseup listener still fires'
+      );
+    });
+
+    test('onPressUp does not fire when released outside the element', async function (assert) {
+      let endCount = 0;
+      let upCount = 0;
+      let pressCount = 0;
+
+      class PressUpOutsideComponent extends Component {
+        onPressEnd = () => {
+          endCount++;
+        };
+
+        onPressUp = () => {
+          upCount++;
+        };
+
+        onPress = () => {
+          pressCount++;
+        };
+
+        <template>
+          <button
+            data-test-id="pressup-outside-target"
+            type="button"
+            {{press
+              onPressEnd=this.onPressEnd
+              onPressUp=this.onPressUp
+              onPress=this.onPress
+            }}
+          >
+            Press Up Outside
+          </button>
+        </template>
+      }
+
+      await render(<template><PressUpOutsideComponent /></template>);
+
+      await triggerEvent(
+        '[data-test-id="pressup-outside-target"]',
+        'pointerdown'
+      );
+      await triggerEvent(document, 'pointerup');
+
+      assert.strictEqual(
+        endCount,
+        1,
+        'onPressEnd still fires when released outside'
+      );
+      assert.strictEqual(
+        pressCount,
+        0,
+        'onPress does not fire when released outside'
+      );
+      assert.strictEqual(
+        upCount,
+        0,
+        'onPressUp does not fire when released outside'
+      );
+    });
+
+    test('press events do not bubble to ancestor handlers by default', async function (assert) {
+      let ancestorDownCount = 0;
+      let ancestorUpCount = 0;
+      let pressCount = 0;
+
+      class AncestorDefaultComponent extends Component {
+        onPress = () => {
+          pressCount++;
+        };
+
+        onAncestorDown = () => {
+          ancestorDownCount++;
+        };
+
+        onAncestorUp = () => {
+          ancestorUpCount++;
+        };
+
+        <template>
+          <div
+            data-test-id="ancestor-default"
+            {{on "pointerdown" this.onAncestorDown}}
+            {{on "pointerup" this.onAncestorUp}}
+          >
+            <button
+              data-test-id="ancestor-default-target"
+              type="button"
+              {{press onPress=this.onPress}}
+            >
+              Inner
+            </button>
+          </div>
+        </template>
+      }
+
+      await render(<template><AncestorDefaultComponent /></template>);
+
+      await triggerEvent(
+        '[data-test-id="ancestor-default-target"]',
+        'pointerdown'
+      );
+      await triggerEvent(
+        '[data-test-id="ancestor-default-target"]',
+        'pointerup'
+      );
+
+      assert.strictEqual(pressCount, 1, 'onPress fired');
+      assert.strictEqual(
+        ancestorDownCount,
+        0,
+        'pointerdown does not reach the ancestor by default'
+      );
+      assert.strictEqual(
+        ancestorUpCount,
+        0,
+        'pointerup does not reach the ancestor by default'
+      );
+    });
+
+    test('press events bubble to ancestor handlers when continuePropagation is called', async function (assert) {
+      let ancestorDownCount = 0;
+      let ancestorUpCount = 0;
+      let pressCount = 0;
+
+      class AncestorContinueComponent extends Component {
+        onPressStart = (event: PressEvent) => {
+          event.continuePropagation();
+        };
+
+        onPress = (event: PressEvent) => {
+          pressCount++;
+          event.continuePropagation();
+        };
+
+        onAncestorDown = () => {
+          ancestorDownCount++;
+        };
+
+        onAncestorUp = () => {
+          ancestorUpCount++;
+        };
+
+        <template>
+          <div
+            data-test-id="ancestor-continue"
+            {{on "pointerdown" this.onAncestorDown}}
+            {{on "pointerup" this.onAncestorUp}}
+          >
+            <button
+              data-test-id="ancestor-continue-target"
+              type="button"
+              {{press onPressStart=this.onPressStart onPress=this.onPress}}
+            >
+              Inner
+            </button>
+          </div>
+        </template>
+      }
+
+      await render(<template><AncestorContinueComponent /></template>);
+
+      await triggerEvent(
+        '[data-test-id="ancestor-continue-target"]',
+        'pointerdown'
+      );
+      await triggerEvent(
+        '[data-test-id="ancestor-continue-target"]',
+        'pointerup'
+      );
+
+      assert.strictEqual(pressCount, 1, 'onPress fired');
+      assert.strictEqual(
+        ancestorDownCount,
+        1,
+        'pointerdown reaches the ancestor when continuePropagation is called'
+      );
+      assert.strictEqual(
+        ancestorUpCount,
+        1,
+        'pointerup reaches the ancestor when continuePropagation is called'
       );
     });
   }
