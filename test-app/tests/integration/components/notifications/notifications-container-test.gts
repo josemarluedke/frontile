@@ -14,9 +14,15 @@ import {
   type NotificationOptions,
   type NotificationsContainerSignature
 } from 'frontile';
-import { registerCustomStyles } from '@frontile/theme';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+
+// Captured before the `registerCustomStyles` override below replaces
+// `notificationsContainer` for the rest of this suite, so tests can still
+// assert against the real, shipped classes (e.g. the pointer-events
+// gap-bridging fix) rather than the class names this file mocks in below.
+const realNotificationsContainerStyles = useStyles().notificationsContainer;
 
 registerCustomStyles({
   notificationsContainer: tv({
@@ -210,6 +216,35 @@ module(
       assert
         .dom('.notifications-container__stack')
         .hasAttribute('data-expanded', 'false');
+    });
+
+    test('the stack slot is pointer-events-none while collapsed and pointer-events-auto while expanded', function (assert) {
+      // Regression guard for the gap-bridging fix: hovering from one
+      // expanded card to the next crosses `gap`px of the stack's own box
+      // that no card covers. If the stack stayed `pointer-events-none`
+      // there, the pointer would fall through to the page mid-hover and the
+      // container would receive a spurious `mouseleave` (which pauses, then
+      // immediately resumes, every notification's timer). This can't be
+      // proven by dispatching synthetic events directly at nodes (as the
+      // other tests in this file do) since that bypasses CSS hit-testing
+      // entirely — it was verified against real pointer movement in a
+      // browser instead. This test only guards the class list itself, using
+      // the real theme styles captured above (this file overrides
+      // `notificationsContainer` with class names that don't carry
+      // pointer-events at all).
+      const { stack } = realNotificationsContainerStyles({
+        placement: 'bottom-right'
+      });
+      const classes = stack();
+
+      assert.true(
+        classes.includes('pointer-events-none'),
+        'the collapsed stack does not intercept clicks across the page'
+      );
+      assert.true(
+        classes.includes('data-[expanded=true]:pointer-events-auto'),
+        'the expanded stack re-enables hit-testing to bridge the gap between cards'
+      );
     });
 
     test('it expands on focusin so hidden cards are reachable', async function (assert) {

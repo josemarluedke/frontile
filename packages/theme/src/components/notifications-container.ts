@@ -4,7 +4,8 @@ const notificationsContainer = tv({
   slots: {
     base: ['fixed z-1000 w-full max-w-lg px-4 py-4 pointer-events-none'],
     stack: [
-      'relative w-full',
+      'relative w-full pointer-events-none',
+      'data-[expanded=true]:pointer-events-auto',
       'transition-[height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
       'motion-reduce:transition-none'
     ]

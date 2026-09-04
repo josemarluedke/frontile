@@ -161,12 +161,12 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
     // i.e. mid-render, while other cards' geometry is still being read from
     // `this.heights` in the same computation. Deferring the write to the next
     // runloop turn avoids the "updated after being used" assertion. Note that
-    // `next()` schedules via `setTimeout(…, 0)`, which lands *after* the
-    // current frame paints — so the first painted frame still renders with
-    // `heights` empty (`containerHeight: 0px`, every collapsed card at
-    // `height: 0px`), corrected one macrotask later. Since the stack carries
-    // `transition-[height] duration-400`, that correction is a visible height
-    // animation from 0 on first appearance.
+    // `next()` schedules via a 1ms `_backburner.later(...)` timer, which lands
+    // *after* the current frame paints — so the first painted frame still
+    // renders with `heights` empty (`containerHeight: 0px`, every collapsed
+    // card at `height: 0px`), corrected one macrotask later. Since the stack
+    // carries `transition-[height] duration-400`, that correction is a
+    // visible height animation from 0 on first appearance.
     next(() => {
       if (this.isDestroying || this.isDestroyed) {
         return;
