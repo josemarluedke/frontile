@@ -639,6 +639,10 @@ Menu items deliberately carry no `aria-selected`: it is invalid on a plain `menu
 conveys state through `aria-checked` and only as `menuitemcheckbox` or `menuitemradio`. A
 menu is a list of commands rather than a set of choices.
 
+Menu items share the Listbox's roving `tabindex`: exactly one item carries `tabindex="0"` —
+the active one, falling back to the first selected item and then to the first item that is not
+disabled — and every other item is `-1`.
+
 Keys are handled in two places, which is worth knowing when debugging one that doesn't fire:
 
 | Focus is on the trigger | Behavior                                          |

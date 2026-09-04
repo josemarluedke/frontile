@@ -101,11 +101,14 @@ class ListboxItem extends Component<ListboxItemSignature> {
     }
   }
 
+  /**
+   * A roving tabindex: the manager nominates one option as the composite's tab
+   * stop and every other option stays out of the tab order, as the ARIA
+   * listbox pattern requires. Giving a `0` to each active *or selected* option
+   * turned a multi-select with eight selections into eight tab stops.
+   */
   get tabindex() {
-    if (this.listItem?.isActive || this.listItem?.isSelected) {
-      return 0;
-    }
-    return -1;
+    return this.manager.isTabStop(this.key) ? 0 : -1;
   }
 
   get classNames() {
