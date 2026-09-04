@@ -56,7 +56,8 @@ export default class RouteLoadingService extends Service {
 
     this.router.off('routeWillChange', this.start);
     this.router.off('routeDidChange', this.finish);
-    this.#clearTimers();
+    clearTimeout(this.#showTimer);
+    clearTimeout(this.#hideTimer);
   }
 
   /**
@@ -77,12 +78,10 @@ export default class RouteLoadingService extends Service {
     // the delay, which would blink it off and on again.
     if (this.isLoading) {
       clearTimeout(this.#hideTimer);
-      this.#hideTimer = undefined;
       return;
     }
 
     this.#showTimer = setTimeout(() => {
-      this.#showTimer = undefined;
       this.#shownAt = Date.now();
       this.isLoading = true;
     }, SHOW_DELAY);
@@ -93,7 +92,6 @@ export default class RouteLoadingService extends Service {
     this.#isTransitioning = false;
 
     clearTimeout(this.#showTimer);
-    this.#showTimer = undefined;
 
     if (!this.isLoading) {
       return;
@@ -106,17 +104,9 @@ export default class RouteLoadingService extends Service {
     }
 
     this.#hideTimer = setTimeout(() => {
-      this.#hideTimer = undefined;
       this.isLoading = false;
     }, remaining);
   };
-
-  #clearTimers(): void {
-    clearTimeout(this.#showTimer);
-    clearTimeout(this.#hideTimer);
-    this.#showTimer = undefined;
-    this.#hideTimer = undefined;
-  }
 }
 
 declare module '@ember/service' {

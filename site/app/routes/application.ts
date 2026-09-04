@@ -18,29 +18,23 @@ export default class Application extends Route {
    */
   @action
   didTransition(): void {
+    // Prerendering has nothing to scroll, and linkedom supplies no `scrollTo`.
+    // Guarding on the function itself is the pattern ssr/README.md prescribes;
+    // `window` is always defined, since a missing global fails the SSR build.
     if (
       config.environment === 'test' ||
-      typeof window === 'undefined' ||
       typeof window.scrollTo !== 'function'
     ) {
       return;
     }
 
-    const prefersReducedMotion = window.matchMedia?.(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)')
+      .matches
+      ? 'auto'
+      : 'smooth';
 
-    const scroll = (): void => {
-      window.scrollTo({
-        top: 0,
-        behavior: prefersReducedMotion ? 'auto' : 'smooth',
-      });
-    };
-
-    if (typeof window.requestAnimationFrame === 'function') {
-      window.requestAnimationFrame(scroll);
-    } else {
-      scroll();
-    }
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior });
+    });
   }
 }

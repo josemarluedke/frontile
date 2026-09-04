@@ -31,7 +31,6 @@ export default class DocfyRouteLoadingBar extends Component {
     >
       {{#if this.routeLoading.isLoading}}
         <VisuallyHidden>Loading page</VisuallyHidden>
-        {{! The bar is decorative; the text above is what gets announced. }}
         <div
           class="h-full w-1/2 animate-swing bg-primary shadow-[0_0_8px_1px_var(--color-primary)] motion-reduce:animate-none"
           aria-hidden="true"

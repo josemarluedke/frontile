@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { waitUntil } from '@ember/test-helpers';
-import type RouteLoadingService from 'site/services/route-loading';
 import { MIN_VISIBLE, SHOW_DELAY } from 'site/services/route-loading';
 
 function wait(ms: number): Promise<void> {
@@ -11,14 +10,8 @@ function wait(ms: number): Promise<void> {
 module('Unit | Service | route-loading', function (hooks) {
   setupTest(hooks);
 
-  function subject(context: object): RouteLoadingService {
-    return (
-      context as { owner: { lookup(name: string): RouteLoadingService } }
-    ).owner.lookup('service:route-loading');
-  }
-
   test('it stays quiet for a transition that settles inside the delay', async function (assert) {
-    const service = subject(this);
+    const service = this.owner.lookup('service:route-loading');
 
     service.start();
     service.finish();
@@ -28,7 +21,7 @@ module('Unit | Service | route-loading', function (hooks) {
   });
 
   test('it reports loading once a transition outlives the delay', async function (assert) {
-    const service = subject(this);
+    const service = this.owner.lookup('service:route-loading');
 
     service.start();
     await waitUntil(() => service.isLoading, { timeout: SHOW_DELAY + 1000 });
@@ -37,7 +30,7 @@ module('Unit | Service | route-loading', function (hooks) {
   });
 
   test('it holds the indicator for the minimum visible time', async function (assert) {
-    const service = subject(this);
+    const service = this.owner.lookup('service:route-loading');
 
     service.start();
     await waitUntil(() => service.isLoading, { timeout: SHOW_DELAY + 1000 });
@@ -53,7 +46,7 @@ module('Unit | Service | route-loading', function (hooks) {
   });
 
   test('a redirect mid-transition keeps the same wait', async function (assert) {
-    const service = subject(this);
+    const service = this.owner.lookup('service:route-loading');
 
     service.start();
     service.start();
@@ -66,7 +59,7 @@ module('Unit | Service | route-loading', function (hooks) {
   });
 
   test('a new transition while the bar is winding down keeps it up', async function (assert) {
-    const service = subject(this);
+    const service = this.owner.lookup('service:route-loading');
 
     service.start();
     await waitUntil(() => service.isLoading, { timeout: SHOW_DELAY + 1000 });
