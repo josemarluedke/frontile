@@ -537,6 +537,37 @@ export default class EmptySelection extends Component {
 }
 ```
 
+### Grouped Options
+
+`l.Group` renders a labelled section of options. It yields its own `Item`, and
+`@withDivider` draws a separator after the group.
+
+Grouping changes nothing about keyboard navigation: arrow keys traverse straight
+across group boundaries, because navigation order is derived from the document
+rather than from the nesting.
+
+```gts preview
+import { Listbox } from 'frontile';
+import { array } from '@ember/helper';
+
+<template>
+  <Listbox @selectionMode='single' @disabledKeys={{array 'calculator'}} as |l|>
+    <l.Group @title='Suggestions' @withDivider={{true}} as |g|>
+      <g.Item @key='calendar'>Calendar</g.Item>
+      <g.Item @key='emoji'>Search Emoji</g.Item>
+      <g.Item @key='calculator'>Calculator</g.Item>
+    </l.Group>
+    <l.Group @title='Settings' as |g|>
+      <g.Item @key='profile' @shortcut='⌘P'>Profile</g.Item>
+      <g.Item @key='billing' @shortcut='⌘B'>Billing</g.Item>
+    </l.Group>
+  </Listbox>
+</template>
+```
+
+A group without `@title` still groups its options but renders no heading, and
+carries no `aria-labelledby` — there would be nothing for it to point at.
+
 ## Accessibility
 
 | Element  | What it exposes                                                                                |
@@ -569,7 +600,19 @@ progress, so a space typed mid-search is treated as part of the search string ra
 a selection. And `@elementToAddKeyboardEvents` moves the key handling onto another element —
 that is how Select and Autocomplete keep focus in their input while driving the list.
 
+Groups render as `role="group"` labelled by their heading, with the list between
+the group and its options marked `role="none"` so the `listbox` → `option`
+ownership chain stays intact. A group with no `@title` carries no
+`aria-labelledby`.
+
 ## API
 
 <Signature @component="Listbox" />
+
+### Listbox::Group
+
+<Signature @component="ListboxGroup" />
+
+### Listbox::Item
+
 <Signature @component="ListboxItem" />

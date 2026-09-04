@@ -1,8 +1,14 @@
 # `Command` — a command palette / search component for Frontile
 
-**Status:** design approved, pending implementation plan
-**Date:** 2026-09-03
-**Research:** [`docs/superpowers/research/command-palette-prior-art.md`](../research/command-palette-prior-art.md)
+**Status:** implemented; amended during implementation
+
+> **How to read this.** §1-§6 and §9-§13 are requirements, agreed before the code.
+> §3's "Verified during implementation" block and §7.1 are an **as-built record** written
+> afterwards — they document what was measured and what was fixed, not what was asked for.
+> Where a later section describes the code rather than constraining it, treat the code as
+> the source of truth and this doc as commentary.
+> **Date:** 2026-09-03
+> **Research:** [`docs/superpowers/research/command-palette-prior-art.md`](../research/command-palette-prior-art.md)
 
 ---
 
@@ -20,18 +26,18 @@ predicate-based filtering, and Frontile ships it in two more places.
 `cmdk` (the React palette everyone copies) applies `PENALTY_NOT_COMPLETE = 0.99` **flat, once**,
 regardless of how many characters are left unmatched:
 
-| query | `Button` | `ButtonGroup` |
-| --- | --- | --- |
+| query         | `Button`   | `ButtonGroup`              |
+| ------------- | ---------- | -------------------------- |
 | `b` … `butto` | 0.98990100 | 0.98990100 — **exact tie** |
-| `button` | 0.99990000 | 0.98990100 |
+| `button`      | 0.99990000 | 0.98990100                 |
 
 For the entire time the user is typing a prefix, the two score bit-for-bit identically and the
 stable sort falls through to registration order. `ButtonGroup` does not out-rank `Button` on
 merit; there is no tiebreak at all. (`PENALTY_DISTANCE_FROM_START` is declared but never used, so
 there is no "match nearer the start" term either.)
 
-`fuse.js` has a different but related flaw: its Bitap error-distance model cannot express *how
-much of the target was left over*, so completeness is not representable at any threshold.
+`fuse.js` has a different but related flaw: its Bitap error-distance model cannot express _how
+much of the target was left over_, so completeness is not representable at any threshold.
 
 ### 1.2 The same bug in shipped Frontile components
 
@@ -71,12 +77,17 @@ Fixing ranking is therefore a library-wide improvement, not a docs-site patch.
 - Add group/section support to `Listbox` (currently absent), reused by all three.
 - Make the docs site the first real consumer; drop `fuse.js`.
 
+**Delivered beyond the original list**, after review: multi-field search
+(`@searchFields`, weighted max per §4.1 — `scoreRecord` itself was not needed), a `c.Footer`
+part with `Kbd`/`Hint`, and `@shortcut` accepting several bindings.
+
 **Non-goals (v1)**
 
 - Virtualized lists.
 - Nested / multi-page palettes ("push a subcommand view").
 - Vim bindings (`ctrl-n`/`ctrl-p`).
-- Recents persistence *inside the library* — see §10.
+- Recents persistence _inside the library_ — see §10.
+- `<mark>` match highlighting. The scorer can expose match indices, so this stays additive.
 
 ---
 
@@ -100,7 +111,7 @@ scorer does not exist.
 `fuzzysort` is chosen over `match-sorter` on two grounds:
 
 1. **API fit.** Our `@filter` contract (§4) is inherently per-item. `fuzzysort.single(query,
-   target)` returns a per-item score (`0.941` for `butt`/`Button` vs `0.875` for
+target)` returns a per-item score (`0.941` for `butt`/`Button` vs `0.875` for
    `butt`/`ButtonGroup`) and `null` for no match. `match-sorter` exports only array-in/array-out
    (`matchSorter`, `matchSorterWithRankInfo`) — there is no per-item scoring function, so it
    cannot implement the contract without redesigning it.
@@ -137,13 +148,13 @@ Two facts shape the fix:
    `threshold: 0.5`. Scoring one item at a time — which the `@filter` contract requires — silently
    opts out of the library's own quality bar. Verified: `go('sa', ['Spain'])` returns `[]` while
    `single('sa', 'Spain')` returns `0.358`.
-2. **A threshold alone is not safe.** Genuine substring matches score *below* 0.5 —
+2. **A threshold alone is not safe.** Genuine substring matches score _below_ 0.5 —
    `ma` -> `Guatemala` is 0.500, `an` -> `Netherlands` 0.462, `an` -> `Switzerland` 0.447 — so any
    useful threshold would drop results the old filter returned.
 
 So the default combines a threshold at fuzzysort's own `0.5` with a **substring floor**: an item
 whose label contains the query is scored at no less than the threshold, whatever fuzzysort thought
-of it. That makes the filter a *strict superset* of the old `includes()` default **by construction
+of it. That makes the filter a _strict superset_ of the old `includes()` default **by construction
 rather than by measurement** — raising the threshold can never make an old result disappear, it can
 only remove matches that are new.
 
@@ -204,7 +215,7 @@ Behavior: a blank or whitespace-only query returns `items` untouched; results ar
 score (`true` -> `1`, `false` -> `0`, numbers as-is, anything `<= 0` or `NaN` dropped) and then
 **stable**-sorted descending.
 
-Normalizing `true` to a *full* match matters: recording it as `0` — as a first cut did — sorted
+Normalizing `true` to a _full_ match matters: recording it as `0` — as a first cut did — sorted
 every boolean match below every numeric one, including the very weakest. And because the sort is
 stable, a purely boolean filter scores every match identically and therefore preserves the order of
 `@items` exactly, so backwards compatibility falls out of the normalization instead of needing a
@@ -233,11 +244,15 @@ Glimmer's keyed `{{#each}}` over sorted data reorders and omits natively.
 Two legitimate models, both supported:
 
 - **Pinned order** (`@groups={{array "Recent" "Navigation"}}`) — the named groups are hoisted to
-  the top in that order. Groups *not* named still render after them, ranked; pinning must not be
+  the top in that order. Groups _not_ named still render after them, ranked; pinning must not be
   able to hide results, which is why this pins rather than filters.
 - **Best-match order** (default when `@groups` is omitted) — rank globally, then partition by
-  group key, ordering groups by their best-scoring member. This is what docs search wants: an
-  exact `Button` hit should top the list regardless of category.
+  group key, ordering groups by their best-scoring member.
+
+  The docs site deliberately does _not_ take this default: it pins `Recent` and `Navigation`,
+  because a section jump the user typed the name of ("theming") is more useful at the top than
+  a page that merely scores well. Pinning affects group order only — within a group, and among
+  the unpinned groups, ranking still decides.
 
 `@groupBy` is a key name or a function over the record.
 
@@ -266,7 +281,7 @@ grouping pattern:
 Implemented as `<l.Group @title="..." @withDivider={{true}} as |g|>` yielding a manager-bound
 `g.Item`. `@title` follows the `ListboxSection`-style naming this component family mirrors, rather
 than cmdk's `heading`; note Frontile otherwise uses `@label` for visible text labels, but that is
-consistently a *form control* label, which a section heading is not.
+consistently a _form control_ label, which a section heading is not.
 
 The heading `<span>` carries no ARIA role — a `span` has none to suppress, and `aria-labelledby`
 takes its accessible name from the text regardless.
@@ -308,12 +323,12 @@ Exposed as a theme variant.
 `Dropdown` will eventually need nested sub-lists. **Groups must not be stretched to serve that
 case.** They differ on every axis:
 
-| | Groups (this spec) | Submenus (future) |
-| --- | --- | --- |
-| ARIA | `role="group"` + `aria-labelledby` | nested `role="menu"`; parent gets `aria-haspopup` / `aria-expanded` |
-| Keyboard | none — one flat traversal | `->` enters, `<-` exits; each level has its own active item |
-| Rendering | inline | portaled popover |
-| `ListManager` | one, unchanged | one **per level** |
+|               | Groups (this spec)                 | Submenus (future)                                                   |
+| ------------- | ---------------------------------- | ------------------------------------------------------------------- |
+| ARIA          | `role="group"` + `aria-labelledby` | nested `role="menu"`; parent gets `aria-haspopup` / `aria-expanded` |
+| Keyboard      | none — one flat traversal          | `->` enters, `<-` exits; each level has its own active item         |
+| Rendering     | inline                             | portaled popover                                                    |
+| `ListManager` | one, unchanged                     | one **per level**                                                   |
 
 The decisive constraint is the DOM-order derivation above. `Popover` portals by default
 (`renderInPlace` is opt-in), so a submenu's options are siblings of `<body>`, not descendants of
@@ -340,13 +355,13 @@ right-aligned `⌘P` uses the existing `@shortcut` arg and its `shortcut` tv slo
 `Command` adopts `Autocomplete`'s existing, proven contract verbatim rather than importing cmdk's
 vocabulary (`shouldFilter`):
 
-| Arg | Behavior |
-| --- | --- |
+| Arg                                       | Behavior                                                                              |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
 | `@onSearch(query) => Promise<T[]> \| T[]` | Debounced; stale responses discarded (latest query wins); disables built-in filtering |
-| `@searchDebounce` | Default `250` |
-| `@isLoading` | Renders `<c.Loading>` |
-| `@disableFiltering` | Render `@items` as-is |
-| `@inputValue` / `@onInputChange` | Controlled text |
+| `@searchDebounce`                         | Default `250`                                                                         |
+| `@isLoading`                              | Renders `<c.Loading>`                                                                 |
+| `@disableFiltering`                       | Render `@items` as-is                                                                 |
+| `@inputValue` / `@onInputChange`          | Controlled text                                                                       |
 
 Blank-query async state renders a "start typing" prompt, mirroring `isSearchPromptState`.
 
@@ -358,17 +373,33 @@ Blank-query async state renders a "start typing" prompt, mirroring `isSearchProm
 `Listbox` + `ListManager`), swapping the popover for an overlay:
 
 ```gts
-<Command::Dialog @isOpen={{this.isOpen}} @onClose={{this.close}} @shortcut="mod+k" as |c|>
+<CommandDialog
+  @isOpen={{this.isOpen}}
+  @onClose={{this.close}}
+  @shortcut={{array "/" "mod+k"}}
+  @items={{this.records}}
+  @groupBy="category"
+  @searchFields={{this.searchFields}}
+  as |c|
+>
   <c.Input @placeholder="Type a command or search…" />
-  <c.List @items={{this.records}} @groupBy="category" as |item|>
-    <c.Item @key={{item.id}} @shortcut={{item.shortcut}} @onSelect={{this.go}}>
-      <:start><item.Icon /></:start>
-      <:default>{{item.title}}</:default>
-    </c.Item>
+  <c.List>
+    <:item as |ctx|>
+      <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
+        <:start><ctx.item.Icon /></:start>
+        <:default>{{ctx.label}}</:default>
+      </ctx.Item>
+    </:item>
+    <:empty>No results</:empty>
   </c.List>
   <c.Footer />
-</Command::Dialog>
+</CommandDialog>
 ```
+
+**`@items` sits on the root, not on `<c.List>`.** The earlier draft put it on the list, but
+`@onSearch` produces items in the root, so a list that owned `@items` could never receive async
+results. `<c.List>` still owns the keyed `{{#each}}` and the grouping; it reads results from the
+root. Items reach the `:item` block rather than being written as children.
 
 `<c.List>` wraps `Listbox`; `<c.Item>` wraps `ListboxItem`, inheriting its `role`,
 `aria-selected`, stable `itemId` and tv slots. `<Command>` is usable without the dialog for inline
@@ -379,7 +410,7 @@ palettes.
 ## 7.1 Visual design (as built)
 
 The first cut was verified by DOM state and tests but never actually looked at, and it looked
-poor. The rebuilt design follows shadcn's *site* command menu (the version with the inset
+poor. The rebuilt design follows shadcn's _site_ command menu (the version with the inset
 search field), mapped onto Frontile tokens:
 
 - **Panel**: `p-2`, `rounded-xl`, `bg-surface-modal`, `border-surface-overlay-mild`, plus
@@ -392,7 +423,10 @@ search field), mapped onto Frontile tokens:
   render as plain muted text (`tracking-widest`, no keycap border); leading `<svg>`s are
   `size-4 text-neutral` unless the consumer sizes/colors them.
 - **Group headings**: `text-body-2xs font-medium text-neutral` (medium, not the semibold label
-  face), inset `px-3 pt-2 pb-1`; dividers between groups get `my-1`.
+  face), inset and block-level (an inline `<span>` paints vertical padding without occupying
+  space, which is what made the sections look cramped); dividers between groups get `my-1`.
+  Exact values live in `packages/theme/src/components/command.ts` — not restated here, since a
+  restated value is a value that goes stale.
 - **Footer** (`c.Footer`, new part): `h-10` bar bleeding to the panel edges
   (`-mx-2 -mb-2`), `bg-neutral-subtle/60 border-t`, `text-body-2xs font-medium text-neutral`,
   with `Kbd` keycaps (`h-5 rounded border bg-surface-modal text-[0.7rem]`). Default content is
@@ -405,7 +439,7 @@ Four bugs found only by looking, all now covered by tests or verified in the bro
 
 1. `@disableFlexContent` on `Overlay` stripped `fixed inset-0`, so the dialog rendered in-flow
    at the bottom of the page with no backdrop.
-2. The dialog bound tv slot *functions* to `class` without invoking them, so the panel had no
+2. The dialog bound tv slot _functions_ to `class` without invoking them, so the panel had no
    styles at all.
 3. `overlay-transition--command-*` classes were never emitted: ember-css-transitions composes
    class names at runtime, so Tailwind cannot see them — every overlay transition must be
@@ -506,10 +540,10 @@ Written in this order:
 
 ## 13. Risks
 
-| Risk | Mitigation |
-| --- | --- |
-| `defaultFilter` change reorders results in shipped components | Documented in v0.18 migration guide; boolean `@filter` restores old behavior; regression tests |
-| `ListManager` `isActive` flake, aggravated by re-ranking | Explicit test early; fall back to a Command-local registry if it proves unstable |
-| Fuzzy matching is looser than `includes()`, admitting noise | Threshold at fuzzysort's own 0.5 **plus** a substring floor, so the filter is a superset of the old behavior by construction; property test over a corpus |
-| A `@filter` mixing booleans and numbers orders incoherently | `true` normalizes to a full match; single stable sort for every case |
-| Listbox group markup regresses existing `Listbox` a11y | Groups are opt-in; existing ungrouped markup path unchanged and still tested |
+| Risk                                                          | Mitigation                                                                                                                                                |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `defaultFilter` change reorders results in shipped components | Documented in v0.18 migration guide; boolean `@filter` restores old behavior; regression tests                                                            |
+| `ListManager` `isActive` flake, aggravated by re-ranking      | Explicit test early; fall back to a Command-local registry if it proves unstable                                                                          |
+| Fuzzy matching is looser than `includes()`, admitting noise   | Threshold at fuzzysort's own 0.5 **plus** a substring floor, so the filter is a superset of the old behavior by construction; property test over a corpus |
+| A `@filter` mixing booleans and numbers orders incoherently   | `true` normalizes to a full match; single stable sort for every case                                                                                      |
+| Listbox group markup regresses existing `Listbox` a11y        | Groups are opt-in; existing ungrouped markup path unchanged and still tested                                                                              |

@@ -44,6 +44,7 @@ export interface CommandApi<T> {
     | 'classes'
     | 'size'
     | 'isLoading'
+    | 'isSearchPrompt'
     | 'inputElement'
     | 'disabledKeys'
     | 'onSelect'
@@ -81,6 +82,16 @@ export interface CommandSignature<T> {
      * filter; see {@link FilterFn}.
      */
     filter?: FilterFn;
+
+    /**
+     * The text searched for each item. Defaults to its label.
+     *
+     * Return several fields to search more than the label — a category, say, or
+     * keywords. The first is primary; the rest are down-weighted and combined
+     * by max, so a weak hit on a secondary field never outranks a strong hit on
+     * the label.
+     */
+    searchFields?: (item: T) => string[];
 
     /**
      * Render `@items` as given, without filtering or ranking. Use with
@@ -250,7 +261,8 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
       filterAndRankItems(
         this.args.items,
         this.query,
-        (item) => keyAndLabelForItem(item).label,
+        (item) =>
+          this.args.searchFields?.(item) ?? keyAndLabelForItem(item).label,
         this.args.filter
       ) ?? []
     );
@@ -268,6 +280,19 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
    */
   get hasResults(): boolean {
     return this.resultCount > 0;
+  }
+
+  /**
+   * An async palette with nothing typed has nothing to show and no results to
+   * report — the moment to ask for a query rather than claim emptiness.
+   */
+  get isSearchPrompt(): boolean {
+    return (
+      typeof this.args.onSearch === 'function' &&
+      !this.query.trim() &&
+      !this.isLoading &&
+      this.resultCount === 0
+    );
   }
 
   @tracked announcement = '';
@@ -380,8 +405,9 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
 
   get baseClass(): string {
     const { command } = useStyles();
+    // No size fallback: the theme's `defaultVariants` owns the default.
     const { base } = command({
-      size: this.args.size || 'md',
+      size: this.args.size,
       isBordered: this.args.isBordered
     });
 
@@ -427,6 +453,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
             id=this.listId
             size=@size
             isLoading=this.isLoading
+            isSearchPrompt=this.isSearchPrompt
             inputElement=this.inputElement
             disabledKeys=@disabledKeys
             onSelect=this.handleSelect

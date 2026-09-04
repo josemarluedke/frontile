@@ -3,6 +3,7 @@ import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { Listbox } from '../listbox/listbox';
 import { Spinner } from '../../utilities/spinner';
+import { Divider } from '../../utilities/divider';
 import { keyAndLabelForItem, type ListItem } from '../../../utils/listManager';
 import type { CommandGroup } from './command';
 import type { ListboxItem } from '../listbox/item';
@@ -25,6 +26,8 @@ export interface CommandListSignature<T> {
     /** @internal bound by Command */
     isLoading?: boolean;
     /** @internal bound by Command */
+    isSearchPrompt?: boolean;
+    /** @internal bound by Command */
     inputElement?: HTMLInputElement;
     /** @internal bound by Command */
     onSelect?: (key: string) => void;
@@ -40,6 +43,8 @@ export interface CommandListSignature<T> {
     item: [{ item: T; key: string; label: string; Item: ItemCompBounded }];
     empty: [];
     loading: [];
+    /** Shown by an async palette before anything has been typed. */
+    prompt: [];
   };
 }
 
@@ -73,7 +78,8 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
 
   get classNames() {
     const { command } = useStyles();
-    return command({ size: this.args.size || 'md' });
+    // No size fallback: the theme's `defaultVariants` owns the default.
+    return command({ size: this.args.size });
   }
 
   <template>
@@ -87,6 +93,17 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
         {{else}}
           <Spinner @size="sm" />
           Searching…
+        {{/if}}
+      </div>
+    {{else if @isSearchPrompt}}
+      <div
+        class={{this.classNames.empty class=@classes.empty}}
+        data-test-id="command-prompt"
+      >
+        {{#if (has-block "prompt")}}
+          {{yield to="prompt"}}
+        {{else}}
+          Start typing to search.
         {{/if}}
       </div>
     {{else if this.isEmpty}}
@@ -149,6 +166,11 @@ class CommandList<T = unknown> extends Component<CommandListSignature<T>> {
                 }}
               {{/let}}
             {{/each}}
+            {{! Ungrouped items render without a Group wrapper, so their
+                separator has to come from here or it goes missing. }}
+            {{#if group.withDivider}}
+              <Divider @as="li" @class="my-1" />
+            {{/if}}
           {{/if}}
         {{/each}}
       </Listbox>

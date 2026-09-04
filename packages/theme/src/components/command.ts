@@ -109,7 +109,7 @@ const command = tv({
       'rounded border border-neutral-soft',
       'bg-surface-modal',
       'px-1',
-      'font-body text-[0.7rem] font-medium',
+      'font-body text-body-4xs font-medium',
       'text-neutral',
       '[&_svg]:size-3'
     ]

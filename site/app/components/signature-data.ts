@@ -13811,6 +13811,18 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-number">250</span>',
       },
       {
+        identifier: 'searchFields',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">item</span>: T) => <span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The text searched for each item. Defaults to its label.</p>\n<p>Return several fields to search more than the label — a category, say, or\nkeywords. The first is primary; the rest are down-weighted and combined\nby max, so a weak hit on a secondary field never outranks a strong hit on\nthe label.</p>',
+        tags: {},
+      },
+      {
         identifier: 'size',
         type: {
           type: '<span class="hljs-keyword">enum</span>',
@@ -13887,7 +13899,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'List',
                     type: {
-                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
+                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, isSearchPrompt, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -14164,12 +14176,28 @@ const data: ComponentDoc[] = [
         defaultValue: '<span class="hljs-number">250</span>',
       },
       {
-        identifier: 'shortcut',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        identifier: 'searchFields',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">item</span>: T) => <span class="hljs-built_in">string</span>[]',
+        },
         isRequired: false,
         isInternal: false,
         description:
-          '<p>Opens the palette from anywhere in the document, e.g. <code>"mod+k"</code> or\n<code>"/"</code>. Requires <code>@onOpen</code>.</p>\n<p>An unmodified shortcut is ignored while the user is typing in a field,\nso <code>/</code> still types a slash in a text input.</p>',
+          '<p>The text searched for each item. Defaults to its label.</p>\n<p>Return several fields to search more than the label — a category, say, or\nkeywords. The first is primary; the rest are down-weighted and combined\nby max, so a weak hit on a secondary field never outranks a strong hit on\nthe label.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'shortcut',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+          items: ['string', 'string[]'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Opens the palette from anywhere in the document, e.g. <code>"mod+k"</code> or\n<code>"/"</code>. Requires <code>@onOpen</code>. Pass an array to accept more than one.</p>\n<p>An unmodified shortcut is ignored while the user is typing in a field,\nso <code>/</code> still types a slash in a text input.</p>',
         tags: {},
       },
       {
@@ -14249,7 +14277,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'List',
                     type: {
-                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
+                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, isSearchPrompt, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -14325,6 +14353,49 @@ const data: ComponentDoc[] = [
   {
     package: 'unknown',
     module: 'footer',
+    name: 'CommandHint',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: { name: 'internal', value: 'bound by CommandFooter' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description: '<p>One hint: a keycap or two and a label.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'footer',
     name: 'CommandFooter',
     fileName:
       'packages/frontile/declarations/components/collections/command/footer.d.ts',
@@ -14345,7 +14416,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">Kbd</span>: <span class="hljs-title class_">CommandKbd</span> (classes bound); }]',
+          raw: '[{ <span class="hljs-title class_">Kbd</span>: <span class="hljs-title class_">CommandKbd</span> (classes bound); <span class="hljs-title class_">Hint</span>: <span class="hljs-title class_">CommandHint</span> (classes bound); }]',
           items: [
             {
               identifier: '0',
@@ -14356,6 +14427,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Kbd',
                     type: {
                       type: '<span class="hljs-title class_">CommandKbd</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Hint',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandHint</span> (classes bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -14416,6 +14497,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'controlsId',
         type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'hasResults',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
         isRequired: false,
         isInternal: true,
         description: '',
@@ -14559,6 +14648,14 @@ const data: ComponentDoc[] = [
         tags: { internal: { name: 'internal', value: 'bound by Command' } },
       },
       {
+        identifier: 'isSearchPrompt',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
         identifier: 'onActiveItemChange',
         type: {
           type: '<span class="hljs-keyword">function</span>',
@@ -14675,6 +14772,19 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'prompt',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Shown by an async palette before anything has been typed.',
         tags: {},
       },
     ],

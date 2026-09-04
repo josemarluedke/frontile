@@ -106,6 +106,14 @@ export function createFuzzyFilter(
 export const defaultFilter = createFuzzyFilter();
 
 /**
+ * Weight applied to every field after the first.
+ *
+ * Fields are combined by weighted **max**, never by sum: summing lets three
+ * weak field hits outrank one exact hit on the primary field.
+ */
+export const SECONDARY_FIELD_WEIGHT = 0.6;
+
+/**
  * Normalize whatever a {@link FilterFn} returned into a score.
  *
  * `true` is a full match rather than a zero one — without this, a filter that
@@ -122,6 +130,26 @@ function toScore(result: boolean | number): number {
   return result ? 1 : 0;
 }
 
+/** Weighted max across fields; see {@link SECONDARY_FIELD_WEIGHT}. */
+function scoreFields(
+  values: string | string[],
+  query: string,
+  filter: FilterFn
+): number {
+  if (typeof values === 'string') {
+    return toScore(filter(values, query));
+  }
+
+  let best = 0;
+
+  values.forEach((value, index) => {
+    const weight = index === 0 ? 1 : SECONDARY_FIELD_WEIGHT;
+    best = Math.max(best, toScore(filter(value, query)) * weight);
+  });
+
+  return best;
+}
+
 /**
  * Filter `items` by `query`, ordering them by relevance.
  *
@@ -134,13 +162,15 @@ function toScore(result: boolean | number): number {
  *
  * @param items - The items to filter.
  * @param query - The user's input text.
- * @param labelFor - Extracts the text to match against.
+ * @param labelFor - Extracts the text to match against. Return an array to
+ * search several fields; the first is the primary one and the rest are
+ * weighted by {@link SECONDARY_FIELD_WEIGHT}, combined by max.
  * @param filter - Scores one item; defaults to {@link defaultFilter}.
  */
 export function filterAndRankItems<T>(
   items: T[] | undefined,
   query: string,
-  labelFor: (item: T) => string,
+  labelFor: (item: T) => string | string[],
   filter: FilterFn = defaultFilter
 ): T[] | undefined {
   if (!items || !query.trim()) {
@@ -150,7 +180,7 @@ export function filterAndRankItems<T>(
   const matched: { item: T; score: number }[] = [];
 
   for (const item of items) {
-    const score = toScore(filter(labelFor(item), query));
+    const score = scoreFields(labelFor(item), query, filter);
 
     if (score > 0) {
       matched.push({ item, score });

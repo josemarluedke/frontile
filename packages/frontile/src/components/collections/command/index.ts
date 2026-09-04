@@ -10,7 +10,9 @@ export { CommandDialog, type CommandDialogSignature } from './dialog';
 export {
   CommandFooter,
   CommandKbd,
+  CommandHint,
   type CommandFooterSignature,
-  type CommandKbdSignature
+  type CommandKbdSignature,
+  type CommandHintSignature
 } from './footer';
 export { Command as default } from './command';

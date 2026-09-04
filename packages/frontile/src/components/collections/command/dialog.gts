@@ -67,12 +67,12 @@ export interface CommandDialogSignature<T> {
 
     /**
      * Opens the palette from anywhere in the document, e.g. `"mod+k"` or
-     * `"/"`. Requires `@onOpen`.
+     * `"/"`. Requires `@onOpen`. Pass an array to accept more than one.
      *
      * An unmodified shortcut is ignored while the user is typing in a field,
      * so `/` still types a slash in a text input.
      */
-    shortcut?: string;
+    shortcut?: string | string[];
 
     onOpen?: () => void;
 
@@ -92,12 +92,21 @@ class CommandDialog<T = unknown> extends Component<CommandDialogSignature<T>> {
     const handler = (event: KeyboardEvent) => {
       const { shortcut } = this.args;
 
-      if (!shortcut || !matchesShortcut(event, shortcut)) {
+      if (!shortcut) {
+        return;
+      }
+
+      const shortcuts = Array.isArray(shortcut) ? shortcut : [shortcut];
+      const matched = shortcuts.find((candidate) =>
+        matchesShortcut(event, candidate)
+      );
+
+      if (!matched) {
         return;
       }
 
       // A bare character shortcut must not steal keystrokes from a field.
-      if (!shortcut.includes('+') && isTypingInField(event.target)) {
+      if (!matched.includes('+') && isTypingInField(event.target)) {
         return;
       }
 
@@ -147,6 +156,7 @@ class CommandDialog<T = unknown> extends Component<CommandDialogSignature<T>> {
             @groupBy={{@groupBy}}
             @groups={{@groups}}
             @filter={{@filter}}
+            @searchFields={{@searchFields}}
             @disableFiltering={{@disableFiltering}}
             @query={{@query}}
             @onQueryChange={{@onQueryChange}}

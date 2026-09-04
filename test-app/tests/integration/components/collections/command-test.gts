@@ -29,6 +29,8 @@ const DOCS: Doc[] = [
   { key: 'billing', label: 'Billing', category: 'Settings' }
 ];
 
+const searchTitleAndCategory = (doc: Doc) => [doc.label, doc.category];
+
 function renderedKeys(): (string | undefined)[] {
   return [...document.querySelectorAll('[data-component="listbox-item"]')].map(
     (el) => (el as HTMLElement).dataset['key']
@@ -321,7 +323,6 @@ module(
       assert.dom(announcer).hasAttribute('role', 'status');
 
       await fillIn('[data-test-id="command-input"]', 'button');
-      await settled();
       assert
         .dom(announcer)
         .hasText(
@@ -330,7 +331,6 @@ module(
         );
 
       await fillIn('[data-test-id="command-input"]', 'zzzzzz');
-      await settled();
       assert.dom(announcer).hasText('No results found');
     });
 
@@ -484,6 +484,160 @@ module(
         .doesNotIncludeText('Navigate');
     });
 
+    test('the active item resets to the first result when the list re-ranks', async function (assert) {
+      await render(
+        <template>
+          <Command @items={{DOCS}} as |c|>
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      const activeKey = () =>
+        (
+          document.querySelector(
+            '[data-component="listbox-item"][data-active="true"]'
+          ) as HTMLElement | null
+        )?.dataset['key'];
+
+      // Move off the first item, then re-rank by typing.
+      await triggerKeyEvent(
+        '[data-test-id="command-input"]',
+        'keydown',
+        'ArrowDown'
+      );
+      await triggerKeyEvent(
+        '[data-test-id="command-input"]',
+        'keydown',
+        'ArrowDown'
+      );
+      const before = activeKey();
+
+      await fillIn('[data-test-id="command-input"]', 'button');
+
+      assert.notStrictEqual(
+        activeKey(),
+        undefined,
+        'something is still active after re-ranking'
+      );
+      assert.strictEqual(
+        activeKey(),
+        renderedKeys()[0],
+        `the active item is the new first result (was ${before})`
+      );
+    });
+
+    test('the active item survives repeated re-ranking', async function (assert) {
+      // ListManager tracks the active item through DOM writes, and Glimmer can
+      // fire focusout synchronously mid-render — a known flake source. Typing
+      // character by character re-ranks on every keystroke.
+      await render(
+        <template>
+          <Command @items={{DOCS}} @groupBy="category" as |c|>
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      for (const query of ['b', 'bu', 'but', 'butt', 'butto', 'button']) {
+        await fillIn('[data-test-id="command-input"]', query);
+
+        assert.strictEqual(
+          document.querySelectorAll(
+            '[data-component="listbox-item"][data-active="true"]'
+          ).length,
+          1,
+          `exactly one active item after typing "${query}"`
+        );
+        assert.strictEqual(
+          (
+            document.querySelector(
+              '[data-component="listbox-item"][data-active="true"]'
+            ) as HTMLElement
+          ).dataset['key'],
+          renderedKeys()[0],
+          `and it is the top result for "${query}"`
+        );
+      }
+    });
+
+    test('it searches secondary fields without letting them outrank the label', async function (assert) {
+      const onSelect = (key: string) => assert.step(key);
+
+      await render(
+        <template>
+          <Command
+            @items={{DOCS}}
+            @searchFields={{searchTitleAndCategory}}
+            @onSelect={{onSelect}}
+            as |c|
+          >
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      // "Settings" is a category on two items and also the label of none here,
+      // so a category-only query must still find them.
+      await fillIn('[data-test-id="command-input"]', 'settings');
+      assert.deepEqual(
+        renderedKeys().sort(),
+        ['billing', 'profile'],
+        'a category match is found via the secondary field'
+      );
+
+      // But an exact label hit still beats a category hit.
+      await fillIn('[data-test-id="command-input"]', 'button');
+      assert.strictEqual(
+        renderedKeys()[0],
+        'button',
+        'the label match stays on top'
+      );
+    });
+
+    module('async', function () {
+      test('it prompts for a query before anything is typed', async function (assert) {
+        const onSearch = () => Promise.resolve([] as Doc[]);
+
+        await render(
+          <template>
+            <Command @onSearch={{onSearch}} @searchDebounce={{0}} as |c|>
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+                <:empty>No matches.</:empty>
+              </c.List>
+            </Command>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="command-prompt"]')
+          .hasText(
+            'Start typing to search.',
+            'not "no results" before searching'
+          );
+        assert.dom('[data-test-id="command-empty"]').doesNotExist();
+      });
+    });
+
     module('dialog', function (hooks) {
       hooks.before(function () {
         // Other test modules register a bare `overlay` style, and that
@@ -602,6 +756,47 @@ module(
         );
 
         assert.strictEqual(isOpen.current, false, 'Escape closed it');
+      });
+
+      test('it accepts more than one shortcut', async function (assert) {
+        const isOpen = cell(false);
+        const open = () => (isOpen.current = true);
+
+        await render(
+          <template>
+            <CommandDialog
+              @isOpen={{isOpen.current}}
+              @onOpen={{open}}
+              @shortcut={{array "/" "mod+k"}}
+              @items={{DOCS}}
+              @disableTransitions={{true}}
+              as |c|
+            >
+              <c.Input />
+            </CommandDialog>
+          </template>
+        );
+
+        const isApple = /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
+        document.body.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'k',
+            metaKey: isApple,
+            ctrlKey: !isApple,
+            bubbles: true
+          })
+        );
+        await settled();
+        assert.strictEqual(isOpen.current, true, 'mod+k opens it');
+
+        isOpen.current = false;
+        await settled();
+
+        document.body.dispatchEvent(
+          new KeyboardEvent('keydown', { key: '/', bubbles: true })
+        );
+        await settled();
+        assert.strictEqual(isOpen.current, true, 'and so does "/"');
       });
 
       test('an unmodified shortcut does not steal keystrokes from a field', async function (assert) {

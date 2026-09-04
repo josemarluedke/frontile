@@ -4,7 +4,7 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import { array } from '@ember/helper';
 import { DocfyService } from '@docfy/ember';
-import { CommandDialog } from 'frontile';
+import { CommandDialog, VisuallyHidden } from 'frontile';
 import {
   RocketIcon,
   PaletteIcon,
@@ -158,6 +158,13 @@ export default class DocfyJumpTo extends Component {
   }
 
   /**
+   * Search the page title and its section, matching the fields the previous
+   * Fuse index covered (`['title', 'parentLabel']`). Title is primary, so a
+   * section match never outranks a title match.
+   */
+  searchFields = (item: PaletteRecord): string[] => [item.label, item.section];
+
+  /**
    * With no query, offer somewhere to go: what you were last reading, then the
    * top-level sections. Once the user types, search every page as well.
    */
@@ -223,6 +230,7 @@ export default class DocfyJumpTo extends Component {
       >
         /
       </code>
+      <VisuallyHidden>or Command K</VisuallyHidden>
     </button>
 
     <CommandDialog
@@ -230,8 +238,9 @@ export default class DocfyJumpTo extends Component {
       @onOpen={{this.open}}
       @onClose={{this.close}}
       @onSelect={{this.select}}
-      @shortcut="/"
+      @shortcut={{array "/" "mod+k"}}
       @items={{this.items}}
+      @searchFields={{this.searchFields}}
       @groupBy="section"
       {{! Recent and Navigation stay on top; matching pages follow by relevance. }}
       @groups={{array RECENT NAVIGATION}}
@@ -256,11 +265,9 @@ export default class DocfyJumpTo extends Component {
         </:empty>
       </c.List>
       <c.Footer as |f|>
-        <span class="flex items-center gap-1.5"><f.Kbd>↑</f.Kbd><f.Kbd>↓</f.Kbd>
-          Navigate</span>
-        <span class="flex items-center gap-1.5"><f.Kbd>↵</f.Kbd>
-          Go to page</span>
-        <span class="flex items-center gap-1.5"><f.Kbd>Esc</f.Kbd> Close</span>
+        <f.Hint><f.Kbd>↑</f.Kbd><f.Kbd>↓</f.Kbd> Navigate</f.Hint>
+        <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
+        <f.Hint><f.Kbd>Esc</f.Kbd> Close</f.Hint>
       </c.Footer>
     </CommandDialog>
   </template>

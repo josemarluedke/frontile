@@ -28,6 +28,27 @@ function kbdClass(classes?: SlotsToClasses<CommandSlots>): string {
   return command().kbd({ class: classes?.kbd });
 }
 
+export interface CommandHintSignature {
+  Args: {
+    /** @internal bound by CommandFooter */
+    classes?: SlotsToClasses<CommandSlots>;
+  };
+  Element: HTMLElement;
+  Blocks: { default: [] };
+}
+
+/** One hint: a keycap or two and a label. */
+const CommandHint: TOC<CommandHintSignature> = <template>
+  <span class={{hintClass @classes}} data-test-id="command-hint" ...attributes>
+    {{yield}}
+  </span>
+</template>;
+
+function hintClass(classes?: SlotsToClasses<CommandSlots>): string {
+  const { command } = useStyles();
+  return command().footerHint({ class: classes?.footerHint });
+}
+
 export interface CommandFooterSignature {
   Args: {
     /** @internal bound by Command */
@@ -39,7 +60,12 @@ export interface CommandFooterSignature {
      * Replaces the default hints. Yields a `Kbd` keycap so custom hints match
      * the built-in ones.
      */
-    default: [{ Kbd: WithBoundArgs<typeof CommandKbd, 'classes'> }];
+    default: [
+      {
+        Kbd: WithBoundArgs<typeof CommandKbd, 'classes'>;
+        Hint: WithBoundArgs<typeof CommandHint, 'classes'>;
+      }
+    ];
   };
 }
 
@@ -66,7 +92,12 @@ class CommandFooter extends Component<CommandFooterSignature> {
       ...attributes
     >
       {{#if (has-block)}}
-        {{yield (hash Kbd=(component CommandKbd classes=@classes))}}
+        {{yield
+          (hash
+            Kbd=(component CommandKbd classes=@classes)
+            Hint=(component CommandHint classes=@classes)
+          )
+        }}
       {{else}}
         <span class={{this.classNames.hint}}>
           <CommandKbd @classes={{@classes}} aria-label="Arrow up">↑</CommandKbd>
@@ -89,5 +120,5 @@ class CommandFooter extends Component<CommandFooterSignature> {
   </template>
 }
 
-export { CommandFooter, CommandKbd };
+export { CommandFooter, CommandKbd, CommandHint };
 export default CommandFooter;

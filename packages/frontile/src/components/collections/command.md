@@ -18,22 +18,61 @@ import { Command, CommandDialog } from 'frontile';
 ## Usage
 
 The usual form is a dialog, opened from a button or from a keyboard shortcut anywhere on the
-page. `mod` is Cmd on Apple platforms and Ctrl elsewhere — press it now.
+page. `mod` is Cmd on Apple platforms and Ctrl elsewhere — press it now. Pass an array to
+accept several, e.g. `@shortcut={{array "/" "mod+k"}}`.
 
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { CommandDialog, Button } from 'frontile';
-import { UserIcon, StarIcon, SearchIcon, CodeIcon } from 'site/components/icons';
+import {
+  UserIcon,
+  StarIcon,
+  SearchIcon,
+  CodeIcon
+} from 'site/components/icons';
 
 const commands = [
-  { key: 'calendar', label: 'Calendar', section: 'Suggestions', Icon: StarIcon },
-  { key: 'search-emoji', label: 'Search Emoji', section: 'Suggestions', Icon: SearchIcon },
-  { key: 'calculator', label: 'Calculator', section: 'Suggestions', Icon: CodeIcon },
-  { key: 'profile', label: 'Profile', section: 'Settings', Icon: UserIcon, shortcut: '⌘P' },
-  { key: 'billing', label: 'Billing', section: 'Settings', Icon: CodeIcon, shortcut: '⌘B' },
-  { key: 'settings', label: 'Settings', section: 'Settings', Icon: CodeIcon, shortcut: '⌘S' }
+  {
+    key: 'calendar',
+    label: 'Calendar',
+    section: 'Suggestions',
+    Icon: StarIcon
+  },
+  {
+    key: 'search-emoji',
+    label: 'Search Emoji',
+    section: 'Suggestions',
+    Icon: SearchIcon
+  },
+  {
+    key: 'calculator',
+    label: 'Calculator',
+    section: 'Suggestions',
+    Icon: CodeIcon
+  },
+  {
+    key: 'profile',
+    label: 'Profile',
+    section: 'Settings',
+    Icon: UserIcon,
+    shortcut: '⌘P'
+  },
+  {
+    key: 'billing',
+    label: 'Billing',
+    section: 'Settings',
+    Icon: CodeIcon,
+    shortcut: '⌘B'
+  },
+  {
+    key: 'settings',
+    label: 'Settings',
+    section: 'Settings',
+    Icon: CodeIcon,
+    shortcut: '⌘S'
+  }
 ];
 
 export default class CommandDialogExample extends Component {
@@ -49,13 +88,16 @@ export default class CommandDialogExample extends Component {
   };
 
   <template>
-    <div class="flex items-center gap-4">
-      <Button @appearance="outlined" {{on "click" this.open}}>
+    <div class='flex items-center gap-4'>
+      <Button @appearance='outlined' {{on 'click' this.open}}>
         Open palette
-        <kbd class="ml-2 rounded border border-neutral-soft px-1.5 font-body text-body-2xs text-neutral">⌘K</kbd>
+        <kbd
+          class='ml-2 rounded border border-neutral-soft px-1.5 font-body text-body-2xs text-neutral'
+        >⌘K</kbd>
       </Button>
       {{#if this.lastSelected}}
-        <span class="font-body text-body-sm text-neutral">Selected: {{this.lastSelected}}</span>
+        <span class='font-body text-body-sm text-neutral'>Selected:
+          {{this.lastSelected}}</span>
       {{/if}}
     </div>
 
@@ -64,11 +106,11 @@ export default class CommandDialogExample extends Component {
       @onOpen={{this.open}}
       @onClose={{this.close}}
       @onSelect={{this.select}}
-      @shortcut="mod+k"
+      @shortcut='mod+k'
       @items={{commands}}
-      @groupBy="section"
-      @label="Search commands"
-      @placeholder="Type a command or search…"
+      @groupBy='section'
+      @label='Search commands'
+      @placeholder='Type a command or search…'
       as |c|
     >
       <c.Input />
@@ -107,7 +149,7 @@ const commands = [
 <template>
   <Command @items={{commands}} @isBordered={{true}} as |c|>
     {{! the search field — carries the combobox semantics }}
-    <c.Input @placeholder="Search…" />
+    <c.Input @placeholder='Search…' />
 
     {{! the results — ranked, grouped, keyboard navigable }}
     <c.List>
@@ -117,6 +159,8 @@ const commands = [
       </:item>
       <:empty>Nothing matched.</:empty>
       <:loading>Searching…</:loading>
+      {{! async only: shown before anything has been typed }}
+      <:prompt>Start typing to search.</:prompt>
     </c.List>
 
     {{! keyboard hints; c.query, c.resultCount and c.isLoading are yielded too }}
@@ -142,7 +186,12 @@ const commands = [
 ];
 
 <template>
-  <Command @items={{commands}} @isBordered={{true}} @placeholder="Type a command or search…" as |c|>
+  <Command
+    @items={{commands}}
+    @isBordered={{true}}
+    @placeholder='Type a command or search…'
+    as |c|
+  >
     <c.Input />
     <c.List>
       <:item as |ctx|>
@@ -173,11 +222,51 @@ const components = [
 ];
 
 <template>
-  <Command @items={{components}} @isBordered={{true}} @placeholder="Try 'button' or 'bg'…" as |c|>
+  <Command
+    @items={{components}}
+    @isBordered={{true}}
+    @placeholder="Try 'button' or 'bg'…"
+    as |c|
+  >
     <c.Input />
     <c.List>
       <:item as |ctx|>
         <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+      </:item>
+    </c.List>
+  </Command>
+</template>
+```
+
+By default only the item's label is searched. `@searchFields` searches more than that — a
+category, keywords — with the first field primary and the rest down-weighted and combined by
+max, so a weak hit on a category never outranks a strong hit on the label.
+
+```gts preview
+import { Command } from 'frontile';
+
+const components = [
+  { key: 'button', label: 'Button', section: 'Buttons' },
+  { key: 'chip', label: 'Chip', section: 'Buttons' },
+  { key: 'modal', label: 'Modal', section: 'Overlays' }
+];
+
+const searchFields = (item) => [item.label, item.section];
+
+<template>
+  <Command
+    @items={{components}}
+    @searchFields={{searchFields}}
+    @isBordered={{true}}
+    @placeholder="Try 'overlays'…"
+    as |c|
+  >
+    <c.Input />
+    <c.List>
+      <:item as |ctx|>
+        <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
+          {{ctx.label}}
+        </ctx.Item>
       </:item>
     </c.List>
   </Command>
@@ -244,11 +333,11 @@ const commands = [
 <template>
   <Command
     @items={{commands}}
-    @groupBy="section"
-    @groups={{array "Suggestions" "Settings"}}
-    @disabledKeys={{array "calculator"}}
+    @groupBy='section'
+    @groups={{array 'Suggestions' 'Settings'}}
+    @disabledKeys={{array 'calculator'}}
     @isBordered={{true}}
-    @placeholder="Type a command or search…"
+    @placeholder='Type a command or search…'
     as |c|
   >
     <c.Input />
@@ -278,7 +367,7 @@ const commands = [
 
 <template>
   <Command @items={{commands}} @isBordered={{true}} as |c|>
-    <c.Input @placeholder="Search…" />
+    <c.Input @placeholder='Search…' />
     <c.List>
       <:item as |ctx|>
         <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
@@ -294,7 +383,8 @@ const commands = [
 ## Footer
 
 `c.Footer` renders the palette's keyboard hints. Give it a block to say something else — it
-yields a `Kbd` keycap so custom hints match the built-in ones.
+yields `Kbd` for a keycap and `Hint` for one hint's layout, so custom hints match the
+built-in ones without copying any classes.
 
 ```gts preview
 import { Command } from 'frontile';
@@ -305,16 +395,16 @@ const commands = [
 ];
 
 <template>
-  <Command @items={{commands}} @isBordered={{true}} @size="sm" as |c|>
-    <c.Input @placeholder="Search components…" />
+  <Command @items={{commands}} @isBordered={{true}} @size='sm' as |c|>
+    <c.Input @placeholder='Search components…' />
     <c.List>
       <:item as |ctx|>
         <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
       </:item>
     </c.List>
     <c.Footer as |f|>
-      <span class="flex items-center gap-1.5"><f.Kbd>↵</f.Kbd> Go to page</span>
-      <span class="flex items-center gap-1.5"><f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd> Copy link</span>
+      <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
+      <f.Hint><f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd> Copy link</f.Hint>
     </c.Footer>
   </Command>
 </template>
@@ -326,14 +416,32 @@ Pass `@onSearch` to fetch results instead of filtering `@items`. It is debounced
 responses are discarded so the latest query always wins — a slow early request can never
 overwrite a newer one. Built-in filtering is disabled, since the server did the filtering.
 
+Before anything is typed an async palette has nothing to show and nothing to report, so it
+renders the `:prompt` block rather than claiming there are no results.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { Command } from 'frontile';
 
 const ALL = [
-  'Argentina', 'Australia', 'Austria', 'Brazil', 'Canada', 'Denmark',
-  'Finland', 'France', 'Germany', 'Japan', 'Mexico', 'Netherlands',
-  'New Zealand', 'Norway', 'Poland', 'South Africa', 'Spain', 'Sweden'
+  'Argentina',
+  'Australia',
+  'Austria',
+  'Brazil',
+  'Canada',
+  'Denmark',
+  'Finland',
+  'France',
+  'Germany',
+  'Japan',
+  'Mexico',
+  'Netherlands',
+  'New Zealand',
+  'Norway',
+  'Poland',
+  'South Africa',
+  'Spain',
+  'Sweden'
 ];
 
 export default class AsyncCommandExample extends Component {
@@ -352,7 +460,7 @@ export default class AsyncCommandExample extends Component {
     <Command
       @onSearch={{this.search}}
       @isBordered={{true}}
-      @placeholder="Search countries…"
+      @placeholder='Search countries…'
       as |c|
     >
       <c.Input />
@@ -361,9 +469,8 @@ export default class AsyncCommandExample extends Component {
           <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
         </:item>
         <:loading>Searching…</:loading>
-        <:empty>
-          {{#if c.query}}No matches for "{{c.query}}"{{else}}Start typing to search.{{/if}}
-        </:empty>
+        <:prompt>Search for a country…</:prompt>
+        <:empty>No matches for "{{c.query}}"</:empty>
       </c.List>
     </Command>
   </template>
@@ -389,10 +496,10 @@ const commands = [
 ];
 
 <template>
-  <div class="flex flex-col gap-6">
-    {{#each (array "sm" "md" "lg") as |size|}}
+  <div class='flex flex-col gap-6'>
+    {{#each (array 'sm' 'md' 'lg') as |size|}}
       <Command @items={{commands}} @size={{size}} @isBordered={{true}} as |c|>
-        <c.Input @placeholder="size={{size}}" />
+        <c.Input @placeholder='size={{size}}' />
         <c.List>
           <:item as |ctx|>
             <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
@@ -410,13 +517,13 @@ const commands = [
 live on the **input** — not on a wrapper — so focus never leaves the field while the user
 arrows through results.
 
-| Key | Behavior |
-| --- | --- |
+| Key                     | Behavior                                          |
+| ----------------------- | ------------------------------------------------- |
 | `ArrowDown` / `ArrowUp` | Move the active option, crossing group boundaries |
-| `Home` / `PageUp` | Activate the first option |
-| `End` / `PageDown` | Activate the last option |
-| `Enter` | Select the active option |
-| `Escape` | Close the dialog |
+| `Home` / `PageUp`       | Activate the first option                         |
+| `End` / `PageDown`      | Activate the last option                          |
+| `Enter`                 | Select the active option                          |
+| `Escape`                | Close the dialog                                  |
 
 Provided for you:
 
@@ -457,6 +564,8 @@ keyboard traversal, disabled rows, and the dialog's positioning.
 ### Command::Footer
 
 <Signature @component="CommandFooter" />
+
+Yields `Kbd` (a keycap) and `Hint` (one hint's layout).
 
 ### Command::Dialog
 
