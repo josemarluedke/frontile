@@ -298,6 +298,11 @@ class Table<
     return keys ? new Set(keys) : new Set();
   }
 
+  // Roving tabindex (WAI-ARIA grid pattern): the key of the row the user last
+  // moved to with the keyboard. `undefined` until they move — see
+  // `rovingRowKey` for the default tab stop.
+  @tracked activeRowKey?: string;
+
   // Extract actual data from row (handles both row.data and direct row)
   getRowData = (row: Row<T>): T => {
     if (row.data && row.table) {
@@ -308,10 +313,11 @@ class Table<
 
   // Get key from item or row - unified method
   getKey = (itemOrRow: T | Row<T>): string => {
-    // Extract the actual item from row if needed
-    const item = (itemOrRow as Row<T>).data
-      ? this.getRowData(itemOrRow as Row<T>)
-      : (itemOrRow as T);
+    // Extract the actual item from row if needed. Note `getRowData`'s check is
+    // structural, so a plain item carrying both `data` and `table` is still
+    // unwrapped as though it were a row — pass `Row` objects here wherever the
+    // keys have to line up with the rendered rows.
+    const item = this.getRowData(itemOrRow as Row<T>);
 
     // Use provided getKey function if available
     if (this.args.getKey) {
@@ -326,6 +332,31 @@ class Table<
       // Final fallback
       return String(item);
     }
+  };
+
+  // The single row that owns the table's tab stop. Defaults to the first
+  // selected row - so tabbing back into the table lands on the user's own
+  // selection - and to the first row when nothing is selected.
+  @cached
+  get rovingRowKey(): string | undefined {
+    // Key off the same `Row` objects the template iterates, so this and
+    // `rowTabIndex` always agree. Mapping `sortedItems` instead would diverge
+    // for an item carrying both `data` and `table`, which `getRowData` unwraps
+    // — leaving the table with no tab stop at all.
+    const keys = [...this.headlessRows].map((row) => this.getKey(row));
+
+    if (this.activeRowKey !== undefined && keys.includes(this.activeRowKey)) {
+      return this.activeRowKey;
+    }
+
+    return keys.find((key) => this.selectedKeysSet.has(key)) ?? keys[0];
+  }
+
+  // Only one row is tabbable at a time; arrow keys move the tab stop along
+  // with focus. Without selection, rows are not part of the tab order at all.
+  rowTabIndex = (row: Row<T>): string => {
+    if (!this.hasSelection) return '-1';
+    return this.getKey(row) === this.rovingRowKey ? '0' : '-1';
   };
 
   // Check if a key is disabled
@@ -398,6 +429,11 @@ class Table<
   handleRowKeydown = (row: Row<T>, event: KeyboardEvent): void => {
     if (!this.hasSelection) return;
 
+    // Only react to keys pressed on the row itself. Anything bubbling up from
+    // interactive cell content (buttons, links, inputs) belongs to that
+    // control, not to the row.
+    if (event.target !== event.currentTarget) return;
+
     // Handle arrow key navigation
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
@@ -410,11 +446,18 @@ class Table<
       ) as HTMLElement[];
 
       const currentIndex = allRows.indexOf(currentElement);
+      let nextRow: HTMLElement | undefined;
 
       if (event.key === 'ArrowDown' && currentIndex < allRows.length - 1) {
-        allRows[currentIndex + 1]?.focus();
+        nextRow = allRows[currentIndex + 1];
       } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-        allRows[currentIndex - 1]?.focus();
+        nextRow = allRows[currentIndex - 1];
+      }
+
+      if (nextRow) {
+        nextRow.focus();
+        // Keep the roving tab stop on the focused row.
+        this.activeRowKey = nextRow.dataset['key'];
       }
 
       return;
@@ -431,6 +474,9 @@ class Table<
 
     const key = this.getKey(row.data);
     const isSelected = this.isRowSelected(row);
+
+    // This row is focused, so it keeps the tab stop even as selection changes.
+    this.activeRowKey = key;
 
     if (this.selectionMode === 'single') {
       // Single selection: always select the row
@@ -785,7 +831,7 @@ class Table<
               data-selected={{if (this.isRowSelected row) "true" "false"}}
               data-disabled={{if (this.isRowDisabled row) "true"}}
               data-selectable={{if this.hasSelection "true"}}
-              tabindex={{if this.hasSelection "0" "-1"}}
+              tabindex={{this.rowTabIndex row}}
             >
               {{#each this.headlessColumns as |column|}}
                 <t.Cell

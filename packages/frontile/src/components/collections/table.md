@@ -1207,11 +1207,19 @@ export default class DemoComponent extends Component {
 
 ### Keyboard Navigation
 
-When selection is enabled, rows can be selected using keyboard:
+When selection is enabled, rows follow the WAI-ARIA grid pattern:
 
+- **Tab**: Moves into the rows. The table is a single tab stop — it uses a
+  roving `tabindex`, so exactly one row is tabbable at a time. That is the first
+  selected row, or the first row when nothing is selected.
+- **Arrow Down** / **Arrow Up**: Move focus between rows, carrying the
+  `tabindex="0"` along with focus.
 - **Space** or **Enter**: Toggle selection (multiple mode) or select row (single mode)
-- Rows are focusable with `tabindex="0"` for keyboard accessibility
-- Disabled rows cannot be selected via keyboard
+- Disabled rows cannot be selected via keyboard, but can still be focused
+- Interactive content inside cells keeps its own keys: a button, link or input in
+  a cell handles Enter, Space and the arrow keys itself, and the row does not
+  toggle its selection. Row keyboard handling only applies to keys pressed on the
+  row itself.
 
 ```gts preview
 import Component from '@glimmer/component';
