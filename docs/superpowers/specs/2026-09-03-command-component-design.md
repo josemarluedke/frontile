@@ -1,0 +1,378 @@
+# `Command` — a command palette / search component for Frontile
+
+**Status:** design approved, pending implementation plan
+**Date:** 2026-09-03
+**Research:** [`docs/superpowers/research/command-palette-prior-art.md`](../research/command-palette-prior-art.md)
+
+---
+
+## 1. Motivation
+
+The docs site's "jump to" palette (`site/app/components/docfy/docfy-jump-to.gts`) is a bespoke
+`Overlay` + raw `<input>` + hand-rolled `selectedIndex` loop, backed by `fuse.js` at
+`threshold: 0.4`. Searching `button` surfaces `ButtonGroup` above `Button`.
+
+Investigation found the defect is **not** docs-site-specific. It is a structural property of
+predicate-based filtering, and Frontile ships it in two more places.
+
+### 1.1 The ranking defect, measured
+
+`cmdk` (the React palette everyone copies) applies `PENALTY_NOT_COMPLETE = 0.99` **flat, once**,
+regardless of how many characters are left unmatched:
+
+| query | `Button` | `ButtonGroup` |
+| --- | --- | --- |
+| `b` … `butto` | 0.98990100 | 0.98990100 — **exact tie** |
+| `button` | 0.99990000 | 0.98990100 |
+
+For the entire time the user is typing a prefix, the two score bit-for-bit identically and the
+stable sort falls through to registration order. `ButtonGroup` does not out-rank `Button` on
+merit; there is no tiebreak at all. (`PENALTY_DISTANCE_FROM_START` is declared but never used, so
+there is no "match nearer the start" term either.)
+
+`fuse.js` has a different but related flaw: its Bitap error-distance model cannot express *how
+much of the target was left over*, so completeness is not representable at any threshold.
+
+### 1.2 The same bug in shipped Frontile components
+
+`autocomplete.gts` and `select/select.gts` contain this identical block:
+
+```ts
+const filter = this.args.filter || defaultFilter;
+return this.args.items?.filter((item) =>
+  filter(keyAndLabelForItem(item).label, query)
+);
+```
+
+with
+
+```ts
+// utils/listManager.ts
+function defaultFilter(itemValue: string, filterValue: string): boolean {
+  return itemValue.toLowerCase().includes(filterValue.toLowerCase());
+}
+```
+
+`@filter` is typed `(itemValue, inputValue) => boolean`. **A boolean predicate can filter but never
+reorder**, so results are always returned in source order. A filterable `Select` over
+alphabetically-ordered items reproduces the `Button`/`ButtonGroup` complaint exactly.
+
+Fixing ranking is therefore a library-wide improvement, not a docs-site patch.
+
+---
+
+## 2. Goals / non-goals
+
+**Goals**
+
+- A `Command` component in the library: palette dialog, grouped results, ranked filtering,
+  async search, keyboard-first, accessible, animated.
+- Fix ranking for `Command`, `Autocomplete`, and filterable `Select` in one place.
+- Add group/section support to `Listbox` (currently absent), reused by all three.
+- Make the docs site the first real consumer; drop `fuse.js`.
+
+**Non-goals (v1)**
+
+- Virtualized lists.
+- Nested / multi-page palettes ("push a subcommand view").
+- Vim bindings (`ctrl-n`/`ctrl-p`).
+- Recents persistence *inside the library* — see §10.
+
+---
+
+## 3. Dependency decision: `fuzzysort`
+
+A hand-written tiered scorer was designed, then **rejected on evidence**. Both `match-sorter` and
+`fuzzysort` were installed and run against the case that motivated this work:
+
+```
+=== match-sorter ===                       === fuzzysort ===
+b     Button > Button Group > ButtonGroup  b     Button > ButtonGroup > Button Group
+butt  Button > Button Group > ButtonGroup  butt  Button > ButtonGroup > Button Group
+bg    Button Group > Checkbox Group > …    bg    ButtonGroup > Button Group
+tab   Tab > Table > Tabs                   tab   Tab > Tabs > Table
+```
+
+Both rank `Button` first at every prefix length. The predicted "ties then falls back to
+alphabetical" failure of `match-sorter` **did not occur**; the correctness case for a custom
+scorer does not exist.
+
+`fuzzysort` is chosen over `match-sorter` on two grounds:
+
+1. **API fit.** Our `@filter` contract (§4) is inherently per-item. `fuzzysort.single(query,
+   target)` returns a per-item score (`0.941` for `butt`/`Button` vs `0.875` for
+   `butt`/`ButtonGroup`) and `null` for no match. `match-sorter` exports only array-in/array-out
+   (`matchSorter`, `matchSorterWithRankInfo`) — there is no per-item scoring function, so it
+   cannot implement the contract without redesigning it.
+2. **Weight.** `fuzzysort` v4 has **zero dependencies**. `match-sorter` pulls `@babel/runtime` and
+   `remove-accents`.
+
+Secondary benefits: `fuzzysort` handles camelCase acronyms correctly (`bg` → `ButtonGroup`, which
+matters when half the corpus is camelCase component names) and returns `indexes`
+(`[0,2,5]` for `btn`/`Button`), which gives `<mark>` highlighting for free.
+
+`fuse.js` is removed from `site/`. Note this is not a like-for-like swap: `fuzzysort` becomes a
+runtime dependency of the published `frontile` package (where `fuse.js` never was), while the site
+sheds one. That is a deliberate trade — ranking is core to `Autocomplete` and `Select`, not just
+to the docs site.
+
+**To verify during implementation:** `fuzzysort` returns `null` for no match and a score in
+`0..1`. Our contract treats `0` as "no match". If a legitimate match can ever score exactly `0`,
+the `?? 0` coalesce would wrongly drop it. Pin this down with a test rather than assuming.
+
+---
+
+## 4. `@filter` widened to `boolean | number`
+
+```ts
+/**
+ * Score or match an item against the current input text.
+ *
+ * Return a **number** to rank: higher sorts first, `0` means no match, and the
+ * list is sorted by score descending. Return a **boolean** to filter only,
+ * preserving the order of `@items`.
+ */
+filter?: (itemValue: string, inputValue: string) => boolean | number;
+```
+
+Backwards compatible: existing boolean filters keep working and keep source order. Numeric returns
+opt into ranking.
+
+`defaultFilter` becomes the `fuzzysort`-backed scorer for `Autocomplete`, `Select` and `Command`.
+**This changes result order for existing consumers** and is documented as a behavior change in the
+v0.18 migration guide, with the escape hatch being an explicit boolean `@filter`.
+
+### 4.1 Shared helper (deduplication)
+
+The identical `filteredItems` logic in `autocomplete.gts` and `select.gts` collapses into one
+helper, so the ranking change lands in a single place:
+
+```ts
+// utils/filter.ts
+export function filterAndRankItems<T>(
+  items: T[] | undefined,
+  query: string,
+  filter: FilterFn = defaultFilter
+): T[] | undefined;
+```
+
+Behavior: empty query returns `items` untouched; boolean results filter only; numeric results
+filter (`> 0`) then **stable**-sort descending, so equal scores preserve source order.
+
+Multi-field records score per-field and take a **weighted max, never a sum** — a sum lets three
+weak field hits beat one exact title match. `fuzzysort.go` supports weighted `keys` natively.
+
+---
+
+## 5. Grouping and filtering
+
+This is the part the reference screenshots pin down: in the unfiltered state two groups render
+with headings and a separator between them; typing `calen` leaves only `Calendar` under
+`Suggestions`, and the `Settings` group — heading and separator included — disappears entirely.
+
+### 5.1 Empty-group hiding is free
+
+Because `<c.List>` renders from a **ranked array** rather than hiding DOM children, a group with
+no surviving items is simply never rendered. There is no visibility tracking and no `forceMount`
+escape hatch. cmdk needs both only because its items are React children it cannot introspect;
+Glimmer's keyed `{{#each}}` over sorted data reorders and omits natively.
+
+### 5.2 Group ordering
+
+Two legitimate models, both supported:
+
+- **Declared order** (`@groups={{array "Suggestions" "Settings"}}`) — fixed groups in a fixed
+  order, ranking applied *within* each group. This is the command-menu case in the screenshots.
+- **Best-match order** (default when `@groups` is omitted) — rank globally, then partition by
+  group key, ordering groups by their best-scoring member. This is what docs search wants: an
+  exact `Button` hit should top the list regardless of category.
+
+`@groupBy` is a key name or a function over the record.
+
+### 5.3 Separators
+
+Rendered **between** rendered groups, never trailing. Derived, not authored, so the screenshot
+behavior (separator disappears with its group) is automatic. An explicit `<c.Separator>` remains
+available for custom layouts.
+
+### 5.4 Listbox group support (new)
+
+`Listbox` gains a section/group concept, since it has none today. Markup follows the APG listbox
+grouping pattern:
+
+```html
+<ul role="listbox">
+  <li role="group" aria-labelledby="grp-1">
+    <span id="grp-1" role="presentation">Suggestions</span>
+    <ul role="none">
+      <li role="option" aria-selected="false">…</li>
+    </ul>
+  </li>
+</ul>
+```
+
+**Critical constraint:** `ListManager` registers items in DOM order, and arrow keys must traverse
+*across* group boundaries in ranked order. Since groups are rendered in ranked order and items
+within them likewise, DOM order equals ranked order and traversal is correct by construction. This
+must be covered by an integration test (arrow-down from the last item of group 1 lands on the
+first item of group 2).
+
+### 5.5 Active item across re-ranking
+
+Every keystroke re-ranks the list. The active item resets to the first visible item
+(`ListManager`'s existing `autoActivateMode: 'first'`). Two things to watch:
+
+- The known `ListManager` `isActive` flake — Glimmer DOM writes can fire `focusout` synchronously
+  mid-render. Re-ranking makes this more likely, so it needs an explicit test.
+- `aria-activedescendant` must point at a **rendered, visible** option id, and be removed when
+  nothing is active.
+
+### 5.6 Fixed list height
+
+The screenshots keep the panel height constant as results shrink. A `min-height` on the list
+prevents the palette from collapsing and re-expanding on every keystroke, which reads as jitter.
+Exposed as a theme variant.
+
+### 5.7 Already supported by `ListboxItem`
+
+The screenshot rows need no new item API: leading icons use the existing `:start` block, the
+right-aligned `⌘P` uses the existing `@shortcut` arg and its `shortcut` tv slot, and the dimmed
+`Calculator` row is `@disabledKeys`.
+
+---
+
+## 6. Async
+
+`Command` adopts `Autocomplete`'s existing, proven contract verbatim rather than importing cmdk's
+vocabulary (`shouldFilter`):
+
+| Arg | Behavior |
+| --- | --- |
+| `@onSearch(query) => Promise<T[]> \| T[]` | Debounced; stale responses discarded (latest query wins); disables built-in filtering |
+| `@searchDebounce` | Default `250` |
+| `@isLoading` | Renders `<c.Loading>` |
+| `@disableFiltering` | Render `@items` as-is |
+| `@inputValue` / `@onInputChange` | Controlled text |
+
+Blank-query async state renders a "start typing" prompt, mirroring `isSearchPromptState`.
+
+---
+
+## 7. Anatomy
+
+`Command` composes existing primitives exactly as `Autocomplete` does (`Popover` + input +
+`Listbox` + `ListManager`), swapping the popover for an overlay:
+
+```gts
+<Command::Dialog @isOpen={{this.isOpen}} @onClose={{this.close}} @shortcut="mod+k" as |c|>
+  <c.Input @placeholder="Type a command or search…" />
+  <c.List @items={{this.records}} @groupBy="category" as |item|>
+    <c.Item @key={{item.id}} @shortcut={{item.shortcut}} @onSelect={{this.go}}>
+      <:start><item.Icon /></:start>
+      <:default>{{item.title}}</:default>
+    </c.Item>
+  </c.List>
+  <c.Empty>No results for "{{c.query}}"</c.Empty>
+  <c.Loading />
+</Command::Dialog>
+```
+
+`<c.List>` wraps `Listbox`; `<c.Item>` wraps `ListboxItem`, inheriting its `role`,
+`aria-selected`, stable `itemId` and tv slots. `<Command>` is usable without the dialog for inline
+palettes.
+
+---
+
+## 8. Motion
+
+New `command` transition in `packages/theme/src/components/command.ts`:
+
+- Backdrop fade ~120ms.
+- Panel `scale(0.96 → 1)` + 4px rise, ~150ms, fast-out curve.
+- **Rows never animate.** Animating rows while the list re-ranks on each keystroke is what makes
+  palettes feel laggy.
+- Wrapped in `prefers-reduced-motion` → plain fade.
+
+CSS only, via `ember-css-transitions` (already an `Overlay` dependency). No JS animation runtime.
+
+---
+
+## 9. Accessibility
+
+Per APG "Combobox with List Autocomplete":
+
+- `role="combobox"`, `aria-autocomplete="list"`, `aria-expanded`, `aria-controls` on the **input**
+  (note: shadcn-ember puts `role="combobox"` on the root with a hardcoded `aria-expanded="true"`,
+  which is wrong; do not copy it).
+- `aria-activedescendant` on the input → the active `ListboxItem`'s `itemId`.
+- One `aria-selected="true"` at a time; `data-active` for styling.
+- Focus never leaves the input. `Esc` closes. `Home`/`End` behave as text-editing keys.
+- Debounced `aria-live="polite"` sr-only region: "N results available" / "No results found".
+- `guidFor(this)` ids so multiple palettes can coexist.
+
+---
+
+## 10. Docs site integration
+
+`docfy-jump-to.gts` becomes a thin consumer:
+
+- Records built from `docfy.flat`: title, `parentLabel`, headings, keywords.
+- Grouped by category (best-match group ordering, §5.2).
+- `/` retained, `⌘K` added; `/` suppressed while focus is in a text field.
+- **Recents live site-side, not in the library.** Persistence keys, privacy and what counts as
+  "recent" are application concerns; the component supports it by receiving a different `@items`
+  array when the query is blank.
+- `fuse.js` removed from `site/package.json`.
+
+---
+
+## 11. File layout
+
+```
+packages/frontile/src/
+  utils/filter.ts                       ← NEW: defaultFilter (fuzzysort), filterAndRankItems, scoreRecord
+  utils/listManager.ts                  ← defaultFilter re-exported from utils/filter; widen FilterFn
+  components/collections/
+    listbox/listbox.gts, item.gts       ← NEW group/section support
+    listbox/group.gts                   ← NEW
+    command/command.gts                 ← root: query state, ranking, grouping, async, context
+    command/input.gts, list.gts, item.gts, group.gts, empty.gts, loading.gts, dialog.gts
+    command.md                          ← co-located docs (live Docfy demos)
+  components/forms/autocomplete.gts     ← use filterAndRankItems
+  components/forms/select/select.gts    ← use filterAndRankItems
+packages/theme/src/components/command.ts  ← NEW tv() slots + motion
+packages/theme/src/components/listbox.ts  ← group heading slots
+site/app/components/docfy/docfy-jump-to.gts  ← rewritten as consumer
+docs/migrations/v0.18/…                 ← ranking behavior change
+```
+
+---
+
+## 12. Testing
+
+Written in this order:
+
+1. **Unit — ranking regression table** (`test-app/tests/unit/`). The literal complaint as a test:
+   `butt` → `Button` before `ButtonGroup`, at every prefix length. Plus `bg` → `ButtonGroup`,
+   `tab` → `Tab`, and the `fuzzysort` zero-score edge case from §3.
+2. **Unit — `filterAndRankItems`**: empty query passthrough, boolean filters preserve source
+   order, numeric filters sort descending, equal scores are stable.
+3. **Integration — `Listbox` groups**: rendering, ARIA structure, arrow-key traversal across group
+   boundaries.
+4. **Integration — `Command`**: empty-group hiding (the screenshot case), separator derivation,
+   active-item reset on re-rank, `ListManager` `isActive` flake under re-ranking,
+   `aria-activedescendant` correctness, async loading/empty/prompt states, `⌘K`/`/` binding and
+   `/` suppression in text fields.
+5. **Regression — `Autocomplete` / `Select`**: existing boolean `@filter` consumers keep source
+   order.
+
+---
+
+## 13. Risks
+
+| Risk | Mitigation |
+| --- | --- |
+| `defaultFilter` change reorders results in shipped components | Documented in v0.18 migration guide; boolean `@filter` restores old behavior; regression tests |
+| `ListManager` `isActive` flake, aggravated by re-ranking | Explicit test early; fall back to a Command-local registry if it proves unstable |
+| `fuzzysort` legitimate `0` score dropped by `?? 0` | Pinned by test before relying on the coalesce |
+| Listbox group markup regresses existing `Listbox` a11y | Groups are opt-in; existing ungrouped markup path unchanged and still tested |
