@@ -211,11 +211,21 @@ grouping pattern:
 </ul>
 ```
 
-**Critical constraint:** `ListManager` registers items in DOM order, and arrow keys must traverse
-*across* group boundaries in ranked order. Since groups are rendered in ranked order and items
-within them likewise, DOM order equals ranked order and traversal is correct by construction. This
-must be covered by an integration test (arrow-down from the last item of group 1 lands on the
-first item of group 2).
+**No `ListManager` changes are required.** Navigation order is derived from the live DOM via
+`compareDocumentPosition`, not from registration order:
+
+```ts
+get #orderedItems(): ListItem[] {
+  return this.#items
+    .filter((item) => item.el.isConnected)
+    .sort((a, b) => { const position = a.el.compareDocumentPosition(b.el); ... });
+}
+```
+
+Nesting options inside a group wrapper leaves document order unchanged, so flat traversal across
+group boundaries is correct by construction. Grouping is therefore a markup + theme change only.
+Still covered by an integration test (arrow-down from the last item of group 1 lands on the first
+item of group 2).
 
 ### 5.5 Active item across re-ranking
 
@@ -232,6 +242,30 @@ Every keystroke re-ranks the list. The active item resets to the first visible i
 The screenshots keep the panel height constant as results shrink. A `min-height` on the list
 prevents the palette from collapsing and re-expanding on every keystroke, which reads as jitter.
 Exposed as a theme variant.
+
+### 5.8 Forward compatibility: submenus are a different concept
+
+`Dropdown` will eventually need nested sub-lists. **Groups must not be stretched to serve that
+case.** They differ on every axis:
+
+| | Groups (this spec) | Submenus (future) |
+| --- | --- | --- |
+| ARIA | `role="group"` + `aria-labelledby` | nested `role="menu"`; parent gets `aria-haspopup` / `aria-expanded` |
+| Keyboard | none — one flat traversal | `->` enters, `<-` exits; each level has its own active item |
+| Rendering | inline | portaled popover |
+| `ListManager` | one, unchanged | one **per level** |
+
+The decisive constraint is the DOM-order derivation above. `Popover` portals by default
+(`renderInPlace` is opt-in), so a submenu's options are siblings of `<body>`, not descendants of
+the parent `<ul>`. `compareDocumentPosition` between a parent option and a portaled child option is
+meaningless, so **a single flat `ListManager` cannot model a submenu at all.**
+
+Recommended future shape (explicitly out of scope here): `Listbox` stays a flat primitive;
+submenus become `Dropdown::SubMenu` — a `Popover` wrapping a nested `Listbox @type="menu"` with its
+own `ListManager`, plus a coordinator for focus handoff and closing the deepest level first on
+`Escape`. This composes existing primitives rather than teaching `ListManager` hierarchy.
+
+Nothing in the group design forecloses this, because groups add no `ListManager` concepts.
 
 ### 5.7 Already supported by `ListboxItem`
 
