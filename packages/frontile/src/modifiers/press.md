@@ -111,7 +111,9 @@ Press events are normalized across different input methods and provide consisten
 - **Positional argument**: Pass `onPress` as the first argument: `{{press this.handlePress}}`
 - **Mixed arguments**: Combine positional `onPress` with named arguments for other callbacks
 - **Conflict handling**: Cannot provide both positional and named `onPress` (assertion error)
-- **Performance**: Only adds event listeners for callbacks you provide
+- **Performance**: Only adds the event listeners your callbacks require - a
+  single callback can need more than one (e.g. `onPressChange` also needs
+  `pointercancel`)
 - **Accessibility**: Automatically handles Enter and Space key interactions
 - **Cross-platform**: Supports mouse, touch, and keyboard across all browsers
 - **Propagation**: By default a press stops propagation of the underlying

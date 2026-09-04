@@ -240,22 +240,21 @@ const press = modifier<PressSignature>(
     // the propagation path, so they must never handle - and never stop - an
     // event that belongs to the element itself: the element's own listeners
     // (including any registered by the consumer) still need to see it.
-    const isOnTarget = (event: Event): boolean =>
+    const isInsideElement = (event: Event): boolean =>
       element.contains(event.target as Node);
 
-    const endFromDocument = (event: Event): void => {
-      if (isOnTarget(event)) {
-        return;
-      }
-      end(event);
-    };
-
-    const cancelFromDocument = (event: PointerEvent): void => {
-      if (isOnTarget(event)) {
-        return;
-      }
-      cancel(event);
-    };
+    // Wraps a handler so it only runs for events that originated outside of the
+    // element, which is the whole contract of the document-level fallback. Each
+    // wrapper is created once and stored, so add/removeEventListener always see
+    // the same function identity.
+    const onlyOutsideElement =
+      <E extends Event>(handler: (event: E) => void) =>
+      (event: E): void => {
+        if (isInsideElement(event)) {
+          return;
+        }
+        handler(event);
+      };
 
     const addDocumentListeners = (): void => {
       if (documentListenersActive || !needsEndEvents) {
@@ -310,8 +309,8 @@ const press = modifier<PressSignature>(
       removeDocumentListeners();
       named.onPressChange?.(false);
 
-      const onTarget = isOnTarget(event);
-      let shouldPropagate = false;
+      const onTarget = isInsideElement(event);
+      const dispatched: PressEvent[] = [];
 
       const pressEndEvent = new PressEvent(
         'pressend',
@@ -320,7 +319,7 @@ const press = modifier<PressSignature>(
         element
       );
       named.onPressEnd?.(pressEndEvent);
-      shouldPropagate = shouldPropagate || pressEndEvent.shouldPropagate;
+      dispatched.push(pressEndEvent);
 
       // `press` and `pressup` only describe a release on the element itself.
       if (onTarget) {
@@ -331,7 +330,7 @@ const press = modifier<PressSignature>(
           element
         );
         onPress?.(pressEvent);
-        shouldPropagate = shouldPropagate || pressEvent.shouldPropagate;
+        dispatched.push(pressEvent);
 
         const pressUpEvent = new PressEvent(
           'pressup',
@@ -340,12 +339,13 @@ const press = modifier<PressSignature>(
           element
         );
         named.onPressUp?.(pressUpEvent);
-        shouldPropagate = shouldPropagate || pressUpEvent.shouldPropagate;
+        dispatched.push(pressUpEvent);
       }
 
-      // Only the element's own release is ours to stop. Stopping a release that
-      // happened elsewhere would hide it from the rest of the page.
-      if (onTarget && !shouldPropagate) {
+      // Any handler opting in to propagation wins. Only the element's own
+      // release is ours to stop - stopping a release that happened elsewhere
+      // would hide it from the rest of the page.
+      if (onTarget && !dispatched.some((e) => e.shouldPropagate)) {
         event.stopPropagation();
       }
     };
@@ -365,10 +365,15 @@ const press = modifier<PressSignature>(
         element
       );
       named.onPressEnd?.(pressEvent);
-      if (isOnTarget(event) && !pressEvent.shouldPropagate) {
+      if (isInsideElement(event) && !pressEvent.shouldPropagate) {
         event.stopPropagation();
       }
     };
+
+    // Declared after `end`/`cancel` so the factory can capture them; the
+    // resulting functions are stored once and reused by add/removeEventListener.
+    const endFromDocument = onlyOutsideElement(end);
+    const cancelFromDocument = onlyOutsideElement<PointerEvent>(cancel);
 
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Enter' || event.key === ' ') {
