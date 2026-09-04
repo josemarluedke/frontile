@@ -232,8 +232,9 @@ Glimmer's keyed `{{#each}}` over sorted data reorders and omits natively.
 
 Two legitimate models, both supported:
 
-- **Declared order** (`@groups={{array "Suggestions" "Settings"}}`) — fixed groups in a fixed
-  order, ranking applied *within* each group. This is the command-menu case in the screenshots.
+- **Pinned order** (`@groups={{array "Recent" "Navigation"}}`) — the named groups are hoisted to
+  the top in that order. Groups *not* named still render after them, ranked; pinning must not be
+  able to hide results, which is why this pins rather than filters.
 - **Best-match order** (default when `@groups` is omitted) — rank globally, then partition by
   group key, ordering groups by their best-scoring member. This is what docs search wants: an
   exact `Button` hit should top the list regardless of category.

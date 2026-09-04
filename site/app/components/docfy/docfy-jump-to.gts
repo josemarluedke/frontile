@@ -2,19 +2,55 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
+import { array } from '@ember/helper';
 import { DocfyService } from '@docfy/ember';
 import { CommandDialog } from 'frontile';
+import {
+  RocketIcon,
+  PaletteIcon,
+  ComponentIcon,
+  AccessibilityIcon,
+  PackageIcon,
+  BookIcon,
+} from '../icons';
 import type RouterService from '@ember/routing/router-service';
-import type { PageMetadata } from '@docfy/core/lib/types';
+import type { PageMetadata, NestedPageMetadata } from '@docfy/core/lib/types';
+import type { ComponentLike } from '@glint/template';
 
-interface DocfyJumpToArgs {}
+type IconComponent = ComponentLike<{ Element: SVGElement }>;
 
-/** One searchable documentation page. */
-interface PageRecord {
+/** One searchable entry: a documentation page or a top-level section. */
+interface PaletteRecord {
   key: string;
   label: string;
   section: string;
   url: string;
+  Icon: IconComponent;
+}
+
+const RECENT = 'Recent';
+const NAVIGATION = 'Navigation';
+
+/**
+ * An icon per top-level docs section, keyed by the first URL segment after
+ * `/docs/`. Pages inherit their section's icon, so a result reads as belonging
+ * somewhere even before you read its group heading.
+ */
+const SECTION_ICONS: Record<string, IconComponent> = {
+  'get-started': RocketIcon,
+  theming: PaletteIcon,
+  components: ComponentIcon,
+  accessibility: AccessibilityIcon,
+  migrations: PackageIcon,
+};
+
+function sectionNameFor(url: string): string | undefined {
+  // '/docs/components/buttons/button' -> 'components'
+  return url.split('/')[2];
+}
+
+function iconFor(url: string): IconComponent {
+  return SECTION_ICONS[sectionNameFor(url) ?? ''] ?? BookIcon;
 }
 
 const RECENTS_KEY = 'frontile:docs:recent-pages';
@@ -26,8 +62,8 @@ const MAX_RECENTS = 5;
  *
  * Persistence is deliberately the app's concern rather than the component's:
  * what counts as "recent", and whether to remember it at all, is a product
- * decision, and `Command` supports it by simply receiving a different list
- * while the query is blank.
+ * decision, and `Command` supports it by receiving a different list while the
+ * query is blank.
  */
 function readRecents(): string[] {
   try {
@@ -48,7 +84,7 @@ function writeRecents(urls: string[]): void {
   }
 }
 
-export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
+export default class DocfyJumpTo extends Component {
   @service declare docfy: DocfyService;
   @service declare router: RouterService;
 
@@ -56,35 +92,81 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
   @tracked query = '';
   @tracked recentUrls: string[] = readRecents();
 
-  get pages(): PageRecord[] {
+  /** The first page under a section, which is where its nav entry points. */
+  firstPageUrl(section: NestedPageMetadata): string | undefined {
+    if (section.pages?.length) {
+      return section.pages[0]?.url;
+    }
+
+    for (const child of section.children ?? []) {
+      const url = this.firstPageUrl(child);
+      if (url) {
+        return url;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * The top-level sections — Get Started, Components, Theming & Styles, and so
+   * on — as jump targets. Same source as the site's own section nav, so the two
+   * cannot drift apart.
+   */
+  get navigation(): PaletteRecord[] {
+    const docs = this.docfy.findNestedChildrenByName('docs');
+
+    return (docs?.children ?? []).reduce<PaletteRecord[]>((records, child) => {
+      const url = this.firstPageUrl(child);
+
+      if (url) {
+        records.push({
+          key: `nav:${child.name}`,
+          label: child.label,
+          section: NAVIGATION,
+          url,
+          Icon: SECTION_ICONS[child.name] ?? BookIcon,
+        });
+      }
+
+      return records;
+    }, []);
+  }
+
+  get pages(): PaletteRecord[] {
     return this.docfy.flat.map((page: PageMetadata) => ({
       key: page.url,
       label: page.title,
       section: page.parentLabel || 'Documentation',
       url: page.url,
+      Icon: iconFor(page.url),
     }));
   }
 
-  /**
-   * With no query, show recents (falling back to everything on a first visit).
-   * Once the user types, search the whole corpus.
-   */
-  get items(): PageRecord[] {
-    if (this.query.trim() || this.recentUrls.length === 0) {
-      return this.pages;
-    }
-
+  get recents(): PaletteRecord[] {
     const byUrl = new Map(this.pages.map((page) => [page.url, page]));
 
-    return this.recentUrls
-      .map((url) => byUrl.get(url))
-      .filter((page): page is PageRecord => Boolean(page));
+    return this.recentUrls.reduce<PaletteRecord[]>((records, url) => {
+      const page = byUrl.get(url);
+
+      if (page) {
+        records.push({ ...page, section: RECENT });
+      }
+
+      return records;
+    }, []);
   }
 
-  get groupBy(): string | undefined {
-    // Recents are already in the order that matters; grouping them by section
-    // would scatter a list of five.
-    return this.query.trim() ? 'section' : undefined;
+  /**
+   * With no query, offer somewhere to go: what you were last reading, then the
+   * top-level sections. Once the user types, search every page as well.
+   */
+  get items(): PaletteRecord[] {
+    if (!this.query.trim()) {
+      return [...this.recents, ...this.navigation];
+    }
+
+    return [...this.navigation, ...this.pages];
   }
 
   open = () => {
@@ -100,7 +182,7 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
     this.query = query;
   };
 
-  select = (_key: string, item?: PageRecord) => {
+  select = (_key: string, item?: PaletteRecord) => {
     if (!item) {
       return;
     }
@@ -150,24 +232,36 @@ export default class DocfyJumpTo extends Component<DocfyJumpToArgs> {
       @onSelect={{this.select}}
       @shortcut="/"
       @items={{this.items}}
-      @groupBy={{this.groupBy}}
+      @groupBy="section"
+      {{! Recent and Navigation stay on top; matching pages follow by relevance. }}
+      @groups={{array RECENT NAVIGATION}}
       @query={{this.query}}
       @onQueryChange={{this.updateQuery}}
       @label="Search documentation"
       @placeholder="Search documentation…"
+      {{! lg so the default Recent + Navigation list fits without scrolling }}
+      @size="lg"
       as |c|
     >
       <c.Input />
       <c.List>
         <:item as |ctx|>
-          <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
-            {{ctx.label}}
+          <ctx.Item @key={{ctx.key}}>
+            <:start><ctx.item.Icon /></:start>
+            <:default>{{ctx.label}}</:default>
           </ctx.Item>
         </:item>
         <:empty>
           No results for "{{c.query}}"
         </:empty>
       </c.List>
+      <c.Footer as |f|>
+        <span class="flex items-center gap-1.5"><f.Kbd>↑</f.Kbd><f.Kbd>↓</f.Kbd>
+          Navigate</span>
+        <span class="flex items-center gap-1.5"><f.Kbd>↵</f.Kbd>
+          Go to page</span>
+        <span class="flex items-center gap-1.5"><f.Kbd>Esc</f.Kbd> Close</span>
+      </c.Footer>
     </CommandDialog>
   </template>
 }

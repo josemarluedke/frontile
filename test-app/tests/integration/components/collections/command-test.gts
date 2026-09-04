@@ -136,6 +136,44 @@ module(
       );
     });
 
+    test('@groups pins groups to the top without hiding the rest', async function (assert) {
+      // Regression: pinning used to *filter* to the listed groups, so a palette
+      // that pinned "Recent" would silently drop every search result.
+      await render(
+        <template>
+          <Command
+            @items={{DOCS}}
+            @groupBy="category"
+            @groups={{array "Settings"}}
+            as |c|
+          >
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+          </Command>
+        </template>
+      );
+
+      assert.strictEqual(
+        groupTitles()[0],
+        'Settings',
+        'the pinned group comes first'
+      );
+      assert.deepEqual(
+        groupTitles().slice(1).sort(),
+        ['Buttons', 'Suggestions'],
+        'and the unpinned groups still render'
+      );
+      assert.strictEqual(
+        renderedKeys().length,
+        DOCS.length,
+        'no items are lost'
+      );
+    });
+
     test('arrow keys navigate from the input and Enter selects', async function (assert) {
       const selected: string[] = [];
       const onSelect = (key: string) => selected.push(key);

@@ -225,7 +225,8 @@ entirely — heading and separator with it — because sections are built from t
 rather than declared as markup. Type `cal` below and watch Settings go.
 
 By default groups are ordered by their best-scoring member, so the closest match is always on
-top. Pass `@groups` to fix the order instead.
+top. `@groups` pins the groups you name to the top, in that order — anything not named still
+renders after them, so pinning a "Recent" section cannot hide search results.
 
 ```gts preview
 import { Command } from 'frontile';

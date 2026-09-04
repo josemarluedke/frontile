@@ -65,8 +65,12 @@ export interface CommandSignature<T> {
     groupBy?: string | ((item: T) => string | undefined);
 
     /**
-     * Fixes the order groups render in. When omitted, groups are ordered by
-     * their best-scoring member, so the closest match is always on top.
+     * Pins these groups to the top, in this order. Any group not listed still
+     * renders, after them, ordered by its best-scoring member — so pinning a
+     * "Recent" section cannot hide search results.
+     *
+     * When omitted, every group is ordered by its best-scoring member, so the
+     * closest match is always on top.
      */
     groups?: string[];
 
@@ -301,11 +305,17 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
       }
     }
 
-    // Declared order when given, otherwise insertion order — which, because
-    // `results` is already ranked, is best-scoring group first.
-    const titles = this.args.groups
-      ? this.args.groups.filter((title) => byTitle.has(title))
-      : [...byTitle.keys()];
+    // Insertion order is best-scoring group first, because `results` is
+    // already ranked. Pinned groups are hoisted above that; anything not
+    // pinned keeps its ranked position rather than being dropped.
+    const ranked = [...byTitle.keys()];
+    const pinned = (this.args.groups ?? []).filter((title) =>
+      byTitle.has(title)
+    );
+    const titles = [
+      ...pinned,
+      ...ranked.filter((title) => !pinned.includes(title))
+    ];
 
     const groups: CommandGroup<T>[] = [];
 

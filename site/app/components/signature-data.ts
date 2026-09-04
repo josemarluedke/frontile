@@ -13707,7 +13707,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Fixes the order groups render in. When omitted, groups are ordered by\ntheir best-scoring member, so the closest match is always on top.',
+          '<p>Pins these groups to the top, in this order. Any group not listed still\nrenders, after them, ordered by its best-scoring member — so pinning a\n"Recent" section cannot hide search results.</p>\n<p>When omitted, every group is ordered by its best-scoring member, so the\nclosest match is always on top.</p>',
         tags: {},
       },
       {
@@ -14038,7 +14038,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Fixes the order groups render in. When omitted, groups are ordered by\ntheir best-scoring member, so the closest match is always on top.',
+          '<p>Pins these groups to the top, in this order. Any group not listed still\nrenders, after them, ordered by its best-scoring member — so pinning a\n"Recent" section cannot hide search results.</p>\n<p>When omitted, every group is ordered by its best-scoring member, so the\nclosest match is always on top.</p>',
         tags: {},
       },
       {
