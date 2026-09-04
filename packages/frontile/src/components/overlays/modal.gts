@@ -124,6 +124,17 @@ export default class Modal extends Component<ModalSignature> {
   // header's modifier is installing, and reading a tracked value there before
   // writing it trips Glimmer's backtracking assertion. Only the derived flag is
   // tracked, and it is always written, never read, from the callback.
+  //
+  // The `ref` utility looks like it should replace all of this, and it was
+  // tried. It cannot: `Ref.setup` clears `current` unconditionally on teardown,
+  // so it answers "what is the current element?" where this needs "does any
+  // header exist?" — and those diverge when a header is *replaced* rather than
+  // added or removed. Glimmer installs the modifiers of newly rendered elements
+  // before tearing down the ones they replace (see the comments in
+  // `utils/listManager.ts`), so with a `ref` a header swapped between the
+  // branches of an `{{#if}}` leaves `current` undefined and the dialog silently
+  // loses its accessible name. A `+1/-1` count is order-independent, which is
+  // the whole point of it being a count.
   renderedHeaders = 0;
   @tracked hasHeader = false;
 
