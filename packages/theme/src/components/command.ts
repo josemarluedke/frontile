@@ -3,46 +3,102 @@ import type { VariantProps } from 'tailwind-variants';
 
 const command = tv({
   slots: {
+    // Padded, with the input inset as its own field: the palette reads as one
+    // surface holding a search box and its results, not as a form control
+    // with a list glued underneath.
     base: [
       'flex flex-col',
-      'w-full',
+      'w-full min-w-0',
+      'p-2',
       'overflow-hidden',
       'text-on-surface-modal'
     ],
     inputWrapper: [
       'flex items-center gap-2',
+      'h-9 shrink-0',
       'px-3',
-      'border-b border-surface-overlay-mild',
-      'shrink-0'
+      'rounded-md',
+      'border border-neutral-soft',
+      'bg-neutral-subtle/60',
+      'transition-colors',
+      'has-[input:focus-visible]:border-neutral-mild'
     ],
-    inputIcon: ['w-4 h-4 shrink-0', 'text-neutral'],
+    inputIcon: ['size-4 shrink-0', 'text-neutral'],
     input: [
-      'w-full',
+      'h-full w-full',
       'bg-transparent',
-      'py-3',
       'font-body text-body-sm',
       'outline-hidden',
       'placeholder:text-neutral',
       'disabled:cursor-not-allowed disabled:opacity-disabled'
     ],
-    // The list keeps a minimum height on purpose: without it the panel
-    // collapses and re-expands on every keystroke as results narrow, which
-    // reads as jitter rather than as responsiveness.
-    list: ['overflow-y-auto', 'overscroll-contain', 'p-1'],
-    empty: ['py-8', 'text-center', 'font-body text-body-sm', 'text-neutral'],
+    // The `size` variant gives the list a minimum height on purpose: without
+    // one the panel collapses and re-expands on every keystroke as results
+    // narrow, which reads as jitter.
+    //
+    // The palette wants denser, plainer rows than a Dropdown menu does. The
+    // descendant utilities below apply that without forking `listboxItem`.
+    // They must stay as literal strings: Tailwind finds classes by scanning
+    // source text, so a class assembled with interpolation is never generated.
+    list: [
+      'mt-1',
+      'overflow-y-auto overflow-x-hidden overscroll-contain',
+      'scroll-py-1',
+      'p-0',
+      // rows
+      '[&_[data-component=listbox-item]]:min-h-9',
+      '[&_[data-component=listbox-item]]:rounded-md',
+      '[&_[data-component=listbox-item]]:px-3',
+      '[&_[data-component=listbox-item]]:py-0',
+      '[&_[data-component=listbox-item]]:border',
+      '[&_[data-component=listbox-item]]:border-transparent',
+      '[&_[data-component=listbox-item][data-active=true]]:border-neutral-soft',
+      '[&_[data-component=listbox-item][data-active=true]]:bg-neutral-subtle/80',
+      // row text
+      '[&_[data-test-id=listbox-item-label]]:text-body-sm',
+      '[&_[data-test-id=listbox-item-label]]:font-medium',
+      // shortcuts read as plain muted text, not as keycaps -- the footer owns keycaps
+      '[&_[data-test-id=listbox-item-shortcut]]:border-transparent',
+      '[&_[data-test-id=listbox-item-shortcut]]:px-0',
+      '[&_[data-test-id=listbox-item-shortcut]]:tracking-widest',
+      // leading icons are sized and muted unless the consumer says otherwise
+      '[&_[data-component=listbox-item]_svg:not([class*=size-])]:size-4',
+      '[&_[data-component=listbox-item]_svg]:shrink-0',
+      '[&_[data-component=listbox-item]_svg:not([class*=text-])]:text-neutral',
+      // group headings
+      '[&_[data-test-id=listbox-group-title]]:px-3',
+      '[&_[data-test-id=listbox-group-title]]:pt-2',
+      '[&_[data-test-id=listbox-group-title]]:pb-1'
+    ],
+    empty: ['py-6', 'text-center', 'font-body text-body-sm', 'text-neutral'],
     loading: [
       'flex items-center justify-center gap-2',
-      'py-8',
+      'py-6',
       'font-body text-body-sm',
       'text-neutral'
     ],
+    // Bleeds to the panel edges, so it reads as the palette's chrome rather
+    // than as a row.
     footer: [
-      'flex items-center gap-2',
-      'px-3 py-2',
-      'shrink-0',
-      'border-t border-surface-overlay-mild',
-      'font-label text-label-2xs',
-      'text-neutral'
+      'flex items-center gap-3',
+      'h-10 shrink-0',
+      '-mx-2 -mb-2 mt-2 px-4',
+      'border-t border-neutral-soft',
+      'bg-neutral-subtle/60',
+      'font-body text-body-2xs font-medium',
+      'text-neutral',
+      'select-none'
+    ],
+    footerHint: 'flex items-center gap-1.5',
+    kbd: [
+      'pointer-events-none select-none',
+      'flex h-5 min-w-5 items-center justify-center gap-1',
+      'rounded border border-neutral-soft',
+      'bg-surface-modal',
+      'px-1',
+      'font-body text-[0.7rem] font-medium',
+      'text-neutral',
+      '[&_svg]:size-3'
     ]
   },
   variants: {
@@ -52,16 +108,22 @@ const command = tv({
       lg: { list: 'max-h-96 min-h-64' }
     },
     /**
-     * Lets a palette rendered inline (rather than in a dialog) carry the same
-     * surface as the dialog panel does.
+     * Draws the palette's own surface, for use outside a dialog. A shrink-wrap
+     * layout would otherwise size it to its widest row, so it also carries a
+     * sensible minimum width.
      */
     isBordered: {
       true: {
         base: [
+          // A percentage here would resolve against a shrink-wrapped parent's
+          // indefinite width and vanish; the rem floor is what actually holds.
+          'min-w-[28rem] max-w-full',
+          'rounded-xl',
           'bg-surface-modal',
           'border border-surface-overlay-mild',
-          'rounded-2xl'
-        ]
+          'shadow-md'
+        ],
+        footer: 'rounded-b-xl'
       }
     }
   },
@@ -74,15 +136,18 @@ const commandDialog = tv({
   slots: {
     // Sits the panel below the top edge rather than centering it: a palette is
     // read top-down, and a vertically centered one moves as results change.
-    base: 'mx-auto mt-[12vh] w-full max-w-xl px-4',
+    base: 'w-full max-w-lg px-4 mt-[12vh] mb-8 sm:mt-[15vh]',
     panel: [
-      'flex flex-col',
+      'relative flex flex-col',
       'w-full',
       'overflow-hidden',
+      'rounded-xl',
       'bg-surface-modal',
       'text-on-surface-modal',
       'border border-surface-overlay-mild',
-      'rounded-2xl',
+      // The soft outer ring is what separates the panel from the scrim; a
+      // shadow alone reads as flat against a dark backdrop.
+      'ring-4 ring-neutral-soft/40',
       'shadow-2xl',
       'outline-hidden'
     ]

@@ -377,7 +377,7 @@ const listboxGroup = tv({
     title: [
       'px-2',
       'py-1.5',
-      'font-label text-label-2xs',
+      'font-body text-body-2xs font-medium',
       'text-neutral',
       'select-none'
     ],

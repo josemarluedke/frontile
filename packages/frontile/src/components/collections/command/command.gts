@@ -8,6 +8,7 @@ import { keyAndLabelForItem, type ListItem } from '../../../utils/listManager';
 import { filterAndRankItems, type FilterFn } from '../../../utils/filter';
 import { CommandInput } from './input';
 import { CommandList } from './list';
+import { CommandFooter } from './footer';
 import type { CommandSlots, SlotsToClasses } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
 
@@ -33,6 +34,7 @@ export interface CommandApi<T> {
     | 'classes'
     | 'setup'
   >;
+  Footer: WithBoundArgs<typeof CommandFooter, 'classes'>;
   List: WithBoundArgs<
     typeof CommandList<T>,
     | 'groups'
@@ -362,6 +364,7 @@ class Command<T = unknown> extends Component<CommandSignature<T>> {
             onActiveItemChange=this.handleActiveItemChange
             classes=@classes
           )
+          Footer=(component CommandFooter classes=@classes)
         )
       }}
     </div>

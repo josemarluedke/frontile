@@ -365,8 +365,7 @@ Blank-query async state renders a "start typing" prompt, mirroring `isSearchProm
       <:default>{{item.title}}</:default>
     </c.Item>
   </c.List>
-  <c.Empty>No results for "{{c.query}}"</c.Empty>
-  <c.Loading />
+  <c.Footer />
 </Command::Dialog>
 ```
 
@@ -375,6 +374,48 @@ Blank-query async state renders a "start typing" prompt, mirroring `isSearchProm
 palettes.
 
 ---
+
+## 7.1 Visual design (as built)
+
+The first cut was verified by DOM state and tests but never actually looked at, and it looked
+poor. The rebuilt design follows shadcn's *site* command menu (the version with the inset
+search field), mapped onto Frontile tokens:
+
+- **Panel**: `p-2`, `rounded-xl`, `bg-surface-modal`, `border-surface-overlay-mild`, plus
+  `ring-4 ring-neutral-soft/40` + `shadow-2xl` in the dialog — the soft outer ring is what
+  separates the panel from the scrim; a shadow alone reads flat against a dark backdrop.
+- **Input**: inset as its own field — `h-9 rounded-md border-neutral-soft bg-neutral-subtle/60`
+  — rather than a flush input with a bottom border.
+- **Rows**: `min-h-9 rounded-md px-3`, label `text-body-sm font-medium` (14px), a transparent
+  border that becomes `border-neutral-soft` + `bg-neutral-subtle/80` when active; shortcuts
+  render as plain muted text (`tracking-widest`, no keycap border); leading `<svg>`s are
+  `size-4 text-neutral` unless the consumer sizes/colors them.
+- **Group headings**: `text-body-2xs font-medium text-neutral` (medium, not the semibold label
+  face), inset `px-3 pt-2 pb-1`; dividers between groups get `my-1`.
+- **Footer** (`c.Footer`, new part): `h-10` bar bleeding to the panel edges
+  (`-mx-2 -mb-2`), `bg-neutral-subtle/60 border-t`, `text-body-2xs font-medium text-neutral`,
+  with `Kbd` keycaps (`h-5 rounded border bg-surface-modal text-[0.7rem]`). Default content is
+  ↑↓ Navigate · ↵ Select · Esc Close; a block replaces it and is handed `Kbd`.
+- **Inline (`@isBordered`)**: `min-w-[28rem]` — a shrink-wrapped flex parent otherwise sizes
+  the palette to its widest row (208px in the docs), which is what made everything look
+  oversized.
+
+Four bugs found only by looking, all now covered by tests or verified in the browser:
+
+1. `@disableFlexContent` on `Overlay` stripped `fixed inset-0`, so the dialog rendered in-flow
+   at the bottom of the page with no backdrop.
+2. The dialog bound tv slot *functions* to `class` without invoking them, so the panel had no
+   styles at all.
+3. `overlay-transition--command-*` classes were never emitted: ember-css-transitions composes
+   class names at runtime, so Tailwind cannot see them — every overlay transition must be
+   listed in `packages/theme/src/plugin/safelist.ts`.
+4. Row/heading overrides written as template literals (`${row}:px-3`) generated nothing:
+   Tailwind scans source text for complete class strings. Descendant utilities must be
+   literal.
+
+Also: `test-app` cannot observe Tailwind class names on `Overlay`, because other test modules
+call `registerCustomStyles({ overlay })` process-wide. Assert on a variant class registered by
+the test itself (the Modal tests' pattern) instead.
 
 ## 8. Motion
 

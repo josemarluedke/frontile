@@ -107,7 +107,7 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
     </li>
 
     {{#if @withDivider}}
-      <Divider @as="li" />
+      <Divider @as="li" @class="my-1" />
     {{/if}}
   </template>
 }

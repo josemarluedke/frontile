@@ -13645,7 +13645,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -13875,6 +13875,16 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'Footer',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandFooter</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
                     identifier: 'List',
                     type: {
                       type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
@@ -13947,7 +13957,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -14227,6 +14237,16 @@ const data: ComponentDoc[] = [
                     tags: {},
                   },
                   {
+                    identifier: 'Footer',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandFooter</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
                     identifier: 'List',
                     type: {
                       type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
@@ -14263,6 +14283,113 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'footer',
+    name: 'CommandKbd',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description: "<p>A keycap, for the footer's hints.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'footer',
+    name: 'CommandFooter',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-title class_">Kbd</span>: <span class="hljs-title class_">CommandKbd</span> (classes bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'Kbd',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandKbd</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Replaces the default hints. Yields a <code>Kbd</code> keycap so custom hints match\nthe built-in ones.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>The bar along the bottom of a palette that teaches its keyboard: how to move,\nhow to choose, how to leave. Renders sensible defaults when given no block.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'input',
     name: 'CommandInput',
     fileName:
@@ -14279,7 +14406,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -14376,7 +14503,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
         },
         isRequired: false,
         isInternal: false,

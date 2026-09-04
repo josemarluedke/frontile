@@ -17,7 +17,118 @@ import { Command, CommandDialog } from 'frontile';
 
 ## Usage
 
-`Command` renders inline. Pass `@items` and describe one row in the `:item` block.
+The usual form is a dialog, opened from a button or from a keyboard shortcut anywhere on the
+page. `mod` is Cmd on Apple platforms and Ctrl elsewhere — press it now.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { CommandDialog, Button } from 'frontile';
+import { UserIcon, StarIcon, SearchIcon, CodeIcon } from 'site/components/icons';
+
+const commands = [
+  { key: 'calendar', label: 'Calendar', section: 'Suggestions', Icon: StarIcon },
+  { key: 'search-emoji', label: 'Search Emoji', section: 'Suggestions', Icon: SearchIcon },
+  { key: 'calculator', label: 'Calculator', section: 'Suggestions', Icon: CodeIcon },
+  { key: 'profile', label: 'Profile', section: 'Settings', Icon: UserIcon, shortcut: '⌘P' },
+  { key: 'billing', label: 'Billing', section: 'Settings', Icon: CodeIcon, shortcut: '⌘B' },
+  { key: 'settings', label: 'Settings', section: 'Settings', Icon: CodeIcon, shortcut: '⌘S' }
+];
+
+export default class CommandDialogExample extends Component {
+  @tracked isOpen = false;
+  @tracked lastSelected;
+
+  open = () => (this.isOpen = true);
+  close = () => (this.isOpen = false);
+
+  select = (key) => {
+    this.lastSelected = key;
+    this.isOpen = false;
+  };
+
+  <template>
+    <div class="flex items-center gap-4">
+      <Button @appearance="outlined" {{on "click" this.open}}>
+        Open palette
+        <kbd class="ml-2 rounded border border-neutral-soft px-1.5 font-body text-body-2xs text-neutral">⌘K</kbd>
+      </Button>
+      {{#if this.lastSelected}}
+        <span class="font-body text-body-sm text-neutral">Selected: {{this.lastSelected}}</span>
+      {{/if}}
+    </div>
+
+    <CommandDialog
+      @isOpen={{this.isOpen}}
+      @onOpen={{this.open}}
+      @onClose={{this.close}}
+      @onSelect={{this.select}}
+      @shortcut="mod+k"
+      @items={{commands}}
+      @groupBy="section"
+      @label="Search commands"
+      @placeholder="Type a command or search…"
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
+            <:start><ctx.item.Icon /></:start>
+            <:default>{{ctx.label}}</:default>
+          </ctx.Item>
+        </:item>
+        <:empty>No results for "{{c.query}}"</:empty>
+      </c.List>
+      <c.Footer />
+    </CommandDialog>
+  </template>
+}
+```
+
+The dialog opens with a short scale-and-rise and honors `prefers-reduced-motion` by keeping
+the fade but dropping the movement. An unmodified shortcut such as `/` is ignored while the
+user is typing in a field, so it still types a slash in a text input.
+
+## Anatomy
+
+`Command` yields the palette's parts plus its current state, so you compose the layout rather
+than configuring it. The same parts are yielded by `CommandDialog`.
+
+```gts preview
+import { Command } from 'frontile';
+
+const commands = [
+  { key: 'profile', label: 'Profile' },
+  { key: 'billing', label: 'Billing' }
+];
+
+<template>
+  <Command @items={{commands}} @isBordered={{true}} as |c|>
+    {{! the search field — carries the combobox semantics }}
+    <c.Input @placeholder="Search…" />
+
+    {{! the results — ranked, grouped, keyboard navigable }}
+    <c.List>
+      <:item as |ctx|>
+        {{! ctx yields the item, its key, its label, and a bound Item component }}
+        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+      </:item>
+      <:empty>Nothing matched.</:empty>
+      <:loading>Searching…</:loading>
+    </c.List>
+
+    {{! keyboard hints; c.query, c.resultCount and c.isLoading are yielded too }}
+    <c.Footer />
+  </Command>
+</template>
+```
+
+## Inline
+
+`Command` on its own renders in place — for a page-level search, a sidebar, or inside a
+custom overlay. `@isBordered` draws its own surface.
 
 ```gts preview
 import { Command } from 'frontile';
@@ -38,39 +149,6 @@ const commands = [
         <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
       </:item>
     </c.List>
-  </Command>
-</template>
-```
-
-## Anatomy
-
-`Command` yields the palette's parts plus its current state, so you compose the layout rather
-than configuring it.
-
-```gts preview
-import { Command } from 'frontile';
-
-const commands = [{ key: 'profile', label: 'Profile' }];
-
-<template>
-  <Command @items={{commands}} @isBordered={{true}} as |c|>
-    {{! the search field — carries the combobox semantics }}
-    <c.Input @placeholder="Search…" />
-
-    {{! the results — ranked, grouped, and keyboard navigable }}
-    <c.List>
-      <:item as |ctx|>
-        {{! ctx yields the item, its key, its label, and a bound Item component }}
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-      <:empty>Nothing matched.</:empty>
-      <:loading>Searching…</:loading>
-    </c.List>
-
-    {{! c.query, c.resultCount and c.isLoading are yielded too }}
-    <div class="px-3 py-2 text-neutral font-label text-label-2xs">
-      {{c.resultCount}} results
-    </div>
   </Command>
 </template>
 ```
@@ -184,40 +262,26 @@ const commands = [
 
 ## Rows
 
-Rows are `Listbox` options, so they take the same `:start` / `:end` blocks, `@description` and
-`@shortcut`.
+Rows are `Listbox` options, so they take the same `:start` / `:end` blocks, `@shortcut` and
+`@description`. Icons in `:start` are sized and muted for you.
 
 ```gts preview
 import { Command } from 'frontile';
 import { UserIcon, StarIcon, SearchIcon } from 'site/components/icons';
 
 const commands = [
-  { key: 'profile', label: 'Profile', shortcut: '⌘P' },
-  { key: 'favorites', label: 'Favorites', shortcut: '⌘F' },
-  { key: 'search', label: 'Search', shortcut: '⌘K' }
+  { key: 'profile', label: 'Profile', shortcut: '⌘P', Icon: UserIcon },
+  { key: 'favorites', label: 'Favorites', shortcut: '⌘F', Icon: StarIcon },
+  { key: 'search', label: 'Search', shortcut: '⌘K', Icon: SearchIcon }
 ];
-
-const iconFor = (key) => {
-  if (key === 'profile') return UserIcon;
-  if (key === 'favorites') return StarIcon;
-  return SearchIcon;
-};
 
 <template>
   <Command @items={{commands}} @isBordered={{true}} as |c|>
     <c.Input @placeholder="Search…" />
     <c.List>
       <:item as |ctx|>
-        <ctx.Item
-          @key={{ctx.key}}
-          @shortcut={{ctx.item.shortcut}}
-          @description="Jump to {{ctx.label}}"
-        >
-          <:start>
-            {{#let (iconFor ctx.key) as |Icon|}}
-              <Icon class="w-4 h-4 shrink-0" />
-            {{/let}}
-          </:start>
+        <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
+          <:start><ctx.item.Icon /></:start>
           <:default>{{ctx.label}}</:default>
         </ctx.Item>
       </:item>
@@ -226,72 +290,34 @@ const iconFor = (key) => {
 </template>
 ```
 
-## Dialog
+## Footer
 
-`CommandDialog` puts the palette in an overlay and can open it from a keyboard shortcut
-anywhere in the document. `mod` is Cmd on Apple platforms and Ctrl elsewhere.
-
-An unmodified shortcut such as `/` is ignored while the user is typing in a field, so it still
-types a slash in a text input.
+`c.Footer` renders the palette's keyboard hints. Give it a block to say something else — it
+yields a `Kbd` keycap so custom hints match the built-in ones.
 
 ```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { CommandDialog, Button } from 'frontile';
+import { Command } from 'frontile';
 
 const commands = [
-  { key: 'profile', label: 'Profile', section: 'Settings' },
-  { key: 'billing', label: 'Billing', section: 'Settings' },
-  { key: 'calendar', label: 'Calendar', section: 'Suggestions' },
-  { key: 'search-emoji', label: 'Search Emoji', section: 'Suggestions' }
+  { key: 'button', label: 'Button' },
+  { key: 'checkbox', label: 'Checkbox' }
 ];
 
-export default class CommandDialogExample extends Component {
-  @tracked isOpen = false;
-  @tracked lastSelected;
-
-  open = () => (this.isOpen = true);
-  close = () => (this.isOpen = false);
-
-  select = (key) => {
-    this.lastSelected = key;
-    this.isOpen = false;
-  };
-
-  <template>
-    <Button {{on "click" this.open}}>Open palette (⌘K)</Button>
-
-    {{#if this.lastSelected}}
-      <p class="mt-3 text-neutral">Selected: {{this.lastSelected}}</p>
-    {{/if}}
-
-    <CommandDialog
-      @isOpen={{this.isOpen}}
-      @onOpen={{this.open}}
-      @onClose={{this.close}}
-      @onSelect={{this.select}}
-      @shortcut="mod+k"
-      @items={{commands}}
-      @groupBy="section"
-      @label="Search commands"
-      @placeholder="Type a command or search…"
-      as |c|
-    >
-      <c.Input />
-      <c.List>
-        <:item as |ctx|>
-          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-        </:item>
-        <:empty>No results for "{{c.query}}"</:empty>
-      </c.List>
-    </CommandDialog>
-  </template>
-}
+<template>
+  <Command @items={{commands}} @isBordered={{true}} @size="sm" as |c|>
+    <c.Input @placeholder="Search components…" />
+    <c.List>
+      <:item as |ctx|>
+        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+      </:item>
+    </c.List>
+    <c.Footer as |f|>
+      <span class="flex items-center gap-1.5"><f.Kbd>↵</f.Kbd> Go to page</span>
+      <span class="flex items-center gap-1.5"><f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd> Copy link</span>
+    </c.Footer>
+  </Command>
+</template>
 ```
-
-The dialog animates in with a short scale-and-rise, and honors
-`prefers-reduced-motion` by dropping the movement while keeping the fade.
 
 ## Async search
 
@@ -362,10 +388,10 @@ const commands = [
 ];
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-6">
     {{#each (array "sm" "md" "lg") as |size|}}
       <Command @items={{commands}} @size={{size}} @isBordered={{true}} as |c|>
-        <c.Input @placeholder="{{size}}" />
+        <c.Input @placeholder="size={{size}}" />
         <c.List>
           <:item as |ctx|>
             <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
@@ -399,7 +425,7 @@ Provided for you:
   render as `role="group"` labelled by their heading, with the intervening list marked
   `role="none"` so the `listbox` → `option` ownership chain stays intact.
 - Disabled rows (via `@disabledKeys`) get `aria-disabled` and cannot be selected.
-- The dialog traps focus and restores it on close.
+- The dialog traps focus, focuses the input on open, and restores focus on close.
 
 What you must supply:
 
@@ -409,7 +435,7 @@ What you must supply:
 
 Verified in `test-app/tests/integration/components/collections/command-test.gts`, which covers
 the combobox attributes, `aria-activedescendant` tracking the active option, cross-group
-keyboard traversal, and disabled rows.
+keyboard traversal, disabled rows, and the dialog's positioning.
 
 ## API
 
@@ -422,6 +448,10 @@ keyboard traversal, and disabled rows.
 ### Command::List
 
 <Signature @component="CommandList" />
+
+### Command::Footer
+
+<Signature @component="CommandFooter" />
 
 ### Command::Dialog
 

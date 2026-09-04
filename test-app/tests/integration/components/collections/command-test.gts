@@ -9,6 +9,8 @@ import {
 } from '@ember/test-helpers';
 import { Command, CommandDialog } from 'frontile';
 import { cell } from 'ember-resources';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
 import { array } from '@ember/helper';
 
 interface Doc {
@@ -298,7 +300,120 @@ module(
       assert.deepEqual(selected, [], 'a disabled item does not select');
     });
 
-    module('dialog', function () {
+    test('it renders a footer with keyboard hints, or a custom one', async function (assert) {
+      await render(
+        <template>
+          <Command @items={{DOCS}} as |c|>
+            <c.Input />
+            <c.List>
+              <:item as |ctx|>
+                <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+              </:item>
+            </c.List>
+            <c.Footer />
+          </Command>
+        </template>
+      );
+
+      assert.dom('[data-test-id="command-footer"]').exists();
+      assert
+        .dom('[data-test-id="command-footer"]')
+        .includesText('Navigate')
+        .includesText('Select')
+        .includesText('Close');
+      assert.strictEqual(
+        document.querySelectorAll('[data-test-id="command-kbd"]').length,
+        4,
+        'up, down, enter and escape keycaps'
+      );
+
+      await render(
+        <template>
+          <Command @items={{DOCS}} as |c|>
+            <c.Input />
+            <c.Footer as |f|>
+              <f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd>
+              Copy link
+            </c.Footer>
+          </Command>
+        </template>
+      );
+
+      assert.dom('[data-test-id="command-footer"]').includesText('Copy link');
+      assert.strictEqual(
+        document.querySelectorAll('[data-test-id="command-kbd"]').length,
+        2,
+        'custom keycaps render through the yielded Kbd'
+      );
+      assert
+        .dom('[data-test-id="command-footer"]')
+        .doesNotIncludeText('Navigate');
+    });
+
+    module('dialog', function (hooks) {
+      hooks.before(function () {
+        // Other test modules register a bare `overlay` style, and that
+        // registration is process-wide, so the theme's Tailwind classes are not
+        // observable here. Register the variant we care about under a name we
+        // can assert on -- the same approach the Modal tests take.
+        registerCustomStyles({
+          overlay: tv({
+            base: 'overlay__content',
+            variants: {
+              enableFlexContent: { true: 'overlay--flex-content' },
+              inPlace: { true: 'overlay--in-place' }
+            }
+          }) as never
+        });
+      });
+
+      test('it renders as a positioned overlay with a styled panel', async function (assert) {
+        // Regression: passing @disableFlexContent to Overlay stripped its
+        // `fixed inset-0` positioning, so the palette rendered in-flow at the
+        // bottom of the page; and the panel's tv slot functions were bound to
+        // `class` without being invoked, so it had no styles at all.
+        await render(
+          <template>
+            <CommandDialog
+              @isOpen={{true}}
+              @items={{DOCS}}
+              @disableTransitions={{true}}
+              as |c|
+            >
+              <c.Input />
+              <c.List>
+                <:item as |ctx|>
+                  <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+                </:item>
+              </c.List>
+              <c.Footer />
+            </CommandDialog>
+          </template>
+        );
+
+        const overlay = document.querySelector(
+          '[data-component="overlay"]'
+        ) as HTMLElement;
+        assert.ok(overlay, 'the overlay rendered');
+        assert.ok(
+          overlay.classList.contains('overlay--flex-content'),
+          `the overlay keeps its positioned flex layout (got "${overlay.className}")`
+        );
+
+        const panel = document.querySelector(
+          '[data-test-id="command-dialog-panel"]'
+        ) as HTMLElement;
+        assert.ok(panel, 'the panel rendered');
+        assert.ok(
+          panel.className.includes('rounded') &&
+            panel.className.includes('bg-surface-modal'),
+          `the panel carries its theme classes (got "${panel.className.slice(0, 80)}")`
+        );
+        assert
+          .dom('[data-test-id="command-footer"]')
+          .exists('the footer is yielded in the dialog too');
+      });
+
       test('it opens on its shortcut and closes on Escape', async function (assert) {
         const isOpen = cell(false);
         const open = () => (isOpen.current = true);
