@@ -79,6 +79,25 @@ module('Unit | Forms | Utils | nested-data', function (hooks) {
       assert.strictEqual(result['user.birthdate'], date);
     });
 
+    test('passes File values through untouched', function (assert) {
+      const file = new File(['contents'], 'resume.txt', { type: 'text/plain' });
+      const nested = {
+        user: {
+          name: 'John',
+          resume: file
+        }
+      };
+
+      const result = flattenData(nested);
+
+      assert.strictEqual(
+        result['user.resume'],
+        file,
+        'the same File instance is preserved'
+      );
+      assert.strictEqual(result['user.name'], 'John');
+    });
+
     test('handles null and undefined values', function (assert) {
       const nested = {
         user: {
@@ -206,6 +225,22 @@ module('Unit | Forms | Utils | nested-data', function (hooks) {
       assert.deepEqual(result, flat);
     });
 
+    test('passes File values through untouched', function (assert) {
+      const file = new File(['contents'], 'resume.txt', { type: 'text/plain' });
+      const flat = {
+        'user.name': 'John',
+        'user.resume': file
+      };
+
+      const result = unflattenData(flat);
+
+      assert.strictEqual(
+        (result['user'] as Record<string, unknown>)['resume'],
+        file,
+        'the same File instance is preserved'
+      );
+    });
+
     test('round-trip: flatten then unflatten', function (assert) {
       const original = {
         user: {
@@ -225,6 +260,152 @@ module('Unit | Forms | Utils | nested-data', function (hooks) {
       const unflattened = unflattenData(flattened);
 
       assert.deepEqual(unflattened, original);
+    });
+  });
+
+  module('prototype pollution', function (hooks) {
+    // These tests write to a shared global (`Object.prototype`) if the guard
+    // regresses, so scrub the known pollution targets after every test. A
+    // leaked property here would silently corrupt every later test in the run.
+    hooks.afterEach(function () {
+      delete (Object.prototype as Record<string, unknown>)['isAdmin'];
+      delete (Object.prototype as Record<string, unknown>)['polluted'];
+    });
+
+    test('unflattenData does not pollute Object.prototype via __proto__', function (assert) {
+      const flat = {
+        '__proto__.isAdmin': true,
+        email: 'john@example.com'
+      };
+
+      const result = unflattenData(flat);
+
+      assert.strictEqual(
+        ({} as Record<string, unknown>)['isAdmin'],
+        undefined,
+        'Object.prototype was not polluted'
+      );
+      assert.deepEqual(
+        result,
+        { email: 'john@example.com' },
+        'the dangerous path is dropped and safe data is kept'
+      );
+    });
+
+    test('unflattenData does not pollute via constructor.prototype', function (assert) {
+      // `constructor` never reached `Object.prototype` through the walk (it is
+      // a function, which `isPlainObject` rejects) — before the guard this
+      // produced `{constructor: {prototype: {polluted: true}}}`. It is refused
+      // as defense in depth, so what this pins is the shape, plus the absence
+      // of pollution if the walk is ever changed.
+      const flat = {
+        'constructor.prototype.polluted': true,
+        email: 'john@example.com'
+      };
+
+      const result = unflattenData(flat);
+
+      assert.strictEqual(
+        ({} as Record<string, unknown>)['polluted'],
+        undefined,
+        'Object.prototype was not polluted'
+      );
+      assert.deepEqual(
+        result,
+        { email: 'john@example.com' },
+        'the dangerous path is dropped and safe data is kept'
+      );
+    });
+
+    test('unflattenData refuses a bare __proto__ final segment', function (assert) {
+      // An object literal `{__proto__: ...}` would set the prototype rather
+      // than create an own key, so build the own key explicitly.
+      const flat: Record<string, unknown> = {};
+      Object.defineProperty(flat, '__proto__', {
+        value: { isAdmin: true },
+        enumerable: true,
+        writable: true,
+        configurable: true
+      });
+      flat['email'] = 'john@example.com';
+
+      const result = unflattenData(flat);
+
+      assert.strictEqual(
+        ({} as Record<string, unknown>)['isAdmin'],
+        undefined,
+        'Object.prototype was not polluted'
+      );
+      assert.notOk(
+        Object.prototype.hasOwnProperty.call(result, '__proto__'),
+        'no own __proto__ key is created on the result'
+      );
+      assert.strictEqual(
+        result['email'],
+        'john@example.com',
+        'safe data is kept'
+      );
+    });
+
+    test('unflattenData refuses dangerous segments in the middle of a path', function (assert) {
+      const flat = {
+        'user.__proto__.isAdmin': true,
+        'user.constructor.prototype.polluted': true,
+        'user.name': 'John'
+      };
+
+      const result = unflattenData(flat);
+
+      assert.strictEqual(
+        ({} as Record<string, unknown>)['isAdmin'],
+        undefined,
+        'Object.prototype was not polluted via __proto__'
+      );
+      assert.strictEqual(
+        ({} as Record<string, unknown>)['polluted'],
+        undefined,
+        'Object.prototype was not polluted via constructor.prototype'
+      );
+      assert.deepEqual(
+        result,
+        { user: { name: 'John' } },
+        'only the safe path is materialized'
+      );
+    });
+
+    test('unflattenData returns objects with a normal prototype', function (assert) {
+      // The result is consumed by Glimmer templates and Ember's `get()`, so it
+      // must not be a null-prototype object.
+      const result = unflattenData({ 'user.name': 'John' });
+
+      assert.strictEqual(
+        Object.getPrototypeOf(result),
+        Object.prototype,
+        'the root object has the normal Object prototype'
+      );
+      assert.strictEqual(
+        Object.getPrototypeOf(result['user'] as object),
+        Object.prototype,
+        'nested objects have the normal Object prototype'
+      );
+    });
+
+    test('flattenData drops dangerous keys so they cannot round-trip', function (assert) {
+      const nested: Record<string, unknown> = { name: 'John' };
+      Object.defineProperty(nested, '__proto__', {
+        value: { isAdmin: true },
+        enumerable: true,
+        writable: true,
+        configurable: true
+      });
+
+      const result = flattenData(nested);
+
+      assert.deepEqual(
+        result,
+        { name: 'John' },
+        'the dangerous key is not emitted'
+      );
     });
   });
 

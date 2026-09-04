@@ -29,6 +29,46 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 /**
+ * Path segments that are refused as object keys.
+ *
+ * Field names come from the `name` attribute of the form's controls, which an
+ * app may render from a server-supplied schema, a CMS, or URL state — so they
+ * are untrusted input.
+ *
+ * `__proto__` is the real vector: `isPlainObject(Object.prototype)` is `true`,
+ * so when the walk below reached a `__proto__` segment it accepted
+ * `Object.prototype` as an already-existing nested object instead of creating a
+ * fresh one, and the final assignment wrote onto every object in the
+ * application.
+ *
+ * `constructor` and `prototype` do not reach `Object.prototype` through the
+ * walk as it is written — `current['constructor']` is a function, which
+ * `isPlainObject` rejects, so the walk shadows it with a fresh own key. They
+ * are refused anyway, as defense in depth: it keeps form data from shadowing
+ * those names, and it means a later change to the walk (or an intermediate that
+ * is a plain object with a `constructor` of its own) cannot quietly turn them
+ * into live vectors.
+ */
+const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype'];
+
+/**
+ * Checks a single path segment. Callers refuse the whole entry rather than
+ * substituting a safe key, so no partially-built path is left behind.
+ */
+function isUnsafeKey(key: string): boolean {
+  return UNSAFE_KEYS.includes(key);
+}
+
+/**
+ * Checks whether a dotted path is safe to materialize. A single unsafe segment
+ * anywhere in the path poisons the whole path, so the entry is refused wholesale
+ * rather than partially built.
+ */
+function isSafePath(keys: string[]): boolean {
+  return !keys.some(isUnsafeKey);
+}
+
+/**
  * Flattens a nested object into a flat object with dotted-path keys.
  *
  * @example
@@ -47,6 +87,13 @@ export function flattenData<T = unknown>(
 
   for (const key in data) {
     if (!Object.prototype.hasOwnProperty.call(data, key)) {
+      continue;
+    }
+
+    // Refuse unsafe keys here too, so a hostile or already-polluted input
+    // cannot produce a dotted path that `unflattenData` would have to reject
+    // on the way back in.
+    if (isUnsafeKey(key)) {
       continue;
     }
 
@@ -87,6 +134,11 @@ export function unflattenData<T = unknown>(
 
     const value = data[path];
     const keys = path.split('.');
+
+    if (!isSafePath(keys)) {
+      continue;
+    }
+
     let current = result;
 
     // Navigate/create nested structure

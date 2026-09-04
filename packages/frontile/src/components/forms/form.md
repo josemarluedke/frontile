@@ -822,6 +822,11 @@ object internally and unflattens it again for `@onChange` and `@onSubmit`, so yo
 your `@data` keep the shape you actually want. Errors and dirty entries are keyed by the same
 dotted path down to the leaf — `user.name.first`, never just `user`.
 
+`__proto__`, `constructor` and `prototype` are reserved: a field whose name uses one of those
+segments is dropped from the form data rather than nested. Building those keys out of untrusted
+field names would let a form write onto `Object.prototype` and change every object in the
+application, so they are refused outright.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
