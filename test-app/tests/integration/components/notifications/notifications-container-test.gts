@@ -172,18 +172,13 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      // Render before adding: `Notification`'s default duration schedules a
-      // real `later()` timer, and `render()` awaits full `settled()`, which
-      // blocks on any pending runloop timer regardless of how far out it is
-      // scheduled. Adding the notifications after the initial render and
-      // flushing with `rerender()` (render-only settledness, not full
-      // settled) keeps the assertions from racing the notifications' own
-      // 5s auto-dismiss timer.
+      // `options` sets `preserve: true`, which skips timer creation entirely
+      // (see `manager.ts`), so the literal add-then-render ordering below
+      // resolves instantly with full `settled()` guarantees and never races
+      // an auto-dismiss timer.
+      service.add('First', options);
+      service.add('Second', options);
       await render(<template><NotificationsContainer /></template>);
-
-      service.add('First');
-      service.add('Second');
-      await rerender();
 
       const cards = findAll('[data-test-notification-card]');
       assert.strictEqual(cards.length, 2);
@@ -198,8 +193,8 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      service.add('First');
-      service.add('Second');
+      service.add('First', options);
+      service.add('Second', options);
       await render(<template><NotificationsContainer /></template>);
 
       assert
@@ -222,7 +217,7 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      service.add('First');
+      service.add('First', options);
       await render(<template><NotificationsContainer /></template>);
 
       await triggerEvent('.notifications-container', 'focusin');
@@ -236,7 +231,7 @@ module(
         'service:notifications'
       ) as NotificationsService;
 
-      service.add('First');
+      service.add('First', options);
       await render(
         <template><NotificationsContainer @expand={{true}} /></template>
       );

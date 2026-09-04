@@ -2,7 +2,7 @@ import { tv } from '../tw';
 
 const notificationsContainer = tv({
   slots: {
-    base: ['fixed z-1000 w-full max-w-lg px-4 py-4'],
+    base: ['fixed z-1000 w-full max-w-lg px-4 py-4 pointer-events-none'],
     stack: [
       'relative w-full',
       'transition-[height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
