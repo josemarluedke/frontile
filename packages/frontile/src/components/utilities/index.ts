@@ -8,4 +8,5 @@ export * from './skeleton';
 export * from './spinner';
 export * from '../../utils/ref';
 export * from '../../utils/toggle';
+export * from '../../utils/selection-indicator';
 export * from '../../modifiers/press';
