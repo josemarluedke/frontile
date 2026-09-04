@@ -28,6 +28,42 @@ export type CustomValidatorFn<Input = unknown> = (
 ) => CustomValidatorReturn;
 
 /**
+ * Extracts the comparable keys from a Standard Schema issue path.
+ *
+ * Path segments may be plain keys or `{ key }` objects. Keys are coerced to
+ * strings so numeric array indexes (including `0`) survive and line up with
+ * the dotted field name a consumer writes as `@name` (e.g. `items.0.name`).
+ *
+ * This is the single source of truth for that format: both
+ * `StandardValidator.filterFieldIssues` and the form component's
+ * `FormErrors` conversion go through it, so field lookup and error keys
+ * cannot disagree.
+ *
+ * @param path The issue path to extract keys from.
+ * @returns The path keys as strings, with null/undefined segments dropped.
+ */
+function issuePathKeys(path: StandardSchemaV1.Issue['path']): string[] {
+  if (!path) return [];
+
+  return path
+    .map((s) => (typeof s === 'object' && s !== null && 'key' in s ? s.key : s))
+    .filter((key) => key !== null && key !== undefined)
+    .map((key) => String(key));
+}
+
+/**
+ * Builds the dotted field name for a Standard Schema issue, matching the
+ * `@name` a consumer gives a field (e.g. `items.0.name`).
+ *
+ * @param issue The issue to build the field name for.
+ * @returns The dotted field name, or an empty string when the issue has no
+ *          path.
+ */
+function issuePathToFieldName(issue: StandardSchemaV1.Issue): string {
+  return issuePathKeys(issue.path).join('.');
+}
+
+/**
  * Provides convenience methods for validating data using Standard Schema.
  * Also supports custom validator functions that return issues in the
  * Standard Schema format.
@@ -230,15 +266,7 @@ class StandardValidator {
     const fieldIssues = issues.filter((issue) => {
       if (!issue.path) return false;
 
-      // Extract keys from path segments.
-      // Segments are coerced to strings so numeric array indexes (including
-      // `0`) survive and can be compared against the dotted field name.
-      const pathKeys = issue.path
-        .map((s) =>
-          typeof s === 'object' && s !== null && 'key' in s ? s.key : s
-        )
-        .filter((key) => key !== null && key !== undefined)
-        .map((key) => String(key));
+      const pathKeys = issuePathKeys(issue.path);
 
       // For exact path matching:
       // The paths must be the same length and match exactly
@@ -252,5 +280,5 @@ class StandardValidator {
   }
 }
 
-export { StandardValidator };
+export { StandardValidator, issuePathKeys, issuePathToFieldName };
 export default StandardValidator;

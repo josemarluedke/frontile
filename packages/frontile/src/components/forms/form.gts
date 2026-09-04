@@ -5,7 +5,10 @@ import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { ref } from '../../utils/ref';
 import { dataFrom } from 'form-data-utils';
-import { StandardValidator } from '../../utils/standard-validator';
+import {
+  StandardValidator,
+  issuePathToFieldName
+} from '../../utils/standard-validator';
 import { flattenData, unflattenData, deepEqual } from '../../utils/nested-data';
 import { Field } from './field';
 
@@ -532,19 +535,10 @@ function validatorToFormErrors(errors: Issues): FormErrors {
   for (const issue of errors) {
     if (!issue.path || issue.path.length === 0) continue;
 
-    // Extract keys from path segments to build field name.
-    // Segments are coerced to strings so numeric array indexes (including
-    // `0`) survive, producing the dotted name a consumer writes as `@name`
-    // (e.g. `items.0.name`). This must stay in sync with
-    // `StandardValidator.filterFieldIssues`.
-    const pathKeys = issue.path
-      .map((s) =>
-        typeof s === 'object' && s !== null && 'key' in s ? s.key : s
-      )
-      .filter((key) => key !== null && key !== undefined)
-      .map((key) => String(key));
-
-    const fieldName = pathKeys.join('.');
+    // `issuePathToFieldName` is shared with
+    // `StandardValidator.filterFieldIssues`, so the keys written here are
+    // by construction the dotted names field lookup resolves against.
+    const fieldName = issuePathToFieldName(issue);
     const message = issue.message;
 
     // Add message to the field's errors

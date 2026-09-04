@@ -1439,6 +1439,13 @@ For feedback that isn't a validation error — hints, confirmations, warnings �
 `FormFeedback` yourself and pick an `@intent` from `primary`, `secondary`, `tertiary`,
 `success`, `warning`, or `danger`. Anything other than `danger` announces politely.
 
+A standalone `FormFeedback` is its own `aria-live` region. Pass `@announce={{false}}` when
+something else already announces the same text — that is exactly what `FormControl` does to
+the feedback it renders, since its persistent live region has already covered the message and
+announcing twice is worse than not at all. See
+[FormControl](/docs/components/forms/form-control) for the full explanation and the
+cases where you want to turn announcing back on.
+
 ```gts preview
 import { FormFeedback } from 'frontile';
 

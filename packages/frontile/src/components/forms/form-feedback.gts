@@ -50,6 +50,21 @@ interface FormFeedbackSignature {
   };
 }
 
+/**
+ * Renders feedback messages as a single string. An array is joined with `; `.
+ *
+ * Shared with `FormControl`, whose persistent live region announces the same
+ * text, so both render an identical separator.
+ *
+ * @param messages A list of messages or a single message string.
+ * @returns The messages as one string, or an empty string when there are none.
+ */
+function feedbackMessageText(messages: string[] | string | undefined): string {
+  if (!messages) return '';
+
+  return typeof messages === 'string' ? messages : messages.join('; ');
+}
+
 class FormFeedback extends Component<FormFeedbackSignature> {
   get isError(): boolean {
     return (
@@ -80,13 +95,7 @@ class FormFeedback extends Component<FormFeedbackSignature> {
   }
 
   get messageText(): string {
-    if (!this.args.messages) return '';
-
-    if (typeof this.args.messages === 'string') {
-      return this.args.messages;
-    } else {
-      return this.args.messages.join('; ');
-    }
+    return feedbackMessageText(this.args.messages);
   }
 
   <template>
@@ -103,5 +112,5 @@ class FormFeedback extends Component<FormFeedbackSignature> {
   </template>
 }
 
-export { FormFeedback, type FormFeedbackSignature };
+export { FormFeedback, feedbackMessageText, type FormFeedbackSignature };
 export default FormFeedback;

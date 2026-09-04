@@ -1,7 +1,10 @@
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
-import Feedback, { type FormFeedbackSignature } from './form-feedback';
+import Feedback, {
+  feedbackMessageText,
+  type FormFeedbackSignature
+} from './form-feedback';
 import Description, { type FormDescriptionSignature } from './form-description';
 import Label, { type LabelSignature } from './label';
 import VisuallyHidden from '../utilities/visually-hidden';
@@ -158,16 +161,10 @@ class FormControl extends Component<FormControlSignature> {
 
   /**
    * The error messages as a single string, used by the persistent live region.
-   * Matches how `FormFeedback` joins an array of messages.
+   * Uses `FormFeedback`'s own join, so both render the same separator.
    */
   get errorMessageText(): string {
-    const { errors } = this.args;
-
-    if (!errors) {
-      return '';
-    }
-
-    return typeof errors === 'string' ? errors : errors.join('; ');
+    return feedbackMessageText(this.args.errors);
   }
 
   get showErrorFeedback(): boolean {
