@@ -15,12 +15,18 @@ export default class Application extends Route {
    *
    * Heading links do not come through here — they are plain anchors handled by
    * DocfyPageHeadings' own scrolling — so this only fires on page changes.
+   *
+   * **This hook also runs while prerendering**, on every page: `ssr/prerender.mjs`
+   * visits each route in Node, so `didTransition` fires there too, and
+   * `config.environment` is `production` in that build — the test guard is no
+   * help. `window` itself exists (prerender.mjs installs it before the app
+   * bundle is imported), but linkedom supplies none of the three functions used
+   * below. Each is therefore checked at its own use, which is the pattern
+   * `ssr/README.md` prescribes: letting one check stand in for the others would
+   * quietly couple this hook to which globals the shim list happens to carry.
    */
   @action
   didTransition(): void {
-    // Prerendering has nothing to scroll, and linkedom supplies no `scrollTo`.
-    // Guarding on the function itself is the pattern ssr/README.md prescribes;
-    // `window` is always defined, since a missing global fails the SSR build.
     if (
       config.environment === 'test' ||
       typeof window.scrollTo !== 'function'
@@ -28,13 +34,19 @@ export default class Application extends Route {
       return;
     }
 
-    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)')
       .matches
       ? 'auto'
       : 'smooth';
 
-    window.requestAnimationFrame(() => {
+    const scrollToTop = (): void => {
       window.scrollTo({ top: 0, behavior });
-    });
+    };
+
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(scrollToTop);
+    } else {
+      scrollToTop();
+    }
   }
 }
