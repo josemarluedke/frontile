@@ -124,8 +124,9 @@ class Popover extends Component<PopoverSignature> {
 
   /**
    * Whether the consumer is still owed a `@didClose`. Set by `close()` when a
-   * popover that was actually open was closed, cleared by whoever fires the
-   * callback, so it can only ever fire once per close.
+   * popover that was actually open was closed, and cleared either by `didClose`
+   * once it has fired the callback -- so it can only ever fire once per close --
+   * or by `open()`, which means the close it was armed for never completed.
    */
   isDidClosePending = false;
 
@@ -162,6 +163,15 @@ class Popover extends Component<PopoverSignature> {
     if (this.isClosing) {
       return;
     }
+
+    // Opening settles any close that never finished. In controlled mode
+    // `close()` only *asks* -- it calls `onOpenChange(false)` and the consumer
+    // decides -- so a consumer that declines leaves the content mounted with
+    // the callback still owed. Nothing clears that but `didClose`, which never
+    // runs while the content stays up, so without this the debt would sit armed
+    // and be paid out by whatever unrelated teardown came next.
+    this.isDidClosePending = false;
+
     if (typeof this.args.onOpenChange === 'function') {
       this.args.onOpenChange(true);
     } else {

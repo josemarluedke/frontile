@@ -651,6 +651,93 @@ module(
       assert.strictEqual(calls, 0, 'closing a closed popover closes nothing');
     });
 
+    test('a declined close in controlled mode does not leave @didClose armed', async function (assert) {
+      // In controlled mode `close()` only *asks* -- it calls `onOpenChange(false)`
+      // and the consumer decides. A consumer that declines keeps the content
+      // mounted, so the close never finishes and no `@didClose` is owed. The
+      // debt must not sit armed waiting for some unrelated later teardown to
+      // pay it out.
+      let calls = 0;
+      const didClose = () => {
+        calls += 1;
+      };
+
+      const isOpen = cell(false);
+      // Opens on request, but refuses every request to close.
+      const onOpenChange = (value: boolean) => {
+        if (value) {
+          isOpen.current = true;
+        }
+      };
+
+      await render(
+        <template>
+          <Popover
+            @isOpen={{isOpen.current}}
+            @onOpenChange={{onOpenChange}}
+            @didClose={{didClose}}
+            as |p|
+          >
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <button data-test-id="open" type="button" {{on "click" p.open}}>
+              Open
+            </button>
+
+            <p.Content
+              @disableTransitions={{true}}
+              @closeOnOutsideClick={{false}}
+              data-test-id="content"
+            >
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+      assert.dom('[data-test-id="content"]').exists('the popover opened');
+
+      // Ask to close; the consumer declines, so nothing closes.
+      await click('[data-test-id="trigger"]');
+      // Past the 90ms `isClosing` window, so the popover will accept an open
+      // again -- the same as a person clicking twice rather than instantly.
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('the content is still mounted after the declined close');
+      assert.strictEqual(calls, 0, '@didClose did not fire while still open');
+
+      // Re-affirm that it is open. Nothing about the state changes, but any
+      // outstanding "close in progress" is definitively over.
+      await click('[data-test-id="open"]');
+      assert.dom('[data-test-id="content"]').exists('still open');
+
+      // Now tear the content down from outside, without going through
+      // `close()`. A popover closed this way owes no `@didClose` -- and it must
+      // not inherit one from the close the consumer declined earlier.
+      isOpen.current = false;
+      await settled();
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await settled();
+
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist('the content is gone');
+      assert.strictEqual(
+        calls,
+        0,
+        '@didClose did not fire for the close the consumer declined'
+      );
+    });
+
     test('closing and unmounting in the same turn tears down cleanly', async function (assert) {
       const show = cell(true);
       const errors: unknown[] = [];
