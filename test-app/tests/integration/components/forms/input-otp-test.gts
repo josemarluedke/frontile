@@ -234,4 +234,100 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       .dom(findAll('[data-test-id="input-otp-cell"]')[5] as Element)
       .hasText('0');
   });
+
+  test('digits is the default and rejects letters wholesale', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await fillIn(input, '123');
+    assert.strictEqual(input.value, '123');
+
+    await fillIn(input, '12a');
+    assert.strictEqual(input.value, '123', 'the rejected value did not stick');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[2] as Element)
+      .hasText('3');
+  });
+
+  test('a pasted value with a separator is rejected, not filtered', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+    // Six characters, not seven: `maxlength` truncates an over-long paste in a
+    // real browser before our handler ever sees it, and fillIn guards on the
+    // same limit. What reaches us is a full-length value with a separator in
+    // it, which is exactly the case worth asserting on.
+    await fillIn(input, '12-456');
+
+    assert.strictEqual(
+      input.value,
+      '',
+      'all-or-nothing, never silently repaired'
+    );
+  });
+
+  test('@allowedChars alphanumeric accepts letters and switches inputmode', async function (assert) {
+    await render(
+      <template>
+        <InputOtp @label="Code" @allowedChars="alphanumeric" @length={{6}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+    await fillIn(input, 'a1b2');
+
+    assert.strictEqual(input.value, 'a1b2');
+    assert.dom(input).hasAttribute('inputmode', 'text');
+  });
+
+  test('@pattern overrides @allowedChars', async function (assert) {
+    const hexish = /^[0-9a-f]+$/;
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @pattern={{hexish}} @length={{4}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await fillIn(input, 'beef');
+    assert.strictEqual(input.value, 'beef');
+
+    await fillIn(input, 'zzzz');
+    assert.strictEqual(input.value, 'beef');
+  });
+
+  test('it carries the attributes autofill and password managers need', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('autocomplete', 'one-time-code');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('type', 'text');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('inputmode', 'numeric');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('pattern', '^\\d+$');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('spellcheck', 'false');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('autocorrect', 'off');
+    assert.dom('[data-component="input-otp"]').hasAttribute('translate', 'no');
+  });
 });

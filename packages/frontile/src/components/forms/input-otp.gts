@@ -11,6 +11,19 @@ import {
 import { FormControl, type FormControlSharedArgs } from './form-control';
 import { ref } from '../../utils/ref';
 
+/**
+ * These must match PARTIAL values. A pattern anchored to the full length --
+ * `/^\d{6}$/` -- rejects the very first keystroke and makes the field
+ * impossible to type into.
+ */
+const OTP_PATTERNS = {
+  digits: /^\d+$/,
+  letters: /^[a-zA-Z]+$/,
+  alphanumeric: /^[a-zA-Z0-9]+$/
+} as const;
+
+type AllowedChars = keyof typeof OTP_PATTERNS;
+
 interface Cell {
   index: number;
   char: string | null;
@@ -32,6 +45,21 @@ interface Args extends FormControlSharedArgs {
    * submitted as part of a form.
    */
   name?: string;
+
+  /**
+   * Which characters the code may contain. Also decides the on-screen keyboard
+   * (`inputmode`) and autocapitalisation.
+   *
+   * @defaultValue 'digits'
+   */
+  allowedChars?: AllowedChars;
+
+  /**
+   * A custom character rule, overriding `allowedChars`. It is tested against
+   * every intermediate value, so it must accept partial input: `/^\d+$/`, not
+   * `/^\d{6}$/`.
+   */
+  pattern?: RegExp;
 
   /**
    * The size of the cells and the label.
@@ -102,6 +130,26 @@ class InputOtp extends Component<InputOtpSignature> {
     return this.args.length ?? 6;
   }
 
+  get allowedChars(): AllowedChars {
+    return this.args.allowedChars ?? 'digits';
+  }
+
+  get pattern(): RegExp {
+    return this.args.pattern ?? OTP_PATTERNS[this.allowedChars];
+  }
+
+  /**
+   * `tel` is deliberately not offered: its keypad carries `*`, `#` and pause
+   * characters that every one of our patterns rejects.
+   */
+  get inputMode(): 'numeric' | 'text' {
+    return this.allowedChars === 'digits' ? 'numeric' : 'text';
+  }
+
+  get autoCapitalize(): 'off' | 'characters' {
+    return this.allowedChars === 'digits' ? 'off' : 'characters';
+  }
+
   get isControlled(): boolean {
     return (
       typeof this.args.onChange === 'function' ||
@@ -153,6 +201,13 @@ class InputOtp extends Component<InputOtpSignature> {
   syncValue(event: Event, notify: 'input' | 'change'): void {
     const element = event.target as HTMLInputElement;
     const next = element.value.slice(0, this.length);
+
+    // All-or-nothing: a value that fails the rule is dropped whole rather than
+    // filtered, so a pasted "123-456" never silently becomes "123456".
+    if (next.length > 0 && !this.pattern.test(next)) {
+      element.value = this.currentValue;
+      return;
+    }
 
     element.value = next;
     this.elementValue = next;
@@ -244,6 +299,12 @@ class InputOtp extends Component<InputOtpSignature> {
           data-component="input-otp-input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
+          autocomplete="one-time-code"
+          inputmode={{this.inputMode}}
+          pattern={{this.pattern.source}}
+          autocapitalize={{this.autoCapitalize}}
+          autocorrect="off"
+          spellcheck="false"
           ...attributes
         />
       </div>
