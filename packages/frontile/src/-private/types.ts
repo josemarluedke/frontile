@@ -18,7 +18,8 @@ export interface CustomAction {
   onClick: () => void;
 }
 
-export type NotificationIntent = 'info' | 'success' | 'warning' | 'danger';
+export type NotificationIntent =
+  'default' | 'info' | 'success' | 'warning' | 'danger';
 
 /**
  * The deprecated intent names. `error` maps onto `danger`.
@@ -86,7 +87,7 @@ export interface NotificationOptions<
   /**
    * The intent of the notification.
    *
-   * @defaultValue 'info'
+   * @defaultValue 'default'
    */
   intent?: NotificationIntent;
 

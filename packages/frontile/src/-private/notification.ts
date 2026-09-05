@@ -45,7 +45,7 @@ function resolveIntent(
     return options.appearance === 'error' ? 'danger' : options.appearance;
   }
 
-  const fromConfig = getConfigOption(config, 'intent', 'info');
+  const fromConfig = getConfigOption(config, 'intent', 'default');
   return fromConfig as NotificationIntent;
 }
 
@@ -102,8 +102,14 @@ export default class Notification<
 
   /**
    * @deprecated Read `intent` instead.
+   *
+   * The return type is widened to include `'default'` because `default` is
+   * new vocabulary introduced alongside this getter's deprecation — it has
+   * no equivalent in the old `NotificationAppearance` names, so mapping it
+   * onto `'info'` here would silently lie about the notification's intent.
+   * Everything else keeps the old four-value shape.
    */
-  get appearance(): 'info' | 'success' | 'warning' | 'error' {
+  get appearance(): 'default' | 'info' | 'success' | 'warning' | 'error' {
     return this.intent === 'danger' ? 'error' : this.intent;
   }
 

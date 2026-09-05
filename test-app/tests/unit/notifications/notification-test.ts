@@ -12,7 +12,7 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     assert.equal(notification.message, 'Message');
     assert.equal(notification.title, 'Message', 'title aliases message');
     assert.equal(typeof notification.description, 'undefined');
-    assert.equal(notification.intent, 'info');
+    assert.equal(notification.intent, 'default');
     assert.equal(notification.isLoading, false);
     assert.equal(typeof notification.customActions, 'undefined');
     assert.equal(notification.duration, 5000);
@@ -60,6 +60,24 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     const notification = new Notification({}, 'Message', { intent: 'danger' });
 
     assert.equal(notification.intent, 'danger');
+  });
+
+  test('a bare notification resolves to the default intent, not info', async function (assert) {
+    const notification = new Notification({}, 'Message');
+
+    assert.equal(notification.intent, 'default');
+  });
+
+  test('an explicit info intent stays distinct from default', async function (assert) {
+    const notification = new Notification({}, 'Message', { intent: 'info' });
+
+    assert.equal(notification.intent, 'info');
+  });
+
+  test('appearance reads back "default" for the default intent', async function (assert) {
+    const notification = new Notification({}, 'Message');
+
+    assert.equal(notification.appearance, 'default');
   });
 
   test('the deprecated appearance option maps onto intent', async function (assert) {

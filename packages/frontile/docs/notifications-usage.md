@@ -30,7 +30,7 @@ import {
 ## Key Features
 
 - **Title & Description**: Structured content with a title and an optional supporting description
-- **Intent Icons**: Info, success, warning, and danger icons rendered automatically per intent
+- **Intent Icons**: Default, info, success, warning, and danger icons rendered automatically per intent
 - **Three Variants**: `default`, `tonal`, and `solid` surface styles
 - **Collapsible Stack**: Toasts collapse into a peeking stack and expand on hover or focus
 - **Promise-Driven Notifications**: Show a loading state that resolves into success or error
@@ -92,7 +92,14 @@ export default class BasicExample extends Component {
 
 ### Notification Intents
 
-Use `intent` to convey the appropriate message type. Each intent renders a matching icon automatically; pass `hideIcon: true` to suppress it.
+Use `intent` to convey the appropriate message type: `'default'`, `'info'`, `'success'`,
+`'warning'`, or `'danger'`. Each intent renders a matching icon automatically; pass
+`hideIcon: true` to suppress it.
+
+`'default'` is the default intent — a bare `notifications.add('message')` with no `intent`
+option produces a `default` toast. It still renders the same info glyph as the `info` intent,
+just in a neutral color rather than the primary accent, so callers who want the old
+teal-accented look pass `intent: 'info'` explicitly.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -102,6 +109,10 @@ import type { NotificationsService } from 'frontile';
 
 export default class IntentExample extends Component {
   @service notifications!: NotificationsService;
+
+  showDefault = () => {
+    this.notifications.add('This is a default notification');
+  };
 
   showInfo = () => {
     this.notifications.add('This is an info notification', {
@@ -129,6 +140,7 @@ export default class IntentExample extends Component {
 
   <template>
     <div class='grid grid-cols-2 gap-2'>
+      <Button @onPress={{this.showDefault}}>Default</Button>
       <Button @onPress={{this.showInfo}}>Info</Button>
       <Button @onPress={{this.showSuccess}} @intent='success'>Success</Button>
       <Button @onPress={{this.showWarning}} @intent='warning'>Warning</Button>
@@ -235,7 +247,13 @@ export default class ContainerConfigExample extends Component {
     { key: '5', label: '5' }
   ];
 
-  intents: NotificationIntent[] = ['info', 'success', 'warning', 'danger'];
+  intents: NotificationIntent[] = [
+    'default',
+    'info',
+    'success',
+    'warning',
+    'danger'
+  ];
 
   get visibleToasts() {
     return parseInt(this.visibleToastsKey, 10) || 3;
@@ -732,7 +750,7 @@ All options available when creating notifications with `add`:
 
 | Option               | Type                                            | Default     | Description                                                                                 |
 | --------------------- | ------------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------- |
-| `intent`              | `'info' \| 'success' \| 'warning' \| 'danger'`   | `'info'`    | The intent of the notification                                                                |
+| `intent`              | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'default'` | The intent of the notification                                                     |
 | `appearance`          | `'info' \| 'success' \| 'warning' \| 'error'`    | `undefined` | **Deprecated** — use `intent` instead. `'error'` maps to `'danger'`. Removed in 0.19           |
 | `description`         | `string`                                         | `undefined` | Supporting text rendered below the title (string content form only)                           |
 | `duration`            | `number`                                         | `5000`      | Auto-dismiss time in milliseconds                                                              |
@@ -780,6 +798,21 @@ The notification API was redesigned in 0.18: `message` became the title with a n
 `description`, `appearance` was renamed `intent` (`'error'` became `'danger'`), the container
 gained a collapsible stack, and the theme slots changed to match. `appearance` keeps working
 until 0.19, emitting a deprecation warning.
+
+**The default intent changed from `'info'` to `'default'`**
+
+A bare `add()` call with no `intent` option used to render as an `info`-colored (primary/teal)
+toast. It now renders as a neutral `default` toast — same info icon, no accent color. This is
+an intentional visual behavior change. Callers who want the previous teal look should pass
+`intent: 'info'` explicitly:
+
+```ts
+// Before: a bare add() was info-colored
+this.notifications.add('Saved');
+
+// After: a bare add() is neutral; pass intent explicitly for the old look
+this.notifications.add('Saved', { intent: 'info' });
+```
 
 **`appearance` → `intent`, `'error'` → `'danger'`**
 
@@ -878,7 +911,7 @@ registerCustomStyles({
 The container's live region moved from `role="alert"` + `aria-live="assertive"` to
 `role="region"` + `aria-label="Notifications"` + `aria-live="polite"`, so the whole stack no
 longer interrupts a screen reader on every new toast. Each card now carries its own
-`role="status"` (info/success) or `role="alert"` (warning/danger) instead. No consumer code
+`role="status"` (default/info/success) or `role="alert"` (warning/danger) instead. No consumer code
 change is required, but update any test or a11y check that asserted the old attributes.
 
 ## Accessibility
@@ -886,8 +919,8 @@ change is required, but update any test or a11y check that asserted the old attr
 The notification system includes built-in accessibility features:
 
 - **ARIA Attributes**: The container uses `role="region"`, `aria-label="Notifications"`, and
-  `aria-live="polite"`. Each card carries `role="status"` (info, success) or `role="alert"`
-  (warning, danger) — `alert` is reserved for intents that warrant interrupting the screen
+  `aria-live="polite"`. Each card carries `role="status"` (default, info, success) or
+  `role="alert"` (warning, danger) — `alert` is reserved for intents that warrant interrupting the screen
   reader.
 - **Screen Reader Support**: Notifications are announced as they appear, without stealing
   focus.

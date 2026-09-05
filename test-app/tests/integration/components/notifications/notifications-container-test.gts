@@ -254,7 +254,13 @@ module(
             closeButton: 'shrink-0 self-center inline-block p-1.5'
           },
           variants: {
-            intent: { info: {}, success: {}, warning: {}, danger: {} },
+            intent: {
+              default: {},
+              info: {},
+              success: {},
+              warning: {},
+              danger: {}
+            },
             variant: { default: {}, tonal: {}, solid: {} },
             hasDescription: {
               true: { inner: 'items-start' },
@@ -395,7 +401,13 @@ module(
             closeButton: 'shrink-0 self-center inline-block p-1.5'
           },
           variants: {
-            intent: { info: {}, success: {}, warning: {}, danger: {} },
+            intent: {
+              default: {},
+              info: {},
+              success: {},
+              warning: {},
+              danger: {}
+            },
             variant: { default: {}, tonal: {}, solid: {} },
             hasDescription: {
               true: { inner: 'items-start' },

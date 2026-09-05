@@ -43,6 +43,7 @@ const notificationCard = tv({
 
   variants: {
     intent: {
+      default: {},
       info: {},
       success: {},
       warning: {},
@@ -79,6 +80,13 @@ const notificationCard = tv({
 
   compoundVariants: [
     // default: neutral surface, colour carried by the icon and title.
+    // `default` intent has no accent — icon and title stay neutral, same
+    // `firm` level the other intents use for their accent text.
+    {
+      variant: 'default',
+      intent: 'default',
+      class: { icon: 'text-neutral-firm', title: 'text-neutral-firm' }
+    },
     {
       variant: 'default',
       intent: 'info',
@@ -102,6 +110,15 @@ const notificationCard = tv({
 
     // tonal: opaque tinted surface. `subtle` is opaque in both themes; `soft`
     // is translucent and must never be used on a floating toast.
+    {
+      variant: 'tonal',
+      intent: 'default',
+      class: {
+        base: 'bg-neutral-subtle border-neutral-muted',
+        icon: 'text-neutral-firm',
+        title: 'text-neutral-firm'
+      }
+    },
     {
       variant: 'tonal',
       intent: 'info',
@@ -140,6 +157,16 @@ const notificationCard = tv({
     },
 
     // solid: filled surface, contrast text.
+    {
+      variant: 'solid',
+      intent: 'default',
+      class: {
+        base: 'bg-neutral text-on-neutral',
+        icon: 'text-on-neutral',
+        title: 'text-on-neutral',
+        description: 'text-on-neutral/80'
+      }
+    },
     {
       variant: 'solid',
       intent: 'info',
@@ -183,7 +210,7 @@ const notificationCard = tv({
   ],
 
   defaultVariants: {
-    intent: 'info',
+    intent: 'default',
     variant: 'default',
     hasDescription: false
   }

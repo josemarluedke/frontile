@@ -26,6 +26,7 @@ registerCustomStyles({
     },
     variants: {
       intent: {
+        default: { base: 'notification-card--default-intent' },
         info: { base: 'notification-card--info' },
         success: { base: 'notification-card--success' },
         warning: { base: 'notification-card--warning' },
@@ -136,6 +137,69 @@ module(
       assert.dom('.notification-card--centered').doesNotExist();
     });
 
+    test('the default intent composes with all three variants', async function (assert) {
+      // This file's module-level `registerCustomStyles` replaces the real
+      // `notificationCard` theme classes with plain marker strings for the
+      // whole test run (see the comment in notifications-container-test.gts
+      // about module-level code running regardless of `--filter`), so this
+      // exercises the `intent`/`variant` plumbing rather than the actual
+      // Tailwind color literals — those are reviewed directly in
+      // packages/theme/src/components/notification-card.ts and verified by
+      // the site build's live demos.
+      notification.current = new Notification({}, 'Message');
+
+      await render(
+        <template>
+          <NotificationCard
+            data-test-notification
+            @placement="top-right"
+            @notification={{notification.current}}
+            @variant="default"
+          />
+        </template>
+      );
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--default-intent');
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--default');
+
+      await render(
+        <template>
+          <NotificationCard
+            data-test-notification
+            @placement="top-right"
+            @notification={{notification.current}}
+            @variant="tonal"
+          />
+        </template>
+      );
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--default-intent');
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--tonal');
+
+      await render(
+        <template>
+          <NotificationCard
+            data-test-notification
+            @placement="top-right"
+            @notification={{notification.current}}
+            @variant="solid"
+          />
+        </template>
+      );
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--default-intent');
+      assert
+        .dom('[data-test-notification]')
+        .hasClass('notification-card--solid');
+    });
+
     test('it applies the intent class', async function (assert) {
       notification.current = new Notification({}, 'Message', {
         intent: 'danger'
@@ -143,6 +207,45 @@ module(
       await render(template);
 
       assert.dom('.notification-card--danger').exists();
+    });
+
+    test('the default intent renders the info icon in neutral styling, distinct from info', async function (assert) {
+      notification.current = new Notification({}, 'Message');
+      await render(template);
+
+      assert
+        .dom('[data-test-notification]')
+        .hasAttribute('data-test-intent', 'default');
+      assert
+        .dom('.notification-card__icon')
+        .hasAttribute(
+          'data-test-icon',
+          'info',
+          'the default intent reuses the info glyph'
+        );
+      assert.dom('.notification-card--default-intent').exists();
+      assert.dom('.notification-card--info').doesNotExist();
+    });
+
+    test('an explicit info intent is distinguishable from default via data-test-intent', async function (assert) {
+      notification.current = new Notification({}, 'Message', {
+        intent: 'info'
+      });
+      await render(template);
+
+      assert
+        .dom('[data-test-notification]')
+        .hasAttribute('data-test-intent', 'info');
+      assert.dom('.notification-card--info').exists();
+      assert.dom('.notification-card--default-intent').doesNotExist();
+    });
+
+    test('the default intent uses role=status', async function (assert) {
+      notification.current = new Notification({}, 'Message');
+      await render(template);
+
+      assert.dom('[role="status"]').exists();
+      assert.dom('[role="alert"]').doesNotExist();
     });
 
     test('it renders an icon per intent', async function (assert) {

@@ -21,6 +21,7 @@ import type {
 import type { SafeString } from '@ember/template';
 
 const ICONS = {
+  default: IconInfo,
   info: IconInfo,
   success: IconSuccess,
   warning: IconWarning,
@@ -31,6 +32,7 @@ const ICONS = {
  * Button intent for the primary custom action, per notification intent.
  */
 const ACTION_INTENT = {
+  default: 'default',
   info: 'primary',
   success: 'success',
   warning: 'warning',
@@ -246,6 +248,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       style={{this.style}}
       role={{this.role}}
       data-test-notification-card
+      data-test-intent={{this.intent}}
       {{this.enter}}
       ...attributes
     >
