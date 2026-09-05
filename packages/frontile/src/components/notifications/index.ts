@@ -6,8 +6,11 @@ import type {
   NotificationOptions,
   NotificationContent,
   NotificationIntent,
+  NotificationAppearance,
   NotificationUpdate,
-  CustomAction
+  CustomAction,
+  PromiseMessage,
+  PromiseNotificationOptions
 } from '../../-private/types';
 import { NotificationStack } from '../../-private/notification-stack';
 import type {
@@ -23,7 +26,10 @@ export type {
   CustomAction,
   NotificationContent,
   NotificationIntent,
-  NotificationUpdate
+  NotificationAppearance,
+  NotificationUpdate,
+  PromiseMessage,
+  PromiseNotificationOptions
 };
 export type { NotificationStackInput, CardGeometry };
 export * from './notification-card';

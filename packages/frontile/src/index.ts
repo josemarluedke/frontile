@@ -9,5 +9,14 @@ export {
   NotificationCard,
   type NotificationsContainerSignature,
   type NotificationCardSignature,
-  type NotificationsService
+  type NotificationsService,
+  type NotificationOptions,
+  type NotificationContent,
+  type NotificationIntent,
+  type NotificationAppearance,
+  type NotificationUpdate,
+  type CustomAction,
+  type PromiseMessage,
+  type PromiseNotificationOptions,
+  type DefaultConfig
 } from './notifications';

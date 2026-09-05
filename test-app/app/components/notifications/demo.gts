@@ -65,7 +65,7 @@ export default class Demo extends Component<DemoArgs> {
       this.notifications.add(
         'Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.',
         {
-          appearance: data['appearance'] as NotificationOptions['appearance'],
+          intent: data['intent'] as NotificationOptions['intent'],
           preserve: data['preserve'] == 'on',
           duration: parseInt(data['duration'] as string) || 5000,
           allowClosing: data['allowClosing'] == 'on',
@@ -99,15 +99,16 @@ export default class Demo extends Component<DemoArgs> {
 
       <RadioGroup
         @orientation="horizontal"
-        @label="Appearance"
-        @name="appearance"
-        @value="info"
+        @label="Intent"
+        @name="intent"
+        @value="default"
         as |Radio|
       >
+        <Radio @value="default" @label="default" />
         <Radio @value="info" @label="info" />
         <Radio @value="success" @label="success" />
         <Radio @value="warning" @label="warning" />
-        <Radio @value="error" @label="error" />
+        <Radio @value="danger" @label="danger" />
       </RadioGroup>
 
       <Checkbox
