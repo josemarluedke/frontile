@@ -66,6 +66,10 @@ export const inventory: InventoryCategory[] = [
       { name: 'Button', path: '/docs/components/buttons/button' },
       { name: 'ButtonGroup', path: '/docs/components/buttons/button-group' },
       { name: 'ToggleButton', path: '/docs/components/buttons/toggle-button' },
+      {
+        name: 'SegmentedControl',
+        path: '/docs/components/buttons/segmented-control',
+      },
       { name: 'CloseButton', path: '/docs/components/buttons/close-button' },
       { name: 'Chip', path: '/docs/components/buttons/chip' },
     ],
