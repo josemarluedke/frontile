@@ -563,4 +563,78 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.strictEqual(active.length, 1);
     assert.dom(active[0] as Element).hasText('6');
   });
+
+  test('@groups splits the cells and inserts separators between them', async function (assert) {
+    const groups = [3, 3];
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
+      </template>
+    );
+
+    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+    assert.strictEqual(
+      findAll('[data-test-id="input-otp-separator"]').length,
+      1,
+      'one separator between two groups, never a leading or trailing one'
+    );
+    assert.dom('[data-test-id="input-otp-separator"]').hasText('–');
+  });
+
+  test('separators are hidden from assistive technology', async function (assert) {
+    const groups = [3, 3];
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
+      </template>
+    );
+
+    // The value contains no dash, so nothing may announce one.
+    assert
+      .dom('[data-test-id="input-otp-separator"]')
+      .hasAttribute('aria-hidden', 'true');
+  });
+
+  test('@separator overrides the character', async function (assert) {
+    const groups = [2, 2];
+
+    await render(
+      <template>
+        <InputOtp
+          @label="Code"
+          @length={{4}}
+          @groups={{groups}}
+          @separator="/"
+        />
+      </template>
+    );
+
+    assert.dom('[data-test-id="input-otp-separator"]').hasText('/');
+  });
+
+  test('without @groups there is one group and no separator', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    assert.strictEqual(
+      findAll('[data-test-id="input-otp-separator"]').length,
+      0
+    );
+    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+  });
+
+  test('groups that do not sum to @length still render @length cells', async function (assert) {
+    // A dev-time warning flags this, but the render must still degrade rather
+    // than drop cells -- and must do so identically in development and production.
+    const groups = [2, 2];
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
+      </template>
+    );
+
+    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+  });
 });

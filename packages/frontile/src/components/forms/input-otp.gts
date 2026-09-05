@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
+import { warn } from '@ember/debug';
 import {
   useStyles,
   type InputOtpSlots,
@@ -100,6 +101,20 @@ interface Args extends FormControlSharedArgs {
    * full value does not fire it again.
    */
   onComplete?: (value: string) => void;
+
+  /**
+   * Splits the cells into visual groups, e.g. `[3, 3]` for a six-digit code.
+   * The entries must sum to `length`. Omit it for a single group.
+   */
+  groups?: number[];
+
+  /**
+   * The character shown between groups. Rendered `aria-hidden`, because the
+   * value itself contains no separator.
+   *
+   * @defaultValue '–'
+   */
+  separator?: string;
 }
 
 interface InputOtpSignature {
@@ -229,10 +244,52 @@ class InputOtp extends Component<InputOtpSignature> {
     return [start, end];
   }
 
+  get separator(): string {
+    return this.args.separator ?? '–';
+  }
+
+  /**
+   * Cell counts per group. A mismatched `@groups` warns in development and
+   * still renders `length` cells, so development and production behave the
+   * same way.
+   */
+  get groupSizes(): number[] {
+    const { groups } = this.args;
+
+    if (!groups || groups.length === 0) {
+      return [this.length];
+    }
+
+    const total = groups.reduce((sum, size) => sum + size, 0);
+
+    warn(
+      `<InputOtp>: @groups must sum to @length (${this.length}), got ${total}. ` +
+        `Rendering ${this.length} cells and adjusting the groups to fit.`,
+      total === this.length,
+      { id: 'frontile.input-otp.groups-mismatch' }
+    );
+
+    const sizes: number[] = [];
+    let taken = 0;
+
+    for (const size of groups) {
+      const clamped = Math.max(0, Math.min(size, this.length - taken));
+      if (clamped > 0) {
+        sizes.push(clamped);
+        taken += clamped;
+      }
+    }
+
+    if (taken < this.length) {
+      sizes.push(this.length - taken);
+    }
+
+    return sizes;
+  }
+
   /**
    * The cells are decoration rendered from a string, so they are grouped here
-   * rather than in the template. Grouping arrives in a later task; for now
-   * every cell lives in a single group.
+   * rather than in the template.
    */
   get cellGroups(): Cell[][] {
     const value = this.currentValue;
@@ -259,7 +316,15 @@ class InputOtp extends Component<InputOtpSignature> {
       });
     }
 
-    return [cells];
+    const groups: Cell[][] = [];
+    let offset = 0;
+
+    for (const size of this.groupSizes) {
+      groups.push(cells.slice(offset, offset + size));
+      offset += size;
+    }
+
+    return groups;
   }
 
   get classes() {
@@ -433,7 +498,14 @@ class InputOtp extends Component<InputOtpSignature> {
         data-component="input-otp"
         translate="no"
       >
-        {{#each this.cellGroups key="@index" as |group|}}
+        {{#each this.cellGroups key="@index" as |group groupIndex|}}
+          {{#if groupIndex}}
+            <div
+              class={{this.classes.separator class=@classes.separator}}
+              data-test-id="input-otp-separator"
+              aria-hidden="true"
+            >{{this.separator}}</div>
+          {{/if}}
           <div class={{this.classes.group class=@classes.group}}>
             {{#each group key="index" as |cell|}}
               <div
