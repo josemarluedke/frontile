@@ -25,6 +25,32 @@ function resolveMessage<T>(
   return typeof resolved === 'string' ? { title: resolved } : resolved;
 }
 
+/**
+ * Whether a notification should get an auto-removal timer, given its own
+ * `preserve` option and the manager's config. An explicit `preserve` wins;
+ * otherwise the config's `preserve` default applies. Either way, a
+ * config-level `skipTimer: true` forces preservation — there's no timer to
+ * skip if the notification is never auto-removed in the first place.
+ *
+ * Shared by `add()` and `promise()`'s settle path, which must apply this
+ * decision identically.
+ */
+function shouldAutoRemove(
+  config: DefaultConfig,
+  preserveOption: boolean | undefined
+): boolean {
+  const preserve =
+    typeof preserveOption === 'undefined'
+      ? getConfigOption(config, 'preserve', false)
+      : preserveOption;
+
+  if (getConfigOption(config, 'skipTimer', false) === true) {
+    return false;
+  }
+
+  return preserve === false;
+}
+
 export default class NotificationsManager {
   @tracked notifications: Notification<Record<string, unknown>>[] = [];
 
@@ -61,18 +87,7 @@ export default class NotificationsManager {
     );
     this.notifications = [...this.notifications, notification];
 
-    let preserve =
-      typeof options.preserve === 'undefined'
-        ? getConfigOption(this.config, 'preserve', false)
-        : options.preserve;
-
-    // if default config has set skipTimer to true, we will preserve the
-    // notification, therefore skiping the timer
-    if (getConfigOption(this.config, 'skipTimer', false) === true) {
-      preserve = true;
-    }
-
-    if (preserve === false) {
+    if (shouldAutoRemove(this.config, options.preserve)) {
       this.setupAutoRemoval(notification, notification.duration);
     }
     return notification;
@@ -130,15 +145,7 @@ export default class NotificationsManager {
       // promise every option except `isLoading` carries through to the
       // settled notification — so a caller's own `preserve` must still be
       // honored here, not silently overridden by the loading phase's.
-      const preserve =
-        typeof rest.preserve === 'undefined'
-          ? getConfigOption(this.config, 'preserve', false)
-          : rest.preserve;
-
-      if (
-        preserve !== true &&
-        getConfigOption(this.config, 'skipTimer', false) !== true
-      ) {
+      if (shouldAutoRemove(this.config, rest.preserve)) {
         this.setupAutoRemoval(notification, notification.duration);
       }
     };
