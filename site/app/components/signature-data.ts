@@ -5029,7 +5029,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> in the listbox, while this is a separate affordance\nyou opt into for exactly the purpose of emptying the field. Since\n<code>allowEmpty</code> defaults to false, honouring it here would render the button\ndead by default.</p>\n<p>No clear button is rendered on a disabled Autocomplete.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5149,7 +5149,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the autocomplete component loses focus.',
+          '<p>Callback fired when focus leaves the Autocomplete.</p>\n<p>"Leaves the Autocomplete" means the whole control: the input <em>and</em> its\ndropdown, which is rendered outside the input in the DOM. Moving focus\nbetween them -- which is what clicking an option does -- is not a blur, so\nthis does not fire while the user is picking an option. It fires once, when\nfocus lands somewhere outside the control (or nowhere, with the dropdown\nclosed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -5990,7 +5990,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">Checkbox</span>: <span class="hljs-title class_">Checkbox</span> (name, errors, checked, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">CheckboxGroup</span>: <span class="hljs-title class_">CheckboxGroup</span> (name, errors, isDisabled bound); <span class="hljs-title class_">Input</span>: <span class="hljs-title class_">Input</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); <span class="hljs-title class_">Radio</span>: <span class="hljs-title class_">Radio</span> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">RadioGroup</span>: <span class="hljs-title class_">RadioGroup</span> (name, errors, value, onChange, isDisabled bound); <span class="hljs-title class_">SingleSelect</span>: <span class="hljs-title class_">Select</span>&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound); <span class="hljs-title class_">MultiSelect</span>: <span class="hljs-title class_">Select</span>&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); <span class="hljs-title class_">Switch</span>: <span class="hljs-title class_">Switch</span> (name, errors, isSelected, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">Textarea</span>: <span class="hljs-title class_">Textarea</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]',
+          raw: '[{ <span class="hljs-title class_">Checkbox</span>: <span class="hljs-title class_">Checkbox</span> (name, errors, checked, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">CheckboxGroup</span>: <span class="hljs-title class_">CheckboxGroup</span> (name, errors, isDisabled bound); <span class="hljs-title class_">Input</span>: <span class="hljs-title class_">Input</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); <span class="hljs-title class_">InputOtp</span>: <span class="hljs-title class_">InputOtp</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); <span class="hljs-title class_">Radio</span>: <span class="hljs-title class_">Radio</span> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">RadioGroup</span>: <span class="hljs-title class_">RadioGroup</span> (name, errors, value, onChange, isDisabled bound); <span class="hljs-title class_">SingleSelect</span>: <span class="hljs-title class_">Select</span>&#x3C;S> (name, errors, selectedKey, onBlur, isDisabled bound); <span class="hljs-title class_">MultiSelect</span>: <span class="hljs-title class_">Select</span>&#x3C;S> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); <span class="hljs-title class_">Switch</span>: <span class="hljs-title class_">Switch</span> (name, errors, isSelected, onChange, onBlur, isDisabled bound); <span class="hljs-title class_">Textarea</span>: <span class="hljs-title class_">Textarea</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]',
           items: [
             {
               identifier: '0',
@@ -6021,6 +6021,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Input',
                     type: {
                       type: '<span class="hljs-title class_">Input</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'InputOtp',
+                    type: {
+                      type: '<span class="hljs-title class_">InputOtp</span> (name, errors, value, onChange, onInput, onBlur, isDisabled bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -6409,6 +6419,16 @@ const data: ComponentDoc[] = [
     fileName:
       'packages/frontile/declarations/components/forms/form-feedback.d.ts',
     Args: [
+      {
+        identifier: 'announce',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the element is itself an <code>aria-live</code> region. Set this to <code>false</code>\nwhen something else (such as <code>FormControl</code>, which keeps a persistent\nlive region in the DOM) already announces the messages, so they are not\nannounced twice.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
+      },
       {
         identifier: 'class',
         type: { type: '<span class="hljs-built_in">string</span>' },
@@ -6829,6 +6849,344 @@ const data: ComponentDoc[] = [
       type: { type: '<span class="hljs-title class_">SVGElement</span>' },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'input-otp',
+    name: 'InputOtp',
+    fileName: 'packages/frontile/declarations/components/forms/input-otp.d.ts',
+    Args: [
+      {
+        identifier: 'allowedChars',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'digits\'</span> | <span class="hljs-string">\'letters\'</span> | <span class="hljs-string">\'alphanumeric\'</span>',
+          items: ["'digits'", "'letters'", "'alphanumeric'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Which characters the code may contain. Also decides the on-screen keyboard\n(<code>inputmode</code>) and autocapitalisation.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'digits'" } },
+        defaultValue: '<span class="hljs-string">\'digits\'</span>',
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'container\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'group\'</span> | <span class="hljs-string">\'cell\'</span> | <span class="hljs-string">\'cellChar\'</span> | <span class="hljs-string">\'caret\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'description',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
+        tags: {},
+      },
+      {
+        identifier: 'errors',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+          items: ['string', 'string[]'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
+        tags: {},
+      },
+      {
+        identifier: 'groups',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">number</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Splits the cells into visual groups, e.g. <code>[3, 3]</code> for a six-digit code.\nThe entries must sum to <code>length</code>. Omit it for a single group.',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'isInvalid',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'isMasked',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a bullet in place of each entered character. The real input\'s text\nis already transparent, so this is purely what the cells draw -- the input\nstays <code>type="text"</code>, which <code>type="password"</code> would break for autofill.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'isRequired',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'label',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
+        tags: {},
+      },
+      {
+        identifier: 'length',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "How many characters the code has. Also the input's <code>maxlength</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: '6' } },
+        defaultValue: '<span class="hljs-number">6</span>',
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The name attribute of the underlying input, used when the code is\nsubmitted as part of a form.',
+        tags: {},
+      },
+      {
+        identifier: 'onBlur',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '() => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when onblur is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>?: <span class="hljs-title class_">Event</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when onchange is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'onComplete',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Called when the code becomes complete. Fires on the transition from a\nshorter value to exactly <code>length</code> characters, so re-rendering an already\nfull value does not fire it again.',
+        tags: {},
+      },
+      {
+        identifier: 'onInput',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">event</span>?: <span class="hljs-title class_">Event</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when oninput is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'pattern',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'exec',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">string</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-title class_">RegExpExecArray</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'string   The String object or string literal on which to perform the search.',
+                },
+              },
+            },
+            {
+              identifier: 'test',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">string</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">boolean</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value that indicates whether or not a pattern exists in a searched string.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'string   String on which to perform the search.',
+                },
+              },
+            },
+            {
+              identifier: 'source',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a copy of the text of the regular expression pattern. Read-only. The regExp argument is a Regular expression object. It can be a variable name or a literal.',
+              tags: {},
+            },
+            {
+              identifier: 'global',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'ignoreCase',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the ignoreCase flag (i) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'multiline',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'lastIndex',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'compile',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">pattern</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">flags</span>?: <span class="hljs-built_in">string</span>) => <span class="hljs-title class_">RegExp</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {
+                deprecated: {
+                  name: 'deprecated',
+                  value: 'A legacy feature for browser compatibility',
+                },
+              },
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A custom character rule, overriding <code>allowedChars</code>. It is tested against\nevery intermediate value, so it must accept partial input: <code>/^\\d+$/</code>, not\n<code>/^\\d{6}$/</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Characters shown in empty cells before anything is entered. Also exposed as\n<code>aria-placeholder</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The character shown between groups. Rendered <code>aria-hidden</code>, because the\nvalue itself contains no separator.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'–'" } },
+        defaultValue: '<span class="hljs-string">\'–\'</span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the cells and the label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'value',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The value of the input. Pair with <code>onInput</code> or <code>onChange</code> to control the\ninput; leave it unset to let the component track its own value.',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLInputElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
     },
     description: '',
     tags: {},
@@ -9082,7 +9440,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9102,7 +9460,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -9596,7 +9954,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9616,7 +9974,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11087,7 +11445,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The display format of the value.\nValues are formatted as a percentage by default.',
+          '<p>The display format of the value, passed to <code>Intl.NumberFormat</code>.</p>\n<p>A <code>percent</code> style formats the position on the min/max scale as a\nfraction; every other style formats the raw <code>progress</code> value. With no\nformat options, the value is displayed as a whole percentage.</p>',
         tags: {},
       },
       {
@@ -11341,7 +11699,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
+          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'. Any CSS height is\naccepted (<code>2rem</code>, <code>50%</code>, <code>calc(1rem + 2px)</code>, …); a value the CSS parser\nrejects is ignored and the content collapses to <code>0</code>.",
         tags: { defaultValue: { name: 'defaultValue', value: '0' } },
         defaultValue: '<span class="hljs-number">0</span>',
       },
@@ -13842,7 +14200,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'first'" } },
+        defaultValue: '<span class="hljs-string">\'first\'</span>',
       },
       {
         identifier: 'class',
@@ -16718,7 +17077,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> (the listbox and the chips both refuse to remove\nthe last one without it), while this is a separate affordance you opt into\nfor exactly the purpose of emptying the field. Since <code>allowEmpty</code> defaults\nto false, honouring it here would render the button dead by default.</p>\n<p>No clear button is rendered on a disabled Select, or with nothing selected.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -16848,7 +17207,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Callback fired when the select component loses focus.',
+        description:
+          '<p>Callback fired when focus leaves the Select.</p>\n<p>"Leaves the Select" means the whole control: the field <em>and</em> its dropdown,\nwhich is rendered outside the field in the DOM. Moving focus between them\n-- which is what clicking an option does -- is not a blur, so this does not\nfire while the user is picking options, in either selection mode. It fires\nonce, when focus lands somewhere outside the control (or nowhere, with the\ndropdown closed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -17790,17 +18150,6 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-keyword">function</span>',
-          raw: '() => <span class="hljs-built_in">void</span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'onFilterInput',
         type: {
           type: '<span class="hljs-keyword">function</span>',
@@ -17820,6 +18169,18 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onFocusOut',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">event</span>: <span class="hljs-title class_">FocusEvent</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "Reports the trigger losing focus, as <code>focusout</code> rather than <code>blur</code>: the\nSelect decides whether focus actually left the control from the event's\n<code>relatedTarget</code>, and browsers only guarantee that on <code>focusout</code>.",
         tags: {},
       },
       {
@@ -18093,6 +18454,18 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
       },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Drawer knows whether it may point <code>aria-labelledby</code> at us.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
     ],
     Blocks: [
       {
@@ -18240,6 +18613,18 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Modal knows whether it may point <code>aria-labelledby</code> at us.',
         tags: { internal: { name: 'internal', value: '' } },
       },
     ],
