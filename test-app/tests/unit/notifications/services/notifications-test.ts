@@ -303,6 +303,36 @@ module(
       );
     });
 
+    test('promise honors preserve: true after settling, instead of forcing an auto-dismiss', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      let resolvePromise!: (value: string) => void;
+      const pending = new Promise<string>((resolve) => {
+        resolvePromise = resolve;
+      });
+
+      service.promise(pending, {
+        loading: 'Saving…',
+        success: 'Saved',
+        error: 'Failed',
+        preserve: true
+      });
+
+      const notification = service.notifications[0]!;
+
+      resolvePromise('done');
+      await pending;
+
+      assert.equal(notification.title, 'Saved');
+      assert.equal(
+        typeof notification.timer,
+        'undefined',
+        'preserve: true is still honored after settle, not overridden by the loading phase'
+      );
+    });
+
     test('promise renders the rejection as a danger notification', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'

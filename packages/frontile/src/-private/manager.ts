@@ -118,7 +118,20 @@ export default class NotificationsManager {
         isLoading: false
       });
 
-      if (getConfigOption(this.config, 'skipTimer', false) !== true) {
+      // `preserve: true` forces the loading phase to skip auto-dismissal
+      // (there's nothing useful to time out on a spinner), but the docs
+      // promise every option except `isLoading` carries through to the
+      // settled notification — so a caller's own `preserve` must still be
+      // honored here, not silently overridden by the loading phase's.
+      const preserve =
+        typeof rest.preserve === 'undefined'
+          ? getConfigOption(this.config, 'preserve', false)
+          : rest.preserve;
+
+      if (
+        preserve !== true &&
+        getConfigOption(this.config, 'skipTimer', false) !== true
+      ) {
         this.setupAutoRemoval(notification, notification.duration);
       }
     };
