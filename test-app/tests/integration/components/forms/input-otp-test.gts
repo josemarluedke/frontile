@@ -695,4 +695,62 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
   });
+
+  test('@isMasked renders a bullet instead of the character', async function (assert) {
+    await render(
+      <template>
+        <InputOtp @label="PIN" @length={{4}} @isMasked={{true}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '12');
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('•');
+    assert.dom(cells[1] as Element).hasText('•');
+    assert.dom(cells[2] as Element).hasText('');
+  });
+
+  test('@isMasked keeps autofill working: the input stays type=text', async function (assert) {
+    await render(
+      <template>
+        <InputOtp @label="PIN" @length={{4}} @isMasked={{true}} />
+      </template>
+    );
+
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('type', 'text');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('autocomplete', 'one-time-code');
+  });
+
+  test('@placeholder fills empty cells and is exposed as aria-placeholder', async function (assert) {
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @placeholder="0000" />
+      </template>
+    );
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('0');
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('aria-placeholder', '0000');
+  });
+
+  test('the placeholder disappears as soon as anything is typed', async function (assert) {
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @placeholder="0000" />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '7');
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('7');
+    assert.dom(cells[1] as Element).hasText('', 'not a stale placeholder');
+  });
 });

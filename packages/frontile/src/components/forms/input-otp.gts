@@ -29,6 +29,8 @@ interface Cell {
   index: number;
   char: string | null;
   placeholderChar: string | null;
+  /** What the cell actually draws: the character, a mask, or a placeholder. */
+  displayChar: string | null;
   isActive: boolean;
   hasFakeCaret: boolean;
 }
@@ -115,6 +117,21 @@ interface Args extends FormControlSharedArgs {
    * @defaultValue '–'
    */
   separator?: string;
+
+  /**
+   * Renders a bullet in place of each entered character. The real input's text
+   * is already transparent, so this is purely what the cells draw -- the input
+   * stays `type="text"`, which `type="password"` would break for autofill.
+   *
+   * @defaultValue false
+   */
+  isMasked?: boolean;
+
+  /**
+   * Characters shown in empty cells before anything is entered. Also exposed as
+   * `aria-placeholder`.
+   */
+  placeholder?: string;
 }
 
 interface InputOtpSignature {
@@ -299,6 +316,16 @@ class InputOtp extends Component<InputOtpSignature> {
 
     for (let index = 0; index < this.length; index++) {
       const char = value[index] ?? null;
+      // The placeholder is an all-or-nothing preview: it survives only while
+      // nothing at all has been entered.
+      const placeholderChar =
+        value.length === 0 ? (this.args.placeholder?.[index] ?? null) : null;
+
+      let displayChar: string | null = placeholderChar;
+      if (char !== null) {
+        displayChar = this.args.isMasked ? '•' : char;
+      }
+
       // A range selection lights up every cell it covers -- that is correct,
       // not a bug.
       const isActive =
@@ -310,7 +337,8 @@ class InputOtp extends Component<InputOtpSignature> {
       cells.push({
         index,
         char,
-        placeholderChar: null,
+        placeholderChar,
+        displayChar,
         isActive,
         hasFakeCaret: isActive && char === null
       });
@@ -520,7 +548,7 @@ class InputOtp extends Component<InputOtpSignature> {
                 aria-hidden="true"
               >
                 <span class={{this.classes.cellChar class=@classes.cellChar}}>
-                  {{cell.char}}
+                  {{cell.displayChar}}
                 </span>
                 {{#if cell.hasFakeCaret}}
                   {{! Never the only focus affordance -- it is invisible under
@@ -551,6 +579,7 @@ class InputOtp extends Component<InputOtpSignature> {
           data-component="input-otp-input"
           aria-invalid={{if c.isInvalid "true"}}
           aria-describedby={{c.describedBy @description c.isInvalid}}
+          aria-placeholder={{@placeholder}}
           autocomplete="one-time-code"
           inputmode={{this.inputMode}}
           pattern={{this.pattern.source}}
