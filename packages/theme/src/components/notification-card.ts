@@ -50,12 +50,17 @@ const notificationCard = tv({
       danger: {}
     },
     variant: {
+      // `text-neutral` (the DEFAULT level) is only ~3:1 against a light
+      // surface — below the 4.5:1 WCAG AA floor these labels need at this
+      // size. `text-neutral-firm` clears it comfortably against every
+      // surface this description can sit on, light or dark, tonal or not.
+      // See docs/notifications-usage.md's contrast note for the measured ratios.
       default: {
         base: 'bg-surface-modal border-surface-overlay-mild',
-        description: 'text-neutral'
+        description: 'text-neutral-firm'
       },
       tonal: {
-        description: 'text-neutral'
+        description: 'text-neutral-firm'
       },
       solid: {
         base: 'border-transparent'
@@ -93,14 +98,20 @@ const notificationCard = tv({
       class: { icon: 'text-primary', title: 'text-primary' }
     },
     {
+      // `success-firm` is only ~2.3:1 on the white card surface in light
+      // mode; `bolder` clears AA in both themes. See docs/notifications-usage.md's
+      // contrast note.
       variant: 'default',
       intent: 'success',
-      class: { icon: 'text-success-firm', title: 'text-success-firm' }
+      class: { icon: 'text-success-bolder', title: 'text-success-bolder' }
     },
     {
+      // `warning-firm` is only ~3:1 on the white card surface in light
+      // mode; `bolder` clears AA in both themes. See docs/notifications-usage.md's
+      // contrast note.
       variant: 'default',
       intent: 'warning',
-      class: { icon: 'text-warning-firm', title: 'text-warning-firm' }
+      class: { icon: 'text-warning-bolder', title: 'text-warning-bolder' }
     },
     {
       variant: 'default',
@@ -129,21 +140,37 @@ const notificationCard = tv({
       }
     },
     {
+      // `success-firm` (green-600) on `success-subtle` (green-50) is only
+      // ~2.2:1 in light mode — the light `success` scale runs bright at
+      // every level below `strong`. `success-bolder` clears AA in both
+      // themes (light: green-900 on green-50; dark: green-100 on
+      // green-950). See docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'success',
       class: {
         base: 'bg-success-subtle border-success-muted',
-        icon: 'text-success-firm',
-        title: 'text-success-firm'
+        icon: 'text-success-bolder',
+        title: 'text-success-bolder'
       }
     },
     {
+      // `warning` is the one intent whose dark `subtle` token (orange-600)
+      // is a mid-tone rather than the near-black `-900`/`-950` tint every
+      // other intent uses for its dark `subtle` — see semantic.ts. No text
+      // color reaches 4.5:1 against it (even white is only ~5.5:1, and the
+      // accent orange tones top out around 4:1), so the background itself
+      // is special-cased here to the same `-900` depth the other intents
+      // get for free, rather than changing the shared `warning` token and
+      // affecting every other consumer of `bg-warning-subtle`. `bolder`
+      // text (vs. the light theme's usual `firm`) is also needed in light
+      // mode: `warning-firm` (orange-400) on `warning-subtle` (orange-50)
+      // is only ~2.7:1. See docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'warning',
       class: {
-        base: 'bg-warning-subtle border-warning-muted',
-        icon: 'text-warning-firm',
-        title: 'text-warning-firm'
+        base: 'bg-warning-subtle dark:bg-[#600102] border-warning-muted',
+        icon: 'text-warning-bolder',
+        title: 'text-warning-bolder'
       }
     },
     {

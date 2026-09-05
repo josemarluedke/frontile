@@ -756,7 +756,7 @@ All options available when creating notifications with `add`:
 | `duration`            | `number`                                         | `5000`      | Auto-dismiss time in milliseconds                                                              |
 | `preserve`            | `boolean`                                        | `false`     | Prevent auto-dismissal                                                                         |
 | `allowClosing`        | `boolean`                                        | `true`      | Show close button                                                                              |
-| `transitionDuration`  | `number`                                         | `200`       | Animation duration in milliseconds                                                             |
+| `transitionDuration`  | `number`                                         | `200`       | Duration of the enter/exit fade, in milliseconds. Card slide/scale and the container's expand-collapse height animate at a fixed 400ms, independent of this option. |
 | `hideIcon`            | `boolean`                                        | `false`     | Hide the leading intent icon                                                                   |
 | `customActions`       | `CustomAction[]`                                 | `undefined` | Array of action buttons                                                                        |
 | `metadata`            | `TMetadata`                                      | `undefined` | Custom data attached to the notification                                                       |
@@ -929,6 +929,24 @@ The notification system includes built-in accessibility features:
   with the keyboard.
 - **Hover and Focus Behavior**: Auto-dismissal pauses for every visible notification while the
   stack is hovered or focused, not just the one underneath the pointer.
+- **Text Contrast**: `success` and `warning` use the brightest levels of their palette scale at
+  the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG AA
+  floor at `firm` — the theme uses `bolder` for their title/icon text instead. `warning`'s dark
+  `subtle` background is also a mid-tone (`orange-600`) rather than the near-black `-900`/`-950`
+  tint every other intent's dark `subtle` uses, so no text color reaches 4.5:1 against it in the
+  `tonal` variant; the card special-cases that one background to the same `-900` depth instead of
+  changing the shared `warning` token (which other components also use). Measured ratios (WCAG
+  relative luminance, both themes):
+
+  | Pairing                                                    | Light  | Dark   |
+  | ----------------------------------------------------------- | ------ | ------ |
+  | `default`/`tonal` description (`text-neutral` → `-firm`)     | 3.1→8.1| 8.9→11.6 |
+  | `default`/`tonal` `success` title (`firm` → `bolder`)        | 2.3→9.3| 16.3 (already passed) |
+  | `default` `warning` title (`firm` → `bolder`)                | 3.0→7.6| 11.4 (already passed) |
+  | `tonal` `warning` title (`firm` → `bolder`, bg unchanged)     | 2.7→7.0| 3.2 (still fails — see below) |
+  | `tonal` `warning` background (`subtle` → `#600102` in dark)   | n/a    | 3.2→8.2 |
+  | `tonal`/`default` `info`, `danger`, neutral `default` intent  | already ≥5.6 | already ≥6.4 |
+  | `solid` variant (all intents, title/icon and 80%-opacity description) | already ≥7.1 | already ≥9 |
 
 ## Best Practices
 
