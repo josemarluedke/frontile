@@ -130,6 +130,16 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   }
 
   /**
+   * `data-expanded` as a string, computed here rather than with an inline
+   * `{{if}}`: the template-side form needs quoted string literals, and
+   * prettier and ember-template-lint disagree about which quotes those may
+   * be, so neither linter can be satisfied inside the template.
+   */
+  get expandedAttribute(): 'true' | 'false' {
+    return this.isExpanded ? 'true' : 'false';
+  }
+
+  /**
    * Newest first, for every placement. The placement only decides which edge
    * the stack is pinned to and which way it grows, never the order.
    */
@@ -346,7 +356,7 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
       <div
         class={{this.classes.stack}}
         style={{this.stackStyle}}
-        data-expanded="{{if this.isExpanded "true" "false"}}"
+        data-expanded={{this.expandedAttribute}}
         {{this.syncTimers this.stackOrder this.isExpanded}}
       >
         {{#each this.stackOrder key="@identity" as |notification index|}}
