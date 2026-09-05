@@ -17,17 +17,25 @@ import { cell as trackedCell } from 'ember-resources';
 
 import { Form, InputOtp, type FormResultData } from 'frontile';
 
+import { captureFrontileWarnings } from '../../../helpers/frontile-warnings';
+
+function otpInput(): HTMLInputElement {
+  return find('[data-component="input-otp-input"]') as HTMLInputElement;
+}
+
+function cells(): Element[] {
+  return findAll('[data-test-id="input-otp-cell"]');
+}
+
+function activeCells(): Element[] {
+  return findAll('[data-test-id="input-otp-cell"][data-active="true"]');
+}
+
 /**
- * Real typing, as opposed to `fillIn`: only an `input` event, no `change`. The
- * native setter is used so the element registers a genuine value change.
+ * Real typing, as opposed to `fillIn`: only an `input` event, no `change`.
  */
 async function typeInto(input: HTMLInputElement, value: string): Promise<void> {
-  const setVal = Object.getOwnPropertyDescriptor(
-    HTMLInputElement.prototype,
-    'value'
-  )?.set as (this: HTMLInputElement, v: string) => void;
-
-  setVal.call(input, value);
+  input.value = value;
   await triggerEvent(input, 'input');
 }
 
@@ -40,18 +48,13 @@ async function typeInto(input: HTMLInputElement, value: string): Promise<void> {
  * a `value=` binding wipes the keystroke, so it is the window to test in.
  */
 async function typeRaw(input: HTMLInputElement, value: string): Promise<void> {
-  const setVal = Object.getOwnPropertyDescriptor(
-    HTMLInputElement.prototype,
-    'value'
-  )?.set as (this: HTMLInputElement, v: string) => void;
-
-  setVal.call(input, value);
+  input.value = value;
   input.dispatchEvent(new Event('input', { bubbles: true }));
   await settled();
 }
 
 async function setCaret(at: number, to = at): Promise<void> {
-  const input = find('[data-component="input-otp-input"]') as HTMLInputElement;
+  const input = otpInput();
   input.setSelectionRange(at, to);
   document.dispatchEvent(new Event('selectionchange'));
   await settled();
@@ -70,17 +73,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       1,
       'there is exactly one real input'
     );
-    assert.strictEqual(
-      findAll('[data-test-id="input-otp-cell"]').length,
-      6,
-      'defaults to six cells'
-    );
+    assert.strictEqual(cells().length, 6, 'defaults to six cells');
   });
 
   test('@length controls the number of cells and the maxlength', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{4}} /></template>);
 
-    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 4);
+    assert.strictEqual(cells().length, 4);
     assert
       .dom('[data-component="input-otp-input"]')
       .hasAttribute('maxlength', '4');
@@ -89,9 +88,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('the label is associated with the real input', async function (assert) {
     await render(<template><InputOtp @label="Code" /></template>);
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
     const id = input.getAttribute('id') || '';
 
     assert.ok(/ember[1-9.]/.test(id), 'the input has a generated id');
@@ -103,24 +100,24 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '123');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('1');
-    assert.dom(cells[1] as Element).hasText('2');
-    assert.dom(cells[2] as Element).hasText('3');
-    assert.dom(cells[3] as Element).hasText('');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('1');
+    assert.dom(allCells[1] as Element).hasText('2');
+    assert.dom(allCells[2] as Element).hasText('3');
+    assert.dom(allCells[3] as Element).hasText('');
   });
 
   test('the cells are decoration: no roles, no labels, no tab stops', async function (assert) {
     await render(<template><InputOtp @label="Code" /></template>);
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
+    const allCells = cells();
     assert.strictEqual(
-      cells.length,
+      allCells.length,
       6,
       'there are cells to assert about at all'
     );
 
-    for (const cell of cells) {
+    for (const cell of allCells) {
       assert.dom(cell).hasAttribute('aria-hidden', 'true');
       assert.dom(cell).doesNotHaveAttribute('role');
       assert.dom(cell).doesNotHaveAttribute('tabindex');
@@ -154,12 +151,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '42');
 
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
-      .hasText('4');
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
-      .hasText('2');
+    assert.dom(cells()[0] as Element).hasText('4');
+    assert.dom(cells()[1] as Element).hasText('2');
   });
 
   test('controlled: @value drives the cells and @onChange reports back', async function (assert) {
@@ -179,9 +172,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       '99',
       'the parent received the new value'
     );
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
-      .hasText('9');
+    assert.dom(cells()[0] as Element).hasText('9');
   });
 
   test('controlled without feedback: cells still render what was typed', async function (assert) {
@@ -195,12 +186,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '77');
 
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
-      .hasText('7');
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
-      .hasText('7');
+    assert.dom(cells()[0] as Element).hasText('7');
+    assert.dom(cells()[1] as Element).hasText('7');
   });
 
   test('controlled with @onChange only: real typing updates the cells before blur', async function (assert) {
@@ -217,9 +204,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
 
@@ -228,12 +213,12 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.strictEqual(value.current, '', 'the parent has not been told yet');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
+    const allCells = cells();
     assert
-      .dom(cells[0] as Element)
+      .dom(allCells[0] as Element)
       .hasText('1', 'the first cell shows what was typed');
     assert
-      .dom(cells[1] as Element)
+      .dom(allCells[1] as Element)
       .hasText('2', 'the second cell shows what was typed');
   });
 
@@ -247,9 +232,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeInto(input, '1');
@@ -258,9 +241,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.strictEqual(value.current, '12', 'the parent is in step');
     assert.strictEqual(input.value, '12', 'the element was not rewritten');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('1');
-    assert.dom(cells[1] as Element).hasText('2');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('1');
+    assert.dom(allCells[1] as Element).hasText('2');
   });
 
   test('controlled with @onInput: a parent that rejects the value wins over what was typed', async function (assert) {
@@ -275,15 +258,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeInto(input, '1');
 
     assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .dom(cells()[0] as Element)
       .hasText('', 'the cell shows the parent value, not the typed one');
   });
 
@@ -300,22 +281,20 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeInto(input, '1');
 
     assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .dom(cells()[0] as Element)
       .hasText('1', 'while typing, the cells mirror the element');
 
     await triggerEvent(input, 'change');
     await blur(input);
 
     assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .dom(cells()[0] as Element)
       .hasText('', 'once the parent has spoken, its value wins');
   });
 
@@ -382,12 +361,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '12');
 
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
-      .hasText('1');
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
-      .hasText('2');
+    assert.dom(cells()[0] as Element).hasText('1');
+    assert.dom(cells()[1] as Element).hasText('2');
   });
 
   test('a full autofill in a single event fires @onComplete exactly once', async function (assert) {
@@ -405,9 +380,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await fillIn('[data-component="input-otp-input"]', '135790');
 
     assert.deepEqual(completed, ['135790']);
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[5] as Element)
-      .hasText('0');
+    assert.dom(cells()[5] as Element).hasText('0');
   });
 
   test('controlled: @onComplete still fires for a single-event autofill after the parent cleared the value', async function (assert) {
@@ -465,9 +438,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.dom('[data-component="form-feedback"]').hasText(errors[0] as string);
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
     assert.dom(input).hasAttribute('aria-invalid', 'true');
     assert.ok(
       (input.getAttribute('aria-describedby') || '').trim().length > 0,
@@ -483,7 +454,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert
       .dom('[data-component="input-otp-input"]')
       .hasAttribute('aria-invalid', 'true');
-    const cell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+    const cell = cells()[0] as Element;
     assert.ok(
       (cell.getAttribute('class') || '').includes('danger'),
       'the cell picks up the invalid styling'
@@ -515,7 +486,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
         <template><InputOtp @label="Code" @size={{size}} /></template>
       );
 
-      const cell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+      const cell = cells()[0] as Element;
       seen.add(cell.getAttribute('class') || '');
     }
 
@@ -529,26 +500,20 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('digits is the default and rejects letters wholesale', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await fillIn(input, '123');
     assert.strictEqual(input.value, '123');
 
     await fillIn(input, '12a');
     assert.strictEqual(input.value, '123', 'the rejected value did not stick');
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[2] as Element)
-      .hasText('3');
+    assert.dom(cells()[2] as Element).hasText('3');
   });
 
   test('a pasted value with a separator is rejected, not filtered', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
     // Six characters, not seven: `maxlength` truncates an over-long paste in a
     // real browser before our handler ever sees it, and fillIn guards on the
     // same limit. What reaches us is a full-length value with a separator in
@@ -569,9 +534,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // whole of it, not just the pasted tail.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await typeInto(input, '1');
     await typeInto(input, '12');
@@ -583,11 +546,11 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     assert.strictEqual(input.value, '123456');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('1');
-    assert.dom(cells[2] as Element).hasText('3');
-    assert.dom(cells[3] as Element).hasText('4');
-    assert.dom(cells[5] as Element).hasText('6');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('1');
+    assert.dom(allCells[2] as Element).hasText('3');
+    assert.dom(allCells[3] as Element).hasText('4');
+    assert.dom(allCells[5] as Element).hasText('6');
   });
 
   test('@allowedChars alphanumeric accepts letters and switches inputmode', async function (assert) {
@@ -597,9 +560,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
     await fillIn(input, 'a1b2');
 
     assert.strictEqual(input.value, 'a1b2');
@@ -615,9 +576,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await fillIn(input, 'beef');
     assert.strictEqual(input.value, 'beef');
@@ -663,9 +622,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(0);
     await setCaret(2);
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1, 'exactly one cell is active');
     assert
       .dom(active[0] as Element)
@@ -683,9 +640,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(5);
     await setCaret(2);
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1, 'exactly one cell is active');
     assert
       .dom(active[0] as Element)
@@ -699,9 +654,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await focus('[data-component="input-otp-input"]');
     await setCaret(0);
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1);
     assert.dom(active[0] as Element).hasText('1');
   });
@@ -713,9 +666,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await focus('[data-component="input-otp-input"]');
     await setCaret(6);
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1);
     assert.dom(active[0] as Element).hasText('6');
   });
@@ -728,10 +679,10 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await focus('[data-component="input-otp-input"]');
     await setCaret(3);
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[3] as Element).hasAttribute('data-active', 'true');
+    const allCells = cells();
+    assert.dom(allCells[3] as Element).hasAttribute('data-active', 'true');
     assert
-      .dom(cells[3] as Element)
+      .dom(allCells[3] as Element)
       .hasText('', 'the active cell is the empty one');
   });
 
@@ -743,7 +694,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(1, 4);
 
     assert.strictEqual(
-      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
+      activeCells().length,
       3,
       'shift-arrow ranges light up every covered cell'
     );
@@ -771,17 +722,14 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(2);
 
     assert.strictEqual(
-      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
+      activeCells().length,
       1,
       'the mirror is populated while focused'
     );
 
     await blur('[data-component="input-otp-input"]');
 
-    assert.strictEqual(
-      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
-      0
-    );
+    assert.strictEqual(activeCells().length, 0);
   });
 
   test('deleting moves the active cell without any selectionchange from the browser', async function (assert) {
@@ -800,9 +748,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '12345');
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1, 'still exactly one active cell');
     assert.dom(active[0] as Element).hasText('', 'it followed the deletion');
   });
@@ -818,9 +764,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(3);
     await setCaret(2);
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1, 'exactly one active cell');
     assert
       .dom(active[0] as Element)
@@ -857,15 +801,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     value.set('');
     await settled();
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const allCells = cells();
+    const active = activeCells();
 
     assert.strictEqual(active.length, 1, 'exactly one active cell');
     assert.strictEqual(
       active[0],
-      cells[0],
+      allCells[0],
       'the first cell, not a position past the end of the empty code'
     );
     assert
@@ -880,9 +822,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await blur('[data-component="input-otp-input"]');
     await focus('[data-component="input-otp-input"]');
 
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const active = activeCells();
     assert.strictEqual(active.length, 1);
     assert.dom(active[0] as Element).hasText('6');
   });
@@ -896,7 +836,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+    assert.strictEqual(cells().length, 6);
     assert.strictEqual(
       findAll('[data-test-id="input-otp-separator"]').length,
       1,
@@ -944,7 +884,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       findAll('[data-test-id="input-otp-separator"]').length,
       0
     );
-    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+    assert.strictEqual(cells().length, 6);
   });
 
   test('with @groups, an active cell in the second group maps to the correct flat index', async function (assert) {
@@ -968,10 +908,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await setCaret(0);
     await setCaret(4);
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    const active = findAll(
-      '[data-test-id="input-otp-cell"][data-active="true"]'
-    );
+    const allCells = cells();
+    const active = activeCells();
 
     assert.strictEqual(active.length, 1, 'exactly one cell is active');
     assert
@@ -981,7 +919,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
         'the flat index still maps to the right digit after chunking'
       );
     assert.ok(
-      cells.indexOf(active[0] as Element) >= 3,
+      allCells.indexOf(active[0] as Element) >= 3,
       'the active cell is in the second group, not renumbered into the first'
     );
   });
@@ -991,13 +929,20 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // than drop cells -- and must do so identically in development and production.
     const groups = [2, 2];
 
-    await render(
-      <template>
-        <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
-      </template>
-    );
+    const warnings = await captureFrontileWarnings(async () => {
+      await render(
+        <template>
+          <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
+        </template>
+      );
+    });
 
-    assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+    assert.deepEqual(
+      warnings,
+      ['frontile.input-otp.groups-mismatch'],
+      'the mismatch is flagged in development'
+    );
+    assert.strictEqual(cells().length, 6);
   });
 
   test('@isMasked renders a bullet instead of the character', async function (assert) {
@@ -1009,10 +954,10 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '12');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('•');
-    assert.dom(cells[1] as Element).hasText('•');
-    assert.dom(cells[2] as Element).hasText('');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('•');
+    assert.dom(allCells[1] as Element).hasText('•');
+    assert.dom(allCells[2] as Element).hasText('');
   });
 
   test('@isMasked keeps autofill working: the input stays type=text', async function (assert) {
@@ -1037,8 +982,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('0');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('0');
     assert
       .dom('[data-component="input-otp-input"]')
       .hasAttribute('aria-placeholder', '0000');
@@ -1053,9 +998,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '7');
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('7');
-    assert.dom(cells[1] as Element).hasText('', 'not a stale placeholder');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('7');
+    assert.dom(allCells[1] as Element).hasText('', 'not a stale placeholder');
   });
 
   test('an active cell showing a placeholder still renders the fake caret', async function (assert) {
@@ -1075,7 +1020,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // above relies on, so follow the same approach here.
     await focus('[data-component="input-otp-input"]');
 
-    const firstCell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+    const firstCell = cells()[0] as Element;
     assert.dom(firstCell).hasAttribute('data-active', 'true');
     assert.dom(firstCell).hasText('0', 'the placeholder is still shown');
     assert
@@ -1095,15 +1040,15 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('0', 'placeholder is unmasked');
-    assert.dom(cells[1] as Element).hasText('0', 'placeholder is unmasked');
-    assert.dom(cells[2] as Element).hasText('0', 'placeholder is unmasked');
-    assert.dom(cells[3] as Element).hasText('0', 'placeholder is unmasked');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(allCells[1] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(allCells[2] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(allCells[3] as Element).hasText('0', 'placeholder is unmasked');
 
     await fillIn('[data-component="input-otp-input"]', '1');
 
-    const filledCells = findAll('[data-test-id="input-otp-cell"]');
+    const filledCells = cells();
     assert.dom(filledCells[0] as Element).hasText('•', 'typed char is masked');
     assert
       .dom(filledCells[1] as Element)
@@ -1135,9 +1080,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // <Form> only starts feeding the value back once its own bubbled-input
     // handler has updated its internal data, so for the first `input` event
     // the component is on its own -- the cells must still show what was typed.
-    assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[3] as Element)
-      .hasText('4');
+    assert.dom(cells()[3] as Element).hasText('4');
   });
 
   test('the Form submits the code as a single value', async function (assert) {
@@ -1200,9 +1143,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeRaw(input, '1');
@@ -1214,16 +1155,16 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
     assert.strictEqual(input.value, '1', 'the element still holds it');
     assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .dom(cells()[0] as Element)
       .hasText('1', 'the first cell shows what was typed');
 
     await typeRaw(input, '12');
 
     assert.deepEqual(seenByAncestor, ['1', '12']);
     assert.strictEqual(input.value, '12');
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('1');
-    assert.dom(cells[1] as Element).hasText('2');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('1');
+    assert.dom(allCells[1] as Element).hasText('2');
   });
 
   test('controlled: an external @value change still takes effect', async function (assert) {
@@ -1241,9 +1182,7 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeInto(input, '12');
@@ -1253,9 +1192,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await settled();
 
     assert.strictEqual(input.value, '99', 'the element took the new value');
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('9');
-    assert.dom(cells[1] as Element).hasText('9');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('9');
+    assert.dom(allCells[1] as Element).hasText('9');
   });
 
   test('inside a Form: typing one character at a time fills the cells', async function (assert) {
@@ -1289,24 +1228,22 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       </template>
     );
 
-    const input = find(
-      '[data-component="input-otp-input"]'
-    ) as HTMLInputElement;
+    const input = otpInput();
 
     await focus(input);
     await typeRaw(input, '1');
 
     assert.strictEqual(input.value, '1', 'the element kept the keystroke');
     assert
-      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .dom(cells()[0] as Element)
       .hasText('1', 'the first cell shows the first keystroke');
 
     await typeRaw(input, '12');
 
     assert.strictEqual(input.value, '12', 'the element kept both keystrokes');
-    const cells = findAll('[data-test-id="input-otp-cell"]');
-    assert.dom(cells[0] as Element).hasText('1');
-    assert.dom(cells[1] as Element).hasText('2');
+    const allCells = cells();
+    assert.dom(allCells[0] as Element).hasText('1');
+    assert.dom(allCells[1] as Element).hasText('2');
     assert.strictEqual(
       formData.current.code,
       '12',
