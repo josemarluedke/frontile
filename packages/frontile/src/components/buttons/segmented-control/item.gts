@@ -70,6 +70,12 @@ class SegmentedControlItem<T> extends Component<
       return;
     }
     this.args.context.select(this.args.value);
+
+    // The browser has already moved checkedness in the DOM. Ask the control to
+    // re-assert the whole group from `@value` once the consumer has had its
+    // chance to respond, so a declined (or absent) `@onChange` cannot leave the
+    // native state disagreeing with the rendered selection.
+    this.args.context.requestFormSync();
   };
 
   <template>
@@ -89,6 +95,7 @@ class SegmentedControlItem<T> extends Component<
           checked={{this.isSelected}}
           disabled={{this.isDisabled}}
           class="sr-only"
+          {{this.registerValue @value}}
           {{on "change" this.handleChange}}
         />
         {{yield (hash isSelected=this.isSelected)}}

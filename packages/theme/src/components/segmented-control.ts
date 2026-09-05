@@ -89,6 +89,15 @@ const segmentedControl = tv({
       }
     },
 
+    // Every intent pairs its selected-state text colour with two literal
+    // selectors, because the two rendering modes express "selected" on
+    // different elements. In button mode the item *is* the control and carries
+    // `aria-checked`; in form mode the item is a `<label>` wrapping an
+    // `sr-only` radio, and only that hidden input knows it is checked -- so the
+    // label has to ask with `has-[:checked]:`. Both selectors are one
+    // specificity step above the resting `text-neutral-strong`, so they win
+    // regardless of source order. Written out literally, never interpolated:
+    // Tailwind generates nothing from a composed class string.
     intent: {
       default: {
         // Light mode: `bg-surface-card` is opaque white (`absolute.white`) --
@@ -109,31 +118,31 @@ const segmentedControl = tv({
         // `aria-checked:text-neutral-bolder` below (palette.gray['100'] in
         // dark mode) comfortably legible against it (~6.8:1 contrast).
         indicator: 'bg-surface-card dark:bg-neutral-soft',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-neutral-bolder'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-neutral-bolder has-[:checked]:text-neutral-bolder'
       },
       primary: {
         indicator: 'bg-primary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-primary'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-primary has-[:checked]:text-on-primary'
       },
       secondary: {
         indicator: 'bg-secondary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-secondary'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-secondary has-[:checked]:text-on-secondary'
       },
       tertiary: {
         indicator: 'bg-tertiary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-tertiary'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-tertiary has-[:checked]:text-on-tertiary'
       },
       success: {
         indicator: 'bg-success',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-success'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-success has-[:checked]:text-on-success'
       },
       warning: {
         indicator: 'bg-warning',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-warning'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-warning has-[:checked]:text-on-warning'
       },
       danger: {
         indicator: 'bg-danger',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-danger'
+        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-danger has-[:checked]:text-on-danger'
       }
     },
 

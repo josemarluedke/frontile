@@ -598,5 +598,118 @@ module(
         'the indicator measures the label, not the hidden input'
       );
     });
+
+    test('form mode paints the selected item with the intent contrast colour', async function (assert) {
+      // The selected-state colour is expressed as `aria-checked:text-*` for
+      // button mode; the label in form mode carries no `aria-checked`, so it
+      // needs the `has-[:checked]:text-*` counterpart. Asserting on the class
+      // string would not catch a class that is present but generates no CSS,
+      // so this compares what the browser actually resolves.
+      await render(
+        <template>
+          <SegmentedControl
+            @value="day"
+            @name="range"
+            @intent="primary"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+
+          <SegmentedControl @value="day" @intent="primary" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const labels = findAll('label') as HTMLLabelElement[];
+      const buttons = findAll('[role="radio"]') as HTMLElement[];
+
+      const selected = getComputedStyle(labels[0]!).color;
+      const unselected = getComputedStyle(labels[1]!).color;
+      const buttonSelected = getComputedStyle(buttons[0]!).color;
+      const buttonUnselected = getComputedStyle(buttons[1]!).color;
+
+      assert.notStrictEqual(
+        buttonSelected,
+        buttonUnselected,
+        'sanity: button mode does distinguish the selected item'
+      );
+      assert.notStrictEqual(
+        selected,
+        unselected,
+        'the selected label does not keep the unselected text colour'
+      );
+      assert.strictEqual(
+        selected,
+        buttonSelected,
+        'the selected label resolves to the same colour button mode uses'
+      );
+      assert.strictEqual(
+        unselected,
+        buttonUnselected,
+        'unselected items match across modes'
+      );
+    });
+
+    test('form mode restores the native checked state when the value does not change', async function (assert) {
+      // No `@onChange`: the click mutates the DOM's `checked` directly, and
+      // `checked={{isSelected}}` alone would never write it back.
+      await render(
+        <template>
+          <SegmentedControl @value="day" @name="range" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+
+      await click(inputs[1]!);
+
+      assert.true(
+        inputs[0]!.checked,
+        'the input matching @value is checked again'
+      );
+      assert.false(
+        inputs[1]!.checked,
+        'the declined pick does not linger in the DOM'
+      );
+    });
+
+    test('form mode keeps an accepted change', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @name="range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+
+      await click(inputs[1]!);
+
+      assert.strictEqual(value.current, 'week', 'the consumer accepted it');
+      assert.false(inputs[0]!.checked, 'the old selection is released');
+      assert.true(
+        inputs[1]!.checked,
+        'the accepted pick sticks -- the guard does not fight it'
+      );
+    });
   }
 );

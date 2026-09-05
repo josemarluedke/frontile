@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { registerDestructor } from '@ember/destroyable';
+import { buildWaiter } from '@ember/test-waiters';
 import type Owner from '@ember/owner';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { SelectionIndicator } from '../../../utils/selection-indicator';
@@ -11,6 +12,10 @@ import type {
   SegmentedControlVariants
 } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
+
+const formSyncWaiter = buildWaiter(
+  '@frontile/buttons:segmented-control-form-sync'
+);
 
 interface SegmentedControlArgs<T> {
   /**
@@ -95,6 +100,7 @@ interface SegmentedControlContext<T> {
   isGroupDisabled: boolean;
   name?: string;
   itemClass: string;
+  requestFormSync: () => void;
 }
 
 interface SegmentedControlSignature<T> {
@@ -114,8 +120,14 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
 
   // Values are held against their elements rather than serialised into a
   // `data-` attribute, so a non-string `@value` survives the round trip from
-  // keyboard activation back to `onChange`.
-  #values = new WeakMap<HTMLElement, T>();
+  // keyboard activation back to `onChange`. A `Map` rather than a `WeakMap`
+  // because form mode has to walk every registered element to re-assert
+  // checkedness; entries are removed by the registering modifier's teardown,
+  // so nothing outlives the elements themselves.
+  #values = new Map<HTMLElement, T>();
+
+  #formSyncFrame?: number;
+  #formSyncToken?: unknown;
 
   roving = new RovingFocus(() => ({
     orientation: this.args.orientation ?? 'horizontal',
@@ -125,7 +137,10 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
 
   constructor(owner: Owner, args: SegmentedControlSignature<T>['Args']) {
     super(owner, args);
-    registerDestructor(this, () => this.indicator.destroy());
+    registerDestructor(this, () => {
+      this.indicator.destroy();
+      this.#cancelFormSync();
+    });
   }
 
   get styles() {
@@ -172,6 +187,64 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
     this.#values.delete(element);
   };
 
+  /**
+   * Form mode only. A native radio flips its own `checked` property the moment
+   * it is clicked, and Glimmer will not undo that: `checked={{isSelected}}`
+   * only writes when `isSelected` itself changes. So an uncontrolled control --
+   * no `@onChange`, or a consumer that declines the change -- would keep the
+   * user's pick in the DOM while `@value` and the indicator still say
+   * otherwise, leaving the accessibility tree contradicting the visuals.
+   *
+   * Re-asserting synchronously inside the change handler would read the stale
+   * `@value` and stomp a legitimate update, so this waits a frame: by then the
+   * consumer has had its chance to respond and Glimmer has re-rendered, and
+   * writing `isSelected` back is either a no-op (the update was accepted) or
+   * the correction (it was not). The whole group is walked, because unchecking
+   * the clicked radio does not restore its previously-checked sibling.
+   *
+   * Wrapped in a test waiter so `settled()` covers it, and cancelled on
+   * teardown so it can never fire against a destroyed component.
+   */
+  requestFormSync = (): void => {
+    if (this.#formSyncToken) {
+      return;
+    }
+
+    const token = formSyncWaiter.beginAsync();
+    this.#formSyncToken = token;
+
+    this.#formSyncFrame = requestAnimationFrame(() => {
+      this.#formSyncFrame = undefined;
+      this.#formSyncToken = undefined;
+      formSyncWaiter.endAsync(token);
+
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
+
+      for (const [element, value] of this.#values) {
+        if (!(element instanceof HTMLInputElement)) {
+          continue;
+        }
+        const shouldBeChecked = this.isSelected(value);
+        if (element.checked !== shouldBeChecked) {
+          element.checked = shouldBeChecked;
+        }
+      }
+    });
+  };
+
+  #cancelFormSync(): void {
+    if (this.#formSyncFrame !== undefined) {
+      cancelAnimationFrame(this.#formSyncFrame);
+      this.#formSyncFrame = undefined;
+    }
+    if (this.#formSyncToken) {
+      formSyncWaiter.endAsync(this.#formSyncToken);
+      this.#formSyncToken = undefined;
+    }
+  }
+
   get context(): SegmentedControlContext<T> {
     return {
       indicator: this.indicator,
@@ -182,6 +255,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
       unregisterValue: this.unregisterValue,
       isGroupDisabled: this.args.isDisabled ?? false,
       name: this.args.name,
+      requestFormSync: this.requestFormSync,
       itemClass: this.styles.item({ class: this.args.classes?.item })
     };
   }
