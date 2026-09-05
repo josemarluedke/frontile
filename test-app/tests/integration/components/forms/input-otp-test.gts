@@ -1,9 +1,24 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, fillIn, blur } from '@ember/test-helpers';
+import {
+  render,
+  find,
+  findAll,
+  fillIn,
+  blur,
+  focus,
+  settled
+} from '@ember/test-helpers';
 import { cell as trackedCell } from 'ember-resources';
 
 import { Form, InputOtp } from 'frontile';
+
+async function setCaret(at: number, to = at): Promise<void> {
+  const input = find('[data-component="input-otp-input"]') as HTMLInputElement;
+  input.setSelectionRange(at, to);
+  document.dispatchEvent(new Event('selectionchange'));
+  await settled();
+}
 
 module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   setupRenderingTest(hooks);
@@ -329,5 +344,164 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       .dom('[data-component="input-otp-input"]')
       .hasAttribute('autocorrect', 'off');
     assert.dom('[data-component="input-otp"]').hasAttribute('translate', 'no');
+  });
+
+  test('moving forward, a collapsed caret widens onto the cell after it', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+
+    // Establish the prior caret explicitly. Direction is inferred by comparing
+    // against where the caret just was, and after fillIn that is not
+    // deterministic -- browsers differ on whether a programmatic value set
+    // fires selectionchange.
+    await setCaret(0);
+    await setCaret(2);
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1, 'exactly one cell is active');
+    assert
+      .dom(active[0] as Element)
+      .hasText('3', 'widened onto the following cell');
+  });
+
+  test('moving backward, a collapsed caret widens onto the cell before it', async function (assert) {
+    // This is the ArrowLeft case: without the -1 shift the caret appears to
+    // skip a cell.
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+
+    await setCaret(5);
+    await setCaret(2);
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1, 'exactly one cell is active');
+    assert
+      .dom(active[0] as Element)
+      .hasText('2', 'widened onto the preceding cell');
+  });
+
+  test('the caret at the start selects the first cell', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(0);
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1);
+    assert.dom(active[0] as Element).hasText('1');
+  });
+
+  test('the caret at the end selects the last cell, not past it', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(6);
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1);
+    assert.dom(active[0] as Element).hasText('6');
+  });
+
+  test('append mode leaves the next empty cell active', async function (assert) {
+    // The exemption that stops the 4th keystroke replacing the 3rd character.
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(3);
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[3] as Element).hasAttribute('data-active', 'true');
+    assert
+      .dom(cells[3] as Element)
+      .hasText('', 'the active cell is the empty one');
+  });
+
+  test('a range selection makes every covered cell active', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(1, 4);
+
+    assert.strictEqual(
+      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
+      3,
+      'shift-arrow ranges light up every covered cell'
+    );
+  });
+
+  test('an empty active cell shows the fake caret; a filled one does not', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(0);
+    assert.dom('[data-test-id="input-otp-caret"]').exists('empty active cell');
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await setCaret(2);
+    assert
+      .dom('[data-test-id="input-otp-caret"]')
+      .doesNotExist('a filled active cell shows its character instead');
+  });
+
+  test('no cell is active while the input is not focused', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(2);
+    await blur('[data-component="input-otp-input"]');
+
+    assert.strictEqual(
+      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
+      0
+    );
+  });
+
+  test('deleting moves the active cell without any selectionchange from the browser', async function (assert) {
+    // No browser fires selectionchange for a deletion, so the component has to
+    // dispatch one itself or the active cell would stick where it was.
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(6);
+
+    await fillIn('[data-component="input-otp-input"]', '12345');
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1, 'still exactly one active cell');
+    assert.dom(active[0] as Element).hasText('', 'it followed the deletion');
+  });
+
+  test('focusing a full code selects the last cell', async function (assert) {
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await blur('[data-component="input-otp-input"]');
+    await focus('[data-component="input-otp-input"]');
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1);
+    assert.dom(active[0] as Element).hasText('6');
   });
 });
