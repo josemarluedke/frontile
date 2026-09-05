@@ -239,8 +239,10 @@ const inputOtp = tv({
     isActive: {
       true: { cell: 'z-10 border-primary-soft ring-3 ring-focus' }
     },
+    // Mirrors `input`'s `aria-invalid:focus:ring-danger-soft`: a focused invalid
+    // cell must ring red, not keep the neutral focus ring.
     isInvalid: {
-      true: { cell: 'border-danger-soft' }
+      true: { cell: 'border-danger-soft ring-danger-soft' }
     },
     isDisabled: {
       true: { cell: 'border-neutral-subtle text-neutral-soft' }
