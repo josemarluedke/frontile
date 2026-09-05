@@ -5,11 +5,6 @@ import {
   resolveKbdPlatform
 } from 'frontile/utils/keys';
 
-/**
- * The parser is the whole reason `Kbd` is more than a styled `<kbd>`: it turns
- * one authored string into per-key glyphs, human names, and a platform-correct
- * reading of `mod`.
- */
 module('Unit | utils | keys', function (hooks) {
   hooks.afterEach(function () {
     setKbdPlatform('auto');

@@ -14,9 +14,13 @@ const kbd = tv({
     ],
     // Each cap. `min-w` is set per size to match its height, so a lone `K` stays
     // square instead of collapsing to the width of the letter.
+    // `font-label` is repeated here rather than inherited from `base`: the CSS
+    // reset styles the `kbd` element itself as monospace, and an element rule
+    // beats inheritance, so the cap must name its own font.
     key: [
       'inline-flex items-center justify-center',
       'shrink-0',
+      'font-label',
       'leading-none',
       '[&_svg]:size-3'
     ],

@@ -4,6 +4,7 @@ import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import { Overlay } from '../../overlays/overlay';
 import { Command, type CommandSignature } from './command';
+import { resolveKbdPlatform } from '../../../utils/keys';
 import type { OverlaySignature } from '../../overlays/overlay';
 
 /**
@@ -12,12 +13,13 @@ import type { OverlaySignature } from '../../overlays/overlay';
  *
  * `mod` is Cmd on Apple platforms and Ctrl elsewhere, which is what users of
  * either expect from a palette.
+ *
+ * The platform comes from `resolveKbdPlatform` so that what `Kbd` prints and
+ * what this matches can never disagree: an app that pins the platform to
+ * label a shortcut `⌘K` gets Cmd+K matched to go with it.
  */
 function isApplePlatform(): boolean {
-  const nav = globalThis.navigator;
-  // `platform` is deprecated but still the only synchronous signal in some
-  // browsers; userAgent covers the rest.
-  return /Mac|iPhone|iPad|iPod/i.test(nav?.platform || nav?.userAgent || '');
+  return resolveKbdPlatform() === 'apple';
 }
 
 function matchesShortcut(event: KeyboardEvent, shortcut: string): boolean {

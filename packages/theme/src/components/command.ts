@@ -96,8 +96,8 @@ const command = tv({
       'select-none'
     ],
     footerHint: 'flex items-center gap-1.5',
-    // `Kbd` draws the keycap now. The slot stays as an override hook so
-    // `@classes={{hash kbd="..."}}` keeps working for consumers.
+    // Empty on purpose: an override hook so `@classes={{hash kbd="..."}}`
+    // reaches the keycap, which `Kbd` itself draws.
     kbd: ''
   },
   variants: {
