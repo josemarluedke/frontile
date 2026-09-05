@@ -4,14 +4,14 @@ import { focusVisibleRing } from './shared';
 const notificationCard = tv({
   slots: {
     base: [
-      'pointer-events-auto w-full flex items-start gap-3 p-4',
+      'pointer-events-auto w-full flex gap-3 p-4',
       'rounded-2xl border shadow-lg',
       'font-body text-body-2xs',
       'overflow-hidden',
       'transition-[transform,opacity,height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
       'motion-reduce:transition-[opacity] motion-reduce:duration-150'
     ],
-    icon: 'shrink-0 size-5 mt-px',
+    icon: 'shrink-0 size-5',
     content: 'grow min-w-0 flex flex-col gap-1',
     title: 'font-label text-label-xs',
     description: 'text-body-2xs',
@@ -42,6 +42,21 @@ const notificationCard = tv({
       },
       solid: {
         base: 'border-transparent'
+      }
+    },
+    // No description: the row reads as a single centred line — icon, title,
+    // and close button all share the same vertical centre.
+    // With a description: the card grows to two lines, so the icon aligns
+    // with the *title's* line box instead of the whole card. The icon is
+    // nudged down by half the difference between the title's line height and
+    // the icon's own height, so their centres coincide.
+    hasDescription: {
+      true: {
+        base: 'items-start',
+        icon: 'mt-[calc((var(--text-label-xs)*var(--line-height-tight)-1.25rem)/2)]'
+      },
+      false: {
+        base: 'items-center'
       }
     }
   },
@@ -153,7 +168,8 @@ const notificationCard = tv({
 
   defaultVariants: {
     intent: 'info',
-    variant: 'default'
+    variant: 'default',
+    hasDescription: false
   }
 });
 

@@ -206,7 +206,8 @@ class NotificationCard extends Component<NotificationCardSignature> {
       closeButton
     } = notificationCard({
       intent: this.intent,
-      variant: this.args.variant || 'default'
+      variant: this.args.variant || 'default',
+      hasDescription: !!this.args.notification.description
     });
 
     return {

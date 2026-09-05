@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, clearRender } from '@ember/test-helpers';
+import { render, click, clearRender, settled } from '@ember/test-helpers';
 import { NotificationCard } from 'frontile';
 import {
   Notification,
@@ -34,11 +34,22 @@ registerCustomStyles({
         default: { base: 'notification-card--default' },
         tonal: { base: 'notification-card--tonal' },
         solid: { base: 'notification-card--solid' }
+      },
+      hasDescription: {
+        true: {
+          base: 'notification-card--has-description',
+          icon: 'notification-card__icon--top-aligned'
+        },
+        false: {
+          base: 'notification-card--centered',
+          icon: 'notification-card__icon--centered'
+        }
       }
     },
     defaultVariants: {
       intent: 'info',
-      variant: 'default'
+      variant: 'default',
+      hasDescription: false
     }
   })
 });
@@ -86,6 +97,42 @@ module(
       assert
         .dom('.notification-card__description')
         .hasText('Starts at 8:00 AM.');
+    });
+
+    test('it applies the centered layout when there is no description', async function (assert) {
+      notification.current = new Notification({}, 'My message');
+      await render(template);
+
+      assert.dom('.notification-card--centered').exists();
+      assert.dom('.notification-card--has-description').doesNotExist();
+      assert.dom('.notification-card__icon--centered').exists();
+    });
+
+    test('it applies the top-aligned layout when there is a description', async function (assert) {
+      notification.current = new Notification({}, 'Event created', {
+        description: 'Starts at 8:00 AM.'
+      });
+      await render(template);
+
+      assert.dom('.notification-card--has-description').exists();
+      assert.dom('.notification-card--centered').doesNotExist();
+      assert.dom('.notification-card__icon--top-aligned').exists();
+    });
+
+    test('it switches from centered to top-aligned when a description is added at runtime', async function (assert) {
+      notification.current = new Notification({}, 'Saving…', {
+        isLoading: true
+      });
+      await render(template);
+
+      assert.dom('.notification-card--centered').exists();
+      assert.dom('.notification-card--has-description').doesNotExist();
+
+      notification.current.update({ description: 'Saved successfully.' });
+      await settled();
+
+      assert.dom('.notification-card--has-description').exists();
+      assert.dom('.notification-card--centered').doesNotExist();
     });
 
     test('it applies the intent class', async function (assert) {
