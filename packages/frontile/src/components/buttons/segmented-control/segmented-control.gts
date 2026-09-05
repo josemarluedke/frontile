@@ -23,10 +23,12 @@ interface SegmentedControlArgs<T> {
    * The currently selected value. Compared against each item's `@value` with
    * `===`, so object values must be referentially stable.
    *
-   * Providing this argument puts the component in controlled mode: the
-   * selection then only ever reflects what you pass, so pair it with
-   * `@onChange` and update your own state. Omit it to let the control track
-   * the selection itself, seeded by `@defaultValue`.
+   * *Passing* this argument at all puts the component in controlled mode --
+   * passing it as `undefined` included, which is how a controlled control says
+   * "nothing is selected". The selection then only ever reflects what you
+   * pass, so pair it with `@onChange` and update your own state; setting it
+   * back to `undefined` clears the selection. Omit the argument entirely to
+   * let the control track the selection itself, seeded by `@defaultValue`.
    */
   value?: T;
 
@@ -183,12 +185,19 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   }
 
   /**
-   * Presence of `@value` decides the mode, matching `Switch`'s
-   * `@isSelected`/`@defaultSelected` convention rather than `Input`'s
-   * handler-presence one.
+   * Whether `@value` was *passed* decides the mode -- not whether it holds a
+   * value. `@value` is generic, so `undefined` is a legitimate selection
+   * meaning "nothing is selected"; testing `!== undefined` (as `Switch` can,
+   * because its `@isSelected` is a boolean and `undefined` there really does
+   * mean "not passed") would run a controlled control uncontrolled until its
+   * first pick, and would make clearing the selection impossible.
+   *
+   * Glimmer's named-args object carries a key for every argument written in
+   * the invoking template, so `in` distinguishes `@value={{undefined}}` from
+   * an omitted `@value` -- which `undefined` alone cannot.
    */
   get isControlled(): boolean {
-    return this.args.value !== undefined;
+    return 'value' in this.args;
   }
 
   /**
@@ -216,10 +225,13 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   };
 
   activateElement = (element: HTMLElement): void => {
-    const value = this.#values.get(element);
-    if (value !== undefined) {
-      this.select(value);
+    // `has`, not a `!== undefined` check on the result: `T` may itself be
+    // `undefined`, so only membership distinguishes "this element is not
+    // registered" from "it is registered against an undefined value".
+    if (!this.#values.has(element)) {
+      return;
     }
+    this.select(this.#values.get(element) as T);
   };
 
   registerValue = (element: HTMLElement, value: T): void => {

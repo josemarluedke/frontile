@@ -7,6 +7,7 @@ import {
   findAll,
   focus,
   settled,
+  triggerEvent,
   triggerKeyEvent,
   waitUntil
 } from '@ember/test-helpers';
@@ -1383,6 +1384,485 @@ module(
       assert.ok(
         indicatorBox.bottom > selectedBox.bottom,
         'and sits below the selected item, where the theme pill never does'
+      );
+    });
+
+    test('controlled: a starting @value of undefined still means controlled', async function (assert) {
+      // `undefined` is a legitimate value of the generic `T` -- "nothing is
+      // selected" -- so it cannot also be the signal for "argument omitted".
+      // Deciding controlled-ness by value rather than by presence used to run
+      // this control uncontrolled until its first pick, so a consumer that
+      // validates and declines the change still saw the selection move.
+      const value = cell<string | undefined>(undefined);
+      const received: string[] = [];
+      const onChange = (next: string): void => {
+        // Deliberately declines the change: a controlled consumer that
+        // validates and says no.
+        received.push(next);
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLButtonElement[];
+      items.forEach((item) => assert.dom(item).hasAria('checked', 'false'));
+
+      await click(items[1]!);
+
+      assert.deepEqual(received, ['week'], 'onChange still reports the pick');
+      findAll('[role="radio"]').forEach((item) => {
+        assert
+          .dom(item)
+          .hasAria(
+            'checked',
+            'false',
+            'but the declined change does not move the selection'
+          );
+      });
+    });
+
+    test('controlled: the consumer can clear the selection back to nothing', async function (assert) {
+      const value = cell<string | undefined>('day');
+      const onChange = (next: string | undefined): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      assert.dom(findAll('[role="radio"]')[0]!).hasAria('checked', 'true');
+
+      value.current = undefined;
+      await settled();
+
+      findAll('[role="radio"]').forEach((item) => {
+        assert
+          .dom(item)
+          .hasAria(
+            'checked',
+            'false',
+            'setting @value back to undefined clears'
+          );
+      });
+      assert.notOk(
+        (find('[role="radiogroup"]') as HTMLElement).hasAttribute(
+          'data-fr-si-ready'
+        ),
+        'and the indicator goes back to hidden'
+      );
+    });
+
+    test('a selection that moves to a value matching no item ends not ready', async function (assert) {
+      // The fall-through case of the deferred re-measure: the outgoing target
+      // tears down, nothing claims the slot, and the deferred measure has to
+      // actually strip data-fr-si-ready. The "value matching no item" test
+      // above only covers the never-ready path, which the deferral cannot
+      // regress.
+      const value = cell('day');
+
+      await render(
+        <template>
+          <SegmentedControl @value={{value.current}} as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      assert.ok(
+        container.hasAttribute('data-fr-si-ready'),
+        'ready while a real item is selected'
+      );
+
+      value.current = 'nothing';
+      await settled();
+
+      assert.notOk(
+        container.hasAttribute('data-fr-si-ready'),
+        'and not ready once the selection matches no item'
+      );
+    });
+
+    test('form mode stands RovingFocus down and leaves the keyboard to the browser', async function (assert) {
+      // The docs justify not running RovingFocus in form mode by saying a
+      // same-named native radio group already owns the keyboard. Two things
+      // have to hold for that to be true, and neither is implied by the
+      // button-mode tests:
+      //
+      // 1. Nothing managed sets tabindex on the labels or the inputs. A roving
+      //    tabindex would leave every unselected radio unreachable and would
+      //    be the visible fingerprint of RovingFocus still being attached.
+      // 2. Arrow keys reach the browser unhandled -- RovingFocus calls
+      //    preventDefault() on every key it acts on, so an un-prevented arrow
+      //    keydown is the proof it is not listening.
+      const value = cell('day');
+      const received: string[] = [];
+      const onChange = (next: string): void => {
+        received.push(next);
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @name="range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const labels = findAll('label') as HTMLLabelElement[];
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+
+      labels.forEach((label, index) => {
+        assert
+          .dom(label)
+          .doesNotHaveAttribute(
+            'tabindex',
+            `label ${index} carries no managed tabindex`
+          );
+      });
+      inputs.forEach((input, index) => {
+        assert
+          .dom(input)
+          .doesNotHaveAttribute(
+            'tabindex',
+            `input ${index} carries no managed tabindex either`
+          );
+      });
+
+      await focus(inputs[0]!);
+
+      // Native radio arrow-keying is a browser default action, which a
+      // synthetic keydown does not perform. What the browser *does* on that
+      // key is well defined, though: it focuses and checks the next radio in
+      // the same-named group and fires `change` on it. Reproduce exactly that
+      // and assert the component responds to it, which is the half of the
+      // contract the component actually owns.
+      inputs[1]!.checked = true;
+      await triggerEvent(inputs[1]!, 'change');
+
+      assert.deepEqual(
+        received,
+        ['week'],
+        'a keyboard-driven native change fires @onChange'
+      );
+      assert.strictEqual(value.current, 'week', 'and moves the selection');
+      assert.true(
+        (findAll('input[type="radio"]')[1] as HTMLInputElement).checked,
+        'the newly selected radio stays checked'
+      );
+      assert.false(
+        (findAll('input[type="radio"]')[0] as HTMLInputElement).checked,
+        'and the previously selected one does not'
+      );
+
+      // Arrow again, from the new position, to prove it is not a one-shot.
+      inputs[2]!.checked = true;
+      await triggerEvent(inputs[2]!, 'change');
+
+      assert.deepEqual(
+        received,
+        ['week', 'month'],
+        'and it keeps working as the keyboard walks the group'
+      );
+    });
+
+    test('form mode does not swallow the arrow keys the browser needs', async function (assert) {
+      await render(
+        <template>
+          <SegmentedControl @value="day" @name="range" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+      const label = find('label') as HTMLLabelElement;
+
+      // RovingFocus preventDefaults every key it handles. If it were attached
+      // here -- to either the label or the input -- this event would come back
+      // prevented, and the browser's own radio-group navigation would never
+      // run.
+      for (const target of [inputs[0]!, label]) {
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowRight',
+          bubbles: true,
+          cancelable: true
+        });
+        target.dispatchEvent(event);
+        assert.false(
+          event.defaultPrevented,
+          `ArrowRight on the ${target.tagName.toLowerCase()} reaches the browser unhandled`
+        );
+      }
+
+      await settled();
+    });
+
+    test('the documented pill example works against a real control', async function (assert) {
+      // C1 regression: selection-indicator.md used to gate both worked
+      // examples with `.indicator[data-fr-si-ready]`. The attribute lands on
+      // the CONTAINER and the indicator is its child, so that selector can
+      // never match -- anyone copying the example got an indicator stuck at
+      // opacity 0 with no transition. This is the corrected rule from the
+      // docs, verbatim, rendered against a real control.
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          {{! template-lint-disable no-forbidden-elements }}
+          {{! Scoped to the test container and torn down with the test. It is
+              the docs' own rule, copied, so that the published contract is
+              executed rather than merely proof-read. }}
+          <style>
+            .my-control .pill-indicator {
+              opacity: 0;
+            }
+
+            .my-control[data-fr-si-ready] .pill-indicator {
+              opacity: 1;
+              transition:
+                translate 200ms ease-out,
+                width 200ms ease-out,
+                height 200ms ease-out;
+            }
+          </style>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @classes={{hash base="my-control" indicator="pill-indicator"}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">A much longer label</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      const indicator = find('[aria-hidden="true"]') as HTMLElement;
+
+      assert.ok(
+        container.matches('.my-control[data-fr-si-ready]'),
+        'the ready attribute is on the container, which is what the rule keys off'
+      );
+      assert.notOk(
+        indicator.matches('[data-fr-si-ready]'),
+        'and never on the indicator itself -- the old example could not match'
+      );
+
+      const computed = window.getComputedStyle(indicator);
+      assert.strictEqual(
+        computed.opacity,
+        '1',
+        'the gated rule makes the indicator visible'
+      );
+      assert.ok(
+        computed.transitionProperty
+          .split(',')
+          .map((property) => property.trim())
+          .includes('translate'),
+        `and applies the transition (${computed.transitionProperty})`
+      );
+
+      // Establish the before-change style so the browser has something to
+      // transition from, then confirm the move really animates.
+      void computed.translate;
+
+      await click(findAll('[role="radio"]')[1]!);
+
+      const running = indicator
+        .getAnimations()
+        .map(
+          (animation) =>
+            (animation as Animation & { transitionProperty?: string })
+              .transitionProperty
+        )
+        .filter((property): property is string => typeof property === 'string');
+
+      assert.ok(
+        running.includes('translate'),
+        `moving the selection starts a translate transition (running: ${running.join(', ') || 'none'})`
+      );
+    });
+
+    test('the documented underline example works against a real control', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          {{! template-lint-disable no-forbidden-elements }}
+          {{! The docs' underline rule, copied verbatim. }}
+          <style>
+            .my-control .underline-indicator {
+              translate: none;
+              width: auto;
+              position: absolute;
+              top: auto;
+              bottom: 0;
+              left: var(--fr-si-x);
+              right: calc(100% - var(--fr-si-x) - var(--fr-si-width));
+              height: 2px;
+              opacity: 0;
+            }
+
+            .my-control[data-fr-si-ready] .underline-indicator {
+              opacity: 1;
+              transition:
+                left 200ms ease-out,
+                right 200ms ease-out;
+            }
+          </style>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @classes={{hash base="my-control" indicator="underline-indicator"}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">A much longer label</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const indicator = find('[aria-hidden="true"]') as HTMLElement;
+      const selected = findAll('[role="radio"]')[0] as HTMLElement;
+
+      const computed = window.getComputedStyle(indicator);
+      assert.strictEqual(
+        computed.opacity,
+        '1',
+        'the gated rule makes the bar visible'
+      );
+      const transitioned = computed.transitionProperty
+        .split(',')
+        .map((property) => property.trim());
+      assert.ok(
+        transitioned.includes('left') && transitioned.includes('right'),
+        `and applies the transition (${computed.transitionProperty})`
+      );
+
+      // Visible means more than opacity: it has to be over the selected item.
+      const indicatorBox = indicator.getBoundingClientRect();
+      const selectedBox = selected.getBoundingClientRect();
+      assert.ok(
+        Math.abs(indicatorBox.left - selectedBox.left) < 1,
+        `the bar lines up with the selected item (off by ${Math.abs(indicatorBox.left - selectedBox.left)})`
+      );
+
+      void computed.left;
+
+      await click(findAll('[role="radio"]')[1]!);
+
+      const running = indicator
+        .getAnimations()
+        .map(
+          (animation) =>
+            (animation as Animation & { transitionProperty?: string })
+              .transitionProperty
+        )
+        .filter((property): property is string => typeof property === 'string');
+
+      assert.ok(
+        running.includes('left'),
+        `moving the selection eases the bar across (running: ${running.join(', ') || 'none'})`
+      );
+    });
+
+    test('the indicator lands on the selected item in an RTL container', async function (assert) {
+      // SelectionIndicator publishes physical offsets (offsetLeft/offsetTop)
+      // on purpose: the browser has already laid the items out for the
+      // container's direction, so a physical offset fed to `translate` is
+      // correct in both directions and a logical property would flip an
+      // already-flipped value. That claim is made in three places and was
+      // never executed.
+      await render(
+        <template>
+          <div dir="rtl">
+            <SegmentedControl @value="month" as |Ctl|>
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">A much longer label</Ctl.Item>
+              <Ctl.Item @value="month">Month</Ctl.Item>
+            </SegmentedControl>
+          </div>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      const indicator = find('[aria-hidden="true"]') as HTMLElement;
+      const selected = items[2]!;
+
+      assert.strictEqual(
+        window.getComputedStyle(container).direction,
+        'rtl',
+        'the control really is laid out right-to-left'
+      );
+      // If direction were being ignored the last item would sit on the right;
+      // in RTL it is the leftmost. Establishes that this is a real RTL layout
+      // and not an LTR one that happens to agree.
+      assert.ok(
+        selected.getBoundingClientRect().left <
+          items[0]!.getBoundingClientRect().left,
+        'the last item is the leftmost one, as RTL requires'
+      );
+
+      const indicatorBox = indicator.getBoundingClientRect();
+      const selectedBox = selected.getBoundingClientRect();
+
+      // Rects are device pixels and `#ember-testing` renders at 50%, so this
+      // 3 is 1.5 real CSS px -- enough for the sub-pixel gap between the
+      // integer offsetLeft the indicator publishes and the fractional rect it
+      // is compared against. A direction bug is nothing like that small: the
+      // double-flip a logical property would cause lands the indicator on the
+      // mirrored item instead, which the second assertion pins down.
+      assert.ok(
+        Math.abs(indicatorBox.left - selectedBox.left) < 3,
+        `the indicator sits over the selected item (off by ${Math.abs(indicatorBox.left - selectedBox.left)})`
+      );
+      assert.ok(
+        Math.abs(indicatorBox.left - items[0]!.getBoundingClientRect().left) >
+          20,
+        'and nowhere near the mirror-image position a double-flip would produce'
+      );
+      assert.ok(
+        Math.abs(indicatorBox.width - selectedBox.width) < 3,
+        `and matches its width (off by ${Math.abs(indicatorBox.width - selectedBox.width)})`
       );
     });
   }

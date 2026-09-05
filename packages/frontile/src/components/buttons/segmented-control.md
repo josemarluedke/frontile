@@ -37,6 +37,13 @@ import { SegmentedControl } from 'frontile';
 
 ## Controlled and uncontrolled
 
+The mode is decided by whether `@value` is *passed*, not by what it holds.
+Omit the argument entirely and the control is uncontrolled; write it at all —
+including `@value={{undefined}}`, or `@value={{this.selection}}` where
+`selection` happens to be `undefined` — and it is controlled. That is what lets
+a controlled control start with nothing selected and, later, be cleared back to
+nothing by assigning `undefined`.
+
 Without `@value` the control is uncontrolled. `@defaultValue` seeds the initial
 selection, the control keeps the current one internally, and `@onChange` still
 fires on every pick — so you can observe the value without having to own it.
@@ -390,6 +397,13 @@ control's value submits with an ordinary form post — no `@onChange` required,
 though one still fires. Keyboard behaviour also changes: a same-named native
 radio group already handles arrow keys and focus on its own, so the component
 steps aside rather than layering its own handling on top.
+
+Form mode also constrains what an item's `@value` can usefully be. A form post
+carries strings, so the input's `value` attribute is `String(value)` — an
+object value submits as the literal `[object Object]`, and a `null` as
+`"null"`. `@onChange` still receives the original typed value, so use `@name`
+with string (or otherwise string-round-trippable) item values, and reach for
+button mode when the values are objects.
 
 ```gts preview
 import Component from '@glimmer/component';

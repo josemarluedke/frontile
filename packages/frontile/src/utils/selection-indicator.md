@@ -50,13 +50,18 @@ property like `inset-inline-start` here would flip an already-flipped value.
 
 Once the first real measurement lands, the container gains a
 `data-fr-si-ready` attribute one frame later. A CSS transition on the
-indicator must be gated on this attribute (`&[data-fr-si-ready] { transition:
-... }`), not applied unconditionally — otherwise the very first paint has
-nothing to transition *from*, and the indicator visibly flies in from the
-container's origin `(0, 0)` before settling into place. The same attribute
-should gate opacity, so the indicator stays invisible until it has something
-correct to show. `SegmentedControl`'s theme keys both off of it via a
-`group-data-[fr-si-ready]/segmented:` variant.
+indicator must be gated on this attribute, not applied unconditionally —
+otherwise the very first paint has nothing to transition *from*, and the
+indicator visibly flies in from the container's origin `(0, 0)` before
+settling into place. The same attribute should gate opacity, so the indicator
+stays invisible until it has something correct to show.
+
+The attribute lands on the **container**, and the indicator is a descendant of
+it, so the gate is a descendant selector — `[data-fr-si-ready] .my-indicator
+{ … }`, never `.my-indicator[data-fr-si-ready]`, which can never match. In
+Tailwind the same relationship is spelled `group-data-[fr-si-ready]/name:`
+against a `group/name` on the container, which is exactly how
+`SegmentedControl`'s theme keys both opacity and the transition off of it.
 
 If the selected target measures zero — inside a closed drawer, an inactive
 tab panel — the container loses `data-fr-si-ready` instead of publishing a
@@ -91,8 +96,16 @@ custom properties, as the worked underline example below does.
 This is what `SegmentedControl`'s own theme does: an absolutely positioned
 box sized and moved entirely by the four custom properties.
 
+`.my-control` is the element carrying `setupContainer`, so it is the one that
+gains `data-fr-si-ready`; the gated rules therefore read *container attribute,
+then descendant indicator*.
+
 ```css
-.pill-indicator {
+.my-control {
+  position: relative;
+}
+
+.my-control .pill-indicator {
   position: absolute;
   left: 0;
   top: 0;
@@ -103,7 +116,7 @@ box sized and moved entirely by the four custom properties.
   opacity: 0;
 }
 
-.pill-indicator[data-fr-si-ready] {
+.my-control[data-fr-si-ready] .pill-indicator {
   opacity: 1;
   transition:
     translate 200ms ease-out,
@@ -120,7 +133,7 @@ from `--fr-si-x` and `--fr-si-width` alone, with the theme's `translate`,
 compose:
 
 ```css
-.underline-indicator {
+.my-control .underline-indicator {
   translate: none;
   width: auto;
   position: absolute;
@@ -132,8 +145,10 @@ compose:
   opacity: 0;
 }
 
-.underline-indicator[data-fr-si-ready] {
+.my-control[data-fr-si-ready] .underline-indicator {
   opacity: 1;
-  transition: left 200ms ease-out, right 200ms ease-out;
+  transition:
+    left 200ms ease-out,
+    right 200ms ease-out;
 }
 ```

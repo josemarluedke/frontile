@@ -30,9 +30,13 @@ const segmentedControl = tv({
       // standalone CSS `translate` property, NOT to `transform`. Omitting it
       // here made the pill snap to its new position in a single frame while
       // only `width` eased -- the slide, the component's headline behaviour,
-      // never happened. `transform` stays in the list because a consumer
-      // overriding this slot via `@classes.indicator` may legitimately
-      // position with `transform` instead (the docs describe that path).
+      // never happened. `transform` stays in the list only as cheap
+      // belt-and-braces: the docs steer overrides AWAY from `transform`
+      // (it composes with `translate` rather than replacing it, so the
+      // offset lands twice -- see the "transform / translate trap" section
+      // of selection-indicator.md), but naming an unused property in a
+      // transition list costs nothing, and an override that reaches for it
+      // anyway then eases instead of snapping.
       'group-data-[fr-si-ready]/segmented:transition-[transform,translate,width,height]',
       'group-data-[fr-si-ready]/segmented:duration-200',
       'group-data-[fr-si-ready]/segmented:ease-out',
@@ -48,8 +52,12 @@ const segmentedControl = tv({
       'rounded-pill',
       'transition-colors duration-200',
       'motion-reduce:transition-none',
+      // Two selectors, not three: button mode's item IS the control and takes
+      // native `disabled`; form mode's item is a `<label>` wrapping the real
+      // input, so it has to ask with `has-[:disabled]:`. No item element ever
+      // carries `aria-disabled` -- the container does, and the container gets
+      // `base` classes -- so an `aria-disabled:` rule here would be dead.
       'disabled:cursor-not-allowed disabled:opacity-disabled',
-      'aria-disabled:cursor-not-allowed aria-disabled:opacity-disabled',
       'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-disabled'
     ]
   },
