@@ -25,7 +25,7 @@ ember install @frontile/theme
 
 Add this to your `app/styles/app.css`:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
@@ -35,7 +35,7 @@ Add this to your `app/styles/app.css`:
 
 Create `frontile.js` in your project root:
 
-```js
+```js title="frontile.js"
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = frontile({
@@ -45,7 +45,7 @@ module.exports = frontile({
 
 Then update `app/styles/app.css`:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
 @import "@frontile/theme";
@@ -305,7 +305,7 @@ The recommended approach for Tailwind v4 is to customize theme values directly u
 
 Add your customizations in your `app/styles/app.css` after importing the theme:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
@@ -365,7 +365,7 @@ Customize layout values for specific themes using the `.dark` and `.light` class
 
 You can also configure the theme using JavaScript by creating a `frontile.js` file in your project root:
 
-```js
+```js title="frontile.js" collapsible
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = frontile({

@@ -81,7 +81,7 @@ npm install frontile @frontile/theme valibot
 
 Complete GTS component with template:
 
-```typescript
+```gts title="app/components/user-form.gts" collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';

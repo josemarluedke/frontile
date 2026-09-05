@@ -24,7 +24,7 @@ The most straightforward way to customize Frontile is using CSS variables in you
 
 Add customizations after importing the theme in your `app/styles/app.css`:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
@@ -74,7 +74,7 @@ For more complex customization, especially colors, use JavaScript configuration.
 
 Create `frontile.js` in your project root:
 
-```js
+```js title="frontile.js"
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = frontile({

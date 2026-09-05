@@ -35,7 +35,7 @@ pnpm install frontile @frontile/theme
 
 Add Frontile's theme configuration to your `app/styles/app.css` for Tailwind CSS v4:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";

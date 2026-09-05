@@ -4,10 +4,9 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { fn } from '@ember/helper';
 import { htmlSafe } from '@ember/template';
-import type { SafeString } from '@ember/template';
 import { Button, Chip, Field, ProgressBar, ToggleButton } from 'frontile';
-import { teal, blue, pink, green } from '@frontile/theme/colors';
 import CodePanel from './code-panel';
+import { themePresets, type Level } from './snippets';
 
 /**
  * Live demonstration of the token system: picking a ramp rewrites the same
@@ -19,8 +18,8 @@ import CodePanel from './code-panel';
  * 1. **Each scheme gets its own ramp.** Frontile's accent ramps invert in dark
  *    mode — `DEFAULT` is the 600 step in light and the 300 step in dark — so
  *    feeding the light ramp to a dark panel produces unreadable
- *    dark-blue-on-black, which the real system never ships. The ramps below are
- *    derived from the palette exactly as
+ *    dark-blue-on-black, which the real system never ships. The ramps come from
+ *    `./snippets`, derived at build time from the palette exactly as
  *    `packages/theme/src/colors/semantic.ts` derives them.
  * 2. **The scoping matches the plugin.** Instead of an inline style that
  *    overrides both schemes at once, this writes a scoped stylesheet using the
@@ -28,61 +27,8 @@ import CodePanel from './code-panel';
  *    scheme it is actually rendering in.
  *
  * The families are real palette families from `@frontile/theme`. The hex
- * literals here are the subject matter, not styling.
+ * literals shown are the subject matter, not styling.
  */
-
-/** A palette family, by the step names `palette.ts` uses. */
-type Step =
-  '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '900' | '950';
-type Family = Record<Step, string>;
-
-interface Level {
-  name: string;
-  value: string;
-}
-
-interface Preset {
-  key: string;
-  label: string;
-  swatchStyle: SafeString;
-  family: Family;
-}
-
-/**
- * The real palette families, imported rather than transcribed. An earlier
- * version inlined all forty hex values, which made the section's central claim
- * — that these are Frontile's own ramps — expire silently the first time the
- * palette was retuned.
- */
-const FAMILIES: Record<string, Family> = { teal, blue, pink, green };
-
-/** Mirrors semantic.ts's light-theme primary derivation. */
-function lightRamp(f: Family): Level[] {
-  return [
-    { name: 'subtle', value: f['50'] },
-    { name: 'muted', value: f['100'] },
-    { name: 'soft', value: `${f['600']}1a` },
-    { name: 'mild', value: f['400'] },
-    { name: 'DEFAULT', value: f['600'] },
-    { name: 'firm', value: f['700'] },
-    { name: 'strong', value: f['900'] },
-    { name: 'bolder', value: f['950'] },
-  ];
-}
-
-/** Mirrors semantic.ts's dark-theme derivation — the ramp runs the other way. */
-function darkRamp(f: Family): Level[] {
-  return [
-    { name: 'subtle', value: f['900'] },
-    { name: 'muted', value: f['700'] },
-    { name: 'soft', value: `${f['300']}40` },
-    { name: 'mild', value: f['500'] },
-    { name: 'DEFAULT', value: f['300'] },
-    { name: 'firm', value: f['200'] },
-    { name: 'strong', value: f['100'] },
-    { name: 'bolder', value: f['50'] },
-  ];
-}
 
 /**
  * Relative luminance of a hex color, per WCAG. Alpha suffixes (the `soft`
@@ -128,18 +74,20 @@ function toCustomProperties(ramp: Level[]): string {
     .join('\n');
 }
 
-function toConfigObject(ramp: Level[], indent: string): string {
-  return ramp
-    .map(({ name, value }) => `${indent}${name}: '${value}'`)
-    .join(',\n');
-}
-
-const PRESETS: Preset[] = Object.entries(FAMILIES).map(([key, family]) => ({
-  key,
-  label: key.charAt(0).toUpperCase() + key.slice(1),
-  family,
-  swatchStyle: htmlSafe(`background: ${family['600']}`),
+/**
+ * The ramps — and the configuration snippet they produce, already
+ * syntax-highlighted — come from `./snippets`, which
+ * `site/lib/generate-homepage-snippets.mjs` derives at build time from
+ * `@frontile/theme`'s real palette families, exactly as
+ * `packages/theme/src/colors/semantic.ts` derives them. Deriving them a second
+ * time here would let the live panels and the snippet beside them disagree.
+ */
+const PRESETS = themePresets.map((preset) => ({
+  ...preset,
+  swatchStyle: htmlSafe(`background: ${preset.swatch}`),
 }));
+
+type Preset = (typeof PRESETS)[number];
 
 /**
  * One copy of the demo UI, in whichever theme its wrapper resolves to.
@@ -220,42 +168,16 @@ export default class ThemeLab extends Component {
    * resolves the ramp belonging to the scheme it renders in.
    */
   get scopedCss(): string {
-    const f = this.activePreset.family;
+    const preset = this.activePreset;
 
     return [
       '.light .theme-lab-scope, .dark .theme-inverse .theme-lab-scope {',
-      toCustomProperties(lightRamp(f)),
+      toCustomProperties(preset.light),
       '}',
       '.dark .theme-lab-scope, .light .theme-inverse .theme-lab-scope {',
-      toCustomProperties(darkRamp(f)),
+      toCustomProperties(preset.dark),
       '}',
     ].join('\n');
-  }
-
-  get configSnippet(): string {
-    const f = this.activePreset.family;
-
-    return `// frontile.js
-const { frontile } = require('@frontile/theme/plugin');
-
-module.exports = frontile({
-  themes: {
-    light: {
-      colors: {
-        primary: {
-${toConfigObject(lightRamp(f), '          ')}
-        }
-      }
-    },
-    dark: {
-      colors: {
-        primary: {
-${toConfigObject(darkRamp(f), '          ')}
-        }
-      }
-    }
-  }
-});`;
   }
 
   <template>
@@ -312,8 +234,7 @@ ${toConfigObject(darkRamp(f), '          ')}
           in your stylesheet.
         </p>
         <CodePanel
-          @code={{this.configSnippet}}
-          @language="javascript"
+          @html={{this.activePreset.configHtml}}
           @label="frontile.js"
           @isCollapsible={{true}}
         />

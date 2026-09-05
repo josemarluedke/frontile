@@ -85,7 +85,7 @@ const PropertiesTable: TOC<{
   };
 }> = <template>
   <div
-    class="prose max-w-none dark:prose-invert mt-8 overflow-x-scroll hljs-light-theme"
+    class="prose max-w-none dark:prose-invert mt-8 overflow-x-scroll"
     ...attributes
   >
     <table class="text-sm">
@@ -111,7 +111,10 @@ const PropertiesTable: TOC<{
             <tr>
               <td class="">
                 <code class="code-transparent">
-                  <span class="hljs-name">
+                  {{! The argument's own name is not highlighter output — it is
+                      an identifier, styled the way the site styles inline code
+                      identifiers everywhere else. }}
+                  <span class="text-primary-firm">
                     {{arg.identifier}}
                   </span>
                 </code>
@@ -162,7 +165,7 @@ const PropertiesTable: TOC<{
                     <pop.Content
                       @closeOnOutsideClick={{false}}
                       @size="lg"
-                      @class="p-4 hljs-light-theme"
+                      @class="p-4"
                     >
                       <code class="code-transparent">
                         {{! template-lint-disable  }}
