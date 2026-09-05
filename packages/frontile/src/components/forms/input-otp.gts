@@ -3,6 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { warn } from '@ember/debug';
+import { next } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 import {
   useStyles,
   type InputOtpSlots,
@@ -155,23 +157,19 @@ interface InputOtpSignature {
 }
 
 class InputOtp extends Component<InputOtpSignature> {
-  @tracked uncontrolledValue: string = this.args.value || '';
-
   /**
-   * What the element itself currently holds. A controlled parent may not feed
-   * a value back through `@value` right away -- `<Form>`, for one, only starts
-   * doing so once its own bubbled-input handler has seen the first `input`
-   * event -- and the cells are decoration rendered from a string, so without
-   * this they would sit empty in that window.
+   * What the element holds, and what the cells draw. The element is the source
+   * of truth for what the user typed -- the browser guarantees that -- so a
+   * parent-owned `@value` is *written down into* it (by `syncFromValueArg` and
+   * `reconcileWithParent`) rather than bound over it.
+   *
+   * Binding `value={{...}}` here is what broke typing inside a `<Form>`:
+   * Glimmer revalidates in a microtask that runs *between* event listeners, so
+   * the attribute was rewritten from a still-stale `@value` before the `input`
+   * event had finished bubbling to the `<form>` -- wiping the keystroke, and
+   * handing `<Form>` an empty value to store.
    */
   @tracked elementValue: string = this.args.value || '';
-
-  /**
-   * The last value we actually handed to the parent. It is what separates a
-   * parent that has *changed* the value from one that is merely lagging behind
-   * our own last emission -- the two are indistinguishable from `@value` alone.
-   */
-  @tracked lastNotifiedValue: string = this.args.value || '';
 
   @tracked isFocused = false;
   @tracked selectionStart: number | null = null;
@@ -236,26 +234,65 @@ class InputOtp extends Component<InputOtpSignature> {
 
   /**
    * The cells are decoration for the real `<input>`, so they mirror what that
-   * element actually holds -- the browser guarantees that is what the user
-   * typed. `@value` wins only when the parent *changed* it: an external set (a
-   * "Clear" button), a transform, or a deliberate rejection. A `@value` that
-   * still equals our last emission is the parent echoing or lagging us -- most
-   * commonly an `@onChange`-only parent, since the DOM `change` event does not
-   * fire until blur -- and rendering that would leave the cells empty for the
-   * whole time the user is typing, and mis-clamp `mirroredSelection` with it.
+   * element actually holds. A controlled parent's `@value` reaches them the
+   * same way it reaches the element: written down by `syncFromValueArg` when
+   * the parent genuinely changes it, or by `reconcileWithParent` once the
+   * parent has had its say about an edit.
    */
   get currentValue(): string {
-    if (!this.isControlled) {
-      return this.uncontrolledValue;
-    }
+    return this.elementValue;
+  }
 
-    if (typeof this.args.value === 'undefined') {
-      return this.elementValue;
+  /**
+   * Writes a parent-owned value down into the element. A modifier re-runs only
+   * when its tracked arguments actually change, so a `@value` that is merely
+   * lagging behind what the user typed never re-runs this and never clobbers a
+   * keystroke -- which is exactly what the removed `value=` binding did.
+   *
+   * This is what makes an external change take effect: a "Clear" button, a
+   * transform, a value pushed in from elsewhere.
+   */
+  syncFromValueArg = modifier(
+    (element: HTMLInputElement, [value]: [string | undefined]) => {
+      if (typeof value === 'string' && value !== element.value) {
+        element.value = value;
+        this.elementValue = value;
+      }
     }
+  );
 
-    return this.args.value === this.lastNotifiedValue
-      ? this.elementValue
-      : this.args.value;
+  /**
+   * Gives a controlled parent the last word on an edit -- but only once the
+   * `input` (or `change`) event has finished travelling.
+   *
+   * A parent that has been told the new value and still holds a different one
+   * has *rejected* it, and controlled semantics say its value wins. A parent
+   * that has not caught up yet has not rejected anything, and the two are
+   * indistinguishable from `@value` at the moment we notify: `<Form>` updates
+   * its data from a handler on the `<form>` element, which runs after ours.
+   * Waiting for the dispatch to finish is what separates them.
+   */
+  reconcileWithParent(element: HTMLInputElement, emitted: string): void {
+    next(this, () => {
+      if (this.isDestroying || this.isDestroyed) {
+        return;
+      }
+
+      const { value } = this.args;
+
+      // Anything typed since this was scheduled wins: it is a later edit, with
+      // a reconciliation of its own already on its way.
+      if (
+        typeof value !== 'string' ||
+        value === emitted ||
+        element.value !== emitted
+      ) {
+        return;
+      }
+
+      element.value = value;
+      this.elementValue = value;
+    });
   }
 
   /**
@@ -394,21 +431,16 @@ class InputOtp extends Component<InputOtpSignature> {
     const next = element.value.slice(0, this.length);
 
     // The value as it stood before this edit, read before anything is mutated.
-    // `currentValue` is the rendered truth in every ownership mode, and unlike
-    // a stored field it also sees a change the parent made on its own -- a
-    // "Clear" or "Resend code" button -- which never travels through here. A
-    // stored field goes stale there, and the next single-event autofill then
-    // looks like a full-to-full replacement and never completes.
+    // It is what we last wrote to the element, which is the rendered truth in
+    // every ownership mode: a change the parent made on its own -- a "Clear" or
+    // "Resend code" button -- has been written down into the element too, so
+    // this does not go stale and the next single-event autofill still reads as
+    // a genuine transition rather than a full-to-full replacement.
     //
-    // The one thing it cannot see is the `change` that merely echoes an `input`
-    // we have already handled: a parent wired only to `@onChange` has not been
-    // told about that input yet, so `@value` still reads pre-edit and the echo
-    // would complete a second time. `elementValue` -- what we last wrote to the
-    // element -- settles that one case, and only for `change`.
-    const previous =
-      notify === 'change' && this.elementValue === next
-        ? next
-        : this.currentValue;
+    // It is also what stops the `change` that merely echoes an `input` we have
+    // already handled from completing a second time: by then it already equals
+    // `next`.
+    const previous = this.currentValue;
 
     // All-or-nothing: a value that fails the rule is dropped whole rather than
     // filtered, so a pasted "123-456" never silently becomes "123456".
@@ -420,21 +452,19 @@ class InputOtp extends Component<InputOtpSignature> {
     element.value = next;
     this.elementValue = next;
 
+    // Only a parent that was actually told gets a say in the reconciliation --
+    // an `@onChange`-only parent is not credited with knowing about an `input`
+    // it never heard.
     if (this.isControlled) {
-      // `lastNotifiedValue` moves only when the parent is genuinely told, so an
-      // `@onChange`-only parent is not credited with knowing about an `input`
-      // it never heard.
       if (notify === 'input') {
         if (this.args.onInput) {
-          this.lastNotifiedValue = next;
           this.args.onInput(next, event);
+          this.reconcileWithParent(element, next);
         }
       } else if (this.args.onChange) {
-        this.lastNotifiedValue = next;
         this.args.onChange(next, event);
+        this.reconcileWithParent(element, next);
       }
-    } else {
-      this.uncontrolledValue = next;
     }
 
     if (
@@ -612,6 +642,7 @@ class InputOtp extends Component<InputOtpSignature> {
 
         <input
           {{this.inputRef.setup}}
+          {{this.syncFromValueArg @value}}
           {{on "input" this.handleOnInput}}
           {{on "change" this.handleOnChange}}
           {{on "focus" this.handleFocus}}
@@ -620,7 +651,6 @@ class InputOtp extends Component<InputOtpSignature> {
           name={{@name}}
           type="text"
           maxlength={{this.length}}
-          value={{this.currentValue}}
           disabled={{@isDisabled}}
           class={{this.classes.input class=@classes.input}}
           data-component="input-otp-input"

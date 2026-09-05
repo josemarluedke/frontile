@@ -1,5 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { on } from '@ember/modifier';
+import { run } from '@ember/runloop';
 import {
   render,
   find,
@@ -13,7 +15,7 @@ import {
 } from '@ember/test-helpers';
 import { cell as trackedCell } from 'ember-resources';
 
-import { Form, InputOtp } from 'frontile';
+import { Form, InputOtp, type FormResultData } from 'frontile';
 
 /**
  * Real typing, as opposed to `fillIn`: only an `input` event, no `change`. The
@@ -27,6 +29,25 @@ async function typeInto(input: HTMLInputElement, value: string): Promise<void> {
 
   setVal.call(input, value);
   await triggerEvent(input, 'input');
+}
+
+/**
+ * Typing without the test helpers' run loop around the dispatch. `triggerEvent`
+ * keeps a run loop open for the whole dispatch, which defers Glimmer's
+ * revalidation past it; a real keystroke has no such run loop, so Glimmer
+ * revalidates in a microtask that runs *between* the listeners on the input and
+ * the listeners on any ancestor -- `<Form>`'s among them. That window is where
+ * a `value=` binding wipes the keystroke, so it is the window to test in.
+ */
+async function typeRaw(input: HTMLInputElement, value: string): Promise<void> {
+  const setVal = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'value'
+  )?.set as (this: HTMLInputElement, v: string) => void;
+
+  setVal.call(input, value);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  await settled();
 }
 
 async function setCaret(at: number, to = at): Promise<void> {
@@ -1142,5 +1163,154 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await click('[data-test-submit]');
 
     assert.verifySteps(['4321'], 'one FormData entry, not four');
+  });
+  test('controlled: a parent that has not caught up does not wipe the keystroke', async function (assert) {
+    // The shape <Form> produces: a bound @value, an @onInput that only
+    // validates, and an ancestor listener that reads the element once the
+    // event reaches it. The keystroke must still be in the element then --
+    // that ancestor is how <Form> learns the value at all.
+    const value = trackedCell<string>('');
+    const validateOnly = () => {};
+    const seenByAncestor: string[] = [];
+
+    const observe = (event: Event) => {
+      // A real keystroke has no run loop around its dispatch, so Glimmer
+      // revalidates in a microtask that runs between the listener on the input
+      // and this one. Flushing an empty run loop reproduces that here, where
+      // the test helpers' own run loop would otherwise defer it past the whole
+      // dispatch and hide the bug.
+      run(() => {});
+
+      const seen = (event.target as HTMLInputElement).value;
+      seenByAncestor.push(seen);
+      value.set(seen);
+    };
+
+    await render(
+      <template>
+        {{! template-lint-disable no-invalid-interactive }}
+        <div {{on "input" observe}}>
+          <InputOtp
+            @label="Code"
+            @length={{4}}
+            @value={{value.current}}
+            @onInput={{validateOnly}}
+          />
+        </div>
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeRaw(input, '1');
+
+    assert.deepEqual(
+      seenByAncestor,
+      ['1'],
+      'the keystroke was still in the element when the event finished bubbling'
+    );
+    assert.strictEqual(input.value, '1', 'the element still holds it');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('1', 'the first cell shows what was typed');
+
+    await typeRaw(input, '12');
+
+    assert.deepEqual(seenByAncestor, ['1', '12']);
+    assert.strictEqual(input.value, '12');
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('1');
+    assert.dom(cells[1] as Element).hasText('2');
+  });
+
+  test('controlled: an external @value change still takes effect', async function (assert) {
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp
+          @label="Code"
+          @length={{4}}
+          @value={{value.current}}
+          @onInput={{update}}
+        />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeInto(input, '12');
+
+    // The parent sets the value on its own -- a "Clear" button, a transform.
+    value.set('99');
+    await settled();
+
+    assert.strictEqual(input.value, '99', 'the element took the new value');
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('9');
+    assert.dom(cells[1] as Element).hasText('9');
+  });
+
+  test('inside a Form: typing one character at a time fills the cells', async function (assert) {
+    // The docs "Inside a Form" example, driven the way a person drives it:
+    // one keystroke at a time, `input` only. `fillIn` hides this because it
+    // lets <Form> catch up before anything is asserted.
+    const formData = trackedCell<{ code: string }>({ code: '' });
+    const flushRender = () => run(() => {});
+    const handleFormChange = (result: FormResultData) => {
+      formData.set(result.data as { code: string });
+    };
+
+    await render(
+      <template>
+        <Form
+          @data={{formData.current}}
+          @onChange={{handleFormChange}}
+          as |form|
+        >
+          <form.Field @name="code" as |field|>
+            {{! Flushes the render queue between our own input handler and
+                <Form>'s, which is where a real keystroke's revalidation lands
+                and where the test helpers' run loop would otherwise not put
+                it. }}
+            {{! template-lint-disable no-invalid-interactive }}
+            <div {{on "input" flushRender}}>
+              <field.InputOtp @label="Verification code" @length={{4}} />
+            </div>
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeRaw(input, '1');
+
+    assert.strictEqual(input.value, '1', 'the element kept the keystroke');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('1', 'the first cell shows the first keystroke');
+
+    await typeRaw(input, '12');
+
+    assert.strictEqual(input.value, '12', 'the element kept both keystrokes');
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('1');
+    assert.dom(cells[1] as Element).hasText('2');
+    assert.strictEqual(
+      formData.current.code,
+      '12',
+      'the form data tracks what was typed'
+    );
   });
 });
