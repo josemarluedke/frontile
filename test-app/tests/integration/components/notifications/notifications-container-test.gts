@@ -25,6 +25,18 @@ import { cell } from 'ember-resources';
 const realNotificationsContainerStyles = useStyles().notificationsContainer;
 const realNotificationCardStyles = useStyles().notificationCard;
 
+// `notification-card.gts`'s `enter` modifier flips `hasEntered` on the frame
+// after insertion (via `requestAnimationFrame`), and only once that happens
+// does the card's style getter switch from the enter transform
+// (`translateY(100%) scale(0.95)`, `opacity: 0`) to the geometry-driven one.
+// `settled()` does not wait on a raw `requestAnimationFrame`, so any test that
+// reads the settled inline style must wait for a frame first — otherwise it
+// races the enter transition and fails intermittently on slower machines.
+async function settledAfterEnter(): Promise<void> {
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+  await settled();
+}
+
 registerCustomStyles({
   notificationsContainer: tv({
     slots: {
@@ -211,6 +223,7 @@ module(
           'to grow taller than a short single-line title would require.'
       });
       await render(<template><NotificationsContainer /></template>);
+      await settledAfterEnter();
 
       const card = find('[data-test-notification-card]');
       assert.ok(card, 'the front card renders');
@@ -328,6 +341,7 @@ module(
         );
 
         await triggerEvent('.notifications-container', 'mouseenter');
+        await settledAfterEnter();
 
         const gap = 16; // NotificationsContainer's default @spacing
 
@@ -436,6 +450,7 @@ module(
         assert.strictEqual(cards.length, 2);
 
         await triggerEvent('.notifications-container', 'mouseenter');
+        await settledAfterEnter();
 
         const gap = 16; // NotificationsContainer's default @spacing
 
@@ -758,14 +773,7 @@ module(
           <NotificationsContainer @spacing={{40}} data-test-notifications />
         </template>
       );
-      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
-      // frame after insertion (via `requestAnimationFrame`), and only once
-      // that happens does the style getter switch from the enter/exit
-      // transform to the geometry-driven one this test reads. `settled()`
-      // doesn't wait on a raw `requestAnimationFrame`, so wait for one
-      // directly.
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-      await settled();
+      await settledAfterEnter();
 
       const cards = findAll('[data-test-notification-card]') as HTMLElement[];
       const translateY = (card: HTMLElement): number => {
@@ -799,14 +807,7 @@ module(
           />
         </template>
       );
-      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
-      // frame after insertion (via `requestAnimationFrame`), and only once
-      // that happens does the style getter switch from the enter/exit
-      // transform (which forces `opacity: 0` regardless of stack position)
-      // to the geometry-driven one this test reads. `settled()` doesn't
-      // wait on a raw `requestAnimationFrame`, so wait for one directly.
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-      await settled();
+      await settledAfterEnter();
 
       const cards = findAll('[data-test-notification-card]') as HTMLElement[];
       const opacity = (card: HTMLElement): string => {
@@ -863,14 +864,7 @@ module(
 
       assert.dom('[data-test-notification-card]').exists({ count: 1 });
 
-      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
-      // frame after insertion (via `requestAnimationFrame`), and only once
-      // that happens does the style getter switch from the enter/exit
-      // transform (which forces `opacity: 0`) to the geometry-driven one
-      // this assertion reads. `settled()` doesn't wait on a raw
-      // `requestAnimationFrame`, so wait for one directly.
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-      await settled();
+      await settledAfterEnter();
 
       const card = find('[data-test-notification-card]') as HTMLElement;
       assert.ok(
