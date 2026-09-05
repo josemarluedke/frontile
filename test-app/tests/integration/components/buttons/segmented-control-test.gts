@@ -2134,5 +2134,51 @@ module(
 
       assert.strictEqual(calls, 0, 'and arrow keys select nothing');
     });
+
+    test('resting ink is secondary to selected, and hover is scoped away from both selected and disabled items', async function (assert) {
+      await render(
+        <template>
+          <SegmentedControl @defaultValue="week" aria-label="Range" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month" @isDisabled={{true}}>Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const [unselected, selected, disabled] = findAll(
+        '[role="radio"]'
+      ) as HTMLElement[];
+
+      const resting = getComputedStyle(unselected!).color;
+
+      assert.notStrictEqual(
+        resting,
+        getComputedStyle(selected!).color,
+        'the resting ink is clearly secondary to the selected ink'
+      );
+      assert.strictEqual(
+        getComputedStyle(disabled!).color,
+        resting,
+        'a disabled item rests at the same ink, dimmed by opacity rather than colour'
+      );
+
+      // The hover ink itself cannot be asserted from computed styles here: CSS
+      // :hover follows the real pointer, and synthetic mouseenter/mouseover do
+      // not set it. What is checkable is that the rule is scoped, which is the
+      // part that regressed before -- an unscoped `hover:` ties on specificity
+      // with the variants' `data-[selected=true]:` ink, leaving the winner to
+      // Tailwind's emitted variant order. The rendered colours were verified in
+      // a real browser: light 0.432 resting -> 0.326 hovered -> 0.234 selected.
+      const hoverClass = [...unselected!.classList].find((c) =>
+        c.includes('hover:text-')
+      );
+      assert.ok(hoverClass, 'the item carries a hover ink rule');
+      assert.ok(
+        hoverClass!.includes('data-[selected=false]') &&
+          hoverClass!.includes('data-[disabled=false]'),
+        `the hover rule is scoped away from selected and disabled items (${hoverClass})`
+      );
+    });
   }
 );

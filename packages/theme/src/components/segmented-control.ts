@@ -58,7 +58,23 @@ const segmentedControl = tv({
       'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled',
       // The resting and hover ink is the same for every intent -- only the
       // selected-state colour varies, so only that lives on the variants.
-      'text-neutral-strong hover:text-neutral-bolder'
+      //
+      // Three distinct levels, because hover needs somewhere to go. Resting sat
+      // at `neutral-strong` before, one step off the top of the scale, so hover
+      // could only reach `neutral-bolder` -- a change of roughly 0.05 in oklch
+      // lightness in dark mode, invisible in practice, and for the `default`
+      // intent it landed on exactly the colour that intent uses for the
+      // *selected* item, so hovering impersonated selection. Resting now sits at
+      // `neutral-firm`, which still clears WCAG AA against the track in both
+      // modes (7.2:1 light, 10.0:1 dark) while reading as clearly secondary to
+      // the selected label.
+      'text-neutral-firm',
+      // Hover is scoped to items that are neither selected nor disabled.
+      // Scoping it matters beyond intent: an unscoped `hover:` sits at the same
+      // specificity as the variants' `data-[selected=true]:` ink, so which one
+      // won on a hovered selected item came down to Tailwind's emitted variant
+      // order rather than anything stated here.
+      'data-[selected=false]:data-[disabled=false]:hover:text-neutral-strong'
     ]
   },
 
@@ -113,7 +129,8 @@ const segmentedControl = tv({
     // component previously shipped a bug where the colour silently never
     // applied in form mode. One attribute, one rule, no mode to forget.
     // `data-[selected=true]` is a specificity step above the resting
-    // `text-neutral-strong`, so it wins regardless of source order. Written
+    // `text-neutral-firm`, so it wins regardless of source order, and hover is
+    // scoped to `data-[selected=false]` so the two can never contend. Written
     // out literally: Tailwind generates nothing from a composed class string.
     intent: {
       default: {
