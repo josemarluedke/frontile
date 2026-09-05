@@ -1894,15 +1894,16 @@ module(
 
       await click(items[0]!);
 
-      assert.dom(findAll('[role="radio"]')[0]!).hasAttribute(
-        'data-selected',
-        'true',
-        'data-selected follows the selection'
-      );
-      assert.dom(findAll('[role="radio"]')[1]!).hasAttribute(
-        'data-selected',
-        'false'
-      );
+      assert
+        .dom(findAll('[role="radio"]')[0]!)
+        .hasAttribute(
+          'data-selected',
+          'true',
+          'data-selected follows the selection'
+        );
+      assert
+        .dom(findAll('[role="radio"]')[1]!)
+        .hasAttribute('data-selected', 'false');
     });
 
     test('items publish data-selected and data-disabled in form mode too', async function (assert) {
@@ -1938,11 +1939,13 @@ module(
 
       await click(findAll('input[type="radio"]')[0]!);
 
-      assert.dom(findAll('label')[0]!).hasAttribute(
-        'data-selected',
-        'true',
-        'data-selected follows the selection in form mode as well'
-      );
+      assert
+        .dom(findAll('label')[0]!)
+        .hasAttribute(
+          'data-selected',
+          'true',
+          'data-selected follows the selection in form mode as well'
+        );
     });
 
     test('a consumer can style the selected item through data-selected in both modes', async function (assert) {
@@ -1954,8 +1957,12 @@ module(
         <template>
           {{! template-lint-disable no-forbidden-elements }}
           <style>
-            .seg-test-item { color: rgb(10, 20, 30); }
-            .seg-test-item[data-selected='true'] { color: rgb(200, 100, 50); }
+            .seg-test-item {
+              color: rgb(10, 20, 30);
+            }
+            .seg-test-item[data-selected="true"] {
+              color: rgb(200, 100, 50);
+            }
           </style>
 
           <SegmentedControl
@@ -2005,6 +2012,5 @@ module(
         'form mode: an unselected item keeps the resting colour'
       );
     });
-
   }
 );

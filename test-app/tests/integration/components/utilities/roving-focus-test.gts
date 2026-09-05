@@ -227,25 +227,13 @@ module(
         <template>
           <div dir="rtl">
             <div>
-              <button
-                type="button"
-                {{horizontal.setupItem true}}
-              >A</button>
-              <button
-                type="button"
-                {{horizontal.setupItem false}}
-              >B</button>
-              <button
-                type="button"
-                {{horizontal.setupItem false}}
-              >C</button>
+              <button type="button" {{horizontal.setupItem true}}>A</button>
+              <button type="button" {{horizontal.setupItem false}}>B</button>
+              <button type="button" {{horizontal.setupItem false}}>C</button>
             </div>
             <div>
               <button type="button" {{vertical.setupItem true}}>D</button>
-              <button
-                type="button"
-                {{vertical.setupItem false}}
-              >E</button>
+              <button type="button" {{vertical.setupItem false}}>E</button>
             </div>
           </div>
         </template>
