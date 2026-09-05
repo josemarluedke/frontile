@@ -491,6 +491,65 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.dom(active[0] as Element).hasText('', 'it followed the deletion');
   });
 
+  test('moving back out of append mode does not overshoot a cell', async function (assert) {
+    // The caret parked collapsed at the end of a not-yet-full code is in append
+    // mode; a backward move out of it must not get the -1 shift that a normal
+    // ArrowLeft gets, or the active cell lands one cell too far left.
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '123');
+    await focus('[data-component="input-otp-input"]');
+    await setCaret(3);
+    await setCaret(2);
+
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+    assert.strictEqual(active.length, 1, 'exactly one active cell');
+    assert
+      .dom(active[0] as Element)
+      .hasText('3', 'the third cell, not the second');
+  });
+
+  test('controlled: a parent clearing @value while focused leaves no phantom cell', async function (assert) {
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp
+          @label="Code"
+          @length={{6}}
+          @value={{value.current}}
+          @onChange={{update}}
+        />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+
+    // A "Clear" button beside the field: the parent shrinks the value directly,
+    // never through an input or change event.
+    value.set('');
+    await settled();
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+
+    assert.strictEqual(active.length, 1, 'exactly one active cell');
+    assert.strictEqual(
+      active[0],
+      cells[0],
+      'the first cell, not a position past the end of the empty code'
+    );
+    assert
+      .dom('[data-test-id="input-otp-caret"]')
+      .exists({ count: 1 }, 'the fake caret sits in it');
+  });
+
   test('focusing a full code selects the last cell', async function (assert) {
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
