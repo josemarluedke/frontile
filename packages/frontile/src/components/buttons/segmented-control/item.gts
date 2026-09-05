@@ -32,7 +32,7 @@ interface SegmentedControlItemSignature<T> {
   Blocks: {
     default: [{ isSelected: boolean }];
   };
-  Element: HTMLButtonElement;
+  Element: HTMLButtonElement | HTMLLabelElement;
 }
 
 class SegmentedControlItem<T> extends Component<
@@ -61,21 +61,54 @@ class SegmentedControlItem<T> extends Component<
     this.args.context.select(this.args.value);
   };
 
+  get stringValue(): string {
+    return String(this.args.value);
+  }
+
+  handleChange = (): void => {
+    if (this.isDisabled) {
+      return;
+    }
+    this.args.context.select(this.args.value);
+  };
+
   <template>
-    <button
-      type="button"
-      role="radio"
-      aria-checked="{{this.isSelected}}"
-      disabled={{this.isDisabled}}
-      class="{{@context.itemClass}} {{@class}}"
-      {{this.registerValue @value}}
-      {{@context.indicator.setupTarget this.isSelected}}
-      {{@context.roving.setupItem this.isSelected this.isDisabled}}
-      {{on "click" this.handleClick}}
-      ...attributes
-    >
-      {{yield (hash isSelected=this.isSelected)}}
-    </button>
+    {{#if @context.name}}
+      {{! Form mode. Native radios bring their own arrow-key and focus
+          behaviour for a same-named group, so RovingFocus deliberately stands
+          down here rather than fighting the browser for control. }}
+      <label
+        class="{{@context.itemClass}} {{@class}}"
+        {{@context.indicator.setupTarget this.isSelected}}
+        ...attributes
+      >
+        <input
+          type="radio"
+          name={{@context.name}}
+          value={{this.stringValue}}
+          checked={{this.isSelected}}
+          disabled={{this.isDisabled}}
+          class="sr-only"
+          {{on "change" this.handleChange}}
+        />
+        {{yield (hash isSelected=this.isSelected)}}
+      </label>
+    {{else}}
+      <button
+        type="button"
+        role="radio"
+        aria-checked="{{this.isSelected}}"
+        disabled={{this.isDisabled}}
+        class="{{@context.itemClass}} {{@class}}"
+        {{this.registerValue @value}}
+        {{@context.indicator.setupTarget this.isSelected}}
+        {{@context.roving.setupItem this.isSelected this.isDisabled}}
+        {{on "click" this.handleClick}}
+        ...attributes
+      >
+        {{yield (hash isSelected=this.isSelected)}}
+      </button>
+    {{/if}}
   </template>
 }
 

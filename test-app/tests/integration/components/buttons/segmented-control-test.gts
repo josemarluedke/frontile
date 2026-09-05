@@ -468,5 +468,135 @@ module(
         observer.disconnect();
       }
     });
+
+    test('@name renders native radio inputs that submit with the form', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <form data-test-form>
+            <SegmentedControl
+              @value={{value.current}}
+              @onChange={{onChange}}
+              @name="range"
+              as |Ctl|
+            >
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">Week</Ctl.Item>
+            </SegmentedControl>
+          </form>
+        </template>
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+      assert.strictEqual(inputs.length, 2, 'renders one native radio per item');
+      assert.dom(inputs[0]!).hasAttribute('name', 'range');
+      assert.true(inputs[0]!.checked, 'the matching input is checked');
+      assert.false(inputs[1]!.checked);
+
+      assert
+        .dom('[role="radio"]')
+        .doesNotExist(
+          'form mode leans on native radio semantics rather than adding its own'
+        );
+
+      const formEl = find('[data-test-form]') as HTMLFormElement;
+      assert.strictEqual(
+        new FormData(formEl).get('range'),
+        'day',
+        'the control submits its value'
+      );
+
+      await click(inputs[1]!);
+      assert.strictEqual(value.current, 'week', 'onChange still fires');
+      assert.strictEqual(
+        new FormData(formEl).get('range'),
+        'week',
+        'the submitted value follows the selection'
+      );
+    });
+
+    test('form mode keeps the typed value in onChange', async function (assert) {
+      const received: unknown[] = [];
+      const onChange = (next: number): void => {
+        received.push(next);
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{1}}
+            @onChange={{onChange}}
+            @name="n"
+            as |Ctl|
+          >
+            <Ctl.Item @value={{1}}>One</Ctl.Item>
+            <Ctl.Item @value={{2}}>Two</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+      assert.dom(inputs[1]!).hasValue('2', 'the input value is stringified');
+
+      await click(inputs[1]!);
+      assert.deepEqual(received, [2], 'onChange receives the original number');
+    });
+
+    test('form mode draws its focus ring on the label', async function (assert) {
+      // The radio input is `sr-only`, so focusing it shows nothing unless the
+      // wrapping label carries the ring. This is the whole reason the theme has
+      // a `mode` variant.
+      await render(
+        <template>
+          <SegmentedControl @value="day" @name="range" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const label = find('label') as HTMLLabelElement;
+      assert.ok(
+        Array.from(label.classList).some((c) =>
+          c.includes('has-focus-visible')
+        ),
+        'the label carries the focus-visible-within ring, not the hidden input'
+      );
+    });
+
+    test('form mode still tracks the indicator', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @name="range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">A much longer label</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      const labels = findAll('label') as HTMLLabelElement[];
+
+      await click(findAll('input[type="radio"]')[1]!);
+
+      assert.strictEqual(
+        container.style.getPropertyValue('--fr-si-width'),
+        `${labels[1]!.offsetWidth}px`,
+        'the indicator measures the label, not the hidden input'
+      );
+    });
   }
 );
