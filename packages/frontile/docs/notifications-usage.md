@@ -756,8 +756,11 @@ const notification = this.notifications.add<UserActionMetadata>(
   the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
   auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `appearance="tonal"`
   uses), which clears AA for every intent in both themes without any hand-picked text level or
-  background override. Measured ratios (WCAG relative luminance, resolving the composited
-  `{intent}-soft`-over-surface color where relevant):
+  background override. `solid`'s title, icon, and description all use the full-strength
+  `on-{intent}` ink — an earlier version put the description at 80% opacity, but compositing
+  white/black at 80% over a saturated fill (e.g. `danger`'s `#e51701`) drops as low as 3.37:1 in
+  light mode, well below the 4.5:1 WCAG AA floor. Measured ratios (WCAG relative luminance,
+  resolving the composited `{intent}-soft`-over-surface color where relevant):
 
   | Pairing                                                                | Light | Dark  |
   | ----------------------------------------------------------------------- | ----- | ----- |
@@ -769,7 +772,11 @@ const notification = this.notifications.add<UserActionMetadata>(
   | `tonal` `success` (`on-success-soft` on composited `success-soft`)      | 19.5  | 12.0  |
   | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`)      | 17.9  | 13.8  |
   | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)         | 16.4  | 16.6  |
-  | `solid` variant (all intents, title/icon and 80%-opacity description)  | ≥7.1  | ≥9    |
+  | `solid` `default` title/icon/description (`on-neutral`)                 | 6.71  | 9.60  |
+  | `solid` `info` title/icon/description (`on-primary`)                    | 6.49  | 9.72  |
+  | `solid` `success` title/icon/description (`on-success`)                 | 16.29 | 16.29 |
+  | `solid` `warning` title/icon/description (`on-warning`)                 | 9.41  | 9.41  |
+  | `solid` `danger` title/icon/description (`on-danger`)                   | 4.71  | 6.09  |
 
 ## Migrating from `appearance`
 

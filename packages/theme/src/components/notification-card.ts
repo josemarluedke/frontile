@@ -20,7 +20,20 @@ const notificationCard = tv({
       'rounded-2xl border shadow-lg',
       'overflow-hidden',
       'transition-[transform,opacity,height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
-      'motion-reduce:transition-[opacity] motion-reduce:duration-150'
+      'motion-reduce:transition-[opacity] motion-reduce:duration-150',
+      // Dropping the transition above only makes the transform apply
+      // instantly instead of animating it — the transform itself (the
+      // stack's slide/scale choreography) still comes from notification-card.gts's
+      // `style` getter as an *inline* `transform:` declaration, so it would
+      // still be present, just un-animated. An inline style normally wins
+      // over any stylesheet rule regardless of that rule's specificity, but
+      // `!important` is the one thing that overrides it — Tailwind v4 marks
+      // a utility `!important` with a trailing `!`, which is exactly what's
+      // needed here. This neutralizes every transform (enter/exit slide,
+      // and the stack's hover-expand translate/scale) under
+      // `prefers-reduced-motion`, matching the spec's "drops all
+      // transforms", entirely in CSS with no JS branching required.
+      'motion-reduce:transform-none!'
     ],
     // The inner element. Holds the actual row layout (icon, content,
     // actions, close button) and is never height-constrained, so its
@@ -193,6 +206,15 @@ const notificationCard = tv({
 
     // solid: filled surface, contrast text.
     //
+    // `description` uses the full-strength `on-{intent}` ink, not a
+    // translucent cut of it. An earlier version used `/80` here, but
+    // compositing white/black at 80% over a saturated fill loses most of
+    // the contrast — e.g. `danger`'s fill (`#e51701`) drops to ~3.37:1 in
+    // light mode, below the 4.5:1 WCAG AA floor. Full opacity matches the
+    // title/icon contrast (≥4.71:1 for every intent in both themes) with
+    // no measurable loss of visual hierarchy, since the hierarchy here
+    // already comes from font weight/size, not from a dimmed description.
+    //
     // The spinner override here matters for a reason the other solid classes
     // don't have to worry about: `@intent` on <Spinner> (mapped from
     // `ACTION_INTENT`) drives the arc via `fill-{intent}` — e.g. `fill-primary`
@@ -210,7 +232,7 @@ const notificationCard = tv({
         base: 'bg-neutral text-on-neutral',
         icon: 'text-on-neutral',
         title: 'text-on-neutral',
-        description: 'text-on-neutral/80',
+        description: 'text-on-neutral',
         spinner: 'fill-on-neutral text-on-neutral/30'
       }
     },
@@ -221,7 +243,7 @@ const notificationCard = tv({
         base: 'bg-primary text-on-primary',
         icon: 'text-on-primary',
         title: 'text-on-primary',
-        description: 'text-on-primary/80',
+        description: 'text-on-primary',
         spinner: 'fill-on-primary text-on-primary/30'
       }
     },
@@ -232,7 +254,7 @@ const notificationCard = tv({
         base: 'bg-success text-on-success',
         icon: 'text-on-success',
         title: 'text-on-success',
-        description: 'text-on-success/80',
+        description: 'text-on-success',
         spinner: 'fill-on-success text-on-success/30'
       }
     },
@@ -243,7 +265,7 @@ const notificationCard = tv({
         base: 'bg-warning text-on-warning',
         icon: 'text-on-warning',
         title: 'text-on-warning',
-        description: 'text-on-warning/80',
+        description: 'text-on-warning',
         spinner: 'fill-on-warning text-on-warning/30'
       }
     },
@@ -254,7 +276,7 @@ const notificationCard = tv({
         base: 'bg-danger text-on-danger',
         icon: 'text-on-danger',
         title: 'text-on-danger',
-        description: 'text-on-danger/80',
+        description: 'text-on-danger',
         spinner: 'fill-on-danger text-on-danger/30'
       }
     }
