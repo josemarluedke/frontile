@@ -143,18 +143,13 @@ class InputOtp extends Component<InputOtpSignature> {
   @tracked uncontrolledValue: string = this.args.value || '';
 
   /**
-   * What the element itself currently holds. A controlled parent does not
-   * always feed the value back through `@value` -- `<Form>`, for one, reads it
-   * off the DOM instead -- and the cells are decoration rendered from a string,
-   * so without this they would sit empty while the user types.
+   * What the element itself currently holds. A controlled parent may not feed
+   * a value back through `@value` right away -- `<Form>`, for one, only starts
+   * doing so once its own bubbled-input handler has seen the first `input`
+   * event -- and the cells are decoration rendered from a string, so without
+   * this they would sit empty in that window.
    */
   @tracked elementValue: string = this.args.value || '';
-
-  /**
-   * The last value we saw on the element. `@onComplete` fires on a transition,
-   * not on a state, so the previous length is the thing that decides it.
-   */
-  previousValue: string = this.args.value || '';
 
   @tracked isFocused = false;
   @tracked selectionStart: number | null = null;
@@ -368,10 +363,27 @@ class InputOtp extends Component<InputOtpSignature> {
     const element = event.target as HTMLInputElement;
     const next = element.value.slice(0, this.length);
 
+    // The value as it stood before this edit, read before anything is mutated.
+    // `currentValue` is the rendered truth in every ownership mode, and unlike
+    // a stored field it also sees a change the parent made on its own -- a
+    // "Clear" or "Resend code" button -- which never travels through here. A
+    // stored field goes stale there, and the next single-event autofill then
+    // looks like a full-to-full replacement and never completes.
+    //
+    // The one thing it cannot see is the `change` that merely echoes an `input`
+    // we have already handled: a parent wired only to `@onChange` has not been
+    // told about that input yet, so `@value` still reads pre-edit and the echo
+    // would complete a second time. `elementValue` -- what we last wrote to the
+    // element -- settles that one case, and only for `change`.
+    const previous =
+      notify === 'change' && this.elementValue === next
+        ? next
+        : this.currentValue;
+
     // All-or-nothing: a value that fails the rule is dropped whole rather than
     // filtered, so a pasted "123-456" never silently becomes "123456".
     if (next.length > 0 && !this.pattern.test(next)) {
-      element.value = this.currentValue;
+      element.value = previous;
       return;
     }
 
@@ -387,9 +399,6 @@ class InputOtp extends Component<InputOtpSignature> {
     } else {
       this.uncontrolledValue = next;
     }
-
-    const previous = this.previousValue;
-    this.previousValue = next;
 
     if (
       next !== previous &&
@@ -593,5 +602,5 @@ class InputOtp extends Component<InputOtpSignature> {
   </template>
 }
 
-export { InputOtp, type InputOtpSignature, type Cell };
+export { InputOtp, type InputOtpSignature };
 export default InputOtp;

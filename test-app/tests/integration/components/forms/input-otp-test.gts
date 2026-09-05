@@ -77,7 +77,14 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('the cells are decoration: no roles, no labels, no tab stops', async function (assert) {
     await render(<template><InputOtp @label="Code" /></template>);
 
-    for (const cell of findAll('[data-test-id="input-otp-cell"]')) {
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.strictEqual(
+      cells.length,
+      6,
+      'there are cells to assert about at all'
+    );
+
+    for (const cell of cells) {
       assert.dom(cell).hasAttribute('aria-hidden', 'true');
       assert.dom(cell).doesNotHaveAttribute('role');
       assert.dom(cell).doesNotHaveAttribute('tabindex');
@@ -142,8 +149,8 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   });
 
   test('controlled without feedback: cells still render what was typed', async function (assert) {
-    // <Form> is exactly this parent -- it binds a value it does not feed back,
-    // reading the real one off the DOM instead.
+    // <Form> looks like this for the first `input` event: a bound value that
+    // has not been fed back yet.
     const noop = () => {};
 
     await render(
@@ -249,6 +256,122 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert
       .dom(findAll('[data-test-id="input-otp-cell"]')[5] as Element)
       .hasText('0');
+  });
+
+  test('controlled: @onComplete still fires for a single-event autofill after the parent cleared the value', async function (assert) {
+    // The real flow: a wrong code, a "Clear"/"Resend code" button that resets
+    // @value straight from the parent, and then a fresh SMS dropped in by the
+    // platform in ONE input event. Nothing about that second code is typed
+    // character by character, so the completion check has to be reading the
+    // value as it actually is, not a field last written by an earlier edit.
+    const completed: string[] = [];
+    const onComplete = (next: string) => completed.push(next);
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp
+          @label="Code"
+          @length={{6}}
+          @value={{value.current}}
+          @onChange={{update}}
+          @onComplete={{onComplete}}
+        />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    assert.deepEqual(completed, ['123456'], 'the first code completed');
+
+    value.set('');
+    await settled();
+
+    await fillIn('[data-component="input-otp-input"]', '654321');
+
+    assert.deepEqual(
+      completed,
+      ['123456', '654321'],
+      'the resent code completed too'
+    );
+  });
+
+  test('@isDisabled disables the real input', async function (assert) {
+    await render(
+      <template><InputOtp @label="Code" @isDisabled={{true}} /></template>
+    );
+
+    assert.dom('[data-component="input-otp-input"]').isDisabled();
+  });
+
+  test('@errors renders the message and marks the input invalid', async function (assert) {
+    const errors = ['That code is not right'];
+
+    await render(
+      <template><InputOtp @label="Code" @errors={{errors}} /></template>
+    );
+
+    assert.dom('[data-component="form-feedback"]').hasText(errors[0] as string);
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+    assert.dom(input).hasAttribute('aria-invalid', 'true');
+    assert.ok(
+      (input.getAttribute('aria-describedby') || '').trim().length > 0,
+      'the message is wired up via aria-describedby'
+    );
+  });
+
+  test('@isInvalid marks the input and the cells invalid', async function (assert) {
+    await render(
+      <template><InputOtp @label="Code" @isInvalid={{true}} /></template>
+    );
+
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('aria-invalid', 'true');
+    const cell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+    assert.ok(
+      (cell.getAttribute('class') || '').includes('danger'),
+      'the cell picks up the invalid styling'
+    );
+  });
+
+  test('@isRequired and @description render', async function (assert) {
+    await render(
+      <template>
+        <InputOtp
+          @label="Code"
+          @isRequired={{true}}
+          @description="Check your text messages"
+        />
+      </template>
+    );
+
+    assert.dom('[data-component="label"]').includesText('*');
+    assert
+      .dom('[data-component="form-description"]')
+      .hasText('Check your text messages');
+  });
+
+  test('@size changes the cell classes', async function (assert) {
+    const seen = new Set<string>();
+
+    for (const size of ['sm', 'md', 'lg'] as const) {
+      await render(
+        <template><InputOtp @label="Code" @size={{size}} /></template>
+      );
+
+      const cell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+      seen.add(cell.getAttribute('class') || '');
+    }
+
+    assert.strictEqual(
+      seen.size,
+      3,
+      'each size produces distinct cell classes'
+    );
   });
 
   test('digits is the default and rejects letters wholesale', async function (assert) {
@@ -829,8 +952,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     await fillIn('[data-component="input-otp-input"]', '1234');
 
-    // <Form> reads the value off the DOM rather than feeding it back, so the
-    // cells must still show what was typed.
+    // <Form> only starts feeding the value back once its own bubbled-input
+    // handler has updated its internal data, so for the first `input` event
+    // the component is on its own -- the cells must still show what was typed.
     assert
       .dom(findAll('[data-test-id="input-otp-cell"]')[3] as Element)
       .hasText('4');
