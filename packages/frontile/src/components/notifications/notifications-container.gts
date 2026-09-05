@@ -4,6 +4,7 @@ import { service } from '@ember/service';
 import { next } from '@ember/runloop';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
+import { modifier } from 'ember-modifier';
 import { htmlSafe } from '@ember/template';
 import { registerDestructor } from '@ember/destroyable';
 import NotificationCard from './notification-card';
@@ -228,6 +229,95 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
     });
   };
 
+  /**
+   * `focusout` bubbles from every element inside the container, and fires
+   * before the next element's `focusin` — so tabbing from one card's close
+   * button to the next card's close button collapses the stack for one
+   * tick and re-expands it immediately after, right in the middle of the
+   * exact keyboard journey the focus-expand behavior exists to support.
+   *
+   * A containment check fixes it: only collapse when focus is actually
+   * leaving the container, i.e. `relatedTarget` (the element about to
+   * receive focus) is not inside it. `relatedTarget` is `null` when focus
+   * moves somewhere that isn't focus-trackable (e.g. the browser chrome),
+   * which is also a real "focus left the container" case.
+   */
+  handleFocusOut = (event: FocusEvent) => {
+    const container = event.currentTarget as HTMLElement;
+    const related = event.relatedTarget as Node | null;
+
+    if (related && container.contains(related)) {
+      return;
+    }
+
+    this.collapse();
+  };
+
+  /**
+   * `expand()`/`collapse()` only touch the timers that exist at the moment
+   * the pointer enters or leaves the stack. That leaves two gaps: a toast
+   * added (or a `promise()` settling into its own timer via
+   * `setupAutoRemoval`) while the stack is already expanded starts
+   * *running*, and can auto-dismiss under the cursor; and with `@expand=
+   * {{true}}` `isExpanded` is permanently true but `expand()` never runs at
+   * all, so none of its timers are ever paused.
+   *
+   * This modifier is the durable fix. It's invoked with `stackOrder` and
+   * `isExpanded` as *positional arguments* (see the template) rather than
+   * only reading them off `this` inside the callback — a function-based
+   * modifier only re-runs when Glimmer sees its own args change; reading
+   * other tracked state from inside the callback without also passing it
+   * as an arg does not reliably trigger a re-invocation. Passing them as
+   * args guarantees this runs again the instant a new notification (and
+   * thus a new timer) appears, or the moment `isExpanded` flips.
+   *
+   * The pause itself is deferred via `next()`, for the same reason
+   * `measure()` below defers its write: `Timer#pause()` reads `isRunning`
+   * (to no-op if already paused) before writing it, and doing that
+   * read-then-write on a tracked property from *within* a modifier's
+   * update — which Glimmer treats as still "rendering" — trips the
+   * "attempted to update a value after using it in this computation"
+   * assertion. Deferring one runloop turn moves the mutation safely
+   * outside that render transaction. `Timer#pause()` is a no-op on an
+   * already-paused timer, so this is safe to run redundantly alongside
+   * `expand()`.
+   */
+  syncTimers = modifier(
+    (
+      _element: Element,
+      [stackOrder, isExpanded]: [
+        Notification<Record<string, unknown>>[],
+        boolean
+      ]
+    ) => {
+      if (!isExpanded) {
+        return;
+      }
+
+      next(() => {
+        if (this.isDestroying || this.isDestroyed) {
+          return;
+        }
+
+        stackOrder.forEach((notification) => {
+          notification.timer?.pause();
+        });
+      });
+    }
+  );
+
+  /**
+   * The number of entries in the `heights` map. Not used for rendering —
+   * exposed (via a `data-*` attribute below) purely so tests can assert the
+   * map is actually pruned on dismiss/measure, rather than only checking
+   * that pruning doesn't throw.
+   *
+   * @internal
+   */
+  get heightsSize(): number {
+    return this.heights.size;
+  }
+
   get classes() {
     const { notificationsContainer } = useStyles();
 
@@ -246,16 +336,18 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
       role="region"
       aria-label="Notifications"
       aria-live="polite"
+      data-test-heights-size={{this.heightsSize}}
       {{on "mouseenter" this.expand}}
       {{on "mouseleave" this.collapse}}
       {{on "focusin" this.expand}}
-      {{on "focusout" this.collapse}}
+      {{on "focusout" this.handleFocusOut}}
       ...attributes
     >
       <div
         class={{this.classes.stack}}
         style={{this.stackStyle}}
-        data-expanded="{{if this.isExpanded 'true' 'false'}}"
+        data-expanded="{{if this.isExpanded "true" "false"}}"
+        {{this.syncTimers this.stackOrder this.isExpanded}}
       >
         {{#each this.stackOrder key="@identity" as |notification index|}}
           <NotificationCard

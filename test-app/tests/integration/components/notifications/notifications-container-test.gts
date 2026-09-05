@@ -622,6 +622,115 @@ module(
       assert.true(service.notifications[1]!.timer!.isRunning);
     });
 
+    test('a toast added while the stack is already hovered starts with its timer paused', async function (assert) {
+      // Regression test: `expand()` only paused the timers that existed at
+      // the moment the pointer entered the stack. A notification added (or
+      // a `promise()` settling into its own timer) *after* that moment used
+      // to start running unpaused, and could auto-dismiss while the user's
+      // cursor was still over it.
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      await render(<template><NotificationsContainer /></template>);
+
+      const container = find('.notifications-container') as HTMLElement;
+      container.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+
+      service.add('Late arrival', { duration: 10000 });
+      await settledAfterEnter();
+
+      assert.false(
+        service.notifications[0]!.timer!.isRunning,
+        'a timer created while the stack is already expanded starts paused, not running'
+      );
+    });
+
+    test('@expand={{true}} pauses timers for notifications added after mount, not just ones present at render', async function (assert) {
+      // Regression test: with `@expand={{true}}`, `isExpanded` is true from
+      // the start but `expand()` (the hover handler) never runs, so nothing
+      // used to pause timers created afterward — a permanently-expanded
+      // stack still let its toasts time out.
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      await render(
+        <template><NotificationsContainer @expand={{true}} /></template>
+      );
+
+      service.add('Late arrival', { duration: 10000 });
+      await settledAfterEnter();
+
+      assert.false(
+        service.notifications[0]!.timer!.isRunning,
+        'a permanently-expanded stack still pauses a timer created after mount'
+      );
+    });
+
+    test('focusout does not collapse the stack when focus moves to another element still inside it', async function (assert) {
+      // Regression test: `focusout` bubbles and fires before the next
+      // element's `focusin`, so without a containment check, tabbing from
+      // one card's close button to the next card's close button collapsed
+      // the stack for a tick and re-expanded it — the exact keyboard
+      // journey the focus-expand feature exists to support.
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('First', options);
+      service.add('Second', options);
+      await render(<template><NotificationsContainer /></template>);
+      await settledAfterEnter();
+
+      const container = find('.notifications-container') as HTMLElement;
+      const buttons = findAll(
+        '.notifications-container button'
+      ) as HTMLElement[];
+      assert.ok(
+        buttons.length >= 2,
+        'at least two focusable close buttons are present to tab between'
+      );
+
+      container.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      await settled();
+      assert
+        .dom('.notifications-container__stack')
+        .hasAttribute('data-expanded', 'true');
+
+      buttons[0]!.dispatchEvent(
+        new FocusEvent('focusout', {
+          bubbles: true,
+          relatedTarget: buttons[1]
+        })
+      );
+      await settled();
+
+      assert
+        .dom('.notifications-container__stack')
+        .hasAttribute(
+          'data-expanded',
+          'true',
+          'the stack stays expanded when focus moves to another element still inside it'
+        );
+
+      buttons[1]!.dispatchEvent(
+        new FocusEvent('focusout', {
+          bubbles: true,
+          relatedTarget: null
+        })
+      );
+      await settled();
+
+      assert
+        .dom('.notifications-container__stack')
+        .hasAttribute(
+          'data-expanded',
+          'false',
+          'the stack collapses once focus actually leaves the container'
+        );
+    });
+
     test('the container is a polite live region', async function (assert) {
       await render(<template><NotificationsContainer /></template>);
 
@@ -832,16 +941,12 @@ module(
     });
 
     // The `heights` map (notifications-container.gts) is keyed by
-    // `Notification` identity and pruned on dismiss so it doesn't hold a
-    // strong reference to every notification ever shown for the container's
-    // lifetime. There's no DOM-observable difference between "pruned" and
-    // "leaked" (a dismissed notification's own entry can never affect a
-    // later, different notification's geometry either way), so this can't
-    // assert the map's size directly without exposing an internal. Instead
-    // it exercises the exact prune-on-dismiss and prune-on-measure code
-    // paths end-to-end through the real dismiss and re-add flow, as a
-    // regression guard against either path throwing or corrupting the
-    // geometry of notifications that stay live.
+    // `Notification` identity and pruned on dismiss (and again on the next
+    // measure) so it doesn't hold a strong reference to every notification
+    // ever shown for the container's lifetime. `heightsSize` (a getter
+    // exposed only for this purpose, via the `data-test-heights-size`
+    // attribute) lets this assert the prune directly instead of only
+    // guarding against a throw.
     test('dismissing notifications and adding new ones after them keeps rendering correctly', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
@@ -851,15 +956,30 @@ module(
 
       const first = service.add('Message 1', options);
       const second = service.add('Message 2', options);
-      await settled();
+      await settledAfterEnter();
 
       assert.dom('[data-test-notification-card]').exists({ count: 2 });
+      assert
+        .dom('[data-test-notifications]')
+        .hasAttribute(
+          'data-test-heights-size',
+          '2',
+          'both live notifications have a measured height entry'
+        );
 
       service.remove(first);
       service.remove(second);
       await settled();
 
       assert.dom('[data-test-notification-card]').doesNotExist();
+      assert
+        .dom('[data-test-notifications]')
+        .hasAttribute(
+          'data-test-heights-size',
+          '0',
+          'dismissing both notifications prunes their height entries immediately, ' +
+            'not just on the next measure'
+        );
 
       service.add('Message 3', options);
       await settled();
@@ -874,6 +994,14 @@ module(
         'the new notification, added after the previous ones were dismissed ' +
           'and pruned, renders with correct geometry'
       );
+      assert
+        .dom('[data-test-notifications]')
+        .hasAttribute(
+          'data-test-heights-size',
+          '1',
+          'the map holds only the one live notification, not a growing history ' +
+            'of every notification ever shown'
+        );
     });
   }
 );
