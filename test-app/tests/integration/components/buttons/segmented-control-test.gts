@@ -6,6 +6,7 @@ import {
   find,
   findAll,
   focus,
+  settled,
   triggerKeyEvent
 } from '@ember/test-helpers';
 import { hash } from '@ember/helper';
@@ -139,7 +140,9 @@ module(
 
     test('a disabled item is skipped and cannot be clicked', async function (assert) {
       const value = cell('day');
+      let calls = 0;
       const onChange = (next: string): void => {
+        calls += 1;
         value.current = next;
       };
 
@@ -159,6 +162,15 @@ module(
 
       const items = findAll('[role="radio"]') as HTMLButtonElement[];
       assert.dom(items[1]!).isDisabled('the disabled item is disabled');
+
+      // `click`/`triggerEvent` refuse disabled elements outright, so dispatch
+      // the event directly: this asserts the item's own guard rather than only
+      // the browser's, and keeps holding once the item moves to aria-disabled.
+      items[1]!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await settled();
+      assert.strictEqual(calls, 0, 'clicking the disabled item calls nothing');
+      assert.strictEqual(value.current, 'day', 'the selection did not change');
+      assert.dom(findAll('[role="radio"]')[1]!).hasAria('checked', 'false');
 
       await focus(items[0]!);
       await triggerKeyEvent(items[0]!, 'keydown', 'ArrowRight');
@@ -189,7 +201,21 @@ module(
       findAll('[role="radio"]').forEach((item) => {
         assert.dom(item).isDisabled();
       });
-      assert.strictEqual(calls, 0, 'nothing was selected');
+
+      const items = findAll('[role="radio"]') as HTMLButtonElement[];
+
+      items[1]!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await settled();
+      assert.strictEqual(calls, 0, 'clicking an item selects nothing');
+
+      items[0]!.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+      );
+      await settled();
+      assert.strictEqual(calls, 0, 'keyboard activation selects nothing');
+
+      assert.dom(items[0]!).hasAria('checked', 'true', 'selection unchanged');
+      assert.dom(items[1]!).hasAria('checked', 'false');
     });
 
     test('the indicator tracks the selected item', async function (assert) {
@@ -323,6 +349,124 @@ module(
       assert.dom('[role="radio"]').hasClass('custom-item');
       assert.dom('[role="radio"]').hasClass('custom-single');
       assert.dom('[aria-hidden="true"]').hasClass('custom-indicator');
+    });
+
+    test('exactly one item is tabbable, and it is the selected one', async function (assert) {
+      await render(
+        <template>
+          <SegmentedControl @value="week" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLButtonElement[];
+      const tabbable = items.filter((item) => item.tabIndex === 0);
+
+      assert.strictEqual(tabbable.length, 1, 'a single tab stop');
+      assert.strictEqual(
+        tabbable[0],
+        items[1],
+        'the tab stop is the selected item'
+      );
+      assert.strictEqual(items[0]!.tabIndex, -1);
+      assert.strictEqual(items[2]!.tabIndex, -1);
+    });
+
+    test('the indicator stays ready while selection moves in either direction', async function (assert) {
+      // Regression: the outgoing item's modifier teardown used to re-measure
+      // synchronously, stripping data-fr-si-ready before the incoming item
+      // could claim the target. The theme gates opacity *and* the transition
+      // on that attribute, so the indicator blinked out and jumped instead of
+      // sliding -- and only when moving to a later item, because that is the
+      // order in which Glimmer runs teardown before setup.
+      //
+      // The flicker is transient: by the time the render settles the attribute
+      // is back, so an end-state assertion cannot see it. Watch the attribute
+      // for the duration of the interaction instead.
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      const items = findAll('[role="radio"]') as HTMLButtonElement[];
+
+      assert.ok(
+        container.hasAttribute('data-fr-si-ready'),
+        'ready after the first measurement'
+      );
+
+      // The observer's own callback is what drains the record queue, so
+      // accumulate there rather than relying on takeRecords().
+      let flickers: MutationRecord[] = [];
+      const observer = new MutationObserver((records) => {
+        flickers.push(...records);
+      });
+      observer.observe(container, {
+        attributes: true,
+        attributeFilter: ['data-fr-si-ready']
+      });
+
+      try {
+        // Forwards: teardown of the outgoing item runs before setup of the
+        // incoming one. This is the direction that used to break.
+        await click(items[2]!);
+
+        flickers.push(...observer.takeRecords());
+        assert.strictEqual(
+          flickers.length,
+          0,
+          'data-fr-si-ready never flickered while selecting a later item'
+        );
+        flickers = [];
+        assert.ok(
+          container.hasAttribute('data-fr-si-ready'),
+          'still ready after selecting a later item'
+        );
+        assert.strictEqual(
+          container.style.getPropertyValue('--fr-si-x'),
+          `${items[2]!.offsetLeft}px`,
+          'indicator moved to the later item'
+        );
+
+        // Backwards: setup of the incoming item runs first.
+        await click(items[0]!);
+
+        flickers.push(...observer.takeRecords());
+        assert.strictEqual(
+          flickers.length,
+          0,
+          'data-fr-si-ready never flickered while selecting an earlier item'
+        );
+        assert.ok(
+          container.hasAttribute('data-fr-si-ready'),
+          'still ready after selecting an earlier item'
+        );
+        assert.strictEqual(
+          container.style.getPropertyValue('--fr-si-x'),
+          `${items[0]!.offsetLeft}px`,
+          'indicator moved back to the earlier item'
+        );
+      } finally {
+        observer.disconnect();
+      }
     });
   }
 );

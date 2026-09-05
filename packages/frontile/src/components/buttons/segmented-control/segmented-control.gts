@@ -29,16 +29,33 @@ interface SegmentedControlArgs<T> {
    */
   name?: string;
 
-  /** @defaultValue 'default' */
+  /**
+   * The colour intent applied to the selected item's indicator and label.
+   *
+   * @defaultValue 'default'
+   */
   intent?: SegmentedControlVariants['intent'];
 
-  /** @defaultValue 'solid' */
+  /**
+   * The visual style of the control's track and indicator.
+   *
+   * @defaultValue 'solid'
+   */
   variant?: SegmentedControlVariants['variant'];
 
-  /** @defaultValue 'md' */
+  /**
+   * The size of the control, driving item padding and text size.
+   *
+   * @defaultValue 'md'
+   */
   size?: SegmentedControlVariants['size'];
 
-  /** @defaultValue 'horizontal' */
+  /**
+   * Lays the items out in a row or a column, and switches the arrow keys that
+   * move between them to match.
+   *
+   * @defaultValue 'horizontal'
+   */
   orientation?: SegmentedControlVariants['orientation'];
 
   /**
@@ -63,8 +80,6 @@ interface SegmentedControlArgs<T> {
    * @defaultValue false
    */
   isDisabled?: boolean;
-
-  class?: string;
 
   /** Class names for each slot of the component, merged with the theme's. */
   classes?: SlotsToClasses<SegmentedControlSlots>;
@@ -185,10 +200,17 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
         class={{this.styles.indicator class=@classes.indicator}}
       ></span>
 
-      {{! @glint-nocheck: SegmentedControlItem has a type param, glint cannot handle that with WithBoundArgs }}
-      {{yield
-        (hash Item=(component SegmentedControlItem context=this.context))
+      {{!
+        Glint cannot compose WithBoundArgs with a generic component, so the
+        curried Item does not type-check against the block signature even
+        though that signature is correct. The let exists only to isolate the
+        failure onto the yield, keeping the ignore below scoped to a single
+        line; a nocheck directive would silence this whole template instead.
       }}
+      {{#let (component SegmentedControlItem context=this.context) as |Item|}}
+        {{! @glint-ignore: WithBoundArgs vs. a generic component }}
+        {{yield (hash Item=Item)}}
+      {{/let}}
     </div>
   </template>
 }

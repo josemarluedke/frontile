@@ -23,6 +23,7 @@ class SelectionIndicator {
   #observer?: ResizeObserver;
   #frame?: number;
   #waiterToken?: unknown;
+  #remeasureToken?: unknown;
   #isReady = false;
 
   /**
@@ -44,6 +45,7 @@ class SelectionIndicator {
       this.#observer?.disconnect();
       this.#observer = undefined;
       this.#cancelReady();
+      this.#cancelRemeasure();
       this.#container = undefined;
       this.#isReady = false;
     };
@@ -62,13 +64,24 @@ class SelectionIndicator {
     }
 
     return (): void => {
-      // Only clear if this element is still the target. When selection moves,
-      // the incoming item's setup can run before the outgoing item's teardown,
-      // and without this guard that teardown would wipe the new target.
+      // Only clear if this element is still the target. When selection moves
+      // backwards, the incoming item's setup runs before the outgoing item's
+      // teardown, and without this guard that teardown would wipe the new
+      // target.
       if (this.#target === element) {
         this.#observer?.unobserve(element);
         this.#target = undefined;
-        this.measure();
+
+        // Do not re-measure synchronously. When selection moves forwards the
+        // order is reversed -- ember-modifier tears down before re-running
+        // setup, and Glimmer revalidates in tree order -- so the outgoing
+        // teardown lands first and the incoming target is still moments away
+        // in this same render. Measuring now would strip the ready attribute,
+        // and the theme gates both opacity and the transition on it, so the
+        // indicator would blink out and jump to its new position instead of
+        // sliding. Defer instead, and only fall through to the not-ready path
+        // if nothing has claimed the target by then.
+        this.#scheduleRemeasure();
       }
     };
   });
@@ -122,6 +135,7 @@ class SelectionIndicator {
     this.#observer?.disconnect();
     this.#observer = undefined;
     this.#cancelReady();
+    this.#cancelRemeasure();
     this.#container = undefined;
     this.#target = undefined;
     this.#isReady = false;
@@ -146,6 +160,40 @@ class SelectionIndicator {
         this.#waiterToken = undefined;
       }
     });
+  }
+
+  // Re-measures once the current render has settled, so a target that is
+  // being handed from one element to another is never observed mid-handover.
+  // Wrapped in the same test waiter so it cannot outlive a `settled()`.
+  #scheduleRemeasure(): void {
+    if (this.#remeasureToken) {
+      return;
+    }
+
+    const token = waiter.beginAsync();
+    this.#remeasureToken = token;
+
+    queueMicrotask(() => {
+      // Cancelled by teardown, or superseded by a later schedule.
+      if (this.#remeasureToken !== token) {
+        return;
+      }
+      this.#remeasureToken = undefined;
+      waiter.endAsync(token);
+
+      // A new target claimed the slot in the meantime and measured itself.
+      if (this.#target) {
+        return;
+      }
+      this.measure();
+    });
+  }
+
+  #cancelRemeasure(): void {
+    if (this.#remeasureToken) {
+      waiter.endAsync(this.#remeasureToken);
+      this.#remeasureToken = undefined;
+    }
   }
 
   #cancelReady(): void {

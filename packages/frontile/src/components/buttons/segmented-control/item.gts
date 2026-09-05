@@ -5,12 +5,22 @@ import { modifier } from 'ember-modifier';
 import type { SegmentedControlContext } from './segmented-control';
 
 interface SegmentedControlItemArgs<T> {
-  /** The value this item represents. */
+  /**
+   * The value this item represents. Selecting it calls the control's
+   * `@onChange` with exactly this value.
+   */
   value: T;
 
-  /** @defaultValue false */
+  /**
+   * Disables this item alone: it cannot be clicked and keyboard navigation
+   * skips over it. The whole control can be disabled with the control's own
+   * `@isDisabled`.
+   *
+   * @defaultValue false
+   */
   isDisabled?: boolean;
 
+  /** Class names appended to this item's theme classes. */
   class?: string;
 
   /** Supplied by SegmentedControl. Not part of the public API. */
