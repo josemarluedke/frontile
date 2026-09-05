@@ -37,10 +37,18 @@
  * ------------------------------------------------------------------ */
 
 .docfy-code-block__header {
-  @apply border-b border-neutral-soft bg-surface-overlay-subtle px-4 py-2;
+  @apply flex items-center border-b border-neutral-soft bg-surface-overlay-subtle px-4 py-2;
 
   /* Room for the copy button, which is positioned against the card. */
   @apply pr-24;
+
+  /* `@docfy/ember/code-block.css` positions `.docfy-code-block__copy`
+     absolutely against the card at a fixed `top: 0.5rem`, which assumes a
+     headerless block. When a header is present its own padding/line-height
+     put the title's centre line somewhere else, so the button reads as
+     misaligned — the rule below re-centres it against the header instead,
+     only when a header exists. */
+  min-height: 2.25rem;
 }
 
 .docfy-code-block__header__title {
@@ -90,12 +98,47 @@
   @apply border-primary text-primary-firm;
 }
 
+/* Re-centre the copy button on the header's own centre line when a header is
+   present, rather than leaving it at the card-corner offset the vendor CSS
+   assumes. A headerless block keeps the corner position, where the button
+   floats over the code with nothing else to align to. */
+.docfy-code-block:has(.docfy-code-block__header) .docfy-code-block__copy {
+  top: 0.3125rem;
+}
+
 /* ------------------------------------------------------------------ *
  * Code
  * ------------------------------------------------------------------ */
 
+/* Vertical padding stays on `<pre>`; horizontal padding moves to `.line`
+   below. This is Shiki's own recommended recipe: `.line[data-highlighted]`
+   (see `@docfy/ember/code-block.css`) is `display: inline-block; width: 100%`
+   so its background spans the full line — but that width is measured inside
+   `<pre>`'s padding box, so a highlighted line's background stopped short of
+   the card's edges whenever the horizontal inset lived on `<pre>` instead. */
 .docfy-code-block__content pre {
-  @apply m-0 overflow-x-auto rounded-none border-0 bg-transparent p-4 font-mono text-sm leading-relaxed;
+  @apply m-0 overflow-x-auto rounded-none border-0 py-4 font-mono text-sm leading-relaxed;
+
+  padding-inline: 0;
+  /* Matches the card's own background exactly (rather than staying
+     transparent) so the collapsed-state fade — which fades to this same
+     surface token — never shows a seam against the code's own background. */
+  background-color: var(--color-surface-app);
+}
+
+.docfy-code-block .line {
+  @apply px-4;
+}
+
+/* Shiki emits one `.line` per row of the fence, including a final empty one
+   for the trailing newline every fence's closing ``` implies. It renders
+   inline today, so an empty line collapses to zero size and stays invisible —
+   but it still walks the `line-numbers` counter below, which would otherwise
+   number a row of code that was never there. Hidden here rather than fixed at
+   the padding layer, which would only paper over the symptom on whichever
+   block happens to need it. */
+.docfy-code-block .line:last-child:empty {
+  display: none;
 }
 
 /* `prose` styles bare `<pre>`/`<code>` as a dark slab with its own radius and
@@ -103,13 +146,16 @@
    comes from Shiki. */
 .prose .docfy-code-block pre,
 .prose .docfy-code-block code {
-  @apply bg-transparent p-0 font-normal;
+  @apply p-0 font-normal;
 
   color: inherit;
 }
 
 .prose .docfy-code-block pre {
-  @apply p-4;
+  @apply py-4;
+
+  padding-inline: 0;
+  background-color: var(--color-surface-app);
 }
 
 .prose .docfy-code-block code::before,
