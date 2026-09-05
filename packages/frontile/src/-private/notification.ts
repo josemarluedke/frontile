@@ -6,6 +6,7 @@ import type {
   NotificationOptions,
   NotificationContent,
   NotificationIntent,
+  NotificationAppearance,
   NotificationUpdate,
   CustomAction,
   DefaultConfig
@@ -16,6 +17,26 @@ import type {
  */
 function toContent(content: string | NotificationContent): NotificationContent {
   return typeof content === 'string' ? { title: content } : content;
+}
+
+/**
+ * Emit the shared deprecation notice and remap `error` onto `danger`. Used
+ * for both the option-level and config-level `appearance` fallbacks in
+ * `resolveIntent`, which must apply the same remap.
+ */
+function mapAppearance(appearance: NotificationAppearance): NotificationIntent {
+  deprecate(
+    'The `appearance` option for notifications is deprecated. Use `intent` instead, and `danger` in place of `error`.',
+    false,
+    {
+      id: 'frontile.notification-appearance',
+      until: '0.19.0',
+      for: 'frontile',
+      since: { available: '0.18.0', enabled: '0.18.0' }
+    }
+  );
+
+  return appearance === 'error' ? 'danger' : appearance;
 }
 
 /**
@@ -31,46 +52,19 @@ function resolveIntent(
   }
 
   if (options.appearance) {
-    deprecate(
-      'The `appearance` option for notifications is deprecated. Use `intent` instead, and `danger` in place of `error`.',
-      false,
-      {
-        id: 'frontile.notification-appearance',
-        until: '0.19.0',
-        for: 'frontile',
-        since: { available: '0.18.0', enabled: '0.18.0' }
-      }
-    );
-
-    return options.appearance === 'error' ? 'danger' : options.appearance;
+    return mapAppearance(options.appearance);
   }
 
-  const configIntent = config.intent;
-  if (configIntent) {
-    return configIntent;
+  if (config.intent) {
+    return config.intent;
   }
 
-  const configAppearance = config.appearance;
-  if (configAppearance) {
-    deprecate(
-      'The `appearance` config option for notifications is deprecated. Use `intent` instead, and `danger` in place of `error`.',
-      false,
-      {
-        id: 'frontile.notification-appearance',
-        until: '0.19.0',
-        for: 'frontile',
-        since: { available: '0.18.0', enabled: '0.18.0' }
-      }
-    );
-
-    return configAppearance === 'error' ? 'danger' : configAppearance;
+  if (config.appearance) {
+    return mapAppearance(config.appearance);
   }
 
-  // Both `config.intent` and `config.appearance` were already read directly
-  // above and found unset, so a config-backed `getConfigOption(config,
-  // 'intent', 'default')` read here would resolve to the same default —
-  // `config` is always a plain object (never an Ember `EmberObject` with a
-  // computed `intent`), so there is no distinct "config lookup" left to do.
+  // `config.intent`/`config.appearance` were already read directly above, so
+  // there is no distinct config lookup left to fall back to.
   return 'default';
 }
 
@@ -121,6 +115,7 @@ export default class Notification<
     this.allowClosing = options.allowClosing !== false;
   }
 
+  /** Read-only alias of `message` — do not add a setter. */
   get title(): string {
     return this.message;
   }
