@@ -508,6 +508,9 @@ importers:
       form-data-utils:
         specifier: ^0.6.0
         version: 0.6.0
+      fuzzysort:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       '@babel/core':
         specifier: 7.26.7
@@ -1135,9 +1138,6 @@ importers:
       frontile:
         specifier: workspace:*
         version: link:../packages/frontile
-      fuse.js:
-        specifier: ^7.5.0
-        version: 7.5.0
       glimmer-docgen-typescript:
         specifier: ^0.4.0
         version: 0.4.0
@@ -10446,12 +10446,11 @@ packages:
         integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
       }
 
-  fuse.js@7.5.0:
+  fuzzysort@4.0.2:
     resolution:
       {
-        integrity: sha512-sQtrEfA+ez/3G0cCZecF70oqpCRttCexYUG4mUrtWL49ULUzUyxokt5kyqwtKzj1270RaKih+hcP3qLcumccow==
+        integrity: sha512-3c7yD6rK1EXIsqpcu1ZVzXJugODWNMzvUij6yTiziaAHrpNS8kzFOI9mJLE8pmG4K9JOaVgzQRgklfOEk8f4Tg==
       }
-    engines: { node: '>=10' }
 
   gensync@1.0.0-beta.2:
     resolution:
@@ -26472,7 +26471,7 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  fuse.js@7.5.0: {}
+  fuzzysort@4.0.2: {}
 
   gensync@1.0.0-beta.2: {}
 

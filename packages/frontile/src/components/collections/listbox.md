@@ -154,19 +154,19 @@ export default class StaticItems extends Component {
         <l.Item
           @key='view'
           @description='View in read-only mode'
-          @shortcut='⌘O'
+          @shortcut='mod+o'
         >
           <:start><ViewIcon /></:start>
           <:default>View Details</:default>
         </l.Item>
-        <l.Item @key='edit' @description='Make changes' @shortcut='⌘E'>
+        <l.Item @key='edit' @description='Make changes' @shortcut='mod+e'>
           <:start><EditIcon /></:start>
           <:default>Edit</:default>
         </l.Item>
         <l.Item
           @key='share'
           @description='Share with team'
-          @shortcut='⌘⇧S'
+          @shortcut='mod+shift+s'
           @withDivider={{true}}
         >
           <:start><ShareIcon /></:start>
@@ -177,7 +177,7 @@ export default class StaticItems extends Component {
           @description='Permanently delete'
           @intent='danger'
           @class='text-danger'
-          @shortcut='⌘⌫'
+          @shortcut='mod+backspace'
         >
           <:start><DeleteIcon /></:start>
           <:default>Delete</:default>
@@ -214,12 +214,12 @@ export default class ActionMenu extends Component {
       >
         <l.Item @key='new'>New File</l.Item>
         <l.Item @key='open'>Open...</l.Item>
-        <l.Item @key='save' @shortcut='⌘S'>Save</l.Item>
-        <l.Item @key='save-as' @shortcut='⌘⇧S' @withDivider={{true}}>
+        <l.Item @key='save' @shortcut='mod+s'>Save</l.Item>
+        <l.Item @key='save-as' @shortcut='mod+shift+s' @withDivider={{true}}>
           Save As...
         </l.Item>
         <l.Item @key='export'>Export</l.Item>
-        <l.Item @key='print' @shortcut='⌘P'>Print</l.Item>
+        <l.Item @key='print' @shortcut='mod+p'>Print</l.Item>
       </Listbox>
     </div>
   </template>
@@ -536,6 +536,61 @@ export default class EmptySelection extends Component {
 }
 ```
 
+### Grouped Options
+
+`l.Group` renders a labelled section of options. It yields its own `Item`, and
+`@withDivider` draws a separator after the group.
+
+Grouping changes nothing about keyboard navigation: arrow keys traverse straight
+across group boundaries, because navigation order is derived from the document
+rather than from the nesting.
+
+```gts preview
+import { Listbox } from 'frontile';
+import { array } from '@ember/helper';
+
+<template>
+  <Listbox @selectionMode='single' @disabledKeys={{array 'calculator'}} as |l|>
+    <l.Group @title='Suggestions' @withDivider={{true}} as |g|>
+      <g.Item @key='calendar'>Calendar</g.Item>
+      <g.Item @key='emoji'>Search Emoji</g.Item>
+      <g.Item @key='calculator'>Calculator</g.Item>
+    </l.Group>
+    <l.Group @title='Settings' as |g|>
+      <g.Item @key='profile' @shortcut='mod+p'>Profile</g.Item>
+      <g.Item @key='billing' @shortcut='mod+b'>Billing</g.Item>
+    </l.Group>
+  </Listbox>
+</template>
+```
+
+A group without `@title` still groups its options but renders no heading, and
+carries no `aria-labelledby` — there would be nothing for it to point at.
+
+### Keyboard Shortcuts
+
+`@shortcut` is rendered by [Kbd](../utilities/kbd), so it understands named keys
+and resolves them per platform: `'mod+o'` shows `⌘O` on Apple and `Ctrl+O`
+elsewhere. A string with no `+`, such as `'⌘⇧S'`, is shown exactly as given.
+
+Keycaps default to the `inherit` appearance, which takes its colour from the
+option, so a shortcut stays legible on an active or filled row. Use
+`@shortcutAppearance` to change that for every item at once — `Command` sets
+`'plain'` for its denser rows.
+
+```gts preview
+import { Listbox } from 'frontile';
+
+<template>
+  <div class='w-[280px] border px-1 py-2 rounded border-neutral-subtle'>
+    <Listbox @selectionMode='none' @shortcutAppearance='plain' as |l|>
+      <l.Item @key='save' @shortcut='mod+s'>Save</l.Item>
+      <l.Item @key='print' @shortcut='mod+p'>Print</l.Item>
+    </Listbox>
+  </div>
+</template>
+```
+
 ## Accessibility
 
 | Element  | What it exposes                                                                                |
@@ -568,7 +623,19 @@ progress, so a space typed mid-search is treated as part of the search string ra
 a selection. And `@elementToAddKeyboardEvents` moves the key handling onto another element —
 that is how Select and Autocomplete keep focus in their input while driving the list.
 
+Groups render as `role="group"` labelled by their heading, with the list between
+the group and its options marked `role="none"` so the `listbox` → `option`
+ownership chain stays intact. A group with no `@title` carries no
+`aria-labelledby`.
+
 ## API
 
 <Signature @component="Listbox" />
+
+### Listbox::Group
+
+<Signature @component="ListboxGroup" />
+
+### Listbox::Item
+
 <Signature @component="ListboxItem" />

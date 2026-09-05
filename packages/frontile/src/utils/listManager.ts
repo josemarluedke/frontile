@@ -4,6 +4,7 @@ import { cancel, debounce, later } from '@ember/runloop';
 import { modifier } from 'ember-modifier';
 import type { Timer } from '@ember/runloop';
 import { getElementById } from '../-private/dom';
+import { defaultFilter, type FilterFn } from './filter';
 
 type SelectionMode = 'none' | 'single' | 'multiple';
 type AutoActivateMode = 'none' | 'first' | 'selected';
@@ -880,14 +881,6 @@ function keyAndLabelForItem(item: unknown): { key: string; label: string } {
   return { key: '', label: '' };
 }
 
-/**
- * Default option-matching used by Select and Autocomplete:
- * case-insensitive "contains".
- */
-function defaultFilter(itemValue: string, filterValue: string): boolean {
-  return itemValue.toLowerCase().includes(filterValue.toLowerCase());
-}
-
 export type {
   ListItem,
   ListItemArgs,
@@ -895,4 +888,8 @@ export type {
   SelectionMode,
   AutoActivateMode
 };
+// `defaultFilter` and `FilterFn` live in ./filter now. They are re-exported
+// here, unused by this module, because this was their public path before the
+// move and consumers import them from it.
 export { ListManager, canDeselectKey, keyAndLabelForItem, defaultFilter };
+export type { FilterFn };

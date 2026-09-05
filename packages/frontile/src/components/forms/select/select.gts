@@ -13,11 +13,8 @@ import { FormControl } from '../form-control';
 import { ref } from '../../../utils/ref';
 import { ControlBlurTracker } from '../../../-private/control-blur';
 import { triggerFormInputEvent } from '../../../utils/forms-utils-index';
-import {
-  canDeselectKey,
-  keyAndLabelForItem,
-  defaultFilter
-} from '../../../utils/listManager';
+import { canDeselectKey, keyAndLabelForItem } from '../../../utils/listManager';
+import { filterAndRankItems } from '../../../utils/filter';
 
 import { SelectNativeMirror } from './native-mirror';
 import { SelectTrigger } from './trigger';
@@ -642,10 +639,11 @@ class Select<T = unknown> extends Component<SelectSignature<T>> {
       return this.args.items;
     }
 
-    let filter = this.args.filter || defaultFilter;
-
-    return this.args.items?.filter((item) =>
-      filter(keyAndLabelForItem(item).label, this.filterValue || '')
+    return filterAndRankItems(
+      this.args.items,
+      this.filterValue || '',
+      (item) => keyAndLabelForItem(item).label,
+      this.args.filter
     );
   }
 

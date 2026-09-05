@@ -24,6 +24,7 @@ them is optional for the whole 0.18 line.
 | `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
 | Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
 | Multi-select renders chips | Multi-selects look different — selections become removable chips | Visual only — nothing to fix |
+| Filtered lists are ranked | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix |
 | `text-body-pico`/`-nano`/`-micro` | Those elements render unstyled | **Silently** |
 | Body text-scale font sizes corrected | Body text (`xs` through `xl`) renders larger than intended | Visual only — nothing to fix |
 
@@ -85,6 +86,22 @@ you can't read — which matters precisely because those changes fail silently.
 **Impact:** none until 0.19. **Time:** 10–30 minutes, mostly automated.
 
 **See:** [Package Consolidation](./package-consolidation.md)
+
+### Filtered lists are ranked by relevance — visual only
+
+`Autocomplete` and filterable `Select` used to filter with a case-insensitive
+"contains" check and render whatever survived **in the order you passed it**.
+They now score each option and list the closest match first, and additionally
+match acronyms (`nz` finds "New Zealand").
+
+Nothing that matched before stops matching, so there is nothing to fix unless
+you pass your own `@filter` — which now also accepts a score:
+
+```ts
+filter?: (itemValue: string, inputValue: string) => boolean | number;
+```
+
+**See:** [Filter Ranking](./filter-ranking.md)
 
 ### 4. Multi-select renders chips — visual only
 

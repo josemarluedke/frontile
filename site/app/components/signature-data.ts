@@ -4451,6 +4451,20 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The appearance of the keycap rendered for each item's <code>@shortcut</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
+        defaultValue: '<span class="hljs-string">\'inherit\'</span>',
+      },
+      {
         identifier: 'target',
         type: {
           type: '<span class="hljs-keyword">enum</span>',
@@ -4920,12 +4934,12 @@ const data: ComponentDoc[] = [
         identifier: 'filter',
         type: {
           type: '<span class="hljs-keyword">function</span>',
-          raw: '(<span class="hljs-attr">itemValue</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">inputValue</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">boolean</span>',
+          raw: '<span class="hljs-title class_">FilterFn</span>',
         },
         isRequired: false,
         isInternal: false,
         description:
-          'Function to filter the items against the current input text.\nThe default implementation performs a case-insensitive "contains" search.',
+          '<p>Function to filter the items against the current input text.</p>\n<p>The default implementation ranks by relevance, so the closest match is\nlisted first rather than whichever match came first in <code>@items</code>.</p>',
         tags: {
           param: {
             name: 'param',
@@ -4934,7 +4948,8 @@ const data: ComponentDoc[] = [
           },
           returns: {
             name: 'returns',
-            value: 'A boolean indicating whether the item should be shown.',
+            value:
+              'A number to rank (higher first, `0` means no match) or a boolean\nto filter only, preserving the order of `@items`.',
           },
         },
       },
@@ -5029,7 +5044,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> in the listbox, while this is a separate affordance\nyou opt into for exactly the purpose of emptying the field. Since\n<code>allowEmpty</code> defaults to false, honouring it here would render the button\ndead by default.</p>\n<p>No clear button is rendered on a disabled Autocomplete.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5149,7 +5164,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the autocomplete component loses focus.',
+          '<p>Callback fired when focus leaves the Autocomplete.</p>\n<p>"Leaves the Autocomplete" means the whole control: the input <em>and</em> its\ndropdown, which is rendered outside the input in the DOM. Moving focus\nbetween them -- which is what clicking an option does -- is not a blur, so\nthis does not fire while the user is picking an option. It fires once, when\nfocus lands somewhere outside the control (or nowhere, with the dropdown\nclosed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -5527,7 +5542,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); }]',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); <span class="hljs-title class_">Group</span>: <span class="hljs-title class_">ListboxGroup</span> (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -5538,6 +5553,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Item',
                     type: {
                       type: '<span class="hljs-title class_">ListboxItem</span> (manager bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Group',
+                    type: {
+                      type: '<span class="hljs-title class_">ListboxGroup</span> (manager bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -6409,6 +6434,16 @@ const data: ComponentDoc[] = [
     fileName:
       'packages/frontile/declarations/components/forms/form-feedback.d.ts',
     Args: [
+      {
+        identifier: 'announce',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the element is itself an <code>aria-live</code> region. Set this to <code>false</code>\nwhen something else (such as <code>FormControl</code>, which keeps a persistent\nlive region in the DOM) already announces the messages, so they are not\nannounced twice.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
+      },
       {
         identifier: 'class',
         type: { type: '<span class="hljs-built_in">string</span>' },
@@ -9082,7 +9117,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9102,7 +9137,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -9596,7 +9631,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9616,7 +9651,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11087,7 +11122,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The display format of the value.\nValues are formatted as a percentage by default.',
+          '<p>The display format of the value, passed to <code>Intl.NumberFormat</code>.</p>\n<p>A <code>percent</code> style formats the position on the min/max scale as a\nfraction; every other style formats the raw <code>progress</code> value. With no\nformat options, the value is displayed as a whole percentage.</p>',
         tags: {},
       },
       {
@@ -11341,7 +11376,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
+          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'. Any CSS height is\naccepted (<code>2rem</code>, <code>50%</code>, <code>calc(1rem + 2px)</code>, …); a value the CSS parser\nrejects is ignored and the content collapses to <code>0</code>.",
         tags: { defaultValue: { name: 'defaultValue', value: '0' } },
         defaultValue: '<span class="hljs-number">0</span>',
       },
@@ -11417,6 +11452,151 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/Element',
     },
     description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'kbd',
+    name: 'Kbd',
+    fileName: 'packages/frontile/declarations/components/utilities/kbd.d.ts',
+    Args: [
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<code>inherit</code> follows the colour it sits on, for keycaps on a filled row.\n<code>plain</code> drops the box entirely, for quiet trailing shortcuts.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom class name, it will override the default ones using Tailwind Merge\nlibrary.',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'key\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Custom CSS classes for styling the individual slots: <code>base</code> for the\nwrapper, <code>key</code> for each cap, <code>separator</code> for the character between caps.',
+        tags: {},
+      },
+      {
+        identifier: 'display',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'split\'</span> | <span class="hljs-string">\'merged\'</span>',
+          items: ["'split'", "'merged'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<code>split</code> gives each key its own cap; <code>merged</code> puts every glyph in one.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'split'" } },
+        defaultValue: '<span class="hljs-string">\'split\'</span>',
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'secondary\'</span> | <span class="hljs-string">\'tertiary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'keys',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The shortcut to render, as <code>+</code>-separated keys: <code>"mod+shift+p"</code>.</p>\n<p>Named keys resolve to glyphs (<code>mod</code>, <code>shift</code>, <code>enter</code>, <code>esc</code>, <code>up</code>, …);\nanything else renders verbatim, with a single letter capitalised. Use\n<code>plus</code> for a literal <code>+</code>. A string with no <code>+</code> is one key, rendered as\ngiven.</p>\n<p>Ignored when a block is passed.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'platform',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-title class_">KbdPlatform</span>',
+          items: ["'apple'", "'other'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Overrides the platform for this keycap only. Prefer <code>setKbdPlatform</code> to\nset it once for the whole app.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Rendered between caps, e.g. <code>"+"</code>. Only applies when <code>@display</code> is\n<code>split</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Replaces <code>@keys</code> with arbitrary content, rendered as a single cap.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      "<p>Renders keyboard keys and shortcuts.</p>\n<p>A wrapper <code>&#x3C;kbd></code> holds one child <code>&#x3C;kbd></code> per key, which is the HTML\nspecification's own idiom for a key combination.</p>",
     tags: {},
   },
   {
@@ -13618,6 +13798,1372 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'command',
+    name: 'Command',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/command.d.ts',
+    Args: [
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disableFiltering',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Render <code>@items</code> as given, without filtering or ranking. Use with\n<code>@query</code>/<code>@onQueryChange</code> when filtering happens elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'filter',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '<span class="hljs-title class_">FilterFn</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Scores or matches an item against the query. Defaults to a relevance\nfilter; see {@link FilterFn}.',
+        tags: {},
+      },
+      {
+        identifier: 'groupBy',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | (<span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">item</span>: T</span>) =></span> <span class="hljs-built_in">string</span>)',
+          items: ['string', '(item: T) => string'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Groups results under headings. Either a property name on the item or a\nfunction returning the heading. Items with no group render ungrouped,\nahead of any groups.',
+        tags: {},
+      },
+      {
+        identifier: 'groups',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Pins these groups to the top, in this order. Any group not listed still\nrenders, after them, ordered by its best-scoring member — so pinning a\n"Recent" section cannot hide search results.</p>\n<p>When omitted, every group is ordered by its best-scoring member, so the\nclosest match is always on top.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'isBordered',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Draw the palette's own surface, for use outside a dialog.",
+        tags: {},
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Show the loading state regardless of <code>@onSearch</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'items',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: 'T[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The items to search. Ranked and grouped by the component unless\n<code>@disableFiltering</code> is set or <code>@onSearch</code> is provided.',
+        tags: {},
+      },
+      {
+        identifier: 'label',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Accessible name for the search input.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Search'" } },
+        defaultValue: '<span class="hljs-string">\'Search\'</span>',
+      },
+      {
+        identifier: 'onQueryChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">query</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onSearch',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">query</span>: <span class="hljs-built_in">string</span>) => T[] | <span class="hljs-title class_">Promise</span>&#x3C;T[]>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.</p>\n<p>The resolved items <strong>replace</strong> <code>@items</code> — this is for a wholly remote\nlist. To combine static entries (navigation, recents) with remote ones,\ndo not use <code>@onSearch</code>: merge them yourself into <code>@items</code>, set\n<code>@disableFiltering</code>, and rank the static half with <code>filterAndRankItems</code>\nfrom <code>frontile/utils/filter</code>. See "Mixing static and remote results" in\nthe docs.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'onSelect',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">item</span>?: T) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Called when an item is chosen, by click or by Enter.',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'query',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The query text. Pass with <code>@onQueryChange</code> to control it.',
+        tags: {},
+      },
+      {
+        identifier: 'searchDebounce',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Debounce applied to <code>@onSearch</code>, in milliseconds.',
+        tags: { defaultValue: { name: 'defaultValue', value: '250' } },
+        defaultValue: '<span class="hljs-number">250</span>',
+      },
+      {
+        identifier: 'searchFields',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">item</span>: T) => <span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The text searched for each item. Defaults to its label.</p>\n<p>Return several fields to search more than the label — a category, say, or\nkeywords. The first is primary; the rest are down-weighted and combined\nby max, so a weak hit on a secondary field never outranks a strong hit on\nthe label.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">CommandApi</span>&#x3C;T>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'query',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'The current query text.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'resultCount',
+                    type: { type: '<span class="hljs-built_in">number</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'How many items matched. `0` renders the `:empty` block.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isLoading',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'True while an `@onSearch` promise is in flight, or `@isLoading` is set.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Input',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandInput</span> (onInput, value, controlsId, hasResults, activeDescendant, classes, setup bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Footer',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandFooter</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'List',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, isSearchPrompt, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>A command palette: a search input over a ranked, optionally grouped list.</p>\n<p>Composed of the same primitives as <code>Autocomplete</code> — an input driving a\n<code>Listbox</code> through <code>ListManager</code> — rather than reimplementing keyboard\nnavigation, option roles or active-item tracking.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'dialog',
+    name: 'CommandDialog',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/dialog.d.ts',
+    Args: [
+      {
+        identifier: 'isOpen',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'backdrop',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'blur\'</span> | <span class="hljs-string">\'transparent\'</span>',
+          items: ["'faded'", "'none'", "'blur'", "'transparent'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'didClose',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '() => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disableFiltering',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Render <code>@items</code> as given, without filtering or ranking. Use with\n<code>@query</code>/<code>@onQueryChange</code> when filtering happens elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'disableTransitions',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'filter',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '<span class="hljs-title class_">FilterFn</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Scores or matches an item against the query. Defaults to a relevance\nfilter; see {@link FilterFn}.',
+        tags: {},
+      },
+      {
+        identifier: 'groupBy',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | (<span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">item</span>: T</span>) =></span> <span class="hljs-built_in">string</span>)',
+          items: ['string', '(item: T) => string'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Groups results under headings. Either a property name on the item or a\nfunction returning the heading. Items with no group render ungrouped,\nahead of any groups.',
+        tags: {},
+      },
+      {
+        identifier: 'groups',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Pins these groups to the top, in this order. Any group not listed still\nrenders, after them, ordered by its best-scoring member — so pinning a\n"Recent" section cannot hide search results.</p>\n<p>When omitted, every group is ordered by its best-scoring member, so the\nclosest match is always on top.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'isBordered',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Draw the palette's own surface, for use outside a dialog.",
+        tags: {},
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Show the loading state regardless of <code>@onSearch</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'items',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: 'T[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The items to search. Ranked and grouped by the component unless\n<code>@disableFiltering</code> is set or <code>@onSearch</code> is provided.',
+        tags: {},
+      },
+      {
+        identifier: 'label',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Accessible name for the search input.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Search'" } },
+        defaultValue: '<span class="hljs-string">\'Search\'</span>',
+      },
+      {
+        identifier: 'onClose',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '() => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onOpen',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '() => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onQueryChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">query</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onSearch',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">query</span>: <span class="hljs-built_in">string</span>) => T[] | <span class="hljs-title class_">Promise</span>&#x3C;T[]>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Async search. Called (debounced) as the user types; the resolved items\nare rendered and a loading state shows while pending. Stale responses are\ndiscarded, so the latest query always wins. Built-in filtering is\ndisabled, and <code>@items</code> is the list shown before the first search.</p>\n<p>The resolved items <strong>replace</strong> <code>@items</code> — this is for a wholly remote\nlist. To combine static entries (navigation, recents) with remote ones,\ndo not use <code>@onSearch</code>: merge them yourself into <code>@items</code>, set\n<code>@disableFiltering</code>, and rank the static half with <code>filterAndRankItems</code>\nfrom <code>frontile/utils/filter</code>. See "Mixing static and remote results" in\nthe docs.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'onSelect',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">item</span>?: T) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Called when an item is chosen, by click or by Enter.',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'query',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The query text. Pass with <code>@onQueryChange</code> to control it.',
+        tags: {},
+      },
+      {
+        identifier: 'searchDebounce',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Debounce applied to <code>@onSearch</code>, in milliseconds.',
+        tags: { defaultValue: { name: 'defaultValue', value: '250' } },
+        defaultValue: '<span class="hljs-number">250</span>',
+      },
+      {
+        identifier: 'searchFields',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">item</span>: T) => <span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The text searched for each item. Defaults to its label.</p>\n<p>Return several fields to search more than the label — a category, say, or\nkeywords. The first is primary; the rest are down-weighted and combined\nby max, so a weak hit on a secondary field never outranks a strong hit on\nthe label.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'shortcut',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-built_in">string</span> | <span class="hljs-built_in">string</span>[]',
+          items: ['string', 'string[]'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>Opens the palette from anywhere in the document, e.g. <code>"mod+k"</code> or\n<code>"/"</code>. Requires <code>@onOpen</code>. Pass an array to accept more than one.</p>\n<p>An unmodified shortcut is ignored while the user is typing in a field,\nso <code>/</code> still types a slash in a text input.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[<span class="hljs-title class_">CommandApi</span>&#x3C;T>]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'query',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: 'The current query text.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'resultCount',
+                    type: { type: '<span class="hljs-built_in">number</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'How many items matched. `0` renders the `:empty` block.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'isLoading',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description:
+                      'True while an `@onSearch` promise is in flight, or `@isLoading` is set.',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Input',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandInput</span> (onInput, value, controlsId, hasResults, activeDescendant, classes, setup bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Footer',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandFooter</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'List',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandList</span>&#x3C;T> (groups, id, classes, size, isLoading, isSearchPrompt, inputElement, disabledKeys, onSelect, onActiveItemChange bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>A <code>Command</code> palette in a dialog, with an optional global shortcut.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'footer',
+    name: 'CommandKbd',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'keys',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A shortcut to render, e.g. <code>"up"</code> or <code>"mod+k"</code>. See <code>Kbd</code>.',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description:
+      "<p>A keycap, for the footer's hints. A thin binding over <code>Kbd</code> so the palette\nand the rest of the library render the same keycap.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'footer',
+    name: 'CommandHint',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: { name: 'internal', value: 'bound by CommandFooter' },
+        },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement',
+    },
+    description: '<p>One hint: a keycap or two and a label.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'footer',
+    name: 'CommandFooter',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/footer.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-title class_">Kbd</span>: <span class="hljs-title class_">CommandKbd</span> (classes bound); <span class="hljs-title class_">Hint</span>: <span class="hljs-title class_">CommandHint</span> (classes bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'Kbd',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandKbd</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Hint',
+                    type: {
+                      type: '<span class="hljs-title class_">CommandHint</span> (classes bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Replaces the default hints. Yields a <code>Kbd</code> keycap so custom hints match\nthe built-in ones.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description:
+      '<p>The bar along the bottom of a palette that teaches its keyboard: how to move,\nhow to choose, how to leave. Renders sensible defaults when given no block.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'input',
+    name: 'CommandInput',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/input.d.ts',
+    Args: [
+      {
+        identifier: 'activeDescendant',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'controlsId',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'hasResults',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'label',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: 'Accessible name for the input.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'Search'" } },
+        defaultValue: '<span class="hljs-string">\'Search\'</span>',
+      },
+      {
+        identifier: 'onInput',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'placeholder',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'setup',
+        type: {
+          type: '<span class="hljs-title class_">ModifierLike</span>&#x3C;{ <span class="hljs-title class_">Element</span>: <span class="hljs-title class_">HTMLInputElement</span>; }>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: {
+          internal: {
+            name: 'internal',
+            value: 'bound by Command: the `ref` modifier tracking this input.',
+          },
+        },
+      },
+      {
+        identifier: 'value',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'icon',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: 'Replaces the leading search icon.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLInputElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
+    },
+    description:
+      "<p>The palette's search field.</p>\n<p>Carries the combobox semantics itself — <code>role</code>, <code>aria-expanded</code>,\n<code>aria-controls</code> and <code>aria-activedescendant</code> all belong on the input, not on a\nwrapper, so a screen reader announces the active option while focus never\nleaves the field.</p>",
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'list',
+    name: 'CommandList',
+    fileName:
+      'packages/frontile/declarations/components/collections/command/list.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'footer\'</span> | <span class="hljs-string">\'input\'</span> | <span class="hljs-string">\'kbd\'</span> | <span class="hljs-string">\'inputWrapper\'</span> | <span class="hljs-string">\'inputIcon\'</span> | <span class="hljs-string">\'list\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'loading\'</span> | <span class="hljs-string">\'footerHint\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'disabledKeys',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-built_in">string</span>[]',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'groups',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '<span class="hljs-title class_">CommandGroup</span>&#x3C;T>[]',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'id',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'inputElement',
+        type: {
+          type: '<span class="hljs-title class_">HTMLInputElement</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'isLoading',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'isSearchPrompt',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'onActiveItemChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">key</span>?: <span class="hljs-built_in">string</span>, <span class="hljs-attr">item</span>?: <span class="hljs-title class_">ListItem</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'onSelect',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description: '',
+        tags: { internal: { name: 'internal', value: 'bound by Command' } },
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'item',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-attr">item</span>: T; <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">label</span>: <span class="hljs-built_in">string</span>; <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'item',
+                    type: { type: 'T' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'key',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'label',
+                    type: { type: '<span class="hljs-built_in">string</span>' },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Item',
+                    type: {
+                      type: '<span class="hljs-title class_">ListboxItem</span> (manager bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'empty',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'loading',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'prompt',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[]',
+          items: [],
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          'Shown by an async palette before anything has been typed.',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLUListElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLUListElement',
+    },
+    description:
+      '<p>Renders the ranked results.</p>\n<p>Sections come from the ranked data rather than from markup, so a group whose\nitems all filtered out is simply not rendered — heading, wrapper and\nseparator disappear together, with no visibility tracking or <code>forceMount</code>\nescape hatch. Reordering is a keyed <code>{{#each}}</code> over a sorted array, which\nGlimmer handles natively.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'group',
+    name: 'ListboxGroup',
+    fileName:
+      'packages/frontile/declarations/components/collections/listbox/group.d.ts',
+    Args: [
+      {
+        identifier: 'manager',
+        type: { type: '<span class="hljs-title class_">ListManager</span>' },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'appearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span>',
+          items: ["'default'", "'outlined'", "'faded'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'base',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'title',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'list',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'secondary\'</span> | <span class="hljs-string">\'tertiary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'title',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The heading rendered above the group's options. When omitted, the group\nstill groups its options but renders no heading — and carries no\n<code>aria-labelledby</code>, since there would be nothing to point at.",
+        tags: {},
+      },
+      {
+        identifier: 'type',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'menu\'</span> | <span class="hljs-string">\'listbox\'</span>',
+          items: ["'menu'", "'listbox'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+      {
+        identifier: 'withDivider',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Render a divider after the group. Groups in a palette are usually\nseparated visually; the divider is a sibling of the group rather than a\nchild so it does not sit inside the group's labelled region.",
+        tags: {},
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager, <span class="hljs-keyword">type</span>, appearance, intent, shortcutAppearance bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'Item',
+                    type: {
+                      type: '<span class="hljs-title class_">ListboxItem</span> (manager, <span class="hljs-keyword">type</span>, appearance, intent, shortcutAppearance bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLLIElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLLIElement',
+    },
+    description:
+      '<p>A labelled section of options within a <code>Listbox</code>.</p>\n<p>The markup nests the options one level deeper than an ungrouped listbox, so\nthe intervening list is marked <code>role="none"</code> to keep the\n<code>listbox</code> -> <code>option</code> ownership chain intact.</p>\n<p>Grouping deliberately adds no concepts to <code>ListManager</code>: navigation order is\nderived from the live DOM via <code>compareDocumentPosition</code>, so nesting options\ninside a group leaves keyboard traversal across group boundaries correct by\nconstruction.</p>',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'item',
     name: 'ListboxItem',
     fileName:
@@ -13713,8 +15259,23 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">string</span>' },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'A keyboard shortcut shown at the end of the option, rendered by <code>Kbd</code>.\nAccepts named keys (<code>"mod+k"</code>) or a literal string (<code>"⌘K"</code>).',
         tags: {},
+      },
+      {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The appearance of the rendered shortcut. Defaults to <code>inherit</code>, so the\nkeycap follows the option's own colour on active and filled rows.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
+        defaultValue: '<span class="hljs-string">\'inherit\'</span>',
       },
       {
         identifier: 'textValue',
@@ -13842,7 +15403,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'first'" } },
+        defaultValue: '<span class="hljs-string">\'first\'</span>',
       },
       {
         identifier: 'class',
@@ -13969,6 +15531,20 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The appearance of the keycap rendered for each item's <code>@shortcut</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
+        defaultValue: '<span class="hljs-string">\'inherit\'</span>',
+      },
+      {
         identifier: 'type',
         type: {
           type: '<span class="hljs-keyword">enum</span>',
@@ -14045,7 +15621,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); }]',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); <span class="hljs-title class_">Group</span>: <span class="hljs-title class_">ListboxGroup</span> (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -14056,6 +15632,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Item',
                     type: {
                       type: '<span class="hljs-title class_">ListboxItem</span> (manager bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Group',
+                    type: {
+                      type: '<span class="hljs-title class_">ListboxGroup</span> (manager bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -14104,7 +15690,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -14210,7 +15796,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -14391,7 +15977,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -14496,7 +16082,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -14593,7 +16179,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -14823,7 +16409,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: true,
@@ -15336,7 +16922,7 @@ const data: ComponentDoc[] = [
       {
         identifier: 'classes',
         type: {
-          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'table\'</span> | <span class="hljs-string">\'tbody\'</span> | <span class="hljs-string">\'td\'</span> | <span class="hljs-string">\'tfoot\'</span> | <span class="hljs-string">\'th\'</span> | <span class="hljs-string">\'thead\'</span> | <span class="hljs-string">\'tr\'</span> | <span class="hljs-string">\'separator\'</span> | <span class="hljs-string">\'wrapper\'</span> | <span class="hljs-string">\'empty\'</span> | <span class="hljs-string">\'sortButton\'</span> | <span class="hljs-string">\'sortIcon\'</span> | <span class="hljs-string">\'columnVisibilityButton\'</span> | <span class="hljs-string">\'columnVisibilityIcon\'</span> | <span class="hljs-string">\'skeleton\'</span> | <span class="hljs-string">\'skeletonRow\'</span>>',
         },
         isRequired: false,
         isInternal: false,
@@ -16618,12 +18204,12 @@ const data: ComponentDoc[] = [
         identifier: 'filter',
         type: {
           type: '<span class="hljs-keyword">function</span>',
-          raw: '(<span class="hljs-attr">itemValue</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">filterValue</span>: <span class="hljs-built_in">string</span>) => <span class="hljs-built_in">boolean</span>',
+          raw: '<span class="hljs-title class_">FilterFn</span>',
         },
         isRequired: false,
         isInternal: false,
         description:
-          'Function to filter the items in the select.\nThe default implementation performs a case-insensitive search.',
+          '<p>Function to filter the items in the select.</p>\n<p>The default implementation ranks by relevance, so the closest match is\nlisted first rather than whichever match came first in <code>@items</code>.</p>',
         tags: {
           param: {
             name: 'param',
@@ -16632,7 +18218,8 @@ const data: ComponentDoc[] = [
           },
           returns: {
             name: 'returns',
-            value: 'A boolean indicating whether the item should be shown.',
+            value:
+              'A number to rank (higher first, `0` means no match) or a boolean\nto filter only, preserving the order of `@items`.',
           },
         },
       },
@@ -16718,7 +18305,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> (the listbox and the chips both refuse to remove\nthe last one without it), while this is a separate affordance you opt into\nfor exactly the purpose of emptying the field. Since <code>allowEmpty</code> defaults\nto false, honouring it here would render the button dead by default.</p>\n<p>No clear button is rendered on a disabled Select, or with nothing selected.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -16848,7 +18435,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Callback fired when the select component loses focus.',
+        description:
+          '<p>Callback fired when focus leaves the Select.</p>\n<p>"Leaves the Select" means the whole control: the field <em>and</em> its dropdown,\nwhich is rendered outside the field in the DOM. Moving focus between them\n-- which is what clicking an option does -- is not a blur, so this does not\nfire while the user is picking options, in either selection mode. It fires\nonce, when focus lands somewhere outside the control (or nowhere, with the\ndropdown closed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -17269,7 +18857,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); }]',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">ListboxItem</span> (manager bound); <span class="hljs-title class_">Group</span>: <span class="hljs-title class_">ListboxGroup</span> (manager bound); }]',
           items: [
             {
               identifier: '0',
@@ -17280,6 +18868,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Item',
                     type: {
                       type: '<span class="hljs-title class_">ListboxItem</span> (manager bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'Group',
+                    type: {
+                      type: '<span class="hljs-title class_">ListboxGroup</span> (manager bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -17790,17 +19388,6 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-keyword">function</span>',
-          raw: '() => <span class="hljs-built_in">void</span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'onFilterInput',
         type: {
           type: '<span class="hljs-keyword">function</span>',
@@ -17820,6 +19407,18 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onFocusOut',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">event</span>: <span class="hljs-title class_">FocusEvent</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "Reports the trigger losing focus, as <code>focusout</code> rather than <code>blur</code>: the\nSelect decides whether focus actually left the control from the event's\n<code>relatedTarget</code>, and browsers only guarantee that on <code>focusout</code>.",
         tags: {},
       },
       {
@@ -18093,6 +19692,18 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
       },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Drawer knows whether it may point <code>aria-labelledby</code> at us.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
     ],
     Blocks: [
       {
@@ -18240,6 +19851,18 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Modal knows whether it may point <code>aria-labelledby</code> at us.',
         tags: { internal: { name: 'internal', value: '' } },
       },
     ],

@@ -43,7 +43,8 @@ import type {
   Collapsible,
   Skeleton,
   Spinner,
-  Divider
+  Divider,
+  Kbd
 } from './components/utilities';
 
 export default interface Registry {
@@ -94,4 +95,5 @@ export default interface Registry {
   Skeleton: typeof Skeleton;
   Spinner: typeof Spinner;
   Divider: typeof Divider;
+  Kbd: typeof Kbd;
 }

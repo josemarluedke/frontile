@@ -23,7 +23,8 @@ import { FormControl, type FormControlSharedArgs } from './form-control';
 import { triggerFormInputEvent } from '../../utils/forms-utils-index';
 import { CloseButton } from '../buttons/close-button';
 import { IconChevronUpDown } from './icons';
-import { keyAndLabelForItem, defaultFilter } from '../../utils/listManager';
+import { keyAndLabelForItem } from '../../utils/listManager';
+import { filterAndRankItems, type FilterFn } from '../../utils/filter';
 import { debounce, cancel } from '@ember/runloop';
 
 import { modifier } from 'ember-modifier';
@@ -158,13 +159,16 @@ interface AutocompleteArgs<T>
 
   /**
    * Function to filter the items against the current input text.
-   * The default implementation performs a case-insensitive "contains" search.
+   *
+   * The default implementation ranks by relevance, so the closest match is
+   * listed first rather than whichever match came first in `@items`.
    *
    * @param itemValue - The label of an item in the dropdown.
    * @param inputValue - The user's input text.
-   * @returns A boolean indicating whether the item should be shown.
+   * @returns A number to rank (higher first, `0` means no match) or a boolean
+   * to filter only, preserving the order of `@items`.
    */
-  filter?: (itemValue: string, inputValue: string) => boolean;
+  filter?: FilterFn;
 
   /**
    * Disables the built-in filtering, rendering `@items` as-is.
@@ -618,11 +622,11 @@ class Autocomplete<T = unknown> extends Component<AutocompleteSignature<T>> {
       return this.args.items;
     }
 
-    const filter = this.args.filter || defaultFilter;
-    const query = this.inputValue;
-
-    return this.args.items?.filter((item) =>
-      filter(keyAndLabelForItem(item).label, query)
+    return filterAndRankItems(
+      this.args.items,
+      this.inputValue,
+      (item) => keyAndLabelForItem(item).label,
+      this.args.filter
     );
   }
 
