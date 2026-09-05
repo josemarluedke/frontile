@@ -7,9 +7,16 @@ import {
   type NotificationsService
 } from 'frontile/notifications';
 import sinon from 'sinon';
-import { registerCustomStyles } from '@frontile/theme';
+import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
+
+// Captured before the `registerCustomStyles` call below replaces
+// `notificationCard` for the rest of this module — `notificationCard` itself
+// isn't part of the package's public value exports (only its type is), so
+// this is the one way to keep a handle on the *real* production tv() function
+// for the direct, unmocked assertions later in this file.
+const realNotificationCardStyles = useStyles().notificationCard;
 
 registerCustomStyles({
   notificationCard: tv({
@@ -17,6 +24,7 @@ registerCustomStyles({
       base: '',
       inner: '',
       icon: 'notification-card__icon',
+      spinner: 'notification-card__spinner',
       content: '',
       title: 'notification-card__title',
       description: 'notification-card__description',
@@ -265,9 +273,155 @@ module(
       });
       await render(template);
 
+      // The spinner has its own `spinner` slot now, distinct from `icon` —
+      // see the class comment on that slot in
+      // packages/theme/src/components/notification-card.ts.
       assert
-        .dom('.notification-card__icon')
+        .dom('.notification-card__spinner')
         .hasAttribute('data-test-icon', 'loading');
+    });
+
+    test('the loading spinner uses a dim track distinct from its accent-coloured arc', async function (assert) {
+      // This exercises the *real* Spinner theme (only `notificationCard` is
+      // overridden by this file's module-level `registerCustomStyles` above;
+      // `spinner` is not), so the `fill-*`/`text-*` classes asserted here are
+      // the actual Tailwind literals, not test marker strings. Regression
+      // target: passing the card's `icon` slot classes to <Spinner> put an
+      // intent-coloured `text-*` class on the track, which Tailwind-merge let
+      // win over the Spinner's own dim `text-neutral-muted`, making arc and
+      // track nearly identical.
+      notification.current = new Notification({}, 'Saving…', {
+        isLoading: true,
+        intent: 'danger'
+      });
+      await render(template);
+
+      const spinner = document.querySelector('[data-test-icon="loading"]');
+      assert.ok(spinner, 'the spinner renders');
+
+      const classList = Array.from(spinner!.classList);
+      const fillClass = classList.find((c) => c.startsWith('fill-'));
+      const trackClass = classList.find(
+        (c) => c === 'text-neutral-muted' || c.startsWith('text-neutral-muted')
+      );
+
+      assert.true(
+        classList.includes('fill-danger'),
+        `the arc picks up the danger accent via @intent; got classes: ${classList.join(' ')}`
+      );
+      assert.true(
+        classList.includes('text-neutral-muted'),
+        `the track stays a dim neutral, not the intent color; got classes: ${classList.join(' ')}`
+      );
+      assert.ok(fillClass, 'an arc fill-* class is present');
+      assert.ok(trackClass, 'a track text-* class is present');
+      assert.notEqual(
+        fillClass,
+        trackClass,
+        'the arc and track resolve to two different color utilities, not the same value'
+      );
+      assert.true(
+        classList.includes('animate-spin'),
+        'the spin animation class survives the class merge'
+      );
+    });
+
+    test('the loading spinner is the same size as the settled intent icon, in every variant', function (assert) {
+      // This must be checked against the *real* theme, not through render:
+      // this file's module-level `registerCustomStyles` mock (needed by the
+      // rendering tests above, e.g. `.notification-card__icon`) replaces
+      // both the `icon` and `spinner` slots with plain marker classes that
+      // carry no size utility at all, so a render-based assertion here would
+      // pass or fail independently of the real classes — it would not catch
+      // a real size mismatch. A mismatch here would resize the card the
+      // instant a promise settles and the spinner swaps for an icon,
+      // re-triggering the stack's layout (see `measure` in
+      // notification-card.gts).
+      const variants: ('default' | 'tonal' | 'solid')[] = [
+        'default',
+        'tonal',
+        'solid'
+      ];
+
+      for (const variant of variants) {
+        const { icon, spinner } = realNotificationCardStyles({
+          intent: 'danger',
+          variant
+        });
+
+        assert.true(
+          icon().includes('size-5'),
+          `${variant}: icon is size-5; got "${icon()}"`
+        );
+        assert.true(
+          spinner().includes('size-5'),
+          `${variant}: spinner is size-5; got "${spinner()}"`
+        );
+      }
+    });
+
+    test('the solid variant gives the spinner an accent arc and a dim track drawn from the same contrast ink, distinct from each other', function (assert) {
+      // Unlike the default/tonal case above, `solid`'s surface is a
+      // saturated `bg-{intent}` fill — the same color `@intent` would put on
+      // the arc via the Spinner's own `fill-{intent}`, which would make the
+      // arc invisible against its own card. This is verified directly
+      // against the real (unmocked) theme object, since this file's
+      // module-level `registerCustomStyles` replaces `notificationCard`'s
+      // classes with test markers for rendering tests.
+      const cases: {
+        intent: 'default' | 'info' | 'success' | 'warning' | 'danger';
+        arc: string;
+        track: string;
+      }[] = [
+        {
+          intent: 'default',
+          arc: 'fill-on-neutral',
+          track: 'text-on-neutral/30'
+        },
+        { intent: 'info', arc: 'fill-on-primary', track: 'text-on-primary/30' },
+        {
+          intent: 'success',
+          arc: 'fill-on-success',
+          track: 'text-on-success/30'
+        },
+        {
+          intent: 'warning',
+          arc: 'fill-on-warning',
+          track: 'text-on-warning/30'
+        },
+        { intent: 'danger', arc: 'fill-on-danger', track: 'text-on-danger/30' }
+      ];
+
+      for (const { intent, arc, track } of cases) {
+        const { spinner, icon } = realNotificationCardStyles({
+          intent,
+          variant: 'solid'
+        });
+        const spinnerClass = spinner();
+        const iconClass = icon();
+
+        assert.true(
+          spinnerClass.includes(arc),
+          `solid/${intent} spinner includes the arc class "${arc}"; got "${spinnerClass}"`
+        );
+        assert.true(
+          spinnerClass.includes(track),
+          `solid/${intent} spinner includes the track class "${track}"; got "${spinnerClass}"`
+        );
+        assert.notEqual(
+          arc,
+          track,
+          `solid/${intent} arc and track are distinct color utilities`
+        );
+        assert.true(
+          spinnerClass.includes('size-5'),
+          `solid/${intent} spinner is still size-5, matching the icon`
+        );
+        assert.true(
+          iconClass.includes('size-5'),
+          `solid/${intent} icon is size-5, for parity with the spinner`
+        );
+      }
     });
 
     test('hideIcon removes the icon', async function (assert) {

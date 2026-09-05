@@ -28,6 +28,16 @@ const notificationCard = tv({
     // the value the measure modifier reads and reports to the stack.
     inner: 'flex gap-3 p-4 font-body text-body-2xs',
     icon: 'shrink-0 size-5',
+    // The loading spinner's own slot, distinct from `icon`. It must NOT
+    // reuse `icon` — `icon`'s intent-coloured `text-*` class (the compound
+    // variants below) would win the Tailwind-merge over the Spinner's own
+    // dim `text-neutral-muted` track, making the arc and track nearly
+    // identical and the spin unreadable. `size-5` matches `icon` exactly so
+    // a promise settling (spinner -> icon) never resizes the card. The arc
+    // colour comes from `@intent` passed to <Spinner>, not from this slot;
+    // this slot only ever supplies sizing/position and, where needed
+    // (solid variant below), an explicit track/arc override.
+    spinner: 'shrink-0 size-5',
     content: 'grow min-w-0 flex flex-col gap-1',
     title: 'font-label text-label-xs',
     description: 'text-body-2xs',
@@ -75,7 +85,9 @@ const notificationCard = tv({
     hasDescription: {
       true: {
         inner: 'items-start',
-        icon: 'mt-[calc((var(--text-label-xs)*var(--line-height-tight)-1.25rem)/2)]'
+        icon: 'mt-[calc((var(--text-label-xs)*var(--line-height-tight)-1.25rem)/2)]',
+        spinner:
+          'mt-[calc((var(--text-label-xs)*var(--line-height-tight)-1.25rem)/2)]'
       },
       false: {
         inner: 'items-center'
@@ -180,6 +192,17 @@ const notificationCard = tv({
     },
 
     // solid: filled surface, contrast text.
+    //
+    // The spinner override here matters for a reason the other solid classes
+    // don't have to worry about: `@intent` on <Spinner> (mapped from
+    // `ACTION_INTENT`) drives the arc via `fill-{intent}` — e.g. `fill-primary`
+    // — which is the *exact same color* as this variant's own `bg-{intent}`
+    // surface. Left alone, the arc would be perfectly camouflaged against its
+    // own card. So on `solid` we force both halves of the spinner to the
+    // contrast ink instead: `fill-on-{intent}` for the arc (full strength,
+    // same ink as the icon/title) and `text-on-{intent}/30` for the track (the
+    // same ink at low opacity, so it reads as dim without needing a second
+    // neutral color that might clash with a saturated fill).
     {
       variant: 'solid',
       intent: 'default',
@@ -187,7 +210,8 @@ const notificationCard = tv({
         base: 'bg-neutral text-on-neutral',
         icon: 'text-on-neutral',
         title: 'text-on-neutral',
-        description: 'text-on-neutral/80'
+        description: 'text-on-neutral/80',
+        spinner: 'fill-on-neutral text-on-neutral/30'
       }
     },
     {
@@ -197,7 +221,8 @@ const notificationCard = tv({
         base: 'bg-primary text-on-primary',
         icon: 'text-on-primary',
         title: 'text-on-primary',
-        description: 'text-on-primary/80'
+        description: 'text-on-primary/80',
+        spinner: 'fill-on-primary text-on-primary/30'
       }
     },
     {
@@ -207,7 +232,8 @@ const notificationCard = tv({
         base: 'bg-success text-on-success',
         icon: 'text-on-success',
         title: 'text-on-success',
-        description: 'text-on-success/80'
+        description: 'text-on-success/80',
+        spinner: 'fill-on-success text-on-success/30'
       }
     },
     {
@@ -217,7 +243,8 @@ const notificationCard = tv({
         base: 'bg-warning text-on-warning',
         icon: 'text-on-warning',
         title: 'text-on-warning',
-        description: 'text-on-warning/80'
+        description: 'text-on-warning/80',
+        spinner: 'fill-on-warning text-on-warning/30'
       }
     },
     {
@@ -227,7 +254,8 @@ const notificationCard = tv({
         base: 'bg-danger text-on-danger',
         icon: 'text-on-danger',
         title: 'text-on-danger',
-        description: 'text-on-danger/80'
+        description: 'text-on-danger/80',
+        spinner: 'fill-on-danger text-on-danger/30'
       }
     }
   ],

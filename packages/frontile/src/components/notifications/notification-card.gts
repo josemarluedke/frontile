@@ -29,7 +29,10 @@ const ICONS = {
 };
 
 /**
- * Button intent for the primary custom action, per notification intent.
+ * Button intent for the primary custom action, per notification intent. Also
+ * reused as the loading <Spinner>'s `@intent` (its `intent` union has the
+ * same default/primary/success/warning/danger shape), so the spinner's arc
+ * matches the same accent the card's custom action button would use.
  */
 const ACTION_INTENT = {
   default: 'default',
@@ -235,6 +238,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       base,
       inner,
       icon,
+      spinner,
       content,
       title,
       description,
@@ -251,6 +255,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
       base: base(),
       inner: inner(),
       icon: icon(),
+      spinner: spinner(),
       content: content(),
       title: title(),
       description: description(),
@@ -276,7 +281,8 @@ class NotificationCard extends Component<NotificationCardSignature> {
         {{#unless @notification.hideIcon}}
           {{#if @notification.isLoading}}
             <Spinner
-              @class={{this.classes.icon}}
+              @class={{this.classes.spinner}}
+              @intent={{this.actionIntent}}
               @size="sm"
               data-test-icon="loading"
             />
