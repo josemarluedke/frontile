@@ -57,11 +57,19 @@ interface NotificationCardSignature {
     /**
      * Position, scale, and stacking supplied by the container. When omitted
      * the card renders in place with no stack transform.
+     *
+     * Part of the container/card plumbing, not a consumer-facing argument.
+     *
+     * @internal
      */
     geometry?: CardGeometry;
 
     /**
      * Called with the card's measured height whenever it changes.
+     *
+     * Part of the container/card plumbing, not a consumer-facing argument.
+     *
+     * @internal
      */
     onMeasure?: (height: number) => void;
   };
