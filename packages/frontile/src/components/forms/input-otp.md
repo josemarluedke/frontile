@@ -6,14 +6,9 @@ imports:
 
 # InputOtp
 
-A one-time-code (OTP/PIN) field. Under the hood it is a single real `<input>` made invisible
-over decorative cells, which is why password managers, iOS/Android SMS autofill, paste, undo
-and screen readers all work without any of it being reimplemented.
-
-> **On the autofill claims.** The attributes and styling those integrations depend on are
-> covered by tests, but the integrations themselves are driven by the OS and the password
-> manager. Confirming them end to end takes a real device — a headless browser cannot
-> deliver an SMS code or open the iOS paste menu.
+A one-time-code (OTP/PIN) field. The cells you see are decoration drawn over a single real
+`<input>`, so password managers, iOS and Android SMS autofill, paste, undo and screen readers
+all behave exactly as they would on an ordinary text field.
 
 ## Import
 
@@ -35,9 +30,8 @@ Split the cells into visual groups with `@groups`, an array of group sizes. `@se
 (default `'–'`) sets the character shown between groups; it is rendered `aria-hidden`
 because the underlying value never contains it.
 
-The sizes are meant to sum to `@length`, but a mismatch is not fatal: it logs a development
-warning, then the groups are clamped and padded so exactly `@length` cells are rendered
-either way. Development and production draw the same thing.
+The sizes should sum to `@length`. If they do not, the groups are adjusted to fit — you always
+get exactly `@length` cells — and a warning is logged in development.
 
 ```gts preview
 import { InputOtp } from 'frontile';
@@ -51,8 +45,7 @@ import { array } from '@ember/helper';
 ## Uncontrolled with `@onComplete`
 
 The common case: let the component own its value and react only when the code is complete.
-`@onComplete` fires once on the transition to a full code, not on every re-render of an
-already-complete value.
+`@onComplete` fires once, when the last character lands.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -134,15 +127,13 @@ export default class OtpFormExample extends Component {
 
 ## Character rules
 
-`@allowedChars` picks a built-in rule (`digits` is the default) that also drives the
-on-screen keyboard (`inputmode`) and autocapitalization. Rejection is all-or-nothing: a
-pasted value that fails the rule is dropped whole, never silently filtered down to the parts
-that pass — pasting `12-456` into a `digits` field does not become `12456`, it is rejected
-entirely.
+`@allowedChars` picks a built-in rule (`digits` is the default), which also sets the on-screen
+keyboard (`inputmode`) and autocapitalization.
 
-That all-or-nothing rule covers *characters*. Length is handled before it: the incoming value
-is truncated to `@length` first, so pasting a longer string does silently keep its first
-`@length` characters and then tests those against the rule.
+A value that fails the rule is rejected whole rather than stripped of the offending
+characters: pasting `12-456` into a `digits` field leaves the field unchanged, it does not
+become `12456`. Length is applied first — anything longer than `@length` is trimmed to its
+first `@length` characters, and those are what the rule checks.
 
 ```gts preview
 import { InputOtp } from 'frontile';
@@ -163,11 +154,10 @@ import { InputOtp } from 'frontile';
 > `/^\d{6}$/` — a length-anchored pattern rejects the very first keystroke and makes the
 > field impossible to type into.
 
-The rule is also emitted as the input's native `pattern` attribute, from the regex's `source`
-— so any flags (`i`, `u`, …) are dropped there, and native constraint validation applies the
-case-sensitive body only. And because the rule has to accept partial input, the browser's own
-validation accepts an incomplete code: it does not enforce `@length`. Check completeness
-yourself, via `@onComplete` or your form's validation.
+The rule is also set as the input's native `pattern` attribute, with any regex flags (`i`,
+`u`, …) dropped. Since the rule accepts partial input, native validation will also accept an
+incomplete code — it does not enforce `@length`. Check for completeness with `@onComplete` or
+your form's validation.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -184,9 +174,8 @@ export default class EvenDigitsExample extends Component {
 
 ## Masked
 
-`@isMasked` draws a bullet in place of each entered character for PIN-style entry. It is a
-rendering choice only — the input stays `type="text"` with `autocomplete="one-time-code"`,
-because `type="password"` would disable autofill.
+`@isMasked` draws a bullet in place of each entered character, for PIN-style entry. Only the
+display changes: autofill and password managers keep working.
 
 ```gts preview
 import { InputOtp } from 'frontile';
@@ -196,10 +185,9 @@ import { InputOtp } from 'frontile';
 
 ## Placeholder
 
-`@placeholder` previews the shape of the code in the empty cells, and is exposed on the real
-input as `aria-placeholder`. It is all-or-nothing: it disappears from *every* cell the moment
-anything at all is entered, rather than lingering in the cells that are still empty. Focus the
-field and type a digit to watch it go — the fake caret sits in the active cell alongside it.
+`@placeholder` previews the shape of the code in the empty cells, and is exposed on the input
+as `aria-placeholder`. It clears from every cell as soon as anything is entered. Type a digit
+in the demo below to watch it go.
 
 ```gts preview
 import { InputOtp } from 'frontile';
@@ -250,21 +238,18 @@ import { InputOtp } from 'frontile';
   `tabindex`, or `aria-label` — there is exactly one tab stop, the real input underneath.
 - Provide a label with `@label` (associated via `for`/`id`) or an `aria-label` passed through
   `...attributes`.
-- Because there is a real text field under the cells, every standard text-field key behaves
-  the way it does in a text field: shift-select, select-all, backspace, word-delete, undo and
-  copy/cut/paste are genuinely untouched. Caret *positioning* is the exception — the component
-  maps the text caret onto cells, so arrow keys move from cell to cell rather than between
-  raw character offsets.
+- Editing works as it does in any text field: shift-select, select-all, backspace,
+  word-delete, undo and copy/cut/paste. Arrow keys move from cell to cell.
 - Validation messages passed through `@errors` are associated via `aria-describedby` and set
   `aria-invalid`, the same as other form controls.
 
 ## SMS autofill
 
-`autocomplete="one-time-code"` is set automatically, which is what lets browsers and mobile
-OSes offer the incoming SMS code as a one-tap autofill suggestion. Opting into iOS 14+
-domain-bound codes needs a `@example.com #123456` footer in the SMS *message* itself — that
-part is entirely a server-side concern of whoever sends the text, not something this
-component can influence.
+`autocomplete="one-time-code"` is set for you, which is what lets browsers and mobile OSes
+offer an incoming SMS code as a one-tap suggestion. Nothing else is required on your side.
+
+To opt into iOS 14+ domain-bound codes, the SMS *message* needs a `@example.com #123456`
+footer — that is set by whatever service sends the text.
 
 ## API
 
