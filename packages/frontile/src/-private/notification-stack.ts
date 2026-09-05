@@ -108,7 +108,13 @@ class NotificationStack {
       transform: `translateY(${this.directionSign * offset}px) scale(${scale})`,
       zIndex,
       opacity: index < this.visibleToasts ? 1 : 0,
-      height: this.frontHeight,
+      // The front card must size to its own content (`null`). Clamping it to
+      // `frontHeight` would be self-referential — `frontHeight` *is* the
+      // front card's own measurement — and would permanently lock in
+      // whatever height was measured first, before content (e.g. a long
+      // description) finished laying out. Only cards behind the front one
+      // need clamping, so a taller card further back can't poke out past it.
+      height: index === 0 ? null : this.frontHeight,
       transformOrigin: this.transformOrigin
     };
   }

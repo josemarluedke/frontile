@@ -19,7 +19,11 @@ module('Unit | @frontile/notifications/NotificationStack', function () {
 
     assert.strictEqual(geometry.transform, 'translateY(0px) scale(1)');
     assert.strictEqual(geometry.opacity, 1);
-    assert.strictEqual(geometry.height, 60, 'clamped to the front height');
+    assert.strictEqual(
+      geometry.height,
+      null,
+      'front card sizes to its own content, not clamped to its own measurement'
+    );
   });
 
   test('collapsed: cards behind peek by gap and scale down by 0.05 each', function (assert) {
@@ -35,9 +39,14 @@ module('Unit | @frontile/notifications/NotificationStack', function () {
     );
   });
 
-  test('collapsed: every card is clamped to the front card height', function (assert) {
+  test('collapsed: cards behind the front are clamped to the front card height, but the front card itself is not', function (assert) {
     const stack = build();
 
+    assert.strictEqual(
+      stack.geometryFor(0).height,
+      null,
+      'front card sizes to content'
+    );
     assert.strictEqual(stack.geometryFor(1).height, 60);
     assert.strictEqual(stack.geometryFor(2).height, 60);
   });

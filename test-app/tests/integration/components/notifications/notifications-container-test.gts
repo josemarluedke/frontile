@@ -194,6 +194,38 @@ module(
       assert.dom(cards[0]!).hasText(/Second/);
     });
 
+    test('the front card sizes to its content instead of a locked-in pixel height', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      // A long description that wraps across several lines, so the card's
+      // natural content height is meaningfully taller than whatever height
+      // might be latched on the very first (pre-layout) measurement.
+      service.add('First', {
+        ...options,
+        description:
+          'This is a much longer description that is expected to wrap ' +
+          'across multiple lines once it is laid out, so the card needs ' +
+          'to grow taller than a short single-line title would require.'
+      });
+      await render(<template><NotificationsContainer /></template>);
+
+      const card = find('[data-test-notification-card]');
+      assert.ok(card, 'the front card renders');
+      // The front card (index 0) must size to its content: it should never
+      // carry a fixed inline `height: <n>px`, which would clip content laid
+      // out after the first measurement.
+      assert.notOk(
+        /height:\s*\d/.test(card!.getAttribute('style') || ''),
+        'the front card has no fixed pixel height'
+      );
+      assert.true(
+        card!.scrollHeight <= card!.clientHeight,
+        'the description is not clipped by a fixed height'
+      );
+    });
+
     test('it expands on hover and collapses on leave', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
