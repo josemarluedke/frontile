@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { registerDestructor } from '@ember/destroyable';
 import { buildWaiter } from '@ember/test-waiters';
@@ -21,8 +22,21 @@ interface SegmentedControlArgs<T> {
   /**
    * The currently selected value. Compared against each item's `@value` with
    * `===`, so object values must be referentially stable.
+   *
+   * Providing this argument puts the component in controlled mode: the
+   * selection then only ever reflects what you pass, so pair it with
+   * `@onChange` and update your own state. Omit it to let the control track
+   * the selection itself, seeded by `@defaultValue`.
    */
   value?: T;
+
+  /**
+   * Sets the initially selected value when the control is used uncontrolled
+   * (that is, when `@value` is not provided). Ignored in controlled mode.
+   *
+   * @defaultValue undefined
+   */
+  defaultValue?: T;
 
   /** Called with the newly selected value when an item is chosen. */
   onChange?: (value: T) => void;
@@ -118,6 +132,11 @@ interface SegmentedControlSignature<T> {
 class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   indicator = new SelectionIndicator();
 
+  // Uncontrolled mode's own selection, seeded from `@defaultValue`. Written on
+  // every `select` regardless of mode -- see `select` -- so the two modes stay
+  // on one code path, exactly as `Switch` does it.
+  @tracked _value: T | undefined;
+
   // Values are held against their elements rather than serialised into a
   // `data-` attribute, so a non-string `@value` survives the round trip from
   // keyboard activation back to `onChange`. A `Map` rather than a `WeakMap`
@@ -137,6 +156,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
 
   constructor(owner: Owner, args: SegmentedControlSignature<T>['Args']) {
     super(owner, args);
+    this._value = this.args.defaultValue;
     registerDestructor(this, () => {
       this.indicator.destroy();
       this.#cancelFormSync();
@@ -162,14 +182,36 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
     return this.args.orientation ?? 'horizontal';
   }
 
+  /**
+   * Presence of `@value` decides the mode, matching `Switch`'s
+   * `@isSelected`/`@defaultSelected` convention rather than `Input`'s
+   * handler-presence one.
+   */
+  get isControlled(): boolean {
+    return this.args.value !== undefined;
+  }
+
+  /**
+   * The selection everything else reads: the argument when controlled, the
+   * internal field otherwise. `requestFormSync` re-asserts the native radios
+   * from this (via `isSelected`) rather than from `@value`, so an uncontrolled
+   * form-mode control does not snap the user's click back.
+   */
+  get selectedValue(): T | undefined {
+    return this.isControlled ? this.args.value : this._value;
+  }
+
   isSelected = (value: T): boolean => {
-    return this.args.value === value;
+    return this.selectedValue === value;
   };
 
   select = (value: T): void => {
     if (this.args.isDisabled) {
       return;
     }
+    // Written unconditionally, as in `Switch`: in controlled mode the getter
+    // above ignores it, so one assignment serves both modes.
+    this._value = value;
     this.args.onChange?.(value);
   };
 

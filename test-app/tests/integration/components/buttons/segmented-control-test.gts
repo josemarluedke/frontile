@@ -69,6 +69,157 @@ module(
       assert.dom(findAll('[role="radio"]')[1]!).hasAria('checked', 'true');
     });
 
+    test('uncontrolled: @defaultValue seeds the selection and clicking moves it', async function (assert) {
+      // No `@value` at all, and no state wired on the consumer's side. This is
+      // the shape every documentation demo uses, and before Task 8 it could not
+      // be clicked: the control had no selection of its own to fall back on.
+      const received: string[] = [];
+      const onChange = (next: string): void => {
+        received.push(next);
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @defaultValue="week"
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      assert
+        .dom(items[1]!)
+        .hasAria('checked', 'true', '@defaultValue seeds the selection');
+
+      await click(items[2]!);
+
+      assert
+        .dom(items[2]!)
+        .hasAria('checked', 'true', 'the click moves the selection');
+      assert.dom(items[1]!).hasAria('checked', 'false', 'and releases the old');
+      assert.deepEqual(
+        received,
+        ['month'],
+        '@onChange still fires in uncontrolled mode'
+      );
+    });
+
+    test('uncontrolled: it is clickable with no @onChange at all', async function (assert) {
+      await render(
+        <template>
+          <SegmentedControl @defaultValue="day" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      await click(items[1]!);
+
+      assert
+        .dom(items[1]!)
+        .hasAria(
+          'checked',
+          'true',
+          'the internal state moves without a handler'
+        );
+    });
+
+    test('controlled: @value without @onChange does not move on click', async function (assert) {
+      // The mirror image of the test above: passing `@value` is what opts into
+      // controlled mode, and a controlled control that nobody updates must
+      // genuinely refuse to move -- otherwise the internal field would leak
+      // through and the two modes would not be distinguishable.
+      await render(
+        <template>
+          <SegmentedControl @value="day" as |Ctl|>
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      await click(items[1]!);
+
+      assert
+        .dom(items[0]!)
+        .hasAria('checked', 'true', '@value still decides the selection');
+      assert
+        .dom(items[1]!)
+        .hasAria('checked', 'false', 'the click is not honoured locally');
+    });
+
+    test('controlled: @value with @onChange moves when the consumer updates', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      await click(items[1]!);
+
+      assert.strictEqual(value.current, 'week', 'the consumer was told');
+      assert
+        .dom(items[1]!)
+        .hasAria('checked', 'true', 'and the update is reflected');
+    });
+
+    test('uncontrolled form mode: the click sticks and the submitted value follows', async function (assert) {
+      // `requestFormSync` re-asserts every native `checked` a frame after the
+      // click. Reading `@value` there rather than the effective value would
+      // snap this pick straight back.
+      await render(
+        <template>
+          <form data-test-form>
+            <SegmentedControl @defaultValue="day" @name="range" as |Ctl|>
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">Week</Ctl.Item>
+            </SegmentedControl>
+          </form>
+        </template>
+      );
+
+      const formEl = find('[data-test-form]') as HTMLFormElement;
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+
+      assert.true(inputs[0]!.checked, '@defaultValue seeds the native state');
+      assert.strictEqual(new FormData(formEl).get('range'), 'day');
+
+      await click(inputs[1]!);
+
+      assert.true(
+        inputs[1]!.checked,
+        'the pick survives the deferred form sync'
+      );
+      assert.false(inputs[0]!.checked, 'and the old one is released');
+      assert.strictEqual(
+        new FormData(formEl).get('range'),
+        'week',
+        'the submitted value follows the selection'
+      );
+    });
+
     test('the container carries radiogroup semantics', async function (assert) {
       await render(
         <template>
@@ -918,6 +1069,129 @@ module(
         before(items[2]!).opacity,
         '1',
         'a separator away from the selection is visible again'
+      );
+    });
+
+    test('vertical drops the pill radius that horizontal keeps', async function (assert) {
+      // A 9999px radius on a tall narrow column renders as an oval blob rather
+      // than a stack, so the vertical axis swaps to a rounded rectangle -- on
+      // the track and on the indicator, or the indicator would bulge out of the
+      // squared-off track.
+      await render(
+        <template>
+          <div>
+            <SegmentedControl
+              @defaultValue="week"
+              @orientation="vertical"
+              data-test-vertical
+              as |Ctl|
+            >
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">Week</Ctl.Item>
+              <Ctl.Item @value="month">Month</Ctl.Item>
+            </SegmentedControl>
+            <SegmentedControl
+              @defaultValue="week"
+              data-test-horizontal
+              as |Ctl|
+            >
+              <Ctl.Item @value="day">Day</Ctl.Item>
+              <Ctl.Item @value="week">Week</Ctl.Item>
+              <Ctl.Item @value="month">Month</Ctl.Item>
+            </SegmentedControl>
+          </div>
+        </template>
+      );
+
+      const vertical = find('[data-test-vertical]') as HTMLElement;
+      const horizontal = find('[data-test-horizontal]') as HTMLElement;
+      const radius = (el: Element): string =>
+        getComputedStyle(el).borderTopLeftRadius;
+
+      assert.strictEqual(
+        radius(horizontal),
+        '9999px',
+        'horizontal keeps the pill'
+      );
+      assert.notStrictEqual(
+        radius(vertical),
+        '9999px',
+        `vertical is a rounded rectangle instead (${radius(vertical)})`
+      );
+      assert.ok(
+        parseFloat(radius(vertical)) > 0,
+        'but is still rounded rather than squared off'
+      );
+
+      const verticalIndicator = vertical.firstElementChild as HTMLElement;
+      const horizontalIndicator = horizontal.firstElementChild as HTMLElement;
+      assert.strictEqual(
+        radius(horizontalIndicator),
+        '9999px',
+        'the horizontal indicator keeps the pill too'
+      );
+      assert.notStrictEqual(
+        radius(verticalIndicator),
+        '9999px',
+        `and the vertical indicator follows the track (${radius(verticalIndicator)})`
+      );
+      assert.ok(
+        parseFloat(radius(verticalIndicator)) <= parseFloat(radius(vertical)),
+        'the indicator sits inside the track, so its radius is no larger'
+      );
+    });
+
+    test('a separator is visible from the first render, not only after a click', async function (assert) {
+      // The three-item/middle-selected fixture the other separator tests use
+      // suppresses EVERY hairline at rest: the first by
+      // `first-of-type:before:content-none`, the second because its item is
+      // selected, the third because it follows the selected one. So their
+      // initial-state assertions cannot tell "all correctly hidden" apart from
+      // "the rule never generated". Four items with the second selected leaves
+      // the fourth item's separator genuinely visible.
+      await render(
+        <template>
+          <SegmentedControl
+            @defaultValue="week"
+            @hasSeparators={{true}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+            <Ctl.Item @value="year">Year</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      const before = (el: HTMLElement): CSSStyleDeclaration =>
+        getComputedStyle(el, '::before');
+
+      assert.strictEqual(
+        before(items[0]!).content,
+        'none',
+        'the first item has no leading separator'
+      );
+      assert.strictEqual(
+        before(items[1]!).opacity,
+        '0',
+        'the separator before the selected item is hidden'
+      );
+      assert.strictEqual(
+        before(items[2]!).opacity,
+        '0',
+        'so is the one immediately after it'
+      );
+      assert.strictEqual(
+        before(items[3]!).opacity,
+        '1',
+        'and the one clear of the selection is visible at rest'
+      );
+      assert.strictEqual(
+        before(items[3]!).width,
+        '1px',
+        'the visible hairline is a real one pixel wide'
       );
     });
 
