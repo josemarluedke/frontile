@@ -113,6 +113,13 @@ export default class NotificationsManager {
 
       notification.update({
         ...content,
+        // `update()` treats an absent key as "leave this field alone" (that
+        // distinction is load-bearing elsewhere), so a settle message with
+        // no description must still pass an explicit empty string here —
+        // otherwise `resolveMessage`'s string-form `{ title }` (no
+        // `description` key at all) would leave the loading phase's stale
+        // description on screen instead of clearing it.
+        description: content.description ?? '',
         intent,
         allowClosing: true,
         isLoading: false

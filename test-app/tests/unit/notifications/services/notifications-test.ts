@@ -416,6 +416,32 @@ module(
       assert.equal(notification.description, 'Hang tight.');
     });
 
+    test('promise settling with a string success message clears the loading description', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      const pending = Promise.resolve('done');
+
+      service.promise(pending, {
+        loading: { title: 'Saving…', description: 'Please wait' },
+        success: 'Saved',
+        error: 'Failed'
+      });
+
+      const notification = service.notifications[0]!;
+      assert.equal(notification.description, 'Please wait');
+
+      await pending;
+
+      assert.equal(notification.title, 'Saved');
+      assert.equal(
+        notification.description,
+        '',
+        'the settled toast does not inherit the stale loading description'
+      );
+    });
+
     test('settling a dismissed notification is a no-op', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
