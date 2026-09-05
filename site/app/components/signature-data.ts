@@ -5029,7 +5029,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> in the listbox, while this is a separate affordance\nyou opt into for exactly the purpose of emptying the field. Since\n<code>allowEmpty</code> defaults to false, honouring it here would render the button\ndead by default.</p>\n<p>No clear button is rendered on a disabled Autocomplete.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5149,7 +5149,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the autocomplete component loses focus.',
+          '<p>Callback fired when focus leaves the Autocomplete.</p>\n<p>"Leaves the Autocomplete" means the whole control: the input <em>and</em> its\ndropdown, which is rendered outside the input in the DOM. Moving focus\nbetween them -- which is what clicking an option does -- is not a blur, so\nthis does not fire while the user is picking an option. It fires once, when\nfocus lands somewhere outside the control (or nowhere, with the dropdown\nclosed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -6409,6 +6409,16 @@ const data: ComponentDoc[] = [
     fileName:
       'packages/frontile/declarations/components/forms/form-feedback.d.ts',
     Args: [
+      {
+        identifier: 'announce',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the element is itself an <code>aria-live</code> region. Set this to <code>false</code>\nwhen something else (such as <code>FormControl</code>, which keeps a persistent\nlive region in the DOM) already announces the messages, so they are not\nannounced twice.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
+      },
       {
         identifier: 'class',
         type: { type: '<span class="hljs-built_in">string</span>' },
@@ -8352,6 +8362,23 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'Component',
+    fileName:
+      'packages/frontile/declarations/components/notifications/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">SVGElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
@@ -8387,13 +8414,100 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'spacing',
-        type: { type: '<span class="hljs-built_in">number</span>' },
+        identifier: 'geometry',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'transform',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'zIndex',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'opacity',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'height',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Fixed height in px while collapsed, so a taller card behind the front one\ncannot stick out past it. `null` means the card sizes to its content.',
+              tags: {},
+            },
+            {
+              identifier: 'transformOrigin',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'top center\'</span> | <span class="hljs-string">\'bottom center\'</span>',
+                items: ["'top center'", "'bottom center'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'pointerEvents',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+                items: ["'none'", "'auto'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "`'none'` when the card is fully transparent (collapsed beyond\n`visibleToasts`), so it cannot swallow clicks meant for the page beneath\nit; `'auto'` otherwise.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          '<p>Position, scale, and stacking supplied by the container. When omitted\nthe card renders in place with no stack transform.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onMeasure',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "<p>Called with the card's measured height whenever it changes.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
-        tags: { defaultValue: { name: 'defaultValue', value: '16' } },
-        defaultValue: '<span class="hljs-number">16</span>',
+        description: 'The visual style of the card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
     ],
     Blocks: [],
@@ -8421,6 +8535,16 @@ const data: ComponentDoc[] = [
         description:
           'Custom class name, it will override the default ones using Tailwind Merge library.',
         tags: {},
+      },
+      {
+        identifier: 'expand',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Keep the stack expanded instead of collapsing it when not hovered.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'onDismiss',
@@ -8460,9 +8584,33 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
+        description:
+          'The peek offset between collapsed cards, and the gap between expanded\ncards, in px.',
         tags: { defaultValue: { name: 'defaultValue', value: '16' } },
         defaultValue: '<span class="hljs-number">16</span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The visual style applied to every card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'visibleToasts',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How many cards stay visible while the stack is collapsed.',
+        tags: { defaultValue: { name: 'defaultValue', value: '3' } },
+        defaultValue: '<span class="hljs-number">3</span>',
       },
     ],
     Blocks: [],
@@ -9082,7 +9230,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9102,7 +9250,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -9596,7 +9744,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9616,7 +9764,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11087,7 +11235,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The display format of the value.\nValues are formatted as a percentage by default.',
+          '<p>The display format of the value, passed to <code>Intl.NumberFormat</code>.</p>\n<p>A <code>percent</code> style formats the position on the min/max scale as a\nfraction; every other style formats the raw <code>progress</code> value. With no\nformat options, the value is displayed as a whole percentage.</p>',
         tags: {},
       },
       {
@@ -11341,7 +11489,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
+          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'. Any CSS height is\naccepted (<code>2rem</code>, <code>50%</code>, <code>calc(1rem + 2px)</code>, …); a value the CSS parser\nrejects is ignored and the content collapses to <code>0</code>.",
         tags: { defaultValue: { name: 'defaultValue', value: '0' } },
         defaultValue: '<span class="hljs-number">0</span>',
       },
@@ -13842,7 +13990,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'first'" } },
+        defaultValue: '<span class="hljs-string">\'first\'</span>',
       },
       {
         identifier: 'class',
@@ -16718,7 +16867,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> (the listbox and the chips both refuse to remove\nthe last one without it), while this is a separate affordance you opt into\nfor exactly the purpose of emptying the field. Since <code>allowEmpty</code> defaults\nto false, honouring it here would render the button dead by default.</p>\n<p>No clear button is rendered on a disabled Select, or with nothing selected.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -16848,7 +16997,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Callback fired when the select component loses focus.',
+        description:
+          '<p>Callback fired when focus leaves the Select.</p>\n<p>"Leaves the Select" means the whole control: the field <em>and</em> its dropdown,\nwhich is rendered outside the field in the DOM. Moving focus between them\n-- which is what clicking an option does -- is not a blur, so this does not\nfire while the user is picking options, in either selection mode. It fires\nonce, when focus lands somewhere outside the control (or nowhere, with the\ndropdown closed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -17790,17 +17940,6 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-keyword">function</span>',
-          raw: '() => <span class="hljs-built_in">void</span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'onFilterInput',
         type: {
           type: '<span class="hljs-keyword">function</span>',
@@ -17820,6 +17959,18 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onFocusOut',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">event</span>: <span class="hljs-title class_">FocusEvent</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "Reports the trigger losing focus, as <code>focusout</code> rather than <code>blur</code>: the\nSelect decides whether focus actually left the control from the event's\n<code>relatedTarget</code>, and browsers only guarantee that on <code>focusout</code>.",
         tags: {},
       },
       {
@@ -18093,6 +18244,18 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
       },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Drawer knows whether it may point <code>aria-labelledby</code> at us.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
     ],
     Blocks: [
       {
@@ -18240,6 +18403,18 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Modal knows whether it may point <code>aria-labelledby</code> at us.',
         tags: { internal: { name: 'internal', value: '' } },
       },
     ],

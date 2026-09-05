@@ -1,19 +1,71 @@
-/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
-import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
+import { modifier } from 'ember-modifier';
 import { service } from '@ember/service';
 import { htmlSafe } from '@ember/template';
-import { later, cancel } from '@ember/runloop';
-import { on } from '@ember/modifier';
-import { fn, concat } from '@ember/helper';
+import { fn } from '@ember/helper';
 import { CloseButton } from '../buttons/close-button';
-import { cssTransition } from 'ember-css-transitions';
+import { Button } from '../buttons/button';
+import { Spinner } from '../utilities/spinner';
+import { IconInfo, IconSuccess, IconWarning, IconDanger } from './icons';
 import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../../services/notifications';
 import type Notification from '../../-private/notification';
-import type { CustomAction, containerPlacement } from '../../-private/types';
+import type { CardGeometry } from '../../-private/notification-stack';
+import type {
+  CustomAction,
+  containerPlacement,
+  NotificationIntent
+} from '../../-private/types';
+import type { SafeString } from '@ember/template';
+
+/**
+ * Everything that varies by `NotificationIntent`, keyed in one place so
+ * adding an intent means adding one row here instead of remembering to
+ * touch an icon map, an action-intent map, and the `role` getter's cascade
+ * separately.
+ */
+const INTENT_CONFIG = {
+  default: {
+    icon: IconInfo,
+    // Button intent for the primary custom action. Also reused as the
+    // loading <Spinner>'s `@intent` (its `intent` union has the same
+    // default/primary/success/warning/danger shape), so the spinner's arc
+    // matches the same accent the card's custom action button would use.
+    actionIntent: 'default',
+    // `alert` interrupts a screen reader, so it is reserved for the
+    // intents that warrant interrupting.
+    role: 'status'
+  },
+  info: {
+    icon: IconInfo,
+    actionIntent: 'primary',
+    role: 'status'
+  },
+  success: {
+    icon: IconSuccess,
+    actionIntent: 'success',
+    role: 'status'
+  },
+  warning: {
+    icon: IconWarning,
+    actionIntent: 'warning',
+    role: 'alert'
+  },
+  danger: {
+    icon: IconDanger,
+    actionIntent: 'danger',
+    role: 'alert'
+  }
+} as const satisfies Record<
+  NotificationIntent,
+  {
+    icon: unknown;
+    actionIntent: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+    role: 'status' | 'alert';
+  }
+>;
 
 interface NotificationCardSignature {
   Args: {
@@ -21,94 +73,179 @@ interface NotificationCardSignature {
     placement: containerPlacement;
 
     /**
-     * Spacing for each notification, in px.
+     * The visual style of the card.
      *
-     * @defaultValue 16
+     * @defaultValue 'default'
      */
-    spacing?: number;
+    variant?: 'default' | 'tonal' | 'solid';
+
+    /**
+     * Position, scale, and stacking supplied by the container. When omitted
+     * the card renders in place with no stack transform.
+     *
+     * Part of the container/card plumbing, not a consumer-facing argument.
+     *
+     * @internal
+     */
+    geometry?: CardGeometry;
+
+    /**
+     * Called with the card's measured height whenever it changes.
+     *
+     * Part of the container/card plumbing, not a consumer-facing argument.
+     *
+     * @internal
+     */
+    onMeasure?: (height: number) => void;
   };
   Element: HTMLDivElement;
 }
 
 class NotificationCard extends Component<NotificationCardSignature> {
   @service notifications!: NotificationsService;
+
+  /**
+   * False for the first frame so the card can transition in from the
+   * placement edge rather than appearing at its resting position.
+   */
   @tracked hasEntered = false;
 
-  get styles(): unknown {
-    const styles = [
-      `transition-duration: ${this.args.notification.transitionDuration}ms`
+  get isTopPlacement(): boolean {
+    return (this.args.placement || 'bottom-right').startsWith('top');
+  }
+
+  get intent(): NotificationIntent {
+    return this.args.notification.intent;
+  }
+
+  get icon() {
+    return INTENT_CONFIG[this.intent].icon;
+  }
+
+  get actionIntent() {
+    return INTENT_CONFIG[this.intent].actionIntent;
+  }
+
+  get role(): 'status' | 'alert' {
+    return INTENT_CONFIG[this.intent].role;
+  }
+
+  get style(): SafeString {
+    const { geometry, notification } = this.args;
+    // The theme's `transition-[transform,opacity,height]` needs a duration
+    // per property, in that order. `transform` and `height` are the stack's
+    // own expand/collapse choreography — fixed at 400ms to match the
+    // container's own height transition (see notifications-container.ts)
+    // and the design spec's "transform 400ms" — while `opacity` is the one
+    // property `@transitionDuration` actually documents governing (the
+    // enter/exit fade). Letting `transitionDuration` also slow `transform`
+    // and `height` would silently turn a "slow down the removal fade" call
+    // into "slow down every hover expand/collapse" too.
+    const declarations = [
+      `transition-duration: 400ms, ${notification.transitionDuration}ms, 400ms`
     ];
 
-    if (!this.hasEntered) {
-      styles.push(
-        `transition-delay: ${this.args.notification.transitionDuration}ms`
+    // The static edge-pinning (`position: absolute` + `left/right/top` or
+    // `bottom`) lives in the `stackPlacement` theme variant (see
+    // `this.classes`) rather than here, since it never varies frame to
+    // frame — only the geometry-driven parts below (transform, opacity,
+    // height, z-index, transform-origin) need to be inline, because a
+    // `style` attribute passed through `...attributes` replaces the
+    // element's own `style` outright and would drop them.
+
+    if (!this.hasEntered || notification.isRemoving) {
+      // Enter from, and exit to, the placement edge.
+      const offset = this.isTopPlacement ? '-100%' : '100%';
+      declarations.push(
+        `opacity: 0`,
+        `transform: translateY(${offset}) scale(0.95)`,
+        // A card can be transparent-and-collapsed the instant it starts
+        // exiting; keep it out of the click path either way.
+        `pointer-events: none`
+      );
+
+      if (geometry) {
+        declarations.push(
+          `z-index: ${geometry.zIndex}`,
+          `transform-origin: ${geometry.transformOrigin}`,
+          // Preserve the collapsed height clamp through the exit
+          // transition — otherwise a non-front collapsed card snaps from
+          // its clamped height to `auto` for the slide-out.
+          geometry.height === null
+            ? `height: auto`
+            : `height: ${geometry.height}px`
+        );
+      }
+
+      return htmlSafe(declarations.join('; '));
+    }
+
+    if (geometry) {
+      declarations.push(
+        `transform: ${geometry.transform}`,
+        `transform-origin: ${geometry.transformOrigin}`,
+        `z-index: ${geometry.zIndex}`,
+        `opacity: ${geometry.opacity}`,
+        `pointer-events: ${geometry.pointerEvents}`,
+        geometry.height === null
+          ? `height: auto`
+          : `height: ${geometry.height}px`
       );
     }
 
-    return htmlSafe(styles.join('; '));
+    return htmlSafe(declarations.join('; '));
   }
 
-  transitionIn = modifier((element: HTMLElement) => {
-    const spacing =
-      typeof this.args.spacing === 'undefined' ? 16 : this.args.spacing;
-    const expectedHeight = element.offsetHeight + spacing;
-    const duration = this.args.notification.transitionDuration / 2;
-
-    let innerFrame: number | undefined;
-    const outerFrame = requestAnimationFrame(() => {
-      element.style.height = '0';
-      const transition = `height ${duration}ms ease-in ${duration}ms`;
-      element.style.transition = transition;
-
-      innerFrame = requestAnimationFrame(() => {
-        element.style.height = `${expectedHeight}px`;
-      });
+  /**
+   * Flip to the resting position on the frame after insertion, so the browser
+   * has a start value to transition from.
+   */
+  enter = modifier(() => {
+    const frame = requestAnimationFrame(() => {
+      this.hasEntered = true;
     });
 
-    const timer = later(
-      this,
-      () => {
-        this.hasEntered = true;
-      },
-      this.args.notification.transitionDuration
-    );
-
-    // The card can be destroyed while the enter transition is still in flight;
-    // cancel the pending work so we never touch the element or write tracked
-    // state after teardown.
-    return () => {
-      cancelAnimationFrame(outerFrame);
-
-      if (typeof innerFrame !== 'undefined') {
-        cancelAnimationFrame(innerFrame);
-      }
-
-      cancel(timer);
-    };
+    return () => cancelAnimationFrame(frame);
   });
 
-  transitionOut = modifier(
-    (element: HTMLElement, [isExiting, ..._]: boolean[]) => {
-      if (isExiting) {
-        element.style.height = '0';
-      }
+  /**
+   * Report the card's height to the container so the stack can lay itself
+   * out. Also fires when promise content swaps change the height.
+   *
+   * `element` is the inner element (never height-constrained, so its
+   * `offsetHeight` is always the content's true natural height). The border
+   * lives on the outer element (`element.parentElement`), so it isn't part
+   * of that number — we add it back via `outer.offsetHeight -
+   * outer.clientHeight`, the outer element's vertical border width. That
+   * difference is constant whether or not the outer element's height is
+   * currently clamped by the collapsed-stack height, so it's safe to read
+   * off the outer element even while it's clamped, and it stays correct if
+   * the theme's border width ever changes.
+   */
+  measure = modifier((element: HTMLElement) => {
+    const { onMeasure } = this.args;
+
+    if (!onMeasure) {
+      return;
     }
-  );
+
+    const outer = element.parentElement as HTMLElement;
+
+    const report = () => {
+      const outerBorder = outer.offsetHeight - outer.clientHeight;
+      onMeasure(element.offsetHeight + outerBorder);
+    };
+
+    const observer = new ResizeObserver(report);
+
+    report();
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  });
 
   remove = () => {
     this.notifications.remove(this.args.notification);
-  };
-
-  pause = () => {
-    if (this.args.notification.timer) {
-      this.args.notification.timer.pause();
-    }
-  };
-
-  resume = () => {
-    if (this.args.notification.timer) {
-      this.args.notification.timer.resume();
-    }
   };
 
   handleClickCustomAction = (customAction: CustomAction) => {
@@ -119,14 +256,39 @@ class NotificationCard extends Component<NotificationCardSignature> {
   get classes() {
     const { notificationCard } = useStyles();
 
-    let { base, message, customActions, customActionButton, closeButton } =
-      notificationCard({
-        appearance: this.args.notification.appearance
-      });
+    const {
+      base,
+      inner,
+      icon,
+      spinner,
+      content,
+      title,
+      description,
+      customActions,
+      customActionButton,
+      closeButton
+    } = notificationCard({
+      intent: this.intent,
+      variant: this.args.variant || 'default',
+      hasDescription: !!this.args.notification.description,
+      // Only pin the card to the placement edge once the container has
+      // supplied stack geometry — see the `stackPlacement` variant's
+      // comment in the theme.
+      stackPlacement: this.args.geometry
+        ? this.isTopPlacement
+          ? 'top'
+          : 'bottom'
+        : 'none'
+    });
 
     return {
       base: base(),
-      message: message(),
+      inner: inner(),
+      icon: icon(),
+      spinner: spinner(),
+      content: content(),
+      title: title(),
+      description: description(),
       customActions: customActions(),
       customActionButton: customActionButton(),
       closeButton: closeButton()
@@ -134,50 +296,67 @@ class NotificationCard extends Component<NotificationCardSignature> {
   }
 
   <template>
-    {{! template-lint-disable no-invalid-interactive }}
-    {{! template-lint-disable no-unnecessary-concat }}
-    {{! template-lint-disable no-inline-styles }}
-    {{! template-lint-disable style-concatenation  }}
-    <div {{this.transitionIn}} {{this.transitionOut @notification.isRemoving}}>
-      {{#unless @notification.isRemoving}}
-        <div
-          {{on "mouseenter" this.pause}}
-          {{on "mouseleave" this.resume}}
-          {{cssTransition
-            (concat "notification-transition--slide-from-" @placement)
-            isEnabled=true
-          }}
-          class={{this.classes.base}}
-          style="{{this.styles}}"
-          ...attributes
-        >
-          <div class={{this.classes.message}}>
-            {{@notification.message}}
-          </div>
+    {{! template-lint-disable no-inline-styles style-concatenation }}
+    <div
+      class={{this.classes.base}}
+      style={{this.style}}
+      role={{this.role}}
+      data-test-notification-card
+      data-test-intent={{this.intent}}
+      {{this.enter}}
+      ...attributes
+    >
+      {{! measure reads offsetHeight off this inner element, not the outer one above, since the outer carries the collapsed-stack height clamp. See notification-stack.ts. }}
+      <div class={{this.classes.inner}} {{this.measure}}>
+        {{#unless @notification.hideIcon}}
+          {{#if @notification.isLoading}}
+            <Spinner
+              @class={{this.classes.spinner}}
+              @intent={{this.actionIntent}}
+              @size="sm"
+              data-test-icon="loading"
+            />
+          {{else}}
+            {{#let this.icon as |Icon|}}
+              <Icon class={{this.classes.icon}} />
+            {{/let}}
+          {{/if}}
+        {{/unless}}
 
-          {{#if @notification.customActions}}
-            <div class={{this.classes.customActions}}>
-              {{#each @notification.customActions as |customAction|}}
-                <button
-                  type="button"
-                  class={{this.classes.customActionButton}}
-                  {{on "click" (fn this.handleClickCustomAction customAction)}}
-                >
-                  {{customAction.label}}
-                </button>
-              {{/each}}
+        <div class={{this.classes.content}}>
+          <div class={{this.classes.title}}>{{@notification.title}}</div>
+
+          {{#if @notification.description}}
+            <div class={{this.classes.description}}>
+              {{@notification.description}}
             </div>
           {{/if}}
-
-          {{#if @notification.allowClosing}}
-            <CloseButton
-              @onPress={{this.remove}}
-              @size="sm"
-              @class={{this.classes.closeButton}}
-            />
-          {{/if}}
         </div>
-      {{/unless}}
+
+        {{#if @notification.customActions}}
+          <div class={{this.classes.customActions}}>
+            {{#each @notification.customActions as |customAction index|}}
+              <Button
+                @size="xs"
+                @intent={{if index "default" this.actionIntent}}
+                @appearance={{if index "minimal" "default"}}
+                @class={{this.classes.customActionButton}}
+                @onPress={{fn this.handleClickCustomAction customAction}}
+              >
+                {{customAction.label}}
+              </Button>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        {{#if @notification.allowClosing}}
+          <CloseButton
+            @onPress={{this.remove}}
+            @size="sm"
+            @class={{this.classes.closeButton}}
+          />
+        {{/if}}
+      </div>
     </div>
   </template>
 }

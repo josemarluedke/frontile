@@ -8,8 +8,48 @@ import { getOwner } from '@ember/owner';
 import { isDestroyed } from '@ember/destroyable';
 import { later } from '@ember/runloop';
 import type Owner from '@ember/owner';
-import type { DefaultConfig } from './types';
-import type { NotificationOptions } from './types';
+import type {
+  DefaultConfig,
+  NotificationOptions,
+  NotificationContent,
+  NotificationIntent,
+  PromiseMessage,
+  PromiseNotificationOptions
+} from './types';
+
+function resolveMessage<T>(
+  message: PromiseMessage<T>,
+  value: T
+): NotificationContent {
+  const resolved = typeof message === 'function' ? message(value) : message;
+  return typeof resolved === 'string' ? { title: resolved } : resolved;
+}
+
+/**
+ * Whether a notification should get an auto-removal timer, given its own
+ * `preserve` option and the manager's config. An explicit `preserve` wins;
+ * otherwise the config's `preserve` default applies. Either way, a
+ * config-level `skipTimer: true` forces preservation — there's no timer to
+ * skip if the notification is never auto-removed in the first place.
+ *
+ * Shared by `add()` and `promise()`'s settle path, which must apply this
+ * decision identically.
+ */
+function shouldAutoRemove(
+  config: DefaultConfig,
+  preserveOption: boolean | undefined
+): boolean {
+  const preserve =
+    typeof preserveOption === 'undefined'
+      ? getConfigOption(config, 'preserve', false)
+      : preserveOption;
+
+  if (getConfigOption(config, 'skipTimer', false) === true) {
+    return false;
+  }
+
+  return preserve === false;
+}
 
 export default class NotificationsManager {
   @tracked notifications: Notification<Record<string, unknown>>[] = [];
@@ -37,31 +77,85 @@ export default class NotificationsManager {
   }
 
   add<TMetadata extends Record<string, unknown> = Record<string, unknown>>(
-    message: string,
+    content: string | NotificationContent,
     options: NotificationOptions<TMetadata> = {}
   ): Notification<TMetadata> {
     const notification = new Notification<TMetadata>(
       this.config,
-      message,
+      content,
       options
     );
     this.notifications = [...this.notifications, notification];
 
-    let preserve =
-      typeof options.preserve === 'undefined'
-        ? getConfigOption(this.config, 'preserve', false)
-        : options.preserve;
-
-    // if default config has set skipTimer to true, we will preserve the
-    // notification, therefore skiping the timer
-    if (getConfigOption(this.config, 'skipTimer', false) === true) {
-      preserve = true;
-    }
-
-    if (preserve === false) {
+    if (shouldAutoRemove(this.config, options.preserve)) {
       this.setupAutoRemoval(notification, notification.duration);
     }
     return notification;
+  }
+
+  /**
+   * Show a notification driven by a promise: a spinner while pending, then
+   * the same notification mutated in place once it settles.
+   *
+   * Returns the original promise, so callers can still await it — and are
+   * still responsible for handling its rejection.
+   */
+  promise<
+    T,
+    TMetadata extends Record<string, unknown> = Record<string, unknown>
+  >(
+    promise: Promise<T>,
+    options: PromiseNotificationOptions<T, TMetadata>
+  ): Promise<T> {
+    const { loading, success, error, ...rest } = options;
+
+    const notification = this.add<TMetadata>(loading, {
+      ...(rest as NotificationOptions<TMetadata>),
+      preserve: true,
+      allowClosing: false,
+      isLoading: true
+    });
+
+    const settle = (
+      content: NotificationContent,
+      intent: NotificationIntent
+    ) => {
+      // The user may have dismissed the toast before the promise settled; in
+      // that case there is nothing left to update.
+      if (notification.isRemoving) {
+        return;
+      }
+
+      notification.update({
+        ...content,
+        // `update()` treats an absent key as "leave this field alone" (that
+        // distinction is load-bearing elsewhere), so a settle message with
+        // no description must still pass an explicit empty string here —
+        // otherwise `resolveMessage`'s string-form `{ title }` (no
+        // `description` key at all) would leave the loading phase's stale
+        // description on screen instead of clearing it.
+        description: content.description ?? '',
+        intent,
+        allowClosing: true,
+        isLoading: false
+      });
+
+      // `preserve: true` forces the loading phase to skip auto-dismissal
+      // (there's nothing useful to time out on a spinner), but the docs
+      // promise every option except `isLoading` carries through to the
+      // settled notification — so a caller's own `preserve` must still be
+      // honored here, not silently overridden by the loading phase's.
+      if (shouldAutoRemove(this.config, rest.preserve)) {
+        this.setupAutoRemoval(notification, notification.duration);
+      }
+    };
+
+    promise.then(
+      (value) => settle(resolveMessage(success, value), 'success'),
+      (reason) => settle(resolveMessage(error, reason), 'danger')
+    );
+
+    return promise;
   }
 
   remove(notification?: Notification<Record<string, unknown>>): void {
@@ -73,6 +167,17 @@ export default class NotificationsManager {
 
     notification.remove();
 
+    // The unmount is timed to `transitionDuration` (default 200ms), which
+    // governs the card's exit *opacity* fade. The exit *slide/scale*
+    // transform, however, runs at a fixed 400ms (see notificationCard's
+    // theme slots) independent of `transitionDuration`. At the defaults this
+    // is invisible only because the opacity reaches 0 at the same moment the
+    // card unmounts, hiding the fact that the slide is truncated mid-flight.
+    // If the opacity duration is ever decoupled from this unmount timer (or
+    // `transitionDuration` is changed without also revisiting the transform
+    // duration), cards will visibly disappear mid-slide instead of fading
+    // out cleanly. Keep the two in sync, or make the unmount wait for the
+    // longer of the two durations.
     later(
       this,
       () => {
