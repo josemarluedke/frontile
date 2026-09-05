@@ -1,5 +1,6 @@
 import { tracked } from '@glimmer/tracking';
 import { deprecate } from '@ember/debug';
+import { get } from '@ember/object';
 import Timer from './timer';
 import { getConfigOption } from './get-config';
 import type {
@@ -45,8 +46,28 @@ function resolveIntent(
     return options.appearance === 'error' ? 'danger' : options.appearance;
   }
 
-  const fromConfig = getConfigOption(config, 'intent', 'default');
-  return fromConfig as NotificationIntent;
+  const configIntent = config.intent;
+  if (configIntent) {
+    return configIntent;
+  }
+
+  const configAppearance = config.appearance;
+  if (configAppearance) {
+    deprecate(
+      'The `appearance` config option for notifications is deprecated. Use `intent` instead, and `danger` in place of `error`.',
+      false,
+      {
+        id: 'frontile.notification-appearance',
+        until: '0.19.0',
+        for: 'frontile',
+        since: { available: '0.18.0', enabled: '0.18.0' }
+      }
+    );
+
+    return configAppearance === 'error' ? 'danger' : configAppearance;
+  }
+
+  return getConfigOption(config, 'intent', 'default') as NotificationIntent;
 }
 
 export default class Notification<

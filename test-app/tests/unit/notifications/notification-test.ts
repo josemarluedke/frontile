@@ -1,7 +1,33 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { registerDeprecationHandler } from '@ember/debug';
 import { Notification, Timer } from 'frontile/notifications';
+
+/**
+ * Capture deprecations raised (by id) while `fn` runs, using Ember's own
+ * deprecation-handler registry. There is no deprecation-assertion helper
+ * installed in this test app (no `ember-cli-deprecation-workflow` or
+ * `ember-qunit-assert-helpers` in `test-app`), so this is the lowest-level
+ * mechanism Ember itself provides for observing `deprecate()` calls.
+ */
+function captureDeprecations(fn: () => void): string[] {
+  const ids: string[] = [];
+
+  // `registerDeprecationHandler` stacks handlers globally for the app's
+  // lifetime; call `next()` so we don't suppress any other registered
+  // handler (e.g. the default console handler).
+  registerDeprecationHandler((message, options, next) => {
+    if (options && options.id) {
+      ids.push(options.id);
+    }
+    next(message, options);
+  });
+
+  fn();
+
+  return ids;
+}
 
 module('Unit | @frontile/notifications/Notification', function (hooks) {
   setupTest(hooks);
@@ -108,6 +134,88 @@ module('Unit | @frontile/notifications/Notification', function (hooks) {
     });
 
     assert.equal(notification.intent, 'warning');
+  });
+
+  test('a config-level appearance is honored as a fallback', async function (assert) {
+    const ids = captureDeprecations(() => {
+      const notification = new Notification(
+        { appearance: 'success' },
+        'Message'
+      );
+
+      assert.equal(notification.intent, 'success');
+    });
+
+    assert.ok(
+      ids.includes('frontile.notification-appearance'),
+      'using config-level appearance emits the deprecation'
+    );
+  });
+
+  test('a config-level appearance of "error" maps onto "danger"', async function (assert) {
+    const notification = new Notification({ appearance: 'error' }, 'Message');
+
+    assert.equal(notification.intent, 'danger');
+  });
+
+  test('precedence: option intent > option appearance > config intent > config appearance > default', async function (assert) {
+    assert.equal(
+      new Notification({ intent: 'info', appearance: 'error' }, 'Message', {
+        intent: 'danger',
+        appearance: 'warning'
+      }).intent,
+      'danger',
+      'option intent wins over everything'
+    );
+
+    assert.equal(
+      new Notification({ intent: 'info', appearance: 'error' }, 'Message', {
+        appearance: 'warning'
+      }).intent,
+      'warning',
+      'option appearance wins over config'
+    );
+
+    assert.equal(
+      new Notification({ intent: 'info', appearance: 'error' }, 'Message')
+        .intent,
+      'info',
+      'config intent wins over config appearance'
+    );
+
+    assert.equal(
+      new Notification({ appearance: 'error' }, 'Message').intent,
+      'danger',
+      'config appearance is used when nothing more specific is set'
+    );
+
+    assert.equal(
+      new Notification({}, 'Message').intent,
+      'default',
+      'the built-in default is the last resort'
+    );
+  });
+
+  test('using intent alone does not emit the appearance deprecation', async function (assert) {
+    const ids = captureDeprecations(() => {
+      new Notification({ intent: 'info' }, 'Message', { intent: 'success' });
+    });
+
+    assert.notOk(
+      ids.includes('frontile.notification-appearance'),
+      'no deprecation when only intent is used'
+    );
+  });
+
+  test('the deprecated appearance option emits a deprecation', async function (assert) {
+    const ids = captureDeprecations(() => {
+      new Notification({}, 'Message', { appearance: 'error' });
+    });
+
+    assert.ok(
+      ids.includes('frontile.notification-appearance'),
+      'using the appearance option emits the deprecation'
+    );
   });
 
   test('update replaces content and intent', async function (assert) {
