@@ -7,7 +7,8 @@ import {
   findAll,
   focus,
   settled,
-  triggerKeyEvent
+  triggerKeyEvent,
+  waitUntil
 } from '@ember/test-helpers';
 import { hash } from '@ember/helper';
 import { SegmentedControl } from 'frontile';
@@ -710,6 +711,181 @@ module(
         inputs[1]!.checked,
         'the accepted pick sticks -- the guard does not fight it'
       );
+    });
+
+    test('separators are drawn between items and hidden around the selection', async function (assert) {
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @hasSeparators={{true}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      const before = (el: HTMLElement): CSSStyleDeclaration =>
+        getComputedStyle(el, '::before');
+
+      assert.strictEqual(
+        before(items[0]!).content,
+        'none',
+        'the first item has no leading separator'
+      );
+      assert.strictEqual(
+        before(items[1]!).opacity,
+        '0',
+        'the separator before the selected item is hidden'
+      );
+      assert.strictEqual(
+        before(items[2]!).opacity,
+        '0',
+        'so is the one immediately after it'
+      );
+
+      await click(items[0]!);
+
+      // The separator's own `before:transition-opacity before:duration-200`
+      // (Step 3) means the browser does not settle the CSS transition within
+      // the same tick `settled()` resolves on -- reading the computed value
+      // immediately after `click()` can still catch it mid-animation.
+      // `waitUntil` polls past that window; the assertion below still checks
+      // the exact settled value, so nothing about the check itself is
+      // weakened.
+      await waitUntil(() => before(items[2]!).opacity === '1', {
+        timeout: 1000
+      });
+
+      assert.strictEqual(
+        before(items[2]!).opacity,
+        '1',
+        'a separator away from the selection is visible again'
+      );
+    });
+
+    test('separators are hidden around the selection in form mode', async function (assert) {
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @name="range"
+            @hasSeparators={{true}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const labels = findAll('label') as HTMLElement[];
+      const before = (el: HTMLElement): CSSStyleDeclaration =>
+        getComputedStyle(el, '::before');
+
+      assert.strictEqual(
+        before(labels[0]!).content,
+        'none',
+        'the first item has no leading separator'
+      );
+      assert.strictEqual(
+        before(labels[1]!).opacity,
+        '0',
+        'the separator before the selected item is hidden'
+      );
+      assert.strictEqual(
+        before(labels[2]!).opacity,
+        '0',
+        'so is the one immediately after it'
+      );
+
+      const inputs = findAll('input[type="radio"]') as HTMLInputElement[];
+      await click(inputs[0]!);
+
+      // See the button-mode test above: the separator's own CSS transition
+      // does not settle within the same tick `settled()` resolves on.
+      await waitUntil(() => before(labels[2]!).opacity === '1', {
+        timeout: 1000
+      });
+
+      assert.strictEqual(
+        before(labels[2]!).opacity,
+        '1',
+        'a separator away from the selection is visible again'
+      );
+    });
+
+    test('an underline indicator positions from x and width alone', async function (assert) {
+      // The theme's own indicator slot moves the pill with Tailwind's
+      // translate-x-[var(--fr-si-x)] utility, which (Tailwind v4) sets the
+      // standalone CSS `translate` property, not `transform`. @classes
+      // merges with the theme's classes rather than replacing them, so this
+      // override still carries that utility. Setting `transform:
+      // translateX(...)` here would not replace it -- `translate` and
+      // `transform` compose instead of one overriding the other -- and the
+      // indicator would end up shifted by twice the intended offset.
+      // Overriding the same `translate` property instead actually replaces
+      // it, which is what `.test-underline` below does.
+      await render(
+        <template>
+          {{! template-lint-disable no-forbidden-elements }}
+          {{! This <style> is scoped to the test container and torn down with
+              the test; it exists only to prove the indicator's geometry
+              (--fr-si-x/--fr-si-width) is consumable by a bar-shaped override,
+              not to style production markup. }}
+          <style>
+            .test-underline {
+              position: absolute;
+              top: auto;
+              bottom: 0;
+              height: 2px;
+              width: var(--fr-si-width);
+              translate: var(--fr-si-x) 0;
+            }
+          </style>
+          <SegmentedControl
+            @value="week"
+            @classes={{hash indicator="test-underline"}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">A much longer label</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const indicator = find('[aria-hidden="true"]') as HTMLElement;
+      const selected = findAll('[role="radio"]')[1] as HTMLElement;
+
+      const indicatorBox = indicator.getBoundingClientRect();
+      const selectedBox = selected.getBoundingClientRect();
+
+      assert.ok(
+        Math.abs(indicatorBox.left - selectedBox.left) < 1.5,
+        'a bar-shaped indicator lines up with the selected item'
+      );
+      assert.ok(
+        Math.abs(indicatorBox.width - selectedBox.width) < 1.5,
+        'and matches its width'
+      );
+      assert.ok(indicatorBox.height < 5, 'while keeping its own height');
     });
   }
 );

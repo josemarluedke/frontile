@@ -153,7 +153,8 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
       size: this.args.size,
       orientation: this.args.orientation,
       isFullWidth: this.args.isFullWidth,
-      isDisabled: this.args.isDisabled
+      isDisabled: this.args.isDisabled,
+      hasSeparators: this.args.hasSeparators
     });
   }
 

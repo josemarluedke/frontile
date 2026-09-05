@@ -163,8 +163,52 @@ const segmentedControl = tv({
 
     isDisabled: {
       true: { base: 'opacity-disabled', item: 'pointer-events-none' }
+    },
+
+    hasSeparators: {
+      true: {
+        item: [
+          // A hairline before every item except the first.
+          'before:absolute before:content-[""]',
+          'before:bg-neutral-muted',
+          'before:transition-opacity before:duration-200',
+          'motion-reduce:before:transition-none',
+          // The indicator's own `<span>` is the container's true first
+          // child, so `first:` (which matches `:first-child`) would never
+          // match any item -- `first-of-type:` matches the first item among
+          // its own tag (`button`/`label`) instead, regardless of what
+          // precedes it.
+          'first-of-type:before:content-none',
+          // Hidden on the selected item and on the one immediately after it,
+          // so the indicator never slides across a visible line. Sibling
+          // selectors already know the order, so nothing has to track indices.
+          'before:opacity-100',
+          'aria-checked:before:opacity-0',
+          '[&[aria-checked=true]+*]:before:opacity-0',
+          // Form mode has no aria-checked; key off the checked input instead.
+          'has-[:checked]:before:opacity-0',
+          '[&:has(:checked)+*]:before:opacity-0'
+        ]
+      }
     }
   },
+
+  compoundVariants: [
+    {
+      hasSeparators: true,
+      orientation: 'horizontal',
+      class: {
+        item: 'before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-px before:h-4'
+      }
+    },
+    {
+      hasSeparators: true,
+      orientation: 'vertical',
+      class: {
+        item: 'before:top-0 before:left-1/2 before:-translate-x-1/2 before:h-px before:w-4'
+      }
+    }
+  ],
 
   defaultVariants: {
     mode: 'button',
