@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { next } from '@ember/runloop';
 import { fn } from '@ember/helper';
@@ -15,6 +15,28 @@ import { type containerPlacement } from '../../-private/types';
 import { useStyles } from '@frontile/theme';
 import type Owner from '@ember/owner';
 import type { SafeString } from '@ember/template';
+
+/**
+ * Defers `fn` to the next runloop turn, skipping it if the component has
+ * started (or finished) being destroyed by then. Shared by `measure` and
+ * `syncTimers`, which each write a tracked property from a place Glimmer
+ * still considers "rendering" (a modifier's install, or a callback invoked
+ * synchronously during render) — writing immediately there trips the
+ * "attempted to update a value after using it in this computation"
+ * assertion, so the write has to land one runloop turn later instead.
+ */
+function deferWhileAlive(
+  component: { isDestroying: boolean; isDestroyed: boolean },
+  fn: () => void
+): void {
+  next(() => {
+    if (component.isDestroying || component.isDestroyed) {
+      return;
+    }
+
+    fn();
+  });
+}
 
 interface NotificationsContainerSignature {
   Args: {
@@ -143,10 +165,12 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
    * Newest first, for every placement. The placement only decides which edge
    * the stack is pinned to and which way it grows, never the order.
    */
+  @cached
   get stackOrder(): Notification<Record<string, unknown>>[] {
     return this.notifications.notifications.slice().reverse();
   }
 
+  @cached
   get stack(): NotificationStack {
     return new NotificationStack({
       heights: this.stackOrder.map(
@@ -181,19 +205,14 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
 
     // The card's measure modifier calls this synchronously while installing,
     // i.e. mid-render, while other cards' geometry is still being read from
-    // `this.heights` in the same computation. Deferring the write to the next
-    // runloop turn avoids the "updated after being used" assertion. Note that
-    // `next()` schedules via a 1ms `_backburner.later(...)` timer, which lands
-    // *after* the current frame paints — so the first painted frame still
-    // renders with `heights` empty (`containerHeight: 0px`, every collapsed
-    // card at `height: 0px`), corrected one macrotask later. Since the stack
-    // carries `transition-[height] duration-400`, that correction is a
-    // visible height animation from 0 on first appearance.
-    next(() => {
-      if (this.isDestroying || this.isDestroyed) {
-        return;
-      }
-
+    // `this.heights` in the same computation — see `deferWhileAlive`. Note
+    // that `next()` schedules via a 1ms `_backburner.later(...)` timer, which
+    // lands *after* the current frame paints — so the first painted frame
+    // still renders with `heights` empty (`containerHeight: 0px`, every
+    // collapsed card at `height: 0px`), corrected one macrotask later. Since
+    // the stack carries `transition-[height] duration-400`, that correction
+    // is a visible height animation from 0 on first appearance.
+    deferWhileAlive(this, () => {
       if (this.heights.get(notification) === height) {
         return;
       }
@@ -266,51 +285,37 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   /**
    * `expand()`/`collapse()` only touch the timers that exist at the moment
    * the pointer enters or leaves the stack. That leaves two gaps: a toast
-   * added (or a `promise()` settling into its own timer via
-   * `setupAutoRemoval`) while the stack is already expanded starts
-   * *running*, and can auto-dismiss under the cursor; and with `@expand=
-   * {{true}}` `isExpanded` is permanently true but `expand()` never runs at
-   * all, so none of its timers are ever paused.
+   * added (or a `promise()` settling into its own timer) while the stack is
+   * already expanded starts *running*, and can auto-dismiss under the
+   * cursor; and with `@expand={{true}}`, `isExpanded` is permanently true
+   * but `expand()`'s hover handler never runs at all, so nothing ever pauses
+   * those timers either.
    *
-   * This modifier is the durable fix. It's invoked with `stackOrder` and
-   * `isExpanded` as *positional arguments* (see the template) rather than
-   * only reading them off `this` inside the callback — a function-based
-   * modifier only re-runs when Glimmer sees its own args change; reading
-   * other tracked state from inside the callback without also passing it
-   * as an arg does not reliably trigger a re-invocation. Passing them as
-   * args guarantees this runs again the instant a new notification (and
-   * thus a new timer) appears, or the moment `isExpanded` flips.
-   *
-   * The pause itself is deferred via `next()`, for the same reason
-   * `measure()` below defers its write: `Timer#pause()` reads `isRunning`
-   * (to no-op if already paused) before writing it, and doing that
-   * read-then-write on a tracked property from *within* a modifier's
-   * update — which Glimmer treats as still "rendering" — trips the
-   * "attempted to update a value after using it in this computation"
-   * assertion. Deferring one runloop turn moves the mutation safely
-   * outside that render transaction. `Timer#pause()` is a no-op on an
-   * already-paused timer, so this is safe to run redundantly alongside
-   * `expand()`.
+   * This modifier reconciles the invariant "a timer runs iff the stack is
+   * not expanded" for every straggler. It re-runs whenever `stackOrder` or
+   * `isExpanded` — passed as *positional arguments* (see the template)
+   * rather than only read off `this` inside the callback, since a
+   * function-based modifier only re-runs when Glimmer sees its own args
+   * change — but the deferred pass below reads `this.isExpanded` fresh
+   * rather than trusting the `isExpanded` captured here: without that, a
+   * collapse landing in the window between this being scheduled and it
+   * actually running would have its resume silently undone by a stale
+   * pause queued moments earlier.
    */
   syncTimers = modifier(
     (
       _element: Element,
-      [stackOrder, isExpanded]: [
-        Notification<Record<string, unknown>>[],
-        boolean
-      ]
+      [stackOrder]: [Notification<Record<string, unknown>>[], boolean]
     ) => {
-      if (!isExpanded) {
-        return;
-      }
-
-      next(() => {
-        if (this.isDestroying || this.isDestroyed) {
-          return;
-        }
+      deferWhileAlive(this, () => {
+        const shouldPause = this.isExpanded;
 
         stackOrder.forEach((notification) => {
-          notification.timer?.pause();
+          if (shouldPause) {
+            notification.timer?.pause();
+          } else {
+            notification.timer?.resume();
+          }
         });
       });
     }

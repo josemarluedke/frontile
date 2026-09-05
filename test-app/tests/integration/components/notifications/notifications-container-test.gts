@@ -18,6 +18,13 @@ import { registerCustomStyles, useStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { cell } from 'ember-resources';
 
+/** A plain real-time wait, deliberately bypassing Ember's test waiters —
+ * unlike `settled()`, it does not block on other pending runloop timers
+ * (e.g. a notification's own still-running real auto-dismiss timer). Used
+ * only to give a `next()`-deferred callback (~1ms) time to run. */
+const sleep = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 // Captured before the `registerCustomStyles` override below replaces
 // `notificationsContainer` for the rest of this suite, so tests can still
 // assert against the real, shipped classes (e.g. the pointer-events
@@ -644,6 +651,57 @@ module(
         service.notifications[0]!.timer!.isRunning,
         'a timer created while the stack is already expanded starts paused, not running'
       );
+    });
+
+    test('a collapse landing in the syncTimers deferred window is not overwritten by a stale re-pause', async function (assert) {
+      // Regression test for a race in `syncTimers`: the modifier reruns
+      // synchronously whenever a new notification arrives while the stack
+      // is already expanded, and defers the actual pause via `next()`. If
+      // that deferred pass trusted the `isExpanded` value captured at the
+      // moment it was *scheduled* instead of reading current state when it
+      // actually runs, a collapse landing in the window before it fires
+      // would have its resume silently undone by a stale re-pause.
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      await render(<template><NotificationsContainer /></template>);
+
+      const container = find('.notifications-container') as HTMLElement;
+      container.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+
+      service.add('Late arrival', { duration: 10000 });
+      // Flush the render (so `syncTimers` reruns and schedules its deferred
+      // pass while `isExpanded` is still true) without draining the
+      // runloop's scheduled timers yet — the point is to collapse *before*
+      // that deferred pass has had a chance to run.
+      await rerender();
+
+      const timer = service.notifications[0]!.timer!;
+
+      try {
+        container.dispatchEvent(
+          new MouseEvent('mouseleave', { bubbles: true })
+        );
+
+        assert.true(
+          timer.isRunning,
+          'collapse resumes the timer synchronously'
+        );
+
+        // Give the deferred `syncTimers` pass (scheduled while still
+        // expanded) time to run, without going through `settled()` — that
+        // would also wait for this notification's own still-pending real
+        // 10s auto-dismiss timer to fire for real.
+        await sleep(50);
+
+        assert.true(
+          timer.isRunning,
+          'the deferred pass reads current state, so it does not re-pause a timer that was already resumed'
+        );
+      } finally {
+        timer.clear();
+      }
     });
 
     test('@expand={{true}} pauses timers for notifications added after mount, not just ones present at render', async function (assert) {
