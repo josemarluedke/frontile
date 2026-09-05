@@ -5,6 +5,7 @@ import { debounce } from '@ember/runloop';
 import Checkbox from './checkbox';
 import CheckboxGroup from './checkbox-group';
 import Input from './input';
+import InputOtp from './input-otp';
 import Radio from './radio';
 import RadioGroup from './radio-group';
 import Select from './select';
@@ -55,6 +56,16 @@ interface FieldSignature<T extends Record<string, unknown> = FormDataCompiled> {
         >;
         Input: WithBoundArgs<
           typeof Input,
+          | 'name'
+          | 'errors'
+          | 'value'
+          | 'onChange'
+          | 'onInput'
+          | 'onBlur'
+          | 'isDisabled'
+        >;
+        InputOtp: WithBoundArgs<
+          typeof InputOtp,
           | 'name'
           | 'errors'
           | 'value'
@@ -191,6 +202,16 @@ class Field<
         )
         Input=(component
           Input
+          name=@name
+          errors=this.fieldErrors
+          value=this.fieldValue
+          isDisabled=@disabled
+          onChange=this.handleChange
+          onInput=this.handleInput
+          onBlur=this.handleBlur
+        )
+        InputOtp=(component
+          InputOtp
           name=@name
           errors=this.fieldErrors
           value=this.fieldValue
