@@ -25,7 +25,7 @@ accept several, e.g. `@shortcut={{array "/" "mod+k"}}`.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { CommandDialog, Button } from 'frontile';
+import { CommandDialog, Button, Kbd } from 'frontile';
 import {
   UserIcon,
   StarIcon,
@@ -91,9 +91,7 @@ export default class CommandDialogExample extends Component {
     <div class='flex items-center gap-4'>
       <Button @appearance='outlined' {{on 'click' this.open}}>
         Open palette
-        <kbd
-          class='ml-2 rounded border border-neutral-soft px-1.5 font-body text-body-2xs text-neutral'
-        >⌘K</kbd>
+        <Kbd @keys='mod+k' @size='sm' @appearance='outlined' @class='ml-2' />
       </Button>
       {{#if this.lastSelected}}
         <span class='font-body text-body-sm text-neutral'>Selected:

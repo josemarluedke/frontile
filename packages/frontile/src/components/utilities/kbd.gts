@@ -74,6 +74,10 @@ export interface KbdSignature {
      */
     class?: string;
 
+    /**
+     * Custom CSS classes for styling the individual slots: `base` for the
+     * wrapper, `key` for each cap, `separator` for the character between caps.
+     */
     classes?: SlotsToClasses<KbdSlots>;
   };
   Element: HTMLElement;
@@ -115,9 +119,23 @@ class Kbd extends Component<KbdSignature> {
   /**
    * The merged cap is read out as its key names, since a run of glyphs like
    * `⌘⇧P` is unintelligible to a screen reader.
+   *
+   * Undefined when no key in the run needs one, so a merged `esc` is not
+   * announced "Esc Escape" — the same rule the split branch applies per key.
    */
-  get mergedLabel(): string {
+  get mergedLabel(): string | undefined {
+    if (!this.keys.some((key) => key.needsSpokenLabel)) {
+      return undefined;
+    }
+
     return this.keys.map((key) => key.name ?? key.glyph).join(' ');
+  }
+
+  /** The merged cap names its keys on hover, as each split cap does. */
+  get mergedTitle(): string | undefined {
+    const named = this.keys.filter((key) => key.name);
+
+    return named.length ? named.map((key) => key.name).join(' ') : undefined;
   }
 
   get classNames() {
@@ -151,9 +169,17 @@ class Kbd extends Component<KbdSignature> {
           data-test-id="kbd-key"
         >{{yield}}</kbd>
       {{else if this.isMerged}}
-        <kbd class={{this.classNames.key}} data-test-id="kbd-key">
-          <span aria-hidden="true">{{this.mergedGlyph}}</span>
-          <span class="sr-only">{{this.mergedLabel}}</span>
+        <kbd
+          class={{this.classNames.key}}
+          data-test-id="kbd-key"
+          title={{this.mergedTitle}}
+        >
+          {{#if this.mergedLabel}}
+            <span aria-hidden="true">{{this.mergedGlyph}}</span>
+            <span class="sr-only">{{this.mergedLabel}}</span>
+          {{else}}
+            {{this.mergedGlyph}}
+          {{/if}}
         </kbd>
       {{else}}
         {{#each this.renderedKeys as |rendered|}}

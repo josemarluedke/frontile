@@ -55,6 +55,30 @@ module(
           );
       });
 
+      test('@shortcutAppearance threads down to the rendered Kbd', async function (assert) {
+        await render(
+          <template>
+            <Listbox @selectionMode="none" @shortcutAppearance="plain" as |l|>
+              <l.Item @key="save" @shortcut="mod+s">Save</l.Item>
+              <l.Group @title="More" as |g|>
+                <g.Item @key="print" @shortcut="mod+p">Print</g.Item>
+              </l.Group>
+            </Listbox>
+          </template>
+        );
+
+        const caps = document.querySelectorAll(
+          '[data-test-id="listbox-item-shortcut"] [data-test-id="kbd-key"]'
+        );
+
+        assert.true(caps.length > 0, 'shortcuts render through Kbd');
+        // `plain` is what Command asks for; without threading these would be
+        // `inherit` and keep their hairline box.
+        for (const cap of caps) {
+          assert.dom(cap).hasClass('border-0');
+        }
+      });
+
       test('a shortcut with no separator still renders verbatim', async function (assert) {
         // Existing consumers pass display strings like this; adopting Kbd must
         // not reinterpret them.

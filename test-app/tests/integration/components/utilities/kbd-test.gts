@@ -107,6 +107,28 @@ module('Integration | Component | @frontile/utilities/Kbd', function (hooks) {
         );
     });
 
+    test('a merged cap follows the same two rules as a split one', async function (assert) {
+      await render(<template><Kbd @keys="esc" @display="merged" /></template>);
+
+      assert
+        .dom('[data-test-id="kbd-key"] .sr-only')
+        .doesNotExist(
+          'Esc reads correctly on its own, so merging must not make it say "Esc Escape"'
+        );
+      assert.dom('[data-test-id="kbd-key"]').hasAttribute('title', 'Escape');
+
+      await render(
+        <template><Kbd @keys="mod+shift+p" @display="merged" /></template>
+      );
+
+      assert
+        .dom('[data-test-id="kbd-key"] .sr-only')
+        .hasText('Command Shift P', 'a run containing symbols is spoken');
+      assert
+        .dom('[data-test-id="kbd-key"]')
+        .hasAttribute('title', 'Command Shift');
+    });
+
     test('named keys carry a title; literals do not', async function (assert) {
       await render(<template><Kbd @keys="mod+k" /></template>);
 

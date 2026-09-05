@@ -148,7 +148,9 @@ import { Kbd } from 'frontile';
 ```
 
 `Listbox`, `Dropdown` and `Command` render their items' `@shortcut` through
-`Kbd`. They default to `inherit`; override with `@shortcutAppearance`.
+`Kbd`. Their keycaps default to `inherit`, so a shortcut stays legible on an
+active or filled row; pass `@shortcutAppearance` on the `Listbox` or `Dropdown`
+to change every item at once.
 
 ## Platform
 

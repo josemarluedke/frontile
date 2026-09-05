@@ -518,3 +518,9 @@
 .prose h5 { @apply font-header text-header-md; }
 .prose h6 { @apply font-header text-header-sm; }
 .prose :is(code, kbd, samp, pre) { @apply font-code; }
+/* Frontile's Kbd picks font-label on purpose: ⌘ ⇧ ⌥ ⌃ render poorly in most
+   monospace faces. The rule above is more specific than a utility class, so
+   without this the component's own choice loses inside docs prose. Plain
+   markdown <kbd> in prose tables stays monospace. */
+.prose [data-component='kbd'],
+.prose [data-component='kbd'] kbd { @apply font-label; }

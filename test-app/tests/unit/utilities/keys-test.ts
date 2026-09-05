@@ -72,6 +72,43 @@ module('Unit | utils | keys', function (hooks) {
       );
     });
 
+    test('every alias resolves to the glyph and name of its canonical key', function (assert) {
+      setKbdPlatform('apple');
+
+      // One case per alias group, so a typo in the table is caught rather
+      // than being covered only by the handful used elsewhere.
+      const ALIASES: [string, string, string][] = [
+        ['cmd', '⌘', 'Command'],
+        ['command', '⌘', 'Command'],
+        ['control', '⌃', 'Control'],
+        ['option', '⌥', 'Option'],
+        ['windows', '⊞', 'Windows'],
+        ['fn', 'fn', 'Function'],
+        ['return', '↵', 'Enter'],
+        ['escape', 'Esc', 'Escape'],
+        ['tab', '⇥', 'Tab'],
+        ['spacebar', '␣', 'Space'],
+        ['backspace', '⌫', 'Backspace'],
+        ['delete', '⌦', 'Delete'],
+        ['capslock', '⇪', 'Caps Lock'],
+        ['arrowup', '↑', 'Arrow up'],
+        ['arrowdown', '↓', 'Arrow down'],
+        ['arrowleft', '←', 'Arrow left'],
+        ['arrowright', '→', 'Arrow right'],
+        ['pageup', '⇞', 'Page up'],
+        ['pagedown', '⇟', 'Page down'],
+        ['home', '↖', 'Home'],
+        ['end', '↘', 'End']
+      ];
+
+      for (const [token, glyph, name] of ALIASES) {
+        const key = parseKeys(token)[0];
+
+        assert.strictEqual(key?.glyph, glyph, `${token} glyph`);
+        assert.strictEqual(key?.name, name, `${token} name`);
+      }
+    });
+
     test('a string with no separator is a single verbatim key', function (assert) {
       // Listbox and Dropdown pass `@shortcut` strings like this today, so this
       // is the guarantee that adopting Kbd there changes nothing.

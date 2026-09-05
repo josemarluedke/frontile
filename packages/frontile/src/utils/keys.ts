@@ -1,3 +1,5 @@
+import { tracked } from '@glimmer/tracking';
+
 /**
  * The key table and grammar behind `Kbd`.
  *
@@ -88,7 +90,23 @@ const KEYS: Record<string, KeyEntry> = {
   end: { glyph: '↘', name: 'End' }
 };
 
-let setting: KbdPlatformSetting = 'auto';
+/**
+ * Tracked so `setKbdPlatform` invalidates keycaps that have already rendered.
+ * With plain module variables a call after first render changed nothing on
+ * screen, which is a trap for an app that resolves its platform
+ * asynchronously.
+ */
+class PlatformState {
+  @tracked setting: KbdPlatformSetting = 'auto';
+}
+
+const state = new PlatformState();
+
+/**
+ * Deliberately NOT tracked. It is an immutable fact about the environment, and
+ * the lazy `??=` below both reads and writes it during render — which on a
+ * tracked property trips Glimmer's backtracking assertion.
+ */
 let detected: KbdPlatform | undefined;
 
 /**
@@ -113,13 +131,13 @@ export function isApplePlatform(): boolean {
  * - in an app that already knows the platform from the request
  */
 export function setKbdPlatform(platform: KbdPlatformSetting): void {
-  setting = platform;
+  state.setting = platform;
 }
 
 /** The platform in force, with `'auto'` already resolved. */
 export function resolveKbdPlatform(): KbdPlatform {
-  if (setting !== 'auto') {
-    return setting;
+  if (state.setting !== 'auto') {
+    return state.setting;
   }
 
   // Detection is cached: it cannot change within a page, and `Kbd` is cheap

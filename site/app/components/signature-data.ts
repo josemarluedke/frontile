@@ -4451,6 +4451,20 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
+        identifier: 'shortcutAppearance',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span> | <span class="hljs-string">\'faded\'</span> | <span class="hljs-string">\'inherit\'</span> | <span class="hljs-string">\'plain\'</span>',
+          items: ["'default'", "'outlined'", "'faded'", "'inherit'", "'plain'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The appearance of the keycap rendered for each item's <code>@shortcut</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'inherit'" } },
+        defaultValue: '<span class="hljs-string">\'inherit\'</span>',
+      },
+      {
         identifier: 'target',
         type: {
           type: '<span class="hljs-keyword">enum</span>',
@@ -11476,7 +11490,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: '',
+        description:
+          'Custom CSS classes for styling the individual slots: <code>base</code> for the\nwrapper, <code>key</code> for each cap, <code>separator</code> for the character between caps.',
         tags: {},
       },
       {

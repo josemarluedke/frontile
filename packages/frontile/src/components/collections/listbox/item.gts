@@ -6,6 +6,7 @@ import { on } from '@ember/modifier';
 import { useStyles } from '@frontile/theme';
 import { Divider } from '../../utilities/divider';
 import { Kbd } from '../../utilities/kbd';
+import type { KbdSignature } from '../../utilities/kbd';
 import { guidFor } from '@ember/object/internals';
 import type { TOC } from '@ember/component/template-only';
 import type { ListManager, ListItem } from '../../../utils/listManager';
@@ -37,7 +38,7 @@ export interface ListboxItemSignature {
      *
      * @defaultValue 'inherit'
      */
-    shortcutAppearance?: 'default' | 'outlined' | 'faded' | 'inherit' | 'plain';
+    shortcutAppearance?: KbdSignature['Args']['appearance'];
     onClick?: () => void;
     class?: string;
     withDivider?: boolean;
