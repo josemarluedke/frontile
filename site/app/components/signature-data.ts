@@ -5029,7 +5029,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the autocomplete component.\nIf enabled, this allows users to clear the selection and input text.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> in the listbox, while this is a separate affordance\nyou opt into for exactly the purpose of emptying the field. Since\n<code>allowEmpty</code> defaults to false, honouring it here would render the button\ndead by default.</p>\n<p>No clear button is rendered on a disabled Autocomplete.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -5149,7 +5149,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Callback fired when the autocomplete component loses focus.',
+          '<p>Callback fired when focus leaves the Autocomplete.</p>\n<p>"Leaves the Autocomplete" means the whole control: the input <em>and</em> its\ndropdown, which is rendered outside the input in the DOM. Moving focus\nbetween them -- which is what clicking an option does -- is not a blur, so\nthis does not fire while the user is picking an option. It fires once, when\nfocus lands somewhere outside the control (or nowhere, with the dropdown\nclosed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -6409,6 +6409,16 @@ const data: ComponentDoc[] = [
     fileName:
       'packages/frontile/declarations/components/forms/form-feedback.d.ts',
     Args: [
+      {
+        identifier: 'announce',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the element is itself an <code>aria-live</code> region. Set this to <code>false</code>\nwhen something else (such as <code>FormControl</code>, which keeps a persistent\nlive region in the DOM) already announces the messages, so they are not\nannounced twice.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'true' } },
+        defaultValue: '<span class="hljs-literal">true</span>',
+      },
       {
         identifier: 'class',
         type: { type: '<span class="hljs-built_in">string</span>' },
@@ -9082,7 +9092,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">DrawerBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">DrawerFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9102,7 +9112,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">DrawerHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -9596,7 +9606,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
+          raw: '[{ <span class="hljs-title class_">CloseButton</span>: <span class="hljs-title class_">CloseButton</span> (onPress, <span class="hljs-keyword">class</span> <span class="hljs-title class_">bound</span>); <span class="hljs-title class_">Header</span>: <span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound); <span class="hljs-title class_">Body</span>: <span class="hljs-title class_">ModalBody</span> (classFromParent bound); <span class="hljs-title class_">Footer</span>: <span class="hljs-title class_">ModalFooter</span> (classFromParent bound); <span class="hljs-attr">headerId</span>: <span class="hljs-built_in">string</span>; }]',
           items: [
             {
               identifier: '0',
@@ -9616,7 +9626,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Header',
                     type: {
-                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent bound)',
+                      type: '<span class="hljs-title class_">ModalHeader</span> (labelledById, classFromParent, registerSelf bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -11087,7 +11097,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The display format of the value.\nValues are formatted as a percentage by default.',
+          '<p>The display format of the value, passed to <code>Intl.NumberFormat</code>.</p>\n<p>A <code>percent</code> style formats the position on the min/max scale as a\nfraction; every other style formats the raw <code>progress</code> value. With no\nformat options, the value is displayed as a whole percentage.</p>',
         tags: {},
       },
       {
@@ -11341,7 +11351,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'.",
+          "The height for the content in it's collapsed state.\nThe unit of the value should be included, eg. '10px'. Any CSS height is\naccepted (<code>2rem</code>, <code>50%</code>, <code>calc(1rem + 2px)</code>, …); a value the CSS parser\nrejects is ignored and the content collapses to <code>0</code>.",
         tags: { defaultValue: { name: 'defaultValue', value: '0' } },
         defaultValue: '<span class="hljs-number">0</span>',
       },
@@ -13619,6 +13629,401 @@ const data: ComponentDoc[] = [
   {
     package: 'unknown',
     module: 'item',
+    name: 'SegmentedControlItem',
+    fileName:
+      'packages/frontile/declarations/components/buttons/segmented-control/item.d.ts',
+    Args: [
+      {
+        identifier: 'context',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'indicator',
+              type: {
+                type: '<span class="hljs-title class_">SelectionIndicator</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'roving',
+              type: {
+                type: '<span class="hljs-title class_">RovingFocus</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isSelected',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">boolean</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'select',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'registerValue',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">element</span>: <span class="hljs-title class_">HTMLElement</span>, <span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'unregisterValue',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">element</span>: <span class="hljs-title class_">HTMLElement</span>) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isGroupDisabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'itemClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'requestFormSync',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '() => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: true,
+        description:
+          'Supplied by SegmentedControl. Not part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'value',
+        type: { type: 'T' },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The value this item represents. Selecting it calls the control's\n<code>@onChange</code> with exactly this value.",
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to this item's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Disables this item alone: it cannot be clicked and keyboard navigation\nskips over it. The whole control can be disabled with the control's own\n<code>@isDisabled</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-attr">isSelected</span>: <span class="hljs-built_in">boolean</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'isSelected',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="hljs-keyword">enum</span>',
+        raw: '<span class="hljs-title class_">HTMLLabelElement</span> | <span class="hljs-title class_">HTMLButtonElement</span>',
+        items: ['HTMLLabelElement', 'HTMLButtonElement'],
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'segmented-control',
+    name: 'SegmentedControl',
+    fileName:
+      'packages/frontile/declarations/components/buttons/segmented-control/segmented-control.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'item\'</span> | <span class="hljs-string">\'indicator\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'defaultValue',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Sets the initially selected value when the control is used uncontrolled\n(that is, when <code>@value</code> is not provided). Ignored in controlled mode.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
+        defaultValue: '<span class="hljs-literal">undefined</span>',
+      },
+      {
+        identifier: 'hasSeparators',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Draws a hairline between neighbouring items, hidden around the selected\none so the indicator never crosses a visible line.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'secondary\'</span> | <span class="hljs-string">\'tertiary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The colour intent applied to the selected item's indicator and label.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Disables every item. Individual items can be disabled with the item's own\n<code>@isDisabled</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'isFullWidth',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Stretches the control to its container and gives every item equal width.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When set, items render as <code>&#x3C;label></code> wrapping a native radio input under\nthis name, so the control submits with its form. Without it the control\nrenders buttons and reports only through <code>onChange</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Called with the newly selected value when an item is chosen.',
+        tags: {},
+      },
+      {
+        identifier: 'orientation',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'horizontal\'</span> | <span class="hljs-string">\'vertical\'</span>',
+          items: ["'horizontal'", "'vertical'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Lays the items out in a row or a column, and switches the arrow keys that\nmove between them to match.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'horizontal'" } },
+        defaultValue: '<span class="hljs-string">\'horizontal\'</span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The size of the control, driving item padding and text size.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'value',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "<p>The currently selected value. Compared against each item's <code>@value</code> with\n<code>===</code>, so object values must be referentially stable.</p>\n<p>Providing this argument puts the component in controlled mode: the\nselection then only ever reflects what you pass, so pair it with\n<code>@onChange</code> and update your own state. Omit it to let the control track\nthe selection itself, seeded by <code>@defaultValue</code>.</p>",
+        tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'solid\'</span> | <span class="hljs-string">\'ghost\'</span>',
+          items: ["'solid'", "'ghost'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "The visual style of the control's track and indicator.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue: '<span class="hljs-string">\'solid\'</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">SegmentedControlItem</span>&#x3C;T> (context bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'Item',
+                    type: {
+                      type: '<span class="hljs-title class_">SegmentedControlItem</span>&#x3C;T> (context bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'item',
     name: 'ListboxItem',
     fileName:
       'packages/frontile/declarations/components/collections/listbox/item.d.ts',
@@ -13842,7 +14247,8 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description: '',
-        tags: { edefaultValue: { name: 'edefaultValue', value: "'frist'" } },
+        tags: { defaultValue: { name: 'defaultValue', value: "'first'" } },
+        defaultValue: '<span class="hljs-string">\'first\'</span>',
       },
       {
         identifier: 'class',
@@ -16718,7 +17124,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.\nThis option ignores the <code>allowEmpty</code> setting.',
+          '<p>Whether to include a clear button in the select component.\nIf enabled, this allows users to clear the selection.</p>\n<p>This option deliberately overrides <code>allowEmpty</code>: that argument governs\ndeselecting an <em>option</em> (the listbox and the chips both refuse to remove\nthe last one without it), while this is a separate affordance you opt into\nfor exactly the purpose of emptying the field. Since <code>allowEmpty</code> defaults\nto false, honouring it here would render the button dead by default.</p>\n<p>No clear button is rendered on a disabled Select, or with nothing selected.</p>',
         tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
         defaultValue: '<span class="hljs-literal">false</span>',
       },
@@ -16848,7 +17254,8 @@ const data: ComponentDoc[] = [
         },
         isRequired: false,
         isInternal: false,
-        description: 'Callback fired when the select component loses focus.',
+        description:
+          '<p>Callback fired when focus leaves the Select.</p>\n<p>"Leaves the Select" means the whole control: the field <em>and</em> its dropdown,\nwhich is rendered outside the field in the DOM. Moving focus between them\n-- which is what clicking an option does -- is not a blur, so this does not\nfire while the user is picking options, in either selection mode. It fires\nonce, when focus lands somewhere outside the control (or nowhere, with the\ndropdown closed).</p>\n<p>This is what <code>Field</code> drives blur validation from.</p>',
         tags: {},
       },
       {
@@ -17790,17 +18197,6 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'onBlur',
-        type: {
-          type: '<span class="hljs-keyword">function</span>',
-          raw: '() => <span class="hljs-built_in">void</span>',
-        },
-        isRequired: true,
-        isInternal: false,
-        description: '',
-        tags: {},
-      },
-      {
         identifier: 'onFilterInput',
         type: {
           type: '<span class="hljs-keyword">function</span>',
@@ -17820,6 +18216,18 @@ const data: ComponentDoc[] = [
         isRequired: true,
         isInternal: false,
         description: '',
+        tags: {},
+      },
+      {
+        identifier: 'onFocusOut',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">event</span>: <span class="hljs-title class_">FocusEvent</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "Reports the trigger losing focus, as <code>focusout</code> rather than <code>blur</code>: the\nSelect decides whether focus actually left the control from the event's\n<code>relatedTarget</code>, and browsers only guarantee that on <code>focusout</code>.",
         tags: {},
       },
       {
@@ -18093,6 +18501,18 @@ const data: ComponentDoc[] = [
         description: '',
         tags: { internal: { name: 'internal', value: '' } },
       },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Drawer knows whether it may point <code>aria-labelledby</code> at us.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
     ],
     Blocks: [
       {
@@ -18240,6 +18660,18 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: true,
         description: '',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'registerSelf',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">isRendered</span>: <span class="hljs-built_in">boolean</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          'Called with <code>true</code> when this header is rendered and <code>false</code> when it is\nremoved, so the Modal knows whether it may point <code>aria-labelledby</code> at us.',
         tags: { internal: { name: 'internal', value: '' } },
       },
     ],
