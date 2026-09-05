@@ -151,6 +151,13 @@ class InputOtp extends Component<InputOtpSignature> {
    */
   @tracked elementValue: string = this.args.value || '';
 
+  /**
+   * The last value we actually handed to the parent. It is what separates a
+   * parent that has *changed* the value from one that is merely lagging behind
+   * our own last emission -- the two are indistinguishable from `@value` alone.
+   */
+  @tracked lastNotifiedValue: string = this.args.value || '';
+
   @tracked isFocused = false;
   @tracked selectionStart: number | null = null;
   @tracked selectionEnd: number | null = null;
@@ -216,12 +223,26 @@ class InputOtp extends Component<InputOtpSignature> {
     );
   }
 
+  /**
+   * The cells are decoration for the real `<input>`, so they mirror what that
+   * element actually holds -- the browser guarantees that is what the user
+   * typed. `@value` wins only when the parent *changed* it: an external set (a
+   * "Clear" button), a transform, or a deliberate rejection. A `@value` that
+   * still equals our last emission is the parent echoing or lagging us -- most
+   * commonly an `@onChange`-only parent, since the DOM `change` event does not
+   * fire until blur -- and rendering that would leave the cells empty for the
+   * whole time the user is typing, and mis-clamp `mirroredSelection` with it.
+   */
   get currentValue(): string {
     if (!this.isControlled) {
       return this.uncontrolledValue;
     }
 
-    return typeof this.args.value === 'undefined'
+    if (typeof this.args.value === 'undefined') {
+      return this.elementValue;
+    }
+
+    return this.args.value === this.lastNotifiedValue
       ? this.elementValue
       : this.args.value;
   }
@@ -391,10 +412,17 @@ class InputOtp extends Component<InputOtpSignature> {
     this.elementValue = next;
 
     if (this.isControlled) {
+      // `lastNotifiedValue` moves only when the parent is genuinely told, so an
+      // `@onChange`-only parent is not credited with knowing about an `input`
+      // it never heard.
       if (notify === 'input') {
-        this.args.onInput?.(next, event);
-      } else {
-        this.args.onChange?.(next, event);
+        if (this.args.onInput) {
+          this.lastNotifiedValue = next;
+          this.args.onInput(next, event);
+        }
+      } else if (this.args.onChange) {
+        this.lastNotifiedValue = next;
+        this.args.onChange(next, event);
       }
     } else {
       this.uncontrolledValue = next;

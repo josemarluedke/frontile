@@ -8,11 +8,26 @@ import {
   blur,
   focus,
   settled,
-  click
+  click,
+  triggerEvent
 } from '@ember/test-helpers';
 import { cell as trackedCell } from 'ember-resources';
 
 import { Form, InputOtp } from 'frontile';
+
+/**
+ * Real typing, as opposed to `fillIn`: only an `input` event, no `change`. The
+ * native setter is used so the element registers a genuine value change.
+ */
+async function typeInto(input: HTMLInputElement, value: string): Promise<void> {
+  const setVal = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'value'
+  )?.set as (this: HTMLInputElement, v: string) => void;
+
+  setVal.call(input, value);
+  await triggerEvent(input, 'input');
+}
 
 async function setCaret(at: number, to = at): Promise<void> {
   const input = find('[data-component="input-otp-input"]') as HTMLInputElement;
@@ -165,6 +180,122 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert
       .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
       .hasText('7');
+  });
+
+  test('controlled with @onChange only: real typing updates the cells before blur', async function (assert) {
+    // `fillIn` fires input AND change in one go, so the parent is always fed
+    // back inside a test. Real typing fires only `input` until blur, which is
+    // when the DOM `change` event -- and therefore `@onChange` -- happens. The
+    // cells must still show what the element holds in that window.
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @value={{value.current}} @onChange={{update}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+
+    await typeInto(input, '1');
+    await typeInto(input, '12');
+
+    assert.strictEqual(value.current, '', 'the parent has not been told yet');
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert
+      .dom(cells[0] as Element)
+      .hasText('1', 'the first cell shows what was typed');
+    assert
+      .dom(cells[1] as Element)
+      .hasText('2', 'the second cell shows what was typed');
+  });
+
+  test('controlled with @onInput: the parent feeding back per keystroke renders once, correctly', async function (assert) {
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @value={{value.current}} @onInput={{update}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeInto(input, '1');
+    await typeInto(input, '12');
+
+    assert.strictEqual(value.current, '12', 'the parent is in step');
+    assert.strictEqual(input.value, '12', 'the element was not rewritten');
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('1');
+    assert.dom(cells[1] as Element).hasText('2');
+  });
+
+  test('controlled with @onInput: a parent that rejects the value wins over what was typed', async function (assert) {
+    // The parent was told, and deliberately did not take it. That is a
+    // rejection, not a lag, and controlled semantics must hold.
+    const value = trackedCell<string>('');
+    const reject = () => {};
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @value={{value.current}} @onInput={{reject}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeInto(input, '1');
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('', 'the cell shows the parent value, not the typed one');
+  });
+
+  test('controlled with @onChange only: a rejecting parent takes effect at blur', async function (assert) {
+    // The trade-off of mirroring the element while typing: an @onChange-only
+    // parent has not been told anything yet, so the rejection cannot be known
+    // until `change` fires -- which the DOM does on blur.
+    const value = trackedCell<string>('');
+    const reject = () => {};
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @value={{value.current}} @onChange={{reject}} />
+      </template>
+    );
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await focus(input);
+    await typeInto(input, '1');
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('1', 'while typing, the cells mirror the element');
+
+    await triggerEvent(input, 'change');
+    await blur(input);
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('', 'once the parent has spoken, its value wins');
   });
 
   test('@onInput fires per keystroke and @onBlur on blur', async function (assert) {

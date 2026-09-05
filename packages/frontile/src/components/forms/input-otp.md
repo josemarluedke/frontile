@@ -68,7 +68,9 @@ export default class VerifyCodeExample extends Component {
 
 ## Controlled
 
-Pair `@value` with `@onChange` to own the value yourself.
+Pair `@value` with `@onInput` to own the value yourself. `@onInput` fires on every
+keystroke; `@onChange` follows the DOM `change` event, which on a text input fires on
+blur, so a parent wired only to `@onChange` hears nothing until the field is left.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -78,13 +80,13 @@ import { InputOtp } from 'frontile';
 export default class ControlledOtpExample extends Component {
   @tracked code = '';
 
-  handleChange = (value: string) => {
+  handleInput = (value: string) => {
     this.code = value;
   };
 
   <template>
     <div class='flex flex-col gap-2'>
-      <InputOtp @label='Verification code' @value={{this.code}} @onChange={{this.handleChange}} />
+      <InputOtp @label='Verification code' @value={{this.code}} @onInput={{this.handleInput}} />
       <p>Current value: {{this.code}}</p>
     </div>
   </template>
