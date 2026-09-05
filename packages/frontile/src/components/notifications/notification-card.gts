@@ -102,8 +102,17 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
   get style(): SafeString {
     const { geometry, notification } = this.args;
+    // The theme's `transition-[transform,opacity,height]` needs a duration
+    // per property, in that order. `transform` and `height` are the stack's
+    // own expand/collapse choreography — fixed at 400ms to match the
+    // container's own height transition (see notifications-container.ts)
+    // and the design spec's "transform 400ms" — while `opacity` is the one
+    // property `@transitionDuration` actually documents governing (the
+    // enter/exit fade). Letting `transitionDuration` also slow `transform`
+    // and `height` would silently turn a "slow down the removal fade" call
+    // into "slow down every hover expand/collapse" too.
     const declarations = [
-      `transition-duration: ${notification.transitionDuration}ms, ${notification.transitionDuration}ms, 400ms`
+      `transition-duration: 400ms, ${notification.transitionDuration}ms, 400ms`
     ];
 
     // Cards are pinned to the placement edge so the stack grows away from it.
@@ -124,13 +133,22 @@ class NotificationCard extends Component<NotificationCardSignature> {
       const offset = this.isTopPlacement ? '-100%' : '100%';
       declarations.push(
         `opacity: 0`,
-        `transform: translateY(${offset}) scale(0.95)`
+        `transform: translateY(${offset}) scale(0.95)`,
+        // A card can be transparent-and-collapsed the instant it starts
+        // exiting; keep it out of the click path either way.
+        `pointer-events: none`
       );
 
       if (geometry) {
         declarations.push(
           `z-index: ${geometry.zIndex}`,
-          `transform-origin: ${geometry.transformOrigin}`
+          `transform-origin: ${geometry.transformOrigin}`,
+          // Preserve the collapsed height clamp through the exit
+          // transition — otherwise a non-front collapsed card snaps from
+          // its clamped height to `auto` for the slide-out.
+          geometry.height === null
+            ? `height: auto`
+            : `height: ${geometry.height}px`
         );
       }
 
@@ -143,6 +161,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
         `transform-origin: ${geometry.transformOrigin}`,
         `z-index: ${geometry.zIndex}`,
         `opacity: ${geometry.opacity}`,
+        `pointer-events: ${geometry.pointerEvents}`,
         geometry.height === null
           ? `height: auto`
           : `height: ${geometry.height}px`

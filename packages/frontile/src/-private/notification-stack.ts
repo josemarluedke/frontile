@@ -39,6 +39,13 @@ interface CardGeometry {
   height: number | null;
 
   transformOrigin: 'top center' | 'bottom center';
+
+  /**
+   * `'none'` when the card is fully transparent (collapsed beyond
+   * `visibleToasts`), so it cannot swallow clicks meant for the page beneath
+   * it; `'auto'` otherwise.
+   */
+  pointerEvents: 'auto' | 'none';
 }
 
 /**
@@ -97,17 +104,19 @@ class NotificationStack {
         zIndex,
         opacity: 1,
         height: null,
-        transformOrigin: this.transformOrigin
+        transformOrigin: this.transformOrigin,
+        pointerEvents: 'auto'
       };
     }
 
     const offset = index * this.gap;
     const scale = Math.max(0, 1 - index * SCALE_STEP);
+    const isVisible = index < this.visibleToasts;
 
     return {
       transform: `translateY(${this.directionSign * offset}px) scale(${scale})`,
       zIndex,
-      opacity: index < this.visibleToasts ? 1 : 0,
+      opacity: isVisible ? 1 : 0,
       // The front card must size to its own content (`null`). Clamping it to
       // `frontHeight` would be self-referential — `frontHeight` *is* the
       // front card's own measurement — and would permanently lock in
@@ -115,7 +124,11 @@ class NotificationStack {
       // description) finished laying out. Only cards behind the front one
       // need clamping, so a taller card further back can't poke out past it.
       height: index === 0 ? null : this.frontHeight,
-      transformOrigin: this.transformOrigin
+      transformOrigin: this.transformOrigin,
+      // A card past `visibleToasts` is fully transparent while collapsed;
+      // without this it would still sit in the fixed-position stack and
+      // swallow clicks meant for the page beneath it.
+      pointerEvents: isVisible ? 'auto' : 'none'
     };
   }
 

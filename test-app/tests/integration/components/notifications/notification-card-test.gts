@@ -455,5 +455,25 @@ module(
         sinon.restore();
       }
     });
+
+    test('@transitionDuration only governs the opacity fade, not the fixed 400ms transform/height animation', async function (assert) {
+      notification.current = new Notification({}, 'My message', {
+        transitionDuration: 1000
+      });
+
+      await render(template);
+
+      const style =
+        document
+          .querySelector('[data-test-notification]')
+          ?.getAttribute('style') || '';
+
+      assert.ok(
+        style.includes('transition-duration: 400ms, 1000ms, 400ms'),
+        `transform and height stay fixed at 400ms regardless of ` +
+          `@transitionDuration; only the opacity slot (the middle value) ` +
+          `follows it. Got: "${style}"`
+      );
+    });
   }
 );

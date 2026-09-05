@@ -58,6 +58,31 @@ module('Unit | @frontile/notifications/NotificationStack', function () {
     assert.strictEqual(stack.geometryFor(3).opacity, 0);
   });
 
+  test('collapsed: cards past visibleToasts are also excluded from the click path', function (assert) {
+    const stack = build({ heights: [60, 80, 100, 40], visibleToasts: 3 });
+
+    assert.strictEqual(
+      stack.geometryFor(2).pointerEvents,
+      'auto',
+      'a visible card stays clickable'
+    );
+    assert.strictEqual(
+      stack.geometryFor(3).pointerEvents,
+      'none',
+      'an invisible card cannot swallow clicks'
+    );
+  });
+
+  test('expanded: every card is visible and clickable', function (assert) {
+    const stack = build({
+      heights: [60, 80, 100, 40],
+      isExpanded: true,
+      visibleToasts: 1
+    });
+
+    assert.strictEqual(stack.geometryFor(3).pointerEvents, 'auto');
+  });
+
   test('expanded: cards offset by the summed heights of the cards in front', function (assert) {
     const stack = build({ isExpanded: true });
 
