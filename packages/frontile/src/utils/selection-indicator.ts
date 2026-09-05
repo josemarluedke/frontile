@@ -123,19 +123,20 @@ class SelectionIndicator {
   };
 
   /**
-   * Tears down the observer and any pending ready scheduling. Call when the
-   * consumer is done with this instance outside of modifier teardown.
+   * Everything the container modifier's destructor undoes.
+   *
+   * There is deliberately no public `destroy`. Both of this utility's entry
+   * points are modifiers, so Ember already owns their teardown -- an element
+   * modifier is a destroyable child of the component that rendered it, and its
+   * destructor runs when that component is torn down. A second, manual
+   * shutdown would only be reachable for an instance that never ran a
+   * modifier, which by definition has nothing to clean up. `listManager` in
+   * this repo hooks its cleanup the same way, for the same reason.
+   *
+   * The target is not reset here: it belongs to `setupTarget`, whose own
+   * destructor clears it, and a container that unmounts while its selected
+   * child is still registered must not strand that registration.
    */
-  destroy = (): void => {
-    this.#shutDown();
-    // Only `destroy` drops the target. Container teardown does not: the target
-    // is owned by `setupTarget`, whose own teardown clears it, and a container
-    // that unmounts while its selected child is still registered must not
-    // strand that registration.
-    this.#target = undefined;
-  };
-
-  /** The shutdown both the container teardown and `destroy` share. */
   #shutDown(): void {
     this.#observer?.disconnect();
     this.#observer = undefined;

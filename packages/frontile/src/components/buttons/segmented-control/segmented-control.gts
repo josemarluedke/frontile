@@ -162,8 +162,10 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   constructor(owner: Owner, args: SegmentedControlSignature<T>['Args']) {
     super(owner, args);
     this._value = this.args.defaultValue;
+    // The indicator and the roving-focus manager clean themselves up through
+    // their own modifiers' destructors. This frame is the component's own, so
+    // it is the only thing here that needs registering.
     registerDestructor(this, () => {
-      this.indicator.destroy();
       this.#cancelFormSync();
     });
   }
