@@ -93,8 +93,10 @@ choice has more than one entry point but otherwise worth avoiding.
 
 ## Intents
 
-`@variant='ghost'` drops the track's fill, which is what lets the intent color
-read on the pill itself rather than competing with a filled background.
+`@intent` colors the selection indicator, so the selected option carries the
+meaning rather than the control as a whole. `default` keeps the neutral raised
+pill; the rest tint it and switch the selected label to the matching contrast
+ink.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
@@ -102,74 +104,74 @@ import { SegmentedControl } from 'frontile';
 <template>
   <div class='flex flex-col items-start gap-3'>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='default'
       aria-label='Default intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Default</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='primary'
       aria-label='Primary intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Primary</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='secondary'
       aria-label='Secondary intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Secondary</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='tertiary'
       aria-label='Tertiary intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Tertiary</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='success'
       aria-label='Success intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Success</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='warning'
       aria-label='Warning intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Warning</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
     <SegmentedControl
-      @defaultValue='on'
-      @variant='ghost'
+      @defaultValue='week'
       @intent='danger'
       aria-label='Danger intent'
       as |Ctl|
     >
-      <Ctl.Item @value='on'>Danger</Ctl.Item>
-      <Ctl.Item @value='off'>Off</Ctl.Item>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
   </div>
 </template>
