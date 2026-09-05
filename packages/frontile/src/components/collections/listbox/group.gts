@@ -10,7 +10,7 @@ import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<
   typeof ListboxItem,
-  'manager' | 'type' | 'appearance' | 'intent'
+  'manager' | 'type' | 'appearance' | 'intent' | 'shortcutAppearance'
 >;
 
 export interface ListboxGroupSignature {
@@ -41,6 +41,7 @@ export interface ListboxGroupSignature {
     type?: ListboxItemSignature['Args']['type'];
     appearance?: ListboxItemSignature['Args']['appearance'];
     intent?: ListboxItemSignature['Args']['intent'];
+    shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
   };
   Element: HTMLLIElement;
   Blocks: {
@@ -100,6 +101,7 @@ class ListboxGroup extends Component<ListboxGroupSignature> {
               manager=@manager
               appearance=@appearance
               intent=@intent
+              shortcutAppearance=@shortcutAppearance
               type=@type
             )
           )

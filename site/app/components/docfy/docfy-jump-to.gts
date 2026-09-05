@@ -4,7 +4,7 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import { array } from '@ember/helper';
 import { DocfyService } from '@docfy/ember';
-import { CommandDialog, VisuallyHidden } from 'frontile';
+import { CommandDialog, Kbd, VisuallyHidden } from 'frontile';
 import {
   RocketIcon,
   PaletteIcon,
@@ -226,12 +226,15 @@ export default class DocfyJumpTo extends Component {
         ></path></svg>
 
       Search
-      <code
-        class="hidden sm:block ml-3 rounded border font-bold border-neutral-soft px-2 py-1 text-xs leading-none"
-      >
-        /
-      </code>
-      <VisuallyHidden>or Command K</VisuallyHidden>
+      <Kbd
+        @keys="/"
+        @size="sm"
+        @appearance="outlined"
+        @class="hidden sm:inline-flex ml-3"
+      />
+      {{! Rendered through Kbd rather than spelled out, so the announced
+          shortcut follows the platform instead of always saying "Command". }}
+      <VisuallyHidden>or <Kbd @keys="mod+k" /></VisuallyHidden>
     </button>
 
     <CommandDialog
@@ -266,9 +269,9 @@ export default class DocfyJumpTo extends Component {
         </:empty>
       </c.List>
       <c.Footer as |f|>
-        <f.Hint><f.Kbd>↑</f.Kbd><f.Kbd>↓</f.Kbd> Navigate</f.Hint>
-        <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
-        <f.Hint><f.Kbd>Esc</f.Kbd> Close</f.Hint>
+        <f.Hint><f.Kbd @keys="up" /><f.Kbd @keys="down" /> Navigate</f.Hint>
+        <f.Hint><f.Kbd @keys="enter" /> Go to page</f.Hint>
+        <f.Hint><f.Kbd @keys="esc" /> Close</f.Hint>
       </c.Footer>
     </CommandDialog>
   </template>

@@ -32,18 +32,7 @@ const listboxItem = tv({
       'text-neutral-firm',
       'group-hover:text-current'
     ],
-    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0'],
-    shortcut: [
-      'px-1',
-      'py-0.5',
-      'rounded-sm',
-      'font-label',
-      'text-neutral',
-      'text-label-2xs',
-      'border',
-      'border-neutral-soft',
-      'group-data-is-active:border-current'
-    ]
+    selectedIcon: ['text-inherit', 'w-4', 'h-4', 'shrink-0']
   },
   variants: {
     appearance: {
@@ -159,62 +148,6 @@ const listboxItem = tv({
           'data-is-active:bg-danger-soft',
           'data-is-active:text-on-danger-soft'
         ]
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'default',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-neutral', 'border-on-neutral/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'primary',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-primary-soft', 'border-on-primary-soft/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'secondary',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-secondary-soft', 'border-on-secondary-soft/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'tertiary',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-tertiary-soft', 'border-on-tertiary-soft/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'success',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-success-soft', 'border-on-success-soft/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'warning',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-warning-soft', 'border-on-warning-soft/20']
-      }
-    },
-    {
-      appearance: 'default',
-      intent: 'danger',
-      isActive: true,
-      class: {
-        shortcut: ['text-on-danger-soft', 'border-on-danger-soft/20']
       }
     },
 

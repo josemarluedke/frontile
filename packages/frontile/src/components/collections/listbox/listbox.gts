@@ -68,6 +68,13 @@ interface ListboxSignature<T> {
       | 'success'
       | 'warning'
       | 'danger';
+
+    /**
+     * The appearance of the keycap rendered for each item's `@shortcut`.
+     *
+     * @defaultValue 'inherit'
+     */
+    shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -253,6 +260,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   manager=this.listManager
                   appearance=@appearance
                   intent=@intent
+                  shortcutAppearance=@shortcutAppearance
                   type=this.role
                   key=keyLabel.key
                   item=item
@@ -267,6 +275,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @item={{item}}
               @appearance={{@appearance}}
               @intent={{@intent}}
+              @shortcutAppearance={{@shortcutAppearance}}
               @type={{this.role}}
             >
               {{keyLabel.label}}
@@ -282,6 +291,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             manager=this.listManager
             appearance=@appearance
             intent=@intent
+            shortcutAppearance=@shortcutAppearance
             type=this.role
           )
           Group=(component
@@ -289,6 +299,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             manager=this.listManager
             appearance=@appearance
             intent=@intent
+            shortcutAppearance=@shortcutAppearance
             type=this.role
           )
         )

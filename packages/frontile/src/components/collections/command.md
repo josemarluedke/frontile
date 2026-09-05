@@ -25,7 +25,7 @@ accept several, e.g. `@shortcut={{array "/" "mod+k"}}`.
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
-import { CommandDialog, Button } from 'frontile';
+import { CommandDialog, Button, Kbd } from 'frontile';
 import {
   UserIcon,
   StarIcon,
@@ -57,21 +57,21 @@ const commands = [
     label: 'Profile',
     section: 'Settings',
     Icon: UserIcon,
-    shortcut: '⌘P'
+    shortcut: 'mod+p'
   },
   {
     key: 'billing',
     label: 'Billing',
     section: 'Settings',
     Icon: CodeIcon,
-    shortcut: '⌘B'
+    shortcut: 'mod+b'
   },
   {
     key: 'settings',
     label: 'Settings',
     section: 'Settings',
     Icon: CodeIcon,
-    shortcut: '⌘S'
+    shortcut: 'mod+s'
   }
 ];
 
@@ -91,9 +91,7 @@ export default class CommandDialogExample extends Component {
     <div class='flex items-center gap-4'>
       <Button @appearance='outlined' {{on 'click' this.open}}>
         Open palette
-        <kbd
-          class='ml-2 rounded border border-neutral-soft px-1.5 font-body text-body-2xs text-neutral'
-        >⌘K</kbd>
+        <Kbd @keys='mod+k' @size='sm' @appearance='outlined' @class='ml-2' />
       </Button>
       {{#if this.lastSelected}}
         <span class='font-body text-body-sm text-neutral'>Selected:
@@ -360,9 +358,9 @@ import { Command } from 'frontile';
 import { UserIcon, StarIcon, SearchIcon } from 'site/components/icons';
 
 const commands = [
-  { key: 'profile', label: 'Profile', shortcut: '⌘P', Icon: UserIcon },
-  { key: 'favorites', label: 'Favorites', shortcut: '⌘F', Icon: StarIcon },
-  { key: 'search', label: 'Search', shortcut: '⌘K', Icon: SearchIcon }
+  { key: 'profile', label: 'Profile', shortcut: 'mod+p', Icon: UserIcon },
+  { key: 'favorites', label: 'Favorites', shortcut: 'mod+f', Icon: StarIcon },
+  { key: 'search', label: 'Search', shortcut: 'mod+k', Icon: SearchIcon }
 ];
 
 <template>
@@ -403,8 +401,8 @@ const commands = [
       </:item>
     </c.List>
     <c.Footer as |f|>
-      <f.Hint><f.Kbd>↵</f.Kbd> Go to page</f.Hint>
-      <f.Hint><f.Kbd>⌘</f.Kbd><f.Kbd>C</f.Kbd> Copy link</f.Hint>
+      <f.Hint><f.Kbd @keys='enter' /> Go to page</f.Hint>
+      <f.Hint><f.Kbd @keys='mod+c' /> Copy link</f.Hint>
     </c.Footer>
   </Command>
 </template>
