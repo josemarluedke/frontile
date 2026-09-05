@@ -153,6 +153,17 @@ export default class NotificationsManager {
 
     notification.remove();
 
+    // The unmount is timed to `transitionDuration` (default 200ms), which
+    // governs the card's exit *opacity* fade. The exit *slide/scale*
+    // transform, however, runs at a fixed 400ms (see notificationCard's
+    // theme slots) independent of `transitionDuration`. At the defaults this
+    // is invisible only because the opacity reaches 0 at the same moment the
+    // card unmounts, hiding the fact that the slide is truncated mid-flight.
+    // If the opacity duration is ever decoupled from this unmount timer (or
+    // `transitionDuration` is changed without also revisiting the transform
+    // duration), cards will visibly disappear mid-slide instead of fading
+    // out cleanly. Keep the two in sync, or make the unmount wait for the
+    // longer of the two durations.
     later(
       this,
       () => {

@@ -54,7 +54,7 @@ const notificationCard = tv({
       // surface — below the 4.5:1 WCAG AA floor these labels need at this
       // size. `text-neutral-firm` clears it comfortably against every
       // surface this description can sit on, light or dark, tonal or not.
-      // See docs/notifications-usage.md's contrast note for the measured ratios.
+      // See packages/frontile/docs/notifications-usage.md's contrast note for the measured ratios.
       default: {
         base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
@@ -99,7 +99,7 @@ const notificationCard = tv({
     },
     {
       // `success-firm` is only ~2.3:1 on the white card surface in light
-      // mode; `bolder` clears AA in both themes. See docs/notifications-usage.md's
+      // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
       variant: 'default',
       intent: 'success',
@@ -107,7 +107,7 @@ const notificationCard = tv({
     },
     {
       // `warning-firm` is only ~3:1 on the white card surface in light
-      // mode; `bolder` clears AA in both themes. See docs/notifications-usage.md's
+      // mode; `bolder` clears AA in both themes. See packages/frontile/docs/notifications-usage.md's
       // contrast note.
       variant: 'default',
       intent: 'warning',
@@ -144,7 +144,7 @@ const notificationCard = tv({
       // ~2.2:1 in light mode — the light `success` scale runs bright at
       // every level below `strong`. `success-bolder` clears AA in both
       // themes (light: green-900 on green-50; dark: green-100 on
-      // green-950). See docs/notifications-usage.md's contrast note.
+      // green-950). See packages/frontile/docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'success',
       class: {
@@ -164,7 +164,7 @@ const notificationCard = tv({
       // affecting every other consumer of `bg-warning-subtle`. `bolder`
       // text (vs. the light theme's usual `firm`) is also needed in light
       // mode: `warning-firm` (orange-400) on `warning-subtle` (orange-50)
-      // is only ~2.7:1. See docs/notifications-usage.md's contrast note.
+      // is only ~2.7:1. See packages/frontile/docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'warning',
       class: {

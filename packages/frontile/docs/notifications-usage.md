@@ -824,6 +824,32 @@ this.notifications.add('Something went wrong', { appearance: 'error' });
 this.notifications.add('Something went wrong', { intent: 'danger' });
 ```
 
+**Reading `notification.appearance` back can now yield `'default'`**
+
+The deprecated `appearance` getter on a `Notification` instance mirrors `intent`, and since
+`default` is now the intent a bare `add()` call resolves to, `appearance` can return `'default'`
+for it — a value that isn't part of the exported `NotificationAppearance` type (`'info' |
+'success' | 'warning' | 'error'`). Code that still reads this getter should account for it:
+assigning it to a `NotificationAppearance`-typed variable is a compile error, and a `switch`
+over the four old names silently falls through for every notification created without an
+explicit `appearance`/`intent`. Add a `'default'` case (or switch to `intent`, which is typed
+to include it):
+
+```ts
+// Reading the deprecated getter still compiles, but 'default' needs handling
+switch (notification.appearance) {
+  case 'default':
+    // new: bare add() calls land here now
+    break;
+  case 'info':
+  case 'success':
+  case 'warning':
+  case 'error':
+    // ...
+    break;
+}
+```
+
 **`notificationTransitions` removed**
 
 `notificationTransitions` is no longer exported from `@frontile/theme`, and the

@@ -1,6 +1,5 @@
 import { tracked } from '@glimmer/tracking';
 import { deprecate } from '@ember/debug';
-import { get } from '@ember/object';
 import Timer from './timer';
 import { getConfigOption } from './get-config';
 import type {
@@ -67,7 +66,12 @@ function resolveIntent(
     return configAppearance === 'error' ? 'danger' : configAppearance;
   }
 
-  return getConfigOption(config, 'intent', 'default') as NotificationIntent;
+  // Both `config.intent` and `config.appearance` were already read directly
+  // above and found unset, so a config-backed `getConfigOption(config,
+  // 'intent', 'default')` read here would resolve to the same default —
+  // `config` is always a plain object (never an Ember `EmberObject` with a
+  // computed `intent`), so there is no distinct "config lookup" left to do.
+  return 'default';
 }
 
 export default class Notification<
