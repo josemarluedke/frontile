@@ -197,6 +197,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
     const {
       base,
+      inner,
       icon,
       content,
       title,
@@ -212,6 +213,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
     return {
       base: base(),
+      inner: inner(),
       icon: icon(),
       content: content(),
       title: title(),
@@ -230,56 +232,58 @@ class NotificationCard extends Component<NotificationCardSignature> {
       role={{this.role}}
       data-test-notification-card
       {{this.enter}}
-      {{this.measure}}
       ...attributes
     >
-      {{#unless @notification.hideIcon}}
-        {{#if @notification.isLoading}}
-          <Spinner
-            @class={{this.classes.icon}}
-            @size="sm"
-            data-test-icon="loading"
-          />
-        {{else}}
-          {{#let this.icon as |Icon|}}
-            <Icon class={{this.classes.icon}} />
-          {{/let}}
-        {{/if}}
-      {{/unless}}
+      {{! measure reads offsetHeight off this inner element, not the outer one above, since the outer carries the collapsed-stack height clamp. See notification-stack.ts. }}
+      <div class={{this.classes.inner}} {{this.measure}}>
+        {{#unless @notification.hideIcon}}
+          {{#if @notification.isLoading}}
+            <Spinner
+              @class={{this.classes.icon}}
+              @size="sm"
+              data-test-icon="loading"
+            />
+          {{else}}
+            {{#let this.icon as |Icon|}}
+              <Icon class={{this.classes.icon}} />
+            {{/let}}
+          {{/if}}
+        {{/unless}}
 
-      <div class={{this.classes.content}}>
-        <div class={{this.classes.title}}>{{@notification.title}}</div>
+        <div class={{this.classes.content}}>
+          <div class={{this.classes.title}}>{{@notification.title}}</div>
 
-        {{#if @notification.description}}
-          <div class={{this.classes.description}}>
-            {{@notification.description}}
+          {{#if @notification.description}}
+            <div class={{this.classes.description}}>
+              {{@notification.description}}
+            </div>
+          {{/if}}
+        </div>
+
+        {{#if @notification.customActions}}
+          <div class={{this.classes.customActions}}>
+            {{#each @notification.customActions as |customAction index|}}
+              <Button
+                @size="xs"
+                @intent={{if index "default" this.actionIntent}}
+                @appearance={{if index "minimal" "default"}}
+                @class={{this.classes.customActionButton}}
+                @onPress={{fn this.handleClickCustomAction customAction}}
+              >
+                {{customAction.label}}
+              </Button>
+            {{/each}}
           </div>
         {{/if}}
+
+        {{#if @notification.allowClosing}}
+          <CloseButton
+            @onPress={{this.remove}}
+            @size="sm"
+            @class={{this.classes.closeButton}}
+          />
+        {{/if}}
       </div>
-
-      {{#if @notification.customActions}}
-        <div class={{this.classes.customActions}}>
-          {{#each @notification.customActions as |customAction index|}}
-            <Button
-              @size="xs"
-              @intent={{if index "default" this.actionIntent}}
-              @appearance={{if index "minimal" "default"}}
-              @class={{this.classes.customActionButton}}
-              @onPress={{fn this.handleClickCustomAction customAction}}
-            >
-              {{customAction.label}}
-            </Button>
-          {{/each}}
-        </div>
-      {{/if}}
-
-      {{#if @notification.allowClosing}}
-        <CloseButton
-          @onPress={{this.remove}}
-          @size="sm"
-          @class={{this.classes.closeButton}}
-        />
-      {{/if}}
     </div>
   </template>
 }

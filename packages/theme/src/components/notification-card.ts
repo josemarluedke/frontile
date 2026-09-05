@@ -3,14 +3,30 @@ import { focusVisibleRing } from './shared';
 
 const notificationCard = tv({
   slots: {
+    // The outer element. It carries the box treatment (surface color,
+    // border, rounded corners, shadow) and everything the stack's geometry
+    // animates (`transform`, `opacity`, and — while collapsed — a clamped
+    // `height` so a taller card behind the front one can't poke out past
+    // it). `overflow-hidden` here is what makes that clamp actually crop
+    // the content instead of just failing to contain it.
+    //
+    // Deliberately NOT a flex container and NOT where padding/gap live:
+    // the `ResizeObserver` in notification-card.gts measures `inner`, not
+    // `base`, specifically so the reported height is always the content's
+    // true natural height, never the clamped one `base` might be wearing
+    // at the time. Move layout classes here and that guarantee breaks.
     base: [
-      'pointer-events-auto w-full flex gap-3 p-4',
+      'pointer-events-auto w-full',
       'rounded-2xl border shadow-lg',
-      'font-body text-body-2xs',
       'overflow-hidden',
       'transition-[transform,opacity,height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
       'motion-reduce:transition-[opacity] motion-reduce:duration-150'
     ],
+    // The inner element. Holds the actual row layout (icon, content,
+    // actions, close button) and is never height-constrained, so its
+    // `offsetHeight` is always the card's true natural height — that's
+    // the value the measure modifier reads and reports to the stack.
+    inner: 'flex gap-3 p-4 font-body text-body-2xs',
     icon: 'shrink-0 size-5',
     content: 'grow min-w-0 flex flex-col gap-1',
     title: 'font-label text-label-xs',
@@ -52,11 +68,11 @@ const notificationCard = tv({
     // the icon's own height, so their centres coincide.
     hasDescription: {
       true: {
-        base: 'items-start',
+        inner: 'items-start',
         icon: 'mt-[calc((var(--text-label-xs)*var(--line-height-tight)-1.25rem)/2)]'
       },
       false: {
-        base: 'items-center'
+        inner: 'items-center'
       }
     }
   },

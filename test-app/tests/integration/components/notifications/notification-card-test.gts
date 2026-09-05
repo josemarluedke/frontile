@@ -15,6 +15,7 @@ registerCustomStyles({
   notificationCard: tv({
     slots: {
       base: '',
+      inner: '',
       icon: 'notification-card__icon',
       content: '',
       title: 'notification-card__title',

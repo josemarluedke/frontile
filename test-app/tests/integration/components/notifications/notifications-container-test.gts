@@ -226,6 +226,145 @@ module(
       );
     });
 
+    test('expanded offsets are computed from each card natural height, not a collapsed clamp', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      // This test needs a real flex row layout on the card (icon beside the
+      // content column) to get a meaningful, realistic natural height out of
+      // `getBoundingClientRect()`. `notification-card-test.gts` registers a
+      // process-wide `notificationCard` override with empty slot classes
+      // (module-level code runs for every loaded test file regardless of
+      // `--filter`), so this test installs its own minimal-but-real-layout
+      // override for its duration and restores whatever was registered
+      // before it, to avoid leaking into other tests.
+      const previousNotificationCardStyles = useStyles().notificationCard;
+      registerCustomStyles({
+        notificationCard: tv({
+          slots: {
+            base: 'w-full',
+            inner: 'flex gap-3 p-4',
+            icon: 'shrink-0 size-5',
+            content: 'grow min-w-0 flex flex-col gap-1',
+            title: '',
+            description: '',
+            customActions: 'flex flex-nowrap shrink-0 items-center gap-2',
+            customActionButton: '',
+            closeButton: 'shrink-0 self-center inline-block p-1.5'
+          },
+          variants: {
+            intent: { info: {}, success: {}, warning: {}, danger: {} },
+            variant: { default: {}, tonal: {}, solid: {} },
+            hasDescription: {
+              true: { inner: 'items-start' },
+              false: { inner: 'items-center' }
+            }
+          },
+          defaultVariants: {
+            intent: 'info',
+            variant: 'default',
+            hasDescription: false
+          }
+        })
+      });
+
+      try {
+        // Cards of DIFFERENT heights are what makes this bug visible: while
+        // collapsed, every card behind the front one is clamped to the
+        // FRONT card's height (see notification-stack.ts `geometryFor`). If
+        // the `ResizeObserver` that reports a card's height reads it off
+        // the same element the clamp is applied to, a clamped card reports
+        // the forced height instead of its true content height, and that
+        // wrong number gets stored and later summed to position every card
+        // behind it once expanded. Uniform-height cards would hide this
+        // completely, since the clamped height and the true height would
+        // coincide.
+        //
+        // A description adds a whole extra line to the card (see
+        // `hasDescription` above), independent of text wrapping, so this is
+        // a reliable height difference regardless of the rendered width.
+        const description = 'Starts at 8:00 AM.';
+
+        // Newest-first display order, so add in reverse of the intended
+        // front-to-back order: front (newest) is short, the middle card is
+        // tall, and the back card is short again.
+        service.add('Short A', options);
+        service.add('Tall middle', {
+          ...options,
+          description
+        });
+        service.add('Short B', options);
+
+        await render(<template><NotificationsContainer /></template>);
+
+        const cards = findAll('[data-test-notification-card]') as HTMLElement[];
+        assert.strictEqual(cards.length, 3);
+
+        // The true natural height of each card, read off the inner content
+        // wrapper the same way the production code does (`offsetHeight`,
+        // not `getBoundingClientRect()` — the test container applies a
+        // visual scale transform that only affects the latter). Unlike the
+        // outer element, the inner wrapper never carries the
+        // collapsed-stack height clamp, so this is accurate regardless of
+        // whether the stack is currently collapsed or expanded.
+        const naturalHeights = cards.map((card) => {
+          const inner = card.firstElementChild as HTMLElement;
+          return inner.offsetHeight;
+        });
+
+        assert.true(
+          Math.abs(naturalHeights[1]! - naturalHeights[0]!) > 10,
+          `fixture sanity check: the middle card (${naturalHeights[1]}px) ` +
+            `must be meaningfully taller than the front card ` +
+            `(${naturalHeights[0]}px)`
+        );
+
+        await triggerEvent('.notifications-container', 'mouseenter');
+
+        const gap = 16; // NotificationsContainer's default @spacing
+
+        // Read the target `translateY` straight out of each card's inline
+        // `style`. That value is set synchronously from `NotificationStack`'s
+        // geometry math, so it is unaffected by the CSS transition still
+        // animating toward it — unlike `getBoundingClientRect()`, which
+        // would report a value mid-transition.
+        const translateY = (card: HTMLElement): number => {
+          const match = /translateY\((-?[\d.]+)px\)/.exec(
+            card.getAttribute('style') || ''
+          );
+          assert.ok(
+            match,
+            `card has a translateY in its style: ${card.getAttribute('style')}`
+          );
+          return match ? parseFloat(match[1]!) : NaN;
+        };
+
+        assert.strictEqual(
+          translateY(cards[0]!),
+          0,
+          'the front card is unmoved'
+        );
+
+        let expectedOffset = 0;
+        for (let i = 1; i < cards.length; i++) {
+          expectedOffset += naturalHeights[i - 1]! + gap;
+
+          const actual = -translateY(cards[i]!);
+          assert.true(
+            Math.abs(actual - expectedOffset) < 1,
+            `card ${i} offset (${actual}px) matches the summed natural ` +
+              `heights of every card in front of it (${expectedOffset}px), ` +
+              'not a collapsed-clamp value'
+          );
+        }
+      } finally {
+        registerCustomStyles({
+          notificationCard: previousNotificationCardStyles
+        });
+      }
+    });
+
     test('it expands on hover and collapses on leave', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'

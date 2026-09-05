@@ -853,6 +853,16 @@ registerCustomStyles({
 });
 ```
 
+**`notificationCard` gained an `inner` slot**
+
+The card is now two elements: `base` (the outer box — surface color, border, rounded corners,
+shadow, and the collapsed-stack height clamp) and `inner` (a new slot — the flex row layout:
+gap, padding, and icon/content-alignment). This split exists so the stack's height measurement
+always reads the content's true natural height rather than whatever height `base` might be
+clamped to while the stack is collapsed. If you override `notificationCard`, add an `inner`
+slot for the row layout (`flex gap-3 p-4`) and move any padding/gap/alignment classes off
+`base` and onto it; `base` should keep only box/surface classes.
+
 **`notificationsContainer` theme slots**
 
 `notificationsContainer` now returns `base` and `stack` slots instead of a single class
