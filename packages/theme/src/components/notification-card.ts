@@ -82,7 +82,12 @@ const notificationCard = tv({
         base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
       },
+      // The outer surface/border is intent-independent — every `tonal`
+      // compound variant below borrows the same neutral surface `default`
+      // uses (see the comment above the `tonal` compound variants), so it
+      // lives here once instead of repeating in each of them.
       tonal: {
+        base: 'bg-surface-modal border-surface-overlay-mild',
         description: 'text-neutral-firm'
       },
       solid: {
@@ -92,9 +97,11 @@ const notificationCard = tv({
     // No description: the row reads as a single centred line — icon, title,
     // and close button all share the same vertical centre.
     // With a description: the card grows to two lines, so the icon aligns
-    // with the *title's* line box instead of the whole card. The icon is
-    // nudged down by half the difference between the title's line height and
-    // the icon's own height, so their centres coincide.
+    // with the *title's* line box instead of the whole card. The icon's
+    // line-height (`--line-height-tight: 1`) makes the title's line box
+    // equal to its font size (~13px) — shorter than the icon's own `size-5`
+    // (20px) — so `(lineBox - iconHeight) / 2` is negative and nudges the
+    // icon *up* by half that difference, landing its centre on the title's.
     hasDescription: {
       true: {
         inner: 'items-start',
@@ -105,6 +112,19 @@ const notificationCard = tv({
       false: {
         inner: 'items-center'
       }
+    },
+    // Cards are pinned to the placement edge so the stack grows away from
+    // it, once the container has supplied stack geometry (`@geometry` on
+    // <NotificationCard>). `none` is the default — a card rendered without
+    // geometry (e.g. a standalone demo) keeps its normal document flow.
+    // The dynamic parts of the stack's positioning (transform, opacity,
+    // height, z-index, transform-origin) still come from the card's own
+    // inline `style` getter, since they change per-frame with the stack's
+    // geometry — only the static edge-pinning lives here.
+    stackPlacement: {
+      top: { base: 'absolute inset-x-0 top-0' },
+      bottom: { base: 'absolute inset-x-0 bottom-0' },
+      none: {}
     }
   },
 
@@ -157,7 +177,6 @@ const notificationCard = tv({
       variant: 'tonal',
       intent: 'default',
       class: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
         inner: 'bg-neutral-soft',
         icon: 'text-on-neutral-soft',
         title: 'text-on-neutral-soft'
@@ -167,7 +186,6 @@ const notificationCard = tv({
       variant: 'tonal',
       intent: 'info',
       class: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
         inner: 'bg-primary-soft',
         icon: 'text-on-primary-soft',
         title: 'text-on-primary-soft'
@@ -177,7 +195,6 @@ const notificationCard = tv({
       variant: 'tonal',
       intent: 'success',
       class: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
         inner: 'bg-success-soft',
         icon: 'text-on-success-soft',
         title: 'text-on-success-soft'
@@ -187,7 +204,6 @@ const notificationCard = tv({
       variant: 'tonal',
       intent: 'warning',
       class: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
         inner: 'bg-warning-soft',
         icon: 'text-on-warning-soft',
         title: 'text-on-warning-soft'
@@ -197,7 +213,6 @@ const notificationCard = tv({
       variant: 'tonal',
       intent: 'danger',
       class: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
         inner: 'bg-danger-soft',
         icon: 'text-on-danger-soft',
         title: 'text-on-danger-soft'
@@ -285,7 +300,8 @@ const notificationCard = tv({
   defaultVariants: {
     intent: 'default',
     variant: 'default',
-    hasDescription: false
+    hasDescription: false,
+    stackPlacement: 'none'
   }
 });
 
