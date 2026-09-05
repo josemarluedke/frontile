@@ -20,27 +20,52 @@ import type {
 } from '../../-private/types';
 import type { SafeString } from '@ember/template';
 
-const ICONS = {
-  default: IconInfo,
-  info: IconInfo,
-  success: IconSuccess,
-  warning: IconWarning,
-  danger: IconDanger
-};
-
 /**
- * Button intent for the primary custom action, per notification intent. Also
- * reused as the loading <Spinner>'s `@intent` (its `intent` union has the
- * same default/primary/success/warning/danger shape), so the spinner's arc
- * matches the same accent the card's custom action button would use.
+ * Everything that varies by `NotificationIntent`, keyed in one place so
+ * adding an intent means adding one row here instead of remembering to
+ * touch an icon map, an action-intent map, and the `role` getter's cascade
+ * separately.
  */
-const ACTION_INTENT = {
-  default: 'default',
-  info: 'primary',
-  success: 'success',
-  warning: 'warning',
-  danger: 'danger'
-} as const;
+const INTENT_CONFIG = {
+  default: {
+    icon: IconInfo,
+    // Button intent for the primary custom action. Also reused as the
+    // loading <Spinner>'s `@intent` (its `intent` union has the same
+    // default/primary/success/warning/danger shape), so the spinner's arc
+    // matches the same accent the card's custom action button would use.
+    actionIntent: 'default',
+    // `alert` interrupts a screen reader, so it is reserved for the
+    // intents that warrant interrupting.
+    role: 'status'
+  },
+  info: {
+    icon: IconInfo,
+    actionIntent: 'primary',
+    role: 'status'
+  },
+  success: {
+    icon: IconSuccess,
+    actionIntent: 'success',
+    role: 'status'
+  },
+  warning: {
+    icon: IconWarning,
+    actionIntent: 'warning',
+    role: 'alert'
+  },
+  danger: {
+    icon: IconDanger,
+    actionIntent: 'danger',
+    role: 'alert'
+  }
+} as const satisfies Record<
+  NotificationIntent,
+  {
+    icon: unknown;
+    actionIntent: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+    role: 'status' | 'alert';
+  }
+>;
 
 interface NotificationCardSignature {
   Args: {
@@ -94,21 +119,15 @@ class NotificationCard extends Component<NotificationCardSignature> {
   }
 
   get icon() {
-    return ICONS[this.intent];
+    return INTENT_CONFIG[this.intent].icon;
   }
 
   get actionIntent() {
-    return ACTION_INTENT[this.intent];
+    return INTENT_CONFIG[this.intent].actionIntent;
   }
 
-  /**
-   * `alert` interrupts a screen reader, so it is reserved for the intents
-   * that warrant interrupting.
-   */
   get role(): 'status' | 'alert' {
-    return this.intent === 'warning' || this.intent === 'danger'
-      ? 'alert'
-      : 'status';
+    return INTENT_CONFIG[this.intent].role;
   }
 
   get style(): SafeString {
@@ -126,18 +145,13 @@ class NotificationCard extends Component<NotificationCardSignature> {
       `transition-duration: 400ms, ${notification.transitionDuration}ms, 400ms`
     ];
 
-    // Cards are pinned to the placement edge so the stack grows away from it.
-    // This lives here rather than on the container, because a `style`
-    // attribute passed through `...attributes` replaces the element's own
-    // `style` outright and would drop the transform below.
-    if (geometry) {
-      declarations.push(
-        'position: absolute',
-        'left: 0',
-        'right: 0',
-        this.isTopPlacement ? 'top: 0' : 'bottom: 0'
-      );
-    }
+    // The static edge-pinning (`position: absolute` + `left/right/top` or
+    // `bottom`) lives in the `stackPlacement` theme variant (see
+    // `this.classes`) rather than here, since it never varies frame to
+    // frame — only the geometry-driven parts below (transform, opacity,
+    // height, z-index, transform-origin) need to be inline, because a
+    // `style` attribute passed through `...attributes` replaces the
+    // element's own `style` outright and would drop them.
 
     if (!this.hasEntered || notification.isRemoving) {
       // Enter from, and exit to, the placement edge.
@@ -256,7 +270,15 @@ class NotificationCard extends Component<NotificationCardSignature> {
     } = notificationCard({
       intent: this.intent,
       variant: this.args.variant || 'default',
-      hasDescription: !!this.args.notification.description
+      hasDescription: !!this.args.notification.description,
+      // Only pin the card to the placement edge once the container has
+      // supplied stack geometry — see the `stackPlacement` variant's
+      // comment in the theme.
+      stackPlacement: this.args.geometry
+        ? this.isTopPlacement
+          ? 'top'
+          : 'bottom'
+        : 'none'
     });
 
     return {
