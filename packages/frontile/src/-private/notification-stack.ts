@@ -5,6 +5,16 @@ import type { containerPlacement } from './types';
  */
 const SCALE_STEP = 0.05;
 
+/**
+ * Cards are pinned to the placement edge, so a top placement stacks
+ * downwards and a bottom placement stacks upwards. Exported so
+ * notification-card.gts's own enter/exit slide direction can share this
+ * instead of re-deriving it from the placement string.
+ */
+function isTopPlacement(placement: containerPlacement): boolean {
+  return placement.startsWith('top');
+}
+
 interface NotificationStackInput {
   /**
    * Measured card heights in px, ordered front-first (index 0 is the newest
@@ -72,7 +82,7 @@ class NotificationStack {
   }
 
   get isTopPlacement(): boolean {
-    return this.placement.startsWith('top');
+    return isTopPlacement(this.placement);
   }
 
   /**
@@ -160,5 +170,5 @@ class NotificationStack {
   }
 }
 
-export { NotificationStack };
+export { NotificationStack, isTopPlacement };
 export type { NotificationStackInput, CardGeometry };

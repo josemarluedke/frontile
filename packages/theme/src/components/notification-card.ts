@@ -19,7 +19,19 @@ const notificationCard = tv({
       'pointer-events-auto w-full',
       'rounded-2xl border shadow-lg',
       'overflow-hidden',
-      'transition-[transform,opacity,height] duration-400 ease-[cubic-bezier(0.21,1.02,0.73,1)]',
+      'transition-[transform,opacity,height] ease-[cubic-bezier(0.21,1.02,0.73,1)]',
+      // The three `transition-duration` values line up positionally with
+      // `transition-[transform,opacity,height]` above: transform and height
+      // are the stack's own expand/collapse choreography, fixed at 400ms to
+      // match the container's own height transition (see
+      // notifications-container.gts) and the design spec's "transform
+      // 400ms"; the middle value is the one `@transitionDuration` actually
+      // governs (the enter/exit fade), supplied via the
+      // `--frontile-toast-fade` custom property the card sets inline (see
+      // notification-card.gts's `style` getter). Both the property order
+      // and the duration ownership live here in one place so they can never
+      // drift apart across the component boundary.
+      '[transition-duration:400ms,_var(--frontile-toast-fade,_200ms),_400ms]',
       'motion-reduce:transition-[opacity] motion-reduce:duration-150',
       // Dropping the transition above only makes the transform apply
       // instantly instead of animating it — the transform itself (the
@@ -94,14 +106,8 @@ const notificationCard = tv({
         base: 'border-transparent'
       }
     },
-    // No description: the row reads as a single centred line — icon, title,
-    // and close button all share the same vertical centre.
-    // With a description: the card grows to two lines, so the icon aligns
-    // with the *title's* line box instead of the whole card. The icon's
-    // line-height (`--line-height-tight: 1`) makes the title's line box
-    // equal to its font size (~13px) — shorter than the icon's own `size-5`
-    // (20px) — so `(lineBox - iconHeight) / 2` is negative and nudges the
-    // icon *up* by half that difference, landing its centre on the title's.
+    // With a description, the icon centres on the *title's* line box rather
+    // than the whole (now two-line) card — hence the negative offset.
     hasDescription: {
       true: {
         inner: 'items-start',
@@ -219,27 +225,16 @@ const notificationCard = tv({
       }
     },
 
-    // solid: filled surface, contrast text.
+    // solid: filled surface, contrast text. `description` uses the
+    // full-strength `on-{intent}` ink rather than a translucent cut — see
+    // packages/frontile/docs/notifications-usage.md's contrast note for why
+    // (a translucent cut used to fail WCAG AA here).
     //
-    // `description` uses the full-strength `on-{intent}` ink, not a
-    // translucent cut of it. An earlier version used `/80` here, but
-    // compositing white/black at 80% over a saturated fill loses most of
-    // the contrast — e.g. `danger`'s fill (`#e51701`) drops to ~3.37:1 in
-    // light mode, below the 4.5:1 WCAG AA floor. Full opacity matches the
-    // title/icon contrast (≥4.71:1 for every intent in both themes) with
-    // no measurable loss of visual hierarchy, since the hierarchy here
-    // already comes from font weight/size, not from a dimmed description.
-    //
-    // The spinner override here matters for a reason the other solid classes
-    // don't have to worry about: `@intent` on <Spinner> (mapped from
-    // `ACTION_INTENT`) drives the arc via `fill-{intent}` — e.g. `fill-primary`
-    // — which is the *exact same color* as this variant's own `bg-{intent}`
-    // surface. Left alone, the arc would be perfectly camouflaged against its
-    // own card. So on `solid` we force both halves of the spinner to the
-    // contrast ink instead: `fill-on-{intent}` for the arc (full strength,
-    // same ink as the icon/title) and `text-on-{intent}/30` for the track (the
-    // same ink at low opacity, so it reads as dim without needing a second
-    // neutral color that might clash with a saturated fill).
+    // The spinner override matters because `@intent` on <Spinner> drives its
+    // arc via `fill-{intent}`, the exact same color as this variant's own
+    // `bg-{intent}` surface — left alone the arc would be camouflaged
+    // against its own card, so `solid` forces both halves of the spinner to
+    // the contrast ink instead.
     {
       variant: 'solid',
       intent: 'default',

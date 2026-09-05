@@ -12,6 +12,7 @@ import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../../services/notifications';
 import type Notification from '../../-private/notification';
+import { isTopPlacement } from '../../-private/notification-stack';
 import type { CardGeometry } from '../../-private/notification-stack';
 import type {
   CustomAction,
@@ -111,7 +112,7 @@ class NotificationCard extends Component<NotificationCardSignature> {
   @tracked hasEntered = false;
 
   get isTopPlacement(): boolean {
-    return (this.args.placement || 'bottom-right').startsWith('top');
+    return isTopPlacement(this.args.placement || 'bottom-right');
   }
 
   get intent(): NotificationIntent {
@@ -132,17 +133,14 @@ class NotificationCard extends Component<NotificationCardSignature> {
 
   get style(): SafeString {
     const { geometry, notification } = this.args;
-    // The theme's `transition-[transform,opacity,height]` needs a duration
-    // per property, in that order. `transform` and `height` are the stack's
-    // own expand/collapse choreography — fixed at 400ms to match the
-    // container's own height transition (see notifications-container.ts)
-    // and the design spec's "transform 400ms" — while `opacity` is the one
-    // property `@transitionDuration` actually documents governing (the
-    // enter/exit fade). Letting `transitionDuration` also slow `transform`
-    // and `height` would silently turn a "slow down the removal fade" call
-    // into "slow down every hover expand/collapse" too.
+    // The theme owns the whole `transition-duration` shorthand (and its
+    // `motion-reduce:` override) so the per-property duration order can
+    // never drift out of sync with `transition-[transform,opacity,height]`
+    // across the component boundary — see notification-card.ts. This card
+    // only supplies the one value `@transitionDuration` actually governs
+    // (the enter/exit fade), as a custom property the theme's `var()` reads.
     const declarations = [
-      `transition-duration: 400ms, ${notification.transitionDuration}ms, 400ms`
+      `--frontile-toast-fade: ${notification.transitionDuration}ms`
     ];
 
     // The static edge-pinning (`position: absolute` + `left/right/top` or

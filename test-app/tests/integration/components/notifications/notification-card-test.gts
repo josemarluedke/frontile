@@ -626,6 +626,12 @@ module(
     });
 
     test('@transitionDuration only governs the opacity fade, not the fixed 400ms transform/height animation', async function (assert) {
+      // The card only sets the `--frontile-toast-fade` custom property
+      // inline; the theme owns the full `transition-duration` shorthand
+      // (`400ms, var(--frontile-toast-fade, 200ms), 400ms`) — see
+      // notification-card.ts. So this asserts the custom property carries
+      // `@transitionDuration`'s value, not a literal `transition-duration`
+      // string (which now lives entirely in the stylesheet, not inline).
       notification.current = new Notification({}, 'My message', {
         transitionDuration: 1000
       });
@@ -638,10 +644,9 @@ module(
           ?.getAttribute('style') || '';
 
       assert.ok(
-        style.includes('transition-duration: 400ms, 1000ms, 400ms'),
-        `transform and height stay fixed at 400ms regardless of ` +
-          `@transitionDuration; only the opacity slot (the middle value) ` +
-          `follows it. Got: "${style}"`
+        style.includes('--frontile-toast-fade: 1000ms'),
+        `expected the fade duration to be passed through as the ` +
+          `--frontile-toast-fade custom property. Got: "${style}"`
       );
     });
   }
