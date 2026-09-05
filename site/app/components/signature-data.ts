@@ -6915,7 +6915,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'Splits the cells into visual groups, e.g. <code>[3, 3]</code> for a six-digit code.\nThe entries must sum to <code>length</code>. Omit it for a single group.',
+          'Splits the cells into visual groups, e.g. <code>[3, 3]</code> for a six-digit code.\nOmit it for a single group. Entries that do not sum to <code>length</code> warn in\ndevelopment and are then clamped and padded, so exactly <code>length</code> cells\nrender either way.',
         tags: {},
       },
       {

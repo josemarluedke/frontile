@@ -119,7 +119,9 @@ interface Args extends FormControlSharedArgs {
 
   /**
    * Splits the cells into visual groups, e.g. `[3, 3]` for a six-digit code.
-   * The entries must sum to `length`. Omit it for a single group.
+   * Omit it for a single group. Entries that do not sum to `length` warn in
+   * development and are then clamped and padded, so exactly `length` cells
+   * render either way.
    */
   groups?: number[];
 
