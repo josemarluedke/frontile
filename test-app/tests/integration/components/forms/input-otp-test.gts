@@ -7,7 +7,8 @@ import {
   fillIn,
   blur,
   focus,
-  settled
+  settled,
+  click
 } from '@ember/test-helpers';
 import { cell as trackedCell } from 'ember-resources';
 
@@ -809,5 +810,54 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       );
     assert.dom(filledCells[2] as Element).hasText('');
     assert.dom(filledCells[3] as Element).hasText('');
+  });
+
+  test('it works inside a Form via field.InputOtp', async function (assert) {
+    await render(
+      <template>
+        <Form as |form|>
+          <form.Field @name="code" as |field|>
+            <field.InputOtp @label="Verification code" @length={{4}} />
+          </form.Field>
+        </Form>
+      </template>
+    );
+
+    assert
+      .dom('[data-component="input-otp-input"]')
+      .hasAttribute('name', 'code');
+
+    await fillIn('[data-component="input-otp-input"]', '1234');
+
+    // <Form> reads the value off the DOM rather than feeding it back, so the
+    // cells must still show what was typed.
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[3] as Element)
+      .hasText('4');
+  });
+
+  test('the Form submits the code as a single value', async function (assert) {
+    // <Form>'s @onSubmit receives a `FormResultData` object (`{ data, isValid,
+    // ... }`), not the raw form data itself -- the submitted field lives at
+    // `result.data['code']`.
+    const onSubmit = (result: { data: Record<string, unknown> }) => {
+      assert.step(String(result.data['code']));
+    };
+
+    await render(
+      <template>
+        <Form @onSubmit={{onSubmit}} as |form|>
+          <form.Field @name="code" as |field|>
+            <field.InputOtp @label="Code" @length={{4}} />
+          </form.Field>
+          <button type="submit" data-test-submit>Submit</button>
+        </Form>
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '4321');
+    await click('[data-test-submit]');
+
+    assert.verifySteps(['4321'], 'one FormData entry, not four');
   });
 });
