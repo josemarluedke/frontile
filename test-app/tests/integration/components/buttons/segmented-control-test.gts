@@ -754,6 +754,23 @@ module(
         'so is the one immediately after it'
       );
 
+      // Dimensions come from `getComputedStyle`, not `getBoundingClientRect`:
+      // `#ember-testing` renders at 50% scale, which halves every rect value
+      // but leaves computed styles alone. Without these two assertions the
+      // horizontal `compoundVariants` entry could be deleted outright and the
+      // opacity checks above would still pass, because a 0x0 pseudo-element
+      // still reports a `content` value and a transitioning `opacity`.
+      const separator = before(items[1]!);
+      assert.strictEqual(
+        separator.width,
+        '1px',
+        'the horizontal hairline is one pixel wide'
+      );
+      assert.ok(
+        parseFloat(separator.height) > parseFloat(separator.width),
+        `and taller than it is wide (${separator.height} tall)`
+      );
+
       await click(items[0]!);
 
       // The separator's own `before:transition-opacity before:duration-200`
@@ -832,17 +849,96 @@ module(
       );
     });
 
+    test('separators transpose their geometry when the control is vertical', async function (assert) {
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @orientation="vertical"
+            @hasSeparators={{true}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      const before = (el: HTMLElement): CSSStyleDeclaration =>
+        getComputedStyle(el, '::before');
+
+      // `getComputedStyle` again rather than `getBoundingClientRect`, for the
+      // 50%-scale reason given in the horizontal test above. In the vertical
+      // compound variant the hairline runs across the stack instead of down
+      // between columns, so its two dimensions swap.
+      const separator = before(items[1]!);
+      assert.strictEqual(
+        separator.height,
+        '1px',
+        'the vertical hairline is one pixel tall'
+      );
+      assert.ok(
+        parseFloat(separator.width) > parseFloat(separator.height),
+        `and wider than it is tall (${separator.width} wide)`
+      );
+
+      assert.strictEqual(
+        before(items[0]!).content,
+        'none',
+        'the first item still has no leading separator'
+      );
+      assert.strictEqual(
+        before(items[1]!).opacity,
+        '0',
+        'the separator before the selected item is hidden on this axis too'
+      );
+      assert.strictEqual(
+        before(items[2]!).opacity,
+        '0',
+        'so is the one immediately after it'
+      );
+
+      await click(items[0]!);
+
+      // See the horizontal test: the separator's own 200ms opacity transition
+      // does not settle within the tick `settled()` resolves on.
+      await waitUntil(() => before(items[2]!).opacity === '1', {
+        timeout: 1000
+      });
+
+      assert.strictEqual(
+        before(items[2]!).opacity,
+        '1',
+        'a separator away from the selection is visible again'
+      );
+    });
+
     test('an underline indicator positions from x and width alone', async function (assert) {
-      // The theme's own indicator slot moves the pill with Tailwind's
-      // translate-x-[var(--fr-si-x)] utility, which (Tailwind v4) sets the
-      // standalone CSS `translate` property, not `transform`. @classes
-      // merges with the theme's classes rather than replacing them, so this
-      // override still carries that utility. Setting `transform:
-      // translateX(...)` here would not replace it -- `translate` and
-      // `transform` compose instead of one overriding the other -- and the
-      // indicator would end up shifted by twice the intended offset.
-      // Overriding the same `translate` property instead actually replaces
-      // it, which is what `.test-underline` below does.
+      // This test is the artifact that locks in the reusable-geometry
+      // contract: SelectionIndicator publishes --fr-si-x / --fr-si-width and
+      // paints nothing, so a consumer (a future Tabs, say) can draw a bar
+      // instead of a pill without touching the JS. For it to prove that, the
+      // override has to be doing ALL of the positioning -- `@classes` MERGES
+      // with the theme's classes rather than replacing them, and tv's twMerge
+      // does not drop the theme's `translate-x-[var(--fr-si-x)]` or
+      // `w-[var(--fr-si-width)]` for an unrecognised name like
+      // `.test-underline`. So the rule below first neutralises the theme's
+      // geometry outright -- `translate: none` kills its translate-x/y,
+      // `width: auto` its w-[var(...)], `top: auto` its top-0, and the
+      // explicit `height` its h-[var(...)] -- and only then re-derives the box
+      // from the published custom properties alone: `left` straight from
+      // --fr-si-x, and the width implied by `left` plus a `right` computed
+      // from both properties. `.test-underline` is unlayered while Tailwind's
+      // utilities sit in a cascade layer, so it wins regardless of
+      // specificity.
       await render(
         <template>
           {{! template-lint-disable no-forbidden-elements }}
@@ -852,12 +948,14 @@ module(
               not to style production markup. }}
           <style>
             .test-underline {
+              translate: none;
+              width: auto;
               position: absolute;
               top: auto;
               bottom: 0;
+              left: var(--fr-si-x);
+              right: calc(100% - var(--fr-si-x) - var(--fr-si-width));
               height: 2px;
-              width: var(--fr-si-width);
-              translate: var(--fr-si-x) 0;
             }
           </style>
           <SegmentedControl
@@ -872,20 +970,47 @@ module(
       );
 
       const indicator = find('[aria-hidden="true"]') as HTMLElement;
+      const container = find('[role="radiogroup"]') as HTMLElement;
       const selected = findAll('[role="radio"]')[1] as HTMLElement;
 
       const indicatorBox = indicator.getBoundingClientRect();
+      const containerBox = container.getBoundingClientRect();
       const selectedBox = selected.getBoundingClientRect();
 
+      // Rects are in device pixels and `#ember-testing` renders at 50%, so
+      // this 1 is 2 real CSS px -- enough to absorb the sub-pixel gap between
+      // the integer offsetLeft/offsetWidth the indicator publishes and the
+      // fractional rect it is compared against, and far tighter than the
+      // ~34px (device) error the assertions below report when the override
+      // stops positioning.
+      const tolerance = 1;
+
       assert.ok(
-        Math.abs(indicatorBox.left - selectedBox.left) < 1.5,
-        'a bar-shaped indicator lines up with the selected item'
+        Math.abs(indicatorBox.left - selectedBox.left) < tolerance,
+        `a bar-shaped indicator lines up with the selected item (off by ${Math.abs(indicatorBox.left - selectedBox.left)})`
       );
       assert.ok(
-        Math.abs(indicatorBox.width - selectedBox.width) < 1.5,
-        'and matches its width'
+        Math.abs(indicatorBox.width - selectedBox.width) < tolerance,
+        `and matches its width (off by ${Math.abs(indicatorBox.width - selectedBox.width)})`
       );
-      assert.ok(indicatorBox.height < 5, 'while keeping its own height');
+      assert.ok(
+        indicatorBox.height < 5,
+        `while keeping its own height (${indicatorBox.height})`
+      );
+
+      // The vertical edge is what only the override can produce: the theme
+      // pins the pill to the top with the item's full height, so its bottom
+      // sits exactly on the item's bottom, one padding step ABOVE the
+      // container's. A bar flush with the container's bottom edge therefore
+      // cannot be the theme's doing.
+      assert.ok(
+        Math.abs(indicatorBox.bottom - containerBox.bottom) < tolerance,
+        `the bar is flush with the container's bottom edge (off by ${Math.abs(indicatorBox.bottom - containerBox.bottom)})`
+      );
+      assert.ok(
+        indicatorBox.bottom > selectedBox.bottom,
+        'and sits below the selected item, where the theme pill never does'
+      );
     });
   }
 );
