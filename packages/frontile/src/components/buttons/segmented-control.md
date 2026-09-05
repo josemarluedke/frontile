@@ -461,6 +461,57 @@ export default class Example extends Component {
 > yielded content to text, icons, and other non-interactive markup in form
 > mode.
 
+## Custom styling
+
+Every slot is overridable through `@classes`, so a control can be restyled well
+past the built-in variants without dropping to a fork. The example below is a
+brand-styled toggle: a white card-coloured track with a hairline border, a
+filled `primary` pill, and the brand color carried by the unselected labels
+instead of neutral ink.
+
+Three of the four pieces come from arguments rather than overrides —
+`@intent='primary'` fills the indicator and picks the contrast ink for the
+selected label, `@isFullWidth={{true}}` stretches the control and divides it
+evenly, and `@size='lg'` sets the 17px semibold label. Only the track's surface
+and the unselected label color need `@classes`.
+
+```gts preview
+import { SegmentedControl } from 'frontile';
+import { hash } from '@ember/helper';
+
+<template>
+  {{! The demo preview container is shrink-to-fit, so a width has to be
+      given explicitly for `@isFullWidth` to have anything to stretch into. }}
+  <div class='w-[34rem] max-w-full'>
+    <SegmentedControl
+      @defaultValue='resident'
+      @intent='primary'
+      @size='lg'
+      @isFullWidth={{true}}
+      @classes={{hash
+        base='bg-surface-card border border-neutral-soft'
+        item='text-primary'
+      }}
+      aria-label='Account type'
+      as |Ctl|
+    >
+      <Ctl.Item @value='resident'>Resident</Ctl.Item>
+      <Ctl.Item @value='business'>Business</Ctl.Item>
+    </SegmentedControl>
+  </div>
+</template>
+```
+
+The selected label stays readable because `@intent` applies its contrast ink
+with an `aria-checked:` (button mode) or `has-[:checked]:` (form mode) modifier,
+which outranks the plain `text-primary` in `@classes.item` on specificity. An
+override meant to win on the *selected* item has to carry the same modifier.
+
+Overriding `@classes.indicator` is how a different indicator shape is built —
+an underline rather than a pill, say. `SelectionIndicator`'s
+[own documentation](/docs/components/utilities/selection-indicator) covers the
+custom properties to position it with, and the one trap to avoid.
+
 ## Accessibility
 
 The control renders `role="radiogroup"` with `aria-orientation`, and each

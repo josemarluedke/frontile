@@ -202,8 +202,15 @@ const segmentedControl = tv({
       true: {
         item: [
           // A hairline before every item except the first.
+          //
+          // The level differs per mode because neither the neutral scale nor
+          // the track is symmetric across them. `neutral-muted` alone reads at
+          // 1.06:1 against the light track (`surface-overlay-soft` over the
+          // page, ~#f2f2f2) -- mathematically invisible -- while reading fine
+          // on the dark one. `mild` in light and `soft` in dark land at
+          // 1.49:1 and 2.08:1: present without competing with the labels.
           'before:absolute before:content-[""]',
-          'before:bg-neutral-muted',
+          'before:bg-neutral-mild dark:before:bg-neutral-soft',
           'before:transition-opacity before:duration-200',
           'motion-reduce:before:transition-none',
           // The indicator's own `<span>` is the container's true first
