@@ -7,7 +7,11 @@ imports:
 
 # Toast Notification
 
-Toast notifications provide brief, non-intrusive feedback about an operation through a small popup. They automatically disappear after a short time and don't require user interaction.
+Toast notifications give brief, non-intrusive feedback about an operation — a save
+succeeded, an upload failed, an item can still be undone — through a small popup that
+disappears on its own and never demands the user's attention the way a modal does. Reach
+for a modal instead when the message needs a decision, and for inline validation when it's
+about a specific form field.
 
 ## Import
 
@@ -18,35 +22,12 @@ import {
 } from 'frontile';
 ```
 
-> **Important**: `NotificationsContainer` renders `notifications.notifications` from the
-> **shared, application-wide** notifications service — it does not own any notification data
-> itself. If more than one `NotificationsContainer` is mounted at the same time, **every**
-> container renders **every** notification, so each toast appears once per mounted container,
-> all stacked in the same corner (or in whichever corners the containers use). Mount a single
-> `NotificationsContainer` in your application template rather than including it in individual
-> components — this prevents duplicate stacks and gives your app one consistent notification
-> experience.
-
-## Key Features
-
-- **Title & Description**: Structured content with a title and an optional supporting description
-- **Intent Icons**: Default, info, success, warning, and danger icons rendered automatically per intent
-- **Three Variants**: `default`, `tonal`, and `solid` surface styles
-- **Collapsible Stack**: Toasts collapse into a peeking stack and expand on hover or focus
-- **Promise-Driven Notifications**: Show a loading state that resolves into success or error
-- **Auto-Dismissal**: Configurable timeout that pauses while the stack is hovered
-- **Custom Actions**: Close button and custom action buttons
-- **Six Placements**: Position the stack around the screen
-- **Dismissal Callbacks**: Track when notifications are removed
-- **Metadata Support**: Attach custom data for analytics and tracking
-- **TypeScript Ready**: Full type safety with generic metadata support
-- **Accessible**: ARIA roles and a live region tuned to each notification's intent
-
 ## Usage
 
-### Global Setup
-
-For best results, place a single `NotificationsContainer` in your application template:
+`NotificationsContainer` renders `notifications.notifications` from the **shared,
+application-wide** notifications service — it does not own any notification data itself.
+Mount exactly one `NotificationsContainer`, in your application template, rather than one
+per feature or component:
 
 ```hbs
 {{! app/templates/application.hbs }}
@@ -58,16 +39,12 @@ For best results, place a single `NotificationsContainer` in your application te
 <NotificationsContainer @placement='bottom-right' />
 ```
 
-This approach ensures:
+> **Important**: if more than one `NotificationsContainer` is mounted at the same time,
+> **every** container renders **every** notification, so each toast appears once per mounted
+> container. A single global container also gives you one place to configure placement and
+> handle dismissal callbacks (see [Dismissal Callbacks and Metadata](#dismissal-callbacks-and-metadata)).
 
-- No conflicting notification containers
-- Consistent placement across your application
-- Centralized callback handling for analytics/logging
-- Better performance with a single container
-
-### Basic Notification
-
-The simplest way to show a notification is to inject the notifications service and call the `add` method.
+With the container mounted, inject the notifications service anywhere and call `add`:
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -90,15 +67,15 @@ export default class BasicExample extends Component {
 }
 ```
 
-### Notification Intents
+## Intents
 
 Use `intent` to convey the appropriate message type: `'default'`, `'info'`, `'success'`,
 `'warning'`, or `'danger'`. Each intent renders a matching icon automatically; pass
 `hideIcon: true` to suppress it.
 
-`'default'` is the default intent — a bare `notifications.add('message')` with no `intent`
-option produces a `default` toast. It still renders the same info glyph as the `info` intent,
-just in a neutral color rather than the primary accent, so callers who want the old
+`'default'` is the intent used when none is given — a bare `notifications.add('message')`
+produces a `default` toast. It still renders the same info glyph as the `info` intent, just
+in a neutral color rather than the primary accent, so callers who want the old
 teal-accented look pass `intent: 'info'` explicitly.
 
 ```gts preview
@@ -152,7 +129,7 @@ export default class IntentExample extends Component {
 
 > **Note**: `appearance` still works but is deprecated — see [Migrating from `appearance`](#migrating-from-appearance) below.
 
-### Title and Description
+## Title and Description
 
 `add` takes the title as a string, with an optional `description` alongside it, or a single content object with both fields.
 
@@ -192,23 +169,53 @@ export default class DescriptionExample extends Component {
 }
 ```
 
-### Container Configuration
+## Variants
 
-`NotificationsContainer` takes several arguments that change how the whole stack renders:
-`@variant` controls the surface style applied to every card (`default` is a neutral opaque
-card where the intent color is carried by the icon and title, `tonal` matches `Button`'s
-`appearance="tonal"` recipe — an opaque neutral card whose inner row carries a translucent
-`{intent}-soft` tint with its `on-{intent}-soft` contrast text, so the card as a whole stays
-fully opaque while the tint reads exactly like a tonal button — and `solid` is a filled surface
-with contrast text), `@placement` controls where the
-stack sits on screen, and `@visibleToasts` (default `3`) sets how many cards stay visible
-while collapsed — `@spacing` (default `16`) is the peek offset between collapsed cards and the
-gap between expanded ones, in pixels, and `@expand` forces the stack to stay expanded instead
-of collapsing when it isn't hovered.
+`@variant` on `NotificationsContainer` controls the surface style applied to every card in
+the stack:
 
-Because only one container should ever be mounted at a time (see the callout above), this
-single demo drives one `NotificationsContainer` from all three controls, rather than mounting
-a separate container per argument.
+- **`default`** — a neutral opaque card; the intent color is carried only by the icon and title.
+- **`tonal`** — the same recipe as `Button`'s `appearance="tonal"`: an opaque neutral card
+  whose inner row carries a translucent `{intent}-soft` tint with its `on-{intent}-soft`
+  contrast text, so the card stays fully opaque while the tint reads like a tonal button.
+- **`solid`** — a filled surface in the intent color, with contrast text.
+
+```gts
+<NotificationsContainer @variant='tonal' />
+```
+
+Try all three live in the [Stacking](#stacking) demo below — its variant control drives the
+one container mounted on this page.
+
+## Placement
+
+`@placement` controls which corner or edge the stack sits on: `'top-left'`, `'top-center'`,
+`'top-right'`, `'bottom-left'`, `'bottom-center'`, or `'bottom-right'` (the default).
+Placement only decides which edge the stack is pinned to — newer notifications always stack
+toward the front regardless of placement.
+
+```gts
+<NotificationsContainer @placement='top-right' />
+```
+
+Compare placements live in the [Stacking](#stacking) demo below.
+
+## Stacking
+
+Collapsed, the stack shows only the front few cards peeking out from behind each other;
+hovering or focusing it expands the whole stack so every toast is readable. Three
+container arguments control this:
+
+- **`@visibleToasts`** (default `3`) — how many cards stay visible while collapsed.
+- **`@spacing`** (default `16`) — the peek offset between collapsed cards, in pixels, and
+  also the gap between cards once the stack is expanded.
+- **`@expand`** (default `false`) — keep the stack always expanded instead of collapsing it
+  when it isn't hovered or focused.
+
+Because only one `NotificationsContainer` should ever be mounted at a time, this single demo
+drives that one container from every argument covered in this section as well as
+[Variants](#variants) and [Placement](#placement) above — rather than mounting a second
+container per argument.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -217,17 +224,19 @@ import { service } from '@ember/service';
 import {
   Button,
   RadioGroup,
+  Switch,
   NotificationsContainer,
   type NotificationsService,
   type NotificationIntent
 } from 'frontile';
 
-export default class ContainerConfigExample extends Component {
+export default class StackingExample extends Component {
   @service notifications!: NotificationsService;
 
   @tracked variant: 'default' | 'tonal' | 'solid' = 'default';
   @tracked placement = 'bottom-right';
   @tracked visibleToastsKey = '3';
+  @tracked expand = false;
 
   variants = [
     { key: 'default', label: 'Default' },
@@ -272,6 +281,10 @@ export default class ContainerConfigExample extends Component {
 
   setVisibleToasts = (value: string) => {
     this.visibleToastsKey = value;
+  };
+
+  toggleExpand = (value: boolean) => {
+    this.expand = value;
   };
 
   showAllIntents = () => {
@@ -330,6 +343,12 @@ export default class ContainerConfigExample extends Component {
         </RadioGroup>
       </div>
 
+      <Switch
+        @label='Keep stack expanded (@expand)'
+        @isSelected={{this.expand}}
+        @onChange={{this.toggleExpand}}
+      />
+
       <div class='flex flex-wrap gap-2'>
         <Button @onPress={{this.showAllIntents}}>Show All Intents</Button>
         <Button @onPress={{this.showFive}}>Show 5 Notifications</Button>
@@ -337,7 +356,8 @@ export default class ContainerConfigExample extends Component {
       </div>
 
       <p class='text-body-2xs text-neutral-muted'>
-        Hover or focus the stack to expand it. Collapsed, it shows
+        Hover or focus the stack to expand it (or toggle "Keep stack expanded"
+        above). Collapsed, it shows
         {{this.visibleToasts}}
         card(s) peeking; the rest stay tucked behind them.
       </p>
@@ -346,13 +366,14 @@ export default class ContainerConfigExample extends Component {
         @placement={{this.placement}}
         @variant={{this.variant}}
         @visibleToasts={{this.visibleToasts}}
+        @expand={{this.expand}}
       />
     </div>
   </template>
 }
 ```
 
-### Custom Actions
+## Custom Actions
 
 Add action buttons to notifications for user interaction.
 
@@ -428,121 +449,10 @@ export default class ActionsExample extends Component {
 }
 ```
 
-### Persistent Notifications
+## Duration and Persistence
 
-Use `preserve: true` to prevent automatic dismissal.
-
-```gts preview
-import Component from '@glimmer/component';
-import { service } from '@ember/service';
-import { Button } from 'frontile';
-import type { NotificationsService } from 'frontile';
-
-export default class PersistentExample extends Component {
-  @service notifications!: NotificationsService;
-
-  showPersistent = () => {
-    this.notifications.add('This notification stays until manually closed', {
-      intent: 'warning',
-      preserve: true
-    });
-  };
-
-  showWithoutCloseButton = () => {
-    this.notifications.add('No close button - click actions to dismiss', {
-      intent: 'info',
-      preserve: true,
-      allowClosing: false,
-      customActions: [
-        {
-          label: 'Got it',
-          onClick: () => {
-            // This will dismiss the notification
-          }
-        }
-      ]
-    });
-  };
-
-  <template>
-    <div class='flex gap-2'>
-      <Button @onPress={{this.showPersistent}}>
-        Persistent Notification
-      </Button>
-      <Button @onPress={{this.showWithoutCloseButton}}>
-        No Close Button
-      </Button>
-    </div>
-  </template>
-}
-```
-
-### Notification Callbacks
-
-Track notification dismissals for analytics, backend updates, or cleanup. When using a global container, set up callbacks in your application template:
-
-`@onDismiss` is called **exactly once per notification**, after it has actually been removed — repeated dismissals of the same notification (e.g. a double-click on the close button) do not call it again. The callback is always read from the current `@onDismiss` argument, so changing it at runtime takes effect immediately.
-
-```hbs
-{{! app/templates/application.hbs }}
-<NotificationsContainer
-  @placement='bottom-right'
-  @onDismiss={{this.handleNotificationDismissed}}
-/>
-```
-
-```gts
-// app/controllers/application.ts
-import Controller from '@ember/controller';
-
-export default class ApplicationController extends Controller {
-  handleNotificationDismissed = (notification) => {
-    if (notification.metadata) {
-      // Send analytics event
-      this.analytics.track('notification_dismissed', notification.metadata);
-
-      // Mark as read on backend
-      if (notification.metadata.notificationId) {
-        this.api.markNotificationAsRead(notification.metadata.notificationId);
-      }
-    }
-  };
-}
-```
-
-Then from any component, add notifications with metadata:
-
-```gts preview
-import Component from '@glimmer/component';
-import { service } from '@ember/service';
-import { Button } from 'frontile';
-import type { NotificationsService } from 'frontile';
-
-export default class CallbackExample extends Component {
-  @service notifications!: NotificationsService;
-
-  showWithCallback = () => {
-    this.notifications.add('Notification with tracking', {
-      intent: 'info',
-      metadata: {
-        id: `notification_${Date.now()}`,
-        source: 'demo',
-        action: 'user_interaction'
-      }
-    });
-  };
-
-  <template>
-    <Button @onPress={{this.showWithCallback}}>
-      Show Tracked Notification
-    </Button>
-  </template>
-}
-```
-
-### Custom Duration
-
-Control timing for individual notifications.
+Every notification auto-dismisses after `duration` milliseconds (default `5000`), unless
+`preserve: true` keeps it open until the user (or a custom action) closes it.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -606,11 +516,72 @@ export default class TimingExample extends Component {
 }
 ```
 
-### Promise-Driven Notifications
+Use `preserve: true` to prevent automatic dismissal entirely, and `allowClosing: false` to
+also hide the close button — pair the latter with a custom action so the notification still
+has a way out.
 
-`promise()` shows a loading toast with a spinner, then mutates that same toast into a success or error state once the promise settles — no second toast is created. While pending, the toast cannot be dismissed. `loading` takes a string or a `{ title, description }` object; `success` and `error` each take a string, a `{ title, description }` object, or a function of the resolved value (for `success`) or rejection reason (for `error`) returning either.
+```gts preview
+import Component from '@glimmer/component';
+import { service } from '@ember/service';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
 
-`promise()` returns the **original promise** unchanged, so the caller still owns rejection handling — the toast alone does not swallow a rejection.
+export default class PersistentExample extends Component {
+  @service notifications!: NotificationsService;
+
+  showPersistent = () => {
+    this.notifications.add('This notification stays until manually closed', {
+      intent: 'warning',
+      preserve: true
+    });
+  };
+
+  showWithoutCloseButton = () => {
+    this.notifications.add('No close button - click actions to dismiss', {
+      intent: 'info',
+      preserve: true,
+      allowClosing: false,
+      customActions: [
+        {
+          label: 'Got it',
+          onClick: () => {
+            // This will dismiss the notification
+          }
+        }
+      ]
+    });
+  };
+
+  <template>
+    <div class='flex gap-2'>
+      <Button @onPress={{this.showPersistent}}>
+        Persistent Notification
+      </Button>
+      <Button @onPress={{this.showWithoutCloseButton}}>
+        No Close Button
+      </Button>
+    </div>
+  </template>
+}
+```
+
+> Auto-dismissal pauses for every visible notification while the stack is hovered or
+> focused, not just the one under the pointer — see [Accessibility](#accessibility).
+
+## Promise-Driven Notifications
+
+`promise()` shows a loading toast with a spinner, then mutates that same toast into a
+success or error state once the promise settles — no second toast is created. While
+pending, the toast cannot be dismissed. `loading` takes a string or a `{ title, description }`
+object; `success` and `error` each take a string, a `{ title, description }` object, or a
+function of the resolved value (for `success`) or rejection reason (for `error`) returning
+either.
+
+`promise()` returns the **original promise** unchanged, so the caller still owns rejection
+handling — the toast alone does not swallow a rejection. Any other notification option
+passed alongside `loading`/`success`/`error` — `preserve` included — carries through to the
+settled notification: the loading phase is always non-dismissible while pending, but once it
+settles, a caller's own `preserve: true` is honored rather than silently overridden.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -678,11 +649,69 @@ export default class PromiseExample extends Component {
 }
 ```
 
-## Advanced Usage
+## Dismissal Callbacks and Metadata
 
-### Type-Safe Metadata
+Track notification dismissals for analytics, backend updates, or cleanup. Set the callback
+on the global container, in your application template:
 
-Use TypeScript generics for strongly-typed metadata.
+`@onDismiss` is called **exactly once per notification**, after it has actually been
+removed — repeated dismissals of the same notification (e.g. a double-click on the close
+button) do not call it again. The callback is always read from the current `@onDismiss`
+argument, so changing it at runtime takes effect immediately.
+
+```hbs
+{{! app/templates/application.hbs }}
+<NotificationsContainer
+  @placement='bottom-right'
+  @onDismiss={{this.handleNotificationDismissed}}
+/>
+```
+
+```gts
+// app/controllers/application.ts
+import Controller from '@ember/controller';
+
+export default class ApplicationController extends Controller {
+  handleNotificationDismissed = (notification) => {
+    if (notification.metadata) {
+      this.analytics.track('notification_dismissed', notification.metadata);
+    }
+  };
+}
+```
+
+Then from any component, add notifications with metadata:
+
+```gts preview
+import Component from '@glimmer/component';
+import { service } from '@ember/service';
+import { Button } from 'frontile';
+import type { NotificationsService } from 'frontile';
+
+export default class CallbackExample extends Component {
+  @service notifications!: NotificationsService;
+
+  showWithCallback = () => {
+    this.notifications.add('Notification with tracking', {
+      intent: 'info',
+      metadata: {
+        id: `notification_${Date.now()}`,
+        source: 'demo',
+        action: 'user_interaction'
+      }
+    });
+  };
+
+  <template>
+    <Button @onPress={{this.showWithCallback}}>
+      Show Tracked Notification
+    </Button>
+  </template>
+}
+```
+
+Use a TypeScript generic on `add` for strongly-typed metadata, so a reader (or the compiler)
+knows exactly what shape to expect back from `notification.metadata`:
 
 ```typescript
 interface UserActionMetadata {
@@ -692,7 +721,6 @@ interface UserActionMetadata {
   timestamp: string;
 }
 
-// Type-safe notification with metadata
 const notification = this.notifications.add<UserActionMetadata>(
   'File uploaded successfully',
   {
@@ -709,91 +737,39 @@ const notification = this.notifications.add<UserActionMetadata>(
 // notification.metadata is now strongly typed as UserActionMetadata
 ```
 
-### Backend Integration Example
+## Accessibility
 
-```typescript
-export default class NotificationService extends Component {
-  @service notifications;
-  @service api;
+- **ARIA Attributes**: The container uses `role="region"`, `aria-label="Notifications"`, and
+  `aria-live="polite"`. Each card carries `role="status"` (default, info, success) or
+  `role="alert"` (warning, danger) — `alert` is reserved for intents that warrant interrupting the screen
+  reader.
+- **Screen Reader Support**: Notifications are announced as they appear, without stealing
+  focus.
+- **Keyboard Navigation**: The stack expands on `focusin` as well as hover, so keyboard users
+  reach the same expanded view; close buttons and custom actions are focusable and operable
+  with the keyboard.
+- **Hover and Focus Behavior**: Auto-dismissal pauses for every visible notification while the
+  stack is hovered or focused, not just the one underneath the pointer.
+- **Text Contrast**: `default` uses the brightest levels of the `success`/`warning` palette scale
+  at the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG
+  AA floor at `firm` — the theme uses `bolder` for their title/icon text instead. `tonal` composites
+  the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
+  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `appearance="tonal"`
+  uses), which clears AA for every intent in both themes without any hand-picked text level or
+  background override. Measured ratios (WCAG relative luminance, resolving the composited
+  `{intent}-soft`-over-surface color where relevant):
 
-  async showNotificationWithBackendSync() {
-    const notification = this.notifications.add('New message received', {
-      intent: 'info',
-      metadata: {
-        notificationId: 'msg_123',
-        userId: this.currentUser.id,
-        source: 'message_system'
-      }
-    });
-  }
-
-  handleNotificationDismissed = async (notification) => {
-    if (notification.metadata?.notificationId) {
-      // Mark as read on backend
-      await this.api.markNotificationAsRead(
-        notification.metadata.notificationId
-      );
-
-      // Track analytics
-      this.analytics.track('notification_dismissed', {
-        notificationId: notification.metadata.notificationId,
-        userId: notification.metadata.userId,
-        dismissedAt: new Date().toISOString()
-      });
-    }
-  };
-}
-```
-
-## Configuration Options
-
-### Notification Options
-
-All options available when creating notifications with `add`:
-
-| Option               | Type                                            | Default     | Description                                                                                 |
-| --------------------- | ------------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------- |
-| `intent`              | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'default'` | The intent of the notification                                                     |
-| `appearance`          | `'info' \| 'success' \| 'warning' \| 'error'`    | `undefined` | **Deprecated** — use `intent` instead. `'error'` maps to `'danger'`. Removed in 0.19           |
-| `description`         | `string`                                         | `undefined` | Supporting text rendered below the title (string content form only)                           |
-| `duration`            | `number`                                         | `5000`      | Auto-dismiss time in milliseconds                                                              |
-| `preserve`            | `boolean`                                        | `false`     | Prevent auto-dismissal                                                                         |
-| `allowClosing`        | `boolean`                                        | `true`      | Show close button                                                                              |
-| `transitionDuration`  | `number`                                         | `200`       | Duration of the enter/exit fade, in milliseconds. Card slide/scale and the container's expand-collapse height animate at a fixed 400ms, independent of this option. |
-| `hideIcon`            | `boolean`                                        | `false`     | Hide the leading intent icon                                                                   |
-| `customActions`       | `CustomAction[]`                                 | `undefined` | Array of action buttons                                                                        |
-| `metadata`            | `TMetadata`                                      | `undefined` | Custom data attached to the notification                                                       |
-
-> The `title` (or `message` for backwards compatibility) comes from the `content` argument to
-> `add`, either as a plain string or as `{ title, description }`.
-
-### Promise Options
-
-Options for `promise()`, in addition to everything above except `isLoading` (which `promise()` manages itself):
-
-| Option    | Type                                                                | Description                                     |
-| --------- | -------------------------------------------------------------------- | ------------------------------------------------ |
-| `loading` | `string \| NotificationContent`                                      | Shown with a spinner while the promise is pending |
-| `success` | `string \| NotificationContent \| (value) => string \| NotificationContent` | Shown when the promise resolves            |
-| `error`   | `string \| NotificationContent \| (reason) => string \| NotificationContent` | Shown when the promise rejects            |
-
-### Container Configuration
-
-Options for the NotificationsContainer component:
-
-- **`placement`**: Position on screen (default: `'bottom-right'`)
-  - `'top-left'` | `'top-center'` | `'top-right'`
-  - `'bottom-left'` | `'bottom-center'` | `'bottom-right'`
-- **`variant`**: Visual style applied to every card (default: `'default'`) — `'default'` | `'tonal'` | `'solid'`
-- **`visibleToasts`**: How many cards stay visible while collapsed (default: `3`)
-- **`expand`**: Keep the stack always expanded instead of collapsing (default: `false`)
-- **`spacing`**: Peek offset between collapsed cards, and gap between expanded cards, in pixels (default: `16`)
-- **`onDismiss`**: Callback function called once per notification, after it is removed
-- **`class`**: Custom CSS classes for styling
-
-> **Note**: The notifications service holds a single `onDismiss` slot. If more than one
-> `NotificationsContainer` is rendered at the same time, the most recently rendered one
-> owns the callback — another reason to render a single global container.
+  | Pairing                                                                | Light | Dark  |
+  | ----------------------------------------------------------------------- | ----- | ----- |
+  | `default`/`tonal` description (`text-neutral-firm`)                     | 8.1   | 8.9–11.6 |
+  | `default` `success`/`warning` title (`bolder`)                          | 9.3 / 7.6 | 16.3 / 11.4 |
+  | `default` `info`/`danger`/neutral title                                 | ≥5.6  | ≥6.4  |
+  | `tonal` `default` (`on-neutral-soft` on composited `neutral-soft`)      | 15.4  | 8.1   |
+  | `tonal` `info` (`on-primary-soft` on composited `primary-soft`)         | 18.0  | 12.4  |
+  | `tonal` `success` (`on-success-soft` on composited `success-soft`)      | 19.5  | 12.0  |
+  | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`)      | 17.9  | 13.8  |
+  | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)         | 16.4  | 16.6  |
+  | `solid` variant (all intents, title/icon and 80%-opacity description)  | ≥7.1  | ≥9    |
 
 ## Migrating from `appearance`
 
@@ -943,67 +919,6 @@ longer interrupts a screen reader on every new toast. Each card now carries its 
 `role="status"` (default/info/success) or `role="alert"` (warning/danger) instead. No consumer code
 change is required, but update any test or a11y check that asserted the old attributes.
 
-## Accessibility
-
-The notification system includes built-in accessibility features:
-
-- **ARIA Attributes**: The container uses `role="region"`, `aria-label="Notifications"`, and
-  `aria-live="polite"`. Each card carries `role="status"` (default, info, success) or
-  `role="alert"` (warning, danger) — `alert` is reserved for intents that warrant interrupting the screen
-  reader.
-- **Screen Reader Support**: Notifications are announced as they appear, without stealing
-  focus.
-- **Keyboard Navigation**: The stack expands on `focusin` as well as hover, so keyboard users
-  reach the same expanded view; close buttons and custom actions are focusable and operable
-  with the keyboard.
-- **Hover and Focus Behavior**: Auto-dismissal pauses for every visible notification while the
-  stack is hovered or focused, not just the one underneath the pointer.
-- **Text Contrast**: `default` uses the brightest levels of the `success`/`warning` palette scale
-  at the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG
-  AA floor at `firm` — the theme uses `bolder` for their title/icon text instead. `tonal` composites
-  the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
-  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `appearance="tonal"`
-  uses), which clears AA for every intent in both themes without any hand-picked text level or
-  background override. Measured ratios (WCAG relative luminance, resolving the composited
-  `{intent}-soft`-over-surface color where relevant):
-
-  | Pairing                                                                | Light | Dark  |
-  | ----------------------------------------------------------------------- | ----- | ----- |
-  | `default`/`tonal` description (`text-neutral-firm`)                     | 8.1   | 8.9–11.6 |
-  | `default` `success`/`warning` title (`bolder`)                          | 9.3 / 7.6 | 16.3 / 11.4 |
-  | `default` `info`/`danger`/neutral title                                 | ≥5.6  | ≥6.4  |
-  | `tonal` `default` (`on-neutral-soft` on composited `neutral-soft`)      | 15.4  | 8.1   |
-  | `tonal` `info` (`on-primary-soft` on composited `primary-soft`)         | 18.0  | 12.4  |
-  | `tonal` `success` (`on-success-soft` on composited `success-soft`)      | 19.5  | 12.0  |
-  | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`)      | 17.9  | 13.8  |
-  | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)         | 16.4  | 16.6  |
-  | `solid` variant (all intents, title/icon and 80%-opacity description)  | ≥7.1  | ≥9    |
-
-## Best Practices
-
-### When to Use Notifications
-
-- **Success confirmations**: "File uploaded successfully"
-- **Error messages**: "Failed to save changes"
-- **Status updates**: "Connecting to server..."
-- **Undo actions**: "Item deleted" with undo button
-
-### When NOT to Use Notifications
-
-- **Critical errors**: Use modals or inline validation instead
-- **Complex forms**: Use inline feedback for form validation
-- **Permanent status**: Use status indicators in the UI
-- **Long content**: Use modals or dedicated pages
-
-### Design Guidelines
-
-- **Keep messages brief**: A short title, with a description only when it adds information
-- **Use appropriate intent**: Match the semantic meaning
-- **Provide actions when useful**: Undo, View, Retry buttons
-- **Consider timing**: Longer duration for actionable notifications
-- **Limit simultaneous notifications**: The stack collapses automatically, but avoid firing
-  many notifications for one user action
-
 ## API
 
 ### NotificationsService
@@ -1022,6 +937,36 @@ The notifications service manages the global notification state and provides met
 | --------------- | ---------------- | ------------------------------------------ |
 | `notifications` | `Notification[]` | Array of current notifications (read-only) |
 
+### Notification Options
+
+All options available when creating notifications with `add`:
+
+| Option               | Type                                            | Default     | Description                                                                                 |
+| --------------------- | ------------------------------------------------ | ----------- | --------------------------------------------------------------------------------------------- |
+| `intent`              | `'default' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'default'` | The intent of the notification                                                     |
+| `appearance`          | `'info' \| 'success' \| 'warning' \| 'error'`    | `undefined` | **Deprecated** — use `intent` instead. `'error'` maps to `'danger'`. Removed in 0.19           |
+| `description`         | `string`                                         | `undefined` | Supporting text rendered below the title (string content form only)                           |
+| `duration`            | `number`                                         | `5000`      | Auto-dismiss time in milliseconds                                                              |
+| `preserve`            | `boolean`                                        | `false`     | Prevent auto-dismissal                                                                         |
+| `allowClosing`        | `boolean`                                        | `true`      | Show close button                                                                              |
+| `transitionDuration`  | `number`                                         | `200`       | Duration of the enter/exit fade, in milliseconds. Card slide/scale and the container's expand-collapse height animate at a fixed 400ms, independent of this option. |
+| `hideIcon`            | `boolean`                                        | `false`     | Hide the leading intent icon                                                                   |
+| `customActions`       | `CustomAction[]`                                 | `undefined` | Array of action buttons                                                                        |
+| `metadata`            | `TMetadata`                                      | `undefined` | Custom data attached to the notification                                                       |
+
+> The `title` (or `message` for backwards compatibility) comes from the `content` argument to
+> `add`, either as a plain string or as `{ title, description }`.
+
+### Promise Options
+
+Options for `promise()`, in addition to everything above except `isLoading` (which `promise()` manages itself):
+
+| Option    | Type                                                                | Description                                     |
+| --------- | -------------------------------------------------------------------- | ------------------------------------------------ |
+| `loading` | `string \| NotificationContent`                                      | Shown with a spinner while the promise is pending |
+| `success` | `string \| NotificationContent \| (value) => string \| NotificationContent` | Shown when the promise resolves            |
+| `error`   | `string \| NotificationContent \| (reason) => string \| NotificationContent` | Shown when the promise rejects            |
+
 ### CustomAction
 
 Structure for notification action buttons:
@@ -1031,15 +976,10 @@ Structure for notification action buttons:
 | `label`   | `string`     | Text displayed on the button           |
 | `onClick` | `() => void` | Function called when button is clicked |
 
-### Container Placement Options
+### NotificationsContainer
 
-Available positions for the notifications container:
-
-- `'top-left'` - Top left corner
-- `'top-center'` - Top center
-- `'top-right'` - Top right corner
-- `'bottom-left'` - Bottom left corner
-- `'bottom-center'` - Bottom center
-- `'bottom-right'` - Bottom right corner (default)
+> The notifications service holds a single `onDismiss` slot. If more than one
+> `NotificationsContainer` is rendered at the same time, the most recently rendered one
+> owns the callback — another reason to render a single global container.
 
 <Signature @component="NotificationsContainer" />
