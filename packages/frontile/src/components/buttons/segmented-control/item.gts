@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
+import { press } from '../../../modifiers/press';
 import { modifier } from 'ember-modifier';
 import type { SegmentedControlContext } from './segmented-control';
 
@@ -117,8 +118,8 @@ class SegmentedControlItem<T> extends Component<
         data-disabled="{{this.isDisabled}}"
         {{this.registerValue @value}}
         {{@context.indicator.setupTarget this.isSelected}}
-        {{@context.roving.setupItem this.isSelected}}
-        {{on "click" this.handleClick}}
+        {{@context.roving.setupItem}}
+        {{press this.handleClick}}
         ...attributes
       >
         {{yield (hash isSelected=this.isSelected)}}

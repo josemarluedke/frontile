@@ -15,6 +15,23 @@ import { hash } from '@ember/helper';
 import { SegmentedControl } from 'frontile';
 import { cell } from 'ember-resources';
 
+/**
+ * Activation the way `press` sees it.
+ *
+ * `@ember/test-helpers`' `click` refuses a natively-disabled element, and the
+ * item activates through the `press` modifier, which listens for pointer
+ * events rather than `click` -- so a synthetic `click` reaches nothing and
+ * would make a disabled-guard assertion pass for the wrong reason.
+ */
+async function pressOn(element: Element): Promise<void> {
+  for (const type of ['pointerdown', 'pointerup']) {
+    element.dispatchEvent(
+      new PointerEvent(type, { bubbles: true, cancelable: true, button: 0 })
+    );
+  }
+  await settled();
+}
+
 module(
   'Integration | Component | SegmentedControl | @frontile/buttons',
   function (hooks) {
@@ -319,8 +336,7 @@ module(
       // `click`/`triggerEvent` refuse disabled elements outright, so dispatch
       // the event directly: this asserts the item's own guard rather than only
       // the browser's, and keeps holding once the item moves to aria-disabled.
-      items[1]!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await settled();
+      await pressOn(items[1]!);
       assert.strictEqual(calls, 0, 'clicking the disabled item calls nothing');
       assert.strictEqual(value.current, 'day', 'the selection did not change');
       assert.dom(findAll('[role="radio"]')[1]!).hasAria('checked', 'false');
@@ -357,8 +373,7 @@ module(
 
       const items = findAll('[role="radio"]') as HTMLButtonElement[];
 
-      items[1]!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      await settled();
+      await pressOn(items[1]!);
       assert.strictEqual(calls, 0, 'clicking an item selects nothing');
 
       items[0]!.dispatchEvent(
@@ -800,8 +815,9 @@ module(
 
     test('form mode draws its focus ring on the label', async function (assert) {
       // The radio input is `sr-only`, so focusing it shows nothing unless the
-      // wrapping label carries the ring. This is the whole reason the theme has
-      // a `mode` variant.
+      // wrapping label carries the ring. The theme ships both rings on every
+      // item and lets the selectors decide which can match, so this asserts the
+      // within-ring is present rather than that a mode was picked.
       await render(
         <template>
           <SegmentedControl @value="day" @name="range" as |Ctl|>

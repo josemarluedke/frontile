@@ -25,9 +25,13 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true}}>A</button>
-            <button type="button" {{roving.setupItem false}}>B</button>
-            <button type="button" {{roving.setupItem false}}>C</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
           </div>
         </template>
       );
@@ -66,8 +70,12 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true}}>A</button>
-            <button type="button" {{roving.setupItem false}}>B</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
           </div>
         </template>
       );
@@ -96,10 +104,14 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" disabled {{roving.setupItem false}}>A</button>
-            <button type="button" {{roving.setupItem true}}>B</button>
-            <button type="button" {{roving.setupItem false}}>C</button>
-            <button type="button" disabled {{roving.setupItem false}}>D</button>
+            <button type="button" disabled {{roving.setupItem}}>A</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
+            <button type="button" disabled {{roving.setupItem}}>D</button>
           </div>
         </template>
       );
@@ -128,9 +140,13 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true}}>A</button>
-            <button type="button" disabled {{roving.setupItem false}}>B</button>
-            <button type="button" {{roving.setupItem false}}>C</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" disabled {{roving.setupItem}}>B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
           </div>
         </template>
       );
@@ -152,9 +168,13 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem false}}>A</button>
-            <button type="button" {{roving.setupItem true}}>B</button>
-            <button type="button" {{roving.setupItem false}}>C</button>
+            <button type="button" {{roving.setupItem}}>A</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
           </div>
         </template>
       );
@@ -173,9 +193,9 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" disabled {{roving.setupItem false}}>A</button>
-            <button type="button" {{roving.setupItem false}}>B</button>
-            <button type="button" {{roving.setupItem false}}>C</button>
+            <button type="button" disabled {{roving.setupItem}}>A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
           </div>
         </template>
       );
@@ -198,8 +218,12 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true}}>A</button>
-            <button type="button" {{roving.setupItem false}}>B</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
           </div>
         </template>
       );
@@ -227,13 +251,21 @@ module(
         <template>
           <div dir="rtl">
             <div>
-              <button type="button" {{horizontal.setupItem true}}>A</button>
-              <button type="button" {{horizontal.setupItem false}}>B</button>
-              <button type="button" {{horizontal.setupItem false}}>C</button>
+              <button
+                type="button"
+                aria-checked="true"
+                {{horizontal.setupItem}}
+              >A</button>
+              <button type="button" {{horizontal.setupItem}}>B</button>
+              <button type="button" {{horizontal.setupItem}}>C</button>
             </div>
             <div>
-              <button type="button" {{vertical.setupItem true}}>D</button>
-              <button type="button" {{vertical.setupItem false}}>E</button>
+              <button
+                type="button"
+                aria-checked="true"
+                {{vertical.setupItem}}
+              >D</button>
+              <button type="button" {{vertical.setupItem}}>E</button>
             </div>
           </div>
         </template>
@@ -298,12 +330,12 @@ module(
             <button
               type="button"
               aria-disabled="true"
-              {{roving.setupItem false}}
+              {{roving.setupItem}}
             >A</button>
             <button
               type="button"
               aria-disabled="true"
-              {{roving.setupItem false}}
+              {{roving.setupItem}}
             >B</button>
           </div>
         </template>
@@ -329,8 +361,12 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true}}>A</button>
-            <button type="button" {{roving.setupItem false}}>B</button>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
           </div>
         </template>
       );

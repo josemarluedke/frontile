@@ -24,7 +24,13 @@ interface RovingFocusOptions {
   onActivate?: (element: HTMLElement) => void;
 }
 
-const SELECTED_ATTRIBUTE = 'data-fr-roving-selected';
+/**
+ * How an element says it is selected. Read from the element for the same
+ * reason as `DISABLED_SELECTOR`: it already has to declare this for assistive
+ * technology, and a second declaration is only a way for the two to disagree.
+ */
+const SELECTED_SELECTOR =
+  '[data-selected="true"], [aria-checked="true"], [aria-selected="true"]';
 
 /**
  * How an element says it is disabled. `:disabled` covers the form controls
@@ -52,29 +58,27 @@ class RovingFocus {
   }
 
   /**
-   * Modifier to place on each candidate item, passing whether it is currently
-   * selected as its sole positional argument.
-   *
-   * Disabled state is deliberately NOT an argument: it is read from the
-   * element itself, live, at the moment a decision is made. An element already
-   * has to say it is disabled for the browser and for assistive technology, so
-   * asking a consumer to say it a second time only creates a way for the two
-   * to disagree.
+   * Modifier to place on each candidate item. It takes no arguments: both the
+   * facts it needs, selection and disabled state, are read from the element
+   * itself at the moment a decision is made.
    */
-  setupItem = modifier((element: HTMLElement, [isSelected]: [boolean]) => {
-    element.setAttribute(SELECTED_ATTRIBUTE, isSelected ? 'true' : 'false');
-
+  setupItem = modifier((element: HTMLElement) => {
     this.#register(element);
     element.addEventListener('keydown', this.handleKeydown);
 
-    // Navigation reads the DOM live, so it never goes stale -- but the tab
-    // stop is a written attribute, and it has to move when the item holding
-    // it becomes disabled. That can happen without this modifier re-running,
-    // since disabled is no longer one of its arguments, so watch for it.
+    // Navigation reads the DOM live, so it never goes stale. The tab stop is a
+    // written attribute though, and nothing re-runs this modifier when the
+    // element's own state changes, so watch for it.
     const observer = new MutationObserver(() => this.#syncTabStops());
     observer.observe(element, {
       attributes: true,
-      attributeFilter: ['disabled', 'aria-disabled']
+      attributeFilter: [
+        'disabled',
+        'aria-disabled',
+        'data-selected',
+        'aria-checked',
+        'aria-selected'
+      ]
     });
     this.#observers.set(element, observer);
 
@@ -184,9 +188,7 @@ class RovingFocus {
    */
   #syncTabStops(): void {
     const selected = this.#items.find(
-      (item) =>
-        item.getAttribute(SELECTED_ATTRIBUTE) === 'true' &&
-        !this.#isDisabled(item)
+      (item) => item.matches(SELECTED_SELECTOR) && !this.#isDisabled(item)
     );
     const stop = selected ?? this.#enabled[0];
 

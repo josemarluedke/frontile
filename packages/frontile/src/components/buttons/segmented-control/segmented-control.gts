@@ -1,8 +1,7 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
 import { registerDestructor } from '@ember/destroyable';
-import { buildWaiter } from '@ember/test-waiters';
 import type Owner from '@ember/owner';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import {
@@ -10,16 +9,13 @@ import {
   type SelectionIndicator
 } from '../../../utils/selection-indicator';
 import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
+import { deferredWork } from '../../../utils/deferred-work';
 import SegmentedControlItem from './item';
 import type {
   SegmentedControlSlots,
   SegmentedControlVariants
 } from '@frontile/theme';
 import type { WithBoundArgs } from '@glint/template';
-
-const formSyncWaiter = buildWaiter(
-  '@frontile/buttons:segmented-control-form-sync'
-);
 
 interface SegmentedControlArgs<T> {
   /**
@@ -150,8 +146,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   // so nothing outlives the elements themselves.
   #values = new Map<HTMLElement, T>();
 
-  #formSyncFrame?: number;
-  #formSyncToken?: unknown;
+  #formSync = deferredWork('@frontile/buttons:segmented-control-form-sync');
 
   roving = rovingFocus(() => ({
     orientation: this.args.orientation ?? 'horizontal',
@@ -166,15 +161,15 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
     // their own modifiers' destructors. This frame is the component's own, so
     // it is the only thing here that needs registering.
     registerDestructor(this, () => {
-      this.#cancelFormSync();
+      this.#formSync.cancel();
     });
   }
 
+  @cached
   get styles() {
     const { segmentedControl } = useStyles();
 
     return segmentedControl({
-      mode: this.args.name ? 'form' : 'button',
       intent: this.args.intent,
       variant: this.args.variant,
       size: this.args.size,
@@ -248,40 +243,22 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   };
 
   /**
-   * Form mode only. A native radio flips its own `checked` property the moment
-   * it is clicked, and Glimmer will not undo that: `checked={{isSelected}}`
-   * only writes when `isSelected` itself changes. So an uncontrolled control --
-   * no `@onChange`, or a consumer that declines the change -- would keep the
-   * user's pick in the DOM while `@value` and the indicator still say
-   * otherwise, leaving the accessibility tree contradicting the visuals.
+   * Form mode only. A native radio flips its own `checked` the moment it is
+   * clicked and Glimmer will not undo that, so the DOM can drift from `@value`
+   * when a consumer declines the change.
    *
-   * Re-asserting synchronously inside the change handler would read the stale
-   * `@value` and stomp a legitimate update, so this waits a frame: by then the
-   * consumer has had its chance to respond and Glimmer has re-rendered, and
-   * writing `isSelected` back is either a no-op (the update was accepted) or
-   * the correction (it was not). The whole group is walked, because unchecking
-   * the clicked radio does not restore its previously-checked sibling.
-   *
-   * Wrapped in a test waiter so `settled()` covers it, and cancelled on
-   * teardown so it can never fire against a destroyed component.
+   * It waits a frame rather than correcting synchronously: reading `@value`
+   * inside the change handler would see the stale value and stomp a legitimate
+   * update.
    */
   requestFormSync = (): void => {
-    if (this.#formSyncToken) {
-      return;
-    }
-
-    const token = formSyncWaiter.beginAsync();
-    this.#formSyncToken = token;
-
-    this.#formSyncFrame = requestAnimationFrame(() => {
-      this.#formSyncFrame = undefined;
-      this.#formSyncToken = undefined;
-      formSyncWaiter.endAsync(token);
-
+    this.#formSync.schedule(() => {
       if (this.isDestroying || this.isDestroyed) {
         return;
       }
 
+      // The whole group is walked: unchecking the clicked radio does not
+      // restore its previously-checked sibling.
       for (const [element, value] of this.#values) {
         if (!(element instanceof HTMLInputElement)) {
           continue;
@@ -294,17 +271,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
     });
   };
 
-  #cancelFormSync(): void {
-    if (this.#formSyncFrame !== undefined) {
-      cancelAnimationFrame(this.#formSyncFrame);
-      this.#formSyncFrame = undefined;
-    }
-    if (this.#formSyncToken) {
-      formSyncWaiter.endAsync(this.#formSyncToken);
-      this.#formSyncToken = undefined;
-    }
-  }
-
+  @cached
   get context(): SegmentedControlContext<T> {
     return {
       indicator: this.indicator,

@@ -1,8 +1,7 @@
 import { modifier } from 'ember-modifier';
-import { buildWaiter } from '@ember/test-waiters';
+import { deferredWork } from './deferred-work';
 
 const READY_ATTRIBUTE = 'data-fr-si-ready';
-const waiter = buildWaiter('@frontile/utils:selection-indicator');
 
 /**
  * Measures whichever element is currently selected and publishes its geometry
@@ -21,9 +20,9 @@ class SelectionIndicator {
   #container?: HTMLElement;
   #target?: HTMLElement;
   #observer?: ResizeObserver;
-  #frame?: number;
-  #waiterToken?: unknown;
-  #remeasureToken?: unknown;
+  #ready = deferredWork('@frontile/utils:selection-indicator:ready');
+  #remeasure = deferredWork('@frontile/utils:selection-indicator:remeasure');
+  #resize = deferredWork('@frontile/utils:selection-indicator:resize');
   #isReady = false;
 
   /**
@@ -33,7 +32,14 @@ class SelectionIndicator {
    */
   setupContainer = modifier((element: HTMLElement) => {
     this.#container = element;
-    this.#observer = new ResizeObserver(() => this.#measure());
+    // Coalesced to one measurement per frame: the container and the target are
+    // both observed, and resizing the container usually resizes the target too,
+    // so a single layout change delivers two entries. Measuring reads layout
+    // and then writes four custom properties, and a window drag fires this
+    // continuously.
+    this.#observer = new ResizeObserver(() =>
+      this.#resize.schedule(() => this.#measure())
+    );
     this.#observer.observe(element);
 
     if (this.#target) {
@@ -123,93 +129,41 @@ class SelectionIndicator {
   };
 
   /**
-   * Everything the container modifier's destructor undoes.
-   *
-   * There is deliberately no public `destroy`. Both of this utility's entry
-   * points are modifiers, so Ember already owns their teardown -- an element
-   * modifier is a destroyable child of the component that rendered it, and its
-   * destructor runs when that component is torn down. A second, manual
-   * shutdown would only be reachable for an instance that never ran a
-   * modifier, which by definition has nothing to clean up. `listManager` in
-   * this repo hooks its cleanup the same way, for the same reason.
-   *
-   * The target is not reset here: it belongs to `setupTarget`, whose own
-   * destructor clears it, and a container that unmounts while its selected
-   * child is still registered must not strand that registration.
+   * Everything the container modifier's destructor undoes. The target is not
+   * reset here: it belongs to `setupTarget`, whose own destructor clears it.
    */
   #shutDown(): void {
     this.#observer?.disconnect();
     this.#observer = undefined;
-    this.#cancelReady();
-    this.#cancelRemeasure();
+    this.#ready.cancel();
+    this.#remeasure.cancel();
+    this.#resize.cancel();
     this.#container = undefined;
     this.#isReady = false;
   }
 
   #markNotReady(): void {
-    this.#cancelReady();
+    this.#ready.cancel();
     this.#isReady = false;
     this.#container?.removeAttribute(READY_ATTRIBUTE);
   }
 
   // The ready flag is set a frame after the first real measurement so the
   // theme can hold transitions off until the indicator is already in place.
-  // Wrapped in a test waiter so `settled()` covers it.
   #scheduleReady(container: HTMLElement): void {
-    this.#waiterToken = waiter.beginAsync();
-    this.#frame = requestAnimationFrame(() => {
-      this.#frame = undefined;
-      container.setAttribute(READY_ATTRIBUTE, '');
-      if (this.#waiterToken) {
-        waiter.endAsync(this.#waiterToken);
-        this.#waiterToken = undefined;
-      }
-    });
+    this.#ready.schedule(() => container.setAttribute(READY_ATTRIBUTE, ''));
   }
 
-  // Re-measures once the current render has settled, so a target that is
-  // being handed from one element to another is never observed mid-handover.
-  // Wrapped in the same test waiter so it cannot outlive a `settled()`.
+  // Re-measures once the current render has settled, so a target being handed
+  // from one element to another is never observed mid-handover.
   #scheduleRemeasure(): void {
-    if (this.#remeasureToken) {
-      return;
-    }
-
-    const token = waiter.beginAsync();
-    this.#remeasureToken = token;
-
-    queueMicrotask(() => {
-      // Cancelled by teardown, or superseded by a later schedule.
-      if (this.#remeasureToken !== token) {
-        return;
-      }
-      this.#remeasureToken = undefined;
-      waiter.endAsync(token);
-
+    this.#remeasure.schedule(() => {
       // A new target claimed the slot in the meantime and measured itself.
       if (this.#target) {
         return;
       }
       this.#measure();
-    });
-  }
-
-  #cancelRemeasure(): void {
-    if (this.#remeasureToken) {
-      waiter.endAsync(this.#remeasureToken);
-      this.#remeasureToken = undefined;
-    }
-  }
-
-  #cancelReady(): void {
-    if (this.#frame !== undefined) {
-      cancelAnimationFrame(this.#frame);
-      this.#frame = undefined;
-    }
-    if (this.#waiterToken) {
-      waiter.endAsync(this.#waiterToken);
-      this.#waiterToken = undefined;
-    }
+    }, 'microtask');
   }
 }
 
