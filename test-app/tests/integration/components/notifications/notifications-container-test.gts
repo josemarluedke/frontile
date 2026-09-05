@@ -799,6 +799,14 @@ module(
           />
         </template>
       );
+      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
+      // frame after insertion (via `requestAnimationFrame`), and only once
+      // that happens does the style getter switch from the enter/exit
+      // transform (which forces `opacity: 0` regardless of stack position)
+      // to the geometry-driven one this test reads. `settled()` doesn't
+      // wait on a raw `requestAnimationFrame`, so wait for one directly.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settled();
 
       const cards = findAll('[data-test-notification-card]') as HTMLElement[];
       const opacity = (card: HTMLElement): string => {
@@ -854,6 +862,15 @@ module(
       await settled();
 
       assert.dom('[data-test-notification-card]').exists({ count: 1 });
+
+      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
+      // frame after insertion (via `requestAnimationFrame`), and only once
+      // that happens does the style getter switch from the enter/exit
+      // transform (which forces `opacity: 0`) to the geometry-driven one
+      // this assertion reads. `settled()` doesn't wait on a raw
+      // `requestAnimationFrame`, so wait for one directly.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settled();
 
       const card = find('[data-test-notification-card]') as HTMLElement;
       assert.ok(
