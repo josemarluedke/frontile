@@ -173,6 +173,21 @@ import { InputOtp } from 'frontile';
 <template><InputOtp @label='PIN' @length={{4}} @isMasked={{true}} /></template>
 ```
 
+## Placeholder
+
+`@placeholder` previews the shape of the code in the empty cells, and is exposed on the real
+input as `aria-placeholder`. It is all-or-nothing: it disappears from *every* cell the moment
+anything at all is entered, rather than lingering in the cells that are still empty. Focus the
+field and type a digit to watch it go — the fake caret sits in the active cell alongside it.
+
+```gts preview
+import { InputOtp } from 'frontile';
+
+<template>
+  <InputOtp @label='Verification code' @length={{6}} @placeholder='000000' />
+</template>
+```
+
 ## Sizes
 
 ```gts preview

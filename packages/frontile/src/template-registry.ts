@@ -12,6 +12,7 @@ import type {
   FormDescription,
   FormFeedback,
   Input,
+  InputOtp,
   Label,
   NativeSelect,
   Select,
@@ -60,6 +61,7 @@ export default interface Registry {
   FormDescription: typeof FormDescription;
   FormFeedback: typeof FormFeedback;
   Input: typeof Input;
+  InputOtp: typeof InputOtp;
   Label: typeof Label;
   NativeSelect: typeof NativeSelect;
   Select: typeof Select;
