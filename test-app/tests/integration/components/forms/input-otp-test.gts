@@ -1,8 +1,9 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, fillIn } from '@ember/test-helpers';
+import { render, find, findAll, fillIn, blur } from '@ember/test-helpers';
+import { cell as trackedCell } from 'ember-resources';
 
-import { InputOtp } from 'frontile';
+import { Form, InputOtp } from 'frontile';
 
 module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   setupRenderingTest(hooks);
@@ -87,5 +88,77 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert
       .dom('[data-component="input-otp-input"]')
       .hasAttribute('data-test-otp');
+  });
+
+  test('uncontrolled: it owns its own value', async function (assert) {
+    await render(<template><InputOtp @label="Code" /></template>);
+
+    await fillIn('[data-component="input-otp-input"]', '42');
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('4');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
+      .hasText('2');
+  });
+
+  test('controlled: @value drives the cells and @onChange reports back', async function (assert) {
+    const value = trackedCell<string>('');
+    const update = (next: string) => value.set(next);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @value={{value.current}} @onChange={{update}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '99');
+
+    assert.strictEqual(
+      value.current,
+      '99',
+      'the parent received the new value'
+    );
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('9');
+  });
+
+  test('controlled without feedback: cells still render what was typed', async function (assert) {
+    // <Form> is exactly this parent -- it binds a value it does not feed back,
+    // reading the real one off the DOM instead.
+    const noop = () => {};
+
+    await render(
+      <template><InputOtp @label="Code" @onChange={{noop}} /></template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '77');
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('7');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
+      .hasText('7');
+  });
+
+  test('@onInput fires per keystroke and @onBlur on blur', async function (assert) {
+    const seen: string[] = [];
+    const onInput = (next: string) => seen.push(next);
+    const onBlur = () => assert.step('blurred');
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @onInput={{onInput}} @onBlur={{onBlur}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '5');
+    await blur('[data-component="input-otp-input"]');
+
+    assert.deepEqual(seen, ['5']);
+    assert.verifySteps(['blurred']);
   });
 });

@@ -44,6 +44,27 @@ interface Args extends FormControlSharedArgs {
    * Class names for each slot of the component, merged with the theme's.
    */
   classes?: SlotsToClasses<InputOtpSlots>;
+
+  /**
+   * The value of the input. Pair with `onInput` or `onChange` to control the
+   * input; leave it unset to let the component track its own value.
+   */
+  value?: string;
+
+  /**
+   * Callback when oninput is triggered.
+   */
+  onInput?: (value: string, event?: Event) => void;
+
+  /**
+   * Callback when onchange is triggered.
+   */
+  onChange?: (value: string, event?: Event) => void;
+
+  /**
+   * Callback when onblur is triggered.
+   */
+  onBlur?: () => void;
 }
 
 interface InputOtpSignature {
@@ -52,7 +73,15 @@ interface InputOtpSignature {
 }
 
 class InputOtp extends Component<InputOtpSignature> {
-  @tracked uncontrolledValue: string = '';
+  @tracked uncontrolledValue: string = this.args.value || '';
+
+  /**
+   * What the element itself currently holds. A controlled parent does not
+   * always feed the value back through `@value` -- `<Form>`, for one, reads it
+   * off the DOM instead -- and the cells are decoration rendered from a string,
+   * so without this they would sit empty while the user types.
+   */
+  @tracked elementValue: string = this.args.value || '';
 
   inputRef = ref<HTMLInputElement>();
 
@@ -60,8 +89,21 @@ class InputOtp extends Component<InputOtpSignature> {
     return this.args.length ?? 6;
   }
 
+  get isControlled(): boolean {
+    return (
+      typeof this.args.onChange === 'function' ||
+      typeof this.args.onInput === 'function'
+    );
+  }
+
   get currentValue(): string {
-    return this.uncontrolledValue;
+    if (!this.isControlled) {
+      return this.uncontrolledValue;
+    }
+
+    return typeof this.args.value === 'undefined'
+      ? this.elementValue
+      : this.args.value;
   }
 
   /**
@@ -91,12 +133,38 @@ class InputOtp extends Component<InputOtpSignature> {
     return inputOtp({ size: this.args.size });
   }
 
-  @action handleInput(event: Event): void {
+  /**
+   * Both `input` and `change` funnel through here so the element, our mirror of
+   * it, and the parent never disagree about the value.
+   */
+  syncValue(event: Event, notify: 'input' | 'change'): void {
     const element = event.target as HTMLInputElement;
     const next = element.value.slice(0, this.length);
 
     element.value = next;
-    this.uncontrolledValue = next;
+    this.elementValue = next;
+
+    if (this.isControlled) {
+      if (notify === 'input') {
+        this.args.onInput?.(next, event);
+      } else {
+        this.args.onChange?.(next, event);
+      }
+    } else {
+      this.uncontrolledValue = next;
+    }
+  }
+
+  @action handleInput(event: Event): void {
+    this.syncValue(event, 'input');
+  }
+
+  @action handleChange(event: Event): void {
+    this.syncValue(event, 'change');
+  }
+
+  @action handleBlur(): void {
+    this.args.onBlur?.();
   }
 
   <template>
@@ -140,6 +208,8 @@ class InputOtp extends Component<InputOtpSignature> {
         <input
           {{this.inputRef.setup}}
           {{on "input" this.handleInput}}
+          {{on "change" this.handleChange}}
+          {{on "blur" this.handleBlur}}
           id={{c.id}}
           name={{@name}}
           type="text"
