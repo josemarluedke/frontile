@@ -10,6 +10,11 @@ A one-time-code (OTP/PIN) field. Under the hood it is a single real `<input>` ma
 over decorative cells, which is why password managers, iOS/Android SMS autofill, paste, undo
 and screen readers all work without any of it being reimplemented.
 
+> **On the autofill claims.** The attributes and styling those integrations depend on are
+> covered by tests, but the integrations themselves are driven by the OS and the password
+> manager. Confirming them end to end takes a real device — a headless browser cannot
+> deliver an SMS code or open the iOS paste menu.
+
 ## Import
 
 ```js
@@ -26,9 +31,13 @@ import { InputOtp } from 'frontile';
 
 ## Groups
 
-Split the cells into visual groups with `@groups`, an array of group sizes that must sum to
-`@length`. `@separator` (default `'–'`) sets the character shown between groups; it is
-rendered `aria-hidden` because the underlying value never contains it.
+Split the cells into visual groups with `@groups`, an array of group sizes. `@separator`
+(default `'–'`) sets the character shown between groups; it is rendered `aria-hidden`
+because the underlying value never contains it.
+
+The sizes are meant to sum to `@length`, but a mismatch is not fatal: it logs a development
+warning, then the groups are clamped and padded so exactly `@length` cells are rendered
+either way. Development and production draw the same thing.
 
 ```gts preview
 import { InputOtp } from 'frontile';
@@ -131,6 +140,10 @@ pasted value that fails the rule is dropped whole, never silently filtered down 
 that pass — pasting `12-456` into a `digits` field does not become `12456`, it is rejected
 entirely.
 
+That all-or-nothing rule covers *characters*. Length is handled before it: the incoming value
+is truncated to `@length` first, so pasting a longer string does silently keep its first
+`@length` characters and then tests those against the rule.
+
 ```gts preview
 import { InputOtp } from 'frontile';
 
@@ -149,6 +162,12 @@ import { InputOtp } from 'frontile';
 > value as the user types, not just the finished code. Use `/^\d+$/`, never an anchored
 > `/^\d{6}$/` — a length-anchored pattern rejects the very first keystroke and makes the
 > field impossible to type into.
+
+The rule is also emitted as the input's native `pattern` attribute, from the regex's `source`
+— so any flags (`i`, `u`, …) are dropped there, and native constraint validation applies the
+case-sensitive body only. And because the rule has to accept partial input, the browser's own
+validation accepts an incomplete code: it does not enforce `@length`. Check completeness
+yourself, via `@onComplete` or your form's validation.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -231,9 +250,11 @@ import { InputOtp } from 'frontile';
   `tabindex`, or `aria-label` — there is exactly one tab stop, the real input underneath.
 - Provide a label with `@label` (associated via `for`/`id`) or an `aria-label` passed through
   `...attributes`.
-- Because there is a real text field under the cells, every standard text-field key works
-  without being reimplemented: arrow keys, shift-select, select-all, backspace, word-delete,
-  undo, and copy/cut/paste.
+- Because there is a real text field under the cells, every standard text-field key behaves
+  the way it does in a text field: shift-select, select-all, backspace, word-delete, undo and
+  copy/cut/paste are genuinely untouched. Caret *positioning* is the exception — the component
+  maps the text caret onto cells, so arrow keys move from cell to cell rather than between
+  raw character offsets.
 - Validation messages passed through `@errors` are associated via `aria-describedby` and set
   `aria-invalid`, the same as other form controls.
 
