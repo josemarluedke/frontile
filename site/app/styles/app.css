@@ -517,10 +517,10 @@
 .prose h4 { @apply font-header text-header-lg; }
 .prose h5 { @apply font-header text-header-md; }
 .prose h6 { @apply font-header text-header-sm; }
-.prose :is(code, kbd, samp, pre) { @apply font-code; }
-/* Frontile's Kbd picks font-label on purpose: ⌘ ⇧ ⌥ ⌃ render poorly in most
-   monospace faces. The rule above is more specific than a utility class, so
-   without this the component's own choice loses inside docs prose. Plain
-   markdown <kbd> in prose tables stays monospace. */
-.prose [data-component='kbd'],
-.prose [data-component='kbd'] kbd { @apply font-label; }
+/* Prose typography is for markdown-authored content. Docfy renders live
+   component demos inside the same .prose subtree, where these rules would
+   override a component's own choices -- so the demo preview is excluded.
+   The source snippet beside it is a sibling, not a child, and stays code. */
+.prose :is(code, kbd, samp, pre):not(.docfy-demo__example__container *) {
+  @apply font-code;
+}
