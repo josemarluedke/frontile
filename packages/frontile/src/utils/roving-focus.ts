@@ -25,7 +25,14 @@ interface RovingFocusOptions {
 }
 
 const SELECTED_ATTRIBUTE = 'data-fr-roving-selected';
-const DISABLED_ATTRIBUTE = 'data-fr-roving-disabled';
+
+/**
+ * How an element says it is disabled. `:disabled` covers the form controls
+ * that support it; `[aria-disabled="true"]` covers everything that does not --
+ * an `<a>` or a `LinkTo`, which a navigation tab list is built from, cannot be
+ * natively disabled at all.
+ */
+const DISABLED_SELECTOR = ':disabled, [aria-disabled="true"]';
 
 /**
  * Keyboard navigation for a single-tab-stop group: arrow keys by orientation,
@@ -37,6 +44,7 @@ const DISABLED_ATTRIBUTE = 'data-fr-roving-disabled';
  */
 class RovingFocus {
   #items: HTMLElement[] = [];
+  #observers = new Map<HTMLElement, MutationObserver>();
   #readOptions: () => RovingFocusOptions;
 
   constructor(readOptions: () => RovingFocusOptions = () => ({})) {
@@ -44,25 +52,47 @@ class RovingFocus {
   }
 
   /**
-   * Modifier to place on each candidate item, passing whether it is
-   * currently selected and whether it is disabled as positional arguments.
+   * Modifier to place on each candidate item, passing whether it is currently
+   * selected as its sole positional argument.
+   *
+   * Disabled state is deliberately NOT an argument: it is read from the
+   * element itself, live, at the moment a decision is made. An element already
+   * has to say it is disabled for the browser and for assistive technology, so
+   * asking a consumer to say it a second time only creates a way for the two
+   * to disagree.
    */
-  setupItem = modifier(
-    (element: HTMLElement, [isSelected, isDisabled]: [boolean, boolean]) => {
-      element.setAttribute(SELECTED_ATTRIBUTE, isSelected ? 'true' : 'false');
-      element.setAttribute(DISABLED_ATTRIBUTE, isDisabled ? 'true' : 'false');
+  setupItem = modifier((element: HTMLElement, [isSelected]: [boolean]) => {
+    element.setAttribute(SELECTED_ATTRIBUTE, isSelected ? 'true' : 'false');
 
-      this.#register(element);
-      element.addEventListener('keydown', this.handleKeydown);
+    this.#register(element);
+    element.addEventListener('keydown', this.handleKeydown);
+
+    // Navigation reads the DOM live, so it never goes stale -- but the tab
+    // stop is a written attribute, and it has to move when the item holding
+    // it becomes disabled. That can happen without this modifier re-running,
+    // since disabled is no longer one of its arguments, so watch for it.
+    const observer = new MutationObserver(() => this.#syncTabStops());
+    observer.observe(element, {
+      attributes: true,
+      attributeFilter: ['disabled', 'aria-disabled']
+    });
+    this.#observers.set(element, observer);
+
+    // Navigation reads the DOM live, so it never goes stale -- but the tab
+    // stop is a written attribute, and it has to move when the item holding
+    // it becomes disabled. That can happen without this modifier re-running,
+    // since disabled is no longer one of its arguments, so watch for it.
+
+    this.#syncTabStops();
+
+    return (): void => {
+      element.removeEventListener('keydown', this.handleKeydown);
+      this.#observers.get(element)?.disconnect();
+      this.#observers.delete(element);
+      this.#items = this.#items.filter((item) => item !== element);
       this.#syncTabStops();
-
-      return (): void => {
-        element.removeEventListener('keydown', this.handleKeydown);
-        this.#items = this.#items.filter((item) => item !== element);
-        this.#syncTabStops();
-      };
-    }
-  );
+    };
+  });
 
   handleKeydown = (event: KeyboardEvent): void => {
     const current = event.currentTarget as HTMLElement | null;
@@ -105,10 +135,12 @@ class RovingFocus {
     );
   }
 
+  #isDisabled(element: HTMLElement): boolean {
+    return element.matches(DISABLED_SELECTOR);
+  }
+
   get #enabled(): HTMLElement[] {
-    return this.#items.filter(
-      (item) => item.getAttribute(DISABLED_ATTRIBUTE) !== 'true'
-    );
+    return this.#items.filter((item) => !this.#isDisabled(item));
   }
 
   #resolve(key: string, current: HTMLElement): HTMLElement | undefined {
@@ -159,7 +191,7 @@ class RovingFocus {
     const selected = this.#items.find(
       (item) =>
         item.getAttribute(SELECTED_ATTRIBUTE) === 'true' &&
-        item.getAttribute(DISABLED_ATTRIBUTE) !== 'true'
+        !this.#isDisabled(item)
     );
     const stop = selected ?? this.#enabled[0];
 

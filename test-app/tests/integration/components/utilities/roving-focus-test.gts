@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerKeyEvent, findAll, focus } from '@ember/test-helpers';
+import {
+  render,
+  triggerKeyEvent,
+  findAll,
+  focus,
+  waitUntil
+} from '@ember/test-helpers';
 import { rovingFocus } from 'frontile';
 
 module(
@@ -19,9 +25,9 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true false}}>A</button>
-            <button type="button" {{roving.setupItem false false}}>B</button>
-            <button type="button" {{roving.setupItem false false}}>C</button>
+            <button type="button" {{roving.setupItem true}}>A</button>
+            <button type="button" {{roving.setupItem false}}>B</button>
+            <button type="button" {{roving.setupItem false}}>C</button>
           </div>
         </template>
       );
@@ -60,8 +66,8 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true false}}>A</button>
-            <button type="button" {{roving.setupItem false false}}>B</button>
+            <button type="button" {{roving.setupItem true}}>A</button>
+            <button type="button" {{roving.setupItem false}}>B</button>
           </div>
         </template>
       );
@@ -90,10 +96,10 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem false true}}>A</button>
-            <button type="button" {{roving.setupItem true false}}>B</button>
-            <button type="button" {{roving.setupItem false false}}>C</button>
-            <button type="button" {{roving.setupItem false true}}>D</button>
+            <button type="button" disabled {{roving.setupItem false}}>A</button>
+            <button type="button" {{roving.setupItem true}}>B</button>
+            <button type="button" {{roving.setupItem false}}>C</button>
+            <button type="button" disabled {{roving.setupItem false}}>D</button>
           </div>
         </template>
       );
@@ -122,9 +128,9 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true false}}>A</button>
-            <button type="button" {{roving.setupItem false true}}>B</button>
-            <button type="button" {{roving.setupItem false false}}>C</button>
+            <button type="button" {{roving.setupItem true}}>A</button>
+            <button type="button" disabled {{roving.setupItem false}}>B</button>
+            <button type="button" {{roving.setupItem false}}>C</button>
           </div>
         </template>
       );
@@ -146,9 +152,9 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem false false}}>A</button>
-            <button type="button" {{roving.setupItem true false}}>B</button>
-            <button type="button" {{roving.setupItem false false}}>C</button>
+            <button type="button" {{roving.setupItem false}}>A</button>
+            <button type="button" {{roving.setupItem true}}>B</button>
+            <button type="button" {{roving.setupItem false}}>C</button>
           </div>
         </template>
       );
@@ -167,9 +173,9 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem false true}}>A</button>
-            <button type="button" {{roving.setupItem false false}}>B</button>
-            <button type="button" {{roving.setupItem false false}}>C</button>
+            <button type="button" disabled {{roving.setupItem false}}>A</button>
+            <button type="button" {{roving.setupItem false}}>B</button>
+            <button type="button" {{roving.setupItem false}}>C</button>
           </div>
         </template>
       );
@@ -192,8 +198,8 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem true false}}>A</button>
-            <button type="button" {{roving.setupItem false false}}>B</button>
+            <button type="button" {{roving.setupItem true}}>A</button>
+            <button type="button" {{roving.setupItem false}}>B</button>
           </div>
         </template>
       );
@@ -223,22 +229,22 @@ module(
             <div>
               <button
                 type="button"
-                {{horizontal.setupItem true false}}
+                {{horizontal.setupItem true}}
               >A</button>
               <button
                 type="button"
-                {{horizontal.setupItem false false}}
+                {{horizontal.setupItem false}}
               >B</button>
               <button
                 type="button"
-                {{horizontal.setupItem false false}}
+                {{horizontal.setupItem false}}
               >C</button>
             </div>
             <div>
-              <button type="button" {{vertical.setupItem true false}}>D</button>
+              <button type="button" {{vertical.setupItem true}}>D</button>
               <button
                 type="button"
-                {{vertical.setupItem false false}}
+                {{vertical.setupItem false}}
               >E</button>
             </div>
           </div>
@@ -298,8 +304,19 @@ module(
       await render(
         <template>
           <div>
-            <button type="button" {{roving.setupItem false true}}>A</button>
-            <button type="button" {{roving.setupItem false true}}>B</button>
+            {{! aria-disabled rather than native disabled: it is how an
+                element that cannot be natively disabled -- an <a>, a LinkTo --
+                says so, and it is the path a navigation tab list will take. }}
+            <button
+              type="button"
+              aria-disabled="true"
+              {{roving.setupItem false}}
+            >A</button>
+            <button
+              type="button"
+              aria-disabled="true"
+              {{roving.setupItem false}}
+            >B</button>
           </div>
         </template>
       );
@@ -313,6 +330,47 @@ module(
 
       await triggerKeyEvent(items[0]!, 'keydown', 'ArrowRight');
       assert.ok(true, 'navigating an all-disabled group does not throw');
+    });
+
+    test('the tab stop moves when the item holding it becomes disabled', async function (assert) {
+      // Disabled is read from the element rather than passed in, so nothing
+      // re-runs the modifier when it changes. The tab stop is a written
+      // attribute, so it has to be resynced by watching the element instead.
+      const roving = rovingFocus(() => ({}));
+
+      await render(
+        <template>
+          <div>
+            <button type="button" {{roving.setupItem true}}>A</button>
+            <button type="button" {{roving.setupItem false}}>B</button>
+          </div>
+        </template>
+      );
+
+      const items = findAll('button') as HTMLButtonElement[];
+      assert.deepEqual(
+        items.map((i) => i.tabIndex),
+        [0, -1],
+        'the selected item starts as the tab stop'
+      );
+
+      // Disable it the way a consumer's own render would, without touching
+      // the modifier's arguments.
+      items[0]!.setAttribute('aria-disabled', 'true');
+      await waitUntil(() => items[0]!.tabIndex === -1, { timeout: 1000 });
+
+      assert.deepEqual(
+        items.map((i) => i.tabIndex),
+        [-1, 0],
+        'the tab stop hands off to the first still-enabled item'
+      );
+
+      await triggerKeyEvent(items[1]!, 'keydown', 'ArrowRight');
+      assert.strictEqual(
+        document.activeElement,
+        items[1],
+        'and navigation now skips the newly disabled item'
+      );
     });
   }
 );

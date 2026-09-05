@@ -117,7 +117,7 @@ class SegmentedControlItem<T> extends Component<
         data-disabled="{{this.isDisabled}}"
         {{this.registerValue @value}}
         {{@context.indicator.setupTarget this.isSelected}}
-        {{@context.roving.setupItem this.isSelected this.isDisabled}}
+        {{@context.roving.setupItem this.isSelected}}
         {{on "click" this.handleClick}}
         ...attributes
       >

@@ -23,16 +23,26 @@ Construct one instance per group, then place its single modifier on every item.
 
 ```gts
 <div role="radiogroup">
-  <button {{roving.setupItem isSelected isDisabled}}>...</button>
+  <button {{roving.setupItem isSelected}}>...</button>
 </div>
 ```
 
-`setupItem` takes two positional arguments, both booleans:
+`setupItem` takes one positional argument:
 
 | Argument     | Meaning                                                    |
 | ------------ | ---------------------------------------------------------- |
 | `isSelected` | Whether this item is the current selection. Drives which item is the group's tab stop. |
-| `isDisabled` | Whether this item should be skipped by arrow navigation and never be the tab stop. |
+
+**Disabled state is not passed in.** It is read from the element itself, live,
+at the moment a decision is made — an item counts as disabled when it matches
+`:disabled` or carries `aria-disabled="true"`. An element already has to say it
+is disabled for the browser and for assistive technology, so asking a consumer
+to say it a second time only creates a way for the two to disagree.
+
+Covering both spellings is deliberate rather than defensive: `:disabled` is the
+form-control path, while `aria-disabled` is the only option for an element that
+cannot be natively disabled at all — an `<a>` or a `LinkTo`, which is exactly
+what a navigation tab list is built from.
 
 Items register themselves as their modifiers run and are kept sorted by
 document position, not by setup order — modifier setup order is not guaranteed
@@ -109,7 +119,10 @@ changes `aria-checked`, `aria-selected`, or anything else about the item.
 
 Exactly one item in the group carries `tabindex="0"`; every other item gets
 `tabindex="-1"`, and the set is recomputed whenever an item is added, removed,
-or changes its selected/disabled flags.
+or changes its selected state. Because disabled is read from the element rather
+than passed in, nothing re-runs the modifier when it changes — so each item is
+also watched for `disabled` and `aria-disabled` changes, and the tab stop hands
+off on its own when the item holding it is disabled.
 
 The tab stop is the selected item — unless nothing is selected, or the selected
 item is disabled, in which case it is the **first enabled item**. That fallback
@@ -180,10 +193,7 @@ export default class Example extends Component {
             class='rounded-md border border-neutral-soft px-3 py-1 text-label-md
               aria-checked:border-primary aria-checked:text-primary
               disabled:cursor-not-allowed disabled:opacity-disabled'
-            {{this.roving.setupItem
-              (this.isSelected option.value)
-              option.isDisabled
-            }}
+            {{this.roving.setupItem (this.isSelected option.value)}}
           >{{option.label}}</button>
         {{/each}}
       </div>
