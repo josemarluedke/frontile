@@ -300,10 +300,6 @@ module(
       assert.ok(spinner, 'the spinner renders');
 
       const classList = Array.from(spinner!.classList);
-      const fillClass = classList.find((c) => c.startsWith('fill-'));
-      const trackClass = classList.find(
-        (c) => c === 'text-neutral-muted' || c.startsWith('text-neutral-muted')
-      );
 
       assert.true(
         classList.includes('fill-danger'),
@@ -313,12 +309,15 @@ module(
         classList.includes('text-neutral-muted'),
         `the track stays a dim neutral, not the intent color; got classes: ${classList.join(' ')}`
       );
-      assert.ok(fillClass, 'an arc fill-* class is present');
-      assert.ok(trackClass, 'a track text-* class is present');
-      assert.notEqual(
-        fillClass,
-        trackClass,
-        'the arc and track resolve to two different color utilities, not the same value'
+      assert.false(
+        classList.includes('fill-neutral-muted'),
+        `the track is not also colored via fill-*, which would make it as ` +
+          `visible as the arc; got classes: ${classList.join(' ')}`
+      );
+      assert.false(
+        classList.includes('text-danger'),
+        `the track does not pick up the intent color meant for the arc; ` +
+          `got classes: ${classList.join(' ')}`
       );
       assert.true(
         classList.includes('animate-spin'),
@@ -370,29 +369,45 @@ module(
       // classes with test markers for rendering tests.
       const cases: {
         intent: 'default' | 'info' | 'success' | 'warning' | 'danger';
+        // The card's own `bg-{cardColor}` surface class — the color the arc
+        // must NOT also use, or it would camouflage against its own card.
+        cardColor: string;
         arc: string;
         track: string;
       }[] = [
         {
           intent: 'default',
+          cardColor: 'fill-neutral',
           arc: 'fill-on-neutral',
           track: 'text-on-neutral/30'
         },
-        { intent: 'info', arc: 'fill-on-primary', track: 'text-on-primary/30' },
+        {
+          intent: 'info',
+          cardColor: 'fill-primary',
+          arc: 'fill-on-primary',
+          track: 'text-on-primary/30'
+        },
         {
           intent: 'success',
+          cardColor: 'fill-success',
           arc: 'fill-on-success',
           track: 'text-on-success/30'
         },
         {
           intent: 'warning',
+          cardColor: 'fill-warning',
           arc: 'fill-on-warning',
           track: 'text-on-warning/30'
         },
-        { intent: 'danger', arc: 'fill-on-danger', track: 'text-on-danger/30' }
+        {
+          intent: 'danger',
+          cardColor: 'fill-danger',
+          arc: 'fill-on-danger',
+          track: 'text-on-danger/30'
+        }
       ];
 
-      for (const { intent, arc, track } of cases) {
+      for (const { intent, cardColor, arc, track } of cases) {
         const { spinner, icon } = realNotificationCardStyles({
           intent,
           variant: 'solid'
@@ -408,10 +423,10 @@ module(
           spinnerClass.includes(track),
           `solid/${intent} spinner includes the track class "${track}"; got "${spinnerClass}"`
         );
-        assert.notEqual(
-          arc,
-          track,
-          `solid/${intent} arc and track are distinct color utilities`
+        assert.false(
+          spinnerClass.includes(cardColor),
+          `solid/${intent} arc does not reuse the card's own "${cardColor}" ` +
+            `fill, which would camouflage it against the card; got "${spinnerClass}"`
         );
         assert.true(
           spinnerClass.includes('size-5'),
