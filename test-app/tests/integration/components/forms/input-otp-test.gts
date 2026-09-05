@@ -465,6 +465,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     await fillIn('[data-component="input-otp-input"]', '123456');
     await focus('[data-component="input-otp-input"]');
     await setCaret(2);
+
+    assert.strictEqual(
+      findAll('[data-test-id="input-otp-cell"][data-active="true"]').length,
+      1,
+      'the mirror is populated while focused'
+    );
+
     await blur('[data-component="input-otp-input"]');
 
     assert.strictEqual(
@@ -476,6 +483,11 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
   test('deleting moves the active cell without any selectionchange from the browser', async function (assert) {
     // No browser fires selectionchange for a deletion, so the component has to
     // dispatch one itself or the active cell would stick where it was.
+    //
+    // Note: in Chrome this test does not currently discriminate -- Chrome fires
+    // its own selectionchange on this kind of edit, so the assertions pass even
+    // without the synthetic dispatch in syncValue. That dispatch is load-bearing
+    // in Safari and Firefox and must not be removed as dead code.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
     await fillIn('[data-component="input-otp-input"]', '123456');
@@ -531,6 +543,13 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
     // A "Clear" button beside the field: the parent shrinks the value directly,
     // never through an input or change event.
+    //
+    // Note: in Chrome this test does not currently discriminate -- Chrome clamps
+    // the input's own selection and fires a real selectionchange on this kind of
+    // programmatic shrink, healing the mirror without the component's help. The
+    // mirroredSelection clamp this test covers is load-bearing in Safari and
+    // Firefox, which do not necessarily fire that event, so it must not be
+    // removed as dead code on the strength of a green Chrome run.
     value.set('');
     await settled();
 
@@ -622,6 +641,45 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
       0
     );
     assert.strictEqual(findAll('[data-test-id="input-otp-cell"]').length, 6);
+  });
+
+  test('with @groups, an active cell in the second group maps to the correct flat index', async function (assert) {
+    // isActive is derived from a flat index computed before @groups chunks the
+    // cells for display. Nothing else exercises an active cell that lands past
+    // the first group, so a chunking bug that renumbered indices within a
+    // group would not be caught anywhere else.
+    const groups = [3, 3];
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{6}} @groups={{groups}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '123456');
+    await focus('[data-component="input-otp-input"]');
+
+    // Establish a known prior caret position before landing on the target, per
+    // the "moving forward"/"moving backward" tests above.
+    await setCaret(0);
+    await setCaret(4);
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    const active = findAll(
+      '[data-test-id="input-otp-cell"][data-active="true"]'
+    );
+
+    assert.strictEqual(active.length, 1, 'exactly one cell is active');
+    assert
+      .dom(active[0] as Element)
+      .hasText(
+        '5',
+        'the flat index still maps to the right digit after chunking'
+      );
+    assert.ok(
+      cells.indexOf(active[0] as Element) >= 3,
+      'the active cell is in the second group, not renumbered into the first'
+    );
   });
 
   test('groups that do not sum to @length still render @length cells', async function (assert) {
