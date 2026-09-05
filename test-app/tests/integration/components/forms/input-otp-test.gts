@@ -753,4 +753,61 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.dom(cells[0] as Element).hasText('7');
     assert.dom(cells[1] as Element).hasText('', 'not a stale placeholder');
   });
+
+  test('an active cell showing a placeholder still renders the fake caret', async function (assert) {
+    // hasFakeCaret is derived from `char`, not `displayChar` -- a cell filled
+    // in only by the placeholder is still empty and must still show the
+    // caret when active. If that derivation were ever switched to read
+    // `displayChar`, the placeholder would silently suppress the caret and
+    // nothing else here would catch it.
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @placeholder="0000" />
+      </template>
+    );
+
+    // Empty value: focus alone parks the caret at position 0 in append mode,
+    // which is exactly what "an empty active cell shows the fake caret"
+    // above relies on, so follow the same approach here.
+    await focus('[data-component="input-otp-input"]');
+
+    const firstCell = findAll('[data-test-id="input-otp-cell"]')[0] as Element;
+    assert.dom(firstCell).hasAttribute('data-active', 'true');
+    assert.dom(firstCell).hasText('0', 'the placeholder is still shown');
+    assert
+      .dom(firstCell.querySelector('[data-test-id="input-otp-caret"]'))
+      .exists('the fake caret coexists with the placeholder in the same cell');
+  });
+
+  test('@isMasked with @placeholder: the placeholder is unmasked, but typed characters mask', async function (assert) {
+    await render(
+      <template>
+        <InputOtp
+          @label="PIN"
+          @length={{4}}
+          @isMasked={{true}}
+          @placeholder="0000"
+        />
+      </template>
+    );
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(cells[1] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(cells[2] as Element).hasText('0', 'placeholder is unmasked');
+    assert.dom(cells[3] as Element).hasText('0', 'placeholder is unmasked');
+
+    await fillIn('[data-component="input-otp-input"]', '1');
+
+    const filledCells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(filledCells[0] as Element).hasText('•', 'typed char is masked');
+    assert
+      .dom(filledCells[1] as Element)
+      .hasText(
+        '',
+        'placeholder is gone once anything is typed, not shown here'
+      );
+    assert.dom(filledCells[2] as Element).hasText('');
+    assert.dom(filledCells[3] as Element).hasText('');
+  });
 });
