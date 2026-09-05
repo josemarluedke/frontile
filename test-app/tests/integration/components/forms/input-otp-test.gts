@@ -786,12 +786,12 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
 
   test('deleting moves the active cell without any selectionchange from the browser', async function (assert) {
     // No browser fires selectionchange for a deletion, so the component has to
-    // dispatch one itself or the active cell would stick where it was.
+    // re-derive the mirror itself or the active cell would stick where it was.
     //
     // Note: in Chrome this test does not currently discriminate -- Chrome fires
     // its own selectionchange on this kind of edit, so the assertions pass even
-    // without the synthetic dispatch in syncValue. That dispatch is load-bearing
-    // in Safari and Firefox and must not be removed as dead code.
+    // without the re-derivation `writeValue` does. That re-derivation is
+    // load-bearing in Safari and Firefox and must not be removed as dead code.
     await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
 
     await fillIn('[data-component="input-otp-input"]', '123456');
@@ -851,9 +851,9 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     // Note: in Chrome this test does not currently discriminate -- Chrome clamps
     // the input's own selection and fires a real selectionchange on this kind of
     // programmatic shrink, healing the mirror without the component's help. The
-    // mirroredSelection clamp this test covers is load-bearing in Safari and
-    // Firefox, which do not necessarily fire that event, so it must not be
-    // removed as dead code on the strength of a green Chrome run.
+    // re-derivation `writeValue` does after writing the element is what covers
+    // Safari and Firefox, which do not necessarily fire that event, so it must
+    // not be removed as dead code on the strength of a green Chrome run.
     value.set('');
     await settled();
 

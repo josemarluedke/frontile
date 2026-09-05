@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { warn } from '@ember/debug';
@@ -122,8 +122,8 @@ interface Args extends FormControlSharedArgs {
   /**
    * Splits the cells into visual groups, e.g. `[3, 3]` for a six-digit code.
    * Omit it for a single group. Entries that do not sum to `length` warn in
-   * development and are then clamped and padded, so exactly `length` cells
-   * render either way.
+   * development; the groups then run out of cells or take a final group of the
+   * remainder, so exactly `length` cells render either way.
    */
   groups?: number[];
 
@@ -156,19 +156,27 @@ interface InputOtpSignature {
   Element: HTMLInputElement;
 }
 
+/**
+ * Ownership model, stated once.
+ *
+ * The `<input>` element is the source of truth for what the user typed -- the
+ * browser guarantees that -- so a parent-owned `@value` is *written down into*
+ * it (by `syncFromValueArg` and `reconcileWithParent`) rather than bound over
+ * it with `value={{...}}`.
+ *
+ * That binding is what broke typing inside a `<Form>`. `elementValue` is
+ * dirtied mid-dispatch and the template reads it (through `cellGroups`), so
+ * Glimmer revalidates in a microtask that runs *between* event listeners --
+ * rewriting the `value` attribute from a still-stale `@value` before the
+ * `input` event had finished bubbling to the `<form>`, wiping the keystroke and
+ * handing `<Form>` an empty value to store.
+ *
+ * The one invariant that keeps the mirror honest: every code path that writes
+ * `element.value` goes through `writeValue`, which re-derives the selection
+ * mirror straight afterwards.
+ */
 class InputOtp extends Component<InputOtpSignature> {
-  /**
-   * What the element holds, and what the cells draw. The element is the source
-   * of truth for what the user typed -- the browser guarantees that -- so a
-   * parent-owned `@value` is *written down into* it (by `syncFromValueArg` and
-   * `reconcileWithParent`) rather than bound over it.
-   *
-   * Binding `value={{...}}` here is what broke typing inside a `<Form>`:
-   * Glimmer revalidates in a microtask that runs *between* event listeners, so
-   * the attribute was rewritten from a still-stale `@value` before the `input`
-   * event had finished bubbling to the `<form>` -- wiping the keystroke, and
-   * handing `<Form>` an empty value to store.
-   */
+  /** What the element holds, and what the cells draw. */
   @tracked elementValue: string = this.args.value || '';
 
   @tracked isFocused = false;
@@ -198,13 +206,6 @@ class InputOtp extends Component<InputOtpSignature> {
     }
   });
 
-  willDestroy(): void {
-    super.willDestroy();
-    document.removeEventListener('selectionchange', this.onSelectionChange, {
-      capture: true
-    });
-  }
-
   get length(): number {
     return this.args.length ?? 6;
   }
@@ -225,38 +226,39 @@ class InputOtp extends Component<InputOtpSignature> {
     return OTP_INPUT_HINTS[this.allowedChars].autoCapitalize;
   }
 
-  get isControlled(): boolean {
-    return (
-      typeof this.args.onChange === 'function' ||
-      typeof this.args.onInput === 'function'
-    );
-  }
-
   /**
-   * The cells are decoration for the real `<input>`, so they mirror what that
-   * element actually holds. A controlled parent's `@value` reaches them the
-   * same way it reaches the element: written down by `syncFromValueArg` when
-   * the parent genuinely changes it, or by `reconcileWithParent` once the
-   * parent has had its say about an edit.
+   * The only way the element's value is ever written. Keeping the element, the
+   * mirror of its value and the mirror of its selection in step here is what
+   * lets every reader downstream just read them.
    */
-  get currentValue(): string {
-    return this.elementValue;
+  writeValue(element: HTMLInputElement, value: string): void {
+    // Assigning to `value` resets the selection even when the string is
+    // unchanged, so a redundant write is not merely wasteful.
+    if (element.value !== value) {
+      element.value = value;
+    }
+
+    // Deliberately unguarded: `syncFromValueArg` reaches here from inside a
+    // modifier, and reading `elementValue` there would consume it into the same
+    // computation that then writes it -- which Glimmer rejects outright.
+    this.elementValue = value;
+
+    // No browser fires `selectionchange` for a programmatic write (nor for a
+    // deletion or a cut), so the mirror is re-derived by hand. It is a no-op
+    // while the input is not focused, which is exactly right.
+    this.onSelectionChange();
   }
 
   /**
    * Writes a parent-owned value down into the element. A modifier re-runs only
    * when its tracked arguments actually change, so a `@value` that is merely
    * lagging behind what the user typed never re-runs this and never clobbers a
-   * keystroke -- which is exactly what the removed `value=` binding did.
-   *
-   * This is what makes an external change take effect: a "Clear" button, a
-   * transform, a value pushed in from elsewhere.
+   * keystroke.
    */
   syncFromValueArg = modifier(
     (element: HTMLInputElement, [value]: [string | undefined]) => {
       if (typeof value === 'string' && value !== element.value) {
-        element.value = value;
-        this.elementValue = value;
+        this.writeValue(element, value);
       }
     }
   );
@@ -290,39 +292,13 @@ class InputOtp extends Component<InputOtpSignature> {
         return;
       }
 
-      element.value = value;
-      this.elementValue = value;
+      this.writeValue(element, value);
     });
   }
 
-  /**
-   * The mirror, clamped against the value it is describing. A controlled parent
-   * can shrink `@value` on its own -- a "Clear" button beside the field -- and
-   * that never travels through `syncValue`, so the stored selection would keep
-   * pointing past the end of the code and light up a phantom cell. Deriving the
-   * clamp here rather than observing the argument keeps the fix to one place:
-   * a selection past the end collapses to the append position, which is exactly
-   * where a fresh focus on a value of that length would put it.
-   *
-   * Current Chrome happens to clamp the element's own selection and fire
-   * `selectionchange` when a programmatic value shrinks, which papers over this
-   * -- as it also papers over the synthetic dispatch in `syncValue`. Neither is
-   * guaranteed, so the derivation stands on its own.
-   */
+  /** The selection mirror, kept in step by `writeValue`. */
   get mirroredSelection(): [number | null, number | null] {
-    const { selectionStart: start, selectionEnd: end } = this;
-
-    if (start === null || end === null) {
-      return [null, null];
-    }
-
-    const length = this.currentValue.length;
-
-    if (end > length && length < this.length) {
-      return [length, length];
-    }
-
-    return [start, end];
+    return [this.selectionStart, this.selectionEnd];
   }
 
   get separator(): string {
@@ -343,37 +319,20 @@ class InputOtp extends Component<InputOtpSignature> {
 
     const total = groups.reduce((sum, size) => sum + size, 0);
 
-    warn(
-      `<InputOtp>: @groups must sum to @length (${this.length}), got ${total}. ` +
-        `Rendering ${this.length} cells and adjusting the groups to fit.`,
-      total === this.length,
-      { id: 'frontile.input-otp.groups-mismatch' }
-    );
-
-    const sizes: number[] = [];
-    let taken = 0;
-
-    for (const size of groups) {
-      const clamped = Math.max(0, Math.min(size, this.length - taken));
-      if (clamped > 0) {
-        sizes.push(clamped);
-        taken += clamped;
-      }
+    if (total !== this.length) {
+      warn(
+        `<InputOtp>: @groups must sum to @length (${this.length}), got ${total}. ` +
+          `Rendering ${this.length} cells and adjusting the groups to fit.`,
+        false,
+        { id: 'frontile.input-otp.groups-mismatch' }
+      );
     }
 
-    if (taken < this.length) {
-      sizes.push(this.length - taken);
-    }
-
-    return sizes;
+    return groups;
   }
 
-  /**
-   * The cells are decoration rendered from a string, so they are grouped here
-   * rather than in the template.
-   */
   get cellGroups(): Cell[][] {
-    const value = this.currentValue;
+    const value = this.elementValue;
     const cells: Cell[] = [];
 
     const [start, end] = this.mirroredSelection;
@@ -406,17 +365,31 @@ class InputOtp extends Component<InputOtpSignature> {
       });
     }
 
+    // `slice` clamps on its own, so a `@groups` that overshoots simply runs out
+    // of cells; anything left over becomes a final group. Either way exactly
+    // `length` cells render.
     const groups: Cell[][] = [];
     let offset = 0;
 
     for (const size of this.groupSizes) {
+      if (offset >= cells.length) {
+        break;
+      }
+      if (size <= 0) {
+        continue;
+      }
       groups.push(cells.slice(offset, offset + size));
       offset += size;
+    }
+
+    if (offset < cells.length) {
+      groups.push(cells.slice(offset));
     }
 
     return groups;
   }
 
+  @cached
   get classes() {
     const { inputOtp } = useStyles();
     return inputOtp({ size: this.args.size });
@@ -431,40 +404,26 @@ class InputOtp extends Component<InputOtpSignature> {
     const next = element.value.slice(0, this.length);
 
     // The value as it stood before this edit, read before anything is mutated.
-    // It is what we last wrote to the element, which is the rendered truth in
-    // every ownership mode: a change the parent made on its own -- a "Clear" or
-    // "Resend code" button -- has been written down into the element too, so
-    // this does not go stale and the next single-event autofill still reads as
-    // a genuine transition rather than a full-to-full replacement.
-    //
-    // It is also what stops the `change` that merely echoes an `input` we have
-    // already handled from completing a second time: by then it already equals
-    // `next`.
-    const previous = this.currentValue;
+    const previous = this.elementValue;
 
     // All-or-nothing: a value that fails the rule is dropped whole rather than
     // filtered, so a pasted "123-456" never silently becomes "123456".
     if (next.length > 0 && !this.pattern.test(next)) {
-      element.value = previous;
+      this.writeValue(element, previous);
       return;
     }
 
-    element.value = next;
-    this.elementValue = next;
+    this.writeValue(element, next);
 
     // Only a parent that was actually told gets a say in the reconciliation --
     // an `@onChange`-only parent is not credited with knowing about an `input`
     // it never heard.
-    if (this.isControlled) {
-      if (notify === 'input') {
-        if (this.args.onInput) {
-          this.args.onInput(next, event);
-          this.reconcileWithParent(element, next);
-        }
-      } else if (this.args.onChange) {
-        this.args.onChange(next, event);
-        this.reconcileWithParent(element, next);
-      }
+    const notifyParent =
+      notify === 'input' ? this.args.onInput : this.args.onChange;
+
+    if (notifyParent) {
+      notifyParent(next, event);
+      this.reconcileWithParent(element, next);
     }
 
     if (
@@ -473,13 +432,6 @@ class InputOtp extends Component<InputOtpSignature> {
       next.length === this.length
     ) {
       this.args.onComplete?.(next);
-    }
-
-    // No browser fires selectionchange for a deletion or a cut, so the active
-    // cell would stick where it was. Known cost: this also fires on
-    // select-all-then-paste-shorter, which is harmless.
-    if (next.length < previous.length) {
-      document.dispatchEvent(new Event('selectionchange'));
     }
   }
 
@@ -557,8 +509,21 @@ class InputOtp extends Component<InputOtpSignature> {
       input.setSelectionRange(start, end, direction);
     }
 
-    this.selectionStart = input.selectionStart;
-    this.selectionEnd = input.selectionEnd;
+    // `selectionchange` fires several times per keystroke; writing an identical
+    // value would still dirty the tag and rebuild every cell. The comparison
+    // goes through the untracked `prevSelection`, which holds exactly what was
+    // last mirrored -- reading the tracked fields here would consume them into
+    // the modifier computation that `writeValue` calls this from.
+    const [lastStart, lastEnd] = this.prevSelection;
+
+    if (lastStart !== input.selectionStart) {
+      this.selectionStart = input.selectionStart;
+    }
+
+    if (lastEnd !== input.selectionEnd) {
+      this.selectionEnd = input.selectionEnd;
+    }
+
     this.prevSelection = [input.selectionStart, input.selectionEnd];
   }
 
