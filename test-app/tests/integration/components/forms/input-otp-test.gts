@@ -161,4 +161,77 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     assert.deepEqual(seen, ['5']);
     assert.verifySteps(['blurred']);
   });
+
+  test('@onComplete fires once when the code becomes full', async function (assert) {
+    const completed: string[] = [];
+    const onComplete = (value: string) => completed.push(value);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @onComplete={{onComplete}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '123');
+    assert.deepEqual(completed, [], 'not fired while incomplete');
+
+    await fillIn('[data-component="input-otp-input"]', '1234');
+    assert.deepEqual(completed, ['1234'], 'fired on the transition to full');
+  });
+
+  test('@onComplete refires after an edit and refill', async function (assert) {
+    const completed: string[] = [];
+    const onComplete = (value: string) => completed.push(value);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @onComplete={{onComplete}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '1234');
+    await fillIn('[data-component="input-otp-input"]', '123');
+    await fillIn('[data-component="input-otp-input"]', '1239');
+
+    assert.deepEqual(completed, ['1234', '1239']);
+  });
+
+  test('@onComplete alone does not make the component controlled', async function (assert) {
+    const onComplete = () => {};
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{4}} @onComplete={{onComplete}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '12');
+
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[0] as Element)
+      .hasText('1');
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[1] as Element)
+      .hasText('2');
+  });
+
+  test('a full autofill in a single event fires @onComplete exactly once', async function (assert) {
+    // This is the SMS-autofill path: the platform drops the whole code in at
+    // once, which is precisely what N one-character inputs cannot receive.
+    const completed: string[] = [];
+    const onComplete = (value: string) => completed.push(value);
+
+    await render(
+      <template>
+        <InputOtp @label="Code" @length={{6}} @onComplete={{onComplete}} />
+      </template>
+    );
+
+    await fillIn('[data-component="input-otp-input"]', '135790');
+
+    assert.deepEqual(completed, ['135790']);
+    assert
+      .dom(findAll('[data-test-id="input-otp-cell"]')[5] as Element)
+      .hasText('0');
+  });
 });

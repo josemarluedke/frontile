@@ -65,6 +65,13 @@ interface Args extends FormControlSharedArgs {
    * Callback when onblur is triggered.
    */
   onBlur?: () => void;
+
+  /**
+   * Called when the code becomes complete. Fires on the transition from a
+   * shorter value to exactly `length` characters, so re-rendering an already
+   * full value does not fire it again.
+   */
+  onComplete?: (value: string) => void;
 }
 
 interface InputOtpSignature {
@@ -82,6 +89,12 @@ class InputOtp extends Component<InputOtpSignature> {
    * so without this they would sit empty while the user types.
    */
   @tracked elementValue: string = this.args.value || '';
+
+  /**
+   * The last value we saw on the element. `@onComplete` fires on a transition,
+   * not on a state, so the previous length is the thing that decides it.
+   */
+  previousValue: string = this.args.value || '';
 
   inputRef = ref<HTMLInputElement>();
 
@@ -152,6 +165,17 @@ class InputOtp extends Component<InputOtpSignature> {
       }
     } else {
       this.uncontrolledValue = next;
+    }
+
+    const previous = this.previousValue;
+    this.previousValue = next;
+
+    if (
+      next !== previous &&
+      previous.length < this.length &&
+      next.length === this.length
+    ) {
+      this.args.onComplete?.(next);
     }
   }
 
