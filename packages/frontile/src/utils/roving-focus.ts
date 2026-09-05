@@ -78,11 +78,6 @@ class RovingFocus {
     });
     this.#observers.set(element, observer);
 
-    // Navigation reads the DOM live, so it never goes stale -- but the tab
-    // stop is a written attribute, and it has to move when the item holding
-    // it becomes disabled. That can happen without this modifier re-running,
-    // since disabled is no longer one of its arguments, so watch for it.
-
     this.#syncTabStops();
 
     return (): void => {

@@ -55,7 +55,10 @@ const segmentedControl = tv({
       // Both rendering modes publish `data-disabled`, so one selector covers
       // them. Keying off native `disabled:` would miss form mode, where the
       // item is a `<label>` and only the hidden input is disabled.
-      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
+      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled',
+      // The resting and hover ink is the same for every intent -- only the
+      // selected-state colour varies, so only that lives on the variants.
+      'text-neutral-strong hover:text-neutral-bolder'
     ]
   },
 
@@ -132,31 +135,31 @@ const segmentedControl = tv({
         // `data-[selected=true]:text-neutral-bolder` below (gray['100'] in
         // dark mode) comfortably legible against it (~6.8:1 contrast).
         indicator: 'bg-surface-card dark:bg-neutral-soft',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-neutral-bolder'
+        item: 'data-[selected=true]:text-neutral-bolder'
       },
       primary: {
         indicator: 'bg-primary',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-primary'
+        item: 'data-[selected=true]:text-on-primary'
       },
       secondary: {
         indicator: 'bg-secondary',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-secondary'
+        item: 'data-[selected=true]:text-on-secondary'
       },
       tertiary: {
         indicator: 'bg-tertiary',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-tertiary'
+        item: 'data-[selected=true]:text-on-tertiary'
       },
       success: {
         indicator: 'bg-success',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-success'
+        item: 'data-[selected=true]:text-on-success'
       },
       warning: {
         indicator: 'bg-warning',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-warning'
+        item: 'data-[selected=true]:text-on-warning'
       },
       danger: {
         indicator: 'bg-danger',
-        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-danger'
+        item: 'data-[selected=true]:text-on-danger'
       }
     },
 

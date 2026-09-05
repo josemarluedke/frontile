@@ -2012,5 +2012,127 @@ module(
         'form mode: an unselected item keeps the resting colour'
       );
     });
+
+    test('Home and End select the first and last enabled items', async function (assert) {
+      // Covered against the bare primitive, but that only proves focus moves.
+      // What matters here is that automatic activation turns that move into a
+      // selection -- the component contract, not the utility's.
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            aria-label="Range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day" @isDisabled={{true}}>Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+            <Ctl.Item @value="year" @isDisabled={{true}}>Year</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      await focus(items[1]!);
+
+      await triggerKeyEvent(items[1]!, 'keydown', 'End');
+      assert.strictEqual(
+        value.current,
+        'month',
+        'End selects the last enabled item, skipping the disabled one'
+      );
+
+      await triggerKeyEvent(items[2]!, 'keydown', 'Home');
+      assert.strictEqual(
+        value.current,
+        'week',
+        'Home selects the first enabled item, skipping the disabled one'
+      );
+    });
+
+    test('arrow navigation wraps at both ends and selects as it goes', async function (assert) {
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            aria-label="Range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month">Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const first = (): HTMLElement =>
+        findAll('[role="radio"]')[0] as HTMLElement;
+      const last = (): HTMLElement =>
+        findAll('[role="radio"]')[2] as HTMLElement;
+
+      await focus(first());
+      await triggerKeyEvent(first(), 'keydown', 'ArrowLeft');
+      assert.strictEqual(
+        value.current,
+        'month',
+        'stepping back from the first item wraps to the last'
+      );
+
+      await triggerKeyEvent(last(), 'keydown', 'ArrowRight');
+      assert.strictEqual(
+        value.current,
+        'day',
+        'and stepping forward from the last wraps to the first'
+      );
+    });
+
+    test('a control whose every item is disabled has no tab stop and cannot be moved', async function (assert) {
+      let calls = 0;
+      const onChange = (): void => {
+        calls += 1;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value="day"
+            @onChange={{onChange}}
+            aria-label="Range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day" @isDisabled={{true}}>Day</Ctl.Item>
+            <Ctl.Item @value="week" @isDisabled={{true}}>Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLButtonElement[];
+      assert.deepEqual(
+        items.map((i) => i.tabIndex),
+        [-1, -1],
+        'nothing in the group is tabbable'
+      );
+
+      // test-helpers refuses to drive a natively-disabled element, so dispatch
+      // straight at it -- listeners still run, which is the point.
+      items[0]!.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+      );
+      await settled();
+
+      assert.strictEqual(calls, 0, 'and arrow keys select nothing');
+    });
   }
 );

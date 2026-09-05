@@ -33,21 +33,16 @@ class SelectionIndicator {
    */
   setupContainer = modifier((element: HTMLElement) => {
     this.#container = element;
-    this.#observer = new ResizeObserver(() => this.measure());
+    this.#observer = new ResizeObserver(() => this.#measure());
     this.#observer.observe(element);
 
     if (this.#target) {
       this.#observer.observe(this.#target);
     }
-    this.measure();
+    this.#measure();
 
     return (): void => {
-      this.#observer?.disconnect();
-      this.#observer = undefined;
-      this.#cancelReady();
-      this.#cancelRemeasure();
-      this.#container = undefined;
-      this.#isReady = false;
+      this.#shutDown();
     };
   });
 
@@ -60,7 +55,7 @@ class SelectionIndicator {
     if (isSelected) {
       this.#target = element;
       this.#observer?.observe(element);
-      this.measure();
+      this.#measure();
     }
 
     return (): void => {
@@ -91,7 +86,7 @@ class SelectionIndicator {
    * automatically on setup, selection change, and container/target resize;
    * exposed for callers that need to force a recomputation.
    */
-  measure = (): void => {
+  #measure = (): void => {
     const container = this.#container;
     if (!container) {
       return;
@@ -132,14 +127,23 @@ class SelectionIndicator {
    * consumer is done with this instance outside of modifier teardown.
    */
   destroy = (): void => {
+    this.#shutDown();
+    // Only `destroy` drops the target. Container teardown does not: the target
+    // is owned by `setupTarget`, whose own teardown clears it, and a container
+    // that unmounts while its selected child is still registered must not
+    // strand that registration.
+    this.#target = undefined;
+  };
+
+  /** The shutdown both the container teardown and `destroy` share. */
+  #shutDown(): void {
     this.#observer?.disconnect();
     this.#observer = undefined;
     this.#cancelReady();
     this.#cancelRemeasure();
     this.#container = undefined;
-    this.#target = undefined;
     this.#isReady = false;
-  };
+  }
 
   #markNotReady(): void {
     this.#cancelReady();
@@ -185,7 +189,7 @@ class SelectionIndicator {
       if (this.#target) {
         return;
       }
-      this.measure();
+      this.#measure();
     });
   }
 
