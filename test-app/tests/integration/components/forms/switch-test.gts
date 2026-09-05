@@ -209,4 +209,151 @@ module('Integration | Component | @frontile/forms/Switch', function (hooks) {
     assert.dom('.my-start-content-class').exists();
     assert.dom('.my-end-content-class').exists();
   });
+  // Regression: Tailwind v4 compiles `translate-x-*` to the standalone CSS
+  // `translate` property and `scale-*` to `scale` -- not to `transform`. The
+  // Switch theme used `transition-transform-opacity` and
+  // `transition-background`, neither of which is a real Tailwind v4 utility,
+  // so they compiled to nothing at all and every one of these elements changed
+  // state in a single frame.
+  //
+  // These assertions read the *computed* transition and the transitions the
+  // browser actually starts. A class-presence assertion passes happily while
+  // the component is broken -- the class string was there the whole time.
+  //
+  // Note: `transition-property` computes to `all` even with no transition
+  // utility at all (that is its CSS initial value), so merely finding the
+  // property in the list proves nothing. What separates a real transition from
+  // none is a non-zero *duration* for that property.
+  test('each animated slot transitions the property it actually changes', async function (assert) {
+    const isSelected = cell(false);
+
+    await render(
+      <template>
+        <Switch @label="Airplane mode" @isSelected={{isSelected.current}}>
+          <:startContent>S</:startContent>
+          <:endContent>E</:endContent>
+        </Switch>
+      </template>
+    );
+
+    const wrapper = find('[data-component="switch"] > span') as HTMLElement;
+    const thumb = find('[data-test-id="switch-thumb-content"]') as HTMLElement;
+    const startContent = find(
+      '[data-test-id="switch-start-content"]'
+    ) as HTMLElement;
+    const endContent = find(
+      '[data-test-id="switch-end-content"]'
+    ) as HTMLElement;
+
+    // The duration the browser will actually use for `property` on `el`, in
+    // seconds. Zero means the element does not transition it, whatever the
+    // class string says.
+    const durationFor = (el: HTMLElement, property: string): number => {
+      const computed = window.getComputedStyle(el);
+      const properties = computed.transitionProperty
+        .split(',')
+        .map((entry) => entry.trim());
+      const durations = computed.transitionDuration
+        .split(',')
+        .map((entry) => entry.trim());
+
+      let seconds = 0;
+      properties.forEach((entry, index) => {
+        if (entry !== property && entry !== 'all') {
+          return;
+        }
+        // transition-duration repeats to cover a longer property list.
+        const duration = durations[index % durations.length] ?? '0s';
+        seconds = Math.max(seconds, parseFloat(duration) || 0);
+      });
+      return seconds;
+    };
+
+    const describe = (el: HTMLElement): string => {
+      const computed = window.getComputedStyle(el);
+      return `${computed.transitionProperty} / ${computed.transitionDuration}`;
+    };
+
+    // The property an element's geometry is actually written to. Tailwind v4
+    // puts `translate-x-*` on `translate` and `scale-*` on `scale`, so a
+    // transition naming only `transform` never fires.
+    const geometryProperty = (el: HTMLElement, fallback: string): string => {
+      const computed = window.getComputedStyle(el) as unknown as Record<
+        string,
+        string
+      >;
+      for (const property of ['translate', 'scale']) {
+        const value = computed[property];
+        if (value && value !== 'none') {
+          return property;
+        }
+      }
+      return fallback;
+    };
+
+    // The wrapper's fill changes via `group-data-[selected=true]:bg-*`.
+    assert.ok(
+      durationFor(wrapper, 'background-color') > 0,
+      `wrapper transitions background-color (${describe(wrapper)})`
+    );
+
+    // The thumb slides with `ms-*` (margin-inline-start).
+    assert.ok(
+      durationFor(thumb, 'margin-inline-start') > 0,
+      `thumb transitions margin-inline-start (${describe(thumb)})`
+    );
+
+    // startContent scales in (`scale-50` -> `scale-100`) and fades.
+    const startProperty = geometryProperty(startContent, 'scale');
+    assert.ok(
+      durationFor(startContent, startProperty) > 0,
+      `startContent transitions the property it is scaled with (${startProperty}; ${describe(startContent)})`
+    );
+    assert.ok(
+      durationFor(startContent, 'opacity') > 0,
+      `startContent transitions opacity (${describe(startContent)})`
+    );
+
+    // endContent slides out with `translate-x-3` and fades.
+    assert.ok(
+      durationFor(endContent, 'opacity') > 0,
+      `endContent transitions opacity (${describe(endContent)})`
+    );
+
+    // Reading the computed styles above also establishes the before-change
+    // style, so the browser has something to transition *from*.
+    isSelected.current = true;
+    await settled();
+
+    const endProperty = geometryProperty(endContent, 'translate');
+    assert.ok(
+      durationFor(endContent, endProperty) > 0,
+      `endContent transitions the property it is moved with (${endProperty}; ${describe(endContent)})`
+    );
+
+    // getAnimations() flushes pending style changes, so the transitions started
+    // by the selection change are observable here. Only a CSSTransition carries
+    // `transitionProperty`, which is enough to pick them out.
+    const runningOn = (el: HTMLElement): string[] =>
+      el
+        .getAnimations()
+        .map(
+          (animation) =>
+            (animation as Animation & { transitionProperty?: string })
+              .transitionProperty
+        )
+        .filter((property): property is string => typeof property === 'string');
+
+    const endRunning = runningOn(endContent);
+    assert.ok(
+      endRunning.includes(endProperty),
+      `toggling starts a transition on ${endProperty} for endContent (running: ${endRunning.join(', ') || 'none'})`
+    );
+
+    const wrapperRunning = runningOn(wrapper);
+    assert.ok(
+      wrapperRunning.includes('background-color'),
+      `toggling starts a background-color transition on the wrapper (running: ${wrapperRunning.join(', ') || 'none'})`
+    );
+  });
 });
