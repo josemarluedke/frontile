@@ -96,6 +96,17 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
   }
 
   handleDismiss = (notification: Notification<Record<string, unknown>>) => {
+    // Prune immediately rather than waiting for the next `measure` call —
+    // if the dismissed notification was the last one, nothing would ever
+    // trigger a rebuild otherwise, and its height entry (with its strong
+    // reference to the `Notification` and its `metadata`) would linger
+    // forever.
+    if (this.heights.has(notification)) {
+      const nextHeights = new Map(this.heights);
+      nextHeights.delete(notification);
+      this.heights = nextHeights;
+    }
+
     this.args.onDismiss?.(notification);
   };
 
@@ -176,7 +187,16 @@ class NotificationsContainer extends Component<NotificationsContainerSignature> 
         return;
       }
 
-      const nextHeights = new Map(this.heights);
+      // Rebuild rather than mutate in place (`Map` mutation isn't tracked),
+      // and prune any notification no longer live while we're at it — a
+      // dismissed notification is never measured again, so without this the
+      // map (and its strong reference to every past `Notification` and its
+      // `metadata`) would grow for the container's entire lifetime, and
+      // every future rebuild would keep copying all of that dead weight.
+      const live = new Set(this.notifications.notifications);
+      const nextHeights = new Map(
+        Array.from(this.heights).filter(([n]) => live.has(n))
+      );
       nextHeights.set(notification, height);
       this.heights = nextHeights;
     });

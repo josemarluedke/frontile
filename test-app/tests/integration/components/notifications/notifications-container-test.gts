@@ -23,6 +23,7 @@ import { cell } from 'ember-resources';
 // assert against the real, shipped classes (e.g. the pointer-events
 // gap-bridging fix) rather than the class names this file mocks in below.
 const realNotificationsContainerStyles = useStyles().notificationsContainer;
+const realNotificationCardStyles = useStyles().notificationCard;
 
 registerCustomStyles({
   notificationsContainer: tv({
@@ -688,6 +689,177 @@ module(
         calls,
         ['second'],
         'the surviving container still receives the callback'
+      );
+    });
+
+    test('it forwards @variant to each card, and each variant applies its expected classes', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('Message 1', { ...options, intent: 'success' });
+
+      for (const variant of ['default', 'tonal', 'solid'] as const) {
+        await render(
+          <template>
+            <NotificationsContainer
+              @variant={{variant}}
+              data-test-notifications
+            />
+          </template>
+        );
+
+        const card = find('[data-test-notification-card]') as HTMLElement;
+        const expectedBase = realNotificationCardStyles({
+          intent: 'success',
+          variant,
+          hasDescription: false
+        }).base();
+
+        assert.strictEqual(
+          card.className,
+          expectedBase,
+          `@variant="${variant}" applies the classes the theme generates for it`
+        );
+      }
+    });
+
+    test('@variant defaults to "default" when omitted', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('Message 1', { ...options, intent: 'info' });
+
+      await render(
+        <template><NotificationsContainer data-test-notifications /></template>
+      );
+
+      const card = find('[data-test-notification-card]') as HTMLElement;
+      const expectedBase = realNotificationCardStyles({
+        intent: 'info',
+        variant: 'default',
+        hasDescription: false
+      }).base();
+
+      assert.strictEqual(card.className, expectedBase);
+    });
+
+    test('it forwards @spacing to the stack geometry', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('Message 1', options);
+      service.add('Message 2', options);
+
+      await render(
+        <template>
+          <NotificationsContainer @spacing={{40}} data-test-notifications />
+        </template>
+      );
+      // `notification-card.gts`'s `enter` modifier flips `hasEntered` on the
+      // frame after insertion (via `requestAnimationFrame`), and only once
+      // that happens does the style getter switch from the enter/exit
+      // transform to the geometry-driven one this test reads. `settled()`
+      // doesn't wait on a raw `requestAnimationFrame`, so wait for one
+      // directly.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      await settled();
+
+      const cards = findAll('[data-test-notification-card]') as HTMLElement[];
+      const translateY = (card: HTMLElement): number => {
+        const match = /translateY\((-?[\d.]+)px\)/.exec(
+          card.getAttribute('style') || ''
+        );
+        return match ? parseFloat(match[1]!) : NaN;
+      };
+
+      assert.strictEqual(
+        Math.abs(translateY(cards[1]!)),
+        40,
+        'the second card peeks by the custom @spacing, not the 16px default'
+      );
+    });
+
+    test('it forwards @visibleToasts to the stack geometry', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      service.add('Message 1', options);
+      service.add('Message 2', options);
+      service.add('Message 3', options);
+
+      await render(
+        <template>
+          <NotificationsContainer
+            @visibleToasts={{1}}
+            data-test-notifications
+          />
+        </template>
+      );
+
+      const cards = findAll('[data-test-notification-card]') as HTMLElement[];
+      const opacity = (card: HTMLElement): string => {
+        const match = /opacity:\s*([\d.]+)/.exec(
+          card.getAttribute('style') || ''
+        );
+        return match ? match[1]! : '';
+      };
+
+      assert.strictEqual(
+        opacity(cards[0]!),
+        '1',
+        'the front card stays visible'
+      );
+      assert.strictEqual(
+        opacity(cards[1]!),
+        '0',
+        'the second card is hidden once @visibleToasts is 1'
+      );
+    });
+
+    // The `heights` map (notifications-container.gts) is keyed by
+    // `Notification` identity and pruned on dismiss so it doesn't hold a
+    // strong reference to every notification ever shown for the container's
+    // lifetime. There's no DOM-observable difference between "pruned" and
+    // "leaked" (a dismissed notification's own entry can never affect a
+    // later, different notification's geometry either way), so this can't
+    // assert the map's size directly without exposing an internal. Instead
+    // it exercises the exact prune-on-dismiss and prune-on-measure code
+    // paths end-to-end through the real dismiss and re-add flow, as a
+    // regression guard against either path throwing or corrupting the
+    // geometry of notifications that stay live.
+    test('dismissing notifications and adding new ones after them keeps rendering correctly', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      await render(template);
+
+      const first = service.add('Message 1', options);
+      const second = service.add('Message 2', options);
+      await settled();
+
+      assert.dom('[data-test-notification-card]').exists({ count: 2 });
+
+      service.remove(first);
+      service.remove(second);
+      await settled();
+
+      assert.dom('[data-test-notification-card]').doesNotExist();
+
+      service.add('Message 3', options);
+      await settled();
+
+      assert.dom('[data-test-notification-card]').exists({ count: 1 });
+
+      const card = find('[data-test-notification-card]') as HTMLElement;
+      assert.ok(
+        card.getAttribute('style')?.includes('opacity: 1'),
+        'the new notification, added after the previous ones were dismissed ' +
+          'and pruned, renders with correct geometry'
       );
     });
   }
