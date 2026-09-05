@@ -165,6 +165,16 @@ class NotificationCard extends Component<NotificationCardSignature> {
   /**
    * Report the card's height to the container so the stack can lay itself
    * out. Also fires when promise content swaps change the height.
+   *
+   * `element` is the inner element (never height-constrained, so its
+   * `offsetHeight` is always the content's true natural height). The border
+   * lives on the outer element (`element.parentElement`), so it isn't part
+   * of that number — we add it back via `outer.offsetHeight -
+   * outer.clientHeight`, the outer element's vertical border width. That
+   * difference is constant whether or not the outer element's height is
+   * currently clamped by the collapsed-stack height, so it's safe to read
+   * off the outer element even while it's clamped, and it stays correct if
+   * the theme's border width ever changes.
    */
   measure = modifier((element: HTMLElement) => {
     const { onMeasure } = this.args;
@@ -173,11 +183,16 @@ class NotificationCard extends Component<NotificationCardSignature> {
       return;
     }
 
-    const observer = new ResizeObserver(() => {
-      onMeasure(element.offsetHeight);
-    });
+    const outer = element.parentElement as HTMLElement;
 
-    onMeasure(element.offsetHeight);
+    const report = () => {
+      const outerBorder = outer.offsetHeight - outer.clientHeight;
+      onMeasure(element.offsetHeight + outerBorder);
+    };
+
+    const observer = new ResizeObserver(report);
+
+    report();
     observer.observe(element);
 
     return () => observer.disconnect();

@@ -365,6 +365,118 @@ module(
       }
     });
 
+    test('measured height includes the outer element border, so expanded gaps and stack height are exact', async function (assert) {
+      const service = this.owner.lookup(
+        'service:notifications'
+      ) as NotificationsService;
+
+      // The border lives on the *outer* card element
+      // (`packages/theme/src/components/notification-card.ts`'s `base`
+      // slot), not the inner one the `ResizeObserver` observes. A real,
+      // non-zero border here is exactly what makes the residual bug
+      // visible: `notification-card.gts`'s `measure` modifier must add the
+      // outer element's vertical border back onto the inner element's
+      // `offsetHeight`, or the height it reports is short by that border
+      // width. This override — real flex-row layout plus a real border —
+      // is intentionally more realistic than the "expanded offsets" test
+      // above, whose override has no border and so cannot catch this.
+      const previousNotificationCardStyles = useStyles().notificationCard;
+      registerCustomStyles({
+        notificationCard: tv({
+          slots: {
+            base: 'w-full border-4 border-solid border-black',
+            inner: 'flex gap-3 p-4',
+            icon: 'shrink-0 size-5',
+            content: 'grow min-w-0 flex flex-col gap-1',
+            title: '',
+            description: '',
+            customActions: 'flex flex-nowrap shrink-0 items-center gap-2',
+            customActionButton: '',
+            closeButton: 'shrink-0 self-center inline-block p-1.5'
+          },
+          variants: {
+            intent: { info: {}, success: {}, warning: {}, danger: {} },
+            variant: { default: {}, tonal: {}, solid: {} },
+            hasDescription: {
+              true: { inner: 'items-start' },
+              false: { inner: 'items-center' }
+            }
+          },
+          defaultVariants: {
+            intent: 'info',
+            variant: 'default',
+            hasDescription: false
+          }
+        })
+      });
+
+      try {
+        service.add('First', {
+          ...options,
+          description: 'Starts at 8:00 AM.'
+        });
+        service.add('Second', options);
+
+        await render(<template><NotificationsContainer /></template>);
+
+        const cards = findAll('[data-test-notification-card]') as HTMLElement[];
+        assert.strictEqual(cards.length, 2);
+
+        await triggerEvent('.notifications-container', 'mouseenter');
+
+        const gap = 16; // NotificationsContainer's default @spacing
+
+        // Expanded cards size to `height: auto`, so the outer element's own
+        // `offsetHeight` is now its true, complete border-box height —
+        // including the border the measurement modifier is supposed to
+        // account for. (`getBoundingClientRect()` is not usable here: the
+        // `#ember-testing` container is rendered at a fixed zoom, which
+        // scales rect-based measurements but not `offsetHeight`; see the
+        // "expanded offsets" test above for the same caveat.)
+        const realHeights = cards.map((card) => card.offsetHeight);
+
+        const translateY = (card: HTMLElement): number => {
+          const match = /translateY\((-?[\d.]+)px\)/.exec(
+            card.getAttribute('style') || ''
+          );
+          assert.ok(
+            match,
+            `card has a translateY in its style: ${card.getAttribute('style')}`
+          );
+          return match ? parseFloat(match[1]!) : NaN;
+        };
+
+        assert.strictEqual(
+          translateY(cards[0]!),
+          0,
+          'the front card is unmoved'
+        );
+
+        const actualGap = -translateY(cards[1]!) - realHeights[0]!;
+        assert.true(
+          Math.abs(actualGap - gap) < 1,
+          `the visual gap between cards (${actualGap}px) is the documented ` +
+            `@spacing (${gap}px), not short by the card's border width`
+        );
+
+        const stack = find('.notifications-container__stack') as HTMLElement;
+        const expectedStackHeight = realHeights[0]! + realHeights[1]! + gap;
+        const actualStackHeight = parseFloat(
+          /height:\s*([\d.]+)px/.exec(stack.getAttribute('style') || '')?.[1] ??
+            'NaN'
+        );
+        assert.true(
+          Math.abs(actualStackHeight - expectedStackHeight) < 1,
+          `the stack height (${actualStackHeight}px) equals the true summed ` +
+            `content height (${expectedStackHeight}px)`
+        );
+      } finally {
+        registerCustomStyles({
+          notificationCard: previousNotificationCardStyles
+        });
+      }
+    });
+
     test('it expands on hover and collapses on leave', async function (assert) {
       const service = this.owner.lookup(
         'service:notifications'
