@@ -119,67 +119,63 @@ const notificationCard = tv({
       class: { icon: 'text-danger-firm', title: 'text-danger-firm' }
     },
 
-    // tonal: opaque tinted surface. `subtle` is opaque in both themes; `soft`
-    // is translucent and must never be used on a floating toast.
+    // tonal: same recipe as Button's `appearance: 'tonal'` — an opaque
+    // outer surface (so the floating card never lets page content show
+    // through) with the translucent `{intent}-soft` tint and its `on-*`
+    // contrast ink applied to the *inner* element, which composites over
+    // that opaque surface. The outer picks up the `default` variant's
+    // neutral surface/border instead of a colour-matched one: Button's
+    // tonal has no border at all, but a card floating over arbitrary page
+    // content benefits from the same edge definition `default` already
+    // uses, so it borrows that treatment rather than inventing a new one.
     {
       variant: 'tonal',
       intent: 'default',
       class: {
-        base: 'bg-neutral-subtle border-neutral-muted',
-        icon: 'text-neutral-firm',
-        title: 'text-neutral-firm'
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        inner: 'bg-neutral-soft',
+        icon: 'text-on-neutral-soft',
+        title: 'text-on-neutral-soft'
       }
     },
     {
       variant: 'tonal',
       intent: 'info',
       class: {
-        base: 'bg-primary-subtle border-primary-muted',
-        icon: 'text-primary',
-        title: 'text-primary'
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        inner: 'bg-primary-soft',
+        icon: 'text-on-primary-soft',
+        title: 'text-on-primary-soft'
       }
     },
     {
-      // `success-firm` (green-600) on `success-subtle` (green-50) is only
-      // ~2.2:1 in light mode — the light `success` scale runs bright at
-      // every level below `strong`. `success-bolder` clears AA in both
-      // themes (light: green-900 on green-50; dark: green-100 on
-      // green-950). See packages/frontile/docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'success',
       class: {
-        base: 'bg-success-subtle border-success-muted',
-        icon: 'text-success-bolder',
-        title: 'text-success-bolder'
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        inner: 'bg-success-soft',
+        icon: 'text-on-success-soft',
+        title: 'text-on-success-soft'
       }
     },
     {
-      // `warning` is the one intent whose dark `subtle` token (orange-600)
-      // is a mid-tone rather than the near-black `-900`/`-950` tint every
-      // other intent uses for its dark `subtle` — see semantic.ts. No text
-      // color reaches 4.5:1 against it (even white is only ~5.5:1, and the
-      // accent orange tones top out around 4:1), so the background itself
-      // is special-cased here to the same `-900` depth the other intents
-      // get for free, rather than changing the shared `warning` token and
-      // affecting every other consumer of `bg-warning-subtle`. `bolder`
-      // text (vs. the light theme's usual `firm`) is also needed in light
-      // mode: `warning-firm` (orange-400) on `warning-subtle` (orange-50)
-      // is only ~2.7:1. See packages/frontile/docs/notifications-usage.md's contrast note.
       variant: 'tonal',
       intent: 'warning',
       class: {
-        base: 'bg-warning-subtle dark:bg-[#600102] border-warning-muted',
-        icon: 'text-warning-bolder',
-        title: 'text-warning-bolder'
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        inner: 'bg-warning-soft',
+        icon: 'text-on-warning-soft',
+        title: 'text-on-warning-soft'
       }
     },
     {
       variant: 'tonal',
       intent: 'danger',
       class: {
-        base: 'bg-danger-subtle border-danger-muted',
-        icon: 'text-danger-firm',
-        title: 'text-danger-firm'
+        base: 'bg-surface-modal border-surface-overlay-mild',
+        inner: 'bg-danger-soft',
+        icon: 'text-on-danger-soft',
+        title: 'text-on-danger-soft'
       }
     },
 

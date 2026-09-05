@@ -196,8 +196,11 @@ export default class DescriptionExample extends Component {
 
 `NotificationsContainer` takes several arguments that change how the whole stack renders:
 `@variant` controls the surface style applied to every card (`default` is a neutral opaque
-card where the intent color is carried by the icon and title, `tonal` is a tinted opaque
-surface, and `solid` is a filled surface with contrast text), `@placement` controls where the
+card where the intent color is carried by the icon and title, `tonal` matches `Button`'s
+`appearance="tonal"` recipe — an opaque neutral card whose inner row carries a translucent
+`{intent}-soft` tint with its `on-{intent}-soft` contrast text, so the card as a whole stays
+fully opaque while the tint reads exactly like a tonal button — and `solid` is a filled surface
+with contrast text), `@placement` controls where the
 stack sits on screen, and `@visibleToasts` (default `3`) sets how many cards stay visible
 while collapsed — `@spacing` (default `16`) is the peek offset between collapsed cards and the
 gap between expanded ones, in pixels, and `@expand` forces the stack to stay expanded instead
@@ -955,24 +958,26 @@ The notification system includes built-in accessibility features:
   with the keyboard.
 - **Hover and Focus Behavior**: Auto-dismissal pauses for every visible notification while the
   stack is hovered or focused, not just the one underneath the pointer.
-- **Text Contrast**: `success` and `warning` use the brightest levels of their palette scale at
-  the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG AA
-  floor at `firm` — the theme uses `bolder` for their title/icon text instead. `warning`'s dark
-  `subtle` background is also a mid-tone (`orange-600`) rather than the near-black `-900`/`-950`
-  tint every other intent's dark `subtle` uses, so no text color reaches 4.5:1 against it in the
-  `tonal` variant; the card special-cases that one background to the same `-900` depth instead of
-  changing the shared `warning` token (which other components also use). Measured ratios (WCAG
-  relative luminance, both themes):
+- **Text Contrast**: `default` uses the brightest levels of the `success`/`warning` palette scale
+  at the `firm` level the other intents' title/icon text uses, so both fall below the 4.5:1 WCAG
+  AA floor at `firm` — the theme uses `bolder` for their title/icon text instead. `tonal` composites
+  the translucent `{intent}-soft` tint over the card's opaque surface and pairs it with the
+  auto-generated `on-{intent}-soft` contrast ink (the same recipe `Button`'s `appearance="tonal"`
+  uses), which clears AA for every intent in both themes without any hand-picked text level or
+  background override. Measured ratios (WCAG relative luminance, resolving the composited
+  `{intent}-soft`-over-surface color where relevant):
 
-  | Pairing                                                    | Light  | Dark   |
-  | ----------------------------------------------------------- | ------ | ------ |
-  | `default`/`tonal` description (`text-neutral` → `-firm`)     | 3.1→8.1| 8.9→11.6 |
-  | `default`/`tonal` `success` title (`firm` → `bolder`)        | 2.3→9.3| 16.3 (already passed) |
-  | `default` `warning` title (`firm` → `bolder`)                | 3.0→7.6| 11.4 (already passed) |
-  | `tonal` `warning` title (`firm` → `bolder`, bg unchanged)     | 2.7→7.0| 3.2 (still fails — see below) |
-  | `tonal` `warning` background (`subtle` → `#600102` in dark)   | n/a    | 3.2→8.2 |
-  | `tonal`/`default` `info`, `danger`, neutral `default` intent  | already ≥5.6 | already ≥6.4 |
-  | `solid` variant (all intents, title/icon and 80%-opacity description) | already ≥7.1 | already ≥9 |
+  | Pairing                                                                | Light | Dark  |
+  | ----------------------------------------------------------------------- | ----- | ----- |
+  | `default`/`tonal` description (`text-neutral-firm`)                     | 8.1   | 8.9–11.6 |
+  | `default` `success`/`warning` title (`bolder`)                          | 9.3 / 7.6 | 16.3 / 11.4 |
+  | `default` `info`/`danger`/neutral title                                 | ≥5.6  | ≥6.4  |
+  | `tonal` `default` (`on-neutral-soft` on composited `neutral-soft`)      | 15.4  | 8.1   |
+  | `tonal` `info` (`on-primary-soft` on composited `primary-soft`)         | 18.0  | 12.4  |
+  | `tonal` `success` (`on-success-soft` on composited `success-soft`)      | 19.5  | 12.0  |
+  | `tonal` `warning` (`on-warning-soft` on composited `warning-soft`)      | 17.9  | 13.8  |
+  | `tonal` `danger` (`on-danger-soft` on composited `danger-soft`)         | 16.4  | 16.6  |
+  | `solid` variant (all intents, title/icon and 80%-opacity description)  | ≥7.1  | ≥9    |
 
 ## Best Practices
 
