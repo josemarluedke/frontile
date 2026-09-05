@@ -541,6 +541,34 @@ module('Integration | Component | @frontile/forms/InputOtp', function (hooks) {
     );
   });
 
+  test('pasting into a half-filled code appends to what is already there', async function (assert) {
+    // The full-code autofill path is covered above; this is the other half of
+    // the paste story -- a code typed by hand and finished by a paste. What the
+    // browser hands us is the merged value, so the component must render the
+    // whole of it, not just the pasted tail.
+    await render(<template><InputOtp @label="Code" @length={{6}} /></template>);
+
+    const input = find(
+      '[data-component="input-otp-input"]'
+    ) as HTMLInputElement;
+
+    await typeInto(input, '1');
+    await typeInto(input, '12');
+    await typeInto(input, '123');
+
+    // The paste lands at the caret, so the element ends up holding the typed
+    // prefix plus the pasted characters.
+    await typeInto(input, '123456');
+
+    assert.strictEqual(input.value, '123456');
+
+    const cells = findAll('[data-test-id="input-otp-cell"]');
+    assert.dom(cells[0] as Element).hasText('1');
+    assert.dom(cells[2] as Element).hasText('3');
+    assert.dom(cells[3] as Element).hasText('4');
+    assert.dom(cells[5] as Element).hasText('6');
+  });
+
   test('@allowedChars alphanumeric accepts letters and switches inputmode', async function (assert) {
     await render(
       <template>

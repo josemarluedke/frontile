@@ -25,10 +25,23 @@ const OTP_PATTERNS = {
 
 type AllowedChars = keyof typeof OTP_PATTERNS;
 
+/**
+ * The on-screen keyboard and autocapitalisation each character set implies.
+ *
+ * `tel` is deliberately not offered: its keypad carries `*`, `#` and pause
+ * characters that every one of our patterns rejects.
+ */
+const OTP_INPUT_HINTS = {
+  digits: { inputMode: 'numeric', autoCapitalize: 'off' },
+  letters: { inputMode: 'text', autoCapitalize: 'characters' },
+  alphanumeric: { inputMode: 'text', autoCapitalize: 'characters' }
+} as const satisfies Record<
+  AllowedChars,
+  { inputMode: 'numeric' | 'text'; autoCapitalize: 'off' | 'characters' }
+>;
+
 interface Cell {
   index: number;
-  char: string | null;
-  placeholderChar: string | null;
   /** What the cell actually draws: the character, a mask, or a placeholder. */
   displayChar: string | null;
   isActive: boolean;
@@ -204,16 +217,12 @@ class InputOtp extends Component<InputOtpSignature> {
     return this.args.pattern ?? OTP_PATTERNS[this.allowedChars];
   }
 
-  /**
-   * `tel` is deliberately not offered: its keypad carries `*`, `#` and pause
-   * characters that every one of our patterns rejects.
-   */
   get inputMode(): 'numeric' | 'text' {
-    return this.allowedChars === 'digits' ? 'numeric' : 'text';
+    return OTP_INPUT_HINTS[this.allowedChars].inputMode;
   }
 
   get autoCapitalize(): 'off' | 'characters' {
-    return this.allowedChars === 'digits' ? 'off' : 'characters';
+    return OTP_INPUT_HINTS[this.allowedChars].autoCapitalize;
   }
 
   get isControlled(): boolean {
@@ -352,8 +361,6 @@ class InputOtp extends Component<InputOtpSignature> {
 
       cells.push({
         index,
-        char,
-        placeholderChar,
         displayChar,
         isActive,
         hasFakeCaret: isActive && char === null
@@ -444,11 +451,11 @@ class InputOtp extends Component<InputOtpSignature> {
     }
   }
 
-  @action handleInput(event: Event): void {
+  @action handleOnInput(event: Event): void {
     this.syncValue(event, 'input');
   }
 
-  @action handleChange(event: Event): void {
+  @action handleOnChange(event: Event): void {
     this.syncValue(event, 'change');
   }
 
@@ -537,7 +544,7 @@ class InputOtp extends Component<InputOtpSignature> {
     this.onSelectionChange();
   }
 
-  @action handleBlur(): void {
+  @action handleOnBlur(): void {
     this.isFocused = false;
     this.selectionStart = null;
     this.selectionEnd = null;
@@ -588,8 +595,9 @@ class InputOtp extends Component<InputOtpSignature> {
                   {{cell.displayChar}}
                 </span>
                 {{#if cell.hasFakeCaret}}
-                  {{! Never the only focus affordance -- it is invisible under
-                      prefers-reduced-motion, so the active cell also rings. }}
+                  {{! Never the only focus affordance -- under
+                      prefers-reduced-motion it stops blinking and reads as a
+                      static bar, so the active cell also rings. }}
                   <span
                     class={{this.classes.caret class=@classes.caret}}
                     data-test-id="input-otp-caret"
@@ -602,10 +610,10 @@ class InputOtp extends Component<InputOtpSignature> {
 
         <input
           {{this.inputRef.setup}}
-          {{on "input" this.handleInput}}
-          {{on "change" this.handleChange}}
+          {{on "input" this.handleOnInput}}
+          {{on "change" this.handleOnChange}}
           {{on "focus" this.handleFocus}}
-          {{on "blur" this.handleBlur}}
+          {{on "blur" this.handleOnBlur}}
           id={{c.id}}
           name={{@name}}
           type="text"
