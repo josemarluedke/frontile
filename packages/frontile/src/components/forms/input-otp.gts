@@ -124,7 +124,39 @@ class InputOtp extends Component<InputOtpSignature> {
    */
   previousValue: string = this.args.value || '';
 
-  inputRef = ref<HTMLInputElement>();
+  @tracked isFocused = false;
+  @tracked selectionStart: number | null = null;
+  @tracked selectionEnd: number | null = null;
+
+  /**
+   * The previous selection. The selection API cannot tell us which side of a
+   * character boundary the user meant, so direction is inferred by comparing
+   * against where the caret was a moment ago.
+   */
+  prevSelection: [number | null, number | null] = [null, null];
+
+  /**
+   * `selectionchange` only fires on `document`, and capture phase keeps us
+   * ahead of anything else listening.
+   */
+  inputRef = ref<HTMLInputElement>((element) => {
+    if (element) {
+      document.addEventListener('selectionchange', this.onSelectionChange, {
+        capture: true
+      });
+    } else {
+      document.removeEventListener('selectionchange', this.onSelectionChange, {
+        capture: true
+      });
+    }
+  });
+
+  willDestroy(): void {
+    super.willDestroy();
+    document.removeEventListener('selectionchange', this.onSelectionChange, {
+      capture: true
+    });
+  }
 
   get length(): number {
     return this.args.length ?? 6;
@@ -176,13 +208,24 @@ class InputOtp extends Component<InputOtpSignature> {
     const value = this.currentValue;
     const cells: Cell[] = [];
 
+    const { selectionStart: start, selectionEnd: end } = this;
+
     for (let index = 0; index < this.length; index++) {
+      const char = value[index] ?? null;
+      // A range selection lights up every cell it covers -- that is correct,
+      // not a bug.
+      const isActive =
+        this.isFocused &&
+        start !== null &&
+        end !== null &&
+        ((start === end && index === start) || (index >= start && index < end));
+
       cells.push({
         index,
-        char: value[index] ?? null,
+        char,
         placeholderChar: null,
-        isActive: false,
-        hasFakeCaret: false
+        isActive,
+        hasFakeCaret: isActive && char === null
       });
     }
 
@@ -232,6 +275,13 @@ class InputOtp extends Component<InputOtpSignature> {
     ) {
       this.args.onComplete?.(next);
     }
+
+    // No browser fires selectionchange for a deletion or a cut, so the active
+    // cell would stick where it was. Known cost: this also fires on
+    // select-all-then-paste-shorter, which is harmless.
+    if (next.length < previous.length) {
+      document.dispatchEvent(new Event('selectionchange'));
+    }
   }
 
   @action handleInput(event: Event): void {
@@ -242,7 +292,96 @@ class InputOtp extends Component<InputOtpSignature> {
     this.syncValue(event, 'change');
   }
 
+  /**
+   * Maps the input's text caret onto discrete cells. A collapsed caret sits
+   * between characters and so belongs to no cell; widening it to a
+   * one-character range makes exactly one cell active and makes typing
+   * overwrite rather than insert.
+   */
+  @action onSelectionChange(): void {
+    const input = this.inputRef.current;
+    if (!input || document.activeElement !== input) {
+      return;
+    }
+
+    const value = input.value;
+    const maxLength = this.length;
+    const caretStart = input.selectionStart;
+    const caretEnd = input.selectionEnd;
+
+    if (caretStart === null || caretEnd === null) {
+      return;
+    }
+
+    let start = -1;
+    let end = -1;
+    let direction: 'forward' | 'backward' | 'none' =
+      input.selectionDirection ?? 'none';
+
+    const isSingleCaret = caretStart === caretEnd;
+    // Appending to a not-yet-full code: leave the caret collapsed, or the next
+    // keystroke would replace the character before it instead of adding one.
+    const isInsertMode =
+      caretStart === value.length && value.length < maxLength;
+
+    if (isSingleCaret && !isInsertMode) {
+      const caret = caretStart;
+
+      if (caret === 0) {
+        start = 0;
+        end = 1;
+        direction = 'forward';
+      } else if (caret === maxLength) {
+        start = caret - 1;
+        end = caret;
+        direction = 'backward';
+      } else if (maxLength > 1 && value.length > 1) {
+        let offset = 0;
+        const [prevStart, prevEnd] = this.prevSelection;
+
+        if (prevStart !== null && prevEnd !== null) {
+          direction = caret < prevEnd ? 'backward' : 'forward';
+          const wasInserting = prevStart === prevEnd && prevStart < maxLength;
+          // Without this, ArrowLeft appears to skip a cell -- except when
+          // leaving append mode, where the shift would overshoot.
+          if (direction === 'backward' && !wasInserting) {
+            offset = -1;
+          }
+        }
+
+        start = offset + caret;
+        end = offset + caret + 1;
+      }
+    }
+
+    if (start !== -1 && end !== -1 && start !== end) {
+      input.setSelectionRange(start, end, direction);
+    }
+
+    this.selectionStart = input.selectionStart;
+    this.selectionEnd = input.selectionEnd;
+    this.prevSelection = [input.selectionStart, input.selectionEnd];
+  }
+
+  @action handleFocus(): void {
+    this.isFocused = true;
+
+    const input = this.inputRef.current;
+    if (!input) {
+      return;
+    }
+
+    // Park on the last cell rather than past the end of a full code.
+    const start = Math.min(input.value.length, this.length - 1);
+    input.setSelectionRange(start, input.value.length);
+    this.onSelectionChange();
+  }
+
   @action handleBlur(): void {
+    this.isFocused = false;
+    this.selectionStart = null;
+    this.selectionEnd = null;
+    this.prevSelection = [null, null];
     this.args.onBlur?.();
   }
 
@@ -270,15 +409,25 @@ class InputOtp extends Component<InputOtpSignature> {
               <div
                 class={{this.classes.cell
                   class=@classes.cell
+                  isActive=cell.isActive
                   isInvalid=c.isInvalid
                   isDisabled=@isDisabled
                 }}
                 data-test-id="input-otp-cell"
+                data-active={{if cell.isActive "true"}}
                 aria-hidden="true"
               >
                 <span class={{this.classes.cellChar class=@classes.cellChar}}>
                   {{cell.char}}
                 </span>
+                {{#if cell.hasFakeCaret}}
+                  {{! Never the only focus affordance -- it is invisible under
+                      prefers-reduced-motion, so the active cell also rings. }}
+                  <span
+                    class={{this.classes.caret class=@classes.caret}}
+                    data-test-id="input-otp-caret"
+                  ></span>
+                {{/if}}
               </div>
             {{/each}}
           </div>
@@ -288,6 +437,7 @@ class InputOtp extends Component<InputOtpSignature> {
           {{this.inputRef.setup}}
           {{on "input" this.handleInput}}
           {{on "change" this.handleChange}}
+          {{on "focus" this.handleFocus}}
           {{on "blur" this.handleBlur}}
           id={{c.id}}
           name={{@name}}
