@@ -412,6 +412,105 @@ module(
       );
     });
 
+    test('the indicator transitions the property that actually moves it', async function (assert) {
+      // Regression: the theme declared the ready-state transition as
+      // `transition-[transform,width,height]`, but Tailwind v4 compiles
+      // `translate-x-*`/`translate-y-*` to the standalone CSS `translate`
+      // property -- the indicator's computed style is `transform: none;
+      // translate: <x> <y>`. With `translate` missing from the transition
+      // list the pill *snapped* to its new position in a single frame while
+      // only `width` eased, so the slide never happened.
+      //
+      // Asserting on the class string would not have caught this: the class
+      // was present and spelled exactly as intended. Only the *computed*
+      // transition, and the animations the browser actually creates, tell
+      // the truth.
+      const value = cell('day');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">A much longer label</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const container = find('[role="radiogroup"]') as HTMLElement;
+      const indicator = find('[aria-hidden="true"]') as HTMLElement;
+
+      assert.ok(
+        container.hasAttribute('data-fr-si-ready'),
+        'the indicator is ready, so the gated transition applies'
+      );
+
+      const computed = window.getComputedStyle(indicator);
+      const transitioned = computed.transitionProperty
+        .split(',')
+        .map((property) => property.trim());
+
+      // The property the geometry is actually written to.
+      const positionProperty =
+        computed.translate && computed.translate !== 'none'
+          ? 'translate'
+          : 'transform';
+
+      assert.ok(
+        transitioned.includes(positionProperty),
+        `the transition list (${computed.transitionProperty}) includes the property the indicator is positioned with (${positionProperty}: ${computed[positionProperty]})`
+      );
+      assert.ok(transitioned.includes('width'), 'and still transitions width');
+
+      // Reading the computed style above also establishes the before-change
+      // style, so the browser has something to transition *from* when the
+      // selection moves below.
+      void computed[positionProperty];
+
+      await click(findAll('[role="radio"]')[1]!);
+
+      // getAnimations() flushes pending style changes, so the transitions
+      // created by this selection change are observable here. Only a
+      // CSSTransition carries `transitionProperty`, so reading that field is
+      // enough to pick them out of whatever else may be animating.
+      const running = indicator
+        .getAnimations()
+        .map((animation) => ({
+          property: (animation as Animation & { transitionProperty?: string })
+            .transitionProperty,
+          effect: animation.effect as {
+            getKeyframes?: () => Record<string, unknown>[];
+          } | null
+        }))
+        .filter((entry) => typeof entry.property === 'string');
+
+      assert.ok(
+        running.some((entry) => entry.property === positionProperty),
+        `moving the selection starts a transition on ${positionProperty} (running: ${running.map((entry) => entry.property).join(', ') || 'none'})`
+      );
+
+      // A transition that exists but interpolates between two identical
+      // values would still be a snap; check its endpoints actually differ.
+      const frames =
+        running
+          .find((entry) => entry.property === positionProperty)
+          ?.effect?.getKeyframes?.() ?? [];
+      const from = frames[0]?.[positionProperty];
+      const to = frames[frames.length - 1]?.[positionProperty];
+
+      assert.notStrictEqual(
+        from,
+        to,
+        `and it eases between two different positions (${String(from)} -> ${String(to)})`
+      );
+    });
+
     test('a value matching no item leaves the indicator hidden', async function (assert) {
       await render(
         <template>

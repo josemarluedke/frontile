@@ -25,7 +25,15 @@ const segmentedControl = tv({
       // indicator never flies in from the container origin on first paint.
       'opacity-0',
       'group-data-[fr-si-ready]/segmented:opacity-100',
-      'group-data-[fr-si-ready]/segmented:transition-[transform,width,height]',
+      // `translate` is the property that actually moves the indicator:
+      // Tailwind v4 compiles `translate-x-*`/`translate-y-*` to the
+      // standalone CSS `translate` property, NOT to `transform`. Omitting it
+      // here made the pill snap to its new position in a single frame while
+      // only `width` eased -- the slide, the component's headline behaviour,
+      // never happened. `transform` stays in the list because a consumer
+      // overriding this slot via `@classes.indicator` may legitimately
+      // position with `transform` instead (the docs describe that path).
+      'group-data-[fr-si-ready]/segmented:transition-[transform,translate,width,height]',
       'group-data-[fr-si-ready]/segmented:duration-200',
       'group-data-[fr-si-ready]/segmented:ease-out',
       'motion-reduce:transition-none'
