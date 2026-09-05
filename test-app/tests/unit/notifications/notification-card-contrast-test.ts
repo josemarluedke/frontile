@@ -1,94 +1,75 @@
 import { module, test } from 'qunit';
-import { semanticColors } from '@frontile/theme/colors';
+import {
+  semanticColors,
+  getContrastingColor,
+  parse,
+  wcagContrast
+} from '@frontile/theme/colors';
 import { useStyles } from '@frontile/theme';
+
+/** Structurally compatible with `culori`'s `Color` (an opaque sRGB triple)
+ * without importing the type from `culori` directly — `culori` isn't a
+ * dependency of this app, only of `@frontile/theme`, which already re-exports
+ * the values (`parse`, `wcagContrast`) this file needs. */
+interface OpaqueRgb {
+  mode: 'rgb';
+  r: number;
+  g: number;
+  b: number;
+}
 
 /**
  * Pure-math contrast regression test for NotificationCard's text/background
  * pairings, computed directly from the theme's own colour objects
- * (`semanticColors`, the same data `packages/theme/src/colors/semantic.ts`
- * feeds into the Tailwind plugin) rather than from a hand-maintained docs
- * table. This is the test that would have caught the `solid` variant's
- * WCAG AA failure (its description used to sit at 80% opacity, which
- * dropped `danger`'s ratio to ~3.37:1 in light mode) — see
- * `packages/frontile/docs/notifications-usage.md`'s contrast note and
- * `packages/theme/src/components/notification-card.ts`'s `solid` compound
- * variants for the fix.
+ * (`semanticColors`) and the theme's own contrast helpers (`getContrastingColor`,
+ * `wcagContrast` re-exported from `packages/theme/src/colors/util.ts`) — the
+ * same code path the `solid` variant's contrast text actually goes through —
+ * rather than a private reimplementation of the WCAG maths. This is the test
+ * that would have caught the `solid` variant's WCAG AA failure (its
+ * description used to sit at 80% opacity, which dropped `danger`'s ratio to
+ * ~3.37:1 in light mode) — see `packages/frontile/docs/notifications-usage.md`'s
+ * contrast note and `packages/theme/src/components/notification-card.ts`'s
+ * `solid` compound variants for the fix.
  *
- * No DOM/rendering is involved: relative luminance and alpha compositing
- * are pure arithmetic, so this runs as a plain unit test.
+ * No DOM/rendering is involved, so this runs as a plain unit test. Alpha
+ * compositing (`culori` doesn't do this) is the only piece not already
+ * covered by the theme's helpers, so it's the only piece still done locally.
  */
 
-type RGBA = { r: number; g: number; b: number; a: number };
+/** Composite a (possibly translucent) foreground color over an assumed-opaque
+ * background, so `wcagContrast` (which does not composite) sees what the
+ * browser actually paints. */
+function compositeOver(fgHex: string, bgHex: string): OpaqueRgb {
+  const fg = parse(fgHex);
+  const bg = parse(bgHex);
+  if (!fg || !bg) {
+    throw new Error(`Failed to parse color: ${fgHex} / ${bgHex}`);
+  }
 
-function hexToRgba(hex: string): RGBA {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.substring(0, 2), 16);
-  const g = parseInt(h.substring(2, 4), 16);
-  const b = parseInt(h.substring(4, 6), 16);
-  const a = h.length > 6 ? parseInt(h.substring(6, 8), 16) / 255 : 1;
-  return { r, g, b, a };
-}
+  const a = fg.alpha ?? 1;
+  const fgR = 'r' in fg ? fg.r : 0;
+  const fgG = 'g' in fg ? fg.g : 0;
+  const fgB = 'b' in fg ? fg.b : 0;
+  const bgR = 'r' in bg ? bg.r : 0;
+  const bgG = 'g' in bg ? bg.g : 0;
+  const bgB = 'b' in bg ? bg.b : 0;
 
-/** Composite `fg` (which may carry alpha) over an assumed-opaque `bg`. */
-function compositeOver(fg: RGBA, bg: RGBA): RGBA {
-  const a = fg.a;
   return {
-    r: fg.r * a + bg.r * (1 - a),
-    g: fg.g * a + bg.g * (1 - a),
-    b: fg.b * a + bg.b * (1 - a),
-    a: 1
+    mode: 'rgb',
+    r: fgR * a + bgR * (1 - a),
+    g: fgG * a + bgG * (1 - a),
+    b: fgB * a + bgB * (1 - a)
   };
 }
 
-function srgbChannelToLinear(c: number): number {
-  const scaled = c / 255;
-  return scaled <= 0.03928
-    ? scaled / 12.92
-    : Math.pow((scaled + 0.055) / 1.055, 2.4);
-}
-
-function relativeLuminance({ r, g, b }: RGBA): number {
-  return (
-    0.2126 * srgbChannelToLinear(r) +
-    0.7152 * srgbChannelToLinear(g) +
-    0.0722 * srgbChannelToLinear(b)
-  );
-}
-
-/** WCAG contrast ratio between two (assumed opaque) colors. */
-function contrastRatio(a: RGBA, b: RGBA): number {
-  const l1 = relativeLuminance(a);
-  const l2 = relativeLuminance(b);
-  const lighter = Math.max(l1, l2);
-  const darker = Math.min(l1, l2);
-  return (lighter + 0.05) / (darker + 0.05);
-}
-
-/**
- * Contrast between a (possibly translucent) foreground hex and an opaque
+/** Contrast between a (possibly translucent) foreground hex and an opaque
  * background hex, compositing first if needed. Mirrors what the browser
- * actually paints.
- */
+ * actually paints. */
 function contrastHex(fgHex: string, bgHex: string): number {
-  const fg = hexToRgba(fgHex);
-  const bg = hexToRgba(bgHex);
-  const composited = fg.a < 1 ? compositeOver(fg, bg) : fg;
-  return contrastRatio(composited, bg);
-}
-
-/**
- * Same algorithm `packages/theme/src/colors/util.ts`'s `getContrastingColor`
- * uses to auto-generate `on-{color}` for every semantic color's `DEFAULT`
- * level: pick whichever of pure black/white contrasts more with the
- * background.
- */
-function getContrastingColor(bgHex: string): string {
-  const bg = hexToRgba(bgHex);
-  const black: RGBA = { r: 0, g: 0, b: 0, a: 1 };
-  const white: RGBA = { r: 255, g: 255, b: 255, a: 1 };
-  const withBlack = contrastRatio(bg, black);
-  const withWhite = contrastRatio(bg, white);
-  return withBlack > withWhite ? '#000000' : '#ffffff';
+  const fg = parse(fgHex);
+  const composited =
+    fg && (fg.alpha ?? 1) < 1 ? compositeOver(fgHex, bgHex) : fgHex;
+  return wcagContrast(composited, bgHex);
 }
 
 const AA_NORMAL_TEXT = 4.5;
@@ -166,11 +147,8 @@ module('Unit | Notifications | notification-card contrast', function () {
           colors[`on-${category}`] as ColorTree,
           'soft'
         );
-        const compositedBg = compositeOver(
-          hexToRgba(soft),
-          hexToRgba(surfaceModal)
-        );
-        const ratio = contrastRatio(hexToRgba(onSoft), compositedBg);
+        const compositedBg = compositeOver(soft, surfaceModal);
+        const ratio = wcagContrast(onSoft, compositedBg);
         assert.true(
           ratio >= AA_NORMAL_TEXT,
           `on-${category}-soft on composited ${category}-soft: expected >= ${AA_NORMAL_TEXT}:1, got ${ratio.toFixed(2)}:1`
@@ -180,7 +158,7 @@ module('Unit | Notifications | notification-card contrast', function () {
       test(`${theme}: solid variant ${intent} title/icon clears AA (this is the pairing BUG 1 broke)`, function (assert) {
         const bg = levelValue(colors[category] as ColorTree, 'DEFAULT');
         const fg = getContrastingColor(bg);
-        const ratio = contrastHex(fg, bg);
+        const ratio = wcagContrast(fg, bg);
 
         assert.true(
           ratio >= AA_NORMAL_TEXT,
@@ -213,7 +191,7 @@ module('Unit | Notifications | notification-card contrast', function () {
 
         const bg = levelValue(colors[category] as ColorTree, 'DEFAULT');
         const fg = getContrastingColor(bg);
-        const ratio = contrastHex(fg, bg);
+        const ratio = wcagContrast(fg, bg);
         assert.true(
           ratio >= AA_NORMAL_TEXT,
           `description ink on ${category}: expected >= ${AA_NORMAL_TEXT}:1, got ${ratio.toFixed(2)}:1`
