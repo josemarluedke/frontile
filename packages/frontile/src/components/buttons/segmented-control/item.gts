@@ -23,7 +23,11 @@ interface SegmentedControlItemArgs<T> {
   /** Class names appended to this item's theme classes. */
   class?: string;
 
-  /** Supplied by SegmentedControl. Not part of the public API. */
+  /**
+   * Supplied by SegmentedControl. Not part of the public API.
+   *
+   * @internal
+   */
   context: SegmentedControlContext<T>;
 }
 

@@ -54,6 +54,10 @@ export const inventory: InventoryCategory[] = [
       { name: 'Press', path: '/docs/components/utilities/press' },
       { name: 'Ref', path: '/docs/components/utilities/ref' },
       {
+        name: 'SelectionIndicator',
+        path: '/docs/components/utilities/selection-indicator',
+      },
+      {
         name: 'VisuallyHidden',
         path: '/docs/components/utilities/visually-hidden',
       },

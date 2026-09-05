@@ -13740,10 +13740,10 @@ const data: ComponentDoc[] = [
           ],
         },
         isRequired: true,
-        isInternal: false,
+        isInternal: true,
         description:
           'Supplied by SegmentedControl. Not part of the public API.',
-        tags: {},
+        tags: { internal: { name: 'internal', value: '' } },
       },
       {
         identifier: 'value',
@@ -13840,6 +13840,16 @@ const data: ComponentDoc[] = [
         description:
           "Class names for each slot of the component, merged with the theme's.",
         tags: {},
+      },
+      {
+        identifier: 'defaultValue',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Sets the initially selected value when the control is used uncontrolled\n(that is, when <code>@value</code> is not provided). Ignored in controlled mode.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
+        defaultValue: '<span class="hljs-literal">undefined</span>',
       },
       {
         identifier: 'hasSeparators',
@@ -13948,7 +13958,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          "The currently selected value. Compared against each item's <code>@value</code> with\n<code>===</code>, so object values must be referentially stable.",
+          "<p>The currently selected value. Compared against each item's <code>@value</code> with\n<code>===</code>, so object values must be referentially stable.</p>\n<p>Providing this argument puts the component in controlled mode: the\nselection then only ever reflects what you pass, so pair it with\n<code>@onChange</code> and update your own state. Omit it to let the control track\nthe selection itself, seeded by <code>@defaultValue</code>.</p>",
         tags: {},
       },
       {

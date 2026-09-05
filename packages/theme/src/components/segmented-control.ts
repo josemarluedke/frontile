@@ -163,13 +163,14 @@ const segmentedControl = tv({
       // `p-1`), never an invented value; tailwind-merge's `rounded` group lets
       // them override the slot's own `rounded-pill`.
       //
-      // `items-stretch` is flexbox's default, but it is stated here because it
-      // is load-bearing on this axis: without a common width the items ragged
-      // to their text and the indicator jumps width as the selection moves.
+      // The radius swap plus the per-size `py-*` compound variants below are
+      // the whole of this axis's styling. Items share a width without anything
+      // stated here: `align-items` is left at its flex default, so they stretch
+      // to the column and the indicator keeps one width as the selection moves.
       vertical: {
-        base: 'flex-col items-stretch rounded-2xl',
+        base: 'flex-col rounded-2xl',
         indicator: 'rounded-xl',
-        item: 'w-full justify-center text-center rounded-xl'
+        item: 'rounded-xl'
       }
     },
 
@@ -212,7 +213,7 @@ const segmentedControl = tv({
   compoundVariants: [
     // Stacked rows read as cramped at the horizontal paddings, where the
     // px/py ratio is tuned for items sitting shoulder to shoulder. On the
-    // vertical axis the width comes from `items-stretch` instead, so the
+    // vertical axis the width comes from the flex stretch instead, so the
     // padding budget moves to the cross axis. Written as one literal class per
     // size; tailwind-merge drops the `py-*` set by the `size` variant.
     { orientation: 'vertical', size: 'sm', class: { item: 'py-1.5' } },

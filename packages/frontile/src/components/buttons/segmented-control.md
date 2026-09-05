@@ -19,6 +19,35 @@ import { SegmentedControl } from 'frontile';
 
 ## Usage
 
+`@defaultValue` picks the item that starts selected and the control tracks the
+rest itself, so the shortest working control needs no state and no handler.
+Click between the items below: the indicator slides.
+
+```gts preview
+import { SegmentedControl } from 'frontile';
+
+<template>
+  <SegmentedControl @defaultValue='week' aria-label='Date range' as |Ctl|>
+    <Ctl.Item @value='day'>Day</Ctl.Item>
+    <Ctl.Item @value='week'>Week</Ctl.Item>
+    <Ctl.Item @value='month'>Month</Ctl.Item>
+  </SegmentedControl>
+</template>
+```
+
+## Controlled and uncontrolled
+
+Without `@value` the control is uncontrolled. `@defaultValue` seeds the initial
+selection, the control keeps the current one internally, and `@onChange` still
+fires on every pick — so you can observe the value without having to own it.
+That is the right default for a control whose selection nothing else drives.
+
+Passing `@value` makes it controlled: the selection then only ever reflects what
+you pass, so pair it with `@onChange` and assign the new value back to your own
+state. Reach for it when something outside the control also sets the selection —
+a query parameter, a saved preference, a value you validate before accepting.
+`@defaultValue` is ignored in that mode.
+
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
@@ -32,16 +61,20 @@ export default class Example extends Component {
   };
 
   <template>
-    <SegmentedControl
-      @value={{this.range}}
-      @onChange={{this.onChange}}
-      aria-label='Date range'
-      as |Ctl|
-    >
-      <Ctl.Item @value='day'>Day</Ctl.Item>
-      <Ctl.Item @value='week'>Week</Ctl.Item>
-      <Ctl.Item @value='month'>Month</Ctl.Item>
-    </SegmentedControl>
+    <div class='flex flex-col items-start gap-3'>
+      <SegmentedControl
+        @value={{this.range}}
+        @onChange={{this.onChange}}
+        aria-label='Date range'
+        as |Ctl|
+      >
+        <Ctl.Item @value='day'>Day</Ctl.Item>
+        <Ctl.Item @value='week'>Week</Ctl.Item>
+        <Ctl.Item @value='month'>Month</Ctl.Item>
+      </SegmentedControl>
+
+      <p class='text-body-sm text-neutral-strong'>Selected: {{this.range}}</p>
+    </div>
   </template>
 }
 ```
@@ -61,31 +94,73 @@ import { SegmentedControl } from 'frontile';
 
 <template>
   <div class='flex flex-col items-start gap-3'>
-    <SegmentedControl @value='on' @variant='ghost' @intent='default' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='default'
+      aria-label='Default intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Default</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='primary' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='primary'
+      aria-label='Primary intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Primary</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='secondary' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='secondary'
+      aria-label='Secondary intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Secondary</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='tertiary' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='tertiary'
+      aria-label='Tertiary intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Tertiary</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='success' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='success'
+      aria-label='Success intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Success</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='warning' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='warning'
+      aria-label='Warning intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Warning</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='on' @variant='ghost' @intent='danger' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='on'
+      @variant='ghost'
+      @intent='danger'
+      aria-label='Danger intent'
+      as |Ctl|
+    >
       <Ctl.Item @value='on'>Danger</Ctl.Item>
       <Ctl.Item @value='off'>Off</Ctl.Item>
     </SegmentedControl>
@@ -100,17 +175,32 @@ import { SegmentedControl } from 'frontile';
 
 <template>
   <div class='flex flex-col items-start gap-3'>
-    <SegmentedControl @value='week' @size='sm' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='week'
+      @size='sm'
+      aria-label='Small'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week'>Week</Ctl.Item>
       <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='week' @size='md' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='week'
+      @size='md'
+      aria-label='Medium'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week'>Week</Ctl.Item>
       <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
-    <SegmentedControl @value='week' @size='lg' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='week'
+      @size='lg'
+      aria-label='Large'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week'>Week</Ctl.Item>
       <Ctl.Item @value='month'>Month</Ctl.Item>
@@ -129,7 +219,12 @@ solid track would compete with the surrounding content.
 import { SegmentedControl } from 'frontile';
 
 <template>
-  <SegmentedControl @value='month' @variant='ghost' as |Ctl|>
+  <SegmentedControl
+    @defaultValue='month'
+    @variant='ghost'
+    aria-label='Date range'
+    as |Ctl|
+  >
     <Ctl.Item @value='day'>Day</Ctl.Item>
     <Ctl.Item @value='week'>Week</Ctl.Item>
     <Ctl.Item @value='month'>Month</Ctl.Item>
@@ -143,14 +238,24 @@ import { SegmentedControl } from 'frontile';
 line on either side of the selected item is hidden, so the indicator never
 appears to slide across a visible rule.
 
+Four items with the first selected leaves two hairlines showing at rest. Click
+along the row and watch them wink out as the indicator arrives and return
+behind it.
+
 ```gts preview
 import { SegmentedControl } from 'frontile';
 
 <template>
-  <SegmentedControl @value='week' @hasSeparators={{true}} as |Ctl|>
+  <SegmentedControl
+    @defaultValue='day'
+    @hasSeparators={{true}}
+    aria-label='Date range'
+    as |Ctl|
+  >
     <Ctl.Item @value='day'>Day</Ctl.Item>
     <Ctl.Item @value='week'>Week</Ctl.Item>
     <Ctl.Item @value='month'>Month</Ctl.Item>
+    <Ctl.Item @value='year'>Year</Ctl.Item>
   </SegmentedControl>
 </template>
 ```
@@ -158,14 +263,28 @@ import { SegmentedControl } from 'frontile';
 ## Full width
 
 `@isFullWidth={{true}}` stretches the control to its container and gives
-every item equal width.
+every item equal width. Both controls below sit in the same 24rem panel: the
+first shrinks to its labels, the second fills the line.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
 
 <template>
-  <div class='max-w-md'>
-    <SegmentedControl @value='week' @isFullWidth={{true}} as |Ctl|>
+  <div
+    class='flex w-96 max-w-full flex-col items-start gap-3 rounded-lg border border-neutral-soft p-4'
+  >
+    <SegmentedControl @defaultValue='week' aria-label='Default width' as |Ctl|>
+      <Ctl.Item @value='day'>Day</Ctl.Item>
+      <Ctl.Item @value='week'>Week</Ctl.Item>
+      <Ctl.Item @value='month'>Month</Ctl.Item>
+    </SegmentedControl>
+
+    <SegmentedControl
+      @defaultValue='week'
+      @isFullWidth={{true}}
+      aria-label='Full width'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week'>Week</Ctl.Item>
       <Ctl.Item @value='month'>Month</Ctl.Item>
@@ -177,16 +296,25 @@ import { SegmentedControl } from 'frontile';
 ## Vertical
 
 `@orientation='vertical'` stacks the items in a column and switches the arrow
-keys that move between them to up/down.
+keys that move between them to up/down. The track and the indicator swap their
+pill radius for a rounded rectangle, and every item takes the column's full
+width, so the indicator slides straight down instead of resizing at each stop —
+clearest when the labels differ in length.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
 
 <template>
-  <SegmentedControl @value='week' @orientation='vertical' as |Ctl|>
+  <SegmentedControl
+    @defaultValue='week'
+    @orientation='vertical'
+    aria-label='Date range'
+    as |Ctl|
+  >
     <Ctl.Item @value='day'>Day</Ctl.Item>
-    <Ctl.Item @value='week'>Week</Ctl.Item>
-    <Ctl.Item @value='month'>Month</Ctl.Item>
+    <Ctl.Item @value='week'>This week</Ctl.Item>
+    <Ctl.Item @value='month'>Month to date</Ctl.Item>
+    <Ctl.Item @value='year'>Year</Ctl.Item>
   </SegmentedControl>
 </template>
 ```
@@ -195,20 +323,29 @@ import { SegmentedControl } from 'frontile';
 
 An individual item can be disabled with its own `@isDisabled`; keyboard
 navigation skips it and it cannot be clicked. `@isDisabled` on the control
-disables every item.
+disables every item, which is why the second control below does not respond.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
 
 <template>
   <div class='flex flex-col items-start gap-3'>
-    <SegmentedControl @value='day' as |Ctl|>
+    <SegmentedControl
+      @defaultValue='day'
+      aria-label='One item disabled'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week' @isDisabled={{true}}>Week</Ctl.Item>
       <Ctl.Item @value='month'>Month</Ctl.Item>
     </SegmentedControl>
 
-    <SegmentedControl @value='day' @isDisabled={{true}} as |Ctl|>
+    <SegmentedControl
+      @defaultValue='day'
+      @isDisabled={{true}}
+      aria-label='Whole control disabled'
+      as |Ctl|
+    >
       <Ctl.Item @value='day'>Day</Ctl.Item>
       <Ctl.Item @value='week'>Week</Ctl.Item>
     </SegmentedControl>
@@ -220,14 +357,15 @@ import { SegmentedControl } from 'frontile';
 
 Each item yields `isSelected`, so a demo can show only an icon when unselected
 and add the label once selected — a compact idle state that expands to
-explain itself.
+explain itself. Clicking between them is also the clearest look at the
+indicator resizing as it moves, not just translating.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
 import { ViewIcon, ComponentIcon, TargetIcon } from 'site/components/icons';
 
 <template>
-  <SegmentedControl @value='list' as |Ctl|>
+  <SegmentedControl @defaultValue='list' aria-label='Layout' as |Ctl|>
     <Ctl.Item @value='list' as |item|>
       <ViewIcon />
       {{if item.isSelected 'List'}}
@@ -270,7 +408,12 @@ export default class Example extends Component {
 
   <template>
     <form {{on 'submit' this.onSubmit}}>
-      <SegmentedControl @value='week' @name='range' aria-label='Range' as |Ctl|>
+      <SegmentedControl
+        @defaultValue='week'
+        @name='range'
+        aria-label='Range'
+        as |Ctl|
+      >
         <Ctl.Item @value='day'>Day</Ctl.Item>
         <Ctl.Item @value='week'>Week</Ctl.Item>
         <Ctl.Item @value='month'>Month</Ctl.Item>
@@ -313,12 +456,12 @@ reveal their own panel.
 The group needs an accessible name from the consumer: pass `aria-label` (as
 every demo above does) or `aria-labelledby`.
 
-| Key                        | Behaviour                                                                    |
-| --------------------------- | ----------------------------------------------------------------------------- |
-| `Tab`                       | Moves focus to the group. Only the selected item is a tab stop.               |
-| `ArrowRight` / `ArrowDown`  | Moves selection to the next enabled item, wrapping at the end.                |
-| `ArrowLeft` / `ArrowUp`     | Moves selection to the previous enabled item, wrapping at the start.          |
-| `Home` / `End`              | Moves selection to the first / last enabled item.                             |
+| Key                        | Behaviour                                                            |
+| -------------------------- | -------------------------------------------------------------------- |
+| `Tab`                      | Moves focus to the group. Only the selected item is a tab stop.      |
+| `ArrowRight` / `ArrowDown` | Moves selection to the next enabled item, wrapping at the end.       |
+| `ArrowLeft` / `ArrowUp`    | Moves selection to the previous enabled item, wrapping at the start. |
+| `Home` / `End`             | Moves selection to the first / last enabled item.                    |
 
 Horizontal orientation uses left/right, vertical orientation uses up/down.
 Disabled items are skipped entirely. In button mode, arrow navigation both
