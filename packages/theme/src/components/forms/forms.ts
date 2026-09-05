@@ -433,7 +433,10 @@ const switchInput = tv({
       'bg-neutral-soft',
       'rounded-full',
       'cursor-pointer touch-none tap-highlight-transparent select-none',
-      'transition-background',
+      // `transition-background` is not a Tailwind v4 utility -- it compiled to
+      // nothing. The wrapper's fill is swapped by `group-data-[selected]:bg-*`,
+      // so background-color is what needs to ease.
+      'transition-colors',
       ...focusVisibleWithinRing
     ],
     hiddenInput: [
@@ -470,14 +473,19 @@ const switchInput = tv({
       'z-0 absolute start-1.5 text-current',
       'opacity-0',
       'scale-50',
-      'transition-transform-opacity',
+      // Tailwind v4 compiles `scale-*` to the standalone `scale` property, not
+      // to `transform`; `transform` stays listed for consumers who override
+      // @classes.startContent and position with it.
+      'transition-[transform,scale,opacity]',
       'group-data-[selected=true]:scale-100',
       'group-data-[selected=true]:opacity-100'
     ],
     endContent: [
       'z-0 absolute end-1.5 text-neutral',
       'opacity-100',
-      'transition-transform-opacity',
+      // Likewise `translate-x-*` compiles to the standalone `translate`
+      // property -- without it listed, this content snapped instead of sliding.
+      'transition-[transform,translate,opacity]',
       'group-data-[selected=true]:translate-x-3',
       'group-data-[selected=true]:opacity-0'
     ]
