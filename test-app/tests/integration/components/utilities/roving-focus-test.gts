@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerKeyEvent, findAll, focus } from '@ember/test-helpers';
-import { RovingFocus } from 'frontile';
+import { rovingFocus } from 'frontile';
 
 module(
   'Integration | Utility | roving-focus | @frontile/utilities',
@@ -10,7 +10,7 @@ module(
 
     test('arrow keys move focus horizontally and wrap', async function (assert) {
       const activated: string[] = [];
-      const roving = new RovingFocus(() => ({
+      const roving = rovingFocus(() => ({
         orientation: 'horizontal' as const,
         activationMode: 'automatic' as const,
         onActivate: (el: HTMLElement) => activated.push(el.textContent ?? '')
@@ -53,7 +53,7 @@ module(
     });
 
     test('vertical orientation uses the up and down arrows', async function (assert) {
-      const roving = new RovingFocus(() => ({
+      const roving = rovingFocus(() => ({
         orientation: 'vertical' as const
       }));
 
@@ -85,7 +85,7 @@ module(
     });
 
     test('Home and End jump to the first and last enabled items', async function (assert) {
-      const roving = new RovingFocus(() => ({}));
+      const roving = rovingFocus(() => ({}));
 
       await render(
         <template>
@@ -117,7 +117,7 @@ module(
     });
 
     test('disabled items are skipped by arrow navigation', async function (assert) {
-      const roving = new RovingFocus(() => ({}));
+      const roving = rovingFocus(() => ({}));
 
       await render(
         <template>
@@ -141,7 +141,7 @@ module(
     });
 
     test('exactly one item is tabbable, and it is the selected one', async function (assert) {
-      const roving = new RovingFocus(() => ({}));
+      const roving = rovingFocus(() => ({}));
 
       await render(
         <template>
@@ -162,7 +162,7 @@ module(
     });
 
     test('with nothing selected the first enabled item is tabbable', async function (assert) {
-      const roving = new RovingFocus(() => ({}));
+      const roving = rovingFocus(() => ({}));
 
       await render(
         <template>
@@ -184,7 +184,7 @@ module(
 
     test('manual activation moves focus without activating, until Enter', async function (assert) {
       const activated: string[] = [];
-      const roving = new RovingFocus(() => ({
+      const roving = rovingFocus(() => ({
         activationMode: 'manual' as const,
         onActivate: (el: HTMLElement) => activated.push(el.textContent ?? '')
       }));
@@ -210,10 +210,10 @@ module(
     });
 
     test('in RTL, horizontal arrows are swapped but vertical is unaffected', async function (assert) {
-      const horizontal = new RovingFocus(() => ({
+      const horizontal = rovingFocus(() => ({
         orientation: 'horizontal' as const
       }));
-      const vertical = new RovingFocus(() => ({
+      const vertical = rovingFocus(() => ({
         orientation: 'vertical' as const
       }));
 
@@ -293,7 +293,7 @@ module(
     });
 
     test('a group with every item disabled does not throw and has no tab stop', async function (assert) {
-      const roving = new RovingFocus(() => ({}));
+      const roving = rovingFocus(() => ({}));
 
       await render(
         <template>

@@ -1,9 +1,10 @@
 ---
+label: New
 ---
 
-# SelectionIndicator
+# selectionIndicator
 
-`SelectionIndicator` measures whichever element is currently selected inside
+`selectionIndicator` creates a helper that measures whichever element is currently selected inside
 a container and publishes its geometry as CSS custom properties on that
 container. It paints nothing itself — a theme decides what that geometry
 becomes, which is what lets one primitive back both `SegmentedControl`'s
@@ -13,12 +14,16 @@ between them.
 ## Import
 
 ```js
-import { SelectionIndicator } from 'frontile';
+import { selectionIndicator } from 'frontile';
 ```
 
 ## The contract
 
-An instance exposes two modifiers.
+Call it to create an instance; the instance exposes two modifiers.
+
+```js
+indicator = selectionIndicator();
+```
 
 `setupContainer` goes on the element the custom properties are written to. It
 observes that element's size and re-measures whenever it changes.
@@ -68,6 +73,93 @@ tab panel — the container loses `data-fr-si-ready` instead of publishing a
 collapsed box, so the indicator does not falsely mark itself ready with
 nothing to show. It picks back up on its own once the target is actually
 visible and a resize is observed.
+
+## A working example
+
+Everything above in one runnable piece: three buttons and a bar that slides
+between them. The primitive supplies no styling at all — the bar's entire
+appearance and geometry come from the CSS below, reading the published custom
+properties.
+
+Note the two rules the rest of this page argues for. The gate is
+`.si-demo[data-fr-si-ready] .si-demo-bar` — container attribute, descendant
+indicator — and the bar is positioned with `left` / `width` from
+`--fr-si-x` / `--fr-si-width`, never with `transform`.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { on } from '@ember/modifier';
+import { fn } from '@ember/helper';
+import { selectionIndicator } from 'frontile';
+
+export default class SelectionIndicatorDemo extends Component {
+  indicator = selectionIndicator();
+
+  tabs = ['Overview', 'Activity', 'Settings'];
+
+  @tracked current = 'Overview';
+
+  select = (tab: string): void => {
+    this.current = tab;
+  };
+
+  isSelected = (tab: string): boolean => {
+    return this.current === tab;
+  };
+
+  <template>
+    {{! template-lint-disable no-forbidden-elements }}
+    <style>
+      .si-demo {
+        position: relative;
+        display: inline-flex;
+      }
+
+      .si-demo-bar {
+        position: absolute;
+        bottom: 0;
+        height: 2px;
+        left: var(--fr-si-x);
+        width: var(--fr-si-width);
+        background: currentColor;
+        opacity: 0;
+      }
+
+      .si-demo[data-fr-si-ready] .si-demo-bar {
+        opacity: 1;
+        transition:
+          left 200ms ease-out,
+          width 200ms ease-out;
+      }
+    </style>
+
+    <div
+      class='si-demo border-b border-neutral-soft text-primary'
+      {{this.indicator.setupContainer}}
+    >
+      <span class='si-demo-bar'></span>
+
+      {{#each this.tabs as |tab|}}
+        <button
+          type='button'
+          class='px-4 py-2 text-label-md
+            {{if (this.isSelected tab) "text-primary" "text-neutral-strong"}}'
+          {{this.indicator.setupTarget (this.isSelected tab)}}
+          {{on 'click' (fn this.select tab)}}
+        >
+          {{tab}}
+        </button>
+      {{/each}}
+    </div>
+  </template>
+}
+```
+
+The same markup with a different stylesheet is a pill, a highlight, or a
+growing outline. That is the point of publishing geometry instead of painting
+it.
+
 
 ## The transform / translate trap
 

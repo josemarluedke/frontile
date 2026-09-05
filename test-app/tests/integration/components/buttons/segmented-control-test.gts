@@ -1865,5 +1865,146 @@ module(
         `and matches its width (off by ${Math.abs(indicatorBox.width - selectedBox.width)})`
       );
     });
+    test('items publish data-selected and data-disabled in button mode', async function (assert) {
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            aria-label="Range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month" @isDisabled={{true}}>Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const items = findAll('[role="radio"]') as HTMLElement[];
+      assert.dom(items[0]!).hasAttribute('data-selected', 'false');
+      assert.dom(items[1]!).hasAttribute('data-selected', 'true');
+      assert.dom(items[0]!).hasAttribute('data-disabled', 'false');
+      assert.dom(items[2]!).hasAttribute('data-disabled', 'true');
+
+      await click(items[0]!);
+
+      assert.dom(findAll('[role="radio"]')[0]!).hasAttribute(
+        'data-selected',
+        'true',
+        'data-selected follows the selection'
+      );
+      assert.dom(findAll('[role="radio"]')[1]!).hasAttribute(
+        'data-selected',
+        'false'
+      );
+    });
+
+    test('items publish data-selected and data-disabled in form mode too', async function (assert) {
+      // The whole point of the attribute: form mode's item is a <label> whose
+      // sr-only input holds the state, so `aria-checked:` and `disabled:` are
+      // both dead there. One hook has to span both modes.
+      const value = cell('week');
+      const onChange = (next: string): void => {
+        value.current = next;
+      };
+
+      await render(
+        <template>
+          <SegmentedControl
+            @value={{value.current}}
+            @onChange={{onChange}}
+            @name="range"
+            aria-label="Range"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+            <Ctl.Item @value="month" @isDisabled={{true}}>Month</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const labels = findAll('label') as HTMLElement[];
+      assert.dom('[role="radio"]').doesNotExist('form mode renders labels');
+      assert.dom(labels[0]!).hasAttribute('data-selected', 'false');
+      assert.dom(labels[1]!).hasAttribute('data-selected', 'true');
+      assert.dom(labels[2]!).hasAttribute('data-disabled', 'true');
+
+      await click(findAll('input[type="radio"]')[0]!);
+
+      assert.dom(findAll('label')[0]!).hasAttribute(
+        'data-selected',
+        'true',
+        'data-selected follows the selection in form mode as well'
+      );
+    });
+
+    test('a consumer can style the selected item through data-selected in both modes', async function (assert) {
+      // The contract consumers actually rely on: not that the attribute is
+      // present, but that a rule keyed off it wins over the resting item
+      // colour. Asserted as computed colour, since a class can be present and
+      // still not apply.
+      await render(
+        <template>
+          {{! template-lint-disable no-forbidden-elements }}
+          <style>
+            .seg-test-item { color: rgb(10, 20, 30); }
+            .seg-test-item[data-selected='true'] { color: rgb(200, 100, 50); }
+          </style>
+
+          <SegmentedControl
+            @defaultValue="week"
+            @classes={{hash item="seg-test-item"}}
+            aria-label="Button mode"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+
+          <SegmentedControl
+            @defaultValue="week"
+            @name="range"
+            @classes={{hash item="seg-test-item"}}
+            aria-label="Form mode"
+            as |Ctl|
+          >
+            <Ctl.Item @value="day">Day</Ctl.Item>
+            <Ctl.Item @value="week">Week</Ctl.Item>
+          </SegmentedControl>
+        </template>
+      );
+
+      const buttons = findAll('[role="radio"]') as HTMLElement[];
+      assert.strictEqual(
+        getComputedStyle(buttons[1]!).color,
+        'rgb(200, 100, 50)',
+        'button mode: the selected item takes the overridden colour'
+      );
+      assert.strictEqual(
+        getComputedStyle(buttons[0]!).color,
+        'rgb(10, 20, 30)',
+        'button mode: an unselected item keeps the resting colour'
+      );
+
+      const labels = findAll('label') as HTMLElement[];
+      assert.strictEqual(
+        getComputedStyle(labels[1]!).color,
+        'rgb(200, 100, 50)',
+        'form mode: the same rule works, with no mode-specific modifier'
+      );
+      assert.strictEqual(
+        getComputedStyle(labels[0]!).color,
+        'rgb(10, 20, 30)',
+        'form mode: an unselected item keeps the resting colour'
+      );
+    });
+
   }
 );

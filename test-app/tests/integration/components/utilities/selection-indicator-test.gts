@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, find } from '@ember/test-helpers';
-import { SelectionIndicator } from 'frontile';
+import { selectionIndicator } from 'frontile';
 import { cell } from 'ember-resources';
 
 function nextFrame(): Promise<void> {
@@ -14,7 +14,7 @@ module(
     setupRenderingTest(hooks);
 
     test('it writes the selected target geometry as custom properties', async function (assert) {
-      const indicator = new SelectionIndicator();
+      const indicator = selectionIndicator();
       const aSelected = cell(false);
       const bSelected = cell(true);
 
@@ -71,7 +71,7 @@ module(
     });
 
     test('it stays un-ready until the first real measurement', async function (assert) {
-      const indicator = new SelectionIndicator();
+      const indicator = selectionIndicator();
 
       await render(
         <template>
@@ -97,7 +97,7 @@ module(
     });
 
     test('a hidden container publishes no geometry and stays un-ready', async function (assert) {
-      const indicator = new SelectionIndicator();
+      const indicator = selectionIndicator();
 
       await render(
         <template>
@@ -129,7 +129,7 @@ module(
     });
 
     test('with no selected target it publishes nothing and is not ready', async function (assert) {
-      const indicator = new SelectionIndicator();
+      const indicator = selectionIndicator();
 
       await render(
         <template>
@@ -156,7 +156,7 @@ module(
     });
 
     test('it recomputes when the container resizes', async function (assert) {
-      const indicator = new SelectionIndicator();
+      const indicator = selectionIndicator();
       const width = cell('300px');
 
       await render(

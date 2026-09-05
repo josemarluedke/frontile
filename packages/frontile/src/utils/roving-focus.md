@@ -1,9 +1,10 @@
 ---
+label: New
 ---
 
-# RovingFocus
+# rovingFocus
 
-`RovingFocus` gives a group of related controls the keyboard behaviour the
+`rovingFocus` gives a group of related controls the keyboard behaviour the
 ARIA authoring practices ask for: the group is a **single tab stop**, and once
 focus is inside it the arrow keys move between the items. It owns the keyboard
 and the `tabindex` bookkeeping only — it renders nothing, decides nothing about
@@ -13,7 +14,7 @@ selection, and applies no styling — which is what lets one primitive serve
 ## Import
 
 ```js
-import { RovingFocus } from 'frontile';
+import { rovingFocus } from 'frontile';
 ```
 
 ## The contract
@@ -44,7 +45,7 @@ The constructor takes a *function* returning the options, not the options
 themselves:
 
 ```ts
-roving = new RovingFocus(() => ({
+roving = rovingFocus(() => ({
   orientation: this.args.orientation ?? 'horizontal',
   activationMode: 'automatic',
   onActivate: this.activate
@@ -101,7 +102,7 @@ tabs want when switching panels is expensive — a user arrowing across six tabs
 should not trigger six panel loads — and it is why the option exists ahead of a
 `Tabs` component to use it.
 
-In both modes the consumer decides what "activate" means. `RovingFocus` never
+In both modes the consumer decides what "activate" means. `rovingFocus` never
 changes `aria-checked`, `aria-selected`, or anything else about the item.
 
 ## The roving tabindex
@@ -122,7 +123,7 @@ outcome — there is nothing there to operate.
 ## Right-to-left
 
 In an RTL container the right arrow moves towards the *start* of the group, so
-`ArrowRight` and `ArrowLeft` swap roles. `RovingFocus` reads the focused item's
+`ArrowRight` and `ArrowLeft` swap roles. `rovingFocus` reads the focused item's
 computed `direction` at the moment the key is handled, so a group inside a
 `dir="rtl"` subtree behaves correctly without the consumer passing anything —
 and a page that flips direction at runtime is picked up on the next keypress
@@ -140,7 +141,7 @@ the group in one press rather than stepping through all four.
 ```gts preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { RovingFocus } from 'frontile';
+import { rovingFocus } from 'frontile';
 
 const options = [
   { value: 'day', label: 'Day', isDisabled: false },
@@ -152,7 +153,7 @@ const options = [
 export default class Example extends Component {
   @tracked selected = 'day';
 
-  roving = new RovingFocus(() => ({
+  roving = rovingFocus(() => ({
     orientation: 'horizontal',
     activationMode: 'automatic',
     onActivate: this.activate
@@ -193,7 +194,7 @@ export default class Example extends Component {
 }
 ```
 
-> `RovingFocus` handles `keydown` on the items themselves, so it only reacts
+> `rovingFocus` handles `keydown` on the items themselves, so it only reacts
 > once focus is already inside the group. Selecting with the pointer stays the
 > consumer's job — wire your own `click` handler alongside `setupItem`, as
 > `SegmentedControl` does.

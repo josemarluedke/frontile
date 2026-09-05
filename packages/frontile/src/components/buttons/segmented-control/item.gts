@@ -89,6 +89,8 @@ class SegmentedControlItem<T> extends Component<
           down here rather than fighting the browser for control. }}
       <label
         class="{{@context.itemClass}} {{@class}}"
+        data-selected="{{this.isSelected}}"
+        data-disabled="{{this.isDisabled}}"
         {{@context.indicator.setupTarget this.isSelected}}
         ...attributes
       >
@@ -111,6 +113,8 @@ class SegmentedControlItem<T> extends Component<
         aria-checked="{{this.isSelected}}"
         disabled={{this.isDisabled}}
         class="{{@context.itemClass}} {{@class}}"
+        data-selected="{{this.isSelected}}"
+        data-disabled="{{this.isDisabled}}"
         {{this.registerValue @value}}
         {{@context.indicator.setupTarget this.isSelected}}
         {{@context.roving.setupItem this.isSelected this.isDisabled}}

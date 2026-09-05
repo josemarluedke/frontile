@@ -169,9 +169,27 @@ class RovingFocus {
   }
 }
 
+/**
+ * Creates a roving-focus manager.
+ *
+ * `readOptions` is read lazily on every key press rather than captured once, so
+ * a consumer whose orientation or activation mode is a component argument stays
+ * reactive without having to push updates in.
+ *
+ * Mirrors the shape of `ref` and `toggleState`: the class stays internal and
+ * the public surface is this lowercase factory, since this is a utility rather
+ * than a component.
+ */
+function rovingFocus(
+  readOptions: () => RovingFocusOptions = () => ({})
+): RovingFocus {
+  return new RovingFocus(readOptions);
+}
+
 export {
-  RovingFocus,
+  rovingFocus,
   type RovingFocusOptions,
   type RovingFocusOrientation,
   type RovingFocusActivationMode
 };
+export type { RovingFocus };

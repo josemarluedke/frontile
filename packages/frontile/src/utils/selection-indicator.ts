@@ -208,4 +208,16 @@ class SelectionIndicator {
   }
 }
 
-export { SelectionIndicator, READY_ATTRIBUTE };
+/**
+ * Creates a selection indicator.
+ *
+ * Mirrors the shape of `ref` and `toggleState`: the class stays internal and
+ * the public surface is this lowercase factory, since this is a utility rather
+ * than a component.
+ */
+function selectionIndicator(): SelectionIndicator {
+  return new SelectionIndicator();
+}
+
+export { selectionIndicator, READY_ATTRIBUTE };
+export type { SelectionIndicator };

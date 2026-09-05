@@ -52,13 +52,10 @@ const segmentedControl = tv({
       'rounded-pill',
       'transition-colors duration-200',
       'motion-reduce:transition-none',
-      // Two selectors, not three: button mode's item IS the control and takes
-      // native `disabled`; form mode's item is a `<label>` wrapping the real
-      // input, so it has to ask with `has-[:disabled]:`. No item element ever
-      // carries `aria-disabled` -- the container does, and the container gets
-      // `base` classes -- so an `aria-disabled:` rule here would be dead.
-      'disabled:cursor-not-allowed disabled:opacity-disabled',
-      'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-disabled'
+      // Both rendering modes publish `data-disabled`, so one selector covers
+      // them. Keying off native `disabled:` would miss form mode, where the
+      // item is a `<label>` and only the hidden input is disabled.
+      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
     ]
   },
 
@@ -105,15 +102,16 @@ const segmentedControl = tv({
       }
     },
 
-    // Every intent pairs its selected-state text colour with two literal
-    // selectors, because the two rendering modes express "selected" on
-    // different elements. In button mode the item *is* the control and carries
-    // `aria-checked`; in form mode the item is a `<label>` wrapping an
-    // `sr-only` radio, and only that hidden input knows it is checked -- so the
-    // label has to ask with `has-[:checked]:`. Both selectors are one
-    // specificity step above the resting `text-neutral-strong`, so they win
-    // regardless of source order. Written out literally, never interpolated:
-    // Tailwind generates nothing from a composed class string.
+    // Selected-state text colour keys off `data-selected`, which the item
+    // publishes in both rendering modes. That matters beyond brevity: the two
+    // modes express "selected" on different elements -- button mode's item
+    // carries `aria-checked`, while form mode's `<label>` only contains a
+    // checked `sr-only` input -- and pairing a rule per mode is how this
+    // component previously shipped a bug where the colour silently never
+    // applied in form mode. One attribute, one rule, no mode to forget.
+    // `data-[selected=true]` is a specificity step above the resting
+    // `text-neutral-strong`, so it wins regardless of source order. Written
+    // out literally: Tailwind generates nothing from a composed class string.
     intent: {
       default: {
         // Light mode: `bg-surface-card` is opaque white (`absolute.white`) --
@@ -131,34 +129,34 @@ const segmentedControl = tv({
         // swaps in the opaque neutral role (palette.gray['700']) instead: a
         // solid, clearly-lighter pill against the `surface-table`
         // (palette.gray['900']) track now used above, and it keeps
-        // `aria-checked:text-neutral-bolder` below (palette.gray['100'] in
+        // `data-[selected=true]:text-neutral-bolder` below (gray['100'] in
         // dark mode) comfortably legible against it (~6.8:1 contrast).
         indicator: 'bg-surface-card dark:bg-neutral-soft',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-neutral-bolder has-[:checked]:text-neutral-bolder'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-neutral-bolder'
       },
       primary: {
         indicator: 'bg-primary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-primary has-[:checked]:text-on-primary'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-primary'
       },
       secondary: {
         indicator: 'bg-secondary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-secondary has-[:checked]:text-on-secondary'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-secondary'
       },
       tertiary: {
         indicator: 'bg-tertiary',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-tertiary has-[:checked]:text-on-tertiary'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-tertiary'
       },
       success: {
         indicator: 'bg-success',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-success has-[:checked]:text-on-success'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-success'
       },
       warning: {
         indicator: 'bg-warning',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-warning has-[:checked]:text-on-warning'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-warning'
       },
       danger: {
         indicator: 'bg-danger',
-        item: 'text-neutral-strong hover:text-neutral-bolder aria-checked:text-on-danger has-[:checked]:text-on-danger'
+        item: 'text-neutral-strong hover:text-neutral-bolder data-[selected=true]:text-on-danger'
       }
     },
 
@@ -223,11 +221,8 @@ const segmentedControl = tv({
           // so the indicator never slides across a visible line. Sibling
           // selectors already know the order, so nothing has to track indices.
           'before:opacity-100',
-          'aria-checked:before:opacity-0',
-          '[&[aria-checked=true]+*]:before:opacity-0',
-          // Form mode has no aria-checked; key off the checked input instead.
-          'has-[:checked]:before:opacity-0',
-          '[&:has(:checked)+*]:before:opacity-0'
+          'data-[selected=true]:before:opacity-0',
+          '[&[data-selected=true]+*]:before:opacity-0'
         ]
       }
     }

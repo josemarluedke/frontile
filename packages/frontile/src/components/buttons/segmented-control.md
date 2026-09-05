@@ -472,8 +472,15 @@ instead of neutral ink.
 Three of the four pieces come from arguments rather than overrides —
 `@intent='primary'` fills the indicator and picks the contrast ink for the
 selected label, `@isFullWidth={{true}}` stretches the control and divides it
-evenly, and `@size='lg'` sets the 17px semibold label. Only the track's surface
-and the unselected label color need `@classes`.
+evenly, and `@size='lg'` sets the padding. Only the track's surface and the
+label treatment need `@classes`.
+
+`text-neutral-bolder` is the strongest neutral ink, which inverts with the
+theme -- near-black (`gray-900`) in light, near-white (`gray-100`) in dark --
+so the unselected labels stay legible on the white track without hard-coding a
+colour per mode. `font-label text-header-md` overrides the size variant's own
+type step; because both live in Tailwind's font-size group, the `@classes`
+value is the one that wins.
 
 ```gts preview
 import { SegmentedControl } from 'frontile';
@@ -490,7 +497,7 @@ import { hash } from '@ember/helper';
       @isFullWidth={{true}}
       @classes={{hash
         base='bg-surface-card border border-neutral-soft'
-        item='text-primary'
+        item='text-neutral-bolder font-label text-header-md'
       }}
       aria-label='Account type'
       as |Ctl|
@@ -502,10 +509,33 @@ import { hash } from '@ember/helper';
 </template>
 ```
 
-The selected label stays readable because `@intent` applies its contrast ink
-with an `aria-checked:` (button mode) or `has-[:checked]:` (form mode) modifier,
-which outranks the plain `text-primary` in `@classes.item` on specificity. An
-override meant to win on the *selected* item has to carry the same modifier.
+### Styling the selected and disabled items
+
+`@classes.item` applies to every item, so an override that should only affect the
+selected one needs a modifier. Each item publishes two data attributes for this,
+in **both** rendering modes:
+
+| Attribute | Values |
+| --------- | ------ |
+| `data-selected` | `"true"` / `"false"` |
+| `data-disabled` | `"true"` / `"false"` |
+
+So `data-[selected=true]:` is the hook, and it is the same in button mode and
+form mode:
+
+```gts
+@classes={{hash item='text-primary data-[selected=true]:text-on-primary'}}
+```
+
+Reach for these rather than the underlying ARIA or DOM state. Button mode's item
+carries `aria-checked` and takes a native `disabled`, while form mode's item is a
+`<label>` whose `sr-only` input holds both — so `aria-checked:` and `disabled:`
+silently do nothing in form mode, and `has-[:checked]:` does nothing in button
+mode. The data attributes are the one hook that spans both. The theme itself is
+written against them for exactly this reason.
+
+This also matches how the rest of Frontile exposes selection: `Switch`,
+`Listbox`, `NativeSelect` and `Table` all publish `data-selected` the same way.
 
 Overriding `@classes.indicator` is how a different indicator shape is built —
 an underline rather than a pill, say. `SelectionIndicator`'s

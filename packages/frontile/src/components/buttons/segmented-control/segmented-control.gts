@@ -5,8 +5,11 @@ import { registerDestructor } from '@ember/destroyable';
 import { buildWaiter } from '@ember/test-waiters';
 import type Owner from '@ember/owner';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
-import { SelectionIndicator } from '../../../utils/selection-indicator';
-import { RovingFocus } from '../../../utils/roving-focus';
+import {
+  selectionIndicator,
+  type SelectionIndicator
+} from '../../../utils/selection-indicator';
+import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import SegmentedControlItem from './item';
 import type {
   SegmentedControlSlots,
@@ -132,7 +135,7 @@ interface SegmentedControlSignature<T> {
 }
 
 class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
-  indicator = new SelectionIndicator();
+  indicator = selectionIndicator();
 
   // Uncontrolled mode's own selection, seeded from `@defaultValue`. Written on
   // every `select` regardless of mode -- see `select` -- so the two modes stay
@@ -150,7 +153,7 @@ class SegmentedControl<T> extends Component<SegmentedControlSignature<T>> {
   #formSyncFrame?: number;
   #formSyncToken?: unknown;
 
-  roving = new RovingFocus(() => ({
+  roving = rovingFocus(() => ({
     orientation: this.args.orientation ?? 'horizontal',
     activationMode: 'automatic' as const,
     onActivate: this.activateElement
