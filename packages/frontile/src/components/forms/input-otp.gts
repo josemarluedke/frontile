@@ -200,6 +200,36 @@ class InputOtp extends Component<InputOtpSignature> {
   }
 
   /**
+   * The mirror, clamped against the value it is describing. A controlled parent
+   * can shrink `@value` on its own -- a "Clear" button beside the field -- and
+   * that never travels through `syncValue`, so the stored selection would keep
+   * pointing past the end of the code and light up a phantom cell. Deriving the
+   * clamp here rather than observing the argument keeps the fix to one place:
+   * a selection past the end collapses to the append position, which is exactly
+   * where a fresh focus on a value of that length would put it.
+   *
+   * Current Chrome happens to clamp the element's own selection and fire
+   * `selectionchange` when a programmatic value shrinks, which papers over this
+   * -- as it also papers over the synthetic dispatch in `syncValue`. Neither is
+   * guaranteed, so the derivation stands on its own.
+   */
+  get mirroredSelection(): [number | null, number | null] {
+    const { selectionStart: start, selectionEnd: end } = this;
+
+    if (start === null || end === null) {
+      return [null, null];
+    }
+
+    const length = this.currentValue.length;
+
+    if (end > length && length < this.length) {
+      return [length, length];
+    }
+
+    return [start, end];
+  }
+
+  /**
    * The cells are decoration rendered from a string, so they are grouped here
    * rather than in the template. Grouping arrives in a later task; for now
    * every cell lives in a single group.
@@ -208,7 +238,7 @@ class InputOtp extends Component<InputOtpSignature> {
     const value = this.currentValue;
     const cells: Cell[] = [];
 
-    const { selectionStart: start, selectionEnd: end } = this;
+    const [start, end] = this.mirroredSelection;
 
     for (let index = 0; index < this.length; index++) {
       const char = value[index] ?? null;
