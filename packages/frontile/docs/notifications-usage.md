@@ -18,7 +18,14 @@ import {
 } from 'frontile';
 ```
 
-> **Note**: In most applications, you should place a single `NotificationsContainer` in your application template rather than including it in individual components. This prevents conflicts and provides a consistent notification experience across your app.
+> **Important**: `NotificationsContainer` renders `notifications.notifications` from the
+> **shared, application-wide** notifications service — it does not own any notification data
+> itself. If more than one `NotificationsContainer` is mounted at the same time, **every**
+> container renders **every** notification, so each toast appears once per mounted container,
+> all stacked in the same corner (or in whichever corners the containers use). Mount a single
+> `NotificationsContainer` in your application template rather than including it in individual
+> components — this prevents duplicate stacks and gives your app one consistent notification
+> experience.
 
 ## Key Features
 
@@ -173,9 +180,20 @@ export default class DescriptionExample extends Component {
 }
 ```
 
-### Variants
+### Container Configuration
 
-The container's `@variant` argument controls the surface style applied to every card it renders: `default` is a neutral opaque card where the intent color is carried by the icon and title, `tonal` is a tinted opaque surface, and `solid` is a filled surface with contrast text.
+`NotificationsContainer` takes several arguments that change how the whole stack renders:
+`@variant` controls the surface style applied to every card (`default` is a neutral opaque
+card where the intent color is carried by the icon and title, `tonal` is a tinted opaque
+surface, and `solid` is a filled surface with contrast text), `@placement` controls where the
+stack sits on screen, and `@visibleToasts` (default `3`) sets how many cards stay visible
+while collapsed — `@spacing` (default `16`) is the peek offset between collapsed cards and the
+gap between expanded ones, in pixels, and `@expand` forces the stack to stay expanded instead
+of collapsing when it isn't hovered.
+
+Because only one container should ever be mounted at a time (see the callout above), this
+single demo drives one `NotificationsContainer` from all three controls, rather than mounting
+a separate container per argument.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -189,77 +207,18 @@ import {
   type NotificationIntent
 } from 'frontile';
 
-export default class VariantExample extends Component {
+export default class ContainerConfigExample extends Component {
   @service notifications!: NotificationsService;
+
   @tracked variant: 'default' | 'tonal' | 'solid' = 'default';
+  @tracked placement = 'bottom-right';
+  @tracked visibleToastsKey = '3';
 
   variants = [
     { key: 'default', label: 'Default' },
     { key: 'tonal', label: 'Tonal' },
     { key: 'solid', label: 'Solid' }
   ];
-
-  intents: NotificationIntent[] = ['info', 'success', 'warning', 'danger'];
-
-  setVariant = (variant: string) => {
-    this.variant = variant as 'default' | 'tonal' | 'solid';
-  };
-
-  showAll = () => {
-    this.intents.forEach((intent) => {
-      this.notifications.add(`${intent} notification`, {
-        intent,
-        preserve: true
-      });
-    });
-  };
-
-  clear = () => {
-    this.notifications.removeAll();
-  };
-
-  <template>
-    <div class='flex flex-col gap-4'>
-      <RadioGroup
-        @label='Variant'
-        @value={{this.variant}}
-        @onChange={{this.setVariant}}
-        as |Radio|
-      >
-        {{#each this.variants as |option|}}
-          <Radio @value={{option.key}} @label={{option.label}} />
-        {{/each}}
-      </RadioGroup>
-
-      <div class='flex gap-2'>
-        <Button @onPress={{this.showAll}}>Show All Intents</Button>
-        <Button @onPress={{this.clear}} @appearance='outlined'>Clear</Button>
-      </div>
-
-      <NotificationsContainer
-        @placement='bottom-right'
-        @variant={{this.variant}}
-      />
-    </div>
-  </template>
-}
-```
-
-### Notification Positions
-
-Control where notifications appear on screen with the `@placement` argument.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { service } from '@ember/service';
-import { Button } from 'frontile';
-import { RadioGroup } from 'frontile';
-import { NotificationsContainer, type NotificationsService } from 'frontile';
-
-export default class PositionExample extends Component {
-  @service notifications!: NotificationsService;
-  @tracked placement = 'bottom-right';
 
   placements = [
     { key: 'top-left', label: 'Top Left' },
@@ -270,52 +229,38 @@ export default class PositionExample extends Component {
     { key: 'bottom-right', label: 'Bottom Right' }
   ];
 
+  visibleToastsOptions = [
+    { key: '2', label: '2' },
+    { key: '3', label: '3' },
+    { key: '5', label: '5' }
+  ];
+
+  intents: NotificationIntent[] = ['info', 'success', 'warning', 'danger'];
+
+  get visibleToasts() {
+    return parseInt(this.visibleToastsKey, 10) || 3;
+  }
+
+  setVariant = (variant: string) => {
+    this.variant = variant as 'default' | 'tonal' | 'solid';
+  };
+
   setPlacement = (placement: string) => {
     this.placement = placement;
   };
 
-  showNotification = () => {
-    this.notifications.add(`Positioned at ${this.placement}`, {
-      intent: 'info'
-    });
+  setVisibleToasts = (value: string) => {
+    this.visibleToastsKey = value;
   };
 
-  <template>
-    <div class='flex flex-col gap-4'>
-      <RadioGroup
-        @label='Position'
-        @value={{this.placement}}
-        @onChange={{this.setPlacement}}
-        as |Radio|
-      >
-        {{#each this.placements as |option|}}
-          <Radio @value={{option.key}} @label={{option.label}} />
-        {{/each}}
-      </RadioGroup>
-
-      <Button @onPress={{this.showNotification}}>
-        Show at
-        {{this.placement}}
-      </Button>
-
-      <NotificationsContainer @placement={{this.placement}} />
-    </div>
-  </template>
-}
-```
-
-### Stacking
-
-Toasts collapse into a peeking stack and expand on hover or keyboard focus. `@visibleToasts` (default `3`) sets how many cards stay visible while collapsed; `@spacing` (default `16`) is the peek offset between collapsed cards and the gap between expanded ones, in pixels; `@expand` forces the stack to stay expanded instead of collapsing when it isn't hovered.
-
-```gts preview
-import Component from '@glimmer/component';
-import { service } from '@ember/service';
-import { Button, NotificationsContainer } from 'frontile';
-import type { NotificationsService } from 'frontile';
-
-export default class StackingExample extends Component {
-  @service notifications!: NotificationsService;
+  showAllIntents = () => {
+    this.intents.forEach((intent) => {
+      this.notifications.add(`${intent} notification`, {
+        intent,
+        preserve: true
+      });
+    });
+  };
 
   showFive = () => {
     for (let i = 1; i <= 5; i++) {
@@ -329,15 +274,58 @@ export default class StackingExample extends Component {
 
   <template>
     <div class='flex flex-col gap-4'>
-      <div class='flex gap-2'>
+      <div class='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+        <RadioGroup
+          @label='Variant'
+          @value={{this.variant}}
+          @onChange={{this.setVariant}}
+          as |Radio|
+        >
+          {{#each this.variants as |option|}}
+            <Radio @value={{option.key}} @label={{option.label}} />
+          {{/each}}
+        </RadioGroup>
+
+        <RadioGroup
+          @label='Placement'
+          @value={{this.placement}}
+          @onChange={{this.setPlacement}}
+          as |Radio|
+        >
+          {{#each this.placements as |option|}}
+            <Radio @value={{option.key}} @label={{option.label}} />
+          {{/each}}
+        </RadioGroup>
+
+        <RadioGroup
+          @label='Visible Toasts'
+          @value={{this.visibleToastsKey}}
+          @onChange={{this.setVisibleToasts}}
+          as |Radio|
+        >
+          {{#each this.visibleToastsOptions as |option|}}
+            <Radio @value={{option.key}} @label={{option.label}} />
+          {{/each}}
+        </RadioGroup>
+      </div>
+
+      <div class='flex flex-wrap gap-2'>
+        <Button @onPress={{this.showAllIntents}}>Show All Intents</Button>
         <Button @onPress={{this.showFive}}>Show 5 Notifications</Button>
         <Button @onPress={{this.clear}} @appearance='outlined'>Clear</Button>
       </div>
+
       <p class='text-body-2xs text-neutral-muted'>
-        Hover or focus the stack below to expand it.
+        Hover or focus the stack to expand it. Collapsed, it shows
+        {{this.visibleToasts}}
+        card(s) peeking; the rest stay tucked behind them.
       </p>
 
-      <NotificationsContainer @placement='bottom-right' @visibleToasts={{2}} />
+      <NotificationsContainer
+        @placement={{this.placement}}
+        @variant={{this.variant}}
+        @visibleToasts={{this.visibleToasts}}
+      />
     </div>
   </template>
 }
@@ -606,7 +594,7 @@ export default class TimingExample extends Component {
 ```gts preview
 import Component from '@glimmer/component';
 import { service } from '@ember/service';
-import { Button, NotificationsContainer } from 'frontile';
+import { Button } from 'frontile';
 import type { NotificationsService } from 'frontile';
 
 interface Event {
@@ -664,8 +652,6 @@ export default class PromiseExample extends Component {
           Save (fails)
         </Button>
       </div>
-
-      <NotificationsContainer @placement='bottom-right' />
     </div>
   </template>
 }
