@@ -85,8 +85,8 @@ import { Spinner } from 'frontile';
 
 ## Accessibility
 
-The spinner is `aria-hidden` by default, and deliberately so: it is a picture of
-a state, not the state itself. An unhidden, unnamed `<svg>` is announced as an
+The spinner is `aria-hidden` by default: it is a picture of a state, not the
+state itself. An unhidden, unnamed `<svg>` is announced as an
 image with no name, which tells a screen reader user nothing — and naming the
 graphic ("Loading spinner") describes the decoration rather than saying that the
 content they asked for is on its way.
@@ -174,7 +174,7 @@ export default class Example extends Component {
 }
 ```
 
-If you genuinely need the graphic itself announced — a full-page loader with
+If you need the graphic itself announced — a full-page loader with
 nothing else on screen — pass your own attributes, which are applied after the
 default and so win:
 
@@ -186,11 +186,10 @@ import { Spinner } from 'frontile';
 </template>
 ```
 
-Motion is the other consideration, and worth knowing precisely: the theme applies
-`animate-spin` with **no** `motion-reduce` variant, so the spinner keeps turning
-for users who have asked for reduced motion. That is a deliberate trade — a
-stopped spinner conveys nothing at all — but if your product treats the
-preference as absolute, suppress it yourself:
+Motion is the other consideration: the theme applies `animate-spin` with **no**
+`motion-reduce` variant, so the spinner keeps turning for users who have asked
+for reduced motion. If your product treats that preference as absolute, suppress
+it yourself:
 
 ```gts preview
 import { Spinner } from 'frontile';
