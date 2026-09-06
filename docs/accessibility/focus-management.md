@@ -1,4 +1,6 @@
 ---
+title: Focus management
+order: 2
 category: accessibility
 ---
 
@@ -36,3 +38,30 @@ import { Input } from 'frontile';
 ```
 
 Notice how the keyboard focus is clearly visible with `Tab`, but clicking with the mouse doesn't show the focus ring on the button.
+
+## Focus lifecycle in overlays
+
+Modal, Drawer, Popover, and Dropdown are all built on the shared `Overlay` primitive, which
+manages focus around opening and closing:
+
+- **On open**, focus moves into the overlay's content automatically, unless
+  `@disableFocusTrap={{true}}` or `@preventAutoFocus={{true}}` is passed.
+- **While open**, a focus trap keeps Tab and Shift+Tab cycling within the overlay's content,
+  so keyboard users can't tab out to the page behind it. This is configurable via
+  `@focusTrapOptions` and can be turned off entirely with `@disableFocusTrap={{true}}`.
+- **On close**, focus returns to whatever element had focus before the overlay opened —
+  typically the button that triggered it — unless `@preventFocusRestore={{true}}` is passed.
+- On `Modal`, `aria-modal="true"` tracks whether the trap is actually active, so assistive
+  technology isn't told the page is modal when the trap has been disabled.
+
+The overlay needs at least one focusable element inside its content for the trap to have
+somewhere to put focus — an overlay with no focusable content is a dead end for keyboard
+users.
+
+## Used by
+
+- [Overlay](../../packages/frontile/src/components/overlays/overlay.md)
+- [Modal](../../packages/frontile/src/components/overlays/modal.md)
+- [Drawer](../../packages/frontile/src/components/overlays/drawer.md)
+- [Popover](../../packages/frontile/src/components/overlays/popover.md)
+- [Dropdown](../../packages/frontile/src/components/collections/dropdown.md)
