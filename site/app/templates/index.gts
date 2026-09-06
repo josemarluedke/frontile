@@ -47,7 +47,7 @@ import OverlayDoor from '../components/homepage/overlay-door';
 import { DocfyLink } from '@docfy/ember';
 import SectionIntro from '../components/homepage/section-intro';
 import onceInView from '../modifiers/once-in-view';
-import { inventory } from '../components/homepage/component-inventory';
+import { inventory } from '../components/component-inventory';
 
 /**
  * DIRECTION CONTRACT — Frontile homepage

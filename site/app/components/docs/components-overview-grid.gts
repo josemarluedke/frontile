@@ -1,6 +1,6 @@
 import type { TOC } from '@ember/component/template-only';
 import { DocfyLink } from '@docfy/ember';
-import { inventory, componentCount } from '../homepage/component-inventory';
+import { inventory, componentCount } from '../component-inventory';
 
 export interface Signature {
   Element: HTMLDivElement;
