@@ -7,6 +7,7 @@ import {
   selectionIndicator,
   type SelectionIndicator
 } from '../../../utils/selection-indicator';
+import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import Tab from './tab';
 import Panel from './panel';
 import type { TabsSlots, TabsVariants } from '@frontile/theme';
@@ -73,6 +74,15 @@ interface TabsArgs<T> {
   /** Called with the newly selected value when a tab is chosen. */
   onChange?: (value: T) => void;
 
+  /**
+   * `automatic` moves selection with focus, which the APG recommends when
+   * panel content is already loaded. `manual` moves focus only and waits for
+   * Enter or Space.
+   *
+   * @defaultValue 'automatic'
+   */
+  activationMode?: 'automatic' | 'manual';
+
   /** Class names for each slot of the component, merged with the theme's. */
   classes?: SlotsToClasses<TabsSlots>;
 }
@@ -90,6 +100,7 @@ interface TabsContext<T> {
   registerValue: (element: HTMLElement, value: T) => void;
   unregisterValue: (element: HTMLElement) => void;
   idFor: (value: T, kind: 'tab' | 'panel') => string;
+  roving: RovingFocus;
 }
 
 interface ListArgs<T> {
@@ -147,6 +158,12 @@ interface TabsSignature<T> {
 
 class Tabs<T> extends Component<TabsSignature<T>> {
   indicator = selectionIndicator();
+
+  roving = rovingFocus(() => ({
+    orientation: this.args.orientation ?? 'horizontal',
+    activationMode: this.args.activationMode ?? 'automatic',
+    onActivate: this.activateElement
+  }));
 
   // Uncontrolled mode's own selection, seeded from `@defaultValue`. Written on
   // every `select` regardless of mode -- the getter ignores it when controlled
@@ -253,7 +270,8 @@ class Tabs<T> extends Component<TabsSignature<T>> {
       select: this.select,
       registerValue: this.registerValue,
       unregisterValue: this.unregisterValue,
-      idFor: this.idFor
+      idFor: this.idFor,
+      roving: this.roving
     };
   }
 

@@ -1,6 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click, findAll } from '@ember/test-helpers';
+import {
+  render,
+  find,
+  click,
+  findAll,
+  focus,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Tabs } from 'frontile';
 
@@ -165,6 +172,124 @@ module(
         tabs[1]!.getAttribute('aria-controls'),
         'aria-controls targets are distinct'
       );
+    });
+
+    test('exactly one tab is in the tab order, and it is the selected one', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="security" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+              <t.Tab @value="billing">Billing</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const tabs = findAll('[role="tab"]');
+      assert.dom(tabs[0]!).hasAttribute('tabindex', '-1');
+      assert.dom(tabs[1]!).hasAttribute('tabindex', '0');
+      assert.dom(tabs[2]!).hasAttribute('tabindex', '-1');
+    });
+
+    test('automatic activation: arrow keys move focus and selection', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      await focus(findAll('[role="tab"]')[0]!);
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[0]!,
+        'keydown',
+        'ArrowRight'
+      );
+
+      assert.dom(findAll('[role="tab"]')[1]!).isFocused();
+      assert.dom(findAll('[role="tab"]')[1]!).hasAria('selected', 'true');
+    });
+
+    test('manual activation: arrows move focus only, Enter selects', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" @activationMode="manual" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      await focus(findAll('[role="tab"]')[0]!);
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[0]!,
+        'keydown',
+        'ArrowRight'
+      );
+
+      assert.dom(findAll('[role="tab"]')[1]!).isFocused();
+      assert
+        .dom(findAll('[role="tab"]')[0]!)
+        .hasAria('selected', 'true', 'selection has not moved yet');
+
+      await triggerKeyEvent(findAll('[role="tab"]')[1]!, 'keydown', 'Enter');
+      assert.dom(findAll('[role="tab"]')[1]!).hasAria('selected', 'true');
+    });
+
+    test('arrow keys skip disabled tabs', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="billing" @isDisabled={{true}}>Billing</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      await focus(findAll('[role="tab"]')[0]!);
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[0]!,
+        'keydown',
+        'ArrowRight'
+      );
+
+      assert
+        .dom(findAll('[role="tab"]')[2]!)
+        .isFocused('focus jumped over the disabled tab');
+    });
+
+    test('vertical orientation uses the vertical arrow keys', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" @orientation="vertical" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      assert.dom('[role="tablist"]').hasAria('orientation', 'vertical');
+
+      await focus(findAll('[role="tab"]')[0]!);
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[0]!,
+        'keydown',
+        'ArrowDown'
+      );
+      assert.dom(findAll('[role="tab"]')[1]!).isFocused();
     });
   }
 );
