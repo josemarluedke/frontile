@@ -36,6 +36,12 @@ import ThemeLab from '../components/homepage/theme-lab';
 import KeyboardProof from '../components/homepage/keyboard-proof';
 import SpecimenTile from '../components/homepage/specimen-tile';
 import CodePanel from '../components/homepage/code-panel';
+// Highlighted at build time by site/lib/generate-homepage-snippets.mjs — see
+// that file for the snippet sources.
+import {
+  signatureSnippetHtml,
+  templateSnippetHtml,
+} from '../components/homepage/snippets';
 import LinkButton from '../components/homepage/link-button';
 import OverlayDoor from '../components/homepage/overlay-door';
 import { DocfyLink } from '@docfy/ember';
@@ -90,24 +96,6 @@ const tableMembers: Member[] = [
     role: 'Editor',
   },
 ];
-
-const signatureSnippet = `import { Table, type ColumnConfig } from 'frontile';
-
-interface Member { id: string; name: string; role: string }
-
-const columns = [
-  { key: 'name', name: 'Member' },
-  { key: 'role', name: 'Role' }
-] as const satisfies ColumnConfig<Member>[];`;
-
-// Written as a constant rather than inline in the template: a `{{...}}` inside
-// a quoted attribute is interpolated by Glimmer, which is how the previous
-// homepage silently rendered `@rows=` with no value in its own code sample.
-const templateSnippet = `<Table @columns={{columns}} @items={{members}} />
-
-{{! Glint checks this against ColumnConfig<Member>: }}
-<Table @columns={{columns}} @items={{projects}} />
-{{! ^ Type 'Project[]' is not assignable to 'Member[]' }}`;
 
 const toast = new Notification({}, 'Invitation sent to ada@example.com', {
   appearance: 'success',
@@ -741,16 +729,8 @@ export default class IndexPage extends Component {
                 mismatched collection is a build error rather than a blank cell.
               </p>
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-                <CodePanel
-                  @code={{signatureSnippet}}
-                  @language="typescript"
-                  @label="columns.ts"
-                />
-                <CodePanel
-                  @code={{templateSnippet}}
-                  @language="handlebars"
-                  @label="members.gts"
-                />
+                <CodePanel @html={{signatureSnippetHtml}} @label="columns.ts" />
+                <CodePanel @html={{templateSnippetHtml}} @label="members.gts" />
               </div>
             </div>
           </div>

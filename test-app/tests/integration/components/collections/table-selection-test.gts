@@ -1285,5 +1285,113 @@ module(
           'the table keeps exactly one tab stop for items shaped like rows'
         );
     });
+    test('keyboard selection uses the same key as the rendered row, for items shaped like rows', async function (assert) {
+      // `getRowData`'s unwrap check is structural, so a plain item carrying
+      // both `data` and `table` is unwrapped as though it were a row. Every
+      // path that names a row has to agree on which key that produces, or
+      // selecting by keyboard writes a key nothing else recognises.
+      interface PayloadItem {
+        id: string;
+        name: string;
+        data: string;
+        table: string;
+      }
+
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<PayloadItem>[];
+
+      const items: PayloadItem[] = [
+        { id: '1', name: 'John Doe', data: 'payload-1', table: 'users' },
+        { id: '2', name: 'Jane Smith', data: 'payload-2', table: 'users' }
+      ];
+
+      let capturedKeys: Set<string> | undefined;
+      const onSelectionChange = (keys: Set<string>): void => {
+        capturedKeys = keys;
+      };
+
+      // Uncontrolled, so the table keeps its own selection and the callback is
+      // free to record exactly which key it was handed.
+      await render(
+        <template>
+          <Table
+            @columns={{columns}}
+            @items={{items}}
+            @selectionMode="multiple"
+            @onSelectionChange={{onSelectionChange}}
+          />
+        </template>
+      );
+
+      const row1 = this.element.querySelector<HTMLElement>(
+        '[data-test-id="table-row"][data-key="1"]'
+      );
+      await focus(row1!);
+      await triggerKeyEvent(
+        '[data-test-id="table-row"][data-key="1"]',
+        'keydown',
+        ' '
+      );
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .hasAttribute(
+          'data-selected',
+          'true',
+          'the row the user pressed Space on reads as selected'
+        );
+      assert.deepEqual(
+        [...(capturedKeys ?? [])],
+        ['1'],
+        'and the reported key is the row key, not the unwrapped payload'
+      );
+    });
+
+    test('select all selects every row for items shaped like rows', async function (assert) {
+      interface PayloadItem {
+        id: string;
+        name: string;
+        data: string;
+        table: string;
+      }
+
+      const columns = [
+        { key: 'id', name: 'ID' },
+        { key: 'name', name: 'Name' }
+      ] as const satisfies ColumnConfig<PayloadItem>[];
+
+      const items: PayloadItem[] = [
+        { id: '1', name: 'John Doe', data: 'payload-1', table: 'users' },
+        { id: '2', name: 'Jane Smith', data: 'payload-2', table: 'users' }
+      ];
+
+      await render(
+        <template>
+          <TestHelper as |selectedKeys onSelectionChange|>
+            <Table
+              @columns={{columns}}
+              @items={{items}}
+              @selectionMode="multiple"
+              @selectedKeys={{selectedKeys}}
+              @onSelectionChange={{onSelectionChange}}
+            />
+          </TestHelper>
+        </template>
+      );
+
+      const selectAllCheckbox = this.element.querySelector<HTMLInputElement>(
+        '[data-test-id="table-column"][data-key="__selection__"] input[type="checkbox"]'
+      );
+      await click(selectAllCheckbox!);
+
+      assert
+        .dom('[data-test-id="table-row"][data-key="1"]')
+        .hasAttribute('data-selected', 'true', 'first row selected');
+      assert
+        .dom('[data-test-id="table-row"][data-key="2"]')
+        .hasAttribute('data-selected', 'true', 'second row selected');
+    });
   }
 );

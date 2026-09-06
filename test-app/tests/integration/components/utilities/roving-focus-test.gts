@@ -396,5 +396,79 @@ module(
         'and navigation now skips the newly disabled item'
       );
     });
+    test('the tab stop follows focus, not just selection', async function (assert) {
+      // Manual activation, so selection stays put and the tab stop has to
+      // move on its own. A group whose tab stop lags behind focus sends the
+      // user back to where they started the next time they Tab in.
+      const roving = rovingFocus(() => ({
+        activationMode: 'manual' as const
+      }));
+
+      await render(
+        <template>
+          <div>
+            <button
+              type="button"
+              aria-checked="true"
+              {{roving.setupItem}}
+            >A</button>
+            <button type="button" {{roving.setupItem}}>B</button>
+            <button type="button" {{roving.setupItem}}>C</button>
+          </div>
+        </template>
+      );
+
+      const items = findAll('button') as HTMLButtonElement[];
+      await focus(items[0]!);
+
+      await triggerKeyEvent(items[0]!, 'keydown', 'ArrowRight');
+      assert.deepEqual(
+        items.map((i) => i.tabIndex),
+        [-1, 0, -1],
+        'the tab stop moved to the focused item'
+      );
+
+      await triggerKeyEvent(items[1]!, 'keydown', 'End');
+      assert.deepEqual(
+        items.map((i) => i.tabIndex),
+        [-1, -1, 0],
+        'and follows End too'
+      );
+    });
+
+    test('keys pressed on nested content inside an item are left alone', async function (assert) {
+      // An item is not always a leaf: a grid row holds real controls, and a
+      // key pressed on one of them belongs to that control.
+      const activated: string[] = [];
+      const roving = rovingFocus(() => ({
+        orientation: 'vertical' as const,
+        activationMode: 'manual' as const,
+        onActivate: (el: HTMLElement) => activated.push(el.id)
+      }));
+
+      await render(
+        <template>
+          <div>
+            <div id="a" {{roving.setupItem}}>
+              <button type="button" id="inner">edit</button>
+            </div>
+            <div id="b" {{roving.setupItem}}></div>
+          </div>
+        </template>
+      );
+
+      const inner = document.getElementById('inner') as HTMLButtonElement;
+      await focus(inner);
+
+      await triggerKeyEvent(inner, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        inner,
+        'the arrow key did not move focus out of the nested control'
+      );
+
+      await triggerKeyEvent(inner, 'keydown', 'Enter');
+      assert.deepEqual(activated, [], 'and Enter did not activate the item');
+    });
   }
 );

@@ -1,10 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import autolinkHeadings from 'rehype-autolink-headings';
-import highlight from 'rehype-highlight';
+import shiki from '@docfy/plugin-shiki';
 import codeImport from 'remark-code-import';
-import { glimmer, glimmerJavascript } from 'highlightjs-glimmer';
-import { common } from 'lowlight';
 import withProse from '@docfy/plugin-with-prose';
 import docfyPluginSignatureMarkdown, {
   loadSignatureData,
@@ -12,18 +10,6 @@ import docfyPluginSignatureMarkdown, {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// gts is gjs with TypeScript inside; the grammar takes the sublanguage to
-// delegate to as its second argument, so the TS flavour is a thin wrapper.
-// Registering it under its own name (rather than through `registerInjections`)
-// leaves plain js/ts fences on the stock grammars.
-function glimmerTypescript(hljs) {
-  return {
-    ...glimmerJavascript(hljs, 'typescript'),
-    name: 'glimmer-typescript',
-    aliases: ['glimmer-ts', 'gts'],
-  };
-}
 
 const signatureData = loadSignatureData(
   path.resolve(__dirname, 'app/components/signature-data.ts'),
@@ -50,25 +36,13 @@ export default {
   ],
   rehypePlugins: [
     autolinkHeadings,
-    [
-      highlight,
-      {
-        // `languages` replaces rehype-highlight's default set, so lowlight's
-        // `common` has to be spread back in or every other language stops
-        // highlighting. highlightjs-glimmer is what finally highlights the
-        // fences the docs are actually written in: `glimmer` claims hbs and
-        // htmlbars, and the two glimmer-javascript grammars claim gjs/gts —
-        // `<template>` tags and hbs`` literals included, instead of the plain
-        // js/ts they used to fall back to.
-        languages: {
-          ...common,
-          glimmer,
-          'glimmer-javascript': glimmerJavascript,
-          'glimmer-typescript': glimmerTypescript,
-        },
-        aliases: { glimmer: ['handlebars'] },
-      },
-    ],
+    // Shiki, through Docfy's preset: real `glimmer-js`/`glimmer-ts` TextMate
+    // grammars (so `.gjs`/`.gts` fences no longer need the hand-rolled
+    // highlight.js wrapper this replaced), and github-light/github-dark
+    // emitted as `--shiki-light`/`--shiki-dark` custom properties, so the
+    // site's theme toggle needs no re-highlighting. The preset also wraps
+    // every fence in `DocfyCodeBlock` — copy button, title bar, collapse.
+    ...shiki(),
   ],
   sources: [
     {

@@ -46,9 +46,12 @@
   @apply border rounded-b;
 }
 
+/* Demo snippets are Shiki output now, so they carry `--shiki-light` /
+   `--shiki-dark` and resolve through docfy-code-block.css. The slab they sit on
+   has to follow the scheme with them — `prose`'s always-dark `pre` background
+   would put github-light's ink on near-black in light mode. */
 .docfy-demo__snippet pre {
-  color: var(--tw-prose-pre-code);
-  background-color: var(--tw-prose-pre-bg);
+  @apply bg-surface-canvas text-neutral-strong;
   @apply m-0;
   @apply p-4;
   @apply flex;

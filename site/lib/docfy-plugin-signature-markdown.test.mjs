@@ -260,15 +260,15 @@ test('loadSignatureData parses the generated .ts file and strips HTML highlighti
       description: 'A button.',
       Element: {
         type: {
-          type: '<span class="hljs-built_in">HTMLButtonElement</span>',
+          type: '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">HTMLButtonElement</span></span>',
         },
       },
       Args: [
         {
           identifier: 'appearance',
           type: {
-            type: '<span class="hljs-built_in">enum</span>',
-            raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'outlined\'</span>',
+            type: '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">enum</span></span>',
+            raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span> | <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'outlined\'</span></span>',
             // items are plain strings in the real generated data - they're
             // never HTML-highlighted in the first place.
             items: ["'default'", "'outlined'"],
@@ -277,7 +277,8 @@ test('loadSignatureData parses the generated .ts file and strips HTML highlighti
           isInternal: false,
           description: 'The appearance',
           tags: {},
-          defaultValue: '<span class="hljs-string">\'default\'</span>',
+          defaultValue:
+            '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'default\'</span></span>',
         },
       ],
       Blocks: [],
@@ -325,7 +326,7 @@ const data: ComponentDoc[] = [
     Args: [
       {
         identifier: 'appearance',
-        type: { type: '<span class="hljs-built_in">string</span>' },
+        type: { type: '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">string</span></span>' },
         isRequired: false,
         isInternal: false,
         description: 'The appearance',
@@ -409,7 +410,7 @@ test('descriptions stored as rendered HTML are reduced to text in the markdown o
 });
 
 test('HTML entities are decoded, not left as escapes', () => {
-  // Both lowlight (types) and remark (descriptions) escape `<` on the way out,
+  // Both Shiki (types) and remark (descriptions) escape `<` on the way out,
   // so stripping tags alone leaves `SlotsToClasses&#x3C;'base'>` in the cell.
   const data = [
     {

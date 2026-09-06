@@ -22,8 +22,10 @@ them is optional for the whole 0.18 line.
 | `--frontile-*` variable references | The declaration is dropped | **Silently** |
 | Nested `LayoutTheme` config | Build or type error | Loudly, and only if you customize the theme |
 | `@frontile/*` package imports | Nothing — they still work in 0.18.x | Deprecation warning only |
+| `@frontile/forms-legacy` / `@frontile/changeset-form` | Nothing — they still work in 0.18.x, but are removed in 0.19.0 | Deprecation warning only |
 | Derived border-radius scale | Slightly rounder corners on menus and small marks | Visual only — nothing to fix |
 | Multi-select renders chips | Multi-selects look different — selections become removable chips | Visual only — nothing to fix |
+| Filtered lists are ranked | `Autocomplete`/`Select` list the closest match first instead of source order | Visual only — nothing to fix |
 | `text-body-pico`/`-nano`/`-micro` | Those elements render unstyled | **Silently** |
 | Body text-scale font sizes corrected | Body text (`xs` through `xl`) renders larger than intended | Visual only — nothing to fix |
 
@@ -85,6 +87,35 @@ you can't read — which matters precisely because those changes fail silently.
 **Impact:** none until 0.19. **Time:** 10–30 minutes, mostly automated.
 
 **See:** [Package Consolidation](./package-consolidation.md)
+
+### Forms Legacy & Changeset Form — optional, any time before 0.19
+
+`@frontile/forms-legacy` and `@frontile/changeset-form` are deprecated and,
+unlike the wrapper packages above, are being removed entirely in 0.19.0, not
+just re-exported. If you depend on either, migrate to the modern `frontile`
+forms (Form + Field pattern with Valibot, Zod, or a custom validator).
+
+**Impact:** none until 0.19, unless you already depend on one of these
+packages. **Time:** varies with form count and validation complexity — see
+each guide's migration checklist.
+
+**See:** [Forms Legacy Migration Guide](./forms-legacy.md), [Changeset Form Migration Guide](./changeset-form.md)
+
+### Filtered lists are ranked by relevance — visual only
+
+`Autocomplete` and filterable `Select` used to filter with a case-insensitive
+"contains" check and render whatever survived **in the order you passed it**.
+They now score each option and list the closest match first, and additionally
+match acronyms (`nz` finds "New Zealand").
+
+Nothing that matched before stops matching, so there is nothing to fix unless
+you pass your own `@filter` — which now also accepts a score:
+
+```ts
+filter?: (itemValue: string, inputValue: string) => boolean | number;
+```
+
+**See:** [Filter Ranking](./filter-ranking.md)
 
 ### 4. Multi-select renders chips — visual only
 
@@ -151,6 +182,7 @@ for `text-body-pico`, `text-body-nano`, and `text-body-micro`.
 - [ ] `{color}-foreground` / `contrast-*` replaced with `on-{color}-{level}`
 - [ ] **Looked at the running app**, not just the diff
 - [ ] Imports moved to `frontile` (optional until 0.19)
+- [ ] Migrated off `@frontile/forms-legacy` / `@frontile/changeset-form`, if used (required before 0.19)
 - [ ] Looked at any multi-selects — they now render chips and are taller
 - [ ] Replaced `text-body-pico`/`-nano`/`-micro` with `text-body-4xs`/`-3xs`/`-2xs`
 

@@ -224,6 +224,54 @@ const overlayTransitions = {
     },
     ...slideTransition
   },
+  /**
+   * Command palette: a short scale-and-rise. Deliberately faster than `scale`
+   * -- a palette is opened mid-task and re-opened constantly, so the animation
+   * has to read as instant rather than as a reveal.
+   */
+  command: {
+    enter: {
+      opacity: '0',
+      transform: 'scale(0.96) translateY(4px)',
+      // Reduced motion keeps the fade but drops the movement, rather than
+      // removing the transition altogether -- the palette should still read as
+      // appearing, just without travel.
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    },
+    enterActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '150ms',
+      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    enterTo: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leave: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leaveActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '100ms',
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    leaveTo: {
+      opacity: '0',
+      transform: 'scale(0.96) translateY(4px)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    }
+  },
   scale: {
     enter: {
       opacity: '0',

@@ -1,10 +1,17 @@
+---
+title: Migrating from Changeset Form
+order: 7
+category: migrations
+subcategory: v0.18
+---
+
 # Migrating from Changeset Form
 
 This guide will help you migrate from the deprecated `@frontile/changeset-form` package to the modern `frontile` forms. We recommend migrating to the modern Form + Field pattern with Valibot validation for the best experience, but also provide paths for teams that need to keep ember-changeset validation.
 
 ## Overview
 
-The `@frontile/changeset-form` package is deprecated and will be removed in future versions. This guide presents three migration paths based on your project's constraints and goals.
+The `@frontile/changeset-form` package is deprecated and will be removed in 0.19.0. This guide presents three migration paths based on your project's constraints and goals.
 
 ## Key Architectural Patterns
 
@@ -12,7 +19,7 @@ The `@frontile/changeset-form` package is deprecated and will be removed in futu
 
 **Standalone components** (Approaches 2 & 3): Use form components directly with manual binding and validation integration.
 
-See the [Form documentation](../forms/) for detailed architecture information.
+See the [Form documentation](https://frontile.dev/docs/components/forms/form) for detailed architecture information.
 
 ## Migration Approach Overview
 
@@ -28,7 +35,7 @@ You have three main migration paths, **ordered by recommendation**:
 
 ## Before You Start
 
-Build the package you'll use: `pnpm --filter forms build` or `pnpm --filter forms-legacy build`
+Build the package you'll use: `pnpm --filter frontile build` (Approaches 1 & 2) or `pnpm --filter forms-legacy build` (Approach 3)
 
 ---
 
@@ -81,7 +88,7 @@ npm install frontile @frontile/theme valibot
 
 Complete GTS component with template:
 
-```typescript
+```gts title="app/components/user-form.gts" collapsible
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { Form, type FormResultData } from 'frontile';
@@ -168,7 +175,7 @@ export default class UserFormComponent extends Component {
 }
 ```
 
-For advanced features like dirty tracking, loading states, and validation timing control, see the [Form documentation](../forms/).
+For advanced features like dirty tracking, loading states, and validation timing control, see the [Form documentation](https://frontile.dev/docs/components/forms/form).
 
 ---
 
@@ -423,6 +430,6 @@ Don't mix these patterns in the same form.
 
 ## Additional Resources
 
-- [Form documentation](../forms/) - Complete Form + Field pattern guide
+- [Form documentation](https://frontile.dev/docs/components/forms/form) - Complete Form + Field pattern guide
 - [Forms Legacy Migration Guide](forms-legacy.md) - Component-specific migration details
 - [Valibot documentation](https://valibot.dev/) - Validation schema reference
