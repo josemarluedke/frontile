@@ -12,7 +12,7 @@ export interface Signature {
  * inventory" section uses, so the two lists can never drift apart.
  */
 const ComponentsOverviewGrid: TOC<Signature> = <template>
-  <div ...attributes>
+  <div class="not-prose" ...attributes>
     <p class="font-caption text-caption-sm text-neutral-firm mb-10">
       {{componentCount}}
       components across

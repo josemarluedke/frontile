@@ -1,4 +1,6 @@
 ---
+title: All Components
+category: components
 order: 1
 imports:
   - import ComponentsOverviewGrid from 'site/components/docs/components-overview-grid';

@@ -39,7 +39,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Field',
         path: '/docs/components/forms/field',
         description:
-          'Binds a label, input, and validation messages together as one accessible unit.',
+          "Binds a form's validation errors to a field by name, for use inside Form.",
       },
       {
         name: 'FormControl',
@@ -137,7 +137,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Toggle',
         path: '/docs/components/utilities/toggle',
         description:
-          "toggleState, a lightweight helper for managing boolean state with a toggle() setter.",
+          'A lightweight helper for tracking boolean state with a toggle() method.',
       },
       {
         name: 'Press',
