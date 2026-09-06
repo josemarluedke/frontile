@@ -8,6 +8,7 @@ import { cached } from '@glimmer/tracking';
 import { SimpleTable } from '../simple-table';
 import { extractFrontileOptions } from './utils';
 import { keyAndLabelForItem } from '../../../utils/listManager';
+import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
 import ColumnVisibilityComponent from './column-visibility';
 import CellForComponent from './cell-for';
 import CellDefaultComponent from './cell-default';
@@ -298,10 +299,30 @@ class Table<
     return keys ? new Set(keys) : new Set();
   }
 
-  // Roving tabindex (WAI-ARIA grid pattern): the key of the row the user last
-  // moved to with the keyboard. `undefined` until they move — see
-  // `rovingRowKey` for the default tab stop.
-  @tracked activeRowKey?: string;
+  // Roving tabindex (WAI-ARIA grid pattern). The rows declare their own
+  // selected and disabled state as attributes, so `rovingFocus` reads both off
+  // the elements and owns arrow keys, Home/End, wrapping, the single tab stop,
+  // and keeping all of it right as rows come and go.
+  //
+  // `manual` activation: arrows move focus only, and selection waits for
+  // Space or Enter, which is what a grid does — a multi-select table that
+  // selected every row you arrowed past would be unusable.
+  roving = rovingFocus(() => ({
+    orientation: 'vertical' as const,
+    activationMode: 'manual' as const,
+    onActivate: this.toggleRowSelection
+  }));
+
+  // Rows are only in the tab order when there is something to select, so the
+  // modifier itself is swapped out rather than gated inside. A no-op modifier
+  // rather than a falsy value keeps this a plain dynamic-modifier value.
+  noopRowSetup: RovingFocus['setupItem'] = modifier(
+    (_element: HTMLElement) => {}
+  );
+
+  get setupRow(): RovingFocus['setupItem'] {
+    return this.hasSelection ? this.roving.setupItem : this.noopRowSetup;
+  }
 
   // Extract actual data from row (handles both row.data and direct row)
   getRowData = (row: Row<T>): T => {
@@ -332,31 +353,6 @@ class Table<
       // Final fallback
       return String(item);
     }
-  };
-
-  // The single row that owns the table's tab stop. Defaults to the first
-  // selected row - so tabbing back into the table lands on the user's own
-  // selection - and to the first row when nothing is selected.
-  @cached
-  get rovingRowKey(): string | undefined {
-    // Key off the same `Row` objects the template iterates, so this and
-    // `rowTabIndex` always agree. Mapping `sortedItems` instead would diverge
-    // for an item carrying both `data` and `table`, which `getRowData` unwraps
-    // — leaving the table with no tab stop at all.
-    const keys = [...this.headlessRows].map((row) => this.getKey(row));
-
-    if (this.activeRowKey !== undefined && keys.includes(this.activeRowKey)) {
-      return this.activeRowKey;
-    }
-
-    return keys.find((key) => this.selectedKeysSet.has(key)) ?? keys[0];
-  }
-
-  // Only one row is tabbable at a time; arrow keys move the tab stop along
-  // with focus. Without selection, rows are not part of the tab order at all.
-  rowTabIndex = (row: Row<T>): string => {
-    if (!this.hasSelection) return '-1';
-    return this.getKey(row) === this.rovingRowKey ? '0' : '-1';
   };
 
   // Check if a key is disabled
@@ -425,84 +421,23 @@ class Table<
     }
   };
 
-  // Handler for keyboard row selection and navigation
-  handleRowKeydown = (row: Row<T>, event: KeyboardEvent): void => {
-    if (!this.hasSelection) return;
-
-    // Only react to keys pressed on the row itself. Anything bubbling up from
-    // interactive cell content (buttons, links, inputs) belongs to that
-    // control, not to the row.
-    if (event.target !== event.currentTarget) return;
-
-    // Handle arrow key navigation
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-
-      const currentElement = event.target as HTMLElement;
-      const allRows = Array.from(
-        currentElement
-          .closest('tbody')
-          ?.querySelectorAll('[data-selectable="true"]') || []
-      ) as HTMLElement[];
-
-      const currentIndex = allRows.indexOf(currentElement);
-      let nextRow: HTMLElement | undefined;
-
-      if (event.key === 'ArrowDown' && currentIndex < allRows.length - 1) {
-        nextRow = allRows[currentIndex + 1];
-      } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-        nextRow = allRows[currentIndex - 1];
-      }
-
-      if (nextRow) {
-        nextRow.focus();
-        // Keep the roving tab stop on the focused row.
-        this.activeRowKey = nextRow.dataset['key'];
-      }
-
-      return;
-    }
-
-    // Handle selection (Space/Enter)
-    if (this.isRowDisabled(row)) return;
-
-    // Only handle Space and Enter keys
-    if (event.key !== ' ' && event.key !== 'Enter') return;
-
-    // Prevent default behavior (scroll for Space, form submission for Enter)
-    event.preventDefault();
-
-    const key = this.getKey(row.data);
-    const isSelected = this.isRowSelected(row);
-
-    // This row is focused, so it keeps the tab stop even as selection changes.
-    this.activeRowKey = key;
+  // What Space and Enter do on a focused row, via `rovingFocus`'s manual
+  // activation. The row is identified by its own `data-key` rather than by a
+  // captured `Row`, because that is the only thing the roving-focus primitive
+  // hands back — and it is the same key the rest of selection speaks in.
+  toggleRowSelection = (element: HTMLElement): void => {
+    const key = element.dataset['key'];
+    if (key === undefined || this.isKeyDisabled(key)) return;
 
     if (this.selectionMode === 'single') {
       // Single selection: always select the row
       this.handleSelect(key);
+    } else if (this.selectedKeysSet.has(key)) {
+      this.handleDeselect(key);
     } else {
-      // Multiple selection: toggle
-      if (isSelected) {
-        this.handleDeselect(key);
-      } else {
-        this.handleSelect(key);
-      }
+      this.handleSelect(key);
     }
   };
-
-  // Modifier for row keyboard navigation
-  rowKeyboardHandler = modifier((element: HTMLElement, [row]: [Row<T>]) => {
-    const handler = (event: KeyboardEvent) => {
-      this.handleRowKeydown(row, event);
-    };
-
-    element.addEventListener('keydown', handler);
-
-    return () => {
-      element.removeEventListener('keydown', handler);
-    };
-  });
 
   // Get all selectable (non-disabled) item keys
   get selectableKeys(): string[] {
@@ -824,14 +759,14 @@ class Table<
           {{#each this.headlessRows as |row|}}
             <t.Row
               {{this.tableInstance.modifiers.row row}}
-              {{this.rowKeyboardHandler row}}
+              {{this.setupRow}}
               @isSticky={{this.isRowSticky row}}
               @hasStickyHeader={{@isStickyHeader}}
               data-key={{this.getKey row}}
               data-selected={{if (this.isRowSelected row) "true" "false"}}
               data-disabled={{if (this.isRowDisabled row) "true"}}
+              aria-disabled={{if (this.isRowDisabled row) "true"}}
               data-selectable={{if this.hasSelection "true"}}
-              tabindex={{this.rowTabIndex row}}
             >
               {{#each this.headlessColumns as |column|}}
                 <t.Cell

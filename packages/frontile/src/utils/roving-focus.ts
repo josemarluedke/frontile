@@ -50,6 +50,7 @@ const DISABLED_SELECTOR = ':disabled, [aria-disabled="true"]';
  */
 class RovingFocus {
   #items: HTMLElement[] = [];
+  #focused: HTMLElement | undefined;
   #observers = new Map<HTMLElement, MutationObserver>();
   #readOptions: () => RovingFocusOptions;
 
@@ -65,6 +66,7 @@ class RovingFocus {
   setupItem = modifier((element: HTMLElement) => {
     this.#register(element);
     element.addEventListener('keydown', this.handleKeydown);
+    element.addEventListener('focusin', this.handleFocusIn);
 
     // Navigation reads the DOM live, so it never goes stale. The tab stop is a
     // written attribute though, and nothing re-runs this modifier when the
@@ -86,16 +88,42 @@ class RovingFocus {
 
     return (): void => {
       element.removeEventListener('keydown', this.handleKeydown);
+      element.removeEventListener('focusin', this.handleFocusIn);
       this.#observers.get(element)?.disconnect();
       this.#observers.delete(element);
       this.#items = this.#items.filter((item) => item !== element);
+      if (this.#focused === element) {
+        this.#focused = undefined;
+      }
       this.#syncTabStops();
     };
   });
 
+  /**
+   * The tab stop belongs wherever focus last was, so that leaving the group
+   * and coming back returns the user to where they left off. `focusin` rather
+   * than `focus` because an item is not always a leaf -- a grid row holds real
+   * controls, and focus landing on one of them still puts the row in play.
+   */
+  handleFocusIn = (event: FocusEvent): void => {
+    const item = event.currentTarget as HTMLElement | null;
+    if (!item || this.#focused === item) {
+      return;
+    }
+    this.#focused = item;
+    this.#syncTabStops();
+  };
+
   handleKeydown = (event: KeyboardEvent): void => {
     const current = event.currentTarget as HTMLElement | null;
     if (!current) {
+      return;
+    }
+
+    // An item is not necessarily a leaf. A key pressed on a button, link or
+    // input *inside* one belongs to that control -- taking it would break
+    // typing in a cell and swallow Enter on a nested button.
+    if (event.target !== current) {
       return;
     }
 
@@ -182,18 +210,39 @@ class RovingFocus {
   }
 
   /**
-   * Exactly one item is tabbable. It is the selected one, or -- per the
-   * radiogroup pattern, where a group with nothing selected still has to be
-   * reachable by Tab -- the first enabled item.
+   * Exactly one item is tabbable. It is wherever focus last was, else the
+   * selected one, else -- per the radiogroup pattern, where a group with
+   * nothing selected still has to be reachable by Tab -- the first enabled
+   * item.
+   *
+   * Focus comes first because the two only disagree when activation does not
+   * follow focus: a `manual` group, or one whose selection is several items
+   * at once. There the selected item is not where the user is, and sending
+   * Tab back to it would undo their navigation.
    */
   #syncTabStops(): void {
+    const focused =
+      this.#focused &&
+      this.#items.includes(this.#focused) &&
+      !this.#isDisabled(this.#focused)
+        ? this.#focused
+        : undefined;
+
     const selected = this.#items.find(
       (item) => item.matches(SELECTED_SELECTOR) && !this.#isDisabled(item)
     );
-    const stop = selected ?? this.#enabled[0];
+    const stop = focused ?? selected ?? this.#enabled[0];
 
     for (const item of this.#items) {
-      item.tabIndex = item === stop ? 0 : -1;
+      const tabIndex = item === stop ? 0 : -1;
+      // Compared against the *attribute*, not the property: an element that is
+      // not natively focusable already reports `tabIndex === -1` with no
+      // attribute set, so a property comparison would skip the very write that
+      // makes it focusable. Guarded at all because this runs once per item as
+      // a group registers -- O(n²) writes for a table's worth of rows.
+      if (item.getAttribute('tabindex') !== String(tabIndex)) {
+        item.tabIndex = tabIndex;
+      }
     }
   }
 }

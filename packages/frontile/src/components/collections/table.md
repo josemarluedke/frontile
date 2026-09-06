@@ -1205,16 +1205,26 @@ export default class DemoComponent extends Component {
 When selection is enabled, rows follow the WAI-ARIA grid pattern:
 
 - **Tab**: Moves into the rows. The table is a single tab stop — it uses a
-  roving `tabindex`, so exactly one row is tabbable at a time. That is the first
-  selected row, or the first row when nothing is selected.
+  roving `tabindex`, so exactly one row is tabbable at a time. That is the row
+  focus was last on, else the first selected row, else the first row.
 - **Arrow Down** / **Arrow Up**: Move focus between rows, carrying the
-  `tabindex="0"` along with focus.
+  `tabindex="0"` along with focus. Focus wraps: down past the last row lands on
+  the first, up past the first lands on the last.
+- **Home** / **End**: Move focus to the first / last row.
 - **Space** or **Enter**: Toggle selection (multiple mode) or select row (single mode)
-- Disabled rows cannot be selected via keyboard, but can still be focused
+- Disabled rows (`@disabledKeys`) are marked `aria-disabled="true"`. Arrow keys,
+  `Home` and `End` skip them entirely, and they never hold the tab stop — a
+  table whose first row is disabled hands it to the first enabled row instead.
+  They can still be focused with the pointer, but not selected.
+- Rows added, removed or reordered are picked up on their own; the tab stop and
+  the navigation order always follow what is rendered.
 - Interactive content inside cells keeps its own keys: a button, link or input in
   a cell handles Enter, Space and the arrow keys itself, and the row does not
   toggle its selection. Row keyboard handling only applies to keys pressed on the
   row itself.
+
+This is the shared [`rovingFocus`](/docs/components/utilities/roving-focus) utility in vertical,
+manual-activation mode — arrows move focus only, and selection waits for Space or Enter.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1342,6 +1352,7 @@ On top of that:
 | Sort control        | A real `<button>` inside the header, so it is focusable and activates on `Enter` and `Space` |
 | Sort direction icon | `aria-hidden="true"` — the chevron is decoration, `aria-sort` carries the meaning            |
 | Row selection       | A checkbox per row labelled "Select row", and "Select all rows" in the header                |
+| Disabled row        | `aria-disabled="true"`, which is also what keyboard navigation reads to skip it              |
 | Skeleton rows       | `aria-hidden="true"` while loading, so placeholder rows are not announced as data            |
 
 `aria-sort` is present on every header cell, including non-sortable ones, where it reads
