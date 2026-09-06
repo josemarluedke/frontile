@@ -615,6 +615,104 @@ module(
 
         assert.dom('[data-test-id="loading-spinner"]').exists();
       });
+
+      test('the <:loading> block replaces the label while loading', async function (assert) {
+        class State {
+          @tracked isLoading = false;
+        }
+        const state = new State();
+        const startLoading = () => (state.isLoading = true);
+
+        await render(
+          <template>
+            <Button @isLoading={{state.isLoading}} data-test-id="button">
+              <:default>Save</:default>
+              <:loading>Saving…</:loading>
+            </Button>
+            <button
+              type="button"
+              data-test-id="start"
+              {{on "click" startLoading}}
+            >go</button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasText('Save');
+
+        await click('[data-test-id="start"]');
+
+        assert.dom('[data-test-id="button"]').hasText('Saving…');
+      });
+
+      test('the default block returns when loading ends', async function (assert) {
+        class State {
+          @tracked isLoading = true;
+        }
+        const state = new State();
+        const stopLoading = () => (state.isLoading = false);
+
+        await render(
+          <template>
+            <Button @isLoading={{state.isLoading}} data-test-id="button">
+              <:default>Save</:default>
+              <:loading>Saving…</:loading>
+            </Button>
+            <button
+              type="button"
+              data-test-id="stop"
+              {{on "click" stopLoading}}
+            >stop</button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasText('Saving…');
+
+        await click('[data-test-id="stop"]');
+
+        assert.dom('[data-test-id="button"]').hasText('Save');
+      });
+
+      test('the yielded hash carries isLoading', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button" as |b|>
+              {{if b.isLoading "busy" "idle"}}
+            </Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasText('busy');
+      });
+
+      test('@isRenderless yields isLoading and ignores <:icon> and <:loading>', async function (assert) {
+        await render(
+          <template>
+            <Button @isRenderless={{true}} @isLoading={{true}}>
+              <:icon><span data-test-id="icon">i</span></:icon>
+              <:default as |b|>
+                <a href="/next" class={{b.classNames}} data-test-id="link">
+                  {{if b.isLoading "Loading…" "Go"}}
+                </a>
+              </:default>
+              <:loading>Saving…</:loading>
+            </Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="link"]').hasText('Loading…');
+        assert.dom('[data-test-id="icon"]').doesNotExist();
+        assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+      });
+
+      test('plain content with no named blocks still renders', async function (assert) {
+        await render(
+          <template>
+            <Button data-test-id="button">Save</Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasText('Save');
+      });
     });
   }
 );

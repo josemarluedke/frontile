@@ -127,8 +127,9 @@ export interface ButtonArgs {
 interface ButtonSignature {
   Args: ButtonArgs;
   Blocks: {
-    default: [{ classNames: string }];
+    default: [{ classNames: string; isLoading: boolean }];
     icon?: [];
+    loading?: [];
   };
   Element: HTMLButtonElement;
 }
@@ -186,7 +187,10 @@ class Button extends Component<ButtonSignature> {
 
   <template>
     {{#if @isRenderless}}
-      {{yield (hash classNames=this.classNames)}}
+      {{yield
+        (hash classNames=this.classNames isLoading=this.isLoading)
+        to="default"
+      }}
     {{else}}
       <button
         type={{this.type}}
@@ -207,7 +211,21 @@ class Button extends Component<ButtonSignature> {
           </SpinnerOrIcon>
         {{/if}}
 
-        {{yield (hash classNames=this.classNames)}}
+        {{#if this.isLoading}}
+          {{#if (has-block "loading")}}
+            {{yield to="loading"}}
+          {{else}}
+            {{yield
+              (hash classNames=this.classNames isLoading=this.isLoading)
+              to="default"
+            }}
+          {{/if}}
+        {{else}}
+          {{yield
+            (hash classNames=this.classNames isLoading=this.isLoading)
+            to="default"
+          }}
+        {{/if}}
 
         {{#if this.isIconAtEnd}}
           <SpinnerOrIcon
