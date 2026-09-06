@@ -96,7 +96,8 @@
     "ember-modifier": "^4.3.0",
     "ember-velcro": "^2.1.3",
     "focus-visible": "^5.2.0",
-    "form-data-utils": "^0.6.0"
+    "form-data-utils": "^0.6.0",
+    "fuzzysort": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "7.26.7",

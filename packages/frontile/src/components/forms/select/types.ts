@@ -1,4 +1,5 @@
 import type { ListboxSignature } from '../../collections/listbox';
+import type { FilterFn } from '../../../utils/filter';
 import type {
   SelectSlots,
   SelectVariants,
@@ -370,13 +371,16 @@ type SelectArgs<T> = (
 
   /**
    * Function to filter the items in the select.
-   * The default implementation performs a case-insensitive search.
+   *
+   * The default implementation ranks by relevance, so the closest match is
+   * listed first rather than whichever match came first in `@items`.
    *
    * @param itemValue - The value of an item in the dropdown.
    * @param filterValue - The user's input in the filter/search box.
-   * @returns A boolean indicating whether the item should be shown.
+   * @returns A number to rank (higher first, `0` means no match) or a boolean
+   * to filter only, preserving the order of `@items`.
    */
-  filter?: (itemValue: string, filterValue: string) => boolean;
+  filter?: FilterFn;
 
   /**
    * If true, the select will show a loading spinner instead of the dropdown icon.

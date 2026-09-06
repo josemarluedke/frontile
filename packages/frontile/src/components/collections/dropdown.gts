@@ -182,6 +182,7 @@ interface MenuArgs
       | 'disabledKeys'
       | 'allowEmpty'
       | 'onSelectionChange'
+      | 'shortcutAppearance'
     >,
     Pick<
       ContentSignature['Args'],
@@ -286,6 +287,7 @@ class Menu extends Component<MenuSignature> {
         @appearance={{@appearance}}
         @disabledKeys={{@disabledKeys}}
         @intent={{@intent}}
+        @shortcutAppearance={{@shortcutAppearance}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
         @onSelectionChange={{@onSelectionChange}}

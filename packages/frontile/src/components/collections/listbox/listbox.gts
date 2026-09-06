@@ -9,10 +9,12 @@ import {
   type ListItem
 } from '../../../utils/listManager';
 import { ListboxItem, type ListboxItemSignature } from './item';
+import { ListboxGroup, type ListboxGroupSignature } from './group';
 import { modifier } from 'ember-modifier';
 import type { WithBoundArgs } from '@glint/template';
 
 type ItemCompBounded = WithBoundArgs<typeof ListboxItem, 'manager'>;
+type GroupCompBounded = WithBoundArgs<typeof ListboxGroup, 'manager'>;
 type ItemCompBoundedWithItem = WithBoundArgs<
   typeof ListboxItem,
   'manager' | 'item'
@@ -66,13 +68,20 @@ interface ListboxSignature<T> {
       | 'success'
       | 'warning'
       | 'danger';
+
+    /**
+     * The appearance of the keycap rendered for each item's `@shortcut`.
+     *
+     * @defaultValue 'inherit'
+     */
+    shortcutAppearance?: ListboxItemSignature['Args']['shortcutAppearance'];
   };
   Element: HTMLUListElement;
   Blocks: {
     item: [
       { item: T; key: string; label: string; Item: ItemCompBoundedWithItem }
     ];
-    default: [{ Item: ItemCompBounded }];
+    default: [{ Item: ItemCompBounded; Group: GroupCompBounded }];
   };
 }
 
@@ -251,6 +260,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
                   manager=this.listManager
                   appearance=@appearance
                   intent=@intent
+                  shortcutAppearance=@shortcutAppearance
                   type=this.role
                   key=keyLabel.key
                   item=item
@@ -265,6 +275,7 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
               @item={{item}}
               @appearance={{@appearance}}
               @intent={{@intent}}
+              @shortcutAppearance={{@shortcutAppearance}}
               @type={{this.role}}
             >
               {{keyLabel.label}}
@@ -280,6 +291,15 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
             manager=this.listManager
             appearance=@appearance
             intent=@intent
+            shortcutAppearance=@shortcutAppearance
+            type=this.role
+          )
+          Group=(component
+            ListboxGroup
+            manager=this.listManager
+            appearance=@appearance
+            intent=@intent
+            shortcutAppearance=@shortcutAppearance
             type=this.role
           )
         )
@@ -291,8 +311,10 @@ class Listbox<T = unknown> extends Component<ListboxSignature<T>> {
 export {
   Listbox,
   ListboxItem,
+  ListboxGroup,
   type ListboxSignature,
   type ListboxItemSignature,
+  type ListboxGroupSignature,
   type ListItem
 };
 export default Listbox;

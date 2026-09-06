@@ -469,6 +469,56 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
     assert.dom('[data-component="listbox"] [data-key="Cherry"]').doesNotExist();
   });
 
+  test('a boolean filter still preserves the order of @items', async function (assert) {
+    // The default filter now ranks by relevance. A consumer-supplied boolean
+    // filter says nothing about relevance, so it must keep source order --
+    // the backwards-compatibility contract of widening @filter to
+    // `boolean | number`.
+    const items = ['Cherry', 'Apricot', 'Apple', 'Banana'];
+    const contains = (itemValue: string, inputValue: string) =>
+      itemValue.toLowerCase().includes(inputValue.toLowerCase());
+
+    await render(
+      <template>
+        <Select @items={{items}} @isFilterable={{true}} @filter={{contains}} />
+      </template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'ap');
+
+    assert.deepEqual(
+      [
+        ...document.querySelectorAll(
+          '[data-component="listbox"] [data-component="listbox-item"]'
+        )
+      ].map((el) => (el as HTMLElement).dataset['key']),
+      ['Apricot', 'Apple'],
+      'source order, not relevance order (which would put Apple first)'
+    );
+  });
+
+  test('the default filter ranks the closest match first', async function (assert) {
+    const items = ['Apricot', 'Apple'];
+
+    await render(
+      <template><Select @items={{items}} @isFilterable={{true}} /></template>
+    );
+
+    await click('[data-component="select-trigger"]');
+    await fillIn('[data-test-id="trigger"]', 'apple');
+
+    assert.strictEqual(
+      (
+        document.querySelector(
+          '[data-component="listbox"] [data-component="listbox-item"]'
+        ) as HTMLElement
+      ).dataset['key'],
+      'Apple',
+      'the exact match is first even though Apricot comes first in @items'
+    );
+  });
+
   test('it shows empty content when no options match the filter', async function (assert) {
     const items = ['Apple', 'Banana', 'Cherry'];
 

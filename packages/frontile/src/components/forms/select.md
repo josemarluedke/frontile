@@ -230,7 +230,7 @@ export default class SelectFormValidation extends Component {
 
 ### Filterable Select
 
-Enable filtering so users can quickly search through the options. Filtering only applies when options are provided via the `@items` argument. The Select component works seamlessly with Form/Field data binding while providing search functionality:
+Enable filtering so users can quickly search through the options. Filtering only applies when options are provided via the `@items` argument. Options are ranked by relevance, so the closest match is listed first; pass `@filter` to score or match them yourself. The Select component works seamlessly with Form/Field data binding while providing search functionality:
 
 ```gts preview
 import Component from '@glimmer/component';
