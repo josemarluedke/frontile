@@ -559,7 +559,7 @@ module(
           <template>
             <Button @iconPlacement="end" data-test-id="button">
               <:icon><span data-test-id="icon">i</span></:icon>
-              <:default>Save</:default>
+              <:default><span data-test-id="label">Save</span></:default>
             </Button>
           </template>
         );
@@ -570,6 +570,11 @@ module(
           button?.lastElementChild,
           button?.querySelector('[data-test-id="icon"]'),
           'the icon is the last element in the button'
+        );
+        assert.strictEqual(
+          button?.firstElementChild,
+          button?.querySelector('[data-test-id="label"]'),
+          'the label comes before the icon'
         );
       });
 
@@ -582,7 +587,7 @@ module(
               data-test-id="button"
             >
               <:icon><span data-test-id="icon">i</span></:icon>
-              <:default>Save</:default>
+              <:default><span data-test-id="label">Save</span></:default>
             </Button>
           </template>
         );
@@ -593,6 +598,11 @@ module(
           button?.lastElementChild,
           button?.querySelector('[data-test-id="loading-spinner"]'),
           'the spinner is the last element in the button'
+        );
+        assert.strictEqual(
+          button?.firstElementChild,
+          button?.querySelector('[data-test-id="label"]'),
+          'the label comes before the spinner'
         );
       });
 
