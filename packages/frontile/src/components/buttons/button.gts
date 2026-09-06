@@ -51,8 +51,13 @@ const disableWhile = modifier((el: HTMLButtonElement, [loading]: [boolean]) => {
 
 /**
  * The spinner stands in for the icon while loading, on whichever side
- * `@iconPlacement` puts it. Extracted so the choice is written once; the
- * caller passes the icon through as this component's default block.
+ * `@iconPlacement` puts it. Extracted so the spinner-or-icon choice is written
+ * once; the caller passes the icon through as this component's default block.
+ *
+ * The invocation below is still written twice, once per side, and that is
+ * deliberate: the block contains `{{yield to="icon"}}`, and Glimmer has no way
+ * to hoist a block-yielding invocation into a `{{#let}}` or a helper. Only the
+ * choice was deduplicated, not the two call sites.
  */
 const SpinnerOrIcon: TOC<{
   Args: {
