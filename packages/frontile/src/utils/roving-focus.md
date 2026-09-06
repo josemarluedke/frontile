@@ -9,7 +9,8 @@ ARIA authoring practices ask for: the group is a **single tab stop**, and once
 focus is inside it the arrow keys move between the items. It owns the keyboard
 and the `tabindex` bookkeeping only — it renders nothing, decides nothing about
 selection, and applies no styling — which is what lets one primitive serve
-`SegmentedControl`'s radiogroup today and a future `Tabs` unchanged.
+`SegmentedControl`'s radiogroup and `Table`'s selectable rows today, and a
+future `Tabs` unchanged.
 
 ## Import
 
@@ -101,6 +102,12 @@ navigation order is computed from the enabled items alone, so wrapping and
 `Home`/`End` land on real targets. Any handled key calls `preventDefault()`;
 anything else is left to the browser.
 
+Keys are only handled when they are pressed on the item **itself**. An item is
+not always a leaf — a grid row holds real controls — and a key pressed on a
+button, link or input inside one belongs to that control. Without this, typing
+in a cell would move the row focus and `Enter` on a nested button would activate
+the row instead.
+
 ## Activation modes
 
 `automatic` — the default, and what the radiogroup pattern requires — moves
@@ -125,11 +132,18 @@ or changes state. Because both facts are read from the element rather than
 passed in, nothing re-runs the modifier when they change — so each item is
 watched for changes to those attributes, and the tab stop hands off on its own.
 
-The tab stop is the selected item — unless nothing is selected, or the selected
-item is disabled, in which case it is the **first enabled item**. That fallback
-is not incidental: a radiogroup with no selection still has to be reachable by
-`Tab`, and without it a fresh group with nothing chosen would have no tab stop
-at all and would be skipped over entirely by keyboard users.
+The tab stop is where focus last was, else the selected item, else the **first
+enabled item**. That last fallback is not incidental: a radiogroup with no
+selection still has to be reachable by `Tab`, and without it a fresh group with
+nothing chosen would have no tab stop at all and would be skipped over entirely
+by keyboard users.
+
+Focus comes ahead of selection because the two only disagree when activation
+does not follow focus — a `manual` group, or one where several items are
+selected at once. There the selected item is not where the user is, and sending
+`Tab` back to it would undo their navigation. Focus is tracked with `focusin`
+rather than `focus`, so focus landing on a control *inside* an item still puts
+that item in play.
 
 A group in which every item is disabled has no tab stop, which is the correct
 outcome — there is nothing there to operate.
