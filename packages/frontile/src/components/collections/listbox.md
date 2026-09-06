@@ -563,7 +563,7 @@ Keyboard, handled on the list itself:
 | `Enter`, `Space`        | Select the active item                                              |
 | any single character    | Type-ahead: jumps to the item whose text starts with what you typed |
 
-Two details worth knowing. Type-ahead means `Space` selects only when no search is in
+Two details. Type-ahead means `Space` selects only when no search is in
 progress, so a space typed mid-search is treated as part of the search string rather than as
 a selection. And `@elementToAddKeyboardEvents` moves the key handling onto another element —
 that is how Select and Autocomplete keep focus in their input while driving the list.

@@ -221,9 +221,9 @@ server-rendered HTML.
 
 ## Accessibility
 
-Neither component adds a role or any ARIA attribute — `PortalTarget` is a plain `div`, and
-that is deliberate: the semantics belong to whatever you render inside it. What they do
-change is DOM position, and that has consequences:
+Neither component adds a role or any ARIA attribute — `PortalTarget` is a plain `div`, so
+the semantics belong to whatever you render inside it. What they do change is DOM position,
+and that has consequences:
 
 - **Reading and tab order follow the destination, not the source.** Content written next to a
   button but portalled to the end of the page is announced and reached there. Place your
@@ -236,10 +236,6 @@ change is DOM position, and that has consequences:
   `aria-describedby`, or `aria-labelledby`, since proximity in the DOM no longer implies it.
 - **Give a named target only one owner.** Two portals targeting the same name append in render
   order; for a slot that should hold one thing at a time, render one `Portal` at a time.
-
-These notes come from reading `portal.gts` and `portal-target.gts` and the integration tests
-in `test-app/tests/integration/components/overlays/`; the tests cover destination resolution,
-not assistive-technology behavior.
 
 ## API
 

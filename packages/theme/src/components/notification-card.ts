@@ -1,11 +1,11 @@
 import { tv } from '../tw';
 import { focusVisibleRing } from './shared';
 
-const btn = ['transition transition-200', ...focusVisibleRing];
+const btn = ['transition duration-200', ...focusVisibleRing];
 
 const notificationCard = tv({
   slots: {
-    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 font-body text-body-2xs rounded-xl shadow-sm transition-all transition-200 ease-in-out',
+    base: 'py-3 px-4 overflow-hidden flex items-center justify-between relative min-h-16 font-body text-body-2xs rounded-xl shadow-sm transition-all duration-200 ease-in-out',
     message: 'grow',
     customActions: 'flex flex-nowrap',
     customActionButton: [

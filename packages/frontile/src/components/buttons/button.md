@@ -391,9 +391,8 @@ export default class KeyboardParityExample extends Component {
 }
 ```
 
-`@type='submit'` and `@type='reset'` are deliberately exempt: the default is
-preserved there so a button inside a form still submits or resets it from the
-keyboard.
+`@type='submit'` and `@type='reset'` are exempt — the default is preserved
+there, so a button inside a form still submits or resets it from the keyboard.
 
 ### Buttons with no text
 
