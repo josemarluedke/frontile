@@ -3,8 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { on } from '@ember/modifier';
 import { ButtonGroup, Dropdown } from 'frontile';
-import type { TOC } from '@ember/component/template-only';
 import { currentOrigin } from 'site/utils/origin';
+import { CheckIcon, DuplicateIcon, ChevronDownIcon } from '../icons';
 
 export interface DocfyCopyPageSignature {
   Args: {
@@ -195,7 +195,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
           {{#if this.isCopied}}
             <CheckIcon class="w-4 h-4" />
           {{else}}
-            <CopyIcon class="w-4 h-4" />
+            <DuplicateIcon class="w-4 h-4" />
           {{/if}}
           {{this.primaryLabel}}
         </g.Button>
@@ -208,20 +208,7 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
             aria-label="More page actions"
             data-test-id="copy-page-trigger"
           >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            <ChevronDownIcon class="w-4 h-4" aria-hidden="true" />
           </d.Trigger>
 
           <d.Menu
@@ -247,34 +234,3 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
     </div>
   </template>
 }
-
-const CopyIcon: TOC<{ Element: SVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  >
-    <rect x="8" y="8" width="14" height="14" rx="2" ry="2" />
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
-    />
-  </svg>
-</template>;
-
-const CheckIcon: TOC<{ Element: SVGElement }> = <template>
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-    ...attributes
-  >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-  </svg>
-</template>;
