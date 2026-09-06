@@ -1,6 +1,15 @@
+---
+title: Migrating from Forms Legacy
+order: 6
+category: migrations
+subcategory: v0.18
+---
+
 # Migrating from Forms Legacy
 
 This guide will help you migrate from the legacy `@frontile/forms-legacy` package to the modern `frontile` forms. The new forms package provides improved developer experience, better accessibility, enhanced customization options, and reduced external dependencies.
+
+`@frontile/forms-legacy` is deprecated and will be removed in 0.19.0.
 
 ## Overview
 
@@ -110,7 +119,7 @@ export default class LoginForm extends Component {
 - No need to manually manage `@tracked` properties for form data
 - `result.data` contains all form values on submit
 
-For complete documentation on the Form component, validation patterns, nested data, and advanced features, see the [Form Component Documentation](https://frontile.dev/docs/forms/form).
+For complete documentation on the Form component, validation patterns, nested data, and advanced features, see the [Form Component Documentation](https://frontile.dev/docs/components/forms/form).
 
 ## Migrating Validation
 
@@ -236,7 +245,7 @@ export default class UserProfileForm extends Component {
 - Validation runs automatically on blur and submit (configurable with `@validateOn`)
 - Less code overall
 
-For complex validation scenarios or custom validation functions, see the [Form Component Documentation](https://frontile.dev/docs/forms/form).
+For complex validation scenarios or custom validation functions, see the [Form Component Documentation](https://frontile.dev/docs/components/forms/form).
 
 ## Nested Data Support
 
@@ -293,7 +302,7 @@ export default class UserSettingsForm extends Component {
 }
 ```
 
-The Form component automatically handles data flattening and unflattening. On submit, `result.data` will contain the properly nested structure. See the [Form Component Documentation](https://frontile.dev/docs/forms/form) for more details.
+The Form component automatically handles data flattening and unflattening. On submit, `result.data` will contain the properly nested structure. See the [Form Component Documentation](https://frontile.dev/docs/components/forms/form) for more details.
 
 ## Breaking Changes
 
@@ -874,4 +883,4 @@ For form validation patterns, see the [Migrating Validation](#migrating-validati
 
 ---
 
-This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `frontile`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/forms/form).
+This migration guide covers the essential changes needed to move from `@frontile/forms-legacy` to `frontile`. The new package provides improved developer experience with better accessibility, flexibility, and maintainability. For detailed Form component documentation, see [frontile.dev/docs/forms/form](https://frontile.dev/docs/components/forms/form).
