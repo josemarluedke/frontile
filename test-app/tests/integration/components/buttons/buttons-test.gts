@@ -4,8 +4,7 @@ import {
   render,
   triggerEvent,
   triggerKeyEvent,
-  click,
-  find
+  click
 } from '@ember/test-helpers';
 import { registerCustomStyles, tv } from '@frontile/theme';
 import { Button } from 'frontile';
@@ -442,19 +441,22 @@ module(
           </template>
         );
 
-        // A genuinely `disabled` button dispatches no click at all, and
-        // `@ember/test-helpers`'s `click()` throws proactively rather than
-        // simulate one (`Can not click disabled ...`), so a native
-        // `HTMLElement#click()` call is used here instead: per spec it is a
-        // no-op on a disabled element, which is exactly the behavior under
-        // test.
-        find('[data-test-id="button"]').click();
-
-        assert.strictEqual(
-          pressCount,
-          0,
-          '@onPress was suppressed while loading'
+        // The `press` modifier listens on pointer/mouse/key events and
+        // registers no `click` listener, so a native `element.click()` can
+        // never reach `onPress` and a test built on one passes even when
+        // `@isLoading` is unwired. Synthetic `dispatchEvent` is no better: it
+        // reaches listeners regardless of `disabled`, so driving
+        // pointerdown/pointerup would fail against a correct implementation.
+        // Asserting that the click helper refuses the element is the
+        // faithful check — it refuses for exactly the reason the browser
+        // does.
+        await assert.rejects(
+          click('[data-test-id="button"]'),
+          /disabled/,
+          'the click helper refuses a disabled button'
         );
+
+        assert.strictEqual(pressCount, 0, '@onPress never fired');
       });
     });
   }
