@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import { extensions, classicEmberSupport, ember } from '@embroider/vite';
 import { babel } from '@rollup/plugin-babel';
 import docfy from '@docfy/ember-vite';
+import Icons from 'unplugin-icons/vite';
 
 // Two builds from one config:
 //
@@ -35,6 +36,7 @@ export default defineConfig(({ isSsrBuild }) => ({
             }),
       },
     ),
+    Icons({ compiler: 'ember' }),
 
     // Nothing serves CSS out of the Node bundle.
     ...(isSsrBuild ? [] : [tailwindcss()]),
