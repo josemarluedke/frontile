@@ -135,6 +135,7 @@ export default {
     'forms-legacy': { label: 'Forms (Legacy)', order: 6 },
     notifications: { label: 'Notifications', order: 7 },
     overlays: { label: 'Overlays', order: 8 },
-    'changeset-form': { label: 'Changeset Form', order: 9 },
+    navigation: { label: 'Navigation', order: 9 },
+    'changeset-form': { label: 'Changeset Form', order: 10 },
   },
 };
