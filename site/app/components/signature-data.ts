@@ -8710,6 +8710,23 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'Component',
+    fileName:
+      'packages/frontile/declarations/components/notifications/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">SVGElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
@@ -8745,13 +8762,100 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'spacing',
-        type: { type: '<span class="hljs-built_in">number</span>' },
+        identifier: 'geometry',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'transform',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'zIndex',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'opacity',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'height',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Fixed height in px while collapsed, so a taller card behind the front one\ncannot stick out past it. `null` means the card sizes to its content.',
+              tags: {},
+            },
+            {
+              identifier: 'transformOrigin',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'top center\'</span> | <span class="hljs-string">\'bottom center\'</span>',
+                items: ["'top center'", "'bottom center'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'pointerEvents',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+                items: ["'none'", "'auto'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "`'none'` when the card is fully transparent (collapsed beyond\n`visibleToasts`), so it cannot swallow clicks meant for the page beneath\nit; `'auto'` otherwise.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          '<p>Position, scale, and stacking supplied by the container. When omitted\nthe card renders in place with no stack transform.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onMeasure',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "<p>Called with the card's measured height whenever it changes.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
-        tags: { defaultValue: { name: 'defaultValue', value: '16' } },
-        defaultValue: '<span class="hljs-number">16</span>',
+        description: 'The visual style of the card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
     ],
     Blocks: [],
@@ -8779,6 +8883,16 @@ const data: ComponentDoc[] = [
         description:
           'Custom class name, it will override the default ones using Tailwind Merge library.',
         tags: {},
+      },
+      {
+        identifier: 'expand',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Keep the stack expanded instead of collapsing it when not hovered.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'onDismiss',
@@ -8818,9 +8932,33 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
+        description:
+          'The peek offset between collapsed cards, and the gap between expanded\ncards, in px.',
         tags: { defaultValue: { name: 'defaultValue', value: '16' } },
         defaultValue: '<span class="hljs-number">16</span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The visual style applied to every card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'visibleToasts',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How many cards stay visible while the stack is collapsed.',
+        tags: { defaultValue: { name: 'defaultValue', value: '3' } },
+        defaultValue: '<span class="hljs-number">3</span>',
       },
     ],
     Blocks: [],

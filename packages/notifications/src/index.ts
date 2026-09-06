@@ -23,6 +23,12 @@ export {
   Notification,
   Timer,
   type NotificationOptions,
+  type NotificationContent,
+  type NotificationIntent,
+  type NotificationAppearance,
+  type NotificationUpdate,
   type DefaultConfig,
-  type CustomAction
+  type CustomAction,
+  type PromiseMessage,
+  type PromiseNotificationOptions
 } from 'frontile/notifications';
