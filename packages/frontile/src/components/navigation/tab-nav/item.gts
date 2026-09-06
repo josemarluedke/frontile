@@ -124,8 +124,8 @@ class TabNavItem extends Component<TabNavItemSignature> {
   <template>
     {{#if @route}}
       {{#if this.isDisabled}}
-        {{! An anchor cannot be natively disabled, and LinkTo cannot be talked out of rendering a real, navigable href -- its @disabled only short-circuits its click handler and tags on an un-themed disabled class. So a disabled @route item renders as a plain, href-less anchor instead, the same way a disabled @href item does. }}
-        {{! template-lint-disable no-unsupported-role-attributes }}
+        {{! An anchor cannot be natively disabled, and LinkTo cannot be talked out of rendering a real, navigable href -- its @disabled only short-circuits its click handler and tags on an un-themed disabled class. So a disabled @route item renders as a plain, href-less anchor instead, the same way a disabled @href item does. A disabled item must not be navigable, and since an <a> cannot be natively disabled, dropping the href is the disabling mechanism. }}
+        {{! template-lint-disable no-unsupported-role-attributes link-href-attributes }}
         {{! aria-disabled is intentionally kept here even with no href attribute
           at all: the static linter can't see that, and a disabled item must
           still carry aria-disabled per this component's documented contract. }}
