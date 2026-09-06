@@ -7,8 +7,9 @@ description: Write, review, and audit Frontile component documentation — the c
 
 This skill is deliberately not a writing guide. It carries the mechanics of this repo's docs
 pipeline that you cannot infer from reading the code, and the two places where sensible
-instincts produce a wrong result here. Everything else — voice, structure, what makes a good
-example — you can read off the sibling `.md` files, and they're a better teacher than prose.
+instincts produce a wrong result here, plus one rule about who the prose is for. Everything
+else — structure, what makes a good example — you can read off the sibling `.md` files, and
+they're a better teacher than prose.
 
 Frontile's docs are the library's demo surface. Docfy renders every ` ```gts preview ` fence
 on frontile.dev as a live, running component, so a wrong class name is a broken page and an
@@ -85,8 +86,9 @@ and the anatomy pattern for yielding components: **`references/structure.md`**.
 
 `## Accessibility` is required because it's the one section a type signature can't generate:
 keyboard table, roles and ARIA the consumer must supply, focus management, screen-reader
-notes. Read the component's tests and document what you verified — if there's no test file,
-say your claims came from source.
+notes. Read the component's tests so your claims are grounded — but state the behaviour, not
+the evidence for it (see *Write for the reader, not the reviewer*). If there's no test file,
+say in your report, not on the page, that your claims came from source.
 
 ## Demos
 
@@ -115,6 +117,50 @@ component-free demos in the theming docs are legitimate for that reason. Raw pal
 
 So the test isn't "does this import `frontile`", it's **"would a reader copying this end up
 reimplementing something we already give them?"**
+
+## Write for the reader, not the reviewer
+
+The audience is someone meeting the component for the first time. They need to know what it
+does and what they have to write. They do not need to know why it was built this way, what
+alternative was rejected, or how a claim was checked — that belongs in code comments, the
+PR, or the tests.
+
+This drifts in during review. A reviewer challenges a claim, the claim gets corrected, and
+the correction's *reasoning* is left in the prose — so the page ends up arguing with an
+earlier version of itself. Cut the argument and keep the corrected fact.
+
+Tells, all of which came out of one page:
+
+- **Defensive contrasts** — "genuinely", "rather than", "not fatal", "it is X only", "the
+  exception is". They rebut a claim the reader never made.
+- **Internal vocabulary** — "fake caret", "the mirror", a class or method name used as if
+  the reader knows it.
+- **Verification narration** — what tests cover, what a headless browser can't do, what
+  needs a real device.
+- **Implementation rationale** — *why* it works this way when the reader only needs *what*
+  it does.
+- **Environment reasoning** — dev vs. production behaviour a consumer never observes.
+
+| Instead of | Write |
+|---|---|
+| "…all work **without any of it being reimplemented**" | "…behave exactly as they would on an ordinary text field" |
+| "**It is a rendering choice only** — the input stays `type="text"`… because `type="password"` would disable autofill" | "Only the display changes: autofill and password managers keep working" |
+| "a mismatch is not fatal… **Development and production draw the same thing**" | "the groups are adjusted to fit — you always get exactly `@length` cells" |
+
+An entire callout headed **"On the autofill claims"**, explaining that the attributes were
+tested but the OS integrations needed a real device, was deleted outright. Nothing in it
+changed what the reader would write.
+
+This is not "cut all detail". Subtle behaviour that changes what the reader writes stays —
+that a custom `@pattern` must match partial values or the field can't be typed into, that
+`@onInput` fires per keystroke while `@onChange` fires on blur, that a paste failing the
+rule is rejected whole rather than stripped.
+
+**The test: does this change what the reader writes or expects to see? Keep it. Does it
+explain why the implementation is the way it is, or how someone checked it? Cut it.**
+
+When auditing an existing page, read for these tells the way you'd read for a wrong class
+name — they accumulate silently and no linter catches them.
 
 ## Shortening a doc
 
@@ -184,6 +230,10 @@ cd site && pnpm build
 ```
 
 If that didn't run, say the demos are unverified rather than implying they were checked.
+
+Neither check reads prose. When reviewing or auditing a page, do that pass yourself: scan
+for the tells in *Write for the reader, not the reviewer* and report each one with the
+sentence it's in.
 
 ## Repo facts
 
