@@ -4,7 +4,8 @@ import {
   render,
   triggerEvent,
   triggerKeyEvent,
-  click
+  click,
+  find
 } from '@ember/test-helpers';
 import { registerCustomStyles, tv } from '@frontile/theme';
 import { Button } from 'frontile';
@@ -320,6 +321,139 @@ module(
           pressEventCount,
           0,
           'onPress should not be called in renderless mode'
+        );
+      });
+    });
+
+    module('@isLoading', function () {
+      test('it is not loading by default', async function (assert) {
+        await render(
+          <template>
+            <Button data-test-id="button">Save</Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').doesNotHaveAttribute('disabled');
+        assert.dom('[data-test-id="button"]').doesNotHaveAttribute('aria-busy');
+        assert
+          .dom('[data-test-id="button"]')
+          .doesNotHaveAttribute('data-loading');
+      });
+
+      test('it disables and marks the button busy while loading', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button">Save</Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').isDisabled();
+        assert.dom('[data-test-id="button"]').hasAttribute('aria-busy', 'true');
+        assert
+          .dom('[data-test-id="button"]')
+          .hasAttribute('data-loading', 'true');
+      });
+
+      test('it clears the loading state when @isLoading becomes false', async function (assert) {
+        class State {
+          @tracked isLoading = true;
+        }
+        const state = new State();
+        const stopLoading = () => (state.isLoading = false);
+
+        await render(
+          <template>
+            <Button
+              @isLoading={{state.isLoading}}
+              data-test-id="button"
+            >Save</Button>
+            <button
+              type="button"
+              data-test-id="stop"
+              {{on "click" stopLoading}}
+            >stop</button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').isDisabled();
+
+        await click('[data-test-id="stop"]');
+
+        assert.dom('[data-test-id="button"]').isNotDisabled();
+        assert.dom('[data-test-id="button"]').doesNotHaveAttribute('aria-busy');
+      });
+
+      test('a consumer disabled={{false}} does not defeat @isLoading', async function (assert) {
+        await render(
+          <template>
+            <Button
+              @isLoading={{true}}
+              disabled={{false}}
+              data-test-id="button"
+            >
+              Save
+            </Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').isDisabled();
+      });
+
+      test('a consumer disabled={{true}} survives @isLoading toggling off', async function (assert) {
+        class State {
+          @tracked isLoading = true;
+        }
+        const state = new State();
+        const stopLoading = () => (state.isLoading = false);
+
+        await render(
+          <template>
+            <Button
+              @isLoading={{state.isLoading}}
+              disabled={{true}}
+              data-test-id="button"
+            >Save</Button>
+            <button
+              type="button"
+              data-test-id="stop"
+              {{on "click" stopLoading}}
+            >stop</button>
+          </template>
+        );
+
+        await click('[data-test-id="stop"]');
+
+        assert
+          .dom('[data-test-id="button"]')
+          .isDisabled('the consumer disable is restored, not cleared');
+      });
+
+      test('@onPress does not fire while loading', async function (assert) {
+        let pressCount = 0;
+        const handlePress = () => (pressCount += 1);
+
+        await render(
+          <template>
+            <Button
+              @isLoading={{true}}
+              @onPress={{handlePress}}
+              data-test-id="button"
+            >Save</Button>
+          </template>
+        );
+
+        // A genuinely `disabled` button dispatches no click at all, and
+        // `@ember/test-helpers`'s `click()` throws proactively rather than
+        // simulate one (`Can not click disabled ...`), so a native
+        // `HTMLElement#click()` call is used here instead: per spec it is a
+        // no-op on a disabled element, which is exactly the behavior under
+        // test.
+        find('[data-test-id="button"]').click();
+
+        assert.strictEqual(
+          pressCount,
+          0,
+          '@onPress was suppressed while loading'
         );
       });
     });

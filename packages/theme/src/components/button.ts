@@ -102,6 +102,9 @@ const button = tv({
       minimal: '',
       tonal: 'shadow-elevation-2',
       custom: ''
+    },
+    isLoading: {
+      true: 'disabled:cursor-progress'
     }
   },
   compoundVariants: [
