@@ -264,5 +264,10 @@
    rounding, so the block's own `my-6` opened a 25px gap inside that border at
    the top and bottom, and its border/radius doubled the snippet's own. */
 .docfy-demo__snippet .docfy-code-block {
-  @apply m-0 rounded-none border-0;
+  /* The block paints an opaque background, so it has to carry the snippet's own
+     bottom rounding — `rounded-none` left square corners covering the rounded
+     ones beneath. Same `rounded-b` utility as `.docfy-demo__snippet`, so the two
+     stay in step if the radius token changes. The block's `overflow-hidden`
+     then clips the `pre` inside it to match. */
+  @apply m-0 rounded-t-none rounded-b border-0;
 }
