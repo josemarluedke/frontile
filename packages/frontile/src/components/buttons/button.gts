@@ -187,10 +187,7 @@ class Button extends Component<ButtonSignature> {
 
   <template>
     {{#if @isRenderless}}
-      {{yield
-        (hash classNames=this.classNames isLoading=this.isLoading)
-        to="default"
-      }}
+      {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
     {{else}}
       <button
         type={{this.type}}
@@ -215,16 +212,10 @@ class Button extends Component<ButtonSignature> {
           {{#if (has-block "loading")}}
             {{yield to="loading"}}
           {{else}}
-            {{yield
-              (hash classNames=this.classNames isLoading=this.isLoading)
-              to="default"
-            }}
+            {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
           {{/if}}
         {{else}}
-          {{yield
-            (hash classNames=this.classNames isLoading=this.isLoading)
-            to="default"
-          }}
+          {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
         {{/if}}
 
         {{#if this.isIconAtEnd}}
