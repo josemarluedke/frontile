@@ -19,8 +19,8 @@ component uses, see that component's own **Accessibility** section — for examp
 
 Frontile owns:
 
-- Correct ARIA roles, states, and relationships for each component (e.g. `aria-expanded`,
-  `aria-selected`, `aria-modal`).
+- Correct ARIA roles, states, and relationships for each component (e.g. `aria-modal`,
+  `aria-invalid`).
 - Keyboard navigation within a component — arrow keys, Home/End, typeahead, and Tab
   behavior for lists, menus, tables, and grouped controls.
 - Focus behavior around opening and closing overlays — where focus goes when a modal opens,

@@ -17,13 +17,17 @@ regardless of how many items a list contains.
 - **Tab** enters or leaves the group in one press — it never steps through every item.
 - **Arrow keys** move focus between items. Horizontal groups (e.g. `SegmentedControl`) use
   Left/Right; vertical groups (e.g. `Table`, `Listbox`) use Up/Down.
-- **Home** / **End** jump to the first / last enabled item.
+- **Home** / **End** jump to the first / last enabled item, in components built on
+  `rovingFocus`. `Listbox` implements the same Home/End behavior itself via a separate,
+  hand-rolled key handler rather than through `ListManager`, and additionally treats
+  PageUp/PageDown the same as Home/End.
 - **Typeahead** — typing a letter jumps to the next item whose text starts with it, in
   components that support text search (Listbox, Select, Autocomplete, Command).
 - **Disabled items are skipped** — navigation is computed from the enabled items only, so
   wrapping and Home/End always land on something usable.
-- In a right-to-left layout, Left/Right swap so "next" and "previous" still match the
-  direction the user reads in. Vertical navigation is unaffected.
+- In a right-to-left layout, `rovingFocus`-based horizontal groups swap Left/Right so "next"
+  and "previous" still match the direction the user reads in. Vertical navigation is
+  unaffected.
 
 ## Two activation styles
 

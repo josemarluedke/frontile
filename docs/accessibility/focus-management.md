@@ -44,19 +44,19 @@ Notice how the keyboard focus is clearly visible with `Tab`, but clicking with t
 Modal, Drawer, Popover, and Dropdown are all built on the shared `Overlay` primitive, which
 manages focus around opening and closing:
 
-- **On open**, focus moves into the overlay's content automatically, unless
-  `@disableFocusTrap={{true}}` or `@preventAutoFocus={{true}}` is passed.
+- **On open**, focus moves into the overlay's content. By default the focus trap is active,
+  and moving focus into the content is handled by the focus-trap library itself as part of
+  activating the trap. If `@disableFocusTrap={{true}}` is passed, the trap doesn't run at
+  all — in that case Overlay focuses the content itself instead, unless
+  `@preventAutoFocus={{true}}` is also passed. (`@preventAutoFocus` only has an effect when
+  the trap is disabled; it does nothing when the trap is active.)
 - **While open**, a focus trap keeps Tab and Shift+Tab cycling within the overlay's content,
   so keyboard users can't tab out to the page behind it. This is configurable via
   `@focusTrapOptions` and can be turned off entirely with `@disableFocusTrap={{true}}`.
 - **On close**, focus returns to whatever element had focus before the overlay opened —
   typically the button that triggered it — unless `@preventFocusRestore={{true}}` is passed.
-- On `Modal`, `aria-modal="true"` tracks whether the trap is actually active, so assistive
-  technology isn't told the page is modal when the trap has been disabled.
-
-The overlay needs at least one focusable element inside its content for the trap to have
-somewhere to put focus — an overlay with no focusable content is a dead end for keyboard
-users.
+- On `Modal` and `Drawer`, `aria-modal="true"` tracks whether the trap is actually active, so
+  assistive technology isn't told the page is modal when the trap has been disabled.
 
 ## Used by
 

@@ -17,12 +17,22 @@ When content changes without a user interaction that would move focus there — 
 notification appearing, or a search result count updating — screen readers need to be told
 explicitly, because nothing about the DOM change otherwise gets announced.
 
-Frontile uses `aria-live="polite"` for this in two places today:
+Frontile uses live regions for this in three places today:
 
-- `NotificationsContainer` wraps its toasts in a live region, so a notification is announced
-  when it appears without moving focus away from what the user was doing.
-- `Command`'s result list announces its result count as the user types, so a screen reader
-  user knows how many matches exist without needing to navigate into the list.
+- `NotificationsContainer` wraps its toasts in an `aria-live="polite"` region, so a
+  notification is announced when it appears without moving focus away from what the user was
+  doing.
+- `Command`'s result list uses `aria-live="polite"` to announce its result count as the user
+  types, so a screen reader user knows how many matches exist without needing to navigate into
+  the list.
+- `FormControl` mounts an always-present, visually hidden `aria-live="assertive"` region for a
+  field's error text, empty until an error occurs. It's mounted unconditionally (rather than
+  only once the field becomes invalid) because a live region that appears at the same moment
+  as its content is not reliably announced — assistive technology needs to already be
+  observing the region before the message lands in it. This is what makes the error text
+  described in the Labeling section below actually get announced the moment it appears,
+  rather than only being discoverable via `aria-describedby` if the user happens to
+  re-navigate to the field.
 
 There's no reusable "announcer" utility in Frontile yet — each of these is a
 component-specific `aria-live` region. If you need the same pattern in your own application
@@ -46,8 +56,9 @@ Two mechanisms cover the common labeling needs:
 ## The combobox pattern
 
 `Command` and `Autocomplete` implement the ARIA combobox pattern: the text input carries
-`role="combobox"`, `aria-autocomplete="list"`, `aria-expanded` (reflecting whether the list is
-open), `aria-controls` (pointing at the list), and `aria-activedescendant` (pointing at
+`role="combobox"`, `aria-autocomplete="list"`, `aria-expanded` (reflecting whether there are
+results to show, not simply whether the list is open), `aria-controls` (pointing at the
+list), and `aria-activedescendant` (pointing at
 whichever item is currently highlighted, without moving DOM focus off the input). Together
 these let a screen reader track "which item is highlighted in the open list" purely from
 attributes on the input the user is actually typing into.
@@ -59,3 +70,4 @@ attributes on the input the user is actually typing into.
 - [Field](../../packages/frontile/src/components/forms/field.md)
 - [Command](../../packages/frontile/src/components/collections/command.md)
 - [Autocomplete](../../packages/frontile/src/components/forms/autocomplete.md)
+- [Notifications](../../packages/frontile/docs/notifications-usage.md)
