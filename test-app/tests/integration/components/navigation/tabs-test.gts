@@ -220,6 +220,11 @@ module(
       // is the thing consumers actually see.
       await render(
         <template>
+          {{! template-lint-disable no-inline-styles }}
+          {{! An inline style, not utility classes: the container has to be a
+            known width and shrink-to-fit regardless of whether Tailwind
+            scanned this test file, since that is the exact condition the
+            assertion below depends on. }}
           <div
             id="wrap"
             style="width: 384px; display: flex; flex-direction: column; align-items: flex-start"

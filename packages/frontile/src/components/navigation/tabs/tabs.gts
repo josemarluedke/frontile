@@ -160,7 +160,7 @@ class Tabs<T> extends Component<TabsSignature<T>> {
   indicator = selectionIndicator();
 
   roving = rovingFocus(() => ({
-    orientation: this.args.orientation ?? 'horizontal',
+    orientation: this.orientation,
     activationMode: this.args.activationMode ?? 'automatic',
     onActivate: this.activateElement
   }));

@@ -40,7 +40,11 @@ const tabs = tv({
       'text-neutral-firm',
       // Scoped to unselected: an unscoped `hover:` ties on specificity with
       // the selected ink, leaving the winner to Tailwind's variant order.
-      'data-[selected=false]:data-[disabled=false]:hover:text-neutral-strong',
+      // "Not disabled" is `not-data-[disabled=true]`, not `data-[disabled=false]`:
+      // an attribute-value selector cannot match an element that never declares
+      // the attribute, and a consumer bringing their own element should not have
+      // to know the theme wants a `data-disabled="false"` written onto it.
+      'data-[selected=false]:not-data-[disabled=true]:hover:text-neutral-strong',
       'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-disabled'
     ],
 
@@ -66,17 +70,39 @@ const tabs = tv({
       }
     },
 
-    // Only the indicator's fill is shared across variants. The selected text
-    // colour differs -- filled pill needs a contrast colour, a bare underline
-    // does not -- so it is set in compoundVariants.
+    // Fill and selected ink travel together: the label sits on the fill, so a
+    // new intent needs both or its selected label is unreadable on its own
+    // background. `underline` overrides the ink in one compound below, since a
+    // bare bar puts no fill behind the label.
     intent: {
-      default: { indicator: 'bg-surface-card dark:bg-neutral-soft' },
-      primary: { indicator: 'bg-primary' },
-      secondary: { indicator: 'bg-secondary' },
-      tertiary: { indicator: 'bg-tertiary' },
-      success: { indicator: 'bg-success' },
-      warning: { indicator: 'bg-warning' },
-      danger: { indicator: 'bg-danger' }
+      default: {
+        indicator: 'bg-surface-card dark:bg-neutral-soft',
+        tab: 'data-[selected=true]:text-neutral-bolder'
+      },
+      primary: {
+        indicator: 'bg-primary',
+        tab: 'data-[selected=true]:text-on-primary'
+      },
+      secondary: {
+        indicator: 'bg-secondary',
+        tab: 'data-[selected=true]:text-on-secondary'
+      },
+      tertiary: {
+        indicator: 'bg-tertiary',
+        tab: 'data-[selected=true]:text-on-tertiary'
+      },
+      success: {
+        indicator: 'bg-success',
+        tab: 'data-[selected=true]:text-on-success'
+      },
+      warning: {
+        indicator: 'bg-warning',
+        tab: 'data-[selected=true]:text-on-warning'
+      },
+      danger: {
+        indicator: 'bg-danger',
+        tab: 'data-[selected=true]:text-on-danger'
+      }
     },
 
     size: {
@@ -102,48 +128,15 @@ const tabs = tv({
   },
 
   compoundVariants: [
-    // -- solid: the pill is filled, so selected text needs a contrast colour.
-    {
-      variant: 'solid',
-      intent: 'default',
-      class: { tab: 'data-[selected=true]:text-neutral-bolder' }
-    },
-    {
-      variant: 'solid',
-      intent: 'primary',
-      class: { tab: 'data-[selected=true]:text-on-primary' }
-    },
-    {
-      variant: 'solid',
-      intent: 'secondary',
-      class: { tab: 'data-[selected=true]:text-on-secondary' }
-    },
-    {
-      variant: 'solid',
-      intent: 'tertiary',
-      class: { tab: 'data-[selected=true]:text-on-tertiary' }
-    },
-    {
-      variant: 'solid',
-      intent: 'success',
-      class: { tab: 'data-[selected=true]:text-on-success' }
-    },
-    {
-      variant: 'solid',
-      intent: 'warning',
-      class: { tab: 'data-[selected=true]:text-on-warning' }
-    },
-    {
-      variant: 'solid',
-      intent: 'danger',
-      class: { tab: 'data-[selected=true]:text-on-danger' }
-    },
-
-    // -- underline: only the bar carries the intent colour; the label stays
-    // high-contrast neutral at every intent, matching the reference designs.
+    // -- underline: no fill behind the label, so the intent colour lives on the
+    // bar alone and the label stays high-contrast neutral at every intent --
+    // matching the reference designs. The hover chip shares this matcher, so it
+    // rides along rather than repeating the condition in a second entry.
     {
       variant: 'underline',
-      class: { tab: 'data-[selected=true]:text-neutral-bolder' }
+      class: {
+        tab: 'data-[selected=true]:text-neutral-bolder data-[selected=false]:not-data-[disabled=true]:hover:bg-surface-overlay-soft'
+      }
     },
     // A pill radius on a tall narrow column reads as an oval blob, so the
     // vertical axis squares off -- on the track and on what sits inside it, or
@@ -163,13 +156,6 @@ const tabs = tv({
       variant: 'underline',
       intent: 'default',
       class: { indicator: 'bg-neutral-bolder' }
-    },
-    // A subtle chip behind an unselected tab on hover.
-    {
-      variant: 'underline',
-      class: {
-        tab: 'data-[selected=false]:data-[disabled=false]:hover:bg-surface-overlay-soft'
-      }
     },
     {
       variant: 'underline',

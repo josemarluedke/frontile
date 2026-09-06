@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { service } from '@ember/service';
 import { LinkTo } from '@ember/routing';
 import type RouterService from '@ember/routing/router-service';
@@ -72,6 +73,7 @@ class TabNavItem extends Component<TabNavItemSignature> {
   // touches the router.
   @service declare router: RouterService;
 
+  @cached
   get models(): unknown[] {
     // `!= null` (not truthiness) so a legitimate falsy dynamic segment --
     // `@model={{0}}` or `@model=""` -- is not silently dropped.
@@ -83,6 +85,7 @@ class TabNavItem extends Component<TabNavItemSignature> {
   // `LinkTo`'s `@query` throws when given `undefined` rather than treating it
   // as "no query params" -- so this must default to an empty object, the same
   // way `models` defaults to an empty array.
+  @cached
   get query(): Record<string, unknown> {
     return this.args.query ?? {};
   }
@@ -121,42 +124,38 @@ class TabNavItem extends Component<TabNavItemSignature> {
     return this.args.isDisabled ?? false;
   }
 
+  /**
+   * A `LinkTo` is only rendered for a route the item can actually navigate to.
+   * `LinkTo` cannot be talked out of a real, navigable href -- its `@disabled`
+   * only short-circuits the click handler and tags on an un-themed `disabled`
+   * class -- so a disabled route item falls through to the plain anchor
+   * instead, where dropping the href is what actually disables it.
+   *
+   * That anchor keeps `aria-disabled` even with no href at all, per this
+   * component's documented contract. `no-unsupported-role-attributes` is
+   * disabled over it for exactly that pairing: the rule cannot see that the
+   * href is conditional.
+   */
+  get rendersLink(): boolean {
+    return Boolean(this.args.route) && !this.isDisabled;
+  }
+
   <template>
-    {{#if @route}}
-      {{#if this.isDisabled}}
-        {{! An anchor cannot be natively disabled, and LinkTo cannot be talked out of rendering a real, navigable href -- its @disabled only short-circuits its click handler and tags on an un-themed disabled class. So a disabled @route item renders as a plain, href-less anchor instead, the same way a disabled @href item does. A disabled item must not be navigable, and since an <a> cannot be natively disabled, dropping the href is the disabling mechanism. }}
-        {{! template-lint-disable no-unsupported-role-attributes link-href-attributes }}
-        {{! aria-disabled is intentionally kept here even with no href attribute
-          at all: the static linter can't see that, and a disabled item must
-          still carry aria-disabled per this component's documented contract. }}
-        <a
-          class="{{@itemClass}} {{@class}}"
-          aria-disabled="true"
-          data-disabled="true"
-          {{@setupItem this.isActive}}
-          ...attributes
-        >
-          {{yield}}
-        </a>
-      {{else}}
-        <LinkTo
-          @route={{@route}}
-          @models={{this.models}}
-          @query={{this.query}}
-          class="{{@itemClass}} {{@class}}"
-          aria-disabled="false"
-          data-disabled="false"
-          {{@setupItem this.isActive}}
-          ...attributes
-        >
-          {{yield}}
-        </LinkTo>
-      {{/if}}
+    {{#if this.rendersLink}}
+      <LinkTo
+        @route={{@route}}
+        @models={{this.models}}
+        @query={{this.query}}
+        class="{{@itemClass}} {{@class}}"
+        aria-disabled="false"
+        data-disabled="false"
+        {{@setupItem this.isActive}}
+        ...attributes
+      >
+        {{yield}}
+      </LinkTo>
     {{else}}
       {{! template-lint-disable no-unsupported-role-attributes }}
-      {{! Same as above: href is conditional on @isDisabled, so this anchor
-        can be href-less, but aria-disabled must stay per the documented
-        contract. }}
       <a
         href={{unless this.isDisabled @href}}
         class="{{@itemClass}} {{@class}}"

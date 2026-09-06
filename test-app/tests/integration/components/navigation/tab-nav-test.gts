@@ -65,50 +65,93 @@ module(
       );
     });
 
-    test('setupItem defaults data-disabled to false, but never clobbers a value already declared on the element', async function (assert) {
-      // The theme's hover rules are scoped behind BOTH
-      // `data-[selected=false]` AND `data-[disabled=false]` (see
-      // packages/theme/src/components/tabs.ts). An element with no
-      // `data-disabled` attribute at all does not match `[data-disabled=false]`,
-      // so a plain link with only `data-selected` written on it would get no
-      // hover feedback. `setupItem` must default the attribute to "false" when
-      // the consumer hasn't declared it -- while leaving alone an element that
-      // already declares `data-disabled` itself, since `TabNav.Item` (Task 8)
-      // renders `data-disabled="{{this.isDisabled}}"` directly in its template
-      // and setupItem must not stomp on that.
+    test('the hover rule reaches a link that never declares data-disabled', async function (assert) {
+      // The theme expresses "not disabled" as `not-data-[disabled=true]` rather
+      // than `data-[disabled=false]`, precisely so a consumer bringing their own
+      // element does not have to know the theme wants an attribute written onto
+      // it. Asserting on the generated rule rather than on a written attribute
+      // is what keeps that promise honest: it fails if the theme ever goes back
+      // to a selector that requires the attribute to be present.
       await render(
         <template>
           <TabNav @label="Sections" as |nav|>
             <a
               href="/one"
               class={{nav.itemClass}}
-              {{nav.setupItem true}}
-            >One</a>
-            <a
-              href="/two"
-              class={{nav.itemClass}}
-              data-disabled="true"
               {{nav.setupItem false}}
-            >Two</a>
+            >One</a>
           </TabNav>
         </template>
       );
 
-      const links = findAll('nav a');
+      const link = find('nav a') as HTMLElement;
+
       assert
-        .dom(links[0]!)
-        .hasAttribute(
+        .dom(link)
+        .doesNotHaveAttribute(
           'data-disabled',
-          'false',
-          'a link with no declared data-disabled gets it defaulted to false'
+          'setupItem no longer has to write the attribute at all'
         );
-      assert
-        .dom(links[1]!)
-        .hasAttribute(
-          'data-disabled',
-          'true',
-          'a link that already declares data-disabled keeps its own value'
-        );
+
+      // Tailwind wraps hover in `@media (hover: hover)` and uses CSS nesting,
+      // so the selector is not on a top-level rule -- walk grouping and nested
+      // rules too, or this finds nothing and passes for the wrong reason.
+      const hoverSelectors: string[] = [];
+      const collect = (rules: CSSRuleList): void => {
+        for (const rule of Array.from(rules)) {
+          const nested = (rule as CSSGroupingRule).cssRules;
+          if (nested) {
+            collect(nested);
+          }
+          const selector = (rule as CSSStyleRule).selectorText;
+          if (selector && selector.includes('data-disabled')) {
+            hoverSelectors.push(selector);
+          }
+        }
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          collect(sheet.cssRules);
+        } catch {
+          continue; // cross-origin sheet
+        }
+      }
+
+      assert.ok(
+        hoverSelectors.length > 0,
+        `the theme emits disabled-scoped rules (${hoverSelectors.length})`
+      );
+
+      // Only the "not disabled" rules matter here; drop `:hover` and the
+      // nesting `&` so the selector can be matched without a real pointer.
+      const notDisabled = hoverSelectors.filter((selector) =>
+        selector.includes(':not(')
+      );
+
+      assert.ok(
+        notDisabled.length > 0,
+        `and expresses "not disabled" as :not(...) (${notDisabled.join(' | ')})`
+      );
+
+      // Strip only the trailing `:hover` pseudo-class. A blanket replace would
+      // also gut the escaped `\:hover\:` inside Tailwind's own class name and
+      // leave a selector that matches nothing -- which would fail for a reason
+      // that has nothing to do with the rule under test.
+      const matched = notDisabled.some((selector) =>
+        selector.split(',').some((part) => {
+          const cleaned = part.trim().replace(/:hover$/, '');
+          try {
+            return cleaned !== '' && link.matches(cleaned);
+          } catch {
+            return false;
+          }
+        })
+      );
+
+      assert.true(
+        matched,
+        'the link matches a hover rule despite carrying no data-disabled attribute'
+      );
     });
 
     test('every link stays in the tab order and arrow keys are not intercepted', async function (assert) {
