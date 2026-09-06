@@ -6,6 +6,7 @@ import {
   click,
   findAll,
   focus,
+  settled,
   triggerKeyEvent,
   waitUntil
 } from '@ember/test-helpers';
@@ -13,7 +14,7 @@ import { cell } from 'ember-resources';
 import { Tabs } from 'frontile';
 
 module(
-  'Integration | Component | Tabs | @frontile/navigation',
+  'Integration | Component | Tabs | frontile/navigation',
   function (hooks) {
     setupRenderingTest(hooks);
 
@@ -438,6 +439,97 @@ module(
         .isFocused('focus jumped over the disabled tab');
     });
 
+    test('Home and End jump to the first and last enabled tab', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="security" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+              <t.Tab @value="billing">Billing</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      await focus(findAll('[role="tab"]')[1]!);
+
+      await triggerKeyEvent(findAll('[role="tab"]')[1]!, 'keydown', 'End');
+      assert.dom(findAll('[role="tab"]')[2]!).isFocused('End goes to the last');
+
+      await triggerKeyEvent(findAll('[role="tab"]')[2]!, 'keydown', 'Home');
+      assert
+        .dom(findAll('[role="tab"]')[0]!)
+        .isFocused('Home goes back to the first');
+    });
+
+    test('Home and End skip tabs disabled at either end', async function (assert) {
+      // Four tabs with both ends disabled, so the enabled span is the middle
+      // pair. Focus starts on the second of those, which means Home and End
+      // each have somewhere to move to -- were the keys unhandled, or were
+      // disabled tabs not skipped, focus would land somewhere else and these
+      // assertions would fail rather than pass by standing still.
+      await render(
+        <template>
+          <Tabs @defaultValue="security" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account" @isDisabled={{true}}>Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+              <t.Tab @value="billing">Billing</t.Tab>
+              <t.Tab @value="archive" @isDisabled={{true}}>Archive</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      await focus(findAll('[role="tab"]')[2]!);
+
+      await triggerKeyEvent(findAll('[role="tab"]')[2]!, 'keydown', 'Home');
+      assert
+        .dom(findAll('[role="tab"]')[1]!)
+        .isFocused('Home lands on the first *enabled* tab, not the first tab');
+
+      await triggerKeyEvent(findAll('[role="tab"]')[1]!, 'keydown', 'End');
+      assert
+        .dom(findAll('[role="tab"]')[2]!)
+        .isFocused('and End on the last enabled one, not the last tab');
+    });
+
+    test('arrow keys wrap around at both ends', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+              <t.Tab @value="billing">Billing</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      // Backwards off the first tab lands on the last.
+      await focus(findAll('[role="tab"]')[0]!);
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[0]!,
+        'keydown',
+        'ArrowLeft'
+      );
+      assert
+        .dom(findAll('[role="tab"]')[2]!)
+        .isFocused('ArrowLeft from the first wraps to the last');
+
+      // And forwards off the last lands back on the first.
+      await triggerKeyEvent(
+        findAll('[role="tab"]')[2]!,
+        'keydown',
+        'ArrowRight'
+      );
+      assert
+        .dom(findAll('[role="tab"]')[0]!)
+        .isFocused('ArrowRight from the last wraps to the first');
+    });
+
     test('vertical orientation uses the vertical arrow keys', async function (assert) {
       await render(
         <template>
@@ -531,15 +623,39 @@ module(
         </template>
       );
 
-      // `data-fr-si-ready` gates opacity, so the class is only meaningful in
-      // combination with it. Assert the gate exists rather than the opacity.
+      const list = find('[role="tablist"]') as HTMLElement;
+      const indicator = list.querySelector(
+        'span[aria-hidden="true"]'
+      ) as HTMLElement;
+
       assert
-        .dom('[role="tablist"]')
+        .dom(list)
         .hasAttribute(
           'data-fr-si-ready',
           '',
           'the ready flag is set once measured'
         );
+      assert.strictEqual(
+        window.getComputedStyle(indicator).opacity,
+        '1',
+        'and the indicator is visible while it is set'
+      );
+
+      // The flag is only worth setting if its absence actually hides the
+      // indicator. Taking it away is the one way to observe the pre-ready
+      // state deterministically -- it lands within a frame of the first
+      // measurement, so a fresh render cannot be caught before it. Without
+      // this, dropping `opacity-0` from the theme would leave the indicator
+      // flying in from the container origin on first paint and no test would
+      // notice.
+      list.removeAttribute('data-fr-si-ready');
+      await settled();
+
+      assert.strictEqual(
+        window.getComputedStyle(indicator).opacity,
+        '0',
+        'and hidden whenever it is not'
+      );
     });
 
     test('the underline variant pins a bar to the bottom edge', async function (assert) {

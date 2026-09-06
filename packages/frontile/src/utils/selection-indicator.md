@@ -19,7 +19,8 @@ import { selectionIndicator } from 'frontile';
 
 ## The contract
 
-Call it to create an instance; the instance exposes two modifiers.
+Call it to create an instance; the instance exposes two modifiers and, for
+callers that cannot use a modifier, the two methods those modifiers wrap.
 
 ```js
 indicator = selectionIndicator();
@@ -40,12 +41,46 @@ selected as its sole positional argument:
 Only the element passed `true` is measured; its geometry is written to the
 container as four custom properties:
 
-| Property         | Value                            |
-| ----------------- | --------------------------------- |
-| `--fr-si-x`        | The selected element's `offsetLeft`  |
-| `--fr-si-y`        | The selected element's `offsetTop`   |
-| `--fr-si-width`    | The selected element's `offsetWidth` |
-| `--fr-si-height`   | The selected element's `offsetHeight`|
+| Property         | Value                                 |
+| ---------------- | ------------------------------------- |
+| `--fr-si-x`      | The selected element's `offsetLeft`   |
+| `--fr-si-y`      | The selected element's `offsetTop`    |
+| `--fr-si-width`  | The selected element's `offsetWidth`  |
+| `--fr-si-height` | The selected element's `offsetHeight` |
+
+### Driving it without `setupTarget`
+
+`setupTarget` is a thin wrapper over two public methods, and a consumer that
+needs to write its own modifier can call them directly:
+
+| Method             | Effect                                               |
+| ------------------ | ---------------------------------------------------- |
+| `claim(element)`   | Makes `element` the measured target and measures it. |
+| `release(element)` | Gives up the target, if `element` still holds it.    |
+
+Reach for these only when one modifier has to do more than track geometry.
+`TabNav` is the case that motivated them: its item modifier also writes
+`aria-current` and `data-selected`, so it cannot simply apply `setupTarget`
+alongside, and re-implementing the handover rules would mean two copies of
+them.
+
+```js
+setupItem = modifier((element, [isActive]) => {
+  if (isActive) {
+    this.indicator.claim(element);
+  }
+
+  return () => {
+    this.indicator.release(element);
+  };
+});
+```
+
+`release` is deliberately safe to call for an element that is not the target —
+it returns without doing anything — so teardown never needs to check first.
+Order matters more than it looks: when the selection moves backwards the
+incoming element's setup runs _before_ the outgoing element's teardown, and the
+guard inside `release` is what stops that teardown from wiping the new target.
 
 These are physical offsets (`offsetLeft` / `offsetTop`), not logical ones,
 and that is deliberate: the browser has already laid the items out for the
@@ -56,7 +91,7 @@ property like `inset-inline-start` here would flip an already-flipped value.
 Once the first real measurement lands, the container gains a
 `data-fr-si-ready` attribute one frame later. A CSS transition on the
 indicator must be gated on this attribute, not applied unconditionally —
-otherwise the very first paint has nothing to transition *from*, and the
+otherwise the very first paint has nothing to transition _from_, and the
 indicator visibly flies in from the container's origin `(0, 0)` before
 settling into place. The same attribute should gate opacity, so the indicator
 stays invisible until it has something correct to show.
@@ -160,7 +195,6 @@ The same markup with a different stylesheet is a pill, a highlight, or a
 growing outline. That is the point of publishing geometry instead of painting
 it.
 
-
 ## The transform / translate trap
 
 Overriding the indicator's positioning with the seemingly obvious
@@ -173,7 +207,7 @@ Overriding the indicator's positioning with the seemingly obvious
 
 silently applies the offset **twice**. Per CSS Transforms Level 2, the
 standalone `translate` property (which is what Tailwind's `translate-x-*`
-utilities emit, not `transform`) is applied *before* `transform` in the same
+utilities emit, not `transform`) is applied _before_ `transform` in the same
 box's transform stack — so a theme that already positions with
 `translate-x-[var(--fr-si-x)]` and an override that adds
 `transform: translateX(var(--fr-si-x))` on top compose, rather than one
@@ -189,8 +223,8 @@ This is what `SegmentedControl`'s own theme does: an absolutely positioned
 box sized and moved entirely by the four custom properties.
 
 `.my-control` is the element carrying `setupContainer`, so it is the one that
-gains `data-fr-si-ready`; the gated rules therefore read *container attribute,
-then descendant indicator*.
+gains `data-fr-si-ready`; the gated rules therefore read _container attribute,
+then descendant indicator_.
 
 ```css
 .my-control {

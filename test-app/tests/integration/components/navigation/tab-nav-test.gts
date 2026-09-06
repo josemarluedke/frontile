@@ -4,7 +4,7 @@ import { render, find, findAll, waitUntil } from '@ember/test-helpers';
 import { TabNav } from 'frontile';
 
 module(
-  'Integration | Component | TabNav | @frontile/navigation',
+  'Integration | Component | TabNav | frontile/navigation',
   function (hooks) {
     setupRenderingTest(hooks);
 
