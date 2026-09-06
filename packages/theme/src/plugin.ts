@@ -1,5 +1,4 @@
 import plugin from 'tailwindcss/plugin';
-import { notificationTransitions } from './components';
 import { overlayTransitions } from './components/overlays';
 import svgToDataUri from 'mini-svg-data-uri';
 
@@ -28,12 +27,6 @@ function frontile(config: PluginConfig = {}): ReturnType<typeof plugin> {
       resolved?.variants.forEach((variant) => {
         addVariant(variant.name, variant.definition);
       });
-
-      addTransitions(
-        addComponents,
-        '.notification-transition',
-        notificationTransitions
-      );
 
       addTransitions(addComponents, '.overlay-transition', overlayTransitions);
 

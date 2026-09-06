@@ -18,6 +18,34 @@ export interface CustomAction {
   onClick: () => void;
 }
 
+export type NotificationIntent =
+  'default' | 'info' | 'success' | 'warning' | 'danger';
+
+/**
+ * The deprecated intent names. `error` maps onto `danger`.
+ */
+export type NotificationAppearance = 'info' | 'success' | 'warning' | 'error';
+
+export interface NotificationContent {
+  /**
+   * The heading line of the notification.
+   */
+  title: string;
+
+  /**
+   * Optional supporting line rendered below the title.
+   */
+  description?: string;
+}
+
+export interface NotificationUpdate {
+  title?: string;
+  description?: string;
+  intent?: NotificationIntent;
+  allowClosing?: boolean;
+  isLoading?: boolean;
+}
+
 export interface NotificationOptions<
   TMetadata extends Record<string, unknown> = Record<string, unknown>
 > {
@@ -50,11 +78,40 @@ export interface NotificationOptions<
   transitionDuration?: number;
 
   /**
-   * The appearance of the notification
+   * Supporting text rendered below the title.
    *
-   * @defaultValue 'info'
+   * @defaultValue undefined
    */
-  appearance?: 'info' | 'success' | 'warning' | 'error';
+  description?: string;
+
+  /**
+   * The intent of the notification.
+   *
+   * @defaultValue 'default'
+   */
+  intent?: NotificationIntent;
+
+  /**
+   * The appearance of the notification.
+   *
+   * @deprecated Use `intent` instead. `error` maps onto `danger`.
+   * @defaultValue undefined
+   */
+  appearance?: NotificationAppearance;
+
+  /**
+   * Hide the leading icon.
+   *
+   * @defaultValue false
+   */
+  hideIcon?: boolean;
+
+  /**
+   * Render a spinner in place of the intent icon. Set by `promise()`.
+   *
+   * @defaultValue false
+   */
+  isLoading?: boolean;
 
   /**
    * A list of custom actions
@@ -69,6 +126,33 @@ export interface NotificationOptions<
    * @defaultValue undefined
    */
   metadata?: TMetadata;
+}
+
+/**
+ * A promise notification message: a fixed string, a fixed content object, or
+ * a function of the settled value.
+ */
+export type PromiseMessage<T> =
+  string | NotificationContent | ((value: T) => string | NotificationContent);
+
+export interface PromiseNotificationOptions<
+  T,
+  TMetadata extends Record<string, unknown> = Record<string, unknown>
+> extends Omit<NotificationOptions<TMetadata>, 'isLoading'> {
+  /**
+   * Shown with a spinner while the promise is pending.
+   */
+  loading: string | NotificationContent;
+
+  /**
+   * Shown when the promise resolves.
+   */
+  success: PromiseMessage<T>;
+
+  /**
+   * Shown when the promise rejects.
+   */
+  error: PromiseMessage<unknown>;
 }
 
 export interface DefaultConfig extends NotificationOptions {

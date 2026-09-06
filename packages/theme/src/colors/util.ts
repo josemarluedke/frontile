@@ -47,4 +47,4 @@ function getContrastingColor(backgroundColor: string): string {
   return contrastWithBlack > contrastWithWhite ? black : white;
 }
 
-export { swapColorValues, getContrastingColor };
+export { swapColorValues, getContrastingColor, parse, wcagContrast };
