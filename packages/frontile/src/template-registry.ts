@@ -48,7 +48,7 @@ import type {
   Divider
 } from './components/utilities';
 
-import type { Tabs } from './components/navigation';
+import type { Tabs, TabNav } from './components/navigation';
 
 export default interface Registry {
   // Buttons
@@ -103,4 +103,5 @@ export default interface Registry {
 
   // Navigation
   Tabs: typeof Tabs;
+  TabNav: typeof TabNav;
 }

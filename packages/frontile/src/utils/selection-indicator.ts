@@ -53,37 +53,54 @@ class SelectionIndicator {
   });
 
   /**
+   * Claims `element` as the measured target. Exposed alongside `setupTarget`
+   * so a consumer composing its own modifier -- a navigation bar that also has
+   * to write `aria-current` -- can delegate here rather than reimplement the
+   * handover rules below.
+   */
+  claim(element: HTMLElement): void {
+    this.#target = element;
+    this.#observer?.observe(element);
+    this.#measure();
+  }
+
+  /**
+   * Releases `element` if it is still the target. Only clear if this element
+   * is still the target. When selection moves backwards, the incoming item's
+   * setup runs before the outgoing item's teardown, and without this guard
+   * that teardown would wipe the new target.
+   */
+  release(element: HTMLElement): void {
+    if (this.#target !== element) {
+      return;
+    }
+    this.#observer?.unobserve(element);
+    this.#target = undefined;
+
+    // Do not re-measure synchronously. When selection moves forwards the
+    // order is reversed -- ember-modifier tears down before re-running
+    // setup, and Glimmer revalidates in tree order -- so the outgoing
+    // teardown lands first and the incoming target is still moments away
+    // in this same render. Measuring now would strip the ready attribute,
+    // and the theme gates both opacity and the transition on it, so the
+    // indicator would blink out and jump to its new position instead of
+    // sliding. Defer instead, and only fall through to the not-ready path
+    // if nothing has claimed the target by then.
+    this.#scheduleRemeasure();
+  }
+
+  /**
    * Modifier to place on each candidate target element, passing whether it
    * is currently selected as the sole positional argument. Only the
    * currently-selected target's geometry is measured and published.
    */
   setupTarget = modifier((element: HTMLElement, [isSelected]: [boolean]) => {
     if (isSelected) {
-      this.#target = element;
-      this.#observer?.observe(element);
-      this.#measure();
+      this.claim(element);
     }
 
     return (): void => {
-      // Only clear if this element is still the target. When selection moves
-      // backwards, the incoming item's setup runs before the outgoing item's
-      // teardown, and without this guard that teardown would wipe the new
-      // target.
-      if (this.#target === element) {
-        this.#observer?.unobserve(element);
-        this.#target = undefined;
-
-        // Do not re-measure synchronously. When selection moves forwards the
-        // order is reversed -- ember-modifier tears down before re-running
-        // setup, and Glimmer revalidates in tree order -- so the outgoing
-        // teardown lands first and the incoming target is still moments away
-        // in this same render. Measuring now would strip the ready attribute,
-        // and the theme gates both opacity and the transition on it, so the
-        // indicator would blink out and jump to its new position instead of
-        // sliding. Defer instead, and only fall through to the not-ready path
-        // if nothing has claimed the target by then.
-        this.#scheduleRemeasure();
-      }
+      this.release(element);
     };
   });
 
