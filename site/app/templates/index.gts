@@ -163,7 +163,7 @@ export default class IndexPage extends Component {
               class="mt-9 flex flex-wrap items-center gap-3 rise rise-step-3"
             >
               <LinkButton
-                @to="/docs/components/buttons/button"
+                @to="/docs/components/overview"
                 @intent="primary"
                 @size="lg"
               >Explore the components</LinkButton>
