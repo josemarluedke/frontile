@@ -48,6 +48,8 @@ import type {
   Divider
 } from './components/utilities';
 
+import type { Tabs } from './components/navigation';
+
 export default interface Registry {
   // Buttons
   Button: typeof Button;
@@ -98,4 +100,7 @@ export default interface Registry {
   Skeleton: typeof Skeleton;
   Spinner: typeof Spinner;
   Divider: typeof Divider;
+
+  // Navigation
+  Tabs: typeof Tabs;
 }

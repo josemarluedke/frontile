@@ -88,6 +88,7 @@ export default {
       'forms',
       'notifications',
       'overlays',
+      'navigation',
     ].map((scope) => ({
       root: path.resolve(__dirname, '../packages/frontile'),
       pattern: `src/components/${scope}/**/*.md`,

@@ -32,6 +32,7 @@ export default {
       'notifications.js',
       'status.js',
       'utilities.js',
+      'navigation.js',
       'test-support.js',
       'template-registry.js'
     ]),
