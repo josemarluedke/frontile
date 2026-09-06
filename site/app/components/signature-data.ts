@@ -8736,6 +8736,23 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
+    module: 'icons',
+    name: 'Component',
+    fileName:
+      'packages/frontile/declarations/components/notifications/icons.d.ts',
+    Args: [],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">SVGElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
@@ -8771,13 +8788,100 @@ const data: ComponentDoc[] = [
         tags: {},
       },
       {
-        identifier: 'spacing',
-        type: { type: '<span class="hljs-built_in">number</span>' },
+        identifier: 'geometry',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'transform',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'zIndex',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'opacity',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'height',
+              type: { type: '<span class="hljs-built_in">number</span>' },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Fixed height in px while collapsed, so a taller card behind the front one\ncannot stick out past it. `null` means the card sizes to its content.',
+              tags: {},
+            },
+            {
+              identifier: 'transformOrigin',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'top center\'</span> | <span class="hljs-string">\'bottom center\'</span>',
+                items: ["'top center'", "'bottom center'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'pointerEvents',
+              type: {
+                type: '<span class="hljs-keyword">enum</span>',
+                raw: '<span class="hljs-string">\'none\'</span> | <span class="hljs-string">\'auto\'</span>',
+                items: ["'none'", "'auto'"],
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                "`'none'` when the card is fully transparent (collapsed beyond\n`visibleToasts`), so it cannot swallow clicks meant for the page beneath\nit; `'auto'` otherwise.",
+              tags: {},
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          '<p>Position, scale, and stacking supplied by the container. When omitted\nthe card renders in place with no stack transform.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'onMeasure',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: true,
+        description:
+          "<p>Called with the card's measured height whenever it changes.</p>\n<p>Part of the container/card plumbing, not a consumer-facing argument.</p>",
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
-        tags: { defaultValue: { name: 'defaultValue', value: '16' } },
-        defaultValue: '<span class="hljs-number">16</span>',
+        description: 'The visual style of the card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
       },
     ],
     Blocks: [],
@@ -8805,6 +8909,16 @@ const data: ComponentDoc[] = [
         description:
           'Custom class name, it will override the default ones using Tailwind Merge library.',
         tags: {},
+      },
+      {
+        identifier: 'expand',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Keep the stack expanded instead of collapsing it when not hovered.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
       },
       {
         identifier: 'onDismiss',
@@ -8844,9 +8958,33 @@ const data: ComponentDoc[] = [
         type: { type: '<span class="hljs-built_in">number</span>' },
         isRequired: false,
         isInternal: false,
-        description: 'Spacing for each notification, in px.',
+        description:
+          'The peek offset between collapsed cards, and the gap between expanded\ncards, in px.',
         tags: { defaultValue: { name: 'defaultValue', value: '16' } },
         defaultValue: '<span class="hljs-number">16</span>',
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'tonal\'</span> | <span class="hljs-string">\'solid\'</span>',
+          items: ["'default'", "'tonal'", "'solid'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The visual style applied to every card.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'visibleToasts',
+        type: { type: '<span class="hljs-built_in">number</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'How many cards stay visible while the stack is collapsed.',
+        tags: { defaultValue: { name: 'defaultValue', value: '3' } },
+        defaultValue: '<span class="hljs-number">3</span>',
       },
     ],
     Blocks: [],
@@ -14141,6 +14279,401 @@ const data: ComponentDoc[] = [
       },
       description: '',
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'item',
+    name: 'SegmentedControlItem',
+    fileName:
+      'packages/frontile/declarations/components/buttons/segmented-control/item.d.ts',
+    Args: [
+      {
+        identifier: 'context',
+        type: {
+          type: '<span class="hljs-title class_">Object</span>',
+          items: [
+            {
+              identifier: 'indicator',
+              type: {
+                type: '<span class="hljs-title class_">SelectionIndicator</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'roving',
+              type: {
+                type: '<span class="hljs-title class_">RovingFocus</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isSelected',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">boolean</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'select',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'registerValue',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">element</span>: <span class="hljs-title class_">HTMLElement</span>, <span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'unregisterValue',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '(<span class="hljs-attr">element</span>: <span class="hljs-title class_">HTMLElement</span>) => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'isGroupDisabled',
+              type: { type: '<span class="hljs-built_in">boolean</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'name',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: false,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'itemClass',
+              type: { type: '<span class="hljs-built_in">string</span>' },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'requestFormSync',
+              type: {
+                type: '<span class="hljs-keyword">function</span>',
+                raw: '() => <span class="hljs-built_in">void</span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: true,
+        description:
+          'Supplied by SegmentedControl. Not part of the public API.',
+        tags: { internal: { name: 'internal', value: '' } },
+      },
+      {
+        identifier: 'value',
+        type: { type: 'T' },
+        isRequired: true,
+        isInternal: false,
+        description:
+          "The value this item represents. Selecting it calls the control's\n<code>@onChange</code> with exactly this value.",
+        tags: {},
+      },
+      {
+        identifier: 'class',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description: "Class names appended to this item's theme classes.",
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Disables this item alone: it cannot be clicked and keyboard navigation\nskips over it. The whole control can be disabled with the control's own\n<code>@isDisabled</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-attr">isSelected</span>: <span class="hljs-built_in">boolean</span>; }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'isSelected',
+                    type: {
+                      type: '<span class="hljs-built_in">boolean</span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="hljs-keyword">enum</span>',
+        raw: '<span class="hljs-title class_">HTMLLabelElement</span> | <span class="hljs-title class_">HTMLButtonElement</span>',
+        items: ['HTMLLabelElement', 'HTMLButtonElement'],
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/enum',
+    },
+    description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'segmented-control',
+    name: 'SegmentedControl',
+    fileName:
+      'packages/frontile/declarations/components/buttons/segmented-control/segmented-control.d.ts',
+    Args: [
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="hljs-title class_">SlotsToClasses</span>&#x3C;<span class="hljs-string">\'base\'</span> | <span class="hljs-string">\'item\'</span> | <span class="hljs-string">\'indicator\'</span>>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'defaultValue',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Sets the initially selected value when the control is used uncontrolled\n(that is, when <code>@value</code> is not provided). Ignored in controlled mode.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'undefined' } },
+        defaultValue: '<span class="hljs-literal">undefined</span>',
+      },
+      {
+        identifier: 'hasSeparators',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Draws a hairline between neighbouring items, hidden around the selected\none so the indicator never crosses a visible line.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'intent',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'default\'</span> | <span class="hljs-string">\'primary\'</span> | <span class="hljs-string">\'secondary\'</span> | <span class="hljs-string">\'tertiary\'</span> | <span class="hljs-string">\'success\'</span> | <span class="hljs-string">\'warning\'</span> | <span class="hljs-string">\'danger\'</span>',
+          items: [
+            "'default'",
+            "'primary'",
+            "'secondary'",
+            "'tertiary'",
+            "'success'",
+            "'warning'",
+            "'danger'",
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "The colour intent applied to the selected item's indicator and label.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'default'" } },
+        defaultValue: '<span class="hljs-string">\'default\'</span>',
+      },
+      {
+        identifier: 'isDisabled',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Disables every item. Individual items can be disabled with the item's own\n<code>@isDisabled</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'isFullWidth',
+        type: { type: '<span class="hljs-built_in">boolean</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Stretches the control to its container and gives every item equal width.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue: '<span class="hljs-literal">false</span>',
+      },
+      {
+        identifier: 'name',
+        type: { type: '<span class="hljs-built_in">string</span>' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'When set, items render as <code>&#x3C;label></code> wrapping a native radio input under\nthis name, so the control submits with its form. Without it the control\nrenders buttons and reports only through <code>onChange</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="hljs-keyword">function</span>',
+          raw: '(<span class="hljs-attr">value</span>: T) => <span class="hljs-built_in">void</span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Called with the newly selected value when an item is chosen.',
+        tags: {},
+      },
+      {
+        identifier: 'orientation',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'horizontal\'</span> | <span class="hljs-string">\'vertical\'</span>',
+          items: ["'horizontal'", "'vertical'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Lays the items out in a row or a column, and switches the arrow keys that\nmove between them to match.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'horizontal'" } },
+        defaultValue: '<span class="hljs-string">\'horizontal\'</span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'sm\'</span> | <span class="hljs-string">\'md\'</span> | <span class="hljs-string">\'lg\'</span>',
+          items: ["'sm'", "'md'", "'lg'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The size of the control, driving item padding and text size.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue: '<span class="hljs-string">\'md\'</span>',
+      },
+      {
+        identifier: 'value',
+        type: { type: 'T' },
+        isRequired: false,
+        isInternal: false,
+        description:
+          '<p>The currently selected value. Compared against each item\'s <code>@value</code> with\n<code>===</code>, so object values must be referentially stable.</p>\n<p><em>Passing</em> this argument at all puts the component in controlled mode --\npassing it as <code>undefined</code> included, which is how a controlled control says\n"nothing is selected". The selection then only ever reflects what you\npass, so pair it with <code>@onChange</code> and update your own state; setting it\nback to <code>undefined</code> clears the selection. Omit the argument entirely to\nlet the control track the selection itself, seeded by <code>@defaultValue</code>.</p>',
+        tags: {},
+      },
+      {
+        identifier: 'variant',
+        type: {
+          type: '<span class="hljs-keyword">enum</span>',
+          raw: '<span class="hljs-string">\'solid\'</span> | <span class="hljs-string">\'ghost\'</span>',
+          items: ["'solid'", "'ghost'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description: "The visual style of the control's track and indicator.",
+        tags: { defaultValue: { name: 'defaultValue', value: "'solid'" } },
+        defaultValue: '<span class="hljs-string">\'solid\'</span>',
+      },
+    ],
+    Blocks: [
+      {
+        identifier: 'default',
+        type: {
+          type: '<span class="hljs-title class_">Array</span>',
+          raw: '[{ <span class="hljs-title class_">Item</span>: <span class="hljs-title class_">SegmentedControlItem</span>&#x3C;T> (context bound); }]',
+          items: [
+            {
+              identifier: '0',
+              type: {
+                type: '<span class="hljs-title class_">Object</span>',
+                items: [
+                  {
+                    identifier: 'Item',
+                    type: {
+                      type: '<span class="hljs-title class_">SegmentedControlItem</span>&#x3C;T> (context bound)',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                ],
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+          ],
+        },
+        isRequired: true,
+        isInternal: false,
+        description: '',
+        tags: {},
+      },
+    ],
+    Element: {
+      identifier: 'Element',
+      type: { type: '<span class="hljs-title class_">HTMLDivElement</span>' },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement',
     },
     description: '',
     tags: {},

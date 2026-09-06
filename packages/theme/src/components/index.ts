@@ -12,6 +12,7 @@ export * from './divider';
 export * from './skeleton';
 export * from './spinner';
 export * from './table';
+export * from './segmented-control';
 
 export * from './notifications-container';
 export * from './notification-card';
