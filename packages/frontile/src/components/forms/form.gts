@@ -161,9 +161,10 @@ interface FormSignature<T = FormDataCompiled> {
  *   <form.Field name="lastName" as |field|>
  *     <field.Input />
  *   </form.Field>
- *   <button type="submit" disabled={{form.isLoading}}>
- *     {{#if form.isLoading}}Submitting...{{else}}Submit{{/if}}
- *   </button>
+ *   <Button type="submit" @isLoading={{form.isLoading}}>
+ *     Submit
+ *     <:loading>Submitting...</:loading>
+ *   </Button>
  * </Form>
  * ```
  */

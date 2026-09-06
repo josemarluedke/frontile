@@ -135,6 +135,22 @@ import { DownloadIcon, ShareIcon, CheckIcon } from 'site/components/icons';
 </template>
 ```
 
+Icons passed as plain content keep working exactly as above. The `icon` named
+block is opt-in sugar: it buys you `@iconPlacement` and, when the button is
+loading, it is the slot the spinner takes over.
+
+```gts preview
+import { Button } from 'frontile';
+import { ShareIcon } from 'site/components/icons';
+
+<template>
+  <Button>
+    <:icon><ShareIcon /></:icon>
+    <:default>Share</:default>
+  </Button>
+</template>
+```
+
 ## Label with a Unit
 
 A label can carry a smaller trailing unit — a price suffix like `/mo`, a count,
@@ -229,6 +245,76 @@ import { Button } from 'frontile';
     <Button @intent='success' disabled>Success</Button>
     <Button @intent='warning' disabled>Warning</Button>
     <Button @intent='danger' disabled>Danger</Button>
+  </div>
+</template>
+```
+
+## Loading
+
+`@isLoading` renders a spinner and disables the button.
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @isLoading={{true}}>Save</Button>
+    <Button @appearance='outlined' @isLoading={{true}}>Save</Button>
+    <Button @intent='danger' @isLoading={{true}}>Delete</Button>
+  </div>
+</template>
+```
+
+Use the `loading` block to swap the label while the action is in flight.
+
+```gts preview
+import { Button } from 'frontile';
+
+<template>
+  <Button @isLoading={{true}}>
+    <:default>Save</:default>
+    <:loading>Saving…</:loading>
+  </Button>
+</template>
+```
+
+The spinner takes the place of the `icon` block, so a button with an icon keeps
+its width while loading.
+
+```gts preview
+import { Button } from 'frontile';
+import { ShareIcon } from 'site/components/icons';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button>
+      <:icon><ShareIcon /></:icon>
+      <:default>Share</:default>
+    </Button>
+    <Button @isLoading={{true}}>
+      <:icon><ShareIcon /></:icon>
+      <:default>Share</:default>
+    </Button>
+  </div>
+</template>
+```
+
+`@iconPlacement='end'` moves both the icon and the spinner after the label.
+
+```gts preview
+import { Button } from 'frontile';
+import { ShareIcon } from 'site/components/icons';
+
+<template>
+  <div class='flex flex-wrap items-center gap-3'>
+    <Button @iconPlacement='end'>
+      <:icon><ShareIcon /></:icon>
+      <:default>Share</:default>
+    </Button>
+    <Button @iconPlacement='end' @isLoading={{true}}>
+      <:icon><ShareIcon /></:icon>
+      <:default>Share</:default>
+    </Button>
   </div>
 </template>
 ```
@@ -416,6 +502,26 @@ There is no `@isDisabled` argument. Pass the plain HTML `disabled` attribute, as
 the [Disabled](#disabled) demo above does; it removes the button from the tab
 order and is what assistive technology reports.
 
+### Loading
+
+`@isLoading` sets the plain HTML `disabled` attribute, which has two
+consequences worth designing around.
+
+**Focus is lost.** A button that disables itself mid-press drops focus to
+`<body>`, so keyboard and screen reader users lose their place and hear
+nothing. Put the outcome of the action in a live region, or leave the button
+enabled and guard against re-entry inside your handler.
+
+**The button widens** by the spinner plus the gap, unless it has an `icon`
+block for the spinner to take over. Either use the `icon` block, or set a
+`min-w-*` class on buttons that toggle between states.
+
+**A plain-content icon is not replaced.** The spinner only swaps in for an
+`icon` block (see [With Icons](#with-icons)); an icon passed as ordinary
+content — `<Button @isLoading={{true}}><DownloadIcon /> Download</Button>` —
+stays on screen alongside the spinner, rendering both. If you want the
+loading-swap behavior, move the icon into `<:icon>`.
+
 ### Renderless buttons
 
 `@isRenderless` hands back only class names, so every semantic the `<button>`
@@ -423,6 +529,10 @@ provided becomes yours. An `<a href>` is already focusable and activates on
 Enter; anything else — a `<div>`, a `<span>` — needs `role='button'`,
 `tabindex='0'`, and its own key handling. Prefer a real `<button>` or `<a>` over
 recreating that.
+
+`@isRenderless` yields only to the default block — `<:icon>` and `<:loading>`
+are ignored, because there is no element for the component to compose. The
+yielded hash still carries `isLoading`, so you can branch on it yourself.
 
 ## API
 
