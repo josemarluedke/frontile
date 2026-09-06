@@ -4,6 +4,7 @@ import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import { VisuallyHidden } from 'frontile';
 import { Drawer } from 'frontile';
+import IconMenu from '~icons/lucide/menu';
 import Content from './content';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 
@@ -52,13 +53,7 @@ export default class SidebarNav extends Component<Signature> {
       {{on "click" this.toggle}}
     >
       <VisuallyHidden>Contents</VisuallyHidden>
-      <svg class="w-8" fill="currentColor" viewBox="0 0 20 20">
-        <path
-          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-          clip-rule="evenodd"
-          fill-rule="evenodd"
-        ></path>
-      </svg>
+      <IconMenu class="size-8" />
     </button>
 
     <Drawer

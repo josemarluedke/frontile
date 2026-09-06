@@ -7,6 +7,9 @@ import DocfySectionNav from './docfy-section-nav';
 import docfyIntersectHeadings from '../../modifiers/docfy-intersect-headings';
 import DocfyCopyPage from './docfy-copy-page';
 import { DocfyLink, DocfyOutput, DocfyPreviousAndNextPage } from '@docfy/ember';
+import IconPencil from '~icons/lucide/pencil';
+import IconArrowLeft from '~icons/lucide/arrow-left';
+import IconArrowRight from '~icons/lucide/arrow-right';
 
 interface Signature {
   Args: {
@@ -67,11 +70,7 @@ export default class DocfyPage extends Component<Signature> {
                   rel="noopener noreferrer"
                   class="flex items-center text-xs text-neutral-firm hover:text-primary"
                 >
-                  <svg class="w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    ></path>
-                  </svg>
+                  <IconPencil class="size-4 mr-2" />
                   Edit this page on GitHub
                 </a>
               {{/if}}
@@ -84,13 +83,7 @@ export default class DocfyPage extends Component<Signature> {
             <DocfyPreviousAndNextPage as |previous next|>
               <div class="flex items-center pt-6 pr-2">
                 {{#if previous}}
-                  <svg class="h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                    ></path>
-                  </svg>
+                  <IconArrowLeft class="size-4 mr-2" />
 
                   <DocfyLink
                     @to={{previous.url}}
@@ -109,13 +102,7 @@ export default class DocfyPage extends Component<Signature> {
                     {{next.title}}
                   </DocfyLink>
 
-                  <svg class="h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                    ></path>
-                  </svg>
+                  <IconArrowRight class="size-4 ml-2" />
                 {{/if}}
               </div>
             </DocfyPreviousAndNextPage>

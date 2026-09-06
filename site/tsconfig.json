@@ -25,7 +25,8 @@
     "types": [
       "ember-source/types",
       "@embroider/core/virtual",
-      "vite/client"
+      "vite/client",
+      "unplugin-icons/types/ember"
     ]
   },
 }

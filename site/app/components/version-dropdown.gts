@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { Dropdown } from 'frontile';
 import { currentDomain, stripScheme } from 'site/utils/origin';
+import { ChevronDownIcon } from './icons';
 
 interface VersionDropdownSignature {
   Element: HTMLDivElement;
@@ -94,19 +95,7 @@ export default class VersionDropdown extends Component<VersionDropdownSignature>
           @class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-neutral-strong bg-neutral-subtle border border-neutral-subtle rounded-lg hover:bg-neutral-subtle focus:bg-neutral-subtle transition-all duration-200"
         >
           <span>{{this.getVersionLabel this.currentVersion}}</span>
-          <svg
-            class="w-4 h-4 text-neutral-firm"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          <ChevronDownIcon class="w-4 h-4 text-neutral-firm" />
         </d.Trigger>
 
         <d.Menu

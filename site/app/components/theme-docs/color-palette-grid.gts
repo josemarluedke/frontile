@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { hash } from '@ember/helper';
 import ColorSwatch from './color-swatch';
+import { CheckIcon } from '../icons';
 
 import {
   colorLevels,
@@ -70,19 +71,7 @@ export default class ColorPaletteGrid extends Component<ColorPaletteGridSignatur
           class="mb-4 p-3 bg-success-subtle text-success-strong rounded border border-success-soft"
         >
           <div class="flex items-center gap-2">
-            <svg
-              class="size-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <CheckIcon class="size-5" />
             <span class="font-mono text-sm">{{this.copiedClass}}</span>
             <span class="text-sm">copied to clipboard!</span>
           </div>

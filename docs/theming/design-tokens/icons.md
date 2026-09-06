@@ -20,40 +20,14 @@ The scale ranges from `pico` (smallest) to `mega` (largest), providing 14 distin
 Apply icon sizes using the `size-icon-*` utilities, which set both width and height:
 
 ```gts preview
+import { StarIcon } from 'site/components/icons';
+
 <template>
   <div class='flex items-center gap-6'>
-    <svg class='size-icon-sm text-primary' fill='currentColor' viewBox='0 0 20 20'>
-      <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
-      <path
-        fill-rule='evenodd'
-        d='M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z'
-        clip-rule='evenodd'
-      ></path>
-    </svg>
-    <svg class='size-icon-md text-primary' fill='currentColor' viewBox='0 0 20 20'>
-      <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
-      <path
-        fill-rule='evenodd'
-        d='M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z'
-        clip-rule='evenodd'
-      ></path>
-    </svg>
-    <svg class='size-icon-lg text-primary' fill='currentColor' viewBox='0 0 20 20'>
-      <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
-      <path
-        fill-rule='evenodd'
-        d='M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z'
-        clip-rule='evenodd'
-      ></path>
-    </svg>
-    <svg class='size-icon-xl text-primary' fill='currentColor' viewBox='0 0 20 20'>
-      <path d='M10 12a2 2 0 100-4 2 2 0 000 4z'></path>
-      <path
-        fill-rule='evenodd'
-        d='M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z'
-        clip-rule='evenodd'
-      ></path>
-    </svg>
+    <StarIcon class='size-icon-sm text-primary' />
+    <StarIcon class='size-icon-md text-primary' />
+    <StarIcon class='size-icon-lg text-primary' />
+    <StarIcon class='size-icon-xl text-primary' />
   </div>
 </template>
 ```

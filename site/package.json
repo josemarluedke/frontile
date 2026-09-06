@@ -66,6 +66,7 @@
     "@glint/environment-ember-loose": "^1.5.2",
     "@glint/environment-ember-template-imports": "^1.5.2",
     "@glint/template": "^1.8.0",
+    "@iconify-json/lucide": "^1.2.129",
     "@rollup/plugin-babel": "^7.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
@@ -112,6 +113,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.67.0",
     "unified": "^11.0.5",
+    "unplugin-icons": "^23.0.1",
     "valibot": "^1.4.2",
     "vite": "^8.2.1"
   },

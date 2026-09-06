@@ -6,6 +6,7 @@ import { fn } from '@ember/helper';
 import { concat } from '@ember/helper';
 import { service } from '@ember/service';
 import { Chip } from 'frontile';
+import IconChevronRight from '~icons/lucide/chevron-right';
 import type { NestedPageMetadata } from '@docfy/core/lib/types';
 import type RouterService from '@ember/routing/router-service';
 import type Owner from '@ember/owner';
@@ -200,7 +201,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                     }}
                   >
                     <span>{{subChild.label}}</span>
-                    <svg
+                    <IconChevronRight
                       class="h-3 w-3 transition-transform
                         {{if
                           (this.isExpanded
@@ -209,17 +210,7 @@ export default class DocfySidebarNavContent extends Component<Signature> {
                           'rotate-90'
                           ''
                         }}"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                    />
                   </button>
 
                   {{#if
