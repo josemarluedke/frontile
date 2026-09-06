@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
@@ -176,6 +176,7 @@ class Button extends Component<ButtonSignature> {
     return !this.isIconAtEnd;
   }
 
+  @cached
   get classNames(): string {
     const { button } = useStyles();
 
@@ -189,6 +190,7 @@ class Button extends Component<ButtonSignature> {
     });
   }
 
+  @cached
   get spinnerClassNames(): string {
     const { buttonSpinner } = useStyles();
 
@@ -200,6 +202,7 @@ class Button extends Component<ButtonSignature> {
    * place of rendering). Hoisted so the shape is written once — it's part of
    * this component's public contract, asserted on directly by tests.
    */
+  @cached
   get yieldedHash(): { classNames: string; isLoading: boolean } {
     return { classNames: this.classNames, isLoading: this.isLoading };
   }
