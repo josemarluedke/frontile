@@ -516,6 +516,12 @@ enabled and guard against re-entry inside your handler.
 block for the spinner to take over. Either use the `icon` block, or set a
 `min-w-*` class on buttons that toggle between states.
 
+**A plain-content icon is not replaced.** The spinner only swaps in for an
+`icon` block (see [With Icons](#with-icons)); an icon passed as ordinary
+content — `<Button @isLoading={{true}}><DownloadIcon /> Download</Button>` —
+stays on screen alongside the spinner, rendering both. If you want the
+loading-swap behavior, move the icon into `<:icon>`.
+
 ### Renderless buttons
 
 `@isRenderless` hands back only class names, so every semantic the `<button>`

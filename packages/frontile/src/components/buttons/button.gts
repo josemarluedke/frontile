@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { hash } from '@ember/helper';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import type { TOC } from '@ember/component/template-only';
@@ -15,11 +14,27 @@ import { Spinner } from '../utilities/spinner';
  * written after it a consumer's `disabled={{false}}` would erase ours.
  * Modifiers run after attributes, so neither ordering problem applies.
  *
- * Known limitation: this re-runs only when `loading` changes. If a consumer's
- * own `disabled` binding flips from true to false while loading is already in
- * flight, Glimmer rewrites the attribute and we do not re-run, so the button
- * goes live mid-load. Closing that would need a MutationObserver for a case
- * nobody has hit.
+ * Known limitation: this re-runs only when `loading` changes, so `previous`
+ * is a snapshot taken once at install time — it goes stale if the consumer's
+ * own `disabled` binding changes while loading is already in flight, in
+ * either direction:
+ *
+ * - true → false: Glimmer rewrites the attribute to `false`, we do not
+ *   re-run, so the button stays disabled (from our own `el.disabled = true`)
+ *   until loading ends and teardown restores the stale `previous` (`false`),
+ *   which happens to match — net: the button goes live at the same moment,
+ *   with the disabling outliving the intent for no visible reason.
+ * - false → true: Glimmer rewrites the attribute to `true`, we do not
+ *   re-run, so `previous` is left holding the stale `false`. When loading
+ *   ends, teardown restores `previous` and sets `disabled = false` — the
+ *   button ends up enabled even though the consumer's binding says
+ *   `disabled={{true}}`. This is a fail-open: the consumer's disable is
+ *   silently and indefinitely lost. See the
+ *   `'known limitation: a consumer disable applied mid-load is lost when
+ *   loading ends'` test in buttons-test.gts, which pins this exact case.
+ *
+ * Closing this would need a MutationObserver watching `disabled` for a case
+ * nobody has hit; the project has decided not to add one.
  */
 const disableWhile = modifier((el: HTMLButtonElement, [loading]: [boolean]) => {
   if (!loading) {
@@ -175,6 +190,15 @@ class Button extends Component<ButtonSignature> {
     return buttonSpinner();
   }
 
+  /**
+   * The object yielded to the default block (and, when `@isRenderless`, in
+   * place of rendering). Hoisted so the shape is written once — it's part of
+   * this component's public contract, asserted on directly by tests.
+   */
+  get yieldedHash(): { classNames: string; isLoading: boolean } {
+    return { classNames: this.classNames, isLoading: this.isLoading };
+  }
+
   handlePressChange = (isPressed: boolean): void => {
     this.isPressed = isPressed;
   };
@@ -187,7 +211,7 @@ class Button extends Component<ButtonSignature> {
 
   <template>
     {{#if @isRenderless}}
-      {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
+      {{yield this.yieldedHash}}
     {{else}}
       <button
         type={{this.type}}
@@ -212,10 +236,10 @@ class Button extends Component<ButtonSignature> {
           {{#if (has-block "loading")}}
             {{yield to="loading"}}
           {{else}}
-            {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
+            {{yield this.yieldedHash}}
           {{/if}}
         {{else}}
-          {{yield (hash classNames=this.classNames isLoading=this.isLoading)}}
+          {{yield this.yieldedHash}}
         {{/if}}
 
         {{#if this.isIconAtEnd}}

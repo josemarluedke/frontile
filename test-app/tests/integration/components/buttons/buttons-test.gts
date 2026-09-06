@@ -427,6 +427,65 @@ module(
           .isDisabled('the consumer disable is restored, not cleared');
       });
 
+      test('known limitation: a consumer disable applied mid-load is lost when loading ends', async function (assert) {
+        // Pins the fail-open direction documented on `disableWhile` in
+        // button.gts: the modifier snapshots `previous = el.disabled` only
+        // when it installs (when `loading` becomes true). A `disabled`
+        // binding that flips false -> true *after* that, while loading is
+        // still in flight, does not cause the modifier to re-run (it only
+        // reacts to `loading` changing), so `previous` stays stale at
+        // `false`. When loading ends, teardown restores that stale
+        // `previous`, silently discarding the consumer's disable.
+        //
+        // A literal `disabled={{true}}` would NOT reproduce this: Glimmer
+        // writes attributes before modifiers run, so `previous` would
+        // already be `true` at install time (see the passing
+        // 'a consumer disabled={{true}} survives @isLoading toggling off'
+        // test above). This test uses a tracked binding that changes only
+        // after the modifier has installed, which is the case that goes
+        // stale.
+        class State {
+          @tracked isLoading = true;
+          @tracked disabled = false;
+        }
+        const state = new State();
+        const disableButton = () => (state.disabled = true);
+        const stopLoading = () => (state.isLoading = false);
+
+        await render(
+          <template>
+            <Button
+              @isLoading={{state.isLoading}}
+              disabled={{state.disabled}}
+              data-test-id="button"
+            >Save</Button>
+            <button
+              type="button"
+              data-test-id="disable"
+              {{on "click" disableButton}}
+            >disable</button>
+            <button
+              type="button"
+              data-test-id="stop"
+              {{on "click" stopLoading}}
+            >stop</button>
+          </template>
+        );
+
+        // Modifier installed with `previous = false`. Flip the consumer's
+        // own `disabled` binding to `true` while loading is still active —
+        // `loading` itself does not change, so the modifier does not re-run.
+        await click('[data-test-id="disable"]');
+
+        await click('[data-test-id="stop"]');
+
+        assert
+          .dom('[data-test-id="button"]')
+          .isNotDisabled(
+            "known limitation: the consumer's disabled={{true}} is lost because the modifier's stale `previous` snapshot wins on teardown"
+          );
+      });
+
       test('@onPress does not fire while loading', async function (assert) {
         let pressCount = 0;
         const handlePress = () => (pressCount += 1);
