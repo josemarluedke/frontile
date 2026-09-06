@@ -77,6 +77,7 @@ class Tab<T> extends Component<TabSignature<T>> {
       data-disabled="{{this.isDisabled}}"
       class="{{@context.tabClass}} {{@class}}"
       {{this.registerValue @value}}
+      {{@context.indicator.setupTarget this.isSelected}}
       {{@context.roving.setupItem}}
       {{on "click" this.handleClick}}
       ...attributes

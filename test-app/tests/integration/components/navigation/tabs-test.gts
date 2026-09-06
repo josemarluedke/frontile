@@ -6,7 +6,8 @@ import {
   click,
   findAll,
   focus,
-  triggerKeyEvent
+  triggerKeyEvent,
+  waitUntil
 } from '@ember/test-helpers';
 import { cell } from 'ember-resources';
 import { Tabs } from 'frontile';
@@ -290,6 +291,87 @@ module(
         'ArrowDown'
       );
       assert.dom(findAll('[role="tab"]')[1]!).isFocused();
+    });
+
+    test('the indicator measures the selected tab and animates between tabs', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">A much longer label</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const list = find('[role="tablist"]')!;
+      const indicator = list.querySelector('span[aria-hidden="true"]')!;
+
+      await waitUntil(() => list.hasAttribute('data-fr-si-ready'), {
+        timeout: 1000
+      });
+
+      assert.strictEqual(
+        list.style.getPropertyValue('--fr-si-width'),
+        `${(findAll('[role="tab"]')[0] as HTMLElement).offsetWidth}px`,
+        'the indicator is sized to the selected tab'
+      );
+
+      const computed = window.getComputedStyle(indicator);
+      const transitioned = computed.transitionProperty
+        .split(',')
+        .map((property) => property.trim());
+
+      // Tailwind v4 compiles `translate-x-*` to the standalone `translate`
+      // property, not `transform`. Omitting `translate` from the transition
+      // list is what made the SegmentedControl indicator snap instead of
+      // slide, so assert against the *computed* list, not the class string.
+      const positionProperty =
+        computed.translate && computed.translate !== 'none'
+          ? 'translate'
+          : 'transform';
+
+      assert.ok(
+        transitioned.includes(positionProperty),
+        `the transition list (${computed.transitionProperty}) includes ${positionProperty}`
+      );
+      assert.ok(transitioned.includes('width'), 'and transitions width');
+
+      // Reading the computed style establishes the before-change value, so the
+      // browser has something to transition from.
+      void computed[positionProperty];
+
+      await click(findAll('[role="tab"]')[1]!);
+
+      assert.ok(
+        indicator
+          .getAnimations()
+          .some((animation) => animation.playState === 'running'),
+        'moving the selection starts a running animation'
+      );
+    });
+
+    test('the indicator stays hidden until the first measurement lands', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      // `data-fr-si-ready` gates opacity, so the class is only meaningful in
+      // combination with it. Assert the gate exists rather than the opacity.
+      assert
+        .dom('[role="tablist"]')
+        .hasAttribute(
+          'data-fr-si-ready',
+          '',
+          'the ready flag is set once measured'
+        );
     });
   }
 );
