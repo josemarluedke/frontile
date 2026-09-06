@@ -54,7 +54,9 @@ export default class Signature extends Component<SignatureSignature> {
           href={{this.component.Element.url}}
           target="_blank"
           rel="noopener noreferrer"
-        >{{this.component.Element.type.type}}</a>
+        >{{! The type carries the generator's syntax-highlighting spans, exactly
+             like the argument types below, so it renders as HTML rather than
+             being escaped into visible markup. }}{{{this.component.Element.type.type}}}</a>
       </p>
     {{/if}}
 

@@ -258,3 +258,11 @@
   font-style: var(--shiki-dark-font-style, inherit);
   font-weight: var(--shiki-dark-font-weight, inherit);
 }
+
+/* Inside a demo snippet the code block IS the snippet's content, not a
+   standalone prose block. The snippet already draws the border and the bottom
+   rounding, so the block's own `my-6` opened a 25px gap inside that border at
+   the top and bottom, and its border/radius doubled the snippet's own. */
+.docfy-demo__snippet .docfy-code-block {
+  @apply m-0 rounded-none border-0;
+}
