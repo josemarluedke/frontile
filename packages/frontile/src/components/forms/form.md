@@ -481,8 +481,9 @@ export default class ValidatedForm extends Component {
             />
           </form.Field>
 
-          <Button type='submit' disabled={{form.isLoading}} @class='mt-4'>
-            {{if form.isLoading 'Creating Account...' 'Create Account'}}
+          <Button type='submit' @isLoading={{form.isLoading}} @class='mt-4'>
+            <:default>Create Account</:default>
+            <:loading>Creating Account…</:loading>
           </Button>
 
           <Button @appearance='outlined' type='reset'>Reset</Button>
@@ -1059,8 +1060,9 @@ export default class ValidatedNestedForm extends Component {
             </form.Field>
           </div>
 
-          <Button type='submit' disabled={{form.isLoading}}>
-            {{if form.isLoading 'Saving...' 'Save Profile'}}
+          <Button type='submit' @isLoading={{form.isLoading}}>
+            <:default>Save Profile</:default>
+            <:loading>Saving…</:loading>
           </Button>
         </div>
       </Form>
@@ -1296,8 +1298,9 @@ export default class ResetValidationForm extends Component {
           </form.Field>
 
           <div class='flex gap-2'>
-            <Button type='submit' disabled={{form.isLoading}}>
-              {{if form.isLoading 'Saving...' 'Save'}}
+            <Button type='submit' @isLoading={{form.isLoading}}>
+              <:default>Save</:default>
+              <:loading>Saving…</:loading>
             </Button>
             <Button
               type='button'
