@@ -181,5 +181,52 @@ module(
       // aria-disabled alone would still leave it clickable.
       assert.dom(link).doesNotHaveAttribute('href');
     });
+
+    test('Item with @route and @isDisabled renders a plain, href-less anchor -- not a disabled LinkTo', async function (assert) {
+      // `LinkTo`'s `@disabled` only short-circuits its click handler; the
+      // element it renders still carries a real, middle-clickable href and an
+      // un-themed "disabled" class. A disabled `@route` item must be exactly
+      // as non-navigable as a disabled `@href` item.
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <nav.Item
+              @route="tab-nav-demo.index"
+              @isDisabled={{true}}
+            >One</nav.Item>
+          </TabNav>
+        </template>
+      );
+
+      const link = find('nav a')!;
+      assert.dom(link).hasAria('disabled', 'true');
+      assert.dom(link).hasAttribute('data-disabled', 'true');
+      assert.dom(link).doesNotHaveAttribute('href');
+      assert
+        .dom(link)
+        .doesNotHaveClass(
+          'disabled',
+          'no stray un-themed class leaks in from LinkTo'
+        );
+    });
+
+    test('Item with @route and a falsy @model reaches the dynamic segment', async function (assert) {
+      // `@model={{0}}` is a legitimate dynamic segment value. A truthiness
+      // check on `@model` would silently drop it, leaving `LinkTo` with no
+      // model for a route that requires one.
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <nav.Item @route="tab-nav-demo.item" @model={{0}}>Item</nav.Item>
+          </TabNav>
+        </template>
+      );
+
+      const link = find('nav a')!;
+      assert.ok(
+        link.getAttribute('href')?.includes('/tab-nav-demo/item/0'),
+        `href resolves the dynamic segment to 0, got: ${link.getAttribute('href')}`
+      );
+    });
   }
 );

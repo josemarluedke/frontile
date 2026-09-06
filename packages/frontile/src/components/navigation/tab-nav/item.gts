@@ -73,7 +73,11 @@ class TabNavItem extends Component<TabNavItemSignature> {
   @service declare router: RouterService;
 
   get models(): unknown[] {
-    return this.args.models ?? (this.args.model ? [this.args.model] : []);
+    // `!= null` (not truthiness) so a legitimate falsy dynamic segment --
+    // `@model={{0}}` or `@model=""` -- is not silently dropped.
+    return (
+      this.args.models ?? (this.args.model != null ? [this.args.model] : [])
+    );
   }
 
   // `LinkTo`'s `@query` throws when given `undefined` rather than treating it
@@ -91,12 +95,19 @@ class TabNavItem extends Component<TabNavItemSignature> {
       return false;
     }
 
-    // `currentURL` is tracked, so this recomputes on every transition.
+    // Redundant belt-and-braces: `RouterService#isActive` already entangles
+    // itself with `currentURL`'s tag internally (see
+    // `consumeTag(tagFor(this._router, 'currentURL'))` in ember-source's
+    // `router-service.js`), so this getter recomputes on every transition even
+    // without the read below. Kept anyway as a documented, version-independent
+    // guarantee -- and covered by the transition test in
+    // `tab-nav-routing-test.gts` -- in case that internal entanglement is ever
+    // dropped.
     void this.router.currentURL;
 
     try {
       return this.router.isActive(this.args.route, ...this.models, {
-        queryParams: this.args.query ?? {}
+        queryParams: this.query
       } as never);
     } catch {
       // `isActive` throws for a route that is not currently reachable -- an
@@ -112,20 +123,42 @@ class TabNavItem extends Component<TabNavItemSignature> {
 
   <template>
     {{#if @route}}
-      <LinkTo
-        @route={{@route}}
-        @models={{this.models}}
-        @query={{this.query}}
-        @disabled={{this.isDisabled}}
-        class="{{@itemClass}} {{@class}}"
-        aria-disabled="{{this.isDisabled}}"
-        data-disabled="{{this.isDisabled}}"
-        {{@setupItem this.isActive}}
-        ...attributes
-      >
-        {{yield}}
-      </LinkTo>
+      {{#if this.isDisabled}}
+        {{! An anchor cannot be natively disabled, and LinkTo cannot be talked out of rendering a real, navigable href -- its @disabled only short-circuits its click handler and tags on an un-themed disabled class. So a disabled @route item renders as a plain, href-less anchor instead, the same way a disabled @href item does. }}
+        {{! template-lint-disable no-unsupported-role-attributes }}
+        {{! aria-disabled is intentionally kept on an href-less <a> here: the
+          static linter can't see that the href is conditional, and a
+          disabled item must still carry aria-disabled per this component's
+          documented contract. }}
+        <a
+          href={{unless this.isDisabled @href}}
+          class="{{@itemClass}} {{@class}}"
+          aria-disabled="true"
+          data-disabled="true"
+          {{@setupItem this.isActive}}
+          ...attributes
+        >
+          {{yield}}
+        </a>
+      {{else}}
+        <LinkTo
+          @route={{@route}}
+          @models={{this.models}}
+          @query={{this.query}}
+          class="{{@itemClass}} {{@class}}"
+          aria-disabled="false"
+          data-disabled="false"
+          {{@setupItem this.isActive}}
+          ...attributes
+        >
+          {{yield}}
+        </LinkTo>
+      {{/if}}
     {{else}}
+      {{! template-lint-disable no-unsupported-role-attributes }}
+      {{! Same as above: href is conditional on @isDisabled, so this anchor
+        can be href-less, but aria-disabled must stay per the documented
+        contract. }}
       <a
         href={{unless this.isDisabled @href}}
         class="{{@itemClass}} {{@class}}"

@@ -22,5 +22,6 @@ Router.map(function () {
   this.route('overlays');
   this.route('tab-nav-demo', function () {
     this.route('second');
+    this.route('item', { path: '/item/:item_id' });
   });
 });
