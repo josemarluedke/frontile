@@ -193,9 +193,9 @@ export default class DocfyCopyPage extends Component<DocfyCopyPageSignature> {
       <ButtonGroup @appearance="soft" @size="xs" as |g|>
         <g.Button @onPress={{this.copyPage}} data-test-id="copy-page-primary">
           {{#if this.isCopied}}
-            <CheckIcon class="w-4 h-4" />
+            <CheckIcon class="w-4 h-4" aria-hidden="true" />
           {{else}}
-            <DuplicateIcon class="w-4 h-4" />
+            <DuplicateIcon class="w-4 h-4" aria-hidden="true" />
           {{/if}}
           {{this.primaryLabel}}
         </g.Button>

@@ -88,12 +88,12 @@ export default class DocfyThemeSwitcher extends Component<Signature> {
         <VisuallyHidden>
           Switch to Light Mode
         </VisuallyHidden>
-        <SunIcon aria-hidden="true" class="w-6 h-6" />
+        <MoonIcon aria-hidden="true" class="w-6 h-6" />
       {{else}}
         <VisuallyHidden>
           Switch to Dark Mode
         </VisuallyHidden>
-        <MoonIcon aria-hidden="true" class="w-6 h-6" />
+        <SunIcon aria-hidden="true" class="w-6 h-6" />
       {{/if}}
     </button>
   </template>

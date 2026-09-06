@@ -53,7 +53,7 @@ export default class SidebarNav extends Component<Signature> {
       {{on "click" this.toggle}}
     >
       <VisuallyHidden>Contents</VisuallyHidden>
-      <IconMenu class="w-8" />
+      <IconMenu class="size-8" />
     </button>
 
     <Drawer
