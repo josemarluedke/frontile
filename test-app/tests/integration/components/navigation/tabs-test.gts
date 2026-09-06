@@ -373,5 +373,77 @@ module(
           'the ready flag is set once measured'
         );
     });
+
+    test('the underline variant pins a bar to the bottom edge', async function (assert) {
+      await render(
+        <template>
+          <Tabs @variant="underline" @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const list = find('[role="tablist"]')!;
+      const indicator = list.querySelector('span[aria-hidden="true"]')!;
+
+      await waitUntil(() => list.hasAttribute('data-fr-si-ready'), {
+        timeout: 1000
+      });
+
+      const computed = window.getComputedStyle(indicator);
+
+      assert.strictEqual(computed.bottom, '0px', 'the bar sits on the bottom edge');
+      assert.notStrictEqual(
+        computed.height,
+        '0px',
+        'the bar has a height of its own rather than the tab height'
+      );
+      assert.strictEqual(
+        computed.width,
+        `${(findAll('[role="tab"]')[0] as HTMLElement).offsetWidth}px`,
+        'the bar is as wide as the selected tab'
+      );
+      assert.ok(
+        computed.translate.startsWith('0px') ||
+          computed.translate.split(' ').length >= 1,
+        `the bar is positioned with translate (${computed.translate})`
+      );
+    });
+
+    test('the underline variant, vertical, pins a bar to the inline start', async function (assert) {
+      await render(
+        <template>
+          <Tabs
+            @variant="underline"
+            @orientation="vertical"
+            @defaultValue="account"
+            as |t|
+          >
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const list = find('[role="tablist"]')!;
+      const indicator = list.querySelector('span[aria-hidden="true"]')!;
+
+      await waitUntil(() => list.hasAttribute('data-fr-si-ready'), {
+        timeout: 1000
+      });
+
+      const computed = window.getComputedStyle(indicator);
+      assert.strictEqual(computed.left, '0px', 'the bar sits on the start edge');
+      assert.strictEqual(
+        computed.height,
+        `${(findAll('[role="tab"]')[0] as HTMLElement).offsetHeight}px`,
+        'the bar is as tall as the selected tab'
+      );
+    });
   }
 );
