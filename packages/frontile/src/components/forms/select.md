@@ -558,11 +558,9 @@ export default class DeclarativeItemsSelect extends Component {
 
 The built-in clear button can be enabled using the `@isClearable` flag. This allows users to reset the selection easily.
 
-It deliberately overrides `@allowEmpty`: that argument governs deselecting an *option*,
-while `@isClearable` is a separate affordance you add for exactly the purpose of emptying
-the field, and it would be dead in every default configuration otherwise (`@allowEmpty`
-defaults to `false`). No clear button renders on a disabled Select, or with nothing
-selected.
+It overrides `@allowEmpty`: that argument governs deselecting an *option*, while
+`@isClearable` is the affordance for emptying the field. No clear button renders on a
+disabled Select, or with nothing selected.
 
 > **Note:** This example demonstrates the clearable feature with direct state management. The `@isClearable` option also works with Form/Field integration.
 
@@ -759,9 +757,9 @@ last remaining selection cannot be removed — its chip renders with **no close 
 rather than a dead one. Set `@allowEmpty={{true}}` to allow emptying the selection one chip
 at a time.
 
-`@isClearable` adds a clear button to the field that removes everything at once. It
-deliberately ignores `@allowEmpty`, so a clearable Select can always be emptied even though
-its last chip has no close button.
+`@isClearable` adds a clear button to the field that removes everything at once. It ignores
+`@allowEmpty`, so a clearable Select can always be emptied even though its last chip has no
+close button.
 
 ```gts preview
 import Component from '@glimmer/component';
@@ -1019,9 +1017,8 @@ Keyboard handling comes from the listbox:
 ### The chips keyboard model
 
 Chip close buttons are **pointer affordances**: they are set to `tabindex="-1"` and are not
-tab stops. This is deliberate. A field holding five selections would otherwise put five Tab
-stops in front of the combobox, so a keyboard user Tabbing into the control would land on
-"Remove ..." rather than on the field itself.
+tab stops, so Tabbing into the control lands on the field itself rather than on a run of
+"Remove ..." buttons in front of it.
 
 Keyboard removal is on the field instead, in **both** modes:
 

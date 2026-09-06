@@ -39,6 +39,44 @@ const DISCOURAGED_HEADINGS = {
   'Important Notes': 'move each note next to the thing it describes',
   'Best Practices': 'move guidance into the section it applies to'
 };
+// Prose that argues with the reader instead of informing them — see the
+// "Write for the reader, not the reviewer" section of SKILL.md. Every one of
+// these is a `warn`, never an error: each is a prompt to reread the sentence,
+// not a verdict. "Move focus somewhere deliberate" is a legitimate instruction
+// and will match `deliberate`; the reviewer is expected to wave it through.
+const PROSE_TELLS = [
+  {
+    // Structural tells. A paragraph or heading that announces itself as
+    // mechanism or justification, e.g. `**How it works:**`, `**Benefits of
+    // input validation:**`, `> **Why is @isFoo true by default?**`. These
+    // survive review because they look like documentation, and they were the
+    // highest-yield findings of the first audit — none of the word-level
+    // patterns below would have caught one.
+    re: /^\s*>?\s*\**\s*(?:How it works|Benefits of\b|Why (?:is|are|does|do)\b[^\n]*\?)/i,
+    message: 'Section explains mechanism or justifies a decision',
+    hint: 'document what it does; why it was built this way belongs in the code or the PR'
+  },
+  {
+    re: /\b(?:deliberate|deliberately|genuinely|not fatal)\b/,
+    message: 'Defensive contrast',
+    hint: 'rebuts a claim the reader never made — state the behaviour on its own'
+  },
+  {
+    re: /\bworth knowing\b/,
+    message: 'Throat-clearing before content that stands on its own',
+    hint: 'drop the preamble and lead with the fact'
+  },
+  {
+    re: /\b(?:covered by tests|the tests cover|comes? from reading|a headless browser|needs a real device)\b/i,
+    message: 'Verification narration',
+    hint: 'how a claim was checked belongs in the PR, not on the page'
+  },
+  {
+    re: /\bcompiled out of production\b|\b(?:development|dev) and production\b/i,
+    message: 'Environment reasoning',
+    hint: 'cut unless the consumer actually observes the difference'
+  }
+];
 const SEMANTIC_CATEGORIES =
   'neutral|primary|secondary|tertiary|success|warning|danger|inverse|surface';
 const UTILITY_PREFIXES =
@@ -300,6 +338,24 @@ function lintDoc(mdPath) {
     if (advice && h.depth <= 3)
       add('warn', h.line, `Heading \`${h.text}\``, advice);
   }
+
+  // --- Prose that argues instead of informing -----------------------------
+  // Only prose: a tell inside a demo is a code comment, which is exactly where
+  // this reasoning is supposed to live.
+  const fenceLines = new Set();
+  for (const fence of collectFences(source)) {
+    for (let n = fence.line; n <= fence.endLine; n++) fenceLines.add(n);
+  }
+  source.split('\n').forEach((line, i) => {
+    const lineNo = i + 1;
+    if (fenceLines.has(lineNo)) return;
+    for (const tell of PROSE_TELLS) {
+      const m = tell.re.exec(line);
+      if (!m) continue;
+      add('warn', lineNo, `${tell.message} — \`${m[0].trim()}\``, tell.hint);
+      break;
+    }
+  });
 
   // --- <Signature> wiring -------------------------------------------------
   const signatureTags = [

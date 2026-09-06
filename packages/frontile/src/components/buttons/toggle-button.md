@@ -136,11 +136,10 @@ followed by its state, and announces the change when it flips.
 | `Enter` | Toggles it, firing `@onChange` with the new value.       |
 | `Space` | Toggles it, firing `@onChange` with the new value.       |
 
-`aria-pressed` tracks `@isSelected`, which the component does not own. Without an
-`@onChange` that writes the new value back, the toggle looks pressed to the eye
-for as long as the pointer is down but never reports a state change — the demos
-under [Sizes](#togglebutton-sizes) and [Disabled](#disabled) are deliberately
-inert for that reason, and are not the pattern to copy.
+`aria-pressed` tracks `@isSelected`, which the component does not own. Always
+pair it with an `@onChange` that writes the new value back: without one the
+toggle looks pressed to the eye for as long as the pointer is down, but never
+reports a state change.
 
 An icon with no text leaves the toggle unnamed, so the state is announced with
 nothing to attach it to. Pass `aria-label`, as the [Usage](#usage) demo does.

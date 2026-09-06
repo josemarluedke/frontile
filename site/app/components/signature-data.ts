@@ -6581,7 +6581,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
-          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Checkbox: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Checkbox</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">CheckboxGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isDisabled bound); Input: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Input</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Radio</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">RadioGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, isDisabled bound); SingleSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); Switch: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Switch</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Textarea</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">[{ Checkbox: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Checkbox</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checked, onChange, onBlur, isDisabled bound); CheckboxGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">CheckboxGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isDisabled bound); Input: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Input</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); InputOtp: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">InputOtp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); Radio: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Radio</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, checkedValue, onChange, onBlur, isDisabled bound); RadioGroup: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">RadioGroup</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, isDisabled bound); SingleSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (name, errors, selectedKey, onBlur, isDisabled bound); MultiSelect: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Select</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">S</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> (selectionMode, name, errors, selectedKeys, onBlur, isDisabled bound); Switch: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Switch</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, isSelected, onChange, onBlur, isDisabled bound); Textarea: </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Textarea</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound); }]</span></span>',
           items: [
             {
               identifier: '0',
@@ -6612,6 +6612,16 @@ const data: ComponentDoc[] = [
                     identifier: 'Input',
                     type: {
                       type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Input</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound)</span></span>',
+                    },
+                    isRequired: true,
+                    isInternal: false,
+                    description: '',
+                    tags: {},
+                  },
+                  {
+                    identifier: 'InputOtp',
+                    type: {
+                      type: '<span class="shiki"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">InputOtp</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (name, errors, value, onChange, onInput, onBlur, isDisabled bound)</span></span>',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -7493,6 +7503,385 @@ const data: ComponentDoc[] = [
       url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
     },
     description: '',
+    tags: {},
+  },
+  {
+    package: 'unknown',
+    module: 'input-otp',
+    name: 'InputOtp',
+    fileName: 'packages/frontile/declarations/components/forms/input-otp.d.ts',
+    Args: [
+      {
+        identifier: 'allowedChars',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'digits\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'letters\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'alphanumeric\'</span></span>',
+          items: ["'digits'", "'letters'", "'alphanumeric'"],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Which characters the code may contain. Also decides the on-screen keyboard\n(<code>inputmode</code>) and autocapitalisation.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'digits'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'digits\'</span></span>',
+      },
+      {
+        identifier: 'classes',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SlotsToClasses</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">InputOtpSlots</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "Class names for each slot of the component, merged with the theme's.",
+        tags: {},
+      },
+      {
+        identifier: 'description',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Help text rendered between the label and the control, and referenced by the\nids <code>describedBy</code> returns.',
+        tags: {},
+      },
+      {
+        identifier: 'errors',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">|</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> string[]</span></span>',
+          items: ['string', 'string[]'],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Validation messages for the field. A non-empty value also marks the control\ninvalid, and an array is joined with <code>; </code> when displayed.',
+        tags: {},
+      },
+      {
+        identifier: 'groups',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Array</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number[]</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Splits the cells into visual groups, e.g. <code>[3, 3]</code> for a six-digit code.\nOmit it for a single group. Entries that do not sum to <code>length</code> warn in\ndevelopment; the groups then run out of cells or take a final group of the\nremainder, so exactly <code>length</code> cells render either way.',
+        tags: {},
+      },
+      {
+        identifier: 'isDisabled',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is disabled. FormControl passes this through for styling;\nthe control it wraps is responsible for the <code>disabled</code> attribute.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isInvalid',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Marks the control invalid without supplying messages, for validation that is\nreported elsewhere.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isMasked',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Renders a bullet in place of each entered character. The real input\'s text\nis already transparent, so this is purely what the cells draw -- the input\nstays <code>type="text"</code>, which <code>type="password"</code> would break for autofill.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'isRequired',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Whether the field is required. Adds an asterisk to the label; it does not\nset the <code>required</code> attribute on the control itself.',
+        tags: { defaultValue: { name: 'defaultValue', value: 'false' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">false</span></span>',
+      },
+      {
+        identifier: 'label',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The label text rendered above the control and associated with it via <code>for</code>.\nUse the <code>:label</code> block instead when the label needs markup.',
+        tags: {},
+      },
+      {
+        identifier: 'length',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          "How many characters the code has. Also the input's <code>maxlength</code>.",
+        tags: { defaultValue: { name: 'defaultValue', value: '6' } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">6</span></span>',
+      },
+      {
+        identifier: 'name',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The name attribute of the underlying input, used when the code is\nsubmitted as part of a form.',
+        tags: {},
+      },
+      {
+        identifier: 'onBlur',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when onblur is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'onChange',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Event</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when onchange is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'onComplete',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Called when the code becomes complete. Fires on the transition from a\nshorter value to exactly <code>length</code> characters, so re-rendering an already\nfull value does not fire it again.',
+        tags: {},
+      },
+      {
+        identifier: 'onInput',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">value</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Event</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> void</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'Callback when oninput is triggered.',
+        tags: {},
+      },
+      {
+        identifier: 'pattern',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Object</span></span>',
+          items: [
+            {
+              identifier: 'exec',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RegExpExecArray</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value:
+                    'string   The String object or string literal on which to perform the search.',
+                },
+              },
+            },
+            {
+              identifier: 'test',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">string</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value that indicates whether or not a pattern exists in a searched string.',
+              tags: {
+                param: {
+                  name: 'param',
+                  value: 'string   String on which to perform the search.',
+                },
+              },
+            },
+            {
+              identifier: 'source',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a copy of the text of the regular expression pattern. Read-only. The regExp argument is a Regular expression object. It can be a variable name or a literal.',
+              tags: {},
+            },
+            {
+              identifier: 'global',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'ignoreCase',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the ignoreCase flag (i) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'multiline',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">boolean</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description:
+                'Returns a Boolean value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.',
+              tags: {},
+            },
+            {
+              identifier: 'lastIndex',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">number</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {},
+            },
+            {
+              identifier: 'compile',
+              type: {
+                type: '<span class="shiki"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">function</span></span>',
+                raw: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">pattern</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">flags</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">?:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> RegExp</span></span>',
+              },
+              isRequired: true,
+              isInternal: false,
+              description: '',
+              tags: {
+                deprecated: {
+                  name: 'deprecated',
+                  value: 'A legacy feature for browser compatibility',
+                },
+              },
+            },
+          ],
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'A custom character rule, overriding <code>allowedChars</code>. It is tested against\nevery intermediate value, so it must accept partial input: <code>/^\\d+$/</code>, not\n<code>/^\\d{6}$/</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'placeholder',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'Characters shown in empty cells before anything is entered. Also exposed as\n<code>aria-placeholder</code>.',
+        tags: {},
+      },
+      {
+        identifier: 'separator',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The character shown between groups. Rendered <code>aria-hidden</code>, because the\nvalue itself contains no separator.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'–'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'–\'</span></span>',
+      },
+      {
+        identifier: 'size',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">InputOtpVariants</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description: 'The size of the cells and the label.',
+        tags: { defaultValue: { name: 'defaultValue', value: "'md'" } },
+        defaultValue:
+          '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'md\'</span></span>',
+      },
+      {
+        identifier: 'value',
+        type: {
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+        },
+        isRequired: false,
+        isInternal: false,
+        description:
+          'The value of the input. Pair with <code>onInput</code> or <code>onChange</code> to control the\ninput; leave it unset to let the component track its own value.',
+        tags: {},
+      },
+    ],
+    Blocks: [],
+    Element: {
+      identifier: 'Element',
+      type: {
+        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">HTMLInputElement</span></span>',
+      },
+      description: '',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement',
+    },
+    description:
+      '<p>Ownership model, stated once.</p>\n<p>The <code>&#x3C;input></code> element is the source of truth for what the user typed -- the\nbrowser guarantees that -- so a parent-owned <code>@value</code> is <em>written down into</em>\nit (by <code>syncFromValueArg</code> and <code>reconcileWithParent</code>) rather than bound over\nit with <code>value={{...}}</code>.</p>\n<p>That binding is what broke typing inside a <code>&#x3C;Form></code>. <code>elementValue</code> is\ndirtied mid-dispatch and the template reads it (through <code>cellGroups</code>), so\nGlimmer revalidates in a microtask that runs <em>between</em> event listeners --\nrewriting the <code>value</code> attribute from a still-stale <code>@value</code> before the\n<code>input</code> event had finished bubbling to the <code>&#x3C;form></code>, wiping the keystroke and\nhanding <code>&#x3C;Form></code> an empty value to store.</p>\n<p>The one invariant that keeps the mirror honest: every code path that writes\n<code>element.value</code> goes through <code>writeValue</code>, which re-derives the selection\nmirror straight afterwards.</p>',
     tags: {},
   },
   {

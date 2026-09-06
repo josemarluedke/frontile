@@ -160,6 +160,99 @@ const textarea = tv({
   }
 });
 
+// A one-time-code field is one real <input> laid transparently over inert
+// cells. The input must stay fully opaque -- iOS refuses the long-press Paste
+// menu on an opacity:0 input -- so every colour is made transparent instead.
+const inputOtp = tv({
+  slots: {
+    base: '',
+    // pointer-events are inverted: the container ignores the pointer so that a
+    // click anywhere in the widget lands on the input below and resolves to the
+    // nearest character position.
+    container: 'relative flex items-center w-fit pointer-events-none',
+    group: 'flex items-center',
+    cell: [
+      ...fieldShell,
+      'relative flex items-center justify-center',
+      'font-body tabular-nums text-neutral-strong',
+      'transition-colors'
+    ],
+    cellChar: 'select-none',
+    caret:
+      'absolute w-px bg-neutral-strong animate-caret-blink motion-reduce:animate-none',
+    separator: 'select-none text-neutral-soft',
+    input: [
+      'absolute inset-y-0 left-0 h-full',
+      'pointer-events-auto',
+      'text-left',
+      // Mandatory: opaque element, transparent paint.
+      'opacity-100',
+      'text-transparent caret-transparent bg-transparent',
+      // Both halves -- setting only the background leaves the text drawn in the
+      // highlight's foreground colour.
+      'selection:bg-transparent selection:text-transparent',
+      'appearance-none border-0 outline-0 shadow-none',
+      'focus:outline-hidden focus:ring-0',
+      // >= 16px or iOS Safari zooms the page on focus. The negative tracking
+      // collapses the invisible glyphs so they cannot spill past the cells.
+      'text-base leading-none font-mono tabular-nums tracking-[-0.5em]',
+      // Chromium paints an autofilled field yellow, and the :autofill state
+      // outlives the fill. -webkit-text-fill-color is the property that
+      // actually controls text colour in that state.
+      'autofill:bg-transparent autofill:shadow-none',
+      'autofill:[-webkit-text-fill-color:transparent]',
+      // iOS paints selection in a native layer that ignores ::selection, so the
+      // text metrics are compressed further to shrink what it can paint.
+      'supports-[-webkit-touch-callout:none]:tracking-[-0.6em]',
+      'supports-[-webkit-touch-callout:none]:font-thin',
+      // Password managers anchor their badge to the INPUT's box, not the
+      // container's, so it would land on the last cell. Reserve a 40px gutter
+      // and clip it back: absolutely positioned, so no layout shift, and
+      // clip-path clips hit-testing too.
+      'w-[calc(100%+40px)] [clip-path:inset(0_40px_0_0)]',
+      // Keep an injected badge clickable inside the pointer-events-none container.
+      '[&+*]:pointer-events-auto'
+    ]
+  },
+  variants: {
+    size: {
+      sm: {
+        cell: 'size-9 rounded-lg text-sm',
+        group: 'gap-1.5',
+        separator: 'px-1 text-sm',
+        caret: 'h-4'
+      },
+      md: {
+        cell: 'size-12 text-base',
+        group: 'gap-2',
+        separator: 'px-1.5 text-base',
+        caret: 'h-5'
+      },
+      lg: {
+        cell: 'size-14 text-lg',
+        group: 'gap-2.5',
+        separator: 'px-2 text-lg',
+        caret: 'h-6'
+      }
+    },
+    // z-10 keeps the active cell's ring from being clipped by its neighbour.
+    isActive: {
+      true: { cell: 'z-10 border-primary-soft ring-3 ring-focus' }
+    },
+    // Mirrors `input`'s `aria-invalid:focus:ring-danger-soft`: a focused invalid
+    // cell must ring red, not keep the neutral focus ring.
+    isInvalid: {
+      true: { cell: 'border-danger-soft ring-danger-soft' }
+    },
+    isDisabled: {
+      true: { cell: 'border-neutral-subtle text-neutral-soft' }
+    }
+  },
+  defaultVariants: {
+    size: 'md'
+  }
+});
+
 const checkboxRadioBase = tv({
   slots: {
     base: ['max-w-fit flex items-center justify-start'],
@@ -581,6 +674,8 @@ export type InputVariants = VariantProps<typeof input>;
 export type InputSlots = keyof ReturnType<typeof input>;
 export type TextareaVariants = VariantProps<typeof textarea>;
 export type TextareaSlots = keyof ReturnType<typeof textarea>;
+export type InputOtpVariants = VariantProps<typeof inputOtp>;
+export type InputOtpSlots = keyof ReturnType<typeof inputOtp>;
 export type CheckboxVariants = VariantProps<typeof checkbox>;
 export type CheckboxSlots = keyof ReturnType<typeof checkbox>;
 export type RadioVariants = VariantProps<typeof radio>;
@@ -603,6 +698,7 @@ export {
   formDescription,
   formFeedback,
   input,
+  inputOtp,
   textarea,
   checkbox,
   radio,

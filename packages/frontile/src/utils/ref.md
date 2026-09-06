@@ -90,9 +90,6 @@ export default class ElementMeasureComponent extends Component {
 }
 ```
 
-This example is to just ilustrate the use of the `onChange`, but getting the element width
-could be achieved using a getter property on the component as well.
-
 ### Using as a Template Helper
 
 You can also use `ref` directly within your templates:

@@ -298,9 +298,8 @@ export default class RoleInput extends Component {
 
 Pass `@isClearable={{true}}` to show a button that clears both the selection and the typed text.
 
-Like `Select`, this deliberately overrides `@allowEmpty` — that argument governs
-deselecting an option in the listbox, while the clear button is the affordance for
-emptying the field. No clear button renders on a disabled Autocomplete.
+Like `Select`, this overrides `@allowEmpty` — that argument governs deselecting an
+option in the listbox, while the clear button is the affordance for emptying the field. No clear button renders on a disabled Autocomplete.
 
 ```gts preview
 import Component from '@glimmer/component';

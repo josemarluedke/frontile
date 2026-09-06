@@ -615,10 +615,8 @@ When used with a Form component that provides `@data`, Field automatically binds
 
 - Extracts the current value for the field from `form.data`
 - Passes the appropriate value prop to each component type
-- Provides a no-op change handler to put components in controlled mode
-  - This ensures form-level `@onChange` handles all state updates
-  - Prevents components from managing their own internal state
-  - Enables the Form component to be the single source of truth
+- Provides a no-op change handler, which puts the component in controlled mode so that
+  form-level `@onChange` handles every update
 
 **Example:**
 
@@ -638,27 +636,14 @@ When the Form component's `@validateOn` argument includes `'change'` or `'input'
 
 **Change Validation (`'change'`)**
 
-Validates when a field loses focus (blur) after being modified:
-
-**How it works:**
-
-1. Form passes `@validateOn` to Field components (defaults to `['change']`)
-2. Field's `handleChange` action checks if `'change'` is included
-3. If change validation is enabled, Field calls `validateField` for that specific field when the field loses focus
-4. Validation errors appear after the user moves to the next field (on blur)
+Validates when a field loses focus (blur) after being modified, so errors appear once the
+user has moved on to the next field.
 
 **Note:** The `'change'` option validates on the HTML `change` event, which fires when a field loses focus (blur) after its value has been modified. It does NOT fire on every keystroke.
 
 **Input Validation (`'input'`)**
 
-Validates as the user types, on every keystroke:
-
-**How it works:**
-
-1. Form passes `@validateOn` to Field components
-2. Field's `handleInput` action checks if `'input'` is included
-3. If input validation is enabled, Field calls `validateField` for that specific field on every keystroke
-4. Validation errors appear in real-time as the user types
+Validates as the user types, so errors appear and clear on every keystroke.
 
 **Note:** The `'input'` option validates on the HTML `input` event, which fires on every keystroke as the user types. This provides immediate feedback but may be distracting for some use cases.
 
@@ -728,21 +713,6 @@ const schema = v.object({
   </Form>
 </template>
 ```
-
-**Benefits of change validation:**
-
-- **Early feedback**: Users see validation errors as they move between fields
-- **Better UX**: Errors are caught before form submission, reducing frustration
-- **Per-field validation**: Each field validates independently when blurred
-- **Clear guidance**: Users know exactly what's wrong before submitting
-- **Natural flow**: Validation happens when user is done with a field (on blur)
-
-**Benefits of input validation:**
-
-- **Immediate feedback**: Users see validation errors in real-time as they type
-- **Perfect for specific cases**: Great for password strength, character limits, username availability
-- **Continuous guidance**: Users can adjust their input immediately based on feedback
-- **Progressive disclosure**: Errors clear as soon as the input becomes valid
 
 **When to use input validation:**
 
@@ -911,7 +881,7 @@ below comes from the wrapped component, and holds for `field.Input`, `field.Sele
 | Errors announced as they appear                                        | `FormFeedback` renders `aria-live="assertive"` for errors, `"polite"` otherwise |
 | Label associated via `for`                                             | `FormControl` + `Label`                                                         |
 
-Two consequences worth knowing. Because error feedback is `aria-live="assertive"`, a form
+Two consequences. Because error feedback is `aria-live="assertive"`, a form
 using `@validateOn={{array "input"}}` interrupts a screen reader on **every keystroke** —
 prefer `change` or `blur` for validation a user hears. And because the announcement is tied
 to the feedback element rather than the control, a field whose errors you render yourself,
