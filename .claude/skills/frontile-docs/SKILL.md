@@ -129,8 +129,13 @@ This drifts in during review. A reviewer challenges a claim, the claim gets corr
 the correction's *reasoning* is left in the prose — so the page ends up arguing with an
 earlier version of itself. Cut the argument and keep the corrected fact.
 
-Tells, all of which came out of one page:
+Tells, starting with the one to learn first — it is the highest-yield, and the only one
+that survives review by looking like documentation:
 
+- **A section that announces itself as mechanism or justification** — `**How it works:**`
+  followed by numbered internal steps, `**Benefits of X:**`, a callout headed `**Why is
+  @isFoo true by default?**`. The word-level tells below would not catch any of these,
+  and an audit of the 36 component pages found five.
 - **Defensive contrasts** — "genuinely", "rather than", "not fatal", "it is X only", "the
   exception is". They rebut a claim the reader never made.
 - **Internal vocabulary** — "fake caret", "the mirror", a class or method name used as if
@@ -159,8 +164,22 @@ rule is rejected whole rather than stripped.
 **The test: does this change what the reader writes or expects to see? Keep it. Does it
 explain why the implementation is the way it is, or how someone checked it? Cut it.**
 
-When auditing an existing page, read for these tells the way you'd read for a wrong class
-name — they accumulate silently and no linter catches them.
+### Cutting rationale can delete the only statement of a fact
+
+Rationale is often fused to the fact it defends, and the fact appears nowhere else on the
+page — a "Why is this the default?" callout is also the only place the default's *effect*
+is described. Delete it cleanly and the page silently loses information while the diff
+looks like pure subtraction.
+
+So restate before you cut: write the behaviour as a plain sentence, check it stands without
+the surrounding argument, and only then remove the original. Four of the fifteen passages
+cut in the first pass needed this — the rest were deletions.
+
+When auditing, start with `lint-docs.mjs`, which flags the greppable subset of these as
+warnings — never errors, since every one needs a human call. It caught 31 of these across
+the pages before the first cleanup, including all five structural tells. Then read the
+prose anyway: implementation rationale written in ordinary words matches no pattern, and
+that is most of the category.
 
 ## Shortening a doc
 
@@ -216,7 +235,8 @@ Zero dependencies, so it runs without `node_modules`, and it exits non-zero on e
 CI. It covers required sections, fence languages, `<Signature>` wiring including tags naming
 a component that doesn't exist, arguments used in demos that aren't in the signature,
 arguments missing the JSDoc that fills the API table, numbered color utilities, raw palette
-classes, inline `<svg>`, and — with `--since` — runnable demos removed since a git ref.
+classes, inline `<svg>`, prose tells from *Write for the reader, not the reviewer*, and —
+with `--since` — runnable demos removed since a git ref.
 
 Demo loss warns, and errors only when more than a third of the page's demos are gone. A
 warning isn't a verdict: removing one demo of seven is often real cleanup. It's a prompt to
@@ -231,9 +251,15 @@ cd site && pnpm build
 
 If that didn't run, say the demos are unverified rather than implying they were checked.
 
-Neither check reads prose. When reviewing or auditing a page, do that pass yourself: scan
-for the tells in *Write for the reader, not the reviewer* and report each one with the
+Prose tells warn and never error, because each one is a judgement call — "move focus
+somewhere deliberate" is a legitimate instruction that matches the *defensive contrast*
+pattern. Triage each, and read for the ones no pattern can catch. Report each with the
 sentence it's in.
+
+When the site build isn't available — a worktree with no `node_modules`, say — a prose-only
+change has a cheap proxy: compare fence counts against the base ref. Identical counts in
+every file mean no demo was touched, so nothing the build would have checked has changed.
+Say which check you ran; don't let the proxy pass for the build.
 
 ## Repo facts
 
