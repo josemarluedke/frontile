@@ -4,7 +4,7 @@ import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
 import type { TabsContext } from './tabs';
 
-interface TabArgs<T> {
+interface TabsTabArgs<T> {
   /** The value this tab represents, paired with a `Panel` of the same value. */
   value: T;
 
@@ -27,13 +27,13 @@ interface TabArgs<T> {
   context: TabsContext<T>;
 }
 
-interface TabSignature<T> {
-  Args: TabArgs<T>;
+interface TabsTabSignature<T> {
+  Args: TabsTabArgs<T>;
   Blocks: { default: [{ isSelected: boolean }] };
   Element: HTMLButtonElement;
 }
 
-class Tab<T> extends Component<TabSignature<T>> {
+class TabsTab<T> extends Component<TabsTabSignature<T>> {
   get isSelected(): boolean {
     return this.args.context.isSelected(this.args.value);
   }
@@ -87,5 +87,5 @@ class Tab<T> extends Component<TabSignature<T>> {
   </template>
 }
 
-export { Tab, type TabSignature, type TabArgs };
-export default Tab;
+export { TabsTab, type TabsTabSignature, type TabsTabArgs };
+export default TabsTab;

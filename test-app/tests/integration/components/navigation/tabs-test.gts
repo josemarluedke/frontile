@@ -110,6 +110,107 @@ module(
       assert.dom(findAll('[role="tab"]')[0]!).hasAria('selected', 'true');
     });
 
+    test('controlled: a starting @value of undefined still means controlled', async function (assert) {
+      // `undefined` is a legitimate value of the generic `T` -- "nothing is
+      // selected" -- so it cannot also be the signal for "argument omitted".
+      // `isControlled` checks `'value' in this.args`, not `!== undefined`,
+      // precisely so a starting `@value={{undefined}}` stays controlled
+      // rather than falling back to internal, uncontrolled tracking.
+      const value = cell<string | undefined>(undefined);
+      const received: string[] = [];
+      const onChange = (next: string): void => {
+        // Deliberately declines the change: a controlled consumer that
+        // validates and says no.
+        received.push(next);
+      };
+
+      await render(
+        <template>
+          <Tabs @value={{value.current}} @onChange={{onChange}} as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const tabs = findAll('[role="tab"]');
+      tabs.forEach((tab) => assert.dom(tab).hasAria('selected', 'false'));
+
+      await click(tabs[1]!);
+
+      assert.deepEqual(
+        received,
+        ['security'],
+        'onChange still reports the pick'
+      );
+      findAll('[role="tab"]').forEach((tab) => {
+        assert
+          .dom(tab)
+          .hasAria(
+            'selected',
+            'false',
+            'but the declined change does not move the selection'
+          );
+      });
+    });
+
+    test('@isDisabled on Tabs disables every tab', async function (assert) {
+      const received: string[] = [];
+      const onChange = (next: string): void => {
+        received.push(next);
+      };
+
+      await render(
+        <template>
+          <Tabs
+            @defaultValue="account"
+            @onChange={{onChange}}
+            @isDisabled={{true}}
+            as |t|
+          >
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const tabs = findAll('[role="tab"]');
+      tabs.forEach((tab) => {
+        assert.dom(tab).hasAria('disabled', 'true');
+        assert.dom(tab).hasAttribute('data-disabled', 'true');
+      });
+
+      tabs[1]!.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      );
+
+      assert.deepEqual(received, [], 'onChange was not called');
+      assert.dom(tabs[0]!).hasAria('selected', 'true', 'selection unchanged');
+      assert.dom(tabs[1]!).hasAria('selected', 'false');
+    });
+
+    test('@isFullWidth stretches the list and each tab', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" @isFullWidth={{true}} as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      assert.dom('[role="tablist"]').hasClass('w-full');
+      findAll('[role="tab"]').forEach((tab) => {
+        assert.dom(tab).hasClass('flex-1');
+      });
+    });
+
     test('only the active panel is rendered, and ARIA round-trips', async function (assert) {
       await render(
         <template>
@@ -150,8 +251,9 @@ module(
     });
 
     test('values that stringify alike still get distinct ids', async function (assert) {
-      // `String()` collapses both of these to "[object Object]". Ids derived
-      // from the stringified value would collide and break aria-controls.
+      // Both fixtures override `toString` to return the same string, "x".
+      // Ids derived from the stringified value would collide and break
+      // aria-controls.
       const a = { toString: (): string => 'x' };
       const b = { toString: (): string => 'x' };
 
@@ -313,7 +415,7 @@ module(
       });
 
       assert.strictEqual(
-        list.style.getPropertyValue('--fr-si-width'),
+        (list as HTMLElement).style.getPropertyValue('--fr-si-width'),
         `${(findAll('[role="tab"]')[0] as HTMLElement).offsetWidth}px`,
         'the indicator is sized to the selected tab'
       );
@@ -352,7 +454,7 @@ module(
       );
     });
 
-    test('the indicator stays hidden until the first measurement lands', async function (assert) {
+    test('the ready flag lands after the first measurement', async function (assert) {
       await render(
         <template>
           <Tabs @defaultValue="account" as |t|>

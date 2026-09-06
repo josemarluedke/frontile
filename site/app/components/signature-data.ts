@@ -19152,7 +19152,7 @@ const data: ComponentDoc[] = [
   {
     package: 'unknown',
     module: 'panel',
-    name: 'Panel',
+    name: 'TabsPanel',
     fileName:
       'packages/frontile/declarations/components/navigation/tabs/panel.d.ts',
     Args: [
@@ -19339,7 +19339,7 @@ const data: ComponentDoc[] = [
   {
     package: 'unknown',
     module: 'tab',
-    name: 'Tab',
+    name: 'TabsTab',
     fileName:
       'packages/frontile/declarations/components/navigation/tabs/tab.d.ts',
     Args: [
@@ -19561,7 +19561,7 @@ const data: ComponentDoc[] = [
   {
     package: 'unknown',
     module: 'tabs',
-    name: 'List',
+    name: 'TabsList',
     fileName:
       'packages/frontile/declarations/components/navigation/tabs/tabs.d.ts',
     Args: [
@@ -19883,7 +19883,7 @@ const data: ComponentDoc[] = [
         identifier: 'default',
         type: {
           type: '<span class="hljs-title class_">Array</span>',
-          raw: '[{ <span class="hljs-title class_">List</span>: <span class="hljs-title class_">List</span>&#x3C;T> (context bound); <span class="hljs-title class_">Tab</span>: <span class="hljs-title class_">Tab</span>&#x3C;T> (context bound); <span class="hljs-title class_">Panel</span>: <span class="hljs-title class_">Panel</span>&#x3C;T> (context bound); }]',
+          raw: '[{ <span class="hljs-title class_">List</span>: <span class="hljs-title class_">TabsList</span>&#x3C;T> (context bound); <span class="hljs-title class_">Tab</span>: <span class="hljs-title class_">TabsTab</span>&#x3C;T> (context bound); <span class="hljs-title class_">Panel</span>: <span class="hljs-title class_">TabsPanel</span>&#x3C;T> (context bound); }]',
           items: [
             {
               identifier: '0',
@@ -19893,7 +19893,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'List',
                     type: {
-                      type: '<span class="hljs-title class_">List</span>&#x3C;T> (context bound)',
+                      type: '<span class="hljs-title class_">TabsList</span>&#x3C;T> (context bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -19903,7 +19903,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Tab',
                     type: {
-                      type: '<span class="hljs-title class_">Tab</span>&#x3C;T> (context bound)',
+                      type: '<span class="hljs-title class_">TabsTab</span>&#x3C;T> (context bound)',
                     },
                     isRequired: true,
                     isInternal: false,
@@ -19913,7 +19913,7 @@ const data: ComponentDoc[] = [
                   {
                     identifier: 'Panel',
                     type: {
-                      type: '<span class="hljs-title class_">Panel</span>&#x3C;T> (context bound)',
+                      type: '<span class="hljs-title class_">TabsPanel</span>&#x3C;T> (context bound)',
                     },
                     isRequired: true,
                     isInternal: false,

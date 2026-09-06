@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import type { TabsContext } from './tabs';
 
-interface PanelArgs<T> {
+interface TabsPanelArgs<T> {
   /** The value this panel is paired with; must match a `Tab`'s `@value`. */
   value: T;
 
@@ -16,13 +16,13 @@ interface PanelArgs<T> {
   context: TabsContext<T>;
 }
 
-interface PanelSignature<T> {
-  Args: PanelArgs<T>;
+interface TabsPanelSignature<T> {
+  Args: TabsPanelArgs<T>;
   Blocks: { default: [] };
   Element: HTMLDivElement;
 }
 
-class Panel<T> extends Component<PanelSignature<T>> {
+class TabsPanel<T> extends Component<TabsPanelSignature<T>> {
   get isSelected(): boolean {
     return this.args.context.isSelected(this.args.value);
   }
@@ -51,5 +51,5 @@ class Panel<T> extends Component<PanelSignature<T>> {
   </template>
 }
 
-export { Panel, type PanelSignature, type PanelArgs };
-export default Panel;
+export { TabsPanel, type TabsPanelSignature, type TabsPanelArgs };
+export default TabsPanel;

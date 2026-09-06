@@ -65,10 +65,10 @@ class SelectionIndicator {
   }
 
   /**
-   * Releases `element` if it is still the target. Only clear if this element
-   * is still the target. When selection moves backwards, the incoming item's
-   * setup runs before the outgoing item's teardown, and without this guard
-   * that teardown would wipe the new target.
+   * Releases `element` if it is still the target. When selection moves
+   * backwards, the incoming item's setup runs before the outgoing item's
+   * teardown, and without this guard that teardown would wipe the new
+   * target.
    */
   release(element: HTMLElement): void {
     if (this.#target !== element) {

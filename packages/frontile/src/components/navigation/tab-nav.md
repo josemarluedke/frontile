@@ -95,6 +95,13 @@ import { TabNav } from 'frontile';
 `@isActive` always wins over anything derived from the router, so it can
 still override a `@route` item when needed.
 
+The router's `isActive` check is a prefix match: a route also counts as active
+while any of its descendant routes are active. So `@route='settings'` and
+`@route='settings.account'` in the same list are both marked active while on
+`settings.account` — not just the more specific one. Pass an explicit
+`@isActive` on the parent item (e.g. comparing the current route name exactly)
+if you need only the leaf to light up.
+
 ## Bring your own link component
 
 `nav` also yields `itemClass` and `setupItem` directly, for a link

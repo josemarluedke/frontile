@@ -8,8 +8,8 @@ import {
   type SelectionIndicator
 } from '../../../utils/selection-indicator';
 import { rovingFocus, type RovingFocus } from '../../../utils/roving-focus';
-import Tab from './tab';
-import Panel from './panel';
+import TabsTab from './tab';
+import TabsPanel from './panel';
 import type { TabsSlots, TabsVariants } from '@frontile/theme';
 import type Owner from '@ember/owner';
 import type { WithBoundArgs } from '@glint/template';
@@ -103,7 +103,7 @@ interface TabsContext<T> {
   roving: RovingFocus;
 }
 
-interface ListArgs<T> {
+interface TabsListArgs<T> {
   /** Accessible name for the tab list. */
   label?: string;
 
@@ -115,18 +115,18 @@ interface ListArgs<T> {
   context: TabsContext<T>;
 }
 
-interface ListSignature<T> {
-  Args: ListArgs<T>;
+interface TabsListSignature<T> {
+  Args: TabsListArgs<T>;
   Blocks: { default: [] };
   Element: HTMLDivElement;
 }
 
 // A class rather than a template-only component: `TOC` values are not
-// themselves generic, so `WithBoundArgs<typeof List<T>, 'context'>` below
+// themselves generic, so `WithBoundArgs<typeof TabsList<T>, 'context'>` below
 // would not type-check against a `TOC`-typed constant. A plain class with no
 // state, mirroring how `Tab` is generic, gives Glint something it can
 // actually parameterize.
-class List<T> extends Component<ListSignature<T>> {
+class TabsList<T> extends Component<TabsListSignature<T>> {
   <template>
     <div
       role="tablist"
@@ -147,9 +147,9 @@ interface TabsSignature<T> {
   Blocks: {
     default: [
       {
-        List: WithBoundArgs<typeof List<T>, 'context'>;
-        Tab: WithBoundArgs<typeof Tab<T>, 'context'>;
-        Panel: WithBoundArgs<typeof Panel<T>, 'context'>;
+        List: WithBoundArgs<typeof TabsList<T>, 'context'>;
+        Tab: WithBoundArgs<typeof TabsTab<T>, 'context'>;
+        Panel: WithBoundArgs<typeof TabsPanel<T>, 'context'>;
       }
     ];
   };
@@ -278,9 +278,9 @@ class Tabs<T> extends Component<TabsSignature<T>> {
   <template>
     <div class={{this.styles.base class=@classes.base}} ...attributes>
       {{#let
-        (component List context=this.context)
-        (component Tab context=this.context)
-        (component Panel context=this.context)
+        (component TabsList context=this.context)
+        (component TabsTab context=this.context)
+        (component TabsPanel context=this.context)
         as |TabList TabItem TabPanel|
       }}
         {{! @glint-ignore: WithBoundArgs vs. a generic component }}
@@ -290,5 +290,5 @@ class Tabs<T> extends Component<TabsSignature<T>> {
   </template>
 }
 
-export { Tabs, List, type TabsSignature, type TabsArgs, type TabsContext };
+export { Tabs, TabsList, type TabsSignature, type TabsArgs, type TabsContext };
 export default Tabs;

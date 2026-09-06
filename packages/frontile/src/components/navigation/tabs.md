@@ -316,5 +316,5 @@ Disabled tabs are skipped entirely.
 ## API
 
 <Signature @component="Tabs" />
-<Signature @component="Tab" />
-<Signature @component="Panel" />
+<Signature @component="TabsTab" />
+<Signature @component="TabsPanel" />
