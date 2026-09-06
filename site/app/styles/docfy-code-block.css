@@ -1,0 +1,273 @@
+/* Chrome for Docfy's code blocks.
+ *
+ * `@docfy/plugin-shiki` wraps every markdown fence in `DocfyCodeBlock`, and
+ * `@docfy/ember/code-block.css` (imported alongside this file) supplies only
+ * the structural rules — the collapsed height, the fade mask, the line-number
+ * counters — with every colour behind a custom property. Everything below is
+ * the appearance: a bordered card with a mono title bar, a copy affordance in
+ * the top-right, a faded collapse, and a segmented tab strip, all built from
+ * Frontile's own tokens so the docs and the components stay one system.
+ *
+ * Nothing here hard-codes a syntax colour. Shiki emits `--shiki-light` and
+ * `--shiki-dark` on every token (`defaultColor: false` in the preset), so the
+ * only theme decision this file makes is which of the two to resolve — see
+ * "Token colours" at the bottom. */
+
+/* ------------------------------------------------------------------ *
+ * The card
+ * ------------------------------------------------------------------ */
+
+.docfy-code-block {
+  /* `surface-app` rather than `surface-canvas`: the page ground *is* canvas, so
+     a canvas card has no edge of its own — in light mode `neutral-subtle` and
+     `surface-canvas` are both gray-50, and the border disappeared entirely. */
+  @apply relative my-6 overflow-hidden rounded-lg border border-neutral-soft bg-surface-app;
+
+  /* The fade at a collapsed block's cutoff has to end in the block's own
+     background or it reads as a band of the wrong colour — most visibly in
+     dark mode, which is the bug this property exists to prevent. */
+  --docfy-code-block-fade: var(--color-surface-app);
+  --docfy-code-block-highlight-background: var(--color-primary-soft);
+  --docfy-code-block-line-number-color: var(--color-neutral);
+  --docfy-code-block-collapsed-height: 18rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Title bar
+ * ------------------------------------------------------------------ */
+
+.docfy-code-block__header {
+  @apply flex items-center border-b border-neutral-soft bg-surface-overlay-subtle px-4 py-2;
+
+  /* Room for the copy button, which is positioned against the card. */
+  @apply pr-24;
+
+  /* `@docfy/ember/code-block.css` positions `.docfy-code-block__copy`
+     absolutely against the card at a fixed `top: 0.5rem`, which assumes a
+     headerless block. When a header is present its own padding/line-height
+     put the title's centre line somewhere else, so the button reads as
+     misaligned — the rule below re-centres it against the header instead,
+     only when a header exists. */
+  min-height: 2.25rem;
+}
+
+.docfy-code-block__header__title {
+  @apply flex min-w-0 items-center gap-2 truncate font-mono text-xs text-neutral-firm;
+}
+
+/* The file-type mark. A single generic document glyph rather than a per-
+   language icon set: `data-language` already names the grammar underneath, and
+   a fifteen-icon set would be fifteen things to keep in step with the preset's
+   language list. Drawn as a mask so it takes the title's colour in both
+   schemes. */
+.docfy-code-block__header__title::before {
+  content: '';
+  flex: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  background-color: currentcolor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+/* ------------------------------------------------------------------ *
+ * Copy
+ *
+ * Anchored to the card, not the header, because a block with no `title=` has
+ * no header to sit in. It stays visible on keyboard focus and on touch, where
+ * there is no hover to reveal it.
+ * ------------------------------------------------------------------ */
+
+.docfy-code-block__copy {
+  @apply rounded-md border border-neutral-soft bg-surface-app px-2 py-1 font-mono text-xs text-neutral-firm opacity-0 transition;
+}
+
+.docfy-code-block:hover .docfy-code-block__copy,
+.docfy-code-block__copy:focus-visible {
+  @apply opacity-100;
+}
+
+@media (hover: none) {
+  .docfy-code-block__copy {
+    @apply opacity-100;
+  }
+}
+
+.docfy-code-block__copy:hover {
+  @apply border-primary text-primary-firm;
+}
+
+/* Re-centre the copy button on the header's own centre line when a header is
+   present, rather than leaving it at the card-corner offset the vendor CSS
+   assumes. A headerless block keeps the corner position, where the button
+   floats over the code with nothing else to align to. */
+.docfy-code-block:has(.docfy-code-block__header) .docfy-code-block__copy {
+  top: 0.3125rem;
+}
+
+/* ------------------------------------------------------------------ *
+ * Code
+ * ------------------------------------------------------------------ */
+
+/* Vertical padding stays on `<pre>`; horizontal padding moves to `.line`
+   below. This is Shiki's own recommended recipe: `.line[data-highlighted]`
+   (see `@docfy/ember/code-block.css`) is `display: inline-block; width: 100%`
+   so its background spans the full line — but that width is measured inside
+   `<pre>`'s padding box, so a highlighted line's background stopped short of
+   the card's edges whenever the horizontal inset lived on `<pre>` instead. */
+.docfy-code-block__content pre {
+  @apply m-0 overflow-x-auto rounded-none border-0 py-4 font-mono text-sm leading-relaxed;
+
+  padding-inline: 0;
+  /* Matches the card's own background exactly (rather than staying
+     transparent) so the collapsed-state fade — which fades to this same
+     surface token — never shows a seam against the code's own background. */
+  background-color: var(--color-surface-app);
+}
+
+.docfy-code-block .line {
+  @apply px-4;
+}
+
+/* Shiki emits one `.line` per row of the fence, including a final empty one
+   for the trailing newline every fence's closing ``` implies. It renders
+   inline today, so an empty line collapses to zero size and stays invisible —
+   but it still walks the `line-numbers` counter below, which would otherwise
+   number a row of code that was never there. Hidden here rather than fixed at
+   the padding layer, which would only paper over the symptom on whichever
+   block happens to need it. */
+.docfy-code-block .line:last-child:empty {
+  display: none;
+}
+
+/* `prose` styles bare `<pre>`/`<code>` as a dark slab with its own radius and
+   its own ink. Inside a code block the card supplies all of that, and the ink
+   comes from Shiki. */
+.prose .docfy-code-block pre,
+.prose .docfy-code-block code {
+  @apply p-0 font-normal;
+
+  color: inherit;
+}
+
+.prose .docfy-code-block pre {
+  @apply py-4;
+
+  padding-inline: 0;
+  background-color: var(--color-surface-app);
+}
+
+.prose .docfy-code-block code::before,
+.prose .docfy-code-block code::after {
+  content: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * Collapse
+ * ------------------------------------------------------------------ */
+
+.docfy-code-block__toggle {
+  @apply absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-md border border-neutral-soft bg-surface-app px-3 py-1 font-mono text-xs text-neutral-firm shadow-sm transition;
+}
+
+.docfy-code-block__toggle:hover {
+  @apply border-primary text-primary-firm;
+}
+
+/* Keep the last line clear of the toggle in both states. */
+.docfy-code-block:has(.docfy-code-block__toggle)
+  .docfy-code-block__content
+  pre {
+  @apply pb-12;
+}
+
+/* ------------------------------------------------------------------ *
+ * Tabs
+ *
+ * A segmented strip above the block: one bordered track, the active tab
+ * lifted out of it on the card surface.
+ * ------------------------------------------------------------------ */
+
+.docfy-code-tabs {
+  @apply my-6;
+}
+
+.docfy-code-tabs__list {
+  @apply mb-2 inline-flex flex-wrap gap-1 rounded-lg border border-neutral-soft bg-surface-overlay-subtle p-1;
+}
+
+.docfy-code-tabs__list__button {
+  @apply rounded-md px-3 py-1 font-mono text-xs text-neutral-firm transition;
+}
+
+.docfy-code-tabs__list__button:hover {
+  @apply text-neutral-strong;
+}
+
+.docfy-code-tabs__list__button--active {
+  @apply bg-surface-app text-neutral-strong shadow-sm;
+}
+
+/* The block inside a tab panel is already framed by the strip above it. */
+.docfy-code-tabs__panel .docfy-code-block {
+  @apply my-0;
+}
+
+/* Dark mode borders. `neutral-soft` is gray-700 once the ramp inverts, which
+ * reads as a drawn line rather than an edge; `neutral-subtle` is the weight the
+ * rest of the site's dark surfaces use (see docfy-demo.css).
+ * ------------------------------------------------------------------ */
+
+.dark .docfy-code-block,
+.dark .docfy-code-block__header,
+.dark .docfy-code-block__copy,
+.dark .docfy-code-block__toggle,
+.dark .docfy-code-tabs__list {
+  @apply border-neutral-subtle;
+}
+
+/* ------------------------------------------------------------------ *
+ * Token colours
+ *
+ * The preset highlights once, at build time, and writes both themes onto every
+ * token as custom properties. Resolving which one applies is a pure CSS
+ * decision, so switching schemes costs no JavaScript and no re-render.
+ * ------------------------------------------------------------------ */
+
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style, inherit);
+  font-weight: var(--shiki-light-font-weight, inherit);
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+}
+
+/* The homepage's code windows are dark in both schemes by design (see
+   `app/components/homepage/code-panel.gts`), so they take the dark token set
+   regardless of the visitor's theme. */
+.code-panel .shiki,
+.code-panel .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+}
+
+/* Inside a demo snippet the code block IS the snippet's content, not a
+   standalone prose block. The snippet already draws the border and the bottom
+   rounding, so the block's own `my-6` opened a 25px gap inside that border at
+   the top and bottom, and its border/radius doubled the snippet's own. */
+.docfy-demo__snippet .docfy-code-block {
+  /* The block paints an opaque background, so it has to carry the snippet's own
+     bottom rounding — `rounded-none` left square corners covering the rounded
+     ones beneath. Same `rounded-b` utility as `.docfy-demo__snippet`, so the two
+     stay in step if the radius token changes. The block's `overflow-hidden`
+     then clips the `pre` inside it to match. */
+  @apply m-0 rounded-t-none rounded-b border-0;
+}

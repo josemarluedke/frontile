@@ -4,17 +4,14 @@ import docgen from 'glimmer-docgen-typescript';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { common, createLowlight } from 'lowlight';
 import { unified } from 'unified';
 import rehypeStringify from 'rehype-stringify';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { collectBoundArgs, applyBoundArgs } from './bound-args.js';
+import { highlightInline } from './shiki-highlight.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const lowlight = createLowlight(common);
-const processor = unified().use(rehypeStringify);
 
 // JSDoc descriptions are markdown — inline code especially, which 130+ of the
 // argument descriptions rely on. They used to reach the page as raw text, so
@@ -77,27 +74,25 @@ if (applyTally.applied !== applyTally.expected) {
   );
 }
 
+// Types reach the page as pre-highlighted HTML: the browser-rendered
+// `Signature` component drops these strings in with `htmlSafe`, so nothing
+// tokenises at runtime. `highlightInline` runs the same Shiki preset the docs
+// pages use (see ./shiki-highlight.mjs), which means an argument's type in an
+// API table is coloured by exactly the rules that colour it in a code fence,
+// in both schemes, from one theme definition.
+function highlightType(value) {
+  return highlightInline(value.replace(/"/g, "'"), 'ts');
+}
+
 function highlight(property) {
   if (!property) {
     return;
   }
   if (property.type) {
-    const type = property.type.type.replace(/"/g, "'");
-    const typeTree = lowlight.highlight('ts', type).children;
-    const typeHTML = processor
-      .stringify({ type: 'root', children: typeTree })
-      .toString();
-
-    property.type.type = typeHTML;
+    property.type.type = highlightType(property.type.type);
 
     if (property.type.raw) {
-      const raw = property.type.raw.replace(/"/g, "'");
-      const rawTree = lowlight.highlight('ts', raw).children;
-      const rawHTML = processor
-        .stringify({ type: 'root', children: rawTree })
-        .toString();
-
-      property.type.raw = rawHTML;
+      property.type.raw = highlightType(property.type.raw);
     }
 
     if (property.type.items && property.type.items.length > 0) {
@@ -106,15 +101,7 @@ function highlight(property) {
   }
 
   if (property.defaultValue) {
-    const defaultValueTree = lowlight.highlight(
-      'ts',
-      property.defaultValue,
-    ).children;
-    const defaultValueHTML = processor
-      .stringify({ type: 'root', children: defaultValueTree })
-      .toString();
-
-    property.defaultValue = defaultValueHTML;
+    property.defaultValue = highlightInline(property.defaultValue, 'ts');
   }
 }
 

@@ -12,9 +12,21 @@ Frontile is a comprehensive component library for Ember.js that provides all the
 
 Install the main `frontile` package along with the theme:
 
-```sh
+:::code-tabs
+
+```sh title="pnpm"
 pnpm install frontile @frontile/theme
 ```
+
+```sh title="npm"
+npm install frontile @frontile/theme
+```
+
+```sh title="yarn"
+yarn add frontile @frontile/theme
+```
+
+:::
 
 That's it! You now have access to all Frontile components:
 
@@ -42,7 +54,7 @@ With modern build tools and explicit imports (`.gts`/`.gjs`), only the component
 
 For the default theme, add this to your `app/styles/app.css`:
 
-```css
+```css title="app/styles/app.css" {7-8}
 @import 'tailwindcss' source('../../');
 @plugin "@frontile/theme/plugin/default";
 @import "@frontile/theme";
@@ -60,7 +72,7 @@ usually `app/app.css`, they are one level shallower.
 
 To customize the frontile theme, create a file in the root of your project named `frontile.js` with the following content:
 
-```js
+```js title="frontile.js"
 const { frontile } = require('@frontile/theme/plugin');
 
 module.exports = frontile({
@@ -70,7 +82,7 @@ module.exports = frontile({
 
 Then update your `app/styles/app.css` to use the custom configuration:
 
-```css
+```css title="app/styles/app.css"
 @import 'tailwindcss' source('../../');
 @plugin "./../../frontile.js";
 @import "@frontile/theme";

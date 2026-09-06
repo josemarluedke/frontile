@@ -11,7 +11,7 @@ const ATTR_PATTERN = /@(component|package|module)="([^"]*)"/g;
 const DATA_ARRAY_PATTERN =
   /const data: ComponentDoc\[\] = (\[[\s\S]*\]);\nexport type/;
 
-// Both producers of this data — lowlight for types, remark for descriptions —
+// Both producers of this data — Shiki for types, remark for descriptions —
 // emit HTML, so `<` and `&` arrive escaped. Dropping the tags without decoding
 // the entities leaves things like `SlotsToClasses&#x3C;'base'>` in the markdown.
 const ENTITIES = {
@@ -44,7 +44,7 @@ function stripHtml(value) {
 }
 
 // The mirror image of generate-signature-data.js's highlight() step: that
-// script bakes hljs-* syntax-highlighting spans into type/defaultValue
+// script bakes Shiki's syntax-highlighting spans into type/defaultValue
 // strings for the browser-rendered Signature component. This plugin only
 // wants the plain text, so it strips them back out at read time rather than
 // requiring a second, separately-generated plain-data file to stay in sync.

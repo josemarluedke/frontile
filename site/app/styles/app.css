@@ -8,15 +8,15 @@
   /* Site defaults to the Frontile body/header face (Open Sans); code uses Source Code Pro */
   --font-sans: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Source Code Pro", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  /* The bundled highlight.js theme (highlight.css) is GitHub Dark with fixed
-     token colors, so code panels stay dark in BOTH schemes. The theme's own
-     neutrals invert between light and dark and cannot express that, so these
-     are named tokens taken from the palette's dark end — defined once here so
-     no literal color appears at a use site. */
+  /* The homepage's code windows stay dark in BOTH schemes: they are pinned to
+     Shiki's dark token set (see docfy-code-block.css). The theme's own neutrals
+     invert between light and dark and cannot express that, so these are named
+     tokens taken from the palette's dark end — defined once here so no literal
+     color appears at a use site. */
   --color-code-surface: #140b06; /* palette gray-950 */
   --color-code-chrome: #241c17; /* palette gray-900 */
   --color-code-border: #39332e; /* palette gray-800 */
-  --color-code-ink: #c9d1d9; /* highlight.js base ink */
+  --color-code-ink: #e1e4e8; /* github-dark base ink */
   --color-code-prompt: #7ce0e1; /* palette teal-200 */
 
   /* Motion. The category's default `ease-in-out` reads as software; these are
@@ -483,7 +483,8 @@
 
 }
 
-@import './highlight.css';
+@import '@docfy/ember/code-block.css';
+@import './docfy-code-block.css';
 @import './docfy-demo.css';
 
 /* The deprecated forms-legacy components render through ember-power-select,
