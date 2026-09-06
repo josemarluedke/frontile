@@ -458,6 +458,64 @@ module(
 
         assert.strictEqual(pressCount, 0, '@onPress never fired');
       });
+
+      test('it renders a spinner only while loading', async function (assert) {
+        class State {
+          @tracked isLoading = false;
+        }
+        const state = new State();
+        const startLoading = () => (state.isLoading = true);
+
+        await render(
+          <template>
+            <Button
+              @isLoading={{state.isLoading}}
+              data-test-id="button"
+            >Save</Button>
+            <button
+              type="button"
+              data-test-id="start"
+              {{on "click" startLoading}}
+            >go</button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="loading-spinner"]').doesNotExist();
+
+        await click('[data-test-id="start"]');
+
+        assert.dom('[data-test-id="loading-spinner"]').exists();
+      });
+
+      test('the label stays visible while loading', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button">Save</Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="button"]').hasText('Save');
+      });
+
+      test('the spinner renders before the label', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button">Save</Button>
+          </template>
+        );
+
+        const button = document.querySelector('[data-test-id="button"]');
+        const spinner = button?.querySelector(
+          '[data-test-id="loading-spinner"]'
+        );
+
+        assert.ok(spinner, 'the spinner is inside the button');
+        assert.strictEqual(
+          button?.firstElementChild,
+          spinner,
+          'the spinner is the first element in the button'
+        );
+      });
     });
   }
 );

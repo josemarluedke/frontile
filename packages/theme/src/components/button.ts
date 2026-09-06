@@ -395,4 +395,12 @@ const buttonGroup = tv({
   base: ['inline-flex items-stretch justify-center h-auto']
 });
 
-export { button, toggleButton, buttonGroup };
+// The in-button spinner has to inherit the button's ink. `spinner`'s own base
+// is `text-neutral-muted` / `fill-neutral-strong`, which is invisible on a
+// filled primary button. `size-[1em]` makes it track the button's font size
+// across all six sizes, matching the base button's `[&_svg]:size-[1em]`.
+const buttonSpinner = tv({
+  base: 'size-[1em] text-current/25 fill-current'
+});
+
+export { button, toggleButton, buttonGroup, buttonSpinner };

@@ -4,6 +4,7 @@ import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import { useStyles } from '@frontile/theme';
 import { press, type PressEvent } from '../../modifiers/press';
+import { Spinner } from '../utilities/spinner';
 
 /**
  * Sets `disabled` on the element while `loading` is true, restoring whatever
@@ -128,6 +129,12 @@ class Button extends Component<ButtonSignature> {
     });
   }
 
+  get spinnerClassNames(): string {
+    const { buttonSpinner } = useStyles();
+
+    return buttonSpinner();
+  }
+
   handlePressChange = (isPressed: boolean): void => {
     this.isPressed = isPressed;
   };
@@ -152,6 +159,12 @@ class Button extends Component<ButtonSignature> {
         ...attributes
         {{disableWhile this.isLoading}}
       >
+        {{#if this.isLoading}}
+          <Spinner
+            @class={{this.spinnerClassNames}}
+            data-test-id="loading-spinner"
+          />
+        {{/if}}
         {{yield (hash classNames=this.classNames)}}
       </button>
     {{/if}}
