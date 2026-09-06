@@ -4,7 +4,7 @@ import { click, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { modifier } from 'ember-modifier';
-import { Listbox, type ListboxSignature } from 'frontile';
+import { Listbox, setKbdPlatform, type ListboxSignature } from 'frontile';
 import { array, get } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { settled } from '@ember/test-helpers';
@@ -13,6 +13,86 @@ module(
   'Integration | Component | Listbox | @frontile/collections',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    hooks.afterEach(function () {
+      setKbdPlatform('auto');
+    });
+
+    module('shortcuts', function () {
+      test('@shortcut accepts named keys and resolves them per platform', async function (assert) {
+        setKbdPlatform('apple');
+
+        await render(
+          <template>
+            <Listbox @selectionMode="none" as |l|>
+              <l.Item @key="save" @shortcut="mod+shift+s">Save as</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="listbox-item-shortcut"]')
+          .hasText(
+            '⌘ Command ⇧ Shift S',
+            'glyphs render with their spoken names alongside'
+          );
+
+        setKbdPlatform('other');
+
+        await render(
+          <template>
+            <Listbox @selectionMode="none" as |l|>
+              <l.Item @key="save" @shortcut="mod+shift+s">Save as</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="listbox-item-shortcut"]')
+          .includesText(
+            'Ctrl',
+            'mod follows the platform, so it is not ⌘ here'
+          );
+      });
+
+      test('@shortcutAppearance threads down to the rendered Kbd', async function (assert) {
+        await render(
+          <template>
+            <Listbox @selectionMode="none" @shortcutAppearance="plain" as |l|>
+              <l.Item @key="save" @shortcut="mod+s">Save</l.Item>
+              <l.Group @title="More" as |g|>
+                <g.Item @key="print" @shortcut="mod+p">Print</g.Item>
+              </l.Group>
+            </Listbox>
+          </template>
+        );
+
+        const caps = document.querySelectorAll(
+          '[data-test-id="listbox-item-shortcut"] [data-test-id="kbd-key"]'
+        );
+
+        assert.true(caps.length > 0, 'shortcuts render through Kbd');
+        // `plain` is what Command asks for; without threading these would be
+        // `inherit` and keep their hairline box.
+        for (const cap of caps) {
+          assert.dom(cap).hasClass('border-0');
+        }
+      });
+
+      test('a shortcut with no separator still renders verbatim', async function (assert) {
+        // Existing consumers pass display strings like this; adopting Kbd must
+        // not reinterpret them.
+        await render(
+          <template>
+            <Listbox @selectionMode="none" as |l|>
+              <l.Item @key="save" @shortcut="⌘⇧S">Save as</l.Item>
+            </Listbox>
+          </template>
+        );
+
+        assert.dom('[data-test-id="listbox-item-shortcut"]').hasText('⌘⇧S');
+      });
+    });
 
     test('it render static items', async function (assert) {
       const clickedOn: string[] = [];

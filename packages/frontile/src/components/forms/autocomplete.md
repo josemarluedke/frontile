@@ -20,7 +20,9 @@ import { Autocomplete } from 'frontile';
 
 ### Basic Autocomplete
 
-Type into the input to filter the options. The default filter is a case-insensitive "contains" match.
+Type into the input to filter the options. The default filter ranks by relevance, so the closest
+match is listed first — and it matches acronyms (`nz` finds "New Zealand") as well as substrings.
+Pass `@filter` to score or match options yourself.
 
 ```gts preview
 import { Autocomplete } from 'frontile';
