@@ -393,9 +393,30 @@ module(
         timeout: 1000
       });
 
+      // Select the second tab: the first tab's offsetLeft is 0px, which
+      // would make a translate assertion pass even with the positioning
+      // class missing entirely.
+      await click(findAll('[role="tab"]')[1]!);
+      const secondTab = findAll('[role="tab"]')[1] as HTMLElement;
+
+      // `translate` is a transitioned property (200ms), so reading it right
+      // after the click can catch it mid-animation. Wait for it to settle at
+      // the selected tab's offset before asserting against it.
+      await waitUntil(
+        () =>
+          window
+            .getComputedStyle(indicator)
+            .translate.includes(`${secondTab.offsetLeft}px`),
+        { timeout: 1000 }
+      );
+
       const computed = window.getComputedStyle(indicator);
 
-      assert.strictEqual(computed.bottom, '0px', 'the bar sits on the bottom edge');
+      assert.strictEqual(
+        computed.bottom,
+        '0px',
+        'the bar sits on the bottom edge'
+      );
       assert.notStrictEqual(
         computed.height,
         '0px',
@@ -403,13 +424,13 @@ module(
       );
       assert.strictEqual(
         computed.width,
-        `${(findAll('[role="tab"]')[0] as HTMLElement).offsetWidth}px`,
+        `${secondTab.offsetWidth}px`,
         'the bar is as wide as the selected tab'
       );
       assert.ok(
-        computed.translate.startsWith('0px') ||
-          computed.translate.split(' ').length >= 1,
-        `the bar is positioned with translate (${computed.translate})`
+        computed.translate.includes(`${secondTab.offsetLeft}px`),
+        `the bar's translate (${computed.translate}) reflects the selected ` +
+          `tab's offsetLeft (${secondTab.offsetLeft}px)`
       );
     });
 
@@ -437,12 +458,38 @@ module(
         timeout: 1000
       });
 
+      // Select the second tab: the first tab's offsetTop is 0px, which
+      // would make a translate assertion pass even with the vertical
+      // compound variant missing entirely.
+      await click(findAll('[role="tab"]')[1]!);
+      const secondTab = findAll('[role="tab"]')[1] as HTMLElement;
+
+      // `translate` is a transitioned property (200ms), so reading it right
+      // after the click can catch it mid-animation. Wait for it to settle at
+      // the selected tab's offset before asserting against it.
+      await waitUntil(
+        () =>
+          window
+            .getComputedStyle(indicator)
+            .translate.includes(`${secondTab.offsetTop}px`),
+        { timeout: 1000 }
+      );
+
       const computed = window.getComputedStyle(indicator);
-      assert.strictEqual(computed.left, '0px', 'the bar sits on the start edge');
+      assert.strictEqual(
+        computed.width,
+        '2px',
+        'the bar is the thin vertical accent (w-0.5), not the full tab width'
+      );
       assert.strictEqual(
         computed.height,
-        `${(findAll('[role="tab"]')[0] as HTMLElement).offsetHeight}px`,
+        `${secondTab.offsetHeight}px`,
         'the bar is as tall as the selected tab'
+      );
+      assert.ok(
+        computed.translate.includes(`${secondTab.offsetTop}px`),
+        `the bar's translate (${computed.translate}) reflects the selected ` +
+          `tab's offsetTop (${secondTab.offsetTop}px)`
       );
     });
   }
