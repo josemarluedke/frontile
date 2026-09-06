@@ -148,10 +148,6 @@ class ListboxItem extends Component<ListboxItemSignature> {
     };
   }
 
-  /**
-   * `inherit` by default so the keycap picks up the option's own colour rather
-   * than the theme having to repaint it for every intent on an active row.
-   */
   get shortcutAppearance() {
     return this.args.shortcutAppearance ?? 'inherit';
   }

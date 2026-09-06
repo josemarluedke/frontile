@@ -463,8 +463,6 @@ module(
         4,
         'up, down, enter and escape keycaps'
       );
-      // Counting the caps says nothing about which keys they are, so assert
-      // the glyphs the named keys resolve to.
       assert.deepEqual(
         [...document.querySelectorAll('[data-test-id="command-kbd"]')].map(
           (el) =>

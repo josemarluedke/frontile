@@ -1,14 +1,9 @@
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 import { useStyles } from '@frontile/theme';
 import { parseKeys } from '../../utils/keys';
 import type { KbdKey, KbdPlatform } from '../../utils/keys';
 import type { KbdSlots, SlotsToClasses } from '@frontile/theme';
-
-interface RenderedKey {
-  key: KbdKey;
-  /** Set on every key but the first, so it renders *between* caps. */
-  separator?: string;
-}
 
 export interface KbdSignature {
   Args: {
@@ -98,20 +93,11 @@ class Kbd extends Component<KbdSignature> {
     return this.args.display === 'merged';
   }
 
+  @cached
   get keys(): KbdKey[] {
     return parseKeys(this.args.keys, this.args.platform);
   }
 
-  get renderedKeys(): RenderedKey[] {
-    const { separator } = this.args;
-
-    return this.keys.map((key, index) => ({
-      key,
-      separator: index > 0 ? separator : undefined
-    }));
-  }
-
-  /** In merged mode every glyph shares one cap, so they concatenate. */
   get mergedGlyph(): string {
     return this.keys.map((key) => key.glyph).join('');
   }
@@ -138,6 +124,9 @@ class Kbd extends Component<KbdSignature> {
     return named.length ? named.map((key) => key.name).join(' ') : undefined;
   }
 
+  // Cached because the template reads these once per key, and each read
+  // otherwise re-resolves every compound variant in the theme.
+  @cached
   get classNames() {
     const { kbd } = useStyles();
     const { classes } = this.args;
@@ -182,28 +171,28 @@ class Kbd extends Component<KbdSignature> {
           {{/if}}
         </kbd>
       {{else}}
-        {{#each this.renderedKeys as |rendered|}}
-          {{#if rendered.separator}}
-            <span
-              class={{this.classNames.separator}}
-              aria-hidden="true"
-              data-test-id="kbd-separator"
-            >{{rendered.separator}}</span>
+        {{#each this.keys as |key index|}}
+          {{! index is 0 for the first key, so a separator falls between. }}
+          {{#if index}}
+            {{#if @separator}}
+              <span
+                class={{this.classNames.separator}}
+                aria-hidden="true"
+                data-test-id="kbd-separator"
+              >{{@separator}}</span>
+            {{/if}}
           {{/if}}
 
           <kbd
             class={{this.classNames.key}}
             data-test-id="kbd-key"
-            title={{rendered.key.name}}
+            title={{key.name}}
           >
-            {{! A symbol is meaningless read aloud, so it is hidden and its
-                  name spoken instead. A glyph like Esc already reads
-                  correctly, and labelling it would say "Escape Escape". }}
-            {{#if rendered.key.needsSpokenLabel}}
-              <span aria-hidden="true">{{rendered.key.glyph}}</span>
-              <span class="sr-only">{{rendered.key.name}}</span>
+            {{#if key.needsSpokenLabel}}
+              <span aria-hidden="true">{{key.glyph}}</span>
+              <span class="sr-only">{{key.name}}</span>
             {{else}}
-              {{rendered.key.glyph}}
+              {{key.glyph}}
             {{/if}}
           </kbd>
         {{/each}}
