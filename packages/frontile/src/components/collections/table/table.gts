@@ -401,19 +401,25 @@ class Table<
     this.args.onSelectionChange?.(newSelection);
   };
 
+  // Every row-level path below keys off the `Row`, never off `row.data`.
+  // `getRowData`'s unwrap check is structural, so handing it `row.data` for an
+  // item that itself carries `data` and `table` unwraps a second time and
+  // yields a different key from the one rendered into `data-key` — which is
+  // what keyboard selection reads back.
+
   // Check if a row is selected
   isRowSelected = (row: Row<T>): boolean => {
-    return this.selectedKeysSet.has(this.getKey(row.data));
+    return this.selectedKeysSet.has(this.getKey(row));
   };
 
   // Check if a row is disabled
   isRowDisabled = (row: Row<T>): boolean => {
-    return this.isKeyDisabled(this.getKey(row.data));
+    return this.isKeyDisabled(this.getKey(row));
   };
 
   // Handler for row checkbox change
   handleRowSelectionChange = (row: Row<T>, checked: boolean): void => {
-    const key = this.getKey(row.data);
+    const key = this.getKey(row);
     if (checked) {
       this.handleSelect(key);
     } else {
@@ -441,9 +447,11 @@ class Table<
 
   // Get all selectable (non-disabled) item keys
   get selectableKeys(): string[] {
-    const items = this.args.items || [];
-    return items
-      .map((item) => this.getKey(item))
+    // Derived from the rendered rows rather than `@items` for the same reason
+    // as the row helpers above: only a `Row` keys the same way `data-key`
+    // does, so select-all and per-row selection speak one vocabulary.
+    return [...this.headlessRows]
+      .map((row) => this.getKey(row))
       .filter((key) => !this.isKeyDisabled(key));
   }
 
