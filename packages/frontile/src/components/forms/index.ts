@@ -5,6 +5,7 @@ export * from './checkbox-group';
 export * from './form-description';
 export * from './form-feedback';
 export * from './input';
+export * from './input-otp';
 export * from './label';
 export * from './native-select';
 export * from './select';
