@@ -211,6 +211,72 @@ module(
       });
     });
 
+    test('@isFullWidth actually fills a shrink-to-fit container', async function (assert) {
+      // The class assertions above pass even when the layout is broken: the
+      // list carries `w-full`, but `w-full` resolves against the Tabs wrapper,
+      // and a wrapper with no width of its own collapses to its content inside
+      // an `align-items: flex-start` parent. Measure the rendered width, which
+      // is the thing consumers actually see.
+      await render(
+        <template>
+          <div
+            id="wrap"
+            style="width: 384px; display: flex; flex-direction: column; align-items: flex-start"
+          >
+            <Tabs @defaultValue="account" @isFullWidth={{true}} as |t|>
+              <t.List @label="Settings">
+                <t.Tab @value="account">Account</t.Tab>
+                <t.Tab @value="security">Security</t.Tab>
+              </t.List>
+            </Tabs>
+          </div>
+        </template>
+      );
+
+      const wrap = find('#wrap') as HTMLElement;
+      const list = find('[role="tablist"]') as HTMLElement;
+
+      assert.strictEqual(
+        list.offsetWidth,
+        wrap.clientWidth,
+        'the tab list spans the full width of its container'
+      );
+    });
+
+    test('a vertical solid control squares off its corners', async function (assert) {
+      // A pill radius on a tall narrow column renders as an oval blob. The
+      // horizontal track is a pill; the vertical one must not be.
+      await render(
+        <template>
+          <Tabs @defaultValue="account" @orientation="vertical" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+              <t.Tab @value="billing">Billing</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const list = find('[role="tablist"]') as HTMLElement;
+      const indicator = list.querySelector(
+        'span[aria-hidden="true"]'
+      ) as HTMLElement;
+      const tab = find('[role="tab"]') as HTMLElement;
+
+      for (const [name, el] of [
+        ['track', list],
+        ['indicator', indicator],
+        ['tab', tab]
+      ] as [string, HTMLElement][]) {
+        assert.notStrictEqual(
+          window.getComputedStyle(el).borderTopLeftRadius,
+          '9999px',
+          `the vertical ${name} does not keep the pill radius`
+        );
+      }
+    });
+
     test('only the active panel is rendered, and ARIA round-trips', async function (assert) {
       await render(
         <template>

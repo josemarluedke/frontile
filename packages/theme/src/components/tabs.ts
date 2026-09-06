@@ -90,7 +90,11 @@ const tabs = tv({
       vertical: { base: 'flex-row gap-4', list: 'flex-col' }
     },
 
-    isFullWidth: { true: { list: 'w-full', tab: 'flex-1' } },
+    // `base` needs the width too, not just `list`: the list's `w-full`
+    // resolves against `base`, and a `base` with no width of its own collapses
+    // to its content inside an `align-items: flex-start` parent -- leaving the
+    // whole argument inert in exactly the layouts that reach for it.
+    isFullWidth: { true: { base: 'w-full', list: 'w-full', tab: 'flex-1' } },
 
     isDisabled: {
       true: { list: 'opacity-disabled', tab: 'pointer-events-none' }
@@ -140,6 +144,19 @@ const tabs = tv({
     {
       variant: 'underline',
       class: { tab: 'data-[selected=true]:text-neutral-bolder' }
+    },
+    // A pill radius on a tall narrow column reads as an oval blob, so the
+    // vertical axis squares off -- on the track and on what sits inside it, or
+    // the indicator would bulge out of the track. The inner radius is the
+    // outer one less the track's `p-1`. Only `solid` has a track to round.
+    {
+      variant: 'solid',
+      orientation: 'vertical',
+      class: {
+        list: 'rounded-2xl',
+        indicator: 'rounded-xl',
+        tab: 'rounded-xl'
+      }
     },
     // `default` intent's fill is a surface in solid; a bare bar needs ink.
     {

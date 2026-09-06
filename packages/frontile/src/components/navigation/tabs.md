@@ -44,7 +44,7 @@ import { Tabs } from 'frontile';
 
 ## Controlled and uncontrolled
 
-The mode is decided by whether `@value` is *passed*, not by what it holds.
+The mode is decided by whether `@value` is _passed_, not by what it holds.
 Omit the argument entirely and `Tabs` is uncontrolled; write it at all —
 including `@value={{undefined}}` — and it is controlled.
 
@@ -130,7 +130,9 @@ import { array } from '@ember/helper';
 <template>
   <div class='flex flex-col items-start gap-3'>
     {{#each
-      (array 'default' 'primary' 'secondary' 'tertiary' 'success' 'warning' 'danger')
+      (array
+        'default' 'primary' 'secondary' 'tertiary' 'success' 'warning' 'danger'
+      )
       as |intent|
     }}
       <Tabs @defaultValue='account' @intent={{intent}} as |t|>
@@ -175,6 +177,33 @@ import { Tabs } from 'frontile';
 
 <template>
   <Tabs @defaultValue='account' @orientation='vertical' as |t|>
+    <t.List @label='Settings'>
+      <t.Tab @value='account'>Account</t.Tab>
+      <t.Tab @value='security'>Security</t.Tab>
+      <t.Tab @value='billing'>Billing</t.Tab>
+    </t.List>
+
+    <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
+    <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
+    <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
+  </Tabs>
+</template>
+```
+
+Both variants work vertically. `underline` pins its bar to the inline start
+edge and runs the rule down the side of the list, so it suits a settings
+sidebar where a filled track would compete with the panel beside it.
+
+```gts preview
+import { Tabs } from 'frontile';
+
+<template>
+  <Tabs
+    @defaultValue='account'
+    @orientation='vertical'
+    @variant='underline'
+    as |t|
+  >
     <t.List @label='Settings'>
       <t.Tab @value='account'>Account</t.Tab>
       <t.Tab @value='security'>Security</t.Tab>
@@ -302,13 +331,13 @@ tab, `tabindex="0"`) that only exists in the DOM while selected.
 `t.List` needs an accessible name from `@label`, or pass `aria-labelledby` on
 `t.List` directly.
 
-| Key | Behaviour |
-| --- | --- |
-| `Tab` | Moves focus into or out of the tab list. Only the selected tab is a tab stop. |
-| `ArrowRight` / `ArrowDown` | Moves focus to the next enabled tab, wrapping at the end. |
-| `ArrowLeft` / `ArrowUp` | Moves focus to the previous enabled tab, wrapping at the start. |
-| `Home` / `End` | Moves focus to the first / last enabled tab. |
-| `Enter` / `Space` | Selects the focused tab. Only needed in manual activation — automatic activation selects on arrival. |
+| Key                        | Behaviour                                                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `Tab`                      | Moves focus into or out of the tab list. Only the selected tab is a tab stop.                        |
+| `ArrowRight` / `ArrowDown` | Moves focus to the next enabled tab, wrapping at the end.                                            |
+| `ArrowLeft` / `ArrowUp`    | Moves focus to the previous enabled tab, wrapping at the start.                                      |
+| `Home` / `End`             | Moves focus to the first / last enabled tab.                                                         |
+| `Enter` / `Space`          | Selects the focused tab. Only needed in manual activation — automatic activation selects on arrival. |
 
 Horizontal orientation uses left/right, vertical orientation uses up/down.
 Disabled tabs are skipped entirely.
