@@ -65,6 +65,52 @@ module(
       );
     });
 
+    test('setupItem defaults data-disabled to false, but never clobbers a value already declared on the element', async function (assert) {
+      // The theme's hover rules are scoped behind BOTH
+      // `data-[selected=false]` AND `data-[disabled=false]` (see
+      // packages/theme/src/components/tabs.ts). An element with no
+      // `data-disabled` attribute at all does not match `[data-disabled=false]`,
+      // so a plain link with only `data-selected` written on it would get no
+      // hover feedback. `setupItem` must default the attribute to "false" when
+      // the consumer hasn't declared it -- while leaving alone an element that
+      // already declares `data-disabled` itself, since `TabNav.Item` (Task 8)
+      // renders `data-disabled="{{this.isDisabled}}"` directly in its template
+      // and setupItem must not stomp on that.
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <a
+              href="/one"
+              class={{nav.itemClass}}
+              {{nav.setupItem true}}
+            >One</a>
+            <a
+              href="/two"
+              class={{nav.itemClass}}
+              data-disabled="true"
+              {{nav.setupItem false}}
+            >Two</a>
+          </TabNav>
+        </template>
+      );
+
+      const links = findAll('nav a');
+      assert
+        .dom(links[0]!)
+        .hasAttribute(
+          'data-disabled',
+          'false',
+          'a link with no declared data-disabled gets it defaulted to false'
+        );
+      assert
+        .dom(links[1]!)
+        .hasAttribute(
+          'data-disabled',
+          'true',
+          'a link that already declares data-disabled keeps its own value'
+        );
+    });
+
     test('every link stays in the tab order and arrow keys are not intercepted', async function (assert) {
       // The deliberate opposite of Tabs. Nav links are links: removing them
       // from the tab order or hijacking the arrow keys would be a regression.

@@ -101,6 +101,21 @@ class TabNav extends Component<TabNavSignature> {
   setupItem = modifier((element: HTMLElement, [isActive]: [boolean]) => {
     element.setAttribute('data-selected', String(Boolean(isActive)));
 
+    // The shared `tabs` theme scopes its hover rules behind BOTH
+    // `data-[selected=false]` and `data-[disabled=false]` (see
+    // `packages/theme/src/components/tabs.ts`). An attribute selector like
+    // `[data-disabled=false]` only matches an element that *has* the
+    // attribute set to that value -- it does not match an element with no
+    // `data-disabled` attribute at all. A plain consumer-supplied `<a>` never
+    // declares `data-disabled`, so without this default it would silently get
+    // no hover feedback. `TabNav.Item` (a later addition) renders
+    // `data-disabled="{{this.isDisabled}}"` directly in its template, so this
+    // must only fill in the gap, never overwrite a value the element already
+    // declares.
+    if (!element.hasAttribute('data-disabled')) {
+      element.setAttribute('data-disabled', 'false');
+    }
+
     if (isActive) {
       // Ember's `LinkTo` has never set `aria-current` -- it publishes only a
       // CSS class -- so this is the component's own contribution, not a
