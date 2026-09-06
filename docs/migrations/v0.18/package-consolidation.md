@@ -181,15 +181,15 @@ echo "Done! Review the changes with: git diff"
 The following packages are **not** part of this consolidation. Their imports remain unchanged:
 
 - **`@frontile/theme`** -- The styling system. Stays as a separate package because it provides Tailwind CSS configuration and has a distinct role in the build pipeline.
-- **`@frontile/forms-legacy`** -- Legacy form components. Will be dropped before v1.0.
-- **`@frontile/changeset-form`** -- Changeset integration. Will be dropped before v1.0.
+- **`@frontile/forms-legacy`** -- Legacy form components. Deprecated, and removed in 0.19.0 alongside the wrapper packages above. See the [Forms Legacy migration guide](./forms-legacy.md).
+- **`@frontile/changeset-form`** -- Changeset integration. Deprecated, and removed in 0.19.0 alongside the wrapper packages above. See the [Changeset Form migration guide](./changeset-form.md).
 
 ## Deprecation Timeline
 
 | Version | Status |
 |---------|--------|
-| **0.18.0** | Old `@frontile/*` packages become thin wrappers that re-export from `frontile`. They emit deprecation warnings at build time. All existing import paths continue to work. |
-| **0.19.0** | Old `@frontile/*` wrapper packages are removed. You must update imports to use `frontile` directly. |
+| **0.18.0** | Old `@frontile/*` packages become thin wrappers that re-export from `frontile`. `@frontile/forms-legacy` and `@frontile/changeset-form` are also marked deprecated. All of them emit deprecation warnings at build time. All existing import paths continue to work. |
+| **0.19.0** | All of the above are removed: the `@frontile/*` wrapper packages, `@frontile/forms-legacy`, and `@frontile/changeset-form`. You must update imports to use `frontile` directly, and migrate off legacy forms and changeset integration. |
 
 During the **0.18.x** cycle, you can migrate at your own pace. Both old and new import paths work simultaneously. However, we recommend migrating sooner rather than later to avoid a last-minute rush before 0.19.0.
 
