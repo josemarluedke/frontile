@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
+import type { TOC } from '@ember/component/template-only';
 import { useStyles } from '@frontile/theme';
 import { press, type PressEvent } from '../../modifiers/press';
 import { Spinner } from '../utilities/spinner';
@@ -32,6 +33,27 @@ const disableWhile = modifier((el: HTMLButtonElement, [loading]: [boolean]) => {
     el.disabled = previous;
   };
 });
+
+/**
+ * The spinner stands in for the icon while loading, on whichever side
+ * `@iconPlacement` puts it. Extracted so the choice is written once; the
+ * caller passes the icon through as this component's default block.
+ */
+const SpinnerOrIcon: TOC<{
+  Args: {
+    isLoading: boolean;
+    spinnerClass: string;
+  };
+  Blocks: {
+    default: [];
+  };
+}> = <template>
+  {{#if @isLoading}}
+    <Spinner @class={{@spinnerClass}} data-test-id="loading-spinner" />
+  {{else}}
+    {{yield}}
+  {{/if}}
+</template>;
 
 export interface ButtonArgs {
   /**
@@ -89,6 +111,14 @@ export interface ButtonArgs {
   isLoading?: boolean;
 
   /**
+   * Which side the `icon` block — and the loading spinner that replaces it —
+   * sits on.
+   *
+   * @defaultValue 'start'
+   */
+  iconPlacement?: 'start' | 'end';
+
+  /**
    * Callback for when the button is pressed.
    */
   onPress?: (event: PressEvent) => void;
@@ -98,6 +128,7 @@ interface ButtonSignature {
   Args: ButtonArgs;
   Blocks: {
     default: [{ classNames: string }];
+    icon?: [];
   };
   Element: HTMLButtonElement;
 }
@@ -114,6 +145,14 @@ class Button extends Component<ButtonSignature> {
 
   get isLoading(): boolean {
     return this.args.isLoading === true;
+  }
+
+  get isIconAtEnd(): boolean {
+    return this.args.iconPlacement === 'end';
+  }
+
+  get isIconAtStart(): boolean {
+    return !this.isIconAtEnd;
   }
 
   get classNames(): string {
@@ -159,13 +198,25 @@ class Button extends Component<ButtonSignature> {
         ...attributes
         {{disableWhile this.isLoading}}
       >
-        {{#if this.isLoading}}
-          <Spinner
-            @class={{this.spinnerClassNames}}
-            data-test-id="loading-spinner"
-          />
+        {{#if this.isIconAtStart}}
+          <SpinnerOrIcon
+            @isLoading={{this.isLoading}}
+            @spinnerClass={{this.spinnerClassNames}}
+          >
+            {{yield to="icon"}}
+          </SpinnerOrIcon>
         {{/if}}
+
         {{yield (hash classNames=this.classNames)}}
+
+        {{#if this.isIconAtEnd}}
+          <SpinnerOrIcon
+            @isLoading={{this.isLoading}}
+            @spinnerClass={{this.spinnerClassNames}}
+          >
+            {{yield to="icon"}}
+          </SpinnerOrIcon>
+        {{/if}}
       </button>
     {{/if}}
   </template>

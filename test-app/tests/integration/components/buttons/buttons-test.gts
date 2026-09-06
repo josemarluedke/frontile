@@ -516,6 +516,95 @@ module(
           'the spinner is the first element in the button'
         );
       });
+
+      test('the <:icon> block renders before the label by default', async function (assert) {
+        await render(
+          <template>
+            <Button data-test-id="button">
+              <:icon><span data-test-id="icon">i</span></:icon>
+              <:default>Save</:default>
+            </Button>
+          </template>
+        );
+
+        const button = document.querySelector('[data-test-id="button"]');
+
+        assert.dom('[data-test-id="icon"]').exists();
+        assert.strictEqual(
+          button?.firstElementChild,
+          button?.querySelector('[data-test-id="icon"]'),
+          'the icon is the first element in the button'
+        );
+        assert.dom('[data-test-id="button"]').hasText('i Save');
+      });
+
+      test('the spinner replaces the <:icon> block while loading', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button">
+              <:icon><span data-test-id="icon">i</span></:icon>
+              <:default>Save</:default>
+            </Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="loading-spinner"]').exists();
+        assert
+          .dom('[data-test-id="icon"]')
+          .doesNotExist('the icon is replaced, not joined, by the spinner');
+      });
+
+      test('@iconPlacement="end" puts the icon after the label', async function (assert) {
+        await render(
+          <template>
+            <Button @iconPlacement="end" data-test-id="button">
+              <:icon><span data-test-id="icon">i</span></:icon>
+              <:default>Save</:default>
+            </Button>
+          </template>
+        );
+
+        const button = document.querySelector('[data-test-id="button"]');
+
+        assert.strictEqual(
+          button?.lastElementChild,
+          button?.querySelector('[data-test-id="icon"]'),
+          'the icon is the last element in the button'
+        );
+      });
+
+      test('@iconPlacement="end" puts the spinner after the label', async function (assert) {
+        await render(
+          <template>
+            <Button
+              @isLoading={{true}}
+              @iconPlacement="end"
+              data-test-id="button"
+            >
+              <:icon><span data-test-id="icon">i</span></:icon>
+              <:default>Save</:default>
+            </Button>
+          </template>
+        );
+
+        const button = document.querySelector('[data-test-id="button"]');
+
+        assert.strictEqual(
+          button?.lastElementChild,
+          button?.querySelector('[data-test-id="loading-spinner"]'),
+          'the spinner is the last element in the button'
+        );
+      });
+
+      test('a button with no <:icon> block still shows the spinner', async function (assert) {
+        await render(
+          <template>
+            <Button @isLoading={{true}} data-test-id="button">Save</Button>
+          </template>
+        );
+
+        assert.dom('[data-test-id="loading-spinner"]').exists();
+      });
     });
   }
 );
