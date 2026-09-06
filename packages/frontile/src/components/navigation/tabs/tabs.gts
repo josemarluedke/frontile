@@ -1,16 +1,18 @@
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { hash } from '@ember/helper';
+import { guidFor } from '@ember/object/internals';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import {
   selectionIndicator,
   type SelectionIndicator
 } from '../../../utils/selection-indicator';
+import Tab from './tab';
 import type { TabsSlots, TabsVariants } from '@frontile/theme';
-import type { TOC } from '@ember/component/template-only';
+import type Owner from '@ember/owner';
 import type { WithBoundArgs } from '@glint/template';
 
-interface TabsArgs {
+interface TabsArgs<T> {
   /**
    * The visual style of the tab list.
    *
@@ -54,18 +56,41 @@ interface TabsArgs {
    */
   isDisabled?: boolean;
 
+  /**
+   * The currently selected value. Compared against each tab's `@value` with
+   * `===`, so object values must be referentially stable.
+   *
+   * *Passing* this argument at all puts the component in controlled mode --
+   * passing it as `undefined` included. Omit it entirely to let `Tabs` track
+   * the selection itself, seeded by `@defaultValue`.
+   */
+  value?: T;
+
+  /** Sets the initially selected value when uncontrolled. */
+  defaultValue?: T;
+
+  /** Called with the newly selected value when a tab is chosen. */
+  onChange?: (value: T) => void;
+
   /** Class names for each slot of the component, merged with the theme's. */
   classes?: SlotsToClasses<TabsSlots>;
 }
 
-interface TabsContext {
+interface TabsContext<T> {
   indicator: SelectionIndicator;
   orientation: 'horizontal' | 'vertical';
   listClass: string;
   indicatorClass: string;
+  tabClass: string;
+  isGroupDisabled: boolean;
+  isSelected: (value: T) => boolean;
+  select: (value: T) => void;
+  registerValue: (element: HTMLElement, value: T) => void;
+  unregisterValue: (element: HTMLElement) => void;
+  idFor: (value: T, kind: 'tab' | 'panel') => string;
 }
 
-interface ListArgs {
+interface ListArgs<T> {
   /** Accessible name for the tab list. */
   label?: string;
 
@@ -74,39 +99,70 @@ interface ListArgs {
    *
    * @internal
    */
-  context: TabsContext;
+  context: TabsContext<T>;
 }
 
-interface ListSignature {
-  Args: ListArgs;
+interface ListSignature<T> {
+  Args: ListArgs<T>;
   Blocks: { default: [] };
   Element: HTMLDivElement;
 }
 
-const List: TOC<ListSignature> = <template>
-  <div
-    role="tablist"
-    aria-orientation={{@context.orientation}}
-    aria-label={{@label}}
-    class="group/tabs {{@context.listClass}}"
-    {{@context.indicator.setupContainer}}
-    ...attributes
-  >
-    <span aria-hidden="true" class={{@context.indicatorClass}}></span>
-    {{yield}}
-  </div>
-</template>;
+// A class rather than a template-only component: `TOC` values are not
+// themselves generic, so `WithBoundArgs<typeof List<T>, 'context'>` below
+// would not type-check against a `TOC`-typed constant. A plain class with no
+// state, mirroring how `Tab` is generic, gives Glint something it can
+// actually parameterize.
+class List<T> extends Component<ListSignature<T>> {
+  <template>
+    <div
+      role="tablist"
+      aria-orientation={{@context.orientation}}
+      aria-label={{@label}}
+      class="group/tabs {{@context.listClass}}"
+      {{@context.indicator.setupContainer}}
+      ...attributes
+    >
+      <span aria-hidden="true" class={{@context.indicatorClass}}></span>
+      {{yield}}
+    </div>
+  </template>
+}
 
-interface TabsSignature {
-  Args: TabsArgs;
+interface TabsSignature<T> {
+  Args: TabsArgs<T>;
   Blocks: {
-    default: [{ List: WithBoundArgs<typeof List, 'context'> }];
+    default: [
+      {
+        List: WithBoundArgs<typeof List<T>, 'context'>;
+        Tab: WithBoundArgs<typeof Tab<T>, 'context'>;
+      }
+    ];
   };
   Element: HTMLDivElement;
 }
 
-class Tabs extends Component<TabsSignature> {
+class Tabs<T> extends Component<TabsSignature<T>> {
   indicator = selectionIndicator();
+
+  // Uncontrolled mode's own selection, seeded from `@defaultValue`. Written on
+  // every `select` regardless of mode -- the getter ignores it when controlled
+  // -- so both modes share one code path, exactly as `SegmentedControl` does.
+  @tracked _value: T | undefined;
+
+  #values = new Map<HTMLElement, T>();
+
+  // Values are given an index on first sight and ids are derived from it,
+  // rather than from the value's `String()` form: two distinct values that
+  // stringify alike would otherwise collide into one id and silently break the
+  // `aria-controls` round trip. Untracked, so populating it during render
+  // raises no backtracking assertion.
+  #indices = new Map<T, number>();
+
+  constructor(owner: Owner, args: TabsSignature<T>['Args']) {
+    super(owner, args);
+    this._value = this.args.defaultValue;
+  }
 
   @cached
   get styles() {
@@ -126,21 +182,87 @@ class Tabs extends Component<TabsSignature> {
     return this.args.orientation ?? 'horizontal';
   }
 
+  /**
+   * Whether `@value` was *passed* decides the mode -- not whether it holds a
+   * value. `T` is generic, so `undefined` is a legitimate selection meaning
+   * "nothing is selected". Glimmer's named-args object carries a key for every
+   * argument written in the invoking template, so `in` distinguishes
+   * `@value={{undefined}}` from an omitted `@value`.
+   */
+  get isControlled(): boolean {
+    return 'value' in this.args;
+  }
+
+  get selectedValue(): T | undefined {
+    return this.isControlled ? this.args.value : this._value;
+  }
+
+  isSelected = (value: T): boolean => this.selectedValue === value;
+
+  select = (value: T): void => {
+    if (this.args.isDisabled) {
+      return;
+    }
+    this._value = value;
+    this.args.onChange?.(value);
+  };
+
+  registerValue = (element: HTMLElement, value: T): void => {
+    this.#values.set(element, value);
+  };
+
+  unregisterValue = (element: HTMLElement): void => {
+    this.#values.delete(element);
+  };
+
+  activateElement = (element: HTMLElement): void => {
+    // `has`, not a `!== undefined` check: `T` may itself be `undefined`, so
+    // only membership distinguishes "not registered" from "registered against
+    // an undefined value".
+    if (!this.#values.has(element)) {
+      return;
+    }
+    this.select(this.#values.get(element) as T);
+  };
+
+  idFor = (value: T, kind: 'tab' | 'panel'): string => {
+    let index = this.#indices.get(value);
+    if (index === undefined) {
+      index = this.#indices.size;
+      this.#indices.set(value, index);
+    }
+    return `${guidFor(this)}-${kind}-${index}`;
+  };
+
   @cached
-  get context(): TabsContext {
+  get context(): TabsContext<T> {
     return {
       indicator: this.indicator,
       orientation: this.orientation,
       listClass: this.styles.list({ class: this.args.classes?.list }),
       indicatorClass: this.styles.indicator({
         class: this.args.classes?.indicator
-      })
+      }),
+      tabClass: this.styles.tab({ class: this.args.classes?.tab }),
+      isGroupDisabled: this.args.isDisabled ?? false,
+      isSelected: this.isSelected,
+      select: this.select,
+      registerValue: this.registerValue,
+      unregisterValue: this.unregisterValue,
+      idFor: this.idFor
     };
   }
 
   <template>
     <div class={{this.styles.base class=@classes.base}} ...attributes>
-      {{yield (hash List=(component List context=this.context))}}
+      {{#let
+        (component List context=this.context)
+        (component Tab context=this.context)
+        as |TabList TabItem|
+      }}
+        {{! @glint-ignore: WithBoundArgs vs. a generic component }}
+        {{yield (hash List=TabList Tab=TabItem)}}
+      {{/let}}
     </div>
   </template>
 }
