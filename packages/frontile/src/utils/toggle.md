@@ -1,7 +1,7 @@
 ---
 ---
 
-# ToggleState
+# toggleState
 
 The `toggleState` utility is a lightweight helper for managing boolean state in your components. It encapsulates a tracked property (`current`) and a `toggle` method that can be used to update the state. This utility supports:
 
