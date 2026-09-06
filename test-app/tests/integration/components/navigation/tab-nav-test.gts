@@ -147,5 +147,39 @@ module(
 
       assert.false(event.defaultPrevented, 'ArrowRight is left to the browser');
     });
+
+    test('Item with @href renders a plain anchor and honours @isActive', async function (assert) {
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <nav.Item @href="/one" @isActive={{false}}>One</nav.Item>
+            <nav.Item @href="/two" @isActive={{true}}>Two</nav.Item>
+          </TabNav>
+        </template>
+      );
+
+      const links = findAll('nav a');
+      assert.dom(links[0]!).hasAttribute('href', '/one');
+      assert.dom(links[1]!).hasAttribute('aria-current', 'page');
+      assert.dom(links[1]!).hasAttribute('data-selected', 'true');
+      assert.dom(links[0]!).hasAttribute('data-selected', 'false');
+    });
+
+    test('Item with @isDisabled is marked disabled and is not activatable', async function (assert) {
+      await render(
+        <template>
+          <TabNav @label="Sections" as |nav|>
+            <nav.Item @href="/one" @isDisabled={{true}}>One</nav.Item>
+          </TabNav>
+        </template>
+      );
+
+      const link = find('nav a')!;
+      assert.dom(link).hasAria('disabled', 'true');
+      assert.dom(link).hasAttribute('data-disabled', 'true');
+      // An <a> cannot be natively disabled, so the href is dropped instead --
+      // aria-disabled alone would still leave it clickable.
+      assert.dom(link).doesNotHaveAttribute('href');
+    });
   }
 );

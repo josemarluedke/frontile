@@ -4,7 +4,9 @@ import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
 import { useStyles, type SlotsToClasses } from '@frontile/theme';
 import { selectionIndicator } from '../../../utils/selection-indicator';
+import TabNavItem from './item';
 import type { TabsSlots, TabsVariants } from '@frontile/theme';
+import type { WithBoundArgs } from '@glint/template';
 
 interface TabNavArgs {
   /** Accessible name for the navigation landmark. */
@@ -54,6 +56,7 @@ interface TabNavSignature {
   Blocks: {
     default: [
       {
+        Item: WithBoundArgs<typeof TabNavItem, 'itemClass' | 'setupItem'>;
         itemClass: string;
         setupItem: TabNav['setupItem'];
       }
@@ -143,7 +146,15 @@ class TabNav extends Component<TabNavSignature> {
         class={{this.styles.indicator class=@classes.indicator}}
       ></span>
 
-      {{yield (hash itemClass=this.itemClass setupItem=this.setupItem)}}
+      {{yield
+        (hash
+          Item=(component
+            TabNavItem itemClass=this.itemClass setupItem=this.setupItem
+          )
+          itemClass=this.itemClass
+          setupItem=this.setupItem
+        )
+      }}
     </nav>
   </template>
 }
