@@ -1,5 +1,4 @@
 ---
-label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
@@ -150,7 +149,7 @@ The `@alt` should name the person, not the picture. "Jon Snow" is useful;
 "User profile picture" and "Avatar" describe the widget, which the reader already
 knows and cannot act on.
 
-Two limits worth knowing:
+Two limits:
 
 - **An avatar is never focusable or interactive.** It renders a `<span>` and
   takes no key handling. If the avatar should open a menu or a profile, wrap it

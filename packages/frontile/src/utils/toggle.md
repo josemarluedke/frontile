@@ -1,5 +1,4 @@
 ---
-label: New
 ---
 
 # ToggleState

@@ -1,5 +1,4 @@
 ---
-label: New
 imports:
   - import Signature from 'site/components/signature';
 ---
@@ -543,7 +542,7 @@ regardless of validity and `@onError` never fires. That's the path for multi-ste
 saves, or validating by hand inside `@onSubmit`. Everything else — dirty tracking, reset, data
 snapshots — keeps working.
 
-Two limits worth knowing: the field-level values (`change`, `blur`, `input`) need
+Two limits: the field-level values (`change`, `blur`, `input`) need
 `form.Field`, and [CheckboxGroup](checkbox-group) validates only on submit.
 
 ## Dirty Field Tracking
@@ -1480,8 +1479,7 @@ Form renders a native `<form>`, so submission on <kbd>Enter</kbd>, field labelli
 - **Error messages** render in a `FormFeedback` associated with the control through
   `aria-describedby`, and are announced from a persistent, visually hidden
   `aria-live='assertive'` region that `FormControl` renders whether or not the field is
-  currently invalid. A live region inserted at the same moment as its content is not
-  announced reliably, which is why the region is always present and merely filled.
+  currently invalid.
 - **Disabled fields** carry the real `disabled` attribute rather than a styling-only state.
 - **Focus** is not managed or trapped by Form; it stays where the browser puts it. If you
   redirect focus to the first invalid field in `@onError`, see

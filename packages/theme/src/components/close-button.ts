@@ -4,7 +4,7 @@ import { focusVisibleRing } from './shared';
 const closeButton = tv({
   slots: {
     base: [
-      'rounded-full transition transition-200 text-inherit',
+      'rounded-full transition duration-200 text-inherit',
       ...focusVisibleRing
     ],
     icon: 'size-[1em]'

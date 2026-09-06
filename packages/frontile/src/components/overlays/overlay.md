@@ -560,9 +560,9 @@ export default class OverlayElementClick extends Component {
 }
 ```
 
-> **Why is `@closeOnOverlayElementClick` `true` by default?**
->
-> This option is set to `true` by default to make "outside click" functionality work intuitively. Most overlay content is wrapped with an inner element (like a card or dialog), which prevents accidental closure when clicking on the actual content. The overlay element itself acts as part of the "outside" area, allowing users to click anywhere around the content to dismiss the overlay.
+> **Note:** Content wrapped in an inner element — a card, a dialog — is not the overlay
+> element itself, so clicking your content never closes the overlay. What
+> `@closeOnOverlayElementClick` covers is the area around it.
 
 ## Using Power Select inside an Overlay
 

@@ -1,5 +1,4 @@
 ---
-label: New
 imports:
   - import Signature from 'site/components/signature';
   - import { users, products, employees, type User, type Product, type Employee } from 'site/components/table-demo-data';
@@ -439,17 +438,14 @@ export default class DemoComponent extends Component {
 }
 ```
 
-The hairline under the header shown above is deliberately subtle — it is meant
-for tables that already have content and are merely refreshing it. When a
-table is loading with nothing on screen yet, prefer the built-in skeleton rows
-below instead.
+The hairline under the header is a subtle indicator, for tables that already
+have content and are merely refreshing it. When a table is loading with nothing
+on screen yet, prefer the built-in skeleton rows below instead.
 
 ### Built-in skeleton rows
 
 `@skeletonRows` renders placeholder rows while the table is loading and has no
-items. It is opt-in, and the number is required rather than defaulted: the row
-count is the one thing the table cannot infer, and a wrong default promises ten
-rows and delivers three.
+items. It is opt-in, and the row count is required — there is no default.
 
 Load the data below to watch the placeholders hand off to real rows.
 
@@ -515,8 +511,7 @@ export default class DemoComponent extends Component {
 
 Placeholder rows fade in one after another, 60ms apart, so they arrive the way
 the real rows will rather than appearing as one block. The stagger stops
-growing after ten rows — past that the last row would sit blank longer than
-many requests take — and `prefers-reduced-motion` turns it off entirely.
+growing after ten rows, and `prefers-reduced-motion` turns it off entirely.
 
 Skeleton rows render only when `@isLoading` is true **and** there are no items,
 so a refresh, a filter requery, or loading page two never throws away rows the
@@ -557,9 +552,9 @@ Because `circle` and `square` reuse Avatar's size scale, a placeholder in an
 `@size="md"` table is the same 32px as the `<Avatar @size="md">` it stands in
 for.
 
-This is deliberately only a shape. For anything richer — cells that stack an
-icon, a name and a chip, or per-column widths — use `bodyTop` with the yielded
-columns and render `Skeleton` yourself for each piece of content.
+`skeleton` sets the shape and nothing else. For anything richer — cells that
+stack an icon, a name and a chip, or per-column widths — use `bodyTop` with the
+yielded columns and render `Skeleton` yourself for each piece of content.
 
 If neither the built-in skeleton rows nor a custom `bodyTop` layout fit —
 for example, an overlay that needs to sit over content that is already on
@@ -1349,9 +1344,8 @@ On top of that:
 | Row selection       | A checkbox per row labelled "Select row", and "Select all rows" in the header                |
 | Skeleton rows       | `aria-hidden="true"` while loading, so placeholder rows are not announced as data            |
 
-`aria-sort` comes from the underlying table library's header-cell modifier, which applies it
-to every header cell — including non-sortable ones, where it reads `none`. That is harmless
-but means the attribute's presence is not a reliable signal of whether a column can be
+`aria-sort` is present on every header cell, including non-sortable ones, where it reads
+`none`. So the attribute's presence is not a reliable signal of whether a column can be
 sorted; `data-sortable` is.
 
 Two things to supply yourself:

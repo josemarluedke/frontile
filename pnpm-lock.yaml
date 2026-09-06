@@ -1257,13 +1257,13 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2(@embroider/core@3.5.7(@glint/template@1.8.0))(webpack@5.109.2(postcss@8.5.26))
       '@frontile/changeset-form':
-        specifier: workspace:0.18.0-alpha.15
+        specifier: workspace:0.18.0-alpha.16
         version: link:../packages/changeset-form
       '@frontile/forms-legacy':
-        specifier: workspace:0.18.0-alpha.15
+        specifier: workspace:0.18.0-alpha.16
         version: link:../packages/forms-legacy
       '@frontile/theme':
-        specifier: workspace:0.18.0-alpha.15
+        specifier: workspace:0.18.0-alpha.16
         version: link:../packages/theme
       '@glimmer/component':
         specifier: ^2.1.1
@@ -1362,7 +1362,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(encoding@0.1.13)
       frontile:
-        specifier: workspace:0.18.0-alpha.15
+        specifier: workspace:0.18.0-alpha.16
         version: link:../packages/frontile
       globals:
         specifier: ^17.9.0

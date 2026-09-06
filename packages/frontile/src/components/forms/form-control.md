@@ -207,7 +207,7 @@ apply them:
 | `c.isInvalid`   | `aria-invalid` on the control                                                                 |
 | `c.describedBy` | `aria-describedby` on the control, called with whether a description and feedback are present |
 
-Notes worth knowing before you rely on it:
+Notes before you rely on it:
 
 - **Required is visual.** `@isRequired` adds an asterisk to the label. Set `required` or
   `aria-required` on the control yourself.
