@@ -101,5 +101,70 @@ module(
       assert.deepEqual(received, [], 'onChange was not called');
       assert.dom(findAll('[role="tab"]')[0]!).hasAria('selected', 'true');
     });
+
+    test('only the active panel is rendered, and ARIA round-trips', async function (assert) {
+      await render(
+        <template>
+          <Tabs @defaultValue="account" as |t|>
+            <t.List @label="Settings">
+              <t.Tab @value="account">Account</t.Tab>
+              <t.Tab @value="security">Security</t.Tab>
+            </t.List>
+            <t.Panel @value="account">Account panel</t.Panel>
+            <t.Panel @value="security">Security panel</t.Panel>
+          </Tabs>
+        </template>
+      );
+
+      assert
+        .dom('[role="tabpanel"]')
+        .exists({ count: 1 }, 'one panel rendered');
+      assert.dom('[role="tabpanel"]').hasText('Account panel');
+      assert.dom('[role="tabpanel"]').hasAttribute('tabindex', '0');
+
+      const tab = findAll('[role="tab"]')[0]!;
+      const panel = find('[role="tabpanel"]')!;
+
+      assert.strictEqual(
+        tab.getAttribute('aria-controls'),
+        panel.id,
+        'the tab points at its panel'
+      );
+      assert.strictEqual(
+        panel.getAttribute('aria-labelledby'),
+        tab.id,
+        'the panel points back at its tab'
+      );
+
+      await click(findAll('[role="tab"]')[1]!);
+      assert.dom('[role="tabpanel"]').hasText('Security panel');
+      assert.dom('[role="tabpanel"]').exists({ count: 1 });
+    });
+
+    test('values that stringify alike still get distinct ids', async function (assert) {
+      // `String()` collapses both of these to "[object Object]". Ids derived
+      // from the stringified value would collide and break aria-controls.
+      const a = { toString: (): string => 'x' };
+      const b = { toString: (): string => 'x' };
+
+      await render(
+        <template>
+          <Tabs @defaultValue={{a}} as |t|>
+            <t.List @label="Objects">
+              <t.Tab @value={{a}}>A</t.Tab>
+              <t.Tab @value={{b}}>B</t.Tab>
+            </t.List>
+          </Tabs>
+        </template>
+      );
+
+      const tabs = findAll('[role="tab"]');
+      assert.notEqual(tabs[0]!.id, tabs[1]!.id, 'ids are distinct');
+      assert.notEqual(
+        tabs[0]!.getAttribute('aria-controls'),
+        tabs[1]!.getAttribute('aria-controls'),
+        'aria-controls targets are distinct'
+      );
+    });
   }
 );

@@ -8,6 +8,7 @@ import {
   type SelectionIndicator
 } from '../../../utils/selection-indicator';
 import Tab from './tab';
+import Panel from './panel';
 import type { TabsSlots, TabsVariants } from '@frontile/theme';
 import type Owner from '@ember/owner';
 import type { WithBoundArgs } from '@glint/template';
@@ -82,6 +83,7 @@ interface TabsContext<T> {
   listClass: string;
   indicatorClass: string;
   tabClass: string;
+  panelClass: string;
   isGroupDisabled: boolean;
   isSelected: (value: T) => boolean;
   select: (value: T) => void;
@@ -136,6 +138,7 @@ interface TabsSignature<T> {
       {
         List: WithBoundArgs<typeof List<T>, 'context'>;
         Tab: WithBoundArgs<typeof Tab<T>, 'context'>;
+        Panel: WithBoundArgs<typeof Panel<T>, 'context'>;
       }
     ];
   };
@@ -244,6 +247,7 @@ class Tabs<T> extends Component<TabsSignature<T>> {
         class: this.args.classes?.indicator
       }),
       tabClass: this.styles.tab({ class: this.args.classes?.tab }),
+      panelClass: this.styles.panel({ class: this.args.classes?.panel }),
       isGroupDisabled: this.args.isDisabled ?? false,
       isSelected: this.isSelected,
       select: this.select,
@@ -258,10 +262,11 @@ class Tabs<T> extends Component<TabsSignature<T>> {
       {{#let
         (component List context=this.context)
         (component Tab context=this.context)
-        as |TabList TabItem|
+        (component Panel context=this.context)
+        as |TabList TabItem TabPanel|
       }}
         {{! @glint-ignore: WithBoundArgs vs. a generic component }}
-        {{yield (hash List=TabList Tab=TabItem)}}
+        {{yield (hash List=TabList Tab=TabItem Panel=TabPanel)}}
       {{/let}}
     </div>
   </template>
