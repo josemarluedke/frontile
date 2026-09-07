@@ -49,6 +49,8 @@ import type {
   Kbd
 } from './components/utilities';
 
+import type { Tabs, TabNav } from './components/navigation';
+
 export default interface Registry {
   // Buttons
   Button: typeof Button;
@@ -100,4 +102,8 @@ export default interface Registry {
   Spinner: typeof Spinner;
   Divider: typeof Divider;
   Kbd: typeof Kbd;
+
+  // Navigation
+  Tabs: typeof Tabs;
+  TabNav: typeof TabNav;
 }

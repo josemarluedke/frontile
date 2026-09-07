@@ -13,6 +13,7 @@ export * from './skeleton';
 export * from './spinner';
 export * from './table';
 export * from './segmented-control';
+export * from './tabs';
 
 export * from './notifications-container';
 export * from './notification-card';

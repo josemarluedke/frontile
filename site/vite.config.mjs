@@ -16,6 +16,11 @@ import Icons from 'unplugin-icons/vite';
 // and only show up as a rehydration mismatch at runtime. Only genuinely
 // environment-specific settings sit behind `isSsrBuild`.
 export default defineConfig(({ isSsrBuild }) => ({
+  // Vite does not read `PORT` on its own. Honouring it lets a caller assign a
+  // free port instead of hardcoding one, which is what keeps several git
+  // worktrees from fighting over the same number. Unset falls back to Vite's
+  // own default.
+  server: process.env.PORT ? { port: Number(process.env.PORT) } : {},
   plugins: [
     docfy(
       /** @type {import('@docfy/ember-vite').DocfyViteOptions} */

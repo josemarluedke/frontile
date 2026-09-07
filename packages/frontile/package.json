@@ -42,6 +42,10 @@
       "types": "./declarations/utilities.d.ts",
       "default": "./dist/utilities.js"
     },
+    "./navigation": {
+      "types": "./declarations/navigation.d.ts",
+      "default": "./dist/navigation.js"
+    },
     "./test-support": {
       "types": "./declarations/test-support.d.ts",
       "default": "./dist/test-support.js"
