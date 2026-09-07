@@ -180,4 +180,4 @@ users who do not recognise a glyph.
 
 ## API
 
-<Signature @package="frontile" @component="Kbd" />
+<Signature @component="Kbd" />
