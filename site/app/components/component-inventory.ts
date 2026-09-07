@@ -33,7 +33,7 @@ export const inventory: InventoryCategory[] = [
         name: 'Form',
         path: '/docs/components/forms/form',
         description:
-          "Wraps a native <form>, serializes its fields, and hands you the result on submit.",
+          'Wraps a native <form>, serializes its fields, and hands you the result on submit.',
       },
       {
         name: 'Field',
@@ -73,7 +73,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Autocomplete',
         path: '/docs/components/forms/autocomplete',
-        description: 'A type-ahead combobox that filters its options as you type.',
+        description:
+          'A type-ahead combobox that filters its options as you type.',
       },
       {
         name: 'Checkbox',
@@ -94,7 +95,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'RadioGroup',
         path: '/docs/components/forms/radio-group',
-        description: 'Manages a set of radio options and their shared selection.',
+        description:
+          'Manages a set of radio options and their shared selection.',
       },
       {
         name: 'Switch',
@@ -110,7 +112,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Avatar',
         path: '/docs/components/utilities/avatar',
-        description: 'Displays a person or entity as an image, initials, or icon.',
+        description:
+          'Displays a person or entity as an image, initials, or icon.',
       },
       {
         name: 'Collapsible',
@@ -121,12 +124,14 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Divider',
         path: '/docs/components/utilities/divider',
-        description: 'A visual or semantic separator between sections of content.',
+        description:
+          'A visual or semantic separator between sections of content.',
       },
       {
         name: 'Skeleton',
         path: '/docs/components/utilities/skeleton',
-        description: 'A placeholder shape that stands in for content while it loads.',
+        description:
+          'A placeholder shape that stands in for content while it loads.',
       },
       {
         name: 'Spinner',
@@ -148,7 +153,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Ref',
         path: '/docs/components/utilities/ref',
-        description: 'A utility for capturing a reactive reference to a DOM element.',
+        description:
+          'A utility for capturing a reactive reference to a DOM element.',
       },
       {
         name: 'RovingFocus',
@@ -177,12 +183,14 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Button',
         path: '/docs/components/buttons/button',
-        description: 'The base pressable action, with intents, appearances, and sizes.',
+        description:
+          'The base pressable action, with intents, appearances, and sizes.',
       },
       {
         name: 'ButtonGroup',
         path: '/docs/components/buttons/button-group',
-        description: 'Groups related buttons, including toggling segmented sets.',
+        description:
+          'Groups related buttons, including toggling segmented sets.',
       },
       {
         name: 'ToggleButton',
@@ -204,7 +212,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Chip',
         path: '/docs/components/buttons/chip',
-        description: 'A compact label for statuses, filters, and removable tags.',
+        description:
+          'A compact label for statuses, filters, and removable tags.',
       },
     ],
   },
@@ -231,7 +240,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Overlay',
         path: '/docs/components/overlays/overlay',
-        description: 'The foundation Modal, Drawer, and Popover are all built on.',
+        description:
+          'The foundation Modal, Drawer, and Popover are all built on.',
       },
       {
         name: 'Portal',
@@ -249,7 +259,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'Table',
         path: '/docs/components/collections/table',
-        description: 'A sortable, selectable table backed by typed column definitions.',
+        description:
+          'A sortable, selectable table backed by typed column definitions.',
       },
       {
         name: 'SimpleTable',
@@ -289,7 +300,8 @@ export const inventory: InventoryCategory[] = [
   },
   {
     name: 'Navigation',
-    summary: 'Moving between panels and pages, with the right ARIA pattern for each.',
+    summary:
+      'Moving between panels and pages, with the right ARIA pattern for each.',
     items: [
       {
         name: 'Tabs',
@@ -300,7 +312,8 @@ export const inventory: InventoryCategory[] = [
       {
         name: 'TabNav',
         path: '/docs/components/navigation/tab-nav',
-        description: 'A navigation bar styled like Tabs, for links that change the page.',
+        description:
+          'A navigation bar styled like Tabs, for links that change the page.',
       },
     ],
   },
