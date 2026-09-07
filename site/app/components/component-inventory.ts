@@ -287,6 +287,23 @@ export const inventory: InventoryCategory[] = [
       },
     ],
   },
+  {
+    name: 'Navigation',
+    summary: 'Moving between panels and pages, with the right ARIA pattern for each.',
+    items: [
+      {
+        name: 'Tabs',
+        path: '/docs/components/navigation/tabs',
+        description:
+          'A set of panels shown one at a time, with an indicator that slides between them.',
+      },
+      {
+        name: 'TabNav',
+        path: '/docs/components/navigation/tab-nav',
+        description: 'A navigation bar styled like Tabs, for links that change the page.',
+      },
+    ],
+  },
 ];
 
 export const componentCount: number = inventory.reduce(
