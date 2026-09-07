@@ -36,6 +36,7 @@ export interface DrawerArgs extends Pick<
   | 'closeOnOutsideClick'
   | 'closeOnEscapeKey'
   | 'backdropTransition'
+  | 'preventAutoFocus'
 > {
   /**
    * The transition to be used in the Drawer.
@@ -234,6 +235,7 @@ export default class Drawer extends Component<DrawerSignature> {
       @backdropTransition={{@backdropTransition}}
       @transition={{this.transition}}
       @closeOnOverlayElementClick={{true}}
+      @preventAutoFocus={{@preventAutoFocus}}
     >
       <div
         class={{this.classes.base class=@classes.base}}

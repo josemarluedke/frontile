@@ -839,7 +839,9 @@ In development, a modal that ends up with no accessible name at all — no `Head
 `frontile.modal.missing-accessible-name`. It is compiled out of production builds.
 
 `aria-modal="true"` is dropped when `@disableFocusTrap={{true}}`: with the trap off the page
-behind really is reachable, and claiming otherwise would mislead screen reader users.
+behind really is reachable, and claiming otherwise would mislead screen reader users. Note
+that the modal still auto-focuses itself in this case, unless `@preventAutoFocus={{true}}`
+is also passed — see [Overlay](./overlay.md#accessibility).
 
 Behavior inherited from [Overlay](./overlay.md):
 
