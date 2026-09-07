@@ -1,4 +1,5 @@
 ---
+label: Updated
 imports:
   - import Signature from 'site/components/signature';
 ---
@@ -189,14 +190,14 @@ import { StarIcon } from 'site/components/icons';
 The unit token pairs with the label token the size variant sets, so it needs to
 change with `@size`:
 
-| `@size` | label (automatic) | unit              | wrapper gap |
-| ------- | ----------------- | ----------------- | ----------- |
-| `xs`    | `text-strong-sm`  | `text-body-3xs`   | `gap-0.5`   |
-| `sm`    | `text-strong-md`  | `text-body-2xs`   | `gap-0.5`   |
-| `md`    | `text-strong-lg`  | `text-body-xs`    | `gap-1`     |
-| `lg`    | `text-strong-xl`  | `text-body-sm`    | `gap-1`     |
-| `xl`    | `text-strong-2xl` | `text-body-md`    | `gap-1`     |
-| `2xl`   | `text-strong-3xl` | `text-body-lg`    | `gap-1.5`   |
+| `@size` | label (automatic) | unit            | wrapper gap |
+| ------- | ----------------- | --------------- | ----------- |
+| `xs`    | `text-strong-sm`  | `text-body-3xs` | `gap-0.5`   |
+| `sm`    | `text-strong-md`  | `text-body-2xs` | `gap-0.5`   |
+| `md`    | `text-strong-lg`  | `text-body-xs`  | `gap-1`     |
+| `lg`    | `text-strong-xl`  | `text-body-sm`  | `gap-1`     |
+| `xl`    | `text-strong-2xl` | `text-body-md`  | `gap-1`     |
+| `2xl`   | `text-strong-3xl` | `text-body-lg`  | `gap-1.5`   |
 
 ```gts preview
 import { Button } from 'frontile';
