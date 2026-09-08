@@ -201,6 +201,13 @@ class Collapsible extends Component<CollapsibleSignature> {
     // The transition is written as an inline style, so a
     // `motion-reduce:transition-none` class could never beat it. The check has
     // to happen here.
+    //
+    // Height, overflow and opacity below land where `onTransitionEnd` leaves
+    // them at the end of a normal expand. `transition` is the one property
+    // that differs: the animated path never clears it, so an element that has
+    // animated keeps an inline `transition` at rest while this path clears it.
+    // Nothing reads that property between runs, so the asymmetry is harmless
+    // -- but it is why this is not, strictly, the same terminal state.
     if (prefersReducedMotion()) {
       element.style.transition = '';
       element.style.overflow = '';
