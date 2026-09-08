@@ -57,13 +57,43 @@ const modal = tv({
 
 const drawer = tv({
   slots: {
-    base: 'flex flex-col absolute text-on-surface-modal bg-surface-modal border border-surface-overlay-mild rounded-2xl w-full h-full outline-hidden overflow-clip',
+    base: 'flex flex-col absolute rounded-2xl w-full h-full outline-hidden overflow-clip border border-neutral-muted shadow-elevation-5',
     closeButton: 'absolute top-3 right-3',
-    header: 'font-header text-header-lg text-center px-8 pt-10 pb-2',
-    body: 'px-8 py-4 grow overflow-y-auto',
-    footer: `${obscurer} flex justify-end items-center relative border-t border-surface-overlay-mild bg-surface-modal p-8 gap-4`
+    header: '',
+    body: 'grow overflow-y-auto',
+    footer: 'flex justify-end items-center relative gap-4',
+    icon: 'row-span-2 col-start-1 shrink-0 flex items-center justify-center',
+    title: 'col-start-2 font-header',
+    description: 'col-start-2',
+    dragHandle:
+      'absolute z-10 flex items-center justify-center touch-none cursor-grab active:cursor-grabbing focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+    dragHandleBar: 'rounded-pill'
   },
   variants: {
+    appearance: {
+      default: {
+        base: 'bg-surface-drawer text-on-surface-drawer',
+        body: 'bg-surface-drawer px-6 py-4',
+        header:
+          'grid grid-cols-[auto_1fr] items-center gap-x-3 bg-black text-white px-6 py-4 pr-14',
+        footer:
+          'bg-surface-app text-on-surface-app border-t border-neutral-muted px-6 py-4',
+        closeButton: 'text-white',
+        icon: 'text-white',
+        title: 'text-header-sm font-semibold text-white',
+        description: 'text-sm text-white/70',
+        dragHandleBar: 'bg-white/40'
+      },
+      ghost: {
+        base: 'bg-surface-modal text-on-surface-modal',
+        body: 'px-8 py-4',
+        header: 'font-header text-header-lg text-center px-8 pt-10 pb-2',
+        footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal p-8`,
+        title: 'text-header-lg',
+        description: 'text-sm text-neutral',
+        dragHandleBar: 'bg-neutral-soft'
+      }
+    },
     size: {
       xs: '',
       sm: '',
@@ -73,10 +103,10 @@ const drawer = tv({
       full: ''
     },
     placement: {
-      top: 'top-0 right-0 left-0',
-      bottom: 'bottom-0 right-0 left-0',
-      left: 'top-0 bottom-0 left-0',
-      right: 'top-0 bottom-0 right-0'
+      top: 'top-2 right-2 left-2',
+      bottom: 'bottom-2 right-2 left-2',
+      left: 'top-2 bottom-2 left-2',
+      right: 'top-2 bottom-2 right-2'
     }
   },
   compoundVariants: [
@@ -142,6 +172,31 @@ const drawer = tv({
       placement: ['right', 'left'],
       size: 'full',
       class: 'drawer--horizontal-full'
+    },
+
+    // Drag handle placement: the bar sits on the edge facing the viewport
+    // centre, so the user grabs the side they would pull from.
+    {
+      placement: 'bottom',
+      class: { dragHandle: 'top-0 left-0 right-0 h-6', dragHandleBar: 'h-1 w-12' }
+    },
+    {
+      placement: 'top',
+      class: {
+        dragHandle: 'bottom-0 left-0 right-0 h-6',
+        dragHandleBar: 'h-1 w-12'
+      }
+    },
+    {
+      placement: 'right',
+      class: { dragHandle: 'left-0 top-0 bottom-0 w-6', dragHandleBar: 'w-1 h-12' }
+    },
+    {
+      placement: 'left',
+      class: {
+        dragHandle: 'right-0 top-0 bottom-0 w-6',
+        dragHandleBar: 'w-1 h-12'
+      }
     }
   ]
 });

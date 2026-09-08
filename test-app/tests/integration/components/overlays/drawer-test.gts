@@ -36,9 +36,18 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
         closeButton: 'drawer__close-btn',
         header: 'drawer__header',
         body: 'drawer__body',
-        footer: 'drawer__footer'
+        footer: 'drawer__footer',
+        icon: 'drawer__icon',
+        title: 'drawer__title',
+        description: 'drawer__description',
+        dragHandle: 'drawer__drag-handle',
+        dragHandleBar: 'drawer__drag-handle-bar'
       },
       variants: {
+        appearance: {
+          default: 'drawer--default',
+          ghost: 'drawer--ghost'
+        },
         size: {
           xs: '',
           sm: '',
