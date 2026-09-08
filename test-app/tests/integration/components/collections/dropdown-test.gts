@@ -282,5 +282,160 @@ module(
         .dom('[data-test-id="listbox"]')
         .exists('Space on a focused trigger opens the menu');
     });
+
+    test('it opens a submenu on click and fires the root onAction for a nested item', async function (assert) {
+      const actions: string[] = [];
+      const onAction = (key: string) => {
+        actions.push(key);
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+
+            <d.Menu
+              @onAction={{onAction}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="move-project">Move to project</Item>
+                  <Item @key="move-folder">Move to folder</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      assert.dom('[data-key="edit"]').exists('the root menu is open');
+      assert.dom('[data-key="move-project"]').doesNotExist('submenu is closed');
+
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+
+      assert.dom('[data-key="move-project"]').exists('the submenu opened');
+      assert.dom('[data-key="edit"]').exists('the parent menu stayed open');
+      assert.deepEqual(actions, [], 'opening a submenu fired no action');
+
+      await click('[data-key="move-folder"]');
+
+      assert.deepEqual(
+        actions,
+        ['move-folder'],
+        'the root onAction saw the key'
+      );
+      assert.dom('[data-key="edit"]').doesNotExist('the whole chain closed');
+    });
+
+    test('a submenu trigger carries the submenu aria attributes', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      const trigger = '[data-test-id="dropdown-submenu-trigger"]';
+      assert.dom(trigger).hasAttribute('role', 'menuitem');
+      assert.dom(trigger).hasAria('haspopup', 'menu');
+      assert.dom(trigger).hasAria('expanded', 'false');
+
+      await click(trigger);
+
+      assert.dom(trigger).hasAria('expanded', 'true');
+
+      const submenuId = document
+        .querySelector(trigger)
+        ?.getAttribute('aria-controls');
+      assert.ok(submenuId, 'aria-controls points somewhere');
+      assert
+        .dom(`#${submenuId}`)
+        .hasAttribute('role', 'menu', 'and it points at the submenu');
+    });
+
+    test('selection settings declared on the root menu reach submenu items', async function (assert) {
+      let selected: string[] = [];
+      const onSelectionChange = (keys: string[]) => {
+        selected = keys;
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @selectionMode="single"
+              @onSelectionChange={{onSelectionChange}}
+              @closeOnItemSelect={{false}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await click('[data-key="nested"]');
+
+      assert.deepEqual(
+        selected,
+        ['nested'],
+        'the root selection handler fired'
+      );
+    });
+
+    test('the existing single-block-param form still works', async function (assert) {
+      const actions: string[] = [];
+      const onAction = (key: string) => {
+        actions.push(key);
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu
+              @onAction={{onAction}}
+              @disableTransitions={{true}}
+              as |Item|
+            >
+              <Item @key="only">Only</Item>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-key="only"]');
+
+      assert.deepEqual(actions, ['only'], 'no regression for as |Item|');
+    });
   }
 );

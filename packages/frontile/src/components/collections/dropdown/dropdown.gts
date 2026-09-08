@@ -9,6 +9,9 @@ import {
 import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
+import { Sub } from './sub';
+import { createRootMenuContext } from './menu-context';
+import type { MenuContext, SubHandle } from './menu-context';
 import type { ModifierLike } from '@glint/template';
 import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
@@ -40,7 +43,7 @@ interface DropdownSignature {
         Trigger: WithBoundArgs<typeof Trigger, 'anchor' | 'toggle' | 'trigger'>;
         Menu: WithBoundArgs<
           typeof Menu,
-          'toggle' | 'Content' | 'closeOnItemSelect'
+          'toggle' | 'close' | 'Content' | 'closeOnItemSelect'
         >;
       }
     ];
@@ -68,6 +71,7 @@ class Dropdown extends Component<DropdownSignature> {
             Menu
             Content=p.Content
             toggle=p.toggle
+            close=p.close
             closeOnItemSelect=@closeOnItemSelect
           )
         )
@@ -225,33 +229,114 @@ interface MenuArgs
    * @defaultValue false
    */
   disableFocusTrap?: boolean;
+
+  /**
+   * @internal
+   */
+  context?: MenuContext;
+
+  /**
+   * @internal
+   */
+  depth?: number;
+
+  /**
+   * @internal
+   */
+  menuId?: string;
+
+  /**
+   * @internal
+   */
+  autoActivateMode?: 'none' | 'first';
+
+  /**
+   * @internal
+   */
+  close?: () => void;
 }
 
 export interface MenuSignature {
   Args: MenuArgs;
   Element: HTMLUListElement;
-  Blocks: { default: [item: WithBoundArgs<typeof ListboxItem, 'manager'>] };
+  Blocks: {
+    default: [
+      item: WithBoundArgs<typeof ListboxItem, 'manager'>,
+      sub: WithBoundArgs<typeof Sub, 'item' | 'menu' | 'parentContext'>
+    ];
+  };
 }
 
 class Menu extends Component<MenuSignature> {
-  onAction = (key: string) => {
-    if (typeof this.args.onAction === 'function') {
-      this.args.onAction(key);
+  /**
+   * The submenus registered at this level. One map for the life of the
+   * component: `context` below is a getter, rebuilt on every render, and a map
+   * created there would drop every `Sub` that had already registered.
+   */
+  #subs = new Map<string, SubHandle>();
+
+  get depth(): number {
+    return this.args.depth ?? 0;
+  }
+
+  /**
+   * A submenu is handed its level's context by the `Sub` that renders it. The
+   * root builds its own, from the arguments the consumer wrote once.
+   */
+  get context(): MenuContext {
+    if (this.args.context) {
+      return this.args.context;
     }
 
-    if (
-      typeof this.args.toggle === 'function' &&
-      this.args.closeOnItemSelect !== false
-    ) {
+    return createRootMenuContext({
+      close: this.closeRoot,
+      subs: this.#subs,
+      selectionMode: this.args.selectionMode,
+      selectedKeys: this.args.selectedKeys,
+      disabledKeys: this.args.disabledKeys,
+      allowEmpty: this.args.allowEmpty,
+      onAction: this.args.onAction,
+      onSelectionChange: this.args.onSelectionChange,
+      appearance: this.args.appearance,
+      intent: this.args.intent,
+      shortcutAppearance: this.args.shortcutAppearance,
+      closeOnItemSelect: this.args.closeOnItemSelect,
+      disableTransitions: this.args.disableTransitions,
+      transitionDuration: this.args.transitionDuration
+    });
+  }
+
+  closeRoot = () => {
+    if (typeof this.args.close === 'function') {
+      this.args.close();
+    } else if (typeof this.args.toggle === 'function') {
       this.args.toggle();
     }
   };
 
+  onAction = (key: string) => {
+    const { onAction, closeOnItemSelect, closeRoot } = this.context;
+
+    if (typeof onAction === 'function') {
+      onAction(key);
+    }
+
+    // A leaf three levels down dismisses the whole dropdown, not just its own
+    // level -- so this closes the root rather than `closeSelf`.
+    if (closeOnItemSelect !== false) {
+      closeRoot();
+    }
+  };
+
+  /**
+   * Only the root locks the page scroll. A submenu is a second overlay over
+   * the same interaction; locking again would just churn the reference count.
+   */
   get blockScroll() {
     if (this.args.blockScroll === false) {
       return false;
     }
-    return true;
+    return this.depth === 0;
   }
 
   get disableFocusTrap() {
@@ -261,15 +346,19 @@ class Menu extends Component<MenuSignature> {
     return false;
   }
 
+  get autoActivateMode(): 'none' | 'first' {
+    return this.args.autoActivateMode ?? 'none';
+  }
+
   <template>
     <@Content
       @target={{@target}}
       @renderInPlace={{@renderInPlace}}
       @disableFocusTrap={{this.disableFocusTrap}}
       @blockScroll={{this.blockScroll}}
-      @transitionDuration={{@transitionDuration}}
+      @transitionDuration={{this.context.transitionDuration}}
       @backdrop={{@backdrop}}
-      @disableTransitions={{@disableTransitions}}
+      @disableTransitions={{this.context.disableTransitions}}
       @focusTrapOptions={{@focusTrapOptions}}
       @closeOnOutsideClick={{@closeOnOutsideClick}}
       @closeOnEscapeKey={{@closeOnEscapeKey}}
@@ -277,26 +366,36 @@ class Menu extends Component<MenuSignature> {
       @transition={{@transition}}
     >
       <Listbox
-        @allowEmpty={{@allowEmpty}}
-        @appearance={{@appearance}}
-        @disabledKeys={{@disabledKeys}}
-        @intent={{@intent}}
-        @shortcutAppearance={{@shortcutAppearance}}
+        @allowEmpty={{this.context.allowEmpty}}
+        @appearance={{this.context.appearance}}
+        @disabledKeys={{this.context.disabledKeys}}
+        @intent={{this.context.intent}}
+        @shortcutAppearance={{this.context.shortcutAppearance}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
-        @onSelectionChange={{@onSelectionChange}}
-        @selectedKeys={{@selectedKeys}}
-        @selectionMode={{if @selectionMode @selectionMode "none"}}
+        @onSelectionChange={{this.context.onSelectionChange}}
+        @selectedKeys={{this.context.selectedKeys}}
+        @selectionMode={{if
+          this.context.selectionMode
+          this.context.selectionMode
+          "none"
+        }}
         @type="menu"
-        @autoActivateMode="none"
+        @autoActivateMode={{this.autoActivateMode}}
+        id={{@menuId}}
         ...attributes
         as |l|
       >
-        {{yield (component l.Item)}}
+        {{yield
+          (component l.Item)
+          (component
+            Sub item=(component l.Item) menu=Menu parentContext=this.context
+          )
+        }}
       </Listbox>
     </@Content>
   </template>
 }
 
-export { Dropdown, type DropdownSignature };
+export { Dropdown, type DropdownSignature, Menu };
 export default Dropdown;
