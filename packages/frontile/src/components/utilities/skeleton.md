@@ -24,10 +24,12 @@ and use `@class` for anything they don't cover.
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose w-80 space-y-3'>
-    <Skeleton @shape='rounded' @class='h-32' />
-    <Skeleton @size='sm' />
-    <Skeleton @size='sm' @class='w-2/3' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose w-80 space-y-3'>
+      <Skeleton @shape='rounded' @class='h-32' />
+      <Skeleton @size='sm' />
+      <Skeleton @size='sm' @class='w-2/3' />
+    </div>
   </div>
 </template>
 ```
@@ -45,13 +47,15 @@ content-sized parent collapses to nothing.
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose flex w-96 items-end gap-4'>
-    <div class='flex-1 space-y-2'>
-      <Skeleton @shape='text' />
-      <Skeleton @shape='text' @class='w-2/3' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose flex w-96 items-end gap-4'>
+      <div class='flex-1 space-y-2'>
+        <Skeleton @shape='text' />
+        <Skeleton @shape='text' @class='w-2/3' />
+      </div>
+      <Skeleton @shape='circle' @size='xl' />
+      <Skeleton @shape='square' @size='xl' />
     </div>
-    <Skeleton @shape='circle' @size='xl' />
-    <Skeleton @shape='square' @size='xl' />
   </div>
 </template>
 ```
@@ -71,11 +75,13 @@ lines up with the real thing it stands in for:
 import { Skeleton, Avatar } from 'frontile';
 
 <template>
-  <div class='not-prose flex items-center gap-4'>
-    <Skeleton @shape='circle' @size='lg' />
-    <Avatar @name='Ada Lovelace' @size='lg' />
-    <Skeleton @shape='square' @size='lg' />
-    <Avatar @name='Ada Lovelace' @shape='square' @size='lg' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose flex items-center gap-4'>
+      <Skeleton @shape='circle' @size='lg' />
+      <Avatar @name='Ada Lovelace' @size='lg' />
+      <Skeleton @shape='square' @size='lg' />
+      <Avatar @name='Ada Lovelace' @shape='square' @size='lg' />
+    </div>
   </div>
 </template>
 ```
@@ -91,12 +97,14 @@ invisible, which makes a loading state look like an empty one.
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose flex w-96 items-center gap-4'>
-    <Skeleton @shape='circle' @size='xs' />
-    <Skeleton @shape='circle' @size='sm' />
-    <Skeleton @shape='circle' @size='md' />
-    <Skeleton @shape='circle' @size='lg' />
-    <Skeleton @shape='circle' @size='xl' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose flex w-96 items-center gap-4'>
+      <Skeleton @shape='circle' @size='xs' />
+      <Skeleton @shape='circle' @size='sm' />
+      <Skeleton @shape='circle' @size='md' />
+      <Skeleton @shape='circle' @size='lg' />
+      <Skeleton @shape='circle' @size='xl' />
+    </div>
   </div>
 </template>
 ```
@@ -109,11 +117,13 @@ import { Skeleton } from 'frontile';
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose w-72 space-y-3'>
-    <Skeleton @shape='rounded' @class='h-40' />
-    <Skeleton @shape='text' @size='lg' @class='w-3/4' />
-    <Skeleton @shape='text' @size='sm' />
-    <Skeleton @shape='text' @size='sm' @class='w-1/2' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose w-72 space-y-3'>
+      <Skeleton @shape='rounded' @class='h-40' />
+      <Skeleton @shape='text' @size='lg' @class='w-3/4' />
+      <Skeleton @shape='text' @size='sm' />
+      <Skeleton @shape='text' @size='sm' @class='w-1/2' />
+    </div>
   </div>
 </template>
 ```
@@ -126,11 +136,13 @@ Compose several to sketch the shape of the real content.
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose flex w-80 items-center gap-3'>
-    <Skeleton @shape='circle' @size='lg' @class='shrink-0' />
-    <div class='flex-1 space-y-2'>
-      <Skeleton @size='sm' />
-      <Skeleton @size='sm' @class='w-2/3' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose flex w-80 items-center gap-3'>
+      <Skeleton @shape='circle' @size='lg' @class='shrink-0' />
+      <div class='flex-1 space-y-2'>
+        <Skeleton @size='sm' />
+        <Skeleton @size='sm' @class='w-2/3' />
+      </div>
     </div>
   </div>
 </template>
@@ -145,18 +157,20 @@ unaffected by an app that redefines Tailwind's `pulse`.
 import { Skeleton } from 'frontile';
 
 <template>
-  <div class='not-prose w-80 space-y-4'>
-    <div>
-      <p class='mb-1 text-body-2xs text-neutral-soft'>shimmer (default)</p>
-      <Skeleton @class='h-4' @animation='shimmer' />
-    </div>
-    <div>
-      <p class='mb-1 text-body-2xs text-neutral-soft'>pulse</p>
-      <Skeleton @class='h-4' @animation='pulse' />
-    </div>
-    <div>
-      <p class='mb-1 text-body-2xs text-neutral-soft'>none</p>
-      <Skeleton @class='h-4' @animation='none' />
+  <div class='demo-stack items-center'>
+    <div class='not-prose w-80 space-y-4'>
+      <div>
+        <p class='mb-1 text-body-2xs text-neutral-soft'>shimmer (default)</p>
+        <Skeleton @class='h-4' @animation='shimmer' />
+      </div>
+      <div>
+        <p class='mb-1 text-body-2xs text-neutral-soft'>pulse</p>
+        <Skeleton @class='h-4' @animation='pulse' />
+      </div>
+      <div>
+        <p class='mb-1 text-body-2xs text-neutral-soft'>none</p>
+        <Skeleton @class='h-4' @animation='none' />
+      </div>
     </div>
   </div>
 </template>
