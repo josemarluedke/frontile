@@ -75,8 +75,8 @@ const EXCLUDED_COLORS = ['background', 'focus', 'divider'];
 
 /**
  * Determine if a color should have an "on-" variant generated.
- * Includes semantic colors and surface-modal.
- * Excludes utility colors and transparent overlays.
+ * Includes semantic categories and opaque surfaces (where contrast can be reliably computed).
+ * Excludes utility colors and translucent overlays.
  */
 function shouldGenerateOnColor(colorName: string): boolean {
   if (EXCLUDED_COLORS.includes(colorName)) {
