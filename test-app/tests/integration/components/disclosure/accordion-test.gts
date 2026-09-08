@@ -1,6 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click, settled } from '@ember/test-helpers';
+import {
+  render,
+  find,
+  findAll,
+  click,
+  focus,
+  settled,
+  triggerKeyEvent
+} from '@ember/test-helpers';
 import { array } from '@ember/helper';
 import { cell } from 'ember-resources';
 import { Accordion } from 'frontile';
@@ -380,6 +388,160 @@ module(
 
       assert.dom(triggers[0]!).hasAria('expanded', 'false');
       assert.deepEqual(calls, [], '@onChange never fired while group-disabled');
+    });
+
+    test('the keydown handler leaves Enter and Space to the native button', async function (assert) {
+      // Toggling on Enter/Space is the browser's job -- the trigger is a real
+      // <button>. What this asserts is that our arrow-key handler does not
+      // swallow them, since a `preventDefault()` here would silently kill
+      // keyboard activation. Asserting `aria-expanded` after a synthetic
+      // keydown would be vacuous: `triggerKeyEvent` does not synthesise the
+      // click a real browser derives from Enter on a button.
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+      await focus(trigger);
+
+      for (const key of ['Enter', ' ']) {
+        const event = new KeyboardEvent('keydown', {
+          key,
+          bubbles: true,
+          cancelable: true
+        });
+        trigger.dispatchEvent(event);
+        assert.false(
+          event.defaultPrevented,
+          `${key === ' ' ? 'Space' : key} was left to the browser`
+        );
+      }
+
+      await settled();
+
+      // And the activation path itself still works.
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'true');
+    });
+
+    test('ArrowDown and ArrowUp move focus between headers and wrap', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+            <a.Item @title="Three">Third body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await focus(triggers[0]!);
+      await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowDown');
+      assert.strictEqual(document.activeElement, triggers[1]!, 'moved down');
+
+      await triggerKeyEvent(triggers[1]!, 'keydown', 'ArrowUp');
+      assert.strictEqual(document.activeElement, triggers[0]!, 'moved up');
+
+      await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowUp');
+      assert.strictEqual(document.activeElement, triggers[2]!, 'wrapped to last');
+
+      await triggerKeyEvent(triggers[2]!, 'keydown', 'ArrowDown');
+      assert.strictEqual(document.activeElement, triggers[0]!, 'wrapped to first');
+    });
+
+    test('Home and End jump to the first and last header', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+            <a.Item @title="Three">Third body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await focus(triggers[1]!);
+      await triggerKeyEvent(triggers[1]!, 'keydown', 'End');
+      assert.strictEqual(document.activeElement, triggers[2]!);
+
+      await triggerKeyEvent(triggers[2]!, 'keydown', 'Home');
+      assert.strictEqual(document.activeElement, triggers[0]!);
+    });
+
+    test('arrow navigation steps over a disabled header', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two" @isDisabled={{true}}>Second body</a.Item>
+            <a.Item @title="Three">Third body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await focus(triggers[0]!);
+      await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        triggers[2]!,
+        'skipped the disabled header'
+      );
+    });
+
+    test('every header is its own tab stop', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      // The APG accordion pattern puts every header in the tab order -- unlike
+      // Tabs, which is a single-tab-stop roving-focus group. No trigger may
+      // carry tabindex="-1".
+      for (const trigger of findAll('[data-fr-accordion-trigger]')) {
+        assert.dom(trigger).doesNotHaveAttribute('tabindex');
+      }
+    });
+
+    test('a nested accordion does not steal its parent arrow keys', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |outer|>
+            <outer.Item @title="Outer one" @isDefaultOpen={{true}}>
+              <Accordion as |inner|>
+                <inner.Item @title="Inner one">Inner body</inner.Item>
+              </Accordion>
+            </outer.Item>
+            <outer.Item @title="Outer two">Second body</outer.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      const innerTrigger = triggers.find(
+        (trigger) => trigger.textContent?.includes('Inner one')
+      )!;
+
+      await focus(innerTrigger);
+      await triggerKeyEvent(innerTrigger, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        innerTrigger,
+        'the lone inner header keeps focus rather than jumping to the outer one'
+      );
     });
   }
 );
