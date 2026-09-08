@@ -47,6 +47,11 @@ const alert = tv({
   variants: {
     // Intent alone paints nothing; every colour comes from an intent ×
     // variant compound below.
+    //
+    // The other half of an intent lives in the component: `INTENT_CONFIG` in
+    // alert.gts maps it to a glyph and an ARIA role. Adding an intent means
+    // adding it in both places — this list plus its three compound variants
+    // here, and a row there.
     intent: {
       default: {},
       info: {},

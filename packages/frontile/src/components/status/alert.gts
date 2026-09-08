@@ -12,10 +12,15 @@ import { CloseButton } from '../buttons/close-button';
 type AlertIntent = 'default' | 'info' | 'success' | 'warning' | 'danger';
 
 /**
- * Everything that varies by intent, keyed in one place — the same shape
- * NotificationCard's own table uses — so adding an intent means adding one
- * row rather than remembering to touch an icon map and a role cascade
- * separately.
+ * Everything about an intent that this component decides, keyed in one place
+ * — the same shape NotificationCard's own table uses — so the icon map and
+ * the role cascade cannot drift apart.
+ *
+ * Colour is deliberately not here: it belongs to the `alert` recipe in
+ * `@frontile/theme`, whose `intent` variant and compound variants carry it.
+ * So a new intent means a row here *and* rows there; neither table can be
+ * derived from the other, since one holds components and the other holds
+ * Tailwind classes.
  */
 const INTENT_CONFIG = {
   default: {
