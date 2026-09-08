@@ -25,6 +25,10 @@ export {
   default as DrawerFooter,
   type DrawerFooterSignature
 } from './drawer/footer';
+export {
+  default as DrawerDragHandle,
+  type DrawerDragHandleSignature
+} from './drawer/drag-handle';
 export * from './portal';
 export * from './portal-target';
 export * from './popover';
