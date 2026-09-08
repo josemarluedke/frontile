@@ -27,18 +27,20 @@ import { Accordion } from 'frontile';
 import { Accordion } from 'frontile';
 
 <template>
-  <Accordion as |a|>
-    <a.Item @title='What are your shipping options?'>
-      Standard shipping arrives in three to five business days. Express arrives
-      the next business day.
-    </a.Item>
-    <a.Item @title='What is your return policy?'>
-      Unopened items can be returned within thirty days for a full refund.
-    </a.Item>
-    <a.Item @title='How can I contact support?'>
-      Email support@example.com, or use the chat widget in the bottom corner.
-    </a.Item>
-  </Accordion>
+  <div class='demo-stack'>
+    <Accordion as |a|>
+      <a.Item @title='What are your shipping options?'>
+        Standard shipping arrives in three to five business days. Express arrives
+        the next business day.
+      </a.Item>
+      <a.Item @title='What is your return policy?'>
+        Unopened items can be returned within thirty days for a full refund.
+      </a.Item>
+      <a.Item @title='How can I contact support?'>
+        Email support@example.com, or use the chat widget in the bottom corner.
+      </a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
@@ -51,12 +53,14 @@ several items declare it, the first in document order wins.
 import { Accordion } from 'frontile';
 
 <template>
-  <Accordion as |a|>
-    <a.Item @title='Shipping' @isDefaultOpen={{true}}>
-      Three to five business days.
-    </a.Item>
-    <a.Item @title='Returns'>Thirty days, unopened.</a.Item>
-  </Accordion>
+  <div class='demo-stack'>
+    <Accordion as |a|>
+      <a.Item @title='Shipping' @isDefaultOpen={{true}}>
+        Three to five business days.
+      </a.Item>
+      <a.Item @title='Returns'>Thirty days, unopened.</a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
@@ -66,15 +70,17 @@ import { Accordion } from 'frontile';
 import { Accordion } from 'frontile';
 
 <template>
-  <Accordion @selectionMode='multiple' as |a|>
-    <a.Item @title='Shipping' @isDefaultOpen={{true}}>
-      Three to five business days.
-    </a.Item>
-    <a.Item @title='Returns' @isDefaultOpen={{true}}>
-      Thirty days, unopened.
-    </a.Item>
-    <a.Item @title='Support'>Email or chat.</a.Item>
-  </Accordion>
+  <div class='demo-stack'>
+    <Accordion @selectionMode='multiple' as |a|>
+      <a.Item @title='Shipping' @isDefaultOpen={{true}}>
+        Three to five business days.
+      </a.Item>
+      <a.Item @title='Returns' @isDefaultOpen={{true}}>
+        Thirty days, unopened.
+      </a.Item>
+      <a.Item @title='Support'>Email or chat.</a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
@@ -114,7 +120,7 @@ export default class ControlledAccordion extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Button @size='sm' {{on 'click' this.openAll}}>Open all</Button>
 
       <Accordion
@@ -142,7 +148,7 @@ import { array } from '@ember/helper';
 import { Accordion } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-8'>
+  <div class='demo-stack'>
     {{#each (array 'outlined' 'ghost' 'faded' 'enclosed') as |variant|}}
       <div>
         <p class='text-label-sm text-neutral-firm mb-2'>{{variant}}</p>
@@ -164,7 +170,7 @@ import { array } from '@ember/helper';
 import { Accordion } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-8'>
+  <div class='demo-stack'>
     {{#each (array 'sm' 'md' 'lg') as |size|}}
       <Accordion @size={{size}} as |a|>
         <a.Item @title='First item' @isDefaultOpen={{true}}>Some value 1…</a.Item>
@@ -192,19 +198,21 @@ Every block yields `{{isOpen}}` and `{{toggle}}`.
 import { Accordion, Avatar } from 'frontile';
 
 <template>
-  <Accordion as |a|>
-    <a.Item @key='team'>
-      <:startContent><Avatar @name='Ada Lovelace' @size='sm' /></:startContent>
-      <:title>Team</:title>
-      <:subtitle>Three members</:subtitle>
-      <:indicator as |i|>{{if i.isOpen '−' '+'}}</:indicator>
-      <:content>Ada, Grace and Katherine.</:content>
-    </a.Item>
+  <div class='demo-stack'>
+    <Accordion as |a|>
+      <a.Item @key='team'>
+        <:startContent><Avatar @name='Ada Lovelace' @size='sm' /></:startContent>
+        <:title>Team</:title>
+        <:subtitle>Three members</:subtitle>
+        <:indicator as |i|>{{if i.isOpen '−' '+'}}</:indicator>
+        <:content>Ada, Grace and Katherine.</:content>
+      </a.Item>
 
-    <a.Item @title='Billing' @subtitle='Plans and invoices'>
-      Monthly or annual, cancel anytime.
-    </a.Item>
-  </Accordion>
+      <a.Item @title='Billing' @subtitle='Plans and invoices'>
+        Monthly or annual, cancel anytime.
+      </a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
@@ -214,12 +222,14 @@ import { Accordion, Avatar } from 'frontile';
 import { Accordion } from 'frontile';
 
 <template>
-  <Accordion as |a|>
-    <a.Item @title='Available'>You can open this one.</a.Item>
-    <a.Item @title='Unavailable' @isDisabled={{true}}>
-      You cannot reach this.
-    </a.Item>
-  </Accordion>
+  <div class='demo-stack'>
+    <Accordion as |a|>
+      <a.Item @title='Available'>You can open this one.</a.Item>
+      <a.Item @title='Unavailable' @isDisabled={{true}}>
+        You cannot reach this.
+      </a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
@@ -232,10 +242,12 @@ is always showing. It applies to `single` mode only.
 import { Accordion } from 'frontile';
 
 <template>
-  <Accordion @isCollapsible={{false}} as |a|>
-    <a.Item @title='First item' @isDefaultOpen={{true}}>Some value 1…</a.Item>
-    <a.Item @title='Second item'>Some value 2…</a.Item>
-  </Accordion>
+  <div class='demo-stack'>
+    <Accordion @isCollapsible={{false}} as |a|>
+      <a.Item @title='First item' @isDefaultOpen={{true}}>Some value 1…</a.Item>
+      <a.Item @title='Second item'>Some value 2…</a.Item>
+    </Accordion>
+  </div>
 </template>
 ```
 
