@@ -31,7 +31,13 @@ import type {
   SimpleTable
 } from './components/collections';
 
-import type { Overlay, Modal, Drawer, Popover } from './components/overlays';
+import type {
+  Overlay,
+  Modal,
+  Drawer,
+  Popover,
+  Tooltip
+} from './components/overlays';
 
 import type {
   NotificationCard,
@@ -87,6 +93,7 @@ export default interface Registry {
   Drawer: typeof Drawer;
   Modal: typeof Modal;
   Popover: typeof Popover;
+  Tooltip: typeof Tooltip;
 
   // Notifications
   NotificationCard: typeof NotificationCard;

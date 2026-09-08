@@ -982,5 +982,10 @@ class Content extends Component<ContentSignature> {
   </template>
 }
 
-export { Popover, type PopoverSignature, type ContentSignature };
+export {
+  Popover,
+  Content as PopoverContent,
+  type PopoverSignature,
+  type ContentSignature
+};
 export default Popover;
