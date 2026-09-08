@@ -647,5 +647,36 @@ module(
         'focus returned to the parent level after Escape'
       );
     });
+
+    test('ArrowLeft at the root level does nothing', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      assert.dom('[data-key="edit"]').exists('root menu is open');
+      assert.dom('[data-key="nested"]').doesNotExist('submenu is closed');
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowLeft');
+      await settled();
+
+      assert.dom('[data-key="edit"]').exists('root menu stayed open');
+      assert
+        .dom('[data-key="nested"]')
+        .doesNotExist('submenu did not open');
+    });
   }
 );
