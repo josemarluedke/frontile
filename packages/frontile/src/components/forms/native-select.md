@@ -33,13 +33,15 @@ export default class NativeSelectUsage extends Component {
   };
 
   <template>
-    <NativeSelect
-      @label='Favorite animal'
-      @items={{animals}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4 text-sm text-neutral'>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <NativeSelect
+        @label='Favorite animal'
+        @items={{animals}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+      <p class='mt-4 text-sm text-neutral'>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -69,17 +71,19 @@ export default class NativeSelectItemBlock extends Component {
   };
 
   <template>
-    <NativeSelect
-      @label='Country'
-      @items={{countries}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:item as |o|>
-        <o.Item @key={{o.item.code}}>{{o.item.country}}</o.Item>
-      </:item>
-    </NativeSelect>
-    <p class='mt-4 text-sm text-neutral'>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <NativeSelect
+        @label='Country'
+        @items={{countries}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:item as |o|>
+          <o.Item @key={{o.item.code}}>{{o.item.country}}</o.Item>
+        </:item>
+      </NativeSelect>
+      <p class='mt-4 text-sm text-neutral'>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -100,17 +104,19 @@ export default class NativeSelectStaticItems extends Component {
   };
 
   <template>
-    <NativeSelect
-      @label='Shipping'
-      @selectedKey={{this.selectedKey}}
-      @disabledKeys={{(array 'overnight')}}
-      @onSelectionChange={{this.onSelectionChange}}
-      as |l|
-    >
-      <l.Item @key='standard'>Standard — 5 business days</l.Item>
-      <l.Item @key='express'>Express — 2 business days</l.Item>
-      <l.Item @key='overnight'>Overnight — unavailable</l.Item>
-    </NativeSelect>
+    <div class='demo-stack'>
+      <NativeSelect
+        @label='Shipping'
+        @selectedKey={{this.selectedKey}}
+        @disabledKeys={{(array 'overnight')}}
+        @onSelectionChange={{this.onSelectionChange}}
+        as |l|
+      >
+        <l.Item @key='standard'>Standard — 5 business days</l.Item>
+        <l.Item @key='express'>Express — 2 business days</l.Item>
+        <l.Item @key='overnight'>Overnight — unavailable</l.Item>
+      </NativeSelect>
+    </div>
   </template>
 }
 ```
@@ -136,16 +142,18 @@ export default class NativeSelectAllowEmpty extends Component {
   };
 
   <template>
-    <NativeSelect
-      @label='Role'
-      @items={{roles}}
-      @allowEmpty={{true}}
-      @placeholder='Select a role'
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4 text-sm text-neutral'>Selected:
-      {{if this.selectedKey this.selectedKey 'none'}}</p>
+    <div class='demo-stack'>
+      <NativeSelect
+        @label='Role'
+        @items={{roles}}
+        @allowEmpty={{true}}
+        @placeholder='Select a role'
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+      <p class='mt-4 text-sm text-neutral'>Selected:
+        {{if this.selectedKey this.selectedKey 'none'}}</p>
+    </div>
   </template>
 }
 ```
@@ -169,14 +177,16 @@ export default class NativeSelectMultiple extends Component {
   };
 
   <template>
-    <NativeSelect
-      @label='Languages'
-      @description='Hold Cmd or Ctrl to select more than one.'
-      @selectionMode='multiple'
-      @items={{languages}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
+    <div class='demo-stack'>
+      <NativeSelect
+        @label='Languages'
+        @description='Hold Cmd or Ctrl to select more than one.'
+        @selectionMode='multiple'
+        @items={{languages}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -192,7 +202,7 @@ import { NativeSelect } from 'frontile';
 const plans = ['Basic', 'Pro'];
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     {{#each (array 'sm' 'md' 'lg') as |size|}}
       <NativeSelect
         @label={{concat 'Plan (' size ')'}}
@@ -215,7 +225,7 @@ import { NativeSelect } from 'frontile';
 const environments = ['Development', 'Staging', 'Production'];
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <NativeSelect
       @label='Environment'
       @description='Where the build will be deployed.'
@@ -247,11 +257,13 @@ import { SearchIcon } from 'site/components/icons';
 const teams = ['Design', 'Engineering', 'Support'];
 
 <template>
-  <NativeSelect @label='Team' @items={{teams}}>
-    <:startContent>
-      <SearchIcon class='size-icon-md text-neutral' />
-    </:startContent>
-  </NativeSelect>
+  <div class='demo-stack'>
+    <NativeSelect @label='Team' @items={{teams}}>
+      <:startContent>
+        <SearchIcon class='size-icon-md text-neutral' />
+      </:startContent>
+    </NativeSelect>
+  </div>
 </template>
 ```
 
