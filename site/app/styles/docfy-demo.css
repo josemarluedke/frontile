@@ -9,6 +9,17 @@
 /* sm:py-24 lg:max-h-120 lg:min-h-120 */
 }
 
+/* The stage above (`.docfy-demo__example__container`) is a centered flex
+   container, so its single child shrink-wraps to its content's width — a
+   demo component sized with `w-full` resolves against that shrunk box
+   instead of the stage. Demos should wrap their content in `.demo-stack` to
+   give the box its own explicit width (capped at `max-w-xl`, same convention
+   shadcn/ui and HeroUI use), so `w-full` children fill it predictably and
+   the box doesn't resize when interactive content changes. */
+.demo-stack {
+  @apply flex flex-col gap-4 w-full max-w-xl;
+}
+
 .docfy-demo__description {
   @apply pb-5;
 }

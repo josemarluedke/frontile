@@ -22,10 +22,12 @@ import { Alert } from 'frontile';
 import { Alert } from 'frontile';
 
 <template>
-  <Alert
-    @title='Update available'
-    @description='A new version is ready to install.'
-  />
+  <div class='demo-stack'>
+    <Alert
+      @title='Update available'
+      @description='A new version is ready to install.'
+    />
+  </div>
 </template>
 ```
 
@@ -35,7 +37,7 @@ import { Alert } from 'frontile';
 import { Alert } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <Alert @title='Default' @description='A neutral, general-purpose message.' />
     <Alert
       @title='Info'
@@ -67,7 +69,7 @@ import { Alert } from 'frontile';
 import { Alert } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <Alert
       @variant='default'
       @intent='info'
@@ -120,7 +122,7 @@ convenient way to build a loading alert, since there is no dedicated loading arg
 import { Alert, Spinner } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <Alert @title='Syncing'>
       <:icon><Spinner @size='sm' /></:icon>
     </Alert>
@@ -141,12 +143,14 @@ button's `@intent` matching the alert's own, and any further button using
 import { Alert, Button } from 'frontile';
 
 <template>
-  <Alert @intent='warning' @title='Unsaved changes' @description='Save before you leave?'>
-    <:actions>
-      <Button @size='xs' @intent='warning'>Save</Button>
-      <Button @size='xs' @appearance='minimal'>Discard</Button>
-    </:actions>
-  </Alert>
+  <div class='demo-stack'>
+    <Alert @intent='warning' @title='Unsaved changes' @description='Save before you leave?'>
+      <:actions>
+        <Button @size='xs' @intent='warning'>Save</Button>
+        <Button @size='xs' @appearance='minimal'>Discard</Button>
+      </:actions>
+    </Alert>
+  </div>
 </template>
 ```
 
@@ -173,16 +177,18 @@ export default class ClosableAlertExample extends Component {
   };
 
   <template>
-    {{#if this.isVisible}}
-      <Alert
-        @intent='success'
-        @title='Changes saved'
-        @onClose={{this.close}}
-        @closeButtonTitle='Dismiss saved message'
-      />
-    {{else}}
-      <Button @size='xs' @onPress={{this.reset}}>Show alert again</Button>
-    {{/if}}
+    <div class='demo-stack'>
+      {{#if this.isVisible}}
+        <Alert
+          @intent='success'
+          @title='Changes saved'
+          @onClose={{this.close}}
+          @closeButtonTitle='Dismiss saved message'
+        />
+      {{else}}
+        <Button @size='xs' @onPress={{this.reset}}>Show alert again</Button>
+      {{/if}}
+    </div>
   </template>
 }
 ```
@@ -199,14 +205,16 @@ only takes a string.
 import { Alert } from 'frontile';
 
 <template>
-  <Alert @intent='info' @title='Before you continue'>
-    <:description>
-      <ul class='list-disc pl-4'>
-        <li>Your session expires in 10 minutes.</li>
-        <li>Unsaved changes are not recovered.</li>
-      </ul>
-    </:description>
-  </Alert>
+  <div class='demo-stack'>
+    <Alert @intent='info' @title='Before you continue'>
+      <:description>
+        <ul class='list-disc pl-4'>
+          <li>Your session expires in 10 minutes.</li>
+          <li>Unsaved changes are not recovered.</li>
+        </ul>
+      </:description>
+    </Alert>
+  </div>
 </template>
 ```
 
