@@ -84,4 +84,62 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         .hasAttribute('aria-label', 'Saved alert');
     });
   });
+
+  module('icon', function () {
+    test('each intent gets its own default glyph', async function (assert) {
+      await render(
+        <template>
+          <Alert @title="Default" data-test-id="d" />
+          <Alert @intent="info" @title="Info" data-test-id="i" />
+          <Alert @intent="success" @title="Success" data-test-id="s" />
+          <Alert @intent="warning" @title="Warning" data-test-id="w" />
+          <Alert @intent="danger" @title="Danger" data-test-id="x" />
+        </template>
+      );
+
+      // The `default` intent shares the info glyph, as NotificationCard does.
+      assert.dom('[data-test-id="d"] [data-test-icon="info"]').exists();
+      assert.dom('[data-test-id="i"] [data-test-icon="info"]').exists();
+      assert.dom('[data-test-id="s"] [data-test-icon="success"]').exists();
+      assert.dom('[data-test-id="w"] [data-test-icon="warning"]').exists();
+      assert.dom('[data-test-id="x"] [data-test-icon="danger"]').exists();
+    });
+
+    test('the icon block replaces the default glyph', async function (assert) {
+      await render(
+        <template>
+          <Alert @intent="success" @title="Saved">
+            <:icon><span data-test-id="custom-icon">*</span></:icon>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-test-id="custom-icon"]').exists();
+      assert.dom('[data-test-icon="success"]').doesNotExist();
+    });
+
+    test('@hideIcon removes the icon entirely', async function (assert) {
+      await render(
+        <template>
+          <Alert @intent="danger" @title="Failed" @hideIcon={{true}} />
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert-icon"]').doesNotExist();
+      assert.dom('[data-test-icon="danger"]').doesNotExist();
+    });
+
+    test('@hideIcon wins over the icon block', async function (assert) {
+      await render(
+        <template>
+          <Alert @title="Saved" @hideIcon={{true}}>
+            <:icon><span data-test-id="custom-icon">*</span></:icon>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert-icon"]').doesNotExist();
+      assert.dom('[data-test-id="custom-icon"]').doesNotExist();
+    });
+  });
 });

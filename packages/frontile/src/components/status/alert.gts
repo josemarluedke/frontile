@@ -1,8 +1,51 @@
 import Component from '@glimmer/component';
 import { useStyles } from '@frontile/theme';
 import type { AlertSlots, SlotsToClasses } from '@frontile/theme';
+import {
+  IconInfo,
+  IconSuccess,
+  IconWarning,
+  IconDanger
+} from '../../-private/intent-icons';
 
 type AlertIntent = 'default' | 'info' | 'success' | 'warning' | 'danger';
+
+/**
+ * Everything that varies by intent, keyed in one place — the same shape
+ * NotificationCard's own table uses — so adding an intent means adding one
+ * row rather than remembering to touch an icon map and a role cascade
+ * separately.
+ */
+const INTENT_CONFIG = {
+  default: {
+    icon: IconInfo,
+    // `alert` interrupts a screen reader, so it is reserved for the
+    // intents that warrant interrupting.
+    role: 'status'
+  },
+  info: {
+    icon: IconInfo,
+    role: 'status'
+  },
+  success: {
+    icon: IconSuccess,
+    role: 'status'
+  },
+  warning: {
+    icon: IconWarning,
+    role: 'alert'
+  },
+  danger: {
+    icon: IconDanger,
+    role: 'alert'
+  }
+} as const satisfies Record<
+  AlertIntent,
+  {
+    icon: unknown;
+    role: 'status' | 'alert';
+  }
+>;
 
 /**
  * `true` when either half of a content pair is present. Used for
@@ -43,6 +86,13 @@ interface AlertSignature {
     variant?: 'default' | 'tonal' | 'solid';
 
     /**
+     * Removes the icon. Wins over the `icon` block if both are supplied.
+     *
+     * @defaultValue false
+     */
+    hideIcon?: boolean;
+
+    /**
      * Custom class name, it will override the default ones using Tailwind
      * Merge library.
      */
@@ -54,6 +104,9 @@ interface AlertSignature {
     classes?: SlotsToClasses<AlertSlots>;
   };
   Blocks: {
+    /** Replaces the default intent glyph. Ignored when `@hideIcon` is set. */
+    icon: [];
+
     /** Overrides `@title`. */
     title: [];
 
@@ -73,6 +126,10 @@ interface AlertSignature {
 class Alert extends Component<AlertSignature> {
   get intent(): AlertIntent {
     return this.args.intent ?? 'default';
+  }
+
+  get icon() {
+    return INTENT_CONFIG[this.intent].icon;
   }
 
   /**
@@ -122,6 +179,18 @@ class Alert extends Component<AlertSignature> {
           ...attributes
         >
           <div class={{classNames.inner}}>
+            {{#unless @hideIcon}}
+              {{#if (has-block "icon")}}
+                <span class={{classNames.icon}} data-test-id="alert-icon">
+                  {{yield to="icon"}}
+                </span>
+              {{else}}
+                {{#let this.icon as |Icon|}}
+                  <Icon class={{classNames.icon}} data-test-id="alert-icon" />
+                {{/let}}
+              {{/if}}
+            {{/unless}}
+
             <div class={{classNames.content}} data-test-id="alert-content">
               {{#if (has-block "title")}}
                 <div class={{classNames.title}} data-test-id="alert-title">
