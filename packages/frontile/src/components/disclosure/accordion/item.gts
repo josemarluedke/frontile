@@ -104,9 +104,10 @@ class AccordionItem extends Component<AccordionItemSignature> {
   /**
    * A collapsed `Collapsible` is `height: 0; overflow: hidden` -- gone to the
    * eye, but its focusable children are still in the tab order. `inert` is
-   * what actually removes them. Returns `undefined` rather than `false` so the
-   * attribute is absent when open: `inert` is a boolean attribute, and
-   * `inert="false"` is still inert.
+   * what actually removes them. Glimmer normalizes a dynamic attribute bound
+   * to `false` or `undefined` to `removeAttribute`, so both render identically;
+   * `undefined` is chosen because it directly states the intent for a boolean
+   * attribute.
    */
   get inert(): true | undefined {
     return this.isOpen ? undefined : true;
