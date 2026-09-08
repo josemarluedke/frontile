@@ -1392,21 +1392,31 @@ module(
     });
 
     test('it renders an arrow and exposes the resolved placement', async function (assert) {
+      // Pinned flush against the viewport's top edge, with no room above it
+      // to render a "top" placement: floating-ui's `flip` middleware (wired
+      // up by default in `Velcro`) must resolve to a `bottom*` placement
+      // instead. Requesting `@placement="top"` and asserting the resolved
+      // value starts with "bottom" is what proves `data-placement` tracks
+      // `velcro.data.placement` rather than merely echoing back `@placement`
+      // -- a buggy `data-placement={{@placement}}` would still read "top"
+      // here and fail this assertion.
       await render(
         <template>
-          <Popover @placement="top" as |p|>
-            <button
-              data-test-id="trigger"
-              type="button"
-              {{p.trigger}}
-              {{p.anchor}}
-            >
-              Trigger
-            </button>
-            <p.Content @arrow={{true}} data-test-id="content">
-              Content here
-            </p.Content>
-          </Popover>
+          <div style="position: fixed; top: 0; left: 0;">
+            <Popover @placement="top" as |p|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{p.trigger}}
+                {{p.anchor}}
+              >
+                Trigger
+              </button>
+              <p.Content @arrow={{true}} data-test-id="content">
+                Content here
+              </p.Content>
+            </Popover>
+          </div>
         </template>
       );
 
@@ -1417,9 +1427,25 @@ module(
         .dom('[data-test-id="content"]')
         .hasAttribute(
           'data-placement',
-          /^(top|bottom)/,
-          'carries the placement actually resolved, after flip'
+          /^bottom/,
+          'carries the placement actually resolved by flip, not the requested "top"'
         );
+
+      // The arrow only gets an inline offset once floating-ui's `arrow`
+      // middleware has run against the *real* arrow element -- which only
+      // happens once the `middleware` getter's `@cached` value has been
+      // invalidated by `arrowEl` going from undefined to set, and produced a
+      // fresh array containing `arrowMiddleware({ element: this.arrowEl })`.
+      // A non-empty offset here is evidence that the appear-then-position
+      // path still works under caching, not just that the element rendered.
+      const arrowEl = find(
+        '[data-test-id="content"] [data-part="arrow"]'
+      ) as HTMLElement;
+      const hasOffset = arrowEl.style.left !== '' || arrowEl.style.top !== '';
+      assert.ok(
+        hasOffset,
+        'arrow element received a computed inline offset from the arrow middleware'
+      );
     });
 
     test('it renders no arrow by default', async function (assert) {

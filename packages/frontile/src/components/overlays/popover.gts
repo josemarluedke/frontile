@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { Overlay, type OverlaySignature } from './overlay';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
 import { Velcro } from 'ember-velcro';
 import { arrow as arrowMiddleware } from '@floating-ui/dom';
 import { assert } from '@ember/debug';
@@ -199,6 +199,19 @@ class Popover extends Component<PopoverSignature> {
     };
   });
 
+  /**
+   * `@cached` is load-bearing, not decorative: without it this getter would
+   * build a brand-new array (and a brand-new `arrowMiddleware(...)` instance)
+   * on every access. `{{this.middleware}}` sits in the same template block
+   * that yields `velcro.data`, so a `Velcro`-driven position update re-renders
+   * that block, which re-invokes the getter -- an unmemoized array would read
+   * to `Velcro` as changed middleware and retrigger positioning, looping
+   * forever. Caching keeps the array's identity stable across re-renders that
+   * don't touch `this.args.middleware` or `this.arrowEl`, while still
+   * producing a new array when either of those tracked dependencies changes
+   * (e.g. when the arrow element first appears).
+   */
+  @cached
   get middleware(): VelcroSignature['Args']['Named']['middleware'] {
     const consumer = this.args.middleware ?? [];
 
@@ -959,6 +972,9 @@ class Content extends Component<ContentSignature> {
           class={{this.arrowClass}}
           data-part="arrow"
           {{@registerArrow}}
+          {{! @velcroData is passed but never read by the modifier body: supplying
+              it is what makes ember-modifier re-run this on every reposition.
+              Remove the argument and the arrow positions once, then never moves. }}
           {{this.positionArrow @velcroData}}
         ></span>
       {{/if}}
