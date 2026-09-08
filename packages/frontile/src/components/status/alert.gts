@@ -7,6 +7,7 @@ import {
   IconWarning,
   IconDanger
 } from '../../-private/intent-icons';
+import { CloseButton } from '../buttons/close-button';
 
 type AlertIntent = 'default' | 'info' | 'success' | 'warning' | 'danger';
 
@@ -93,6 +94,25 @@ interface AlertSignature {
     hideIcon?: boolean;
 
     /**
+     * Called when the close button is pressed. Passing this argument is what
+     * reveals the close button.
+     *
+     * Alert does not hide itself — the consumer removes it from the DOM, so
+     * showing it again, animating it out, or persisting the dismissal are all
+     * the application's to decide.
+     */
+    onClose?: () => void;
+
+    /**
+     * The accessible name of the close button. Worth setting when several
+     * alerts sit together, since every close button would otherwise be
+     * announced as just "Close" without saying what is being dismissed.
+     *
+     * @defaultValue 'Close'
+     */
+    closeButtonTitle?: string;
+
+    /**
      * Custom class name, it will override the default ones using Tailwind
      * Merge library.
      */
@@ -112,6 +132,11 @@ interface AlertSignature {
 
     /** Overrides `@description`. Takes markup. */
     description: [];
+
+    /**
+     * Buttons, rendered in a row between the content and the close button.
+     */
+    actions: [];
   };
   Element: HTMLDivElement;
 }
@@ -218,6 +243,22 @@ class Alert extends Component<AlertSignature> {
                 </div>
               {{/if}}
             </div>
+
+            {{#if (has-block "actions")}}
+              <div class={{classNames.actions}} data-test-id="alert-actions">
+                {{yield to="actions"}}
+              </div>
+            {{/if}}
+
+            {{#if @onClose}}
+              <CloseButton
+                @onPress={{@onClose}}
+                @size="sm"
+                @title={{@closeButtonTitle}}
+                @class={{classNames.closeButton}}
+                data-test-id="alert-close-button"
+              />
+            {{/if}}
           </div>
         </div>
       {{/let}}

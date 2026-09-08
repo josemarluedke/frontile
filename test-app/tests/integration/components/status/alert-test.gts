@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import { Alert } from 'frontile';
 
 module('Integration | Component | Alert | @frontile/status', function (hooks) {
@@ -140,6 +140,86 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
 
       assert.dom('[data-test-id="alert-icon"]').doesNotExist();
       assert.dom('[data-test-id="custom-icon"]').doesNotExist();
+    });
+  });
+
+  module('actions and closing', function () {
+    test('the actions block renders', async function (assert) {
+      await render(
+        <template>
+          <Alert @intent="danger" @title="Unable to connect">
+            <:actions><button
+                type="button"
+                data-test-id="retry"
+              >Retry</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert-actions"]').exists();
+      assert
+        .dom('[data-test-id="alert-actions"] [data-test-id="retry"]')
+        .exists();
+    });
+
+    test('there is no actions element when the block is not passed', async function (assert) {
+      await render(<template><Alert @title="Saved" /></template>);
+
+      assert.dom('[data-test-id="alert-actions"]').doesNotExist();
+    });
+
+    test('the close button appears only when @onClose is passed', async function (assert) {
+      await render(<template><Alert @title="Saved" /></template>);
+
+      assert.dom('[data-test-id="alert-close-button"]').doesNotExist();
+    });
+
+    test('clicking the close button calls @onClose', async function (assert) {
+      let closed = 0;
+      const onClose = () => {
+        closed++;
+      };
+
+      await render(
+        <template><Alert @title="Saved" @onClose={{onClose}} /></template>
+      );
+
+      assert.dom('[data-test-id="alert-close-button"]').exists();
+
+      await click('[data-test-id="alert-close-button"]');
+
+      assert.strictEqual(closed, 1, 'the close button called @onClose once');
+    });
+
+    test('@closeButtonTitle names the close button, defaulting to Close', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert
+            @title="Alpha"
+            @onClose={{onClose}}
+            data-test-id="default-title"
+          />
+          <Alert
+            @title="Beta"
+            @onClose={{onClose}}
+            @closeButtonTitle="Dismiss the beta alert"
+            data-test-id="custom-title"
+          />
+        </template>
+      );
+
+      assert
+        .dom(
+          '[data-test-id="default-title"] [data-test-id="alert-close-button"]'
+        )
+        .hasText('Close');
+      assert
+        .dom(
+          '[data-test-id="custom-title"] [data-test-id="alert-close-button"]'
+        )
+        .hasText('Dismiss the beta alert');
     });
   });
 });
