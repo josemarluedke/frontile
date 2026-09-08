@@ -7,7 +7,8 @@ import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
 import { useStyles } from '@frontile/theme';
 import { modifier } from 'ember-modifier';
-import { debounce } from '@ember/runloop';
+import { debounce, later, cancel } from '@ember/runloop';
+import type { Timer as EmberTimer } from '@ember/runloop';
 import type { ModifierLike } from '@glint/template';
 import type { WithBoundArgs } from '@glint/template';
 import type { Signature as VelcroSignature } from 'ember-velcro/modifiers/velcro';
@@ -239,16 +240,20 @@ class Popover extends Component<PopoverSignature> {
    * to cancel each other -- a leave-then-re-enter inside the window queued
    * both, and the close won.
    *
-   * Scheduled with a raw `setTimeout`/`clearTimeout` rather than
-   * `@ember/runloop`'s `later`/`cancel`: `settled()` (and so `await
-   * triggerEvent(...)` in tests) blocks until every pending run-loop timer has
-   * fired, however far out it is scheduled. Content hover depends on being
-   * able to dispatch a second event -- the pointer arriving on the content --
-   * inside the still-pending close window; a run-loop-tracked timer would
-   * have already fired and closed it by the time `await
-   * triggerEvent('mouseleave')` returned control to the test.
+   * Scheduled with `@ember/runloop`'s `later`/`cancel`, like the rest of this
+   * codebase (`-private/timer.ts`, `control-blur.ts`, `-private/manager.ts`,
+   * `utils/listManager.ts`, `resetIsClosing` below), rather than a raw
+   * `setTimeout`/`clearTimeout`. Run-loop tracking is what makes `settled()`
+   * -- and so `await triggerEvent(...)`/`await click(...)` in
+   * `@ember/test-helpers` -- wait out a pending hover open or close, the same
+   * way every other timed transition in this component already does. Tests
+   * that need to prove a pending close gets cancelled by a second event
+   * (e.g. the pointer arriving on the content) dispatch the raw DOM events
+   * directly and `await settled()` once afterward, instead of relying on
+   * `await triggerEvent(...)`'s auto-wait -- see the "hover: leaving and
+   * re-entering" tests below.
    */
-  hoverTimer?: { id: ReturnType<typeof setTimeout>; intent: 'open' | 'close' };
+  hoverTimer?: { id: EmberTimer; intent: 'open' | 'close' };
 
   get openDelay(): number {
     return typeof this.args.openDelay === 'number' ? this.args.openDelay : 100;
@@ -262,7 +267,7 @@ class Popover extends Component<PopoverSignature> {
 
   clearHoverTimer = () => {
     if (this.hoverTimer) {
-      clearTimeout(this.hoverTimer.id);
+      cancel(this.hoverTimer.id);
       this.hoverTimer = undefined;
     }
   };
@@ -289,7 +294,7 @@ class Popover extends Component<PopoverSignature> {
       return;
     }
 
-    this.hoverTimer = { id: setTimeout(run, this.openDelay), intent: 'open' };
+    this.hoverTimer = { id: later(run, this.openDelay), intent: 'open' };
   };
 
   scheduleClose = () => {
@@ -310,7 +315,7 @@ class Popover extends Component<PopoverSignature> {
       return;
     }
 
-    this.hoverTimer = { id: setTimeout(run, this.closeDelay), intent: 'close' };
+    this.hoverTimer = { id: later(run, this.closeDelay), intent: 'close' };
   };
 
   /**
@@ -416,7 +421,15 @@ class Popover extends Component<PopoverSignature> {
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
         this.isHoverTrigger = true;
-        this.setupEscapeListener();
+        // The modifier body re-runs on every open/close (it reads
+        // `this.isOpen` below to keep `aria-expanded` in sync), and the
+        // returned cleanup below always tears the listener down first -- so
+        // gating the install on `isOpen` here is what keeps the document
+        // listener attached only while open, matching the doc comment on
+        // `escapeListener`.
+        if (this.isOpen) {
+          this.setupEscapeListener();
+        }
 
         el.addEventListener('mouseenter', this.scheduleOpen);
         el.addEventListener('mouseleave', this.scheduleClose);
@@ -751,6 +764,16 @@ class Content extends Component<ContentSignature> {
    * `{{#if}}` cannot guard a modifier, so the decision lives inside it: when
    * the trigger is not in hover mode, or the consumer opted out, this installs
    * no listeners at all.
+   *
+   * Also tracks focus, not just the pointer: a keyboard user tabbing from the
+   * trigger into a focusable element inside the content triggers the
+   * trigger's own `focusout`, which unconditionally schedules a close. With
+   * nothing here to cancel it, that close would fire out from under a
+   * keyboard user after `closeDelay`, even though the pointer analogue --
+   * moving onto the content -- keeps it open. `focusin`/`focusout` reuse the
+   * same callbacks as `mouseenter`/`mouseleave` because they need to do
+   * exactly the same thing: cancel or (re)schedule the one pending hover
+   * intent.
    */
   trackContentHover = modifier((el: HTMLElement) => {
     if (
@@ -765,10 +788,14 @@ class Content extends Component<ContentSignature> {
 
     el.addEventListener('mouseenter', enter);
     el.addEventListener('mouseleave', leave);
+    el.addEventListener('focusin', enter);
+    el.addEventListener('focusout', leave);
 
     return () => {
       el.removeEventListener('mouseenter', enter);
       el.removeEventListener('mouseleave', leave);
+      el.removeEventListener('focusin', enter);
+      el.removeEventListener('focusout', leave);
     };
   });
 

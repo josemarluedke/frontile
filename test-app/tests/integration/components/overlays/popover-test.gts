@@ -134,13 +134,6 @@ module(
 
       assert.dom('[data-test-id="content"]').doesNotExist();
       await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
-      // The default @openDelay (100ms) is scheduled with a raw `setTimeout`
-      // (not run-loop tracked -- see the note on `hoverTimer` in
-      // popover.gts), so `settled()` does not wait it out; poll instead of
-      // asserting immediately.
-      await waitUntil(() => find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
 
       assert.dom('[data-test-id="content"]').exists();
       assert.dom('[data-test-id="content"]').containsText('Content here');
@@ -156,9 +149,6 @@ module(
         );
 
       await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
-      await waitUntil(() => !find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
       assert.dom('[data-test-id="content"]').doesNotExist();
 
       // Focus was never moved by hover in the first place, so there is
@@ -1050,7 +1040,7 @@ module(
     test('hover: leaving and re-entering within the delay does not close it', async function (assert) {
       await render(
         <template>
-          <Popover @openDelay={{20}} @closeDelay={{20}} as |p|>
+          <Popover @openDelay={{10}} @closeDelay={{100}} as |p|>
             <button
               data-test-id="trigger"
               type="button"
@@ -1065,19 +1055,29 @@ module(
       );
 
       await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
-      // The open is scheduled with a raw `setTimeout` (not run-loop tracked --
-      // see the note on `hoverTimer` in popover.gts), so `settled()` does not
-      // wait it out; poll for it instead of asserting immediately.
-      await waitUntil(() => find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
       assert.dom('[data-test-id="content"]').exists('opens on enter');
 
-      // Leave and immediately re-enter. The two intents previously landed on
-      // separate debounce targets, so both stayed queued and the close won.
-      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
-      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      // Leave (schedules a close after closeDelay=100ms) and immediately
+      // re-enter (should cancel that close outright, since the popover is
+      // already open by the time it arrives). Dispatch the raw DOM events
+      // directly rather than through `triggerEvent`: `triggerEvent` calls
+      // `settled()` internally, and `settled()` waits out *any* pending
+      // run-loop timer, however far out it is scheduled -- awaiting between
+      // the two events would let the close fire before the re-entry could
+      // ever race it.
+      const trigger = find('[data-test-id="trigger"]') as HTMLElement;
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      trigger.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      await settled();
 
+      // openDelay (10ms) is deliberately much shorter than closeDelay
+      // (100ms). Before this fix, `open` and `close` were scheduled on
+      // separate debounce targets that could not cancel each other: the
+      // re-entry's open debounce would fire (a no-op, already open) but the
+      // earlier leave's close debounce would still be alive and independent,
+      // firing 90ms later and closing the content anyway. `settled()`
+      // blocks until that stray close timer fires, so if it were still
+      // pending this assertion would see the content already closed.
       assert
         .dom('[data-test-id="content"]')
         .exists('re-entering cancels the pending close');
@@ -1104,27 +1104,30 @@ module(
       assert.dom('[data-test-id="content"]').exists();
 
       // Crossing the offset gap: leave the trigger, arrive on the content
-      // inside the close delay.
-      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
-      await triggerEvent('[data-test-id="content"]', 'mouseenter');
+      // inside the close delay. Dispatched raw, not through `triggerEvent`,
+      // so the still-pending close from the `mouseleave` cannot fire (via
+      // `settled()`'s wait) before the `mouseenter` on the content has a
+      // chance to cancel it.
+      const trigger = find('[data-test-id="trigger"]') as HTMLElement;
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      content.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      await settled();
 
       assert
         .dom('[data-test-id="content"]')
         .exists('content hover cancels the pending close');
 
       await triggerEvent('[data-test-id="content"]', 'mouseleave');
-      await waitUntil(() => !find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
       assert
         .dom('[data-test-id="content"]')
         .doesNotExist('leaving the content closes it');
     });
 
-    test('hover: @disableInteractive closes when the trigger is left', async function (assert) {
+    test('hover: @disableInteractive closes when the pointer moves onto the content', async function (assert) {
       await render(
         <template>
-          <Popover @openDelay={{0}} @closeDelay={{20}} as |p|>
+          <Popover @openDelay={{0}} @closeDelay={{50}} as |p|>
             <button
               data-test-id="trigger"
               type="button"
@@ -1143,11 +1146,25 @@ module(
       await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
       assert.dom('[data-test-id="content"]').exists();
 
-      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
-      await waitUntil(() => !find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
-      assert.dom('[data-test-id="content"]').doesNotExist();
+      // Leave the trigger and land on the content before the close fires --
+      // exactly the sequence that keeps a popover open when the content is
+      // interactive (see "moving the pointer into the content keeps it
+      // open" above). `@disableInteractive` exists to make this the
+      // opposite: `trackContentHover` never installs its listeners when it
+      // is set, so nothing on the content can cancel the pending close.
+      // Dispatched raw, and awaited once at the end, for the same reason as
+      // the interactive-content test above.
+      const trigger = find('[data-test-id="trigger"]') as HTMLElement;
+      const content = find('[data-test-id="content"]') as HTMLElement;
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      content.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      await settled();
+
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist(
+          '@disableInteractive ignores the pointer arriving on the content'
+        );
     });
 
     test('hover: an adjacent trigger can open right after the first closes', async function (assert) {
@@ -1162,7 +1179,9 @@ module(
             >
               One
             </button>
-            <p.Content data-test-id="content-one">One content</p.Content>
+            <p.Content @disableTransitions={{true}} data-test-id="content-one">
+              One content
+            </p.Content>
           </Popover>
         </template>
       );
@@ -1170,10 +1189,22 @@ module(
       await triggerEvent('[data-test-id="trigger-one"]', 'mouseenter');
       assert.dom('[data-test-id="content-one"]').exists();
 
-      // `isClosing` used to block `open()` for 90ms after any close, so a
-      // re-entry straight after leaving was swallowed.
-      await triggerEvent('[data-test-id="trigger-one"]', 'mouseleave');
-      await triggerEvent('[data-test-id="trigger-one"]', 'mouseenter');
+      // Leave (closeDelay=0, so this closes synchronously and arms the 90ms
+      // `isClosing` window that `close()` debounces `resetIsClosing` with)
+      // and immediately re-enter (openDelay=0, so the reopen attempt also
+      // runs synchronously, landing well inside that window). `isClosing`
+      // used to block `open()` for the full 90ms after any close, so a
+      // re-entry straight after leaving was swallowed. Dispatched raw and
+      // settled once at the end, not through `triggerEvent`: `close()`'s
+      // own `resetIsClosing` debounce is itself a run-loop timer, so
+      // `await triggerEvent(...)` between the two events would wait it out
+      // first via its internal `settled()` -- clearing `isClosing` before
+      // the re-entry ever had a chance to land inside the window this test
+      // needs to probe.
+      const trigger = find('[data-test-id="trigger-one"]') as HTMLElement;
+      trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      trigger.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      await settled();
 
       assert
         .dom('[data-test-id="content-one"]')
@@ -1208,10 +1239,60 @@ module(
 
       trigger.blur();
       await triggerEvent(trigger, 'focusout');
-      await waitUntil(() => !find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
       assert.dom('[data-test-id="content"]').doesNotExist('blur closes it');
+    });
+
+    test('hover: a keyboard user can tab from the trigger into focusable content without it closing', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{20}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">
+              <button data-test-id="content-button" type="button">
+                Inside
+              </button>
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      const trigger = find('[data-test-id="trigger"]') as HTMLButtonElement;
+      await triggerKeyEvent(document.body, 'keydown', 'Tab');
+      trigger.focus();
+      await triggerEvent(trigger, 'focusin');
+      assert.dom('[data-test-id="content"]').exists('focus opens it');
+
+      // Tabbing from the trigger into a focusable element inside the content
+      // fires the trigger's `focusout` (which schedules a close) and then
+      // the content's `focusin` (which must cancel it). Dispatched raw and
+      // awaited once, for the same reason as the pointer interleaving tests
+      // above: `triggerEvent`'s internal `settled()` would otherwise block
+      // on the pending close and let it fire before the content's `focusin`
+      // had a chance to cancel it.
+      const contentButton = find(
+        '[data-test-id="content-button"]'
+      ) as HTMLButtonElement;
+      trigger.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      contentButton.focus();
+      contentButton.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+      await settled();
+
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('focus moving into the content cancels the pending close');
+
+      contentButton.blur();
+      await triggerEvent(contentButton, 'focusout');
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist('leaving the content by blur still closes it');
     });
 
     test('hover: Escape closes it', async function (assert) {
@@ -1237,9 +1318,6 @@ module(
       // Focus is nowhere near the trigger in hover mode, so the listener has
       // to be on the document.
       await triggerKeyEvent(document, 'keydown', 'Escape');
-      await waitUntil(() => !find('[data-test-id="content"]'), {
-        timeout: 2000
-      });
       assert.dom('[data-test-id="content"]').doesNotExist();
     });
   }
