@@ -161,7 +161,13 @@ const tabs = tv({
       variant: 'underline',
       orientation: 'horizontal',
       class: {
-        list: 'gap-1 border-b border-neutral-mild dark:border-neutral-soft',
+        // `pb-2` is what separates the labels from the rule, and it belongs on
+        // the list rather than as a margin on each tab: an absolutely
+        // positioned box resolves its offsets against the padding box, so the
+        // bar stays welded to the rule at `bottom-0` while the padding pushes
+        // the tabs -- and with them their hover chips -- clear of it. A chip
+        // that runs into the rule is the thing this buys off.
+        list: 'gap-1 pb-2 border-b border-neutral-mild dark:border-neutral-soft',
         indicator: [
           'top-auto bottom-0 h-0.5 rounded-full',
           'w-[var(--fr-si-width)]',
@@ -173,7 +179,8 @@ const tabs = tv({
       variant: 'underline',
       orientation: 'vertical',
       class: {
-        list: 'gap-1 border-l border-neutral-mild dark:border-neutral-soft',
+        // The same gap, on the axis this orientation puts the rule on.
+        list: 'gap-1 ps-2 border-l border-neutral-mild dark:border-neutral-soft',
         indicator: [
           'left-0 w-0.5 rounded-full',
           'h-[var(--fr-si-height)]',
