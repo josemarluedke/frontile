@@ -6,12 +6,20 @@ import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Alert } from 'frontile';
 
-registerCustomStyles({
-  alert: tv({
+/**
+ * `iconSlot` is a parameter so the "icon slot sizing" test below can
+ * register a variant that also carries the production centering/clamping
+ * classes (`inline-flex items-center justify-center [&>*]:size-full`,
+ * mirroring `packages/theme/src/components/alert.ts`) without disturbing
+ * every other test in this file, which only cares that `alert-icon` landed
+ * on the right element.
+ */
+function customAlertStyles(iconSlot: string[] = ['alert-icon']) {
+  return tv({
     slots: {
       base: ['alert-base'],
       inner: ['alert-inner'],
-      icon: ['alert-icon'],
+      icon: iconSlot,
       content: ['alert-content'],
       title: ['alert-title'],
       description: ['alert-description'],
@@ -42,7 +50,11 @@ registerCustomStyles({
       hasDescription: false
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as any
+  }) as any;
+}
+
+registerCustomStyles({
+  alert: customAlertStyles()
 });
 
 module('Integration | Component | Alert | @frontile/status', function (hooks) {
@@ -182,6 +194,69 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
 
       assert.dom('[data-test-id="alert-icon"]').doesNotExist();
       assert.dom('[data-test-id="custom-icon"]').doesNotExist();
+    });
+
+    test('yielded icon-block content is clamped to the icon slot size, not its own intrinsic size', async function (assert) {
+      // Pins the fix for the whole-branch review's Important finding: the
+      // documented `<:icon><Spinner @size='sm' /></:icon>` pattern used to
+      // render oversized (Spinner's 24px `sm` vs the 20px icon slot) because
+      // the slot's classes landed on the wrapping `<span>` only, never on
+      // the yielded content. The real recipe
+      // (`packages/theme/src/components/alert.ts`) now makes the icon slot
+      // `inline-flex items-center justify-center` at a fixed size, with
+      // `[&>*]:size-full` forcing whatever lands inside — a `Spinner`, a raw
+      // `<svg>`, or anything else — to fill that box instead of rendering at
+      // its own size. This test registers that same pattern locally (this
+      // file's shared custom recipe otherwise only tags slots with plain,
+      // unstyled class names) and proves it against a deliberately
+      // oversized yielded element.
+      registerCustomStyles({
+        alert: customAlertStyles([
+          'alert-icon',
+          'size-5 inline-flex items-center justify-center [&>*]:size-full'
+        ])
+      });
+
+      try {
+        await render(
+          <template>
+            <Alert @title="Syncing">
+              <:icon>
+                <svg
+                  data-test-id="oversized-icon"
+                  class="w-6 h-6"
+                  viewBox="0 0 24 24"
+                ><circle cx="12" cy="12" r="10" /></svg>
+              </:icon>
+            </Alert>
+          </template>
+        );
+
+        const slot = document.querySelector('[data-test-id="alert-icon"]');
+        const yielded = document.querySelector(
+          '[data-test-id="oversized-icon"]'
+        );
+        assert.ok(slot, 'the icon slot wrapper renders');
+        assert.ok(yielded, 'the yielded icon renders inside it');
+
+        const slotRect = (slot as Element).getBoundingClientRect();
+        const yieldedRect = (yielded as Element).getBoundingClientRect();
+
+        assert.strictEqual(
+          yieldedRect.width,
+          slotRect.width,
+          'the yielded icon is stretched to the slot width instead of keeping its own w-6 (24px)'
+        );
+        assert.strictEqual(
+          yieldedRect.height,
+          slotRect.height,
+          'the yielded icon is stretched to the slot height instead of keeping its own h-6 (24px)'
+        );
+      } finally {
+        // Restore the file's shared custom recipe so later tests in this
+        // module see the plain, unstyled `alert-icon` class they expect.
+        registerCustomStyles({ alert: customAlertStyles() });
+      }
     });
   });
 

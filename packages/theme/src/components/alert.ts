@@ -16,7 +16,14 @@ const alert = tv({
     // `{intent}-soft` tint has to composite over an opaque surface. All
     // three variants share the structure rather than branching the DOM.
     inner: 'flex gap-3 p-4 font-body text-body-2xs',
-    icon: 'shrink-0 size-5',
+    // `inline-flex items-center justify-center` turns this slot into a
+    // fixed 20px centering box, and `[&>*]:size-full` forces whatever
+    // element lands inside it (default intent glyph, or arbitrary content
+    // yielded through the `icon` block, e.g. `<Spinner @size='sm' />`) to
+    // fill that box rather than render at its own intrinsic size. Without
+    // this, a yielded `Spinner` (`sm` = 24px) would overflow and
+    // misalign inside the 20px slot — see alert.md's "Icon" section.
+    icon: 'shrink-0 size-5 inline-flex items-center justify-center [&>*]:size-full',
     content: 'grow min-w-0 flex flex-col gap-1',
     title: 'font-label text-label-xs',
     description: 'text-body-2xs',

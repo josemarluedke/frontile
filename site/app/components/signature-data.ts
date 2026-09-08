@@ -9658,25 +9658,6 @@ const data: ComponentDoc[] = [
   },
   {
     package: 'unknown',
-    module: 'icons',
-    name: 'Component',
-    fileName:
-      'packages/frontile/declarations/components/notifications/icons.d.ts',
-    Args: [],
-    Blocks: [],
-    Element: {
-      identifier: 'Element',
-      type: {
-        type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">SVGElement</span></span>',
-      },
-      description: '',
-      url: 'https://developer.mozilla.org/en-US/docs/Web/API/SVGElement',
-    },
-    description: '',
-    tags: {},
-  },
-  {
-    package: 'unknown',
     module: 'notification-card',
     name: 'NotificationCard',
     fileName:
