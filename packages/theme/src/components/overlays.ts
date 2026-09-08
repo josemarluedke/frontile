@@ -178,7 +178,10 @@ const drawer = tv({
     // centre, so the user grabs the side they would pull from.
     {
       placement: 'bottom',
-      class: { dragHandle: 'top-0 left-0 right-0 h-6', dragHandleBar: 'h-1 w-12' }
+      class: {
+        dragHandle: 'top-0 left-0 right-0 h-6',
+        dragHandleBar: 'h-1 w-12'
+      }
     },
     {
       placement: 'top',
@@ -189,7 +192,10 @@ const drawer = tv({
     },
     {
       placement: 'right',
-      class: { dragHandle: 'left-0 top-0 bottom-0 w-6', dragHandleBar: 'w-1 h-12' }
+      class: {
+        dragHandle: 'left-0 top-0 bottom-0 w-6',
+        dragHandleBar: 'w-1 h-12'
+      }
     },
     {
       placement: 'left',
