@@ -63,6 +63,7 @@ export default {
       'notifications',
       'overlays',
       'navigation',
+      'disclosure',
     ].map((scope) => ({
       root: path.resolve(__dirname, '../packages/frontile'),
       pattern: `src/components/${scope}/**/*.md`,
@@ -110,6 +111,7 @@ export default {
     notifications: { label: 'Notifications', order: 7 },
     overlays: { label: 'Overlays', order: 8 },
     navigation: { label: 'Navigation', order: 9 },
-    'changeset-form': { label: 'Changeset Form', order: 10 },
+    disclosure: { label: 'Disclosure', order: 10 },
+    'changeset-form': { label: 'Changeset Form', order: 11 },
   },
 };
