@@ -137,22 +137,28 @@ module(
 
       assert.dom('[data-test-id="content"]').exists();
       assert.dom('[data-test-id="content"]').containsText('Content here');
+      // Hover must not move focus. Focusing the portaled overlay is what made
+      // hover popovers visibly jump -- the browser scrolls the newly focused
+      // element into view inside whatever scroll container it landed in.
       assert
         .dom(document.activeElement)
         .hasAttribute(
           'data-test-id',
-          'content',
-          'should have focused in the content'
+          'focused-element',
+          'should have left focus on the element that had it'
         );
 
       await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
       assert.dom('[data-test-id="content"]').doesNotExist();
 
+      // Focus was never moved by hover in the first place, so there is
+      // nothing to "restore" -- it simply stays where it always was.
       assert
         .dom(document.activeElement)
-        .doesNotHaveAttribute(
+        .hasAttribute(
           'data-test-id',
-          'should have not restored the focus'
+          'focused-element',
+          'should still have focus on the element that had it'
         );
     });
 

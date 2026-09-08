@@ -106,6 +106,7 @@ interface PopoverSignature {
           | 'blockScroll'
           | 'backdrop'
           | 'triggerWidth'
+          | 'preventAutoFocus'
         >;
       }
     ];
@@ -133,6 +134,14 @@ class Popover extends Component<PopoverSignature> {
   @tracked _isOpen = false;
   @tracked isClosing = false;
   @tracked preventFocusRestore = false;
+
+  /**
+   * Whether a `trigger` is installed in hover mode. Hover popovers must not
+   * take focus -- `Overlay` focuses its content when the focus trap is
+   * disabled, which for a hover popover means the pointer silently moves focus
+   * and scrolls the content into view.
+   */
+  @tracked isHoverTrigger = false;
   @tracked triggerWidth?: number;
 
   get isOpen(): boolean {
@@ -273,6 +282,7 @@ class Popover extends Component<PopoverSignature> {
 
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
+        this.isHoverTrigger = true;
         el.addEventListener('mouseenter', open);
         el.addEventListener('mouseleave', close);
       } else {
@@ -293,6 +303,7 @@ class Popover extends Component<PopoverSignature> {
 
       return () => {
         if (eventType === 'hover') {
+          this.isHoverTrigger = false;
           el.removeEventListener('mouseenter', open);
           el.removeEventListener('mouseleave', close);
         } else {
@@ -413,6 +424,7 @@ class Popover extends Component<PopoverSignature> {
             toggle=this.toggle
             internalDidClose=this.didClose
             preventFocusRestore=this.preventFocusRestore
+            preventAutoFocus=this.isHoverTrigger
             triggerWidth=this.triggerWidth
           )
         )
