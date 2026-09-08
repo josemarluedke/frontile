@@ -1,5 +1,21 @@
 import { tv } from '../tw';
-import { focusVisibleRing } from './shared';
+import { statusRowCloseButton } from './shared';
+
+/**
+ * `default` and `tonal` wear the same outer box. `tonal` carries its colour
+ * on the inner element instead (see its compound variants), so the two must
+ * stay identical out here — sharing the object keeps that structural rather
+ * than a thing a future edit has to remember.
+ *
+ * `text-neutral` (the DEFAULT level) is only ~3:1 against a light surface —
+ * below the 4.5:1 WCAG AA floor a description needs at this size.
+ * `text-neutral-firm` clears it against every surface this text can sit on,
+ * light or dark.
+ */
+const neutralSurface = {
+  base: 'bg-surface-modal border-surface-overlay-mild',
+  description: 'text-neutral-firm'
+};
 
 const alert = tv({
   slots: {
@@ -36,12 +52,7 @@ const alert = tv({
     title: 'font-label text-label-xs',
     description: 'text-body-2xs',
     actions: 'flex flex-nowrap shrink-0 items-center gap-2 self-center',
-    closeButton: [
-      'shrink-0 self-center -mr-1 inline-block p-1.5 rounded-full',
-      'transition duration-200',
-      'hover:bg-surface-overlay-soft',
-      ...focusVisibleRing
-    ]
+    closeButton: statusRowCloseButton
   },
 
   variants: {
@@ -60,21 +71,10 @@ const alert = tv({
       danger: {}
     },
     variant: {
-      // `text-neutral` (the DEFAULT level) is only ~3:1 against a light
-      // surface — below the 4.5:1 WCAG AA floor a description needs at
-      // this size. `text-neutral-firm` clears it against every surface
-      // this text can sit on, light or dark.
-      default: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
-        description: 'text-neutral-firm'
-      },
-      // The outer surface/border is intent-independent — every `tonal`
-      // compound below tints the *inner* element instead — so it lives
-      // here once rather than repeating five times.
-      tonal: {
-        base: 'bg-surface-modal border-surface-overlay-mild',
-        description: 'text-neutral-firm'
-      },
+      default: neutralSurface,
+      // Intent-independent out here: every `tonal` compound below tints the
+      // *inner* element instead, so the outer box is `default`'s.
+      tonal: neutralSurface,
       solid: {
         base: 'border-transparent'
       }
