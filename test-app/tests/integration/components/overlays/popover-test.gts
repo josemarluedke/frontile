@@ -1390,5 +1390,58 @@ module(
       assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-controls');
       assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-describedby');
     });
+
+    test('it renders an arrow and exposes the resolved placement', async function (assert) {
+      await render(
+        <template>
+          <Popover @placement="top" as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content @arrow={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      assert.dom('[data-test-id="content"] [data-part="arrow"]').exists();
+      assert
+        .dom('[data-test-id="content"]')
+        .hasAttribute(
+          'data-placement',
+          /^(top|bottom)/,
+          'carries the placement actually resolved, after flip'
+        );
+    });
+
+    test('it renders no arrow by default', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await click('[data-test-id="trigger"]');
+
+      assert.dom('[data-test-id="content"] [data-part="arrow"]').doesNotExist();
+    });
   }
 );

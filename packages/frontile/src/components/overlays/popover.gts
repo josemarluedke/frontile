@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { Overlay, type OverlaySignature } from './overlay';
 import { tracked } from '@glimmer/tracking';
 import { Velcro } from 'ember-velcro';
+import { arrow as arrowMiddleware } from '@floating-ui/dom';
 import { assert } from '@ember/debug';
 import { guidFor } from '@ember/object/internals';
 import { hash } from '@ember/helper';
@@ -12,6 +13,7 @@ import type { Timer as EmberTimer } from '@ember/runloop';
 import type { ModifierLike } from '@glint/template';
 import type { WithBoundArgs } from '@glint/template';
 import type { Signature as VelcroSignature } from 'ember-velcro/modifiers/velcro';
+import type { MiddlewareArguments } from '@floating-ui/dom';
 
 interface PopoverSignature {
   Args: {
@@ -120,6 +122,12 @@ interface PopoverSignature {
             Named: { aria?: 'menu' | 'describedby' | 'none' };
           };
         }>;
+
+        /**
+         * The floating-ui middleware data for the current position, including
+         * the placement actually resolved after `flip`.
+         */
+        data: MiddlewareArguments;
         Content: WithBoundArgs<
           typeof Content,
           | 'loop'
@@ -134,6 +142,8 @@ interface PopoverSignature {
           | 'isHoverTrigger'
           | 'onContentHoverStart'
           | 'onContentHoverEnd'
+          | 'registerArrow'
+          | 'velcroData'
         >;
       }
     ];
@@ -170,6 +180,39 @@ class Popover extends Component<PopoverSignature> {
    */
   @tracked isHoverTrigger = false;
   @tracked triggerWidth?: number;
+
+  /**
+   * The arrow element, once `Content` has rendered one. Tracked because the
+   * middleware array is derived from it -- `Velcro` re-runs when the array
+   * identity changes, so the arrow is picked up whenever it appears, in either
+   * render order.
+   */
+  @tracked arrowEl?: HTMLElement;
+
+  registerArrow = modifier((el: HTMLElement) => {
+    this.arrowEl = el;
+
+    return () => {
+      if (this.arrowEl === el) {
+        this.arrowEl = undefined;
+      }
+    };
+  });
+
+  get middleware(): VelcroSignature['Args']['Named']['middleware'] {
+    const consumer = this.args.middleware ?? [];
+
+    if (!this.arrowEl) {
+      return this.args.middleware;
+    }
+
+    // `padding` keeps the arrow off the content's rounded corners, where it
+    // would poke out past the radius.
+    return [
+      ...consumer,
+      arrowMiddleware({ element: this.arrowEl, padding: 4 })
+    ];
+  }
 
   get isOpen(): boolean {
     if (
@@ -578,7 +621,7 @@ class Popover extends Component<PopoverSignature> {
       @strategy={{if @strategy @strategy "absolute"}}
       @offsetOptions={{if @offsetOptions @offsetOptions 5}}
       @flipOptions={{@flipOptions}}
-      @middleware={{@middleware}}
+      @middleware={{this.middleware}}
       @shiftOptions={{@shiftOptions}}
       as |velcro|
     >
@@ -591,6 +634,7 @@ class Popover extends Component<PopoverSignature> {
           close=this.close
           toggle=this.toggle
           trigger=this.trigger
+          data=velcro.data
           Content=(component
             Content
             id=this.menuId
@@ -604,6 +648,8 @@ class Popover extends Component<PopoverSignature> {
             isHoverTrigger=this.isHoverTrigger
             onContentHoverStart=this.clearHoverTimer
             onContentHoverEnd=this.scheduleClose
+            registerArrow=this.registerArrow
+            velcroData=velcro.data
           )
         )
       }}
@@ -675,6 +721,23 @@ interface ContentArgs extends Pick<
    * @internal
    */
   onContentHoverEnd?: () => void;
+
+  /**
+   * Renders an arrow pointing at the anchor.
+   *
+   * @defaultValue false
+   */
+  arrow?: boolean;
+
+  /**
+   * @internal
+   */
+  registerArrow?: ModifierLike<{ Element: HTMLElement }>;
+
+  /**
+   * @internal
+   */
+  velcroData?: MiddlewareArguments;
 
   /**
    * Closes as soon as the pointer leaves the trigger, instead of letting it
@@ -818,6 +881,48 @@ class Content extends Component<ContentSignature> {
     };
   });
 
+  get placement(): string | undefined {
+    return this.args.velcroData?.placement;
+  }
+
+  get arrowClass(): string {
+    const { overlayArrow } = useStyles();
+    return overlayArrow();
+  }
+
+  /**
+   * Positions the arrow from the floating-ui `arrow` middleware: it supplies
+   * the offset along the content's edge (`x` for a top/bottom placement, `y`
+   * for left/right), and the side the arrow sits on is the one opposite the
+   * resolved placement. Inline styles rather than classes -- the offset is a
+   * computed pixel value that changes on every reposition.
+   */
+  positionArrow = modifier((el: HTMLElement) => {
+    const data = this.args.velcroData;
+    const offset = data?.middlewareData?.arrow;
+    const placement = data?.placement;
+
+    if (!offset || !placement) {
+      return;
+    }
+
+    const staticSides: Record<string, string> = {
+      top: 'bottom',
+      bottom: 'top',
+      left: 'right',
+      right: 'left'
+    };
+    const side = placement.split('-')[0] as string;
+    const staticSide = staticSides[side] ?? 'bottom';
+
+    el.style.left = typeof offset.x === 'number' ? `${offset.x}px` : '';
+    el.style.top = typeof offset.y === 'number' ? `${offset.y}px` : '';
+    el.style.right = '';
+    el.style.bottom = '';
+    // Half the arrow's 8px box, so the rotated square straddles the edge.
+    el.style[staticSide as 'top' | 'bottom' | 'left' | 'right'] = '-4px';
+  });
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -843,11 +948,20 @@ class Content extends Component<ContentSignature> {
       @preventAutoFocus={{@preventAutoFocus}}
       @closeOnOverlayElementClick={{false}}
       id={{@id}}
+      data-placement={{this.placement}}
       ...attributes
       {{this.updateTriggerWidth @triggerWidth}}
       {{this.trackContentHover @isHoverTrigger @disableInteractive}}
     >
       {{yield}}
+      {{#if @arrow}}
+        <span
+          class={{this.arrowClass}}
+          data-part="arrow"
+          {{@registerArrow}}
+          {{this.positionArrow @velcroData}}
+        ></span>
+      {{/if}}
     </Overlay>
   </template>
 }
