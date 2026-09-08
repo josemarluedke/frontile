@@ -101,6 +101,20 @@ const dragToDismiss = modifier<{
       target.closest(named.handleSelector)
     );
 
+  // Without either selector configured, the whole element is free-drag: any
+  // pointerdown on it starts a drag. Once a handleSelector and/or
+  // scrollSelector is configured, they're the only ways in — a handle press
+  // always qualifies, and a scroll container only yields once it's already
+  // scrolled to the edge the drag pulls away from (or the press landed
+  // outside it entirely).
+  const pointerDownStartsDrag = (target: EventTarget | null): boolean => {
+    if (!named.handleSelector && !named.scrollSelector) {
+      return true;
+    }
+
+    return isHandle(target) || scrollerAllowsDrag(target);
+  };
+
   const handlePointerDown = (event: PointerEvent): void => {
     if (
       !named.isEnabled ||
@@ -111,7 +125,7 @@ const dragToDismiss = modifier<{
       return;
     }
 
-    if (!isHandle(event.target) && !scrollerAllowsDrag(event.target)) {
+    if (!pointerDownStartsDrag(event.target)) {
       return;
     }
 

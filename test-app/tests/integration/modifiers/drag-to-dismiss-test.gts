@@ -170,4 +170,35 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
     pointer(handle, 'pointerup', 0, -100);
     await settled();
   });
+
+  test('it free-drags on the whole element when no selectors are configured', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+          }}
+        >
+        </div>
+      </template>
+    );
+
+    const panel = find("[data-test-id='panel']")!;
+    pointer(panel, 'pointerdown', 0, 0);
+    pointer(panel, 'pointermove', 0, 80); // 80 > 25% of 200
+    pointer(panel, 'pointerup', 0, 80);
+    await settled();
+
+    assert.strictEqual(dismissed, 1, 'onDismiss fired once');
+  });
 });
