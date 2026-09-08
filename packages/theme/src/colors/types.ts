@@ -312,6 +312,27 @@ export interface SurfaceColors {
   table: string;
 
   /**
+   * Drawer body surface (hierarchy level 3).
+   *
+   * The scrollable content area of a Drawer, deliberately one step off the
+   * drawer's own header and footer bands so the body reads as a distinct
+   * region rather than one flat panel.
+   *
+   * Light: `gray-50`, a hair off the white footer
+   * Dark: `gray-900`, one step above the black footer
+   *
+   * Opaque in both schemes — a drawer sits over a backdrop, and a translucent
+   * body would let the page behind bleed through the content.
+   *
+   * @example
+   * // Drawer body
+   * <div className="bg-surface-drawer text-on-surface-drawer px-8 py-4">
+   *   Content
+   * </div>
+   */
+  drawer: string;
+
+  /**
    * Form control surface for inputs, checkboxes, radios, and similar controls
    * (hierarchy level -1).
    *
