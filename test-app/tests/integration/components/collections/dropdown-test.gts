@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render, triggerKeyEvent } from '@ember/test-helpers';
+import {
+  click,
+  render,
+  triggerKeyEvent,
+  triggerEvent
+} from '@ember/test-helpers';
 import { registerCustomStyles } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Dropdown } from 'frontile';
@@ -598,6 +603,43 @@ module(
           'false',
           'pointer open highlights nothing'
         );
+    });
+
+    test('hovering a sub-trigger opens the submenu, and leaving closes it', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      assert.dom('[data-key="nested"]').doesNotExist('closed at rest');
+
+      await triggerEvent(
+        '[data-test-id="dropdown-submenu-trigger"]',
+        'pointerenter'
+      );
+
+      assert.dom('[data-key="nested"]').exists('hover opened it');
+
+      // Leaving toward a sibling row -- straight out of the safe area.
+      await triggerEvent(
+        '[data-test-id="dropdown-submenu-trigger"]',
+        'pointerleave'
+      );
+
+      assert.dom('[data-key="nested"]').doesNotExist('leaving closed it');
     });
 
     test('closing a submenu returns focus to the parent level', async function (assert) {

@@ -1,16 +1,34 @@
+/* eslint-disable ember/no-runloop */
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
 import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
+import { cancel, later } from '@ember/runloop';
+import { modifier } from 'ember-modifier';
 import { Popover, type PopoverSignature } from '../../overlays/popover';
 import { createChildMenuContext } from './menu-context';
 import type { MenuContext, OpenSource, SubHandle } from './menu-context';
 import type { ListboxItem } from '../listbox/item';
 import type Owner from '@ember/owner';
+import type { Timer } from '@ember/runloop';
 import type { WithBoundArgs } from '@glint/template';
 import type { ModifierLike } from '@glint/template';
 import type { Menu } from './dropdown';
+
+/**
+ * Long enough that dragging the pointer across a row on its way somewhere else
+ * does not flash a submenu open, short enough to feel immediate when the
+ * pointer settles.
+ */
+const SUBMENU_OPEN_DELAY = 100;
+
+/**
+ * The pointer has to cross a gap to reach the submenu, so leaving the trigger
+ * cannot close it instantly. Task 11's safe area decides *where* the pointer
+ * is allowed to go; this is how long it has to get there.
+ */
+const SUBMENU_CLOSE_DELAY = 300;
 
 /**
  * The raw, unbound `Menu` component, handed in rather than imported.
@@ -83,7 +101,13 @@ export interface SubSignature {
       {
         Trigger: WithBoundArgs<
           typeof SubTrigger,
-          'item' | 'anchor' | 'onTriggerClick' | 'isOpen' | 'submenuId' | 'key'
+          | 'item'
+          | 'anchor'
+          | 'onTriggerClick'
+          | 'isOpen'
+          | 'submenuId'
+          | 'key'
+          | 'hoverTrigger'
         >;
         Menu: BoundMenuComponent;
         isOpen: boolean;
@@ -136,6 +160,8 @@ class Sub extends Component<SubSignature> {
   willDestroy(): void {
     super.willDestroy();
     this.args.parentContext.unregisterSub(this.triggerKey);
+    cancel(this.#openTimer);
+    cancel(this.#closeTimer);
   }
 
   handle: SubHandle = {
@@ -149,8 +175,47 @@ class Sub extends Component<SubSignature> {
   };
 
   close = () => {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
     this.isOpen = false;
   };
+
+  #openTimer?: Timer;
+  #closeTimer?: Timer;
+
+  scheduleOpen = () => {
+    this.cancelClose();
+    cancel(this.#openTimer);
+    this.#openTimer = later(
+      this,
+      () => this.open('pointer'),
+      SUBMENU_OPEN_DELAY
+    );
+  };
+
+  scheduleClose = () => {
+    cancel(this.#openTimer);
+    cancel(this.#closeTimer);
+    this.#closeTimer = later(this, this.close, SUBMENU_CLOSE_DELAY);
+  };
+
+  cancelClose = () => {
+    cancel(this.#closeTimer);
+    this.#closeTimer = undefined;
+  };
+
+  hoverTrigger = modifier((el: HTMLElement) => {
+    el.addEventListener('pointerenter', this.scheduleOpen);
+    el.addEventListener('pointerleave', this.scheduleClose);
+
+    return () => {
+      el.removeEventListener('pointerenter', this.scheduleOpen);
+      el.removeEventListener('pointerleave', this.scheduleClose);
+      cancel(this.#openTimer);
+      cancel(this.#closeTimer);
+    };
+  });
 
   onTriggerClick = () => {
     if (this.isOpen) {
@@ -205,6 +270,7 @@ class Sub extends Component<SubSignature> {
             isOpen=this.isOpen
             submenuId=this.submenuId
             key=this.triggerKey
+            hoverTrigger=this.hoverTrigger
           )
           Menu=(component
             @menu
@@ -253,6 +319,11 @@ interface SubTriggerArgs {
    * an override so a test or a consumer can address the row by `data-key`.
    */
   key?: string;
+
+  /**
+   * @internal
+   */
+  hoverTrigger: ModifierLike<{ Element: HTMLElement }>;
 }
 
 export interface SubTriggerSignature {
@@ -294,6 +365,7 @@ class SubTrigger extends Component<SubTriggerSignature> {
       @submenuId={{@submenuId}}
       @onClick={{@onTriggerClick}}
       {{@anchor}}
+      {{@hoverTrigger}}
       data-test-id="dropdown-submenu-trigger"
       ...attributes
     >
