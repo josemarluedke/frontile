@@ -101,6 +101,17 @@ class AccordionItem extends Component<AccordionItemSignature> {
     return this.args.context.isOpen(this.key);
   }
 
+  /**
+   * A collapsed `Collapsible` is `height: 0; overflow: hidden` -- gone to the
+   * eye, but its focusable children are still in the tab order. `inert` is
+   * what actually removes them. Returns `undefined` rather than `false` so the
+   * attribute is absent when open: `inert` is a boolean attribute, and
+   * `inert="false"` is still inert.
+   */
+  get inert(): true | undefined {
+    return this.isOpen ? undefined : true;
+  }
+
   get isDisabled(): boolean {
     return !!this.args.isDisabled || this.args.context.isGroupDisabled;
   }
@@ -215,6 +226,7 @@ class AccordionItem extends Component<AccordionItemSignature> {
         role="region"
         id={{this.panelId}}
         aria-labelledby={{this.triggerId}}
+        inert={{this.inert}}
         class={{@context.contentClass}}
       >
         <div class={{@context.contentBodyClass}}>

@@ -449,10 +449,18 @@ module(
       assert.strictEqual(document.activeElement, triggers[0]!, 'moved up');
 
       await triggerKeyEvent(triggers[0]!, 'keydown', 'ArrowUp');
-      assert.strictEqual(document.activeElement, triggers[2]!, 'wrapped to last');
+      assert.strictEqual(
+        document.activeElement,
+        triggers[2]!,
+        'wrapped to last'
+      );
 
       await triggerKeyEvent(triggers[2]!, 'keydown', 'ArrowDown');
-      assert.strictEqual(document.activeElement, triggers[0]!, 'wrapped to first');
+      assert.strictEqual(
+        document.activeElement,
+        triggers[0]!,
+        'wrapped to first'
+      );
     });
 
     test('Home and End jump to the first and last header', async function (assert) {
@@ -573,6 +581,45 @@ module(
         document.activeElement,
         innerOne,
         'the inner walk wraps within the inner accordion, not into the outer one'
+      );
+    });
+
+    test('a closed panel is inert, so its focusables leave the tab order', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">
+              <button type="button" id="buried">Buried</button>
+            </a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+      const panel = document.getElementById(
+        trigger.getAttribute('aria-controls')!
+      )!;
+
+      assert.dom(panel).hasAttribute('inert', '', 'closed panel is inert');
+
+      const buried = find('#buried') as HTMLButtonElement;
+      buried.focus();
+      assert.notStrictEqual(
+        document.activeElement,
+        buried,
+        'an inert subtree cannot take focus'
+      );
+
+      await click(trigger);
+      assert
+        .dom(panel)
+        .doesNotHaveAttribute('inert', 'open panel is not inert');
+
+      buried.focus();
+      assert.strictEqual(
+        document.activeElement,
+        buried,
+        'focusable again once open'
       );
     });
   }
