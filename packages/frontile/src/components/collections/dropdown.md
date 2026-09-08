@@ -171,7 +171,7 @@ export default class SelectableDropdown extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-2'>
+    <div class='demo-stack items-center'>
       <Dropdown @closeOnItemSelect={{false}} as |d|>
         <d.Trigger @size='sm'>Text Formatting</d.Trigger>
 
@@ -308,7 +308,7 @@ export default class MenuPositioning extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='flex gap-2 flex-wrap'>
         <ButtonGroup @size='xs' @intent='primary' as |g|>
           {{#each this.placements as |p|}}
@@ -401,7 +401,7 @@ export default class KeepOpenDropdown extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-2'>
+    <div class='demo-stack items-center'>
       <Dropdown @closeOnItemSelect={{false}} as |d|>
         <d.Trigger @size='sm'>Filter Options</d.Trigger>
 
@@ -547,7 +547,7 @@ export default class DropdownBackdrop extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <ButtonGroup @size='xs' @intent='primary' as |g|>
         <g.ToggleButton
           @isSelected={{this.isActiveBackdrop 'none'}}
