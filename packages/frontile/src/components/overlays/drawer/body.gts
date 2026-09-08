@@ -19,7 +19,11 @@ export interface DrawerBodySignature {
 
 export default class DrawerBody extends Component<DrawerBodySignature> {
   <template>
-    <div class={{twMerge @classFromParent @class}} ...attributes>
+    <div
+      data-drawer-body
+      class={{twMerge @classFromParent @class}}
+      ...attributes
+    >
       {{yield}}
     </div>
   </template>

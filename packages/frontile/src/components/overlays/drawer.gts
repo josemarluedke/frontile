@@ -8,6 +8,11 @@ import Overlay, { type OverlaySignature } from './overlay';
 import DrawerBody, { type DrawerBodySignature } from './drawer/body';
 import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
 import DrawerHeader, { type DrawerHeaderSignature } from './drawer/header';
+import DrawerDragHandle from './drawer/drag-handle';
+import dragToDismiss, {
+  type DragAxis,
+  type DragDirection
+} from '../../modifiers/drag-to-dismiss';
 import {
   CloseButton,
   type CloseButtonSignature
@@ -82,6 +87,27 @@ export interface DrawerArgs extends Pick<
   size?: DrawerVariants['size'];
 
   /**
+   * The Drawer visual appearance.
+   *
+   * `default` gives the drawer a black header band, a distinct body surface and
+   * a solid footer. `ghost` keeps every region on the modal surface.
+   *
+   * @defaultValue 'default'
+   */
+  appearance?: DrawerVariants['appearance'];
+
+  /**
+   * Enables the drag-to-close gesture and its grab handle.
+   *
+   * Omit it and the gesture is on for `top` and `bottom` placements and off for
+   * `left` and `right`. Pass `true` to opt a side drawer in, or `false` to turn
+   * it off entirely. Always off when `allowClosing` is `false`.
+   *
+   * @defaultValue true for `top`/`bottom`, false for `left`/`right`
+   */
+  allowDragToClose?: boolean;
+
+  /**
    * Class names for each slot of the component, merged with the theme's.
    */
   classes?: SlotsToClasses<DrawerSlots>;
@@ -98,7 +124,12 @@ export interface DrawerSignature {
         >;
         Header: WithBoundArgs<
           ComponentLike<DrawerHeaderSignature>,
-          'labelledById' | 'classFromParent' | 'registerSelf'
+          | 'labelledById'
+          | 'classFromParent'
+          | 'registerSelf'
+          | 'iconClass'
+          | 'titleClass'
+          | 'descriptionClass'
         >;
         Body: WithBoundArgs<
           ComponentLike<DrawerBodySignature>,
@@ -197,12 +228,47 @@ export default class Drawer extends Component<DrawerSignature> {
     return this.args.placement || 'right';
   }
 
+  get appearance(): NonNullable<DrawerVariants['appearance']> {
+    return this.args.appearance || 'default';
+  }
+
+  get isVerticalPlacement(): boolean {
+    return this.placement === 'top' || this.placement === 'bottom';
+  }
+
+  get allowDragToClose(): boolean {
+    if (this.args.allowClosing === false) {
+      return false;
+    }
+
+    if (typeof this.args.allowDragToClose === 'boolean') {
+      return this.args.allowDragToClose;
+    }
+
+    return this.isVerticalPlacement;
+  }
+
+  get dragAxis(): DragAxis {
+    return this.isVerticalPlacement ? 'y' : 'x';
+  }
+
+  // The drawer is dismissed by pushing it back toward the edge it came from:
+  // a bottom drawer moves down (+y), a top drawer up (-y).
+  get dragDirection(): DragDirection {
+    return this.placement === 'bottom' || this.placement === 'right' ? 1 : -1;
+  }
+
+  handleDragDismiss = (): void => {
+    this.args.onClose?.();
+  };
+
   get classes() {
     const { drawer } = useStyles();
 
     return drawer({
       placement: this.placement,
-      size: this.args.size || 'md'
+      size: this.args.size || 'md',
+      appearance: this.appearance
     });
   }
   get transition() {
@@ -243,9 +309,27 @@ export default class Drawer extends Component<DrawerSignature> {
         role="dialog"
         aria-modal={{this.ariaModal}}
         aria-labelledby={{this.labelledById}}
+        {{dragToDismiss
+          axis=this.dragAxis
+          direction=this.dragDirection
+          isEnabled=this.allowDragToClose
+          onDismiss=this.handleDragDismiss
+          handleSelector="[data-drawer-drag-handle]"
+          scrollSelector="[data-drawer-body]"
+        }}
         {{this.warnIfUnnamed}}
         ...attributes
       >
+        {{#if this.allowDragToClose}}
+          <DrawerDragHandle
+            @onPress={{@onClose}}
+            @class={{this.classes.dragHandle class=@classes.dragHandle}}
+            @barClass={{this.classes.dragHandleBar
+              class=@classes.dragHandleBar
+            }}
+          />
+        {{/if}}
+
         {{#if this.showCloseButton}}
           <CloseButton
             @onPress={{@onClose}}
@@ -266,6 +350,11 @@ export default class Drawer extends Component<DrawerSignature> {
               labelledById=this.headerId
               registerSelf=this.registerHeader
               classFromParent=(this.classes.header class=@classes.header)
+              iconClass=(this.classes.icon class=@classes.icon)
+              titleClass=(this.classes.title class=@classes.title)
+              descriptionClass=(this.classes.description
+                class=@classes.description
+              )
             )
             Body=(component
               DrawerBody

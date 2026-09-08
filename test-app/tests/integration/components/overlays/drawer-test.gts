@@ -900,4 +900,141 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
       'a frontile.* warning raised after restore still reaches the handler below'
     );
   });
+
+  test('it applies appearance classes', async function (assert) {
+    const isOpen = cell(true);
+    const appearance = cell<string | undefined>(undefined);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @appearance={{appearance.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"]')
+      .hasClass('drawer--default', 'defaults to the default appearance');
+
+    appearance.current = 'ghost';
+    await settled();
+
+    assert.dom('[data-test-id="drawer"]').hasClass('drawer--ghost');
+    assert.dom('[data-test-id="drawer"]').doesNotHaveClass('drawer--default');
+  });
+
+  test('it renders the drag handle per placement and @allowDragToClose', async function (assert) {
+    const isOpen = cell(true);
+    const placement = cell<string | undefined>(undefined);
+    const allowDragToClose = cell<boolean | undefined>(undefined);
+    const allowClosing = cell<boolean | undefined>(undefined);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @placement={{placement.current}}
+          @allowDragToClose={{allowDragToClose.current}}
+          @allowClosing={{allowClosing.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-drawer-drag-handle]')
+      .doesNotExist('right placement is off by default');
+
+    placement.current = 'bottom';
+    await settled();
+    assert.dom('[data-drawer-drag-handle]').exists('bottom is on by default');
+
+    placement.current = 'top';
+    await settled();
+    assert.dom('[data-drawer-drag-handle]').exists('top is on by default');
+
+    allowDragToClose.current = false;
+    await settled();
+    assert.dom('[data-drawer-drag-handle]').doesNotExist('explicit false wins');
+
+    placement.current = 'left';
+    allowDragToClose.current = true;
+    await settled();
+    assert
+      .dom('[data-drawer-drag-handle]')
+      .exists('explicit true opts a side drawer in');
+
+    allowDragToClose.current = undefined;
+    allowClosing.current = false;
+    placement.current = 'bottom';
+    await settled();
+    assert
+      .dom('[data-drawer-drag-handle]')
+      .doesNotExist('allowClosing=false forces the handle off');
+  });
+
+  test('pressing the drag handle closes the drawer', async function (assert) {
+    const isOpen = cell(true);
+    let closed = 0;
+    const onClose = () => {
+      closed += 1;
+    };
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @onClose={{onClose}}
+          @placement="bottom"
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    await click('[data-drawer-drag-handle]');
+    assert.strictEqual(closed, 1, 'onClose fired');
+  });
+
+  test('it passes header args through the yielded Header', async function (assert) {
+    const isOpen = cell(true);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header @title="Drawer title" @description="Supporting text" />
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"] .drawer__title')
+      .hasText('Drawer title');
+    assert
+      .dom('[data-test-id="drawer"] .drawer__description')
+      .hasText('Supporting text');
+  });
 });
