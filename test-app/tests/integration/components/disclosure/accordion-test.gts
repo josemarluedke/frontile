@@ -318,5 +318,66 @@ module(
       await click(trigger);
       assert.dom(trigger).hasAria('expanded', 'false', 'still controlled');
     });
+
+    test('a disabled item cannot be toggled', async function (assert) {
+      const calls: string[][] = [];
+      const onChange = (keys: string[]): void => {
+        calls.push(keys);
+      };
+
+      await render(
+        <template>
+          <Accordion @onChange={{onChange}} as |a|>
+            <a.Item @title="One" @isDisabled={{true}}>First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[0]!).hasAria('disabled', 'true');
+      assert.dom(triggers[0]!).hasAttribute('data-disabled', 'true');
+
+      // A per-item disabled trigger keeps its pointer events -- only the
+      // group-level `@isDisabled` variant sets `pointer-events-none` -- so a
+      // real click lands on the handler and exercises the guard in `toggle`.
+      await click(triggers[0]!);
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+      assert.deepEqual(calls, [], '@onChange never fired for a disabled item');
+
+      await click(triggers[1]!);
+      assert.dom(triggers[1]!).hasAria('expanded', 'true', 'others still work');
+    });
+
+    test('@isDisabled on the accordion disables every item', async function (assert) {
+      const calls: string[][] = [];
+      const onChange = (keys: string[]): void => {
+        calls.push(keys);
+      };
+
+      await render(
+        <template>
+          <Accordion @isDisabled={{true}} @onChange={{onChange}} as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[0]!).hasAria('disabled', 'true');
+      assert.dom(triggers[1]!).hasAria('disabled', 'true');
+
+      // The theme puts `pointer-events-none` on a group-disabled trigger, so a
+      // hit-tested click would assert the CSS rather than the guard in
+      // `toggle`. A native `.click()` bypasses hit-testing and reaches the
+      // handler, which is the thing under test: delete the guard and this
+      // fails.
+      triggers[0]!.click();
+      await settled();
+
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+      assert.deepEqual(calls, [], '@onChange never fired while group-disabled');
+    });
   }
 );
