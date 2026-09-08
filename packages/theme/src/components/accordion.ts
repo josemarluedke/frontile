@@ -70,21 +70,35 @@ const accordion = tv({
     },
 
     size: {
+      // Typography sits on `trigger`, not on `title`, and that placement is
+      // load-bearing: the trigger renders inside a real `<h3>` (or whatever
+      // `@headingLevel` says), so a host page's heading styles -- large, bold,
+      // tight tracking -- would otherwise be inherited by everything in the
+      // header row that does not set its own size: `startContent`, the
+      // indicator, and any custom `<:title>` content. The class on the trigger
+      // is the baseline that neutralises that; `subtitle` then refines it, and
+      // `@classes.title` still wins on the title element itself.
+      //
+      // `text-label-*` (semibold, default tracking) rather than `text-strong-*`
+      // (bold, tight): an accordion header is a label on a row, not a section
+      // heading. It matches the panel body's size at every step and lets weight
+      // alone do the separating, which is how the reference implementations
+      // read.
       sm: {
-        trigger: 'gap-2 py-2 text-strong-md',
-        subtitle: 'text-label-xs',
+        trigger: 'gap-2 py-2 text-label-xs',
+        subtitle: 'text-body-2xs',
         indicator: 'size-4',
         contentBody: 'pb-2 text-body-sm'
       },
       md: {
-        trigger: 'gap-3 py-3 text-strong-lg',
-        subtitle: 'text-label-sm',
+        trigger: 'gap-3 py-3 text-label-sm',
+        subtitle: 'text-body-xs',
         indicator: 'size-5',
         contentBody: 'pb-3 text-body-md'
       },
       lg: {
-        trigger: 'gap-3 py-4 text-strong-xl',
-        subtitle: 'text-label-md',
+        trigger: 'gap-3 py-4 text-label-md',
+        subtitle: 'text-body-sm',
         indicator: 'size-6',
         contentBody: 'pb-4 text-body-lg'
       }
