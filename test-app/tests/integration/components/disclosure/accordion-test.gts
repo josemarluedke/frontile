@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, click } from '@ember/test-helpers';
+import { render, find, findAll, click, settled } from '@ember/test-helpers';
+import { array } from '@ember/helper';
+import { cell } from 'ember-resources';
 import { Accordion } from 'frontile';
 
 module(
@@ -185,6 +187,136 @@ module(
       const triggers = findAll('[data-fr-accordion-trigger]');
       assert.dom(triggers[0]!).hasAria('expanded', 'true');
       assert.dom(triggers[1]!).hasAria('expanded', 'false');
+    });
+
+    test('multiple mode keeps several items open', async function (assert) {
+      await render(
+        <template>
+          <Accordion @selectionMode="multiple" as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await click(triggers[0]!);
+      await click(triggers[1]!);
+
+      assert.dom(triggers[0]!).hasAria('expanded', 'true');
+      assert.dom(triggers[1]!).hasAria('expanded', 'true');
+
+      await click(triggers[0]!);
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+      assert
+        .dom(triggers[1]!)
+        .hasAria('expanded', 'true', 'the other stays open');
+    });
+
+    test('multiple mode: all @isDefaultOpen items start open', async function (assert) {
+      await render(
+        <template>
+          <Accordion @selectionMode="multiple" as |a|>
+            <a.Item @title="One" @isDefaultOpen={{true}}>First body</a.Item>
+            <a.Item @title="Two" @isDefaultOpen={{true}}>Second body</a.Item>
+            <a.Item @title="Three">Third body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[0]!).hasAria('expanded', 'true');
+      assert.dom(triggers[1]!).hasAria('expanded', 'true');
+      assert.dom(triggers[2]!).hasAria('expanded', 'false');
+    });
+
+    test('uncontrolled: @defaultKeys seeds the open items and wins over @isDefaultOpen', async function (assert) {
+      await render(
+        <template>
+          <Accordion @defaultKeys={{array "two"}} as |a|>
+            <a.Item @key="one" @title="One" @isDefaultOpen={{true}}>First body</a.Item>
+            <a.Item @key="two" @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert
+        .dom(triggers[1]!)
+        .hasAria('expanded', 'true', '@defaultKeys took precedence');
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+    });
+
+    test('@onChange reports the new key set in both modes', async function (assert) {
+      const calls: string[][] = [];
+      const onChange = (keys: string[]): void => {
+        calls.push(keys);
+      };
+
+      await render(
+        <template>
+          <Accordion @selectionMode="multiple" @onChange={{onChange}} as |a|>
+            <a.Item @key="one" @title="One">First body</a.Item>
+            <a.Item @key="two" @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      await click(triggers[0]!);
+      await click(triggers[1]!);
+      await click(triggers[0]!);
+
+      assert.deepEqual(calls, [['one'], ['one', 'two'], ['two']]);
+    });
+
+    test('controlled: @keys governs, and clicking alone changes nothing', async function (assert) {
+      const keys = cell<string[]>(['two']);
+
+      await render(
+        <template>
+          <Accordion @keys={{keys.current}} as |a|>
+            <a.Item @key="one" @title="One">First body</a.Item>
+            <a.Item @key="two" @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[1]!).hasAria('expanded', 'true');
+
+      await click(triggers[0]!);
+      assert
+        .dom(triggers[0]!)
+        .hasAria('expanded', 'false', 'the component did not self-update');
+
+      keys.current = ['one'];
+      await settled();
+      assert.dom(triggers[0]!).hasAria('expanded', 'true');
+      assert.dom(triggers[1]!).hasAria('expanded', 'false');
+    });
+
+    test('controlled: @keys={{undefined}} is controlled-with-nothing-open', async function (assert) {
+      await render(
+        <template>
+          <Accordion @keys={{undefined}} as |a|>
+            <a.Item @key="one" @title="One" @isDefaultOpen={{true}}>First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+      assert
+        .dom(trigger)
+        .hasAria(
+          'expanded',
+          'false',
+          '@isDefaultOpen is ignored when controlled'
+        );
+
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'false', 'still controlled');
     });
   }
 );
