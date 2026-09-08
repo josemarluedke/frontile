@@ -1378,5 +1378,88 @@ module(
         );
       });
     });
+
+    test('a sub-trigger item carries submenu aria attributes and never selects', async function (assert) {
+      const actions: string[] = [];
+      const onAction = (key: string) => {
+        actions.push(key);
+      };
+
+      await render(
+        <template>
+          <Listbox @type="menu" @onAction={{onAction}} as |l|>
+            <l.Item @key="plain">Plain</l.Item>
+            <l.Item
+              @key="parent"
+              @hasSubmenu={{true}}
+              @isSubmenuOpen={{false}}
+              @submenuId="my-submenu"
+            >More</l.Item>
+          </Listbox>
+        </template>
+      );
+
+      assert.dom('[data-key="parent"]').hasAria('haspopup', 'menu');
+      assert.dom('[data-key="parent"]').hasAria('expanded', 'false');
+      assert.dom('[data-key="parent"]').hasAria('controls', 'my-submenu');
+      assert
+        .dom('[data-key="parent"]')
+        .hasAttribute('data-submenu-open', 'false');
+      assert
+        .dom(
+          '[data-key="parent"] [data-test-id="listbox-item-submenu-indicator"]'
+        )
+        .exists('renders the chevron');
+
+      // A plain item is untouched by the new args.
+      assert.dom('[data-key="plain"]').doesNotHaveAria('haspopup');
+      assert
+        .dom(
+          '[data-key="plain"] [data-test-id="listbox-item-submenu-indicator"]'
+        )
+        .doesNotExist();
+
+      // Clicking a sub-trigger must not fire onAction -- opening is not choosing.
+      await click('[data-key="parent"]');
+      assert.deepEqual(actions, [], 'sub-trigger fired no action');
+
+      await click('[data-key="plain"]');
+      assert.deepEqual(actions, ['plain'], 'a plain item still fires');
+    });
+
+    test('an open sub-trigger reports aria-expanded and data-submenu-open', async function (assert) {
+      await render(
+        <template>
+          <Listbox @type="menu" as |l|>
+            <l.Item @key="parent" @hasSubmenu={{true}} @isSubmenuOpen={{true}}>
+              More
+            </l.Item>
+          </Listbox>
+        </template>
+      );
+
+      assert.dom('[data-key="parent"]').hasAria('expanded', 'true');
+      assert
+        .dom('[data-key="parent"]')
+        .hasAttribute('data-submenu-open', 'true');
+    });
+
+    test('an explicit :end block wins over the submenu chevron', async function (assert) {
+      await render(
+        <template>
+          <Listbox @type="menu" as |l|>
+            <l.Item @key="parent" @hasSubmenu={{true}}>
+              <:default>More</:default>
+              <:end><span data-test-id="custom-end">custom</span></:end>
+            </l.Item>
+          </Listbox>
+        </template>
+      );
+
+      assert.dom('[data-test-id="custom-end"]').exists();
+      assert
+        .dom('[data-test-id="listbox-item-submenu-indicator"]')
+        .doesNotExist('the default chevron steps aside');
+    });
   }
 );
