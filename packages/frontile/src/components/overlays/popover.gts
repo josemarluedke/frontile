@@ -76,6 +76,26 @@ interface PopoverSignature {
      * Callback when closing has finished, including any exit transition.
      */
     didClose?: () => void;
+
+    /**
+     * Milliseconds to wait before opening on hover or keyboard focus. Only
+     * applies to a `trigger` installed in hover mode.
+     *
+     * @defaultValue 100
+     */
+    openDelay?: number;
+
+    /**
+     * Milliseconds to wait before closing after the pointer leaves the trigger
+     * or the content. Only applies to a `trigger` installed in hover mode.
+     *
+     * This is also the window the pointer has to cross the gap between the
+     * trigger and the content, so setting it to 0 makes content hover
+     * unreachable in practice.
+     *
+     * @defaultValue 100
+     */
+    closeDelay?: number;
   };
   Element: HTMLUListElement;
   Blocks: {
@@ -107,6 +127,9 @@ interface PopoverSignature {
           | 'backdrop'
           | 'triggerWidth'
           | 'preventAutoFocus'
+          | 'isHoverTrigger'
+          | 'onContentHoverStart'
+          | 'onContentHoverEnd'
         >;
       }
     ];
@@ -209,6 +232,120 @@ class Popover extends Component<PopoverSignature> {
     debounce(this, this.resetIsClosing, 90);
   };
 
+  /**
+   * The single pending hover intent, or `undefined`. One field rather than two
+   * debounces: `debounce` keys on the target/method pair, so debouncing
+   * `open` from `mouseenter` and `close` from `mouseleave` left the two unable
+   * to cancel each other -- a leave-then-re-enter inside the window queued
+   * both, and the close won.
+   *
+   * Scheduled with a raw `setTimeout`/`clearTimeout` rather than
+   * `@ember/runloop`'s `later`/`cancel`: `settled()` (and so `await
+   * triggerEvent(...)` in tests) blocks until every pending run-loop timer has
+   * fired, however far out it is scheduled. Content hover depends on being
+   * able to dispatch a second event -- the pointer arriving on the content --
+   * inside the still-pending close window; a run-loop-tracked timer would
+   * have already fired and closed it by the time `await
+   * triggerEvent('mouseleave')` returned control to the test.
+   */
+  hoverTimer?: { id: ReturnType<typeof setTimeout>; intent: 'open' | 'close' };
+
+  get openDelay(): number {
+    return typeof this.args.openDelay === 'number' ? this.args.openDelay : 100;
+  }
+
+  get closeDelay(): number {
+    return typeof this.args.closeDelay === 'number'
+      ? this.args.closeDelay
+      : 100;
+  }
+
+  clearHoverTimer = () => {
+    if (this.hoverTimer) {
+      clearTimeout(this.hoverTimer.id);
+      this.hoverTimer = undefined;
+    }
+  };
+
+  scheduleOpen = () => {
+    this.clearHoverTimer();
+
+    if (this.isOpen) {
+      return;
+    }
+
+    const run = () => {
+      this.hoverTimer = undefined;
+      if (this.isDestroyed || this.isDestroying) return;
+      // A hover open is never part of the click cascade `isClosing` guards
+      // against, so it must not be gated by it -- that gate is what swallowed
+      // opens on an adjacent trigger.
+      this.isClosing = false;
+      this.open();
+    };
+
+    if (this.openDelay === 0) {
+      run();
+      return;
+    }
+
+    this.hoverTimer = { id: setTimeout(run, this.openDelay), intent: 'open' };
+  };
+
+  scheduleClose = () => {
+    this.clearHoverTimer();
+
+    if (!this.isOpen) {
+      return;
+    }
+
+    const run = () => {
+      this.hoverTimer = undefined;
+      if (this.isDestroyed || this.isDestroying) return;
+      this.close();
+    };
+
+    if (this.closeDelay === 0) {
+      run();
+      return;
+    }
+
+    this.hoverTimer = { id: setTimeout(run, this.closeDelay), intent: 'close' };
+  };
+
+  /**
+   * `Escape` must close a hover popover (WCAG 1.4.13), but in hover mode focus
+   * is typically nowhere near the trigger, so a trigger-level `keydown` would
+   * never see the key. Installed on the document while open in hover mode.
+   */
+  escapeListener?: (event: KeyboardEvent) => void;
+
+  setupEscapeListener = () => {
+    if (this.escapeListener) return;
+
+    this.escapeListener = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && this.isOpen) {
+        this.clearHoverTimer();
+        this.close();
+      }
+    };
+
+    document.addEventListener('keydown', this.escapeListener);
+  };
+
+  teardownEscapeListener = () => {
+    if (this.escapeListener) {
+      document.removeEventListener('keydown', this.escapeListener);
+      this.escapeListener = undefined;
+    }
+  };
+
+  willDestroy(): void {
+    super.willDestroy();
+    this.clearHoverTimer();
+    this.teardownEscapeListener();
+  }
+
   trigger = modifier(
     (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
       // The trigger is only the width reference when nothing more specific was
@@ -236,14 +373,10 @@ class Popover extends Component<PopoverSignature> {
         observer.observe(el);
       }
 
-      const debounceDuration = 100;
-
-      const open = () => {
-        debounce(this, this.open, debounceDuration);
-      };
-
-      const close = () => {
-        debounce(this, this.close, debounceDuration);
+      const onFocusIn = () => {
+        if (el.matches(':focus-visible')) {
+          this.scheduleOpen();
+        }
       };
 
       const onKeydown = (event: KeyboardEvent) => {
@@ -283,8 +416,14 @@ class Popover extends Component<PopoverSignature> {
       if (eventType === 'hover') {
         this.preventFocusRestore = true;
         this.isHoverTrigger = true;
-        el.addEventListener('mouseenter', open);
-        el.addEventListener('mouseleave', close);
+        this.setupEscapeListener();
+
+        el.addEventListener('mouseenter', this.scheduleOpen);
+        el.addEventListener('mouseleave', this.scheduleClose);
+        // Keyboard-only: a mouse click also fires `focusin`, and opening on
+        // that would leave content up after the pointer had already left.
+        el.addEventListener('focusin', onFocusIn);
+        el.addEventListener('focusout', this.scheduleClose);
       } else {
         el.addEventListener('keydown', onKeydown);
         el.addEventListener('click', this.toggle);
@@ -304,8 +443,12 @@ class Popover extends Component<PopoverSignature> {
       return () => {
         if (eventType === 'hover') {
           this.isHoverTrigger = false;
-          el.removeEventListener('mouseenter', open);
-          el.removeEventListener('mouseleave', close);
+          this.clearHoverTimer();
+          this.teardownEscapeListener();
+          el.removeEventListener('mouseenter', this.scheduleOpen);
+          el.removeEventListener('mouseleave', this.scheduleClose);
+          el.removeEventListener('focusin', onFocusIn);
+          el.removeEventListener('focusout', this.scheduleClose);
         } else {
           el.removeEventListener('click', this.toggle);
           el.removeEventListener('keydown', onKeydown);
@@ -426,6 +569,9 @@ class Popover extends Component<PopoverSignature> {
             preventFocusRestore=this.preventFocusRestore
             preventAutoFocus=this.isHoverTrigger
             triggerWidth=this.triggerWidth
+            isHoverTrigger=this.isHoverTrigger
+            onContentHoverStart=this.clearHoverTimer
+            onContentHoverEnd=this.scheduleClose
           )
         )
       }}
@@ -482,6 +628,29 @@ interface ContentArgs extends Pick<
    * @internal
    */
   triggerWidth?: number;
+
+  /**
+   * @internal
+   */
+  isHoverTrigger?: boolean;
+
+  /**
+   * @internal
+   */
+  onContentHoverStart?: () => void;
+
+  /**
+   * @internal
+   */
+  onContentHoverEnd?: () => void;
+
+  /**
+   * Closes as soon as the pointer leaves the trigger, instead of letting it
+   * move into the content. Only meaningful for a hover trigger.
+   *
+   * @defaultValue false
+   */
+  disableInteractive?: boolean;
 
   /**
    * Custom class name for the content element, merged with the default ones
@@ -578,6 +747,31 @@ class Content extends Component<ContentSignature> {
     }
   });
 
+  /**
+   * `{{#if}}` cannot guard a modifier, so the decision lives inside it: when
+   * the trigger is not in hover mode, or the consumer opted out, this installs
+   * no listeners at all.
+   */
+  trackContentHover = modifier((el: HTMLElement) => {
+    if (
+      this.args.isHoverTrigger !== true ||
+      this.args.disableInteractive === true
+    ) {
+      return;
+    }
+
+    const enter = () => this.args.onContentHoverStart?.();
+    const leave = () => this.args.onContentHoverEnd?.();
+
+    el.addEventListener('mouseenter', enter);
+    el.addEventListener('mouseleave', leave);
+
+    return () => {
+      el.removeEventListener('mouseenter', enter);
+      el.removeEventListener('mouseleave', leave);
+    };
+  });
+
   <template>
     <Overlay
       @blockScroll={{this.blockScroll}}
@@ -605,6 +799,7 @@ class Content extends Component<ContentSignature> {
       id={{@id}}
       ...attributes
       {{this.updateTriggerWidth @triggerWidth}}
+      {{this.trackContentHover @isHoverTrigger @disableInteractive}}
     >
       {{yield}}
     </Overlay>

@@ -134,6 +134,13 @@ module(
 
       assert.dom('[data-test-id="content"]').doesNotExist();
       await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      // The default @openDelay (100ms) is scheduled with a raw `setTimeout`
+      // (not run-loop tracked -- see the note on `hoverTimer` in
+      // popover.gts), so `settled()` does not wait it out; poll instead of
+      // asserting immediately.
+      await waitUntil(() => find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
 
       assert.dom('[data-test-id="content"]').exists();
       assert.dom('[data-test-id="content"]').containsText('Content here');
@@ -149,6 +156,9 @@ module(
         );
 
       await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
       assert.dom('[data-test-id="content"]').doesNotExist();
 
       // Focus was never moved by hover in the first place, so there is
@@ -1035,6 +1045,202 @@ module(
         '250px',
         'the measured element is re-measured when it changes size'
       );
+    });
+
+    test('hover: leaving and re-entering within the delay does not close it', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{20}} @closeDelay={{20}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      // The open is scheduled with a raw `setTimeout` (not run-loop tracked --
+      // see the note on `hoverTimer` in popover.gts), so `settled()` does not
+      // wait it out; poll for it instead of asserting immediately.
+      await waitUntil(() => find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
+      assert.dom('[data-test-id="content"]').exists('opens on enter');
+
+      // Leave and immediately re-enter. The two intents previously landed on
+      // separate debounce targets, so both stayed queued and the close won.
+      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('re-entering cancels the pending close');
+    });
+
+    test('hover: moving the pointer into the content keeps it open', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{20}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      assert.dom('[data-test-id="content"]').exists();
+
+      // Crossing the offset gap: leave the trigger, arrive on the content
+      // inside the close delay.
+      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+      await triggerEvent('[data-test-id="content"]', 'mouseenter');
+
+      assert
+        .dom('[data-test-id="content"]')
+        .exists('content hover cancels the pending close');
+
+      await triggerEvent('[data-test-id="content"]', 'mouseleave');
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
+      assert
+        .dom('[data-test-id="content"]')
+        .doesNotExist('leaving the content closes it');
+    });
+
+    test('hover: @disableInteractive closes when the trigger is left', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{20}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content @disableInteractive={{true}} data-test-id="content">
+              Content here
+            </p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      assert.dom('[data-test-id="content"]').exists();
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
+      assert.dom('[data-test-id="content"]').doesNotExist();
+    });
+
+    test('hover: an adjacent trigger can open right after the first closes', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{0}} as |p|>
+            <button
+              data-test-id="trigger-one"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              One
+            </button>
+            <p.Content data-test-id="content-one">One content</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger-one"]', 'mouseenter');
+      assert.dom('[data-test-id="content-one"]').exists();
+
+      // `isClosing` used to block `open()` for 90ms after any close, so a
+      // re-entry straight after leaving was swallowed.
+      await triggerEvent('[data-test-id="trigger-one"]', 'mouseleave');
+      await triggerEvent('[data-test-id="trigger-one"]', 'mouseenter');
+
+      assert
+        .dom('[data-test-id="content-one"]')
+        .exists('re-opening is not blocked by the closing window');
+    });
+
+    test('hover: keyboard focus opens it and blur closes it', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{0}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      // `focus()` alone does not set `:focus-visible` in every browser, so
+      // dispatch a keyboard-origin focus the way a Tab would.
+      const trigger = find('[data-test-id="trigger"]') as HTMLButtonElement;
+      await triggerKeyEvent(document.body, 'keydown', 'Tab');
+      trigger.focus();
+      await triggerEvent(trigger, 'focusin');
+
+      assert.dom('[data-test-id="content"]').exists('focus opens it');
+
+      trigger.blur();
+      await triggerEvent(trigger, 'focusout');
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
+      assert.dom('[data-test-id="content"]').doesNotExist('blur closes it');
+    });
+
+    test('hover: Escape closes it', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{0}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+      assert.dom('[data-test-id="content"]').exists();
+
+      // Focus is nowhere near the trigger in hover mode, so the listener has
+      // to be on the document.
+      await triggerKeyEvent(document, 'keydown', 'Escape');
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
+      assert.dom('[data-test-id="content"]').doesNotExist();
     });
   }
 );
