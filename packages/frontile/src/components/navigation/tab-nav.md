@@ -46,29 +46,31 @@ export default class Example extends Component {
   };
 
   <template>
-    <TabNav @label='Settings' as |nav|>
-      <nav.Item
-        @href='#account'
-        @isActive={{this.isCurrent 'account'}}
-        {{on 'click' (fn this.select 'account')}}
-      >
-        Account
-      </nav.Item>
-      <nav.Item
-        @href='#security'
-        @isActive={{this.isCurrent 'security'}}
-        {{on 'click' (fn this.select 'security')}}
-      >
-        Security
-      </nav.Item>
-      <nav.Item
-        @href='#billing'
-        @isActive={{this.isCurrent 'billing'}}
-        {{on 'click' (fn this.select 'billing')}}
-      >
-        Billing
-      </nav.Item>
-    </TabNav>
+    <div class='demo-stack items-center'>
+      <TabNav @label='Settings' as |nav|>
+        <nav.Item
+          @href='#account'
+          @isActive={{this.isCurrent 'account'}}
+          {{on 'click' (fn this.select 'account')}}
+        >
+          Account
+        </nav.Item>
+        <nav.Item
+          @href='#security'
+          @isActive={{this.isCurrent 'security'}}
+          {{on 'click' (fn this.select 'security')}}
+        >
+          Security
+        </nav.Item>
+        <nav.Item
+          @href='#billing'
+          @isActive={{this.isCurrent 'billing'}}
+          {{on 'click' (fn this.select 'billing')}}
+        >
+          Billing
+        </nav.Item>
+      </TabNav>
+    </div>
   </template>
 }
 ```
@@ -137,7 +139,7 @@ behave the same way — see [Tabs](./tabs) for each option.
 import { TabNav } from 'frontile';
 
 <template>
-  <div class='flex flex-col items-start gap-6'>
+  <div class='demo-stack items-center'>
     <TabNav @label='Solid' @variant='solid' @intent='primary' as |nav|>
       <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
       <nav.Item @href='#security'>Security</nav.Item>
@@ -157,11 +159,13 @@ import { TabNav } from 'frontile';
 import { TabNav } from 'frontile';
 
 <template>
-  <TabNav @label='Settings' @orientation='vertical' as |nav|>
-    <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
-    <nav.Item @href='#security'>Security</nav.Item>
-    <nav.Item @href='#billing'>Billing</nav.Item>
-  </TabNav>
+  <div class='demo-stack items-center'>
+    <TabNav @label='Settings' @orientation='vertical' as |nav|>
+      <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
+      <nav.Item @href='#security'>Security</nav.Item>
+      <nav.Item @href='#billing'>Billing</nav.Item>
+    </TabNav>
+  </div>
 </template>
 ```
 
@@ -174,11 +178,13 @@ link equal width.
 import { TabNav } from 'frontile';
 
 <template>
-  <div class='w-96 max-w-full rounded-lg border border-neutral-soft p-4'>
-    <TabNav @label='Settings' @isFullWidth={{true}} as |nav|>
-      <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
-      <nav.Item @href='#security'>Security</nav.Item>
-    </TabNav>
+  <div class='demo-stack items-center'>
+    <div class='w-96 max-w-full rounded-lg border border-neutral-soft p-4'>
+      <TabNav @label='Settings' @isFullWidth={{true}} as |nav|>
+        <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
+        <nav.Item @href='#security'>Security</nav.Item>
+      </TabNav>
+    </div>
   </div>
 </template>
 ```
@@ -193,11 +199,13 @@ stops navigation.
 import { TabNav } from 'frontile';
 
 <template>
-  <TabNav @label='Settings' as |nav|>
-    <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
-    <nav.Item @href='#billing' @isDisabled={{true}}>Billing</nav.Item>
-    <nav.Item @href='#security'>Security</nav.Item>
-  </TabNav>
+  <div class='demo-stack items-center'>
+    <TabNav @label='Settings' as |nav|>
+      <nav.Item @href='#account' @isActive={{true}}>Account</nav.Item>
+      <nav.Item @href='#billing' @isDisabled={{true}}>Billing</nav.Item>
+      <nav.Item @href='#security'>Security</nav.Item>
+    </TabNav>
+  </div>
 </template>
 ```
 
