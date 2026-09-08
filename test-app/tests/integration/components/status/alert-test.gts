@@ -1,7 +1,49 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
+import { hash } from '@ember/helper';
+import { registerCustomStyles } from '@frontile/theme';
+import { tv } from 'tailwind-variants';
 import { Alert } from 'frontile';
+
+registerCustomStyles({
+  alert: tv({
+    slots: {
+      base: ['alert-base'],
+      inner: ['alert-inner'],
+      icon: ['alert-icon'],
+      content: ['alert-content'],
+      title: ['alert-title'],
+      description: ['alert-description'],
+      actions: ['alert-actions'],
+      closeButton: ['alert-close-button']
+    },
+    variants: {
+      intent: {
+        default: 'intent-default',
+        info: 'intent-info',
+        success: 'intent-success',
+        warning: 'intent-warning',
+        danger: 'intent-danger'
+      },
+      variant: {
+        default: 'variant-default',
+        tonal: 'variant-tonal',
+        solid: 'variant-solid'
+      },
+      hasDescription: {
+        true: { inner: ['has-description'] },
+        false: { inner: ['no-description'] }
+      }
+    },
+    defaultVariants: {
+      intent: 'default',
+      variant: 'default',
+      hasDescription: false
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) as any
+});
 
 module('Integration | Component | Alert | @frontile/status', function (hooks) {
   setupRenderingTest(hooks);
@@ -278,6 +320,96 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
 
       assert.dom('[data-test-id="static"]').exists();
       assert.dom('[data-test-id="static"]').doesNotHaveAttribute('role');
+    });
+  });
+
+  module('custom styling', function () {
+    test('the recipe puts each slot class on its own element', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert @title="Saved" @description="All good." @onClose={{onClose}}>
+            <:actions><button type="button">Undo</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert"]').hasClass('alert-base');
+      assert.dom('[data-test-id="alert-content"]').hasClass('alert-content');
+      assert.dom('[data-test-id="alert-title"]').hasClass('alert-title');
+      assert
+        .dom('[data-test-id="alert-description"]')
+        .hasClass('alert-description');
+      assert.dom('[data-test-id="alert-icon"]').hasClass('alert-icon');
+      assert.dom('[data-test-id="alert-actions"]').hasClass('alert-actions');
+      assert
+        .dom('[data-test-id="alert-close-button"]')
+        .hasClass('alert-close-button');
+    });
+
+    test('hasDescription tracks the argument and the block', async function (assert) {
+      await render(
+        <template>
+          <Alert @title="Bare" data-test-id="bare" />
+          <Alert @title="Arg" @description="Some copy." data-test-id="arg" />
+          <Alert @title="Block" data-test-id="block">
+            <:description>Some copy.</:description>
+          </Alert>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="bare"] .alert-inner')
+        .hasClass('no-description');
+      assert
+        .dom('[data-test-id="arg"] .alert-inner')
+        .hasClass('has-description');
+      assert
+        .dom('[data-test-id="block"] .alert-inner')
+        .hasClass('has-description');
+    });
+
+    test('@class merges onto the root element', async function (assert) {
+      await render(
+        <template><Alert @title="Saved" @class="my-alert" /></template>
+      );
+
+      assert.dom('[data-test-id="alert"]').hasClass('my-alert');
+      assert.dom('[data-test-id="alert"]').hasClass('alert-base');
+    });
+
+    test('@classes targets individual slots', async function (assert) {
+      const onClose = () => {};
+
+      await render(
+        <template>
+          <Alert
+            @title="Saved"
+            @description="All good."
+            @onClose={{onClose}}
+            @classes={{hash
+              base="my-base"
+              title="my-title"
+              description="my-description"
+              icon="my-icon"
+              actions="my-actions"
+              closeButton="my-close"
+            }}
+          >
+            <:actions><button type="button">Undo</button></:actions>
+          </Alert>
+        </template>
+      );
+
+      assert.dom('[data-test-id="alert"]').hasClass('my-base');
+      assert.dom('[data-test-id="alert-title"]').hasClass('my-title');
+      assert
+        .dom('[data-test-id="alert-description"]')
+        .hasClass('my-description');
+      assert.dom('[data-test-id="alert-icon"]').hasClass('my-icon');
+      assert.dom('[data-test-id="alert-actions"]').hasClass('my-actions');
+      assert.dom('[data-test-id="alert-close-button"]').hasClass('my-close');
     });
   });
 });
