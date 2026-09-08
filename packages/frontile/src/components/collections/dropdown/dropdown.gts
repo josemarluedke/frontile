@@ -397,5 +397,5 @@ class Menu extends Component<MenuSignature> {
   </template>
 }
 
-export { Dropdown, type DropdownSignature, Menu };
+export { Dropdown, type DropdownSignature, type Menu };
 export default Dropdown;
