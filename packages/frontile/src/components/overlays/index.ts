@@ -12,7 +12,13 @@ export {
 } from './modal/footer';
 export {
   default as DrawerHeader,
-  type DrawerHeaderSignature
+  DrawerHeaderIcon,
+  DrawerHeaderTitle,
+  DrawerHeaderDescription,
+  type DrawerHeaderSignature,
+  type DrawerHeaderIconSignature,
+  type DrawerHeaderTitleSignature,
+  type DrawerHeaderDescriptionSignature
 } from './drawer/header';
 export { default as DrawerBody, type DrawerBodySignature } from './drawer/body';
 export {

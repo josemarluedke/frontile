@@ -1,6 +1,77 @@
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
 import { twMerge } from '@frontile/theme';
+import type { TOC } from '@ember/component/template-only';
+import type { ComponentLike } from '@glint/template';
+
+export interface DrawerHeaderIconSignature {
+  Args: {
+    /**
+     * @internal
+     */
+    classFromParent?: string;
+    class?: string;
+  };
+  Element: HTMLDivElement;
+  Blocks: { default: [] };
+}
+
+const DrawerHeaderIcon: TOC<DrawerHeaderIconSignature> = <template>
+  <div class={{twMerge @classFromParent @class}} ...attributes>
+    {{yield}}
+  </div>
+</template>;
+
+export interface DrawerHeaderTitleSignature {
+  Args: {
+    /**
+     * Fallback content, used when this component is given no block.
+     */
+    value?: string;
+
+    /**
+     * @internal
+     */
+    classFromParent?: string;
+    class?: string;
+  };
+  Element: HTMLDivElement;
+  Blocks: { default: [] };
+}
+
+class DrawerHeaderTitle extends Component<DrawerHeaderTitleSignature> {
+  <template>
+    <div class={{twMerge @classFromParent @class}} ...attributes>
+      {{#if (has-block)}}{{yield}}{{else}}{{@value}}{{/if}}
+    </div>
+  </template>
+}
+
+export interface DrawerHeaderDescriptionSignature {
+  Args: {
+    /**
+     * Fallback content, used when this component is given no block.
+     */
+    value?: string;
+
+    /**
+     * @internal
+     */
+    classFromParent?: string;
+    class?: string;
+  };
+  Element: HTMLDivElement;
+  Blocks: { default: [] };
+}
+
+class DrawerHeaderDescription extends Component<DrawerHeaderDescriptionSignature> {
+  <template>
+    <div class={{twMerge @classFromParent @class}} ...attributes>
+      {{#if (has-block)}}{{yield}}{{else}}{{@value}}{{/if}}
+    </div>
+  </template>
+}
 
 export interface DrawerHeaderArgs {
   /**
@@ -8,12 +79,38 @@ export interface DrawerHeaderArgs {
    */
   labelledById: string;
 
+  /**
+   * Header title. Rendered into the themed title slot when the header is given
+   * no block, and used as the fallback content for a blockless `<h.Title />`.
+   */
+  title?: string;
+
+  /**
+   * Header description, shown under the title. Behaves like `@title`.
+   */
+  description?: string;
+
   class?: string;
 
   /**
    * @internal
    */
   classFromParent?: string;
+
+  /**
+   * @internal
+   */
+  iconClass?: string;
+
+  /**
+   * @internal
+   */
+  titleClass?: string;
+
+  /**
+   * @internal
+   */
+  descriptionClass?: string;
 
   /**
    * Called with `true` when this header is rendered and `false` when it is
@@ -28,9 +125,16 @@ export interface DrawerHeaderSignature {
   Args: DrawerHeaderArgs;
   Element: HTMLDivElement;
   Blocks: {
-    default: [];
+    default: [
+      {
+        Icon: ComponentLike<DrawerHeaderIconSignature>;
+        Title: ComponentLike<DrawerHeaderTitleSignature>;
+        Description: ComponentLike<DrawerHeaderDescriptionSignature>;
+      }
+    ];
   };
 }
+
 export default class DrawerHeader extends Component<DrawerHeaderSignature> {
   register = modifier(() => {
     this.args.registerSelf?.(true);
@@ -47,7 +151,30 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
       {{this.register}}
       ...attributes
     >
-      {{yield}}
+      {{#if (has-block)}}
+        {{yield
+          (hash
+            Icon=(component DrawerHeaderIcon classFromParent=@iconClass)
+            Title=(component
+              DrawerHeaderTitle classFromParent=@titleClass value=@title
+            )
+            Description=(component
+              DrawerHeaderDescription
+              classFromParent=@descriptionClass
+              value=@description
+            )
+          )
+        }}
+      {{else}}
+        {{#if @title}}
+          <div class={{@titleClass}}>{{@title}}</div>
+        {{/if}}
+        {{#if @description}}
+          <div class={{@descriptionClass}}>{{@description}}</div>
+        {{/if}}
+      {{/if}}
     </div>
   </template>
 }
+
+export { DrawerHeaderIcon, DrawerHeaderTitle, DrawerHeaderDescription };
