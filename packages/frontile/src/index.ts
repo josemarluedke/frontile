@@ -5,6 +5,7 @@ export * from './overlays';
 export * from './status';
 export * from './utilities';
 export * from './navigation';
+export * from './disclosure';
 export {
   NotificationsContainer,
   NotificationCard,
