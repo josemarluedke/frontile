@@ -39,14 +39,14 @@ module('Unit | Utils | safe-area', function () {
   test('the polygon bridges the trigger edge to the content when opened right', function (assert) {
     const polygon = buildSafeAreaPolygon(trigger, contentRight);
 
-    assert.strictEqual(polygon.length, 6, 'six vertices');
+    assert.strictEqual(polygon.length, 4, 'four vertices');
     assert.deepEqual(
       polygon[0],
       { x: 100, y: 0 },
       'starts at the trigger top-right'
     );
     assert.deepEqual(
-      polygon[5],
+      polygon[3],
       { x: 100, y: 20 },
       'ends at the trigger bottom-right'
     );
@@ -65,6 +65,14 @@ module('Unit | Utils | safe-area', function () {
     assert.true(
       isPointInSafeArea({ x: 50, y: 10 }, trigger, contentRight),
       'still on the trigger'
+    );
+    assert.true(
+      isPointInSafeArea({ x: 200, y: 30 }, trigger, contentRight),
+      'in the gap band above the content, heading for the submenu'
+    );
+    assert.true(
+      isPointInSafeArea({ x: 120, y: 28 }, trigger, contentRight),
+      'on a straight diagonal from the trigger toward the submenu'
     );
   });
 

@@ -39,21 +39,33 @@ function isPointInRect(point: Point, rect: Rect): boolean {
  * Which edge faces the content is decided by the rects: floating-ui's flip
  * middleware can put the submenu on either side, and a polygon built for the
  * wrong side would make every pointer movement unsafe.
+ *
+ * This is a convex quadrilateral: two points on the trigger's facing edge
+ * (its top and bottom corners) fanning out to the content rect's two FAR
+ * corners — the corners on the side away from the trigger. An earlier
+ * version of this function also routed the polygon through the content
+ * rect's NEAR corners, producing a concave hexagon that pinched inward right
+ * at the content's facing edge. Anywhere the content is taller than the
+ * trigger (the common case), that pinch carves a notch out of the safe area
+ * exactly along the path a pointer takes when travelling from the trigger to
+ * the content — the one path this polygon exists to protect. The near
+ * corners are safe to drop even though the pointer legitimately needs to
+ * reach them: they are dominated vertices, meaning they sit inside the
+ * convex hull formed by the other four points, so removing them only grows
+ * the polygon, and the region they used to carve out is already covered by
+ * the plain content-rect check in isPointInSafeArea.
  */
 function buildSafeAreaPolygon(trigger: Rect, content: Rect): Point[] {
   const opensRight =
     content.left + content.right >= trigger.left + trigger.right;
 
   const edgeX = opensRight ? trigger.right : trigger.left;
-  const nearX = opensRight ? content.left : content.right;
   const farX = opensRight ? content.right : content.left;
 
   return [
     { x: edgeX, y: trigger.top },
-    { x: nearX, y: content.top },
     { x: farX, y: content.top },
     { x: farX, y: content.bottom },
-    { x: nearX, y: content.bottom },
     { x: edgeX, y: trigger.bottom }
   ];
 }
