@@ -148,17 +148,25 @@ import { array } from '@ember/helper';
 import { Accordion } from 'frontile';
 
 <template>
+  {{! `demo-stack` has to be the demo's root for the full-width rule to fire,
+      but its own `gap-4` is too tight to read as four separate groups. A
+      `gap-8` utility on the same element loses to the helper's `@apply gap-4`
+      on source order, so the wider rhythm goes on an inner wrapper. }}
   <div class='demo-stack'>
-    {{#each (array 'outlined' 'ghost' 'faded' 'enclosed') as |variant|}}
-      <div>
-        <p class='text-label-sm text-neutral-firm mb-2'>{{variant}}</p>
-        <Accordion @variant={{variant}} as |a|>
-          <a.Item @title='First item' @isDefaultOpen={{true}}>Some value 1…</a.Item>
-          <a.Item @title='Second item'>Some value 2…</a.Item>
-          <a.Item @title='Third item'>Some value 3…</a.Item>
-        </Accordion>
-      </div>
-    {{/each}}
+    <div class='flex flex-col gap-8'>
+      {{#each (array 'outlined' 'ghost' 'faded' 'enclosed') as |variant|}}
+        <div>
+          <p class='text-label-xs text-neutral-firm mb-2'>{{variant}}</p>
+          <Accordion @variant={{variant}} as |a|>
+            <a.Item @title='First item' @isDefaultOpen={{true}}>
+              Some value 1…
+            </a.Item>
+            <a.Item @title='Second item'>Some value 2…</a.Item>
+            <a.Item @title='Third item'>Some value 3…</a.Item>
+          </Accordion>
+        </div>
+      {{/each}}
+    </div>
   </div>
 </template>
 ```
@@ -171,12 +179,19 @@ import { Accordion } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    {{#each (array 'sm' 'md' 'lg') as |size|}}
-      <Accordion @size={{size}} as |a|>
-        <a.Item @title='First item' @isDefaultOpen={{true}}>Some value 1…</a.Item>
-        <a.Item @title='Second item'>Some value 2…</a.Item>
-      </Accordion>
-    {{/each}}
+    <div class='flex flex-col gap-8'>
+      {{#each (array 'sm' 'md' 'lg') as |size|}}
+        <div>
+          <p class='text-label-xs text-neutral-firm mb-2'>{{size}}</p>
+          <Accordion @size={{size}} as |a|>
+            <a.Item @title='First item' @isDefaultOpen={{true}}>
+              Some value 1…
+            </a.Item>
+            <a.Item @title='Second item'>Some value 2…</a.Item>
+          </Accordion>
+        </div>
+      {{/each}}
+    </div>
   </div>
 </template>
 ```
