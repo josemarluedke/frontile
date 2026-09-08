@@ -437,5 +437,215 @@ module(
 
       assert.deepEqual(actions, ['only'], 'no regression for as |Item|');
     });
+
+    test('ArrowRight opens the submenu of the active item and highlights its first row', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="first-nested">First nested</Item>
+                  <Item @key="second-nested">Second nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+
+      // Walk down onto the sub-trigger: Edit, then More.
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      assert
+        .dom('[data-test-id="dropdown-submenu-trigger"]')
+        .hasAttribute('data-active', 'true', 'the sub-trigger is active');
+
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowRight');
+      await settled();
+
+      assert.dom('[data-key="first-nested"]').exists('ArrowRight opened it');
+      assert
+        .dom('[data-key="first-nested"]')
+        .hasAttribute('data-active', 'true', 'keyboard open highlights the first row');
+    });
+
+    test('ArrowLeft closes the submenu and leaves the parent open', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await settled();
+      assert.dom('[data-key="nested"]').exists('open to begin with');
+
+      const submenuId = document
+        .querySelector('[data-test-id="dropdown-submenu-trigger"]')
+        ?.getAttribute('aria-controls') as string;
+
+      await triggerKeyEvent(`#${submenuId}`, 'keydown', 'ArrowLeft');
+      await settled();
+
+      assert.dom('[data-key="nested"]').doesNotExist('the submenu closed');
+      assert.dom('[data-key="edit"]').exists('the parent stayed open');
+    });
+
+    test('Escape closes only the innermost level', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await settled();
+
+      const submenuId = document
+        .querySelector('[data-test-id="dropdown-submenu-trigger"]')
+        ?.getAttribute('aria-controls') as string;
+
+      await triggerKeyEvent(`#${submenuId}`, 'keydown', 'Escape');
+      await settled();
+
+      assert.dom('[data-key="nested"]').doesNotExist('the submenu closed');
+      assert.dom('[data-key="edit"]').exists('the parent survived Escape');
+    });
+
+    test('Enter on a sub-trigger opens the submenu', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
+      await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Enter');
+      await settled();
+
+      assert.dom('[data-key="nested"]').exists('Enter opened the submenu');
+    });
+
+    test('a hover-opened submenu highlights nothing', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      // A click is a pointer open, like a hover.
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await settled();
+
+      assert
+        .dom('[data-key="nested"]')
+        .hasAttribute('data-active', 'false', 'pointer open highlights nothing');
+    });
+
+    test('closing a submenu returns focus to the parent level', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Options</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="edit">Edit</Item>
+              <Sub as |s|>
+                <s.Trigger>More</s.Trigger>
+                <s.Menu as |Item|>
+                  <Item @key="nested">Nested</Item>
+                </s.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      const parentListbox = document.querySelector(
+        '[data-test-id="listbox"]'
+      ) as HTMLElement;
+
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await settled();
+
+      const submenuId = document
+        .querySelector('[data-test-id="dropdown-submenu-trigger"]')
+        ?.getAttribute('aria-controls') as string;
+
+      await triggerKeyEvent(`#${submenuId}`, 'keydown', 'ArrowLeft');
+      await settled();
+
+      assert.ok(
+        parentListbox.contains(document.activeElement),
+        'focus returned to the parent level after ArrowLeft'
+      );
+
+      await click('[data-test-id="dropdown-submenu-trigger"]');
+      await settled();
+
+      const submenuId2 = document
+        .querySelector('[data-test-id="dropdown-submenu-trigger"]')
+        ?.getAttribute('aria-controls') as string;
+
+      await triggerKeyEvent(`#${submenuId2}`, 'keydown', 'Escape');
+      await settled();
+
+      assert.ok(
+        parentListbox.contains(document.activeElement),
+        'focus returned to the parent level after Escape'
+      );
+    });
   }
 );

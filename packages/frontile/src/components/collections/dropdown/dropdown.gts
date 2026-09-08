@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { Button, type ButtonSignature } from '../../buttons/button';
-import { Listbox, type ListboxSignature } from '../listbox';
+import { Listbox, type ListboxSignature, type ListItem } from '../listbox';
 import {
   Popover,
   type PopoverSignature,
@@ -254,6 +255,11 @@ interface MenuArgs
    * @internal
    */
   close?: () => void;
+
+  /**
+   * Callback when the active (highlighted) row changes.
+   */
+  onActiveItemChange?: (key?: string, item?: ListItem) => void;
 }
 
 export interface MenuSignature {
@@ -350,6 +356,58 @@ class Menu extends Component<MenuSignature> {
     return this.args.autoActivateMode ?? 'none';
   }
 
+  /**
+   * The key of the row the arrow keys are currently on.
+   *
+   * ArrowRight has to open the submenu belonging to the *active* row, and the
+   * row itself never learns about the submenu -- so the level tracks which key
+   * is active and looks the submenu up in its own registry.
+   */
+  @tracked activeKey?: string;
+
+  /**
+   * Chained rather than replaced: a consumer that passed
+   * `@onActiveItemChange` still hears about every move.
+   */
+  onActiveItemChange = (key?: string) => {
+    this.activeKey = key;
+
+    if (typeof this.args.onActiveItemChange === 'function') {
+      this.args.onActiveItemChange(key);
+    }
+  };
+
+  /**
+   * ArrowRight and ArrowLeft, which `Listbox` does not handle.
+   *
+   * There is no "which level is focused" bookkeeping to do: every level is its
+   * own portaled `Listbox` with its own `<ul tabindex="0">`, and a submenu's
+   * portal is a *sibling* of its parent's content element -- so a keypress
+   * only ever reaches the level that holds focus.
+   */
+  handleArrowKeys = (event: KeyboardEvent) => {
+    if (event.key === 'ArrowRight') {
+      const handle = this.activeKey
+        ? this.context.subs.get(this.activeKey)
+        : undefined;
+
+      if (handle) {
+        event.preventDefault();
+        event.stopPropagation();
+        handle.open('keyboard');
+      }
+      return;
+    }
+
+    // The root has no parent to step back to; ArrowLeft there belongs to
+    // whatever the consumer put in the row.
+    if (event.key === 'ArrowLeft' && this.context.depth > 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.context.closeSelf();
+    }
+  };
+
   <template>
     <@Content
       @target={{@target}}
@@ -366,6 +424,7 @@ class Menu extends Component<MenuSignature> {
       @transition={{@transition}}
     >
       <Listbox
+        {{on "keydown" this.handleArrowKeys}}
         @allowEmpty={{this.context.allowEmpty}}
         @appearance={{this.context.appearance}}
         @disabledKeys={{this.context.disabledKeys}}
@@ -373,6 +432,7 @@ class Menu extends Component<MenuSignature> {
         @shortcutAppearance={{this.context.shortcutAppearance}}
         @isKeyboardEventsEnabled={{true}}
         @onAction={{this.onAction}}
+        @onActiveItemChange={{this.onActiveItemChange}}
         @onSelectionChange={{this.context.onSelectionChange}}
         @selectedKeys={{this.context.selectedKeys}}
         @selectionMode={{if
