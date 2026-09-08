@@ -222,4 +222,62 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         .hasText('Dismiss the beta alert');
     });
   });
+
+  module('role', function () {
+    test('warning and danger are assertive; the rest are polite', async function (assert) {
+      await render(
+        <template>
+          <Alert @title="Default" data-test-id="d" />
+          <Alert @intent="info" @title="Info" data-test-id="i" />
+          <Alert @intent="success" @title="Success" data-test-id="s" />
+          <Alert @intent="warning" @title="Warning" data-test-id="w" />
+          <Alert @intent="danger" @title="Danger" data-test-id="x" />
+        </template>
+      );
+
+      assert.dom('[data-test-id="d"]').hasAttribute('role', 'status');
+      assert.dom('[data-test-id="i"]').hasAttribute('role', 'status');
+      assert.dom('[data-test-id="s"]').hasAttribute('role', 'status');
+      assert.dom('[data-test-id="w"]').hasAttribute('role', 'alert');
+      assert.dom('[data-test-id="x"]').hasAttribute('role', 'alert');
+    });
+
+    test('@role overrides the intent-derived default', async function (assert) {
+      await render(
+        <template>
+          <Alert
+            @intent="danger"
+            @title="Quiet"
+            @role="status"
+            data-test-id="quiet"
+          />
+          <Alert
+            @intent="info"
+            @title="Loud"
+            @role="alert"
+            data-test-id="loud"
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="quiet"]').hasAttribute('role', 'status');
+      assert.dom('[data-test-id="loud"]').hasAttribute('role', 'alert');
+    });
+
+    test("@role='none' emits no role attribute", async function (assert) {
+      await render(
+        <template>
+          <Alert
+            @intent="danger"
+            @title="Static"
+            @role="none"
+            data-test-id="static"
+          />
+        </template>
+      );
+
+      assert.dom('[data-test-id="static"]').exists();
+      assert.dom('[data-test-id="static"]').doesNotHaveAttribute('role');
+    });
+  });
 });

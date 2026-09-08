@@ -113,6 +113,18 @@ interface AlertSignature {
     closeButtonTitle?: string;
 
     /**
+     * Overrides the ARIA role, which otherwise comes from `@intent`:
+     * `warning` and `danger` render `role="alert"`, every other intent
+     * renders `role="status"`.
+     *
+     * That default suits an alert *inserted* in response to an event. Use
+     * `'none'` for one present in the DOM at first paint, where a live
+     * region announces nothing useful and `alert` can interrupt a screen
+     * reader mid-page.
+     */
+    role?: 'alert' | 'status' | 'none';
+
+    /**
      * Custom class name, it will override the default ones using Tailwind
      * Merge library.
      */
@@ -158,6 +170,21 @@ class Alert extends Component<AlertSignature> {
   }
 
   /**
+   * `undefined` for `'none'`, which makes Glimmer omit the attribute rather
+   * than render `role="none"` — an actual ARIA role meaning "presentational",
+   * which is not what is wanted here.
+   */
+  get role(): 'alert' | 'status' | undefined {
+    const { role } = this.args;
+
+    if (role === 'none') {
+      return undefined;
+    }
+
+    return role ?? INTENT_CONFIG[this.intent].role;
+  }
+
+  /**
    * A method rather than a getter because `hasDescription` can only be
    * determined in the template — `has-block` is a template keyword with no
    * JS equivalent — and it drives the icon's optical alignment.
@@ -198,6 +225,7 @@ class Alert extends Component<AlertSignature> {
       {{#let (this.classNames hasDescription) as |classNames|}}
         <div
           class={{classNames.base}}
+          role={{this.role}}
           data-test-id="alert"
           data-component="alert"
           data-test-intent={{this.intent}}
