@@ -369,10 +369,12 @@ module(
       assert.dom(triggers[1]!).hasAria('disabled', 'true');
 
       // The theme puts `pointer-events-none` on a group-disabled trigger, so a
-      // hit-tested click would assert the CSS rather than the guard in
-      // `toggle`. A native `.click()` bypasses hit-testing and reaches the
-      // handler, which is the thing under test: delete the guard and this
-      // fails.
+      // hit-tested click would assert CSS rather than the component's refusal.
+      // A native `.click()` bypasses that hit-testing to reach the handler.
+      // This test proves that `AccordionItem#toggle` refuses when
+      // group-disabled (deleting its guard fails the test). `Accordion#toggle`'s
+      // own `isDisabled` guard is unreachable via public API due to the OR'd
+      // short-circuit in `AccordionItem#isDisabled`, making it defense in depth.
       triggers[0]!.click();
       await settled();
 
