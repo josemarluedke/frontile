@@ -9,7 +9,8 @@ import {
   settled,
   triggerKeyEvent
 } from '@ember/test-helpers';
-import { array } from '@ember/helper';
+import { array, hash } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { cell } from 'ember-resources';
 import { Accordion } from 'frontile';
 
@@ -621,6 +622,134 @@ module(
         buried,
         'focusable again once open'
       );
+    });
+
+    test('named blocks render title, subtitle, startContent, indicator and content', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @key="team">
+              <:startContent><span id="start">S</span></:startContent>
+              <:title><span id="title">Team</span></:title>
+              <:subtitle><span id="subtitle">Three members</span></:subtitle>
+              <:indicator as |i|><span id="indicator">{{if
+                    i.isOpen
+                    "-"
+                    "+"
+                  }}</span></:indicator>
+              <:content><span id="content">Body</span></:content>
+            </a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert.dom('#start').exists('startContent block rendered');
+      assert.dom('#title').hasText('Team');
+      assert.dom('#subtitle').hasText('Three members');
+      assert.dom('#indicator').hasText('+', 'indicator sees isOpen');
+      assert.dom('#content').hasText('Body');
+
+      await click(find('[data-fr-accordion-trigger]')!);
+      assert.dom('#indicator').hasText('-', 'indicator re-renders on toggle');
+    });
+
+    test('the default block is the content', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One"><span id="body">Default body</span></a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+      const panel = document.getElementById(
+        trigger.getAttribute('aria-controls')!
+      )!;
+      assert.dom('#body').exists();
+      assert.ok(
+        panel.contains(find('#body')),
+        'the default block lands in the panel'
+      );
+    });
+
+    test('blocks yield isOpen and a working toggle', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">
+              <:content as |i|>
+                <span id="state">{{if i.isOpen "open" "closed"}}</span>
+                <button
+                  type="button"
+                  id="close"
+                  {{on "click" i.toggle}}
+                >Close</button>
+              </:content>
+            </a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+      assert.dom('#state').hasText('closed');
+
+      await click(trigger);
+      assert.dom('#state').hasText('open');
+
+      await click(find('#close')!);
+      assert.dom('#state').hasText('closed', 'the yielded toggle closed it');
+    });
+
+    test('@hideIndicator removes the chevron', async function (assert) {
+      await render(
+        <template>
+          <Accordion @hideIndicator={{true}} as |a|>
+            <a.Item @title="One">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert
+        .dom('[data-fr-accordion-trigger] svg')
+        .doesNotExist('no chevron rendered');
+    });
+
+    test('@classes merges into each slot', async function (assert) {
+      await render(
+        <template>
+          <Accordion
+            @classes={{hash
+              base="custom-base"
+              trigger="custom-trigger"
+              contentBody="custom-body"
+            }}
+            as |a|
+          >
+            <a.Item @title="One">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert.dom('[data-fr-accordion]').hasClass('custom-base');
+      assert.dom('[data-fr-accordion-trigger]').hasClass('custom-trigger');
+      assert.dom('.custom-body').exists('contentBody got the class');
+      assert
+        .dom('[data-fr-accordion-trigger]')
+        .hasClass('flex', 'theme classes survive the merge');
+    });
+
+    test('@class on an item is appended to its theme classes', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One" @class="custom-item">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      assert.dom('.custom-item').exists();
+      assert.dom('.custom-item').hasAttribute('data-open', 'false');
     });
   }
 );
