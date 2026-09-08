@@ -1320,5 +1320,75 @@ module(
       await triggerKeyEvent(document, 'keydown', 'Escape');
       assert.dom('[data-test-id="content"]').doesNotExist();
     });
+
+    test('trigger aria="describedby" wires aria-describedby, not menu attributes', async function (assert) {
+      await render(
+        <template>
+          <Popover @openDelay={{0}} @closeDelay={{0}} as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "hover" aria="describedby"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-haspopup', 'a description is not a popup');
+      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-expanded');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute(
+          'aria-describedby',
+          'nothing to describe while closed'
+        );
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+
+      const contentId = (find('[data-test-id="content"]') as HTMLElement).id;
+      assert.ok(contentId, 'the content has an id');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .hasAttribute('aria-describedby', contentId);
+
+      await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+      await waitUntil(() => !find('[data-test-id="content"]'), { timeout: 2000 });
+
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute(
+          'aria-describedby',
+          'removed once there is nothing to describe'
+        );
+    });
+
+    test('trigger aria="none" sets no aria attributes', async function (assert) {
+      await render(
+        <template>
+          <Popover as |p|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{p.trigger "click" aria="none"}}
+              {{p.anchor}}
+            >
+              Trigger
+            </button>
+            <p.Content data-test-id="content">Content here</p.Content>
+          </Popover>
+        </template>
+      );
+
+      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-haspopup');
+      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-expanded');
+      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-controls');
+      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-describedby');
+    });
   }
 );

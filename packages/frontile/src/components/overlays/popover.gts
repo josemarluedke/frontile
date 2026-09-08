@@ -115,7 +115,10 @@ interface PopoverSignature {
         close: () => void;
         trigger: ModifierLike<{
           Element: HTMLElement;
-          Args: { Positional: [eventType?: 'click' | 'hover'] };
+          Args: {
+            Positional: [eventType?: 'click' | 'hover'];
+            Named: { aria?: 'menu' | 'describedby' | 'none' };
+          };
         }>;
         Content: WithBoundArgs<
           typeof Content,
@@ -352,7 +355,11 @@ class Popover extends Component<PopoverSignature> {
   }
 
   trigger = modifier(
-    (el: HTMLElement, [eventType]: [eventType?: 'click' | 'hover']) => {
+    (
+      el: HTMLElement,
+      [eventType]: [eventType?: 'click' | 'hover'],
+      { aria }: { aria?: 'menu' | 'describedby' | 'none' } = {}
+    ) => {
       // The trigger is only the width reference when nothing more specific was
       // nominated. `widthEl` is checked when the measurement happens rather than
       // when the modifier installs, so the two modifiers can install in either
@@ -442,16 +449,28 @@ class Popover extends Component<PopoverSignature> {
         el.addEventListener('click', this.toggle);
       }
 
-      el.setAttribute('aria-haspopup', 'true');
-      el.setAttribute('aria-controls', this.menuId);
-      // Reading `this.isOpen` here is what keeps `aria-expanded` in sync: the
+      // Reading `this.isOpen` here is what keeps these attributes in sync: the
       // modifier consumes the tracked state, so its whole body re-runs on every
-      // open and close. That is more work than one attribute needs -- the
-      // listeners and the ResizeObserver are rebuilt too -- but it is also the
-      // only mechanism that covers `@isOpen` being flipped from outside in
-      // controlled mode, which an imperative update from `open()`/`close()`
-      // would miss. Correctness over the rebuild.
-      el.setAttribute('aria-expanded', this.isOpen.toString());
+      // open and close. That is more work than an attribute needs -- the
+      // listeners are rebuilt too -- but it is the only mechanism that covers
+      // `@isOpen` being flipped from outside in controlled mode, which an
+      // imperative update from `open()`/`close()` would miss.
+      const ariaMode = aria ?? 'menu';
+
+      if (ariaMode === 'menu') {
+        el.setAttribute('aria-haspopup', 'true');
+        el.setAttribute('aria-controls', this.menuId);
+        el.setAttribute('aria-expanded', this.isOpen.toString());
+      } else if (ariaMode === 'describedby') {
+        // A tooltip is its trigger's description, not a popup it owns. The
+        // attribute only exists while there is something to describe --
+        // pointing at an unrendered id is worse than pointing at nothing.
+        if (this.isOpen) {
+          el.setAttribute('aria-describedby', this.menuId);
+        } else {
+          el.removeAttribute('aria-describedby');
+        }
+      }
 
       return () => {
         if (eventType === 'hover') {
