@@ -616,5 +616,61 @@ module(
       await settled();
       assert.strictEqual(document.body.style.overflow, '');
     });
+
+    test('it closes on an outside click even while a nested portal is open', async function (assert) {
+      const isOpen = cell(true);
+      const isNestedOpen = cell(true);
+      const onClose = () => {
+        isOpen.current = false;
+      };
+      const onNestedClose = () => {
+        isNestedOpen.current = false;
+      };
+
+      await render(
+        <template>
+          <div id="outside-target">outside</div>
+
+          <Overlay
+            @isOpen={{isOpen.current}}
+            @onClose={{onClose}}
+            @disableTransitions={{true}}
+            @disableFocusTrap={{true}}
+          >
+            <div data-test-id="outer-content">
+              outer
+              <Overlay
+                @isOpen={{isNestedOpen.current}}
+                @onClose={{onNestedClose}}
+                @disableTransitions={{true}}
+                @disableFocusTrap={{true}}
+              >
+                <div data-test-id="inner-content">inner</div>
+              </Overlay>
+            </div>
+          </Overlay>
+        </template>
+      );
+
+      assert.dom('[data-test-id="outer-content"]').exists('outer is open');
+      assert.dom('[data-test-id="inner-content"]').exists('inner is open');
+
+      // A click inside the nested portal must NOT close the outer overlay.
+      await click('[data-test-id="inner-content"]');
+
+      assert.true(
+        isOpen.current,
+        'a click inside the nested portal keeps outer open'
+      );
+
+      // A click genuinely outside everything MUST close the outer overlay, even
+      // though a nested portal exists.
+      await click('#outside-target');
+
+      assert.false(
+        isOpen.current,
+        'a click outside closes outer despite the nested portal'
+      );
+    });
   }
 );
