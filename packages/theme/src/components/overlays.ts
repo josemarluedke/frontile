@@ -286,6 +286,55 @@ const overlayTransitions = {
       }
     }
   },
+  /**
+   * Tooltip: a short scale-and-approach. Deliberately faster than `scale` --
+   * a tooltip fires on every mouse pass, so a 200ms reveal reads as lag. The
+   * translate is toward the anchor and the origin is set from the resolved
+   * placement (see the `tooltip` component's `data-placement` classes), so it
+   * grows out of the trigger rather than appearing in space.
+   */
+  tooltip: {
+    enter: {
+      opacity: '0',
+      transform: 'scale(0.95) translateY(3px)',
+      // Reduced motion keeps the fade and drops the travel, rather than
+      // removing the transition -- the tooltip should still read as appearing.
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    },
+    enterActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '120ms',
+      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    enterTo: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leave: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leaveActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '80ms',
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    leaveTo: {
+      opacity: '0',
+      transform: 'scale(0.95) translateY(3px)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    }
+  },
   scale: {
     enter: {
       opacity: '0',
