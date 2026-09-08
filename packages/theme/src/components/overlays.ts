@@ -156,6 +156,20 @@ const slideTransition = {
   }
 };
 
+/**
+ * The arrow shared by `Popover.Content` and `Tooltip`.
+ *
+ * A rotated square rather than a border triangle, so it can carry the
+ * content's own border. `bg-inherit` is the point: the arrow takes whatever
+ * background the content has, so intents and custom classes never have to be
+ * restated here. Its offset along the content's edge comes from the
+ * floating-ui `arrow` middleware and is written as inline `left`/`top`; the
+ * static side is pinned by the component from the resolved placement.
+ */
+const overlayArrow = tv({
+  base: 'absolute w-2 h-2 rotate-45 bg-inherit border border-neutral-subtle pointer-events-none'
+});
+
 const overlayTransitions = {
   fade: {
     enter: {
@@ -284,11 +298,11 @@ const overlayTransitions = {
     },
     enterTo: {
       opacity: '1',
-      transform: 'translate(scaleX(1) scaleY(1))'
+      transform: 'scale(1)'
     },
     leave: {
       opacity: '1',
-      transform: 'translate(scaleX(1) scaleY(1))'
+      transform: 'scale(1)'
     },
     leaveActive: {
       transitionProperty: 'transform, opacity',
@@ -310,5 +324,6 @@ export type ModalVariants = VariantProps<typeof modal>;
 export type ModalSlots = keyof ReturnType<typeof modal>;
 export type BackdropVariants = VariantProps<typeof backdrop>;
 export type BackdropSlots = keyof ReturnType<typeof backdrop>;
+export type OverlayArrowVariants = VariantProps<typeof overlayArrow>;
 
-export { overlay, drawer, modal, overlayTransitions, backdrop };
+export { overlay, drawer, modal, overlayTransitions, backdrop, overlayArrow };

@@ -14,6 +14,7 @@ export * from './spinner';
 export * from './table';
 export * from './segmented-control';
 export * from './tabs';
+export * from './tooltip';
 
 export * from './notifications-container';
 export * from './notification-card';
