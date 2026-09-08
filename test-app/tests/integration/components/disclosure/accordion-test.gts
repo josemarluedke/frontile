@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll } from '@ember/test-helpers';
+import { render, find, findAll, click } from '@ember/test-helpers';
 import { Accordion } from 'frontile';
 
 module(
@@ -93,6 +93,98 @@ module(
         'panel ids differ'
       );
       assert.ok(find('[data-fr-accordion]'), 'root still renders');
+    });
+
+    test('single mode: opening one item closes the previous', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await click(triggers[0]!);
+      assert.dom(triggers[0]!).hasAria('expanded', 'true');
+      assert.dom(triggers[1]!).hasAria('expanded', 'false');
+
+      await click(triggers[1]!);
+      assert.dom(triggers[0]!).hasAria('expanded', 'false', 'the first closed');
+      assert.dom(triggers[1]!).hasAria('expanded', 'true');
+    });
+
+    test('single mode: clicking the open item closes it', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const trigger = find('[data-fr-accordion-trigger]')!;
+
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'true');
+
+      await click(trigger);
+      assert.dom(trigger).hasAria('expanded', 'false');
+    });
+
+    test('@isCollapsible={{false}} keeps the open item open', async function (assert) {
+      await render(
+        <template>
+          <Accordion @isCollapsible={{false}} as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two">Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+
+      await click(triggers[0]!);
+      await click(triggers[0]!);
+      assert
+        .dom(triggers[0]!)
+        .hasAria('expanded', 'true', 'cannot close the only open item');
+
+      await click(triggers[1]!);
+      assert.dom(triggers[1]!).hasAria('expanded', 'true', 'can still move');
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+    });
+
+    test('item @isDefaultOpen seeds the open item with no keys anywhere', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+            <a.Item @title="Two" @isDefaultOpen={{true}}>Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[1]!).hasAria('expanded', 'true');
+      assert.dom(triggers[0]!).hasAria('expanded', 'false');
+    });
+
+    test('single mode: with two @isDefaultOpen items, the first in document order wins', async function (assert) {
+      await render(
+        <template>
+          <Accordion as |a|>
+            <a.Item @title="One" @isDefaultOpen={{true}}>First body</a.Item>
+            <a.Item @title="Two" @isDefaultOpen={{true}}>Second body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      const triggers = findAll('[data-fr-accordion-trigger]');
+      assert.dom(triggers[0]!).hasAria('expanded', 'true');
+      assert.dom(triggers[1]!).hasAria('expanded', 'false');
     });
   }
 );
