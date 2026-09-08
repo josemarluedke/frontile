@@ -67,6 +67,7 @@ const SEMANTIC_COLOR_PREFIXES = [
   'success',
   'danger',
   'warning',
+  'surface-input',
   'surface-modal'
 ];
 

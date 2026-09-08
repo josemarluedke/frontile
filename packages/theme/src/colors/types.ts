@@ -381,6 +381,17 @@ export interface ThemeColors {
   'on-danger'?: OnColorCategory;
 
   /**
+   * Optional on-color override for the `surface-input` background.
+   *
+   * By default, auto-generated for optimal WCAG contrast, same as the other
+   * semantic categories.
+   *
+   * @example
+   * 'on-surface-input': '#111111'
+   */
+  'on-surface-input'?: string;
+
+  /**
    * Optional on-color override for the `surface-modal` background.
    *
    * By default, auto-generated for optimal WCAG contrast, same as the other
