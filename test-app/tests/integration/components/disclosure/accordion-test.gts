@@ -704,6 +704,21 @@ module(
     test('@hideIndicator removes the chevron', async function (assert) {
       await render(
         <template>
+          <Accordion as |a|>
+            <a.Item @title="One">First body</a.Item>
+          </Accordion>
+        </template>
+      );
+
+      // Establish the baseline before asserting the absence. On its own,
+      // "no svg" would pass against a component that never rendered an
+      // indicator at all, which is the regression this test exists to catch.
+      assert
+        .dom('[data-fr-accordion-trigger] svg')
+        .exists('the chevron renders by default');
+
+      await render(
+        <template>
           <Accordion @hideIndicator={{true}} as |a|>
             <a.Item @title="One">First body</a.Item>
           </Accordion>
@@ -712,7 +727,7 @@ module(
 
       assert
         .dom('[data-fr-accordion-trigger] svg')
-        .doesNotExist('no chevron rendered');
+        .doesNotExist('@hideIndicator removes it');
     });
 
     test('@classes merges into each slot', async function (assert) {
@@ -748,8 +763,18 @@ module(
         </template>
       );
 
-      assert.dom('.custom-item').exists();
-      assert.dom('.custom-item').hasAttribute('data-open', 'false');
+      const item = find('.custom-item')!;
+
+      // Both halves matter. Asserting only the custom class would pass against
+      // a regression that REPLACED the theme classes instead of appending to
+      // them, which is exactly what "appended" in the test name claims.
+      assert.dom(item).hasClass('custom-item', 'the custom class lands');
+      assert
+        .dom(item)
+        .hasClass(
+          'border-b',
+          'the default outlined variant theme class survives alongside it'
+        );
     });
   }
 );
