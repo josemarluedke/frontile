@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import { hash } from '@ember/helper';
-import { registerCustomStyles } from '@frontile/theme';
+import { registerCustomStyles, alert } from '@frontile/theme';
 import { tv } from 'tailwind-variants';
 import { Alert } from 'frontile';
 
@@ -257,6 +257,33 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         // module see the plain, unstyled `alert-icon` class they expect.
         registerCustomStyles({ alert: customAlertStyles() });
       }
+    });
+  });
+
+  module('shipped recipe', function () {
+    test('the real icon slot recipe carries the oversized-content clamp', function (assert) {
+      // The "icon slot sizing" test above proves the *technique* works, but
+      // it does so against a custom recipe registered locally in this file
+      // (`customAlertStyles`) rather than the recipe Alert actually ships
+      // with. If someone reverted the `icon` slot in
+      // `packages/theme/src/components/alert.ts` back to a plain
+      // `shrink-0 size-5`, that test would keep passing — nothing in it
+      // touches the shipped recipe. This test closes that gap by importing
+      // the real `alert` recipe directly from `@frontile/theme` and
+      // asserting its generated `icon` class string still contains the
+      // clamp.
+      //
+      // It deliberately does NOT go through `useStyles()`: this file calls
+      // `registerCustomStyles({ alert: customAlertStyles() })` at module
+      // scope (above), which swaps out what `useStyles()` returns for the
+      // whole module's run. Importing `alert` directly bypasses that swap
+      // and asserts against the production recipe itself.
+      const classes = alert().icon();
+
+      assert.true(
+        classes.includes('[&>*]:size-full'),
+        `expected the shipped icon slot to clamp yielded content with [&>*]:size-full, got: ${classes}`
+      );
     });
   });
 

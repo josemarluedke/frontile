@@ -23,7 +23,15 @@ const alert = tv({
     // fill that box rather than render at its own intrinsic size. Without
     // this, a yielded `Spinner` (`sm` = 24px) would overflow and
     // misalign inside the 20px slot — see alert.md's "Icon" section.
-    icon: 'shrink-0 size-5 inline-flex items-center justify-center [&>*]:size-full',
+    // The trailing `!` marks the utility `!important` (Tailwind v4 syntax):
+    // `[&>*]:size-full` is equal specificity to whatever size utility the
+    // yielded component carries on itself (e.g. Spinner's own `w-6 h-6`), so
+    // without `!` which one wins is just Tailwind's emission order — it
+    // happens to work today but could flip on a Tailwind version bump or
+    // build change with no structural guarantee. `!` makes this clamp always
+    // win instead of relying on that ordering. Same pattern as
+    // `motion-reduce:transform-none!` in notification-card.ts.
+    icon: 'shrink-0 size-5 inline-flex items-center justify-center [&>*]:size-full!',
     content: 'grow min-w-0 flex flex-col gap-1',
     title: 'font-label text-label-xs',
     description: 'text-body-2xs',
