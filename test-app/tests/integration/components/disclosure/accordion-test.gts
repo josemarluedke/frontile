@@ -510,7 +510,10 @@ module(
 
       // The APG accordion pattern puts every header in the tab order -- unlike
       // Tabs, which is a single-tab-stop roving-focus group. No trigger may
-      // carry tabindex="-1".
+      // carry tabindex="-1". Note this is only a proxy for real tabbability --
+      // a header disabled natively or made unreachable via an ancestor's
+      // tabindex="-1" would still pass this assertion -- but the harness has
+      // no reliable synthetic Tab traversal to check the stronger property.
       for (const trigger of findAll('[data-fr-accordion-trigger]')) {
         assert.dom(trigger).doesNotHaveAttribute('tabindex');
       }
@@ -522,7 +525,8 @@ module(
           <Accordion as |outer|>
             <outer.Item @title="Outer one" @isDefaultOpen={{true}}>
               <Accordion as |inner|>
-                <inner.Item @title="Inner one">Inner body</inner.Item>
+                <inner.Item @title="Inner one">Inner body one</inner.Item>
+                <inner.Item @title="Inner two">Inner body two</inner.Item>
               </Accordion>
             </outer.Item>
             <outer.Item @title="Outer two">Second body</outer.Item>
@@ -531,16 +535,44 @@ module(
       );
 
       const triggers = findAll('[data-fr-accordion-trigger]');
-      const innerTrigger = triggers.find(
-        (trigger) => trigger.textContent?.includes('Inner one')
-      )!;
+      const byLabel = (label: string): HTMLElement =>
+        triggers.find((trigger) => trigger.textContent?.includes(label))!;
 
-      await focus(innerTrigger);
-      await triggerKeyEvent(innerTrigger, 'keydown', 'ArrowDown');
+      const outerOne = byLabel('Outer one');
+      const outerTwo = byLabel('Outer two');
+      const innerOne = byLabel('Inner one');
+      const innerTwo = byLabel('Inner two');
+
+      // The outer root's `querySelectorAll` matches the nested triggers too --
+      // it is not limited to direct descendants -- so the `closest` filter in
+      // `#triggers()` is the only thing keeping them out of the outer walk.
+      // ArrowDown from the first outer header must reach the second outer
+      // header, stepping over both inner headers that sit between them in DOM
+      // order. Without the filter, focus would land on "Inner one" instead.
+      await focus(outerOne);
+      await triggerKeyEvent(outerOne, 'keydown', 'ArrowDown');
       assert.strictEqual(
         document.activeElement,
-        innerTrigger,
-        'the lone inner header keeps focus rather than jumping to the outer one'
+        outerTwo,
+        'the outer walk steps over the nested accordion'
+      );
+
+      // And the inner accordion walks only within itself: two headers, so
+      // ArrowDown moves to the second and then wraps back to the first rather
+      // than escaping into the outer list.
+      await focus(innerOne);
+      await triggerKeyEvent(innerOne, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        innerTwo,
+        'the inner walk stays inside the inner accordion'
+      );
+
+      await triggerKeyEvent(innerTwo, 'keydown', 'ArrowDown');
+      assert.strictEqual(
+        document.activeElement,
+        innerOne,
+        'the inner walk wraps within the inner accordion, not into the outer one'
       );
     });
   }
