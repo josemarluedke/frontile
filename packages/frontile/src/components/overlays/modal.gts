@@ -36,6 +36,7 @@ export interface ModalArgs extends Pick<
   | 'closeOnOutsideClick'
   | 'closeOnEscapeKey'
   | 'backdropTransition'
+  | 'preventAutoFocus'
 > {
   /**
    * The transition to be used in the Modal.
@@ -234,6 +235,7 @@ export default class Modal extends Component<ModalSignature> {
       @backdropTransition={{@backdropTransition}}
       @transition={{this.transition}}
       @closeOnOverlayElementClick={{true}}
+      @preventAutoFocus={{@preventAutoFocus}}
     >
       <div
         class={{this.classes.base class=@classes.base}}

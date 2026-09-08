@@ -591,6 +591,7 @@ accessible name.
 | -------------- | -------------------------------------------------------------------------- |
 | Focus on open  | Moves into the overlay; `ember-focus-trap` keeps it there                  |
 | Focus trap     | Disable with `@disableFocusTrap={{true}}`, or tune via `@focusTrapOptions` |
+| Focus without trap | Still auto-focuses the overlay when `@disableFocusTrap={{true}}`, unless `@preventAutoFocus={{true}}` |
 | Focus on close | Returns to the previously focused element, unless `@preventFocusRestore`   |
 | `Escape`       | Closes, unless `@closeOnEscapeKey={{false}}`                               |
 | Backdrop click | Closes, unless `@closeOnOutsideClick={{false}}`                            |

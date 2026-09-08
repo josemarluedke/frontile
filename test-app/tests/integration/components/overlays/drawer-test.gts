@@ -584,6 +584,53 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
     assert.dom('[data-test-id="drawer"]').doesNotHaveAttribute('aria-modal');
   });
 
+  test('it auto focuses when @disableFocusTrap={{true}}, unless @preventAutoFocus={{true}}', async function (assert) {
+    const isOpen = cell(false);
+    const preventAutoFocus = cell<boolean | undefined>(undefined);
+
+    await render(
+      <template>
+        <button type="button" data-test-id="some-button">Button</button>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @disableFocusTrap={{true}}
+          @preventAutoFocus={{preventAutoFocus.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    (find('[data-test-id="some-button"]') as HTMLButtonElement).focus();
+    isOpen.current = true;
+    await settled();
+    assert
+      .dom(document.activeElement)
+      .hasAttribute(
+        'data-component',
+        'overlay',
+        'auto focuses the drawer by default'
+      );
+
+    isOpen.current = false;
+    await settled();
+
+    preventAutoFocus.current = true;
+    (find('[data-test-id="some-button"]') as HTMLButtonElement).focus();
+    isOpen.current = true;
+    await settled();
+    assert
+      .dom(document.activeElement)
+      .hasAttribute(
+        'data-test-id',
+        'some-button',
+        'does not steal focus when @preventAutoFocus={{true}}'
+      );
+  });
+
   test('it does not render aria-labelledby when no header is rendered, and warns', async function (assert) {
     const isOpen = cell(true);
 
