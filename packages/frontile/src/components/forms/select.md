@@ -25,7 +25,9 @@ import { Select } from 'frontile';
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
 <template>
-  <Select @placeholder='Select an option' @items={{options}} />
+  <div class='demo-stack'>
+    <Select @placeholder='Select an option' @items={{options}} />
+  </div>
 </template>
 ```
 
@@ -43,14 +45,16 @@ import { Select } from 'frontile';
 const options = ['Option 1', 'Option 2', 'Option 3'];
 
 <template>
-  <div class='grid grid-cols-2 gap-4'>
-    <Select @intent='default' @placeholder='Default' @items={{options}} />
-    <Select @intent='primary' @placeholder='Primary' @items={{options}} />
-    <Select @intent='secondary' @placeholder='Secondary' @items={{options}} />
-    <Select @intent='tertiary' @placeholder='Tertiary' @items={{options}} />
-    <Select @intent='success' @placeholder='Success' @items={{options}} />
-    <Select @intent='warning' @placeholder='Warning' @items={{options}} />
-    <Select @intent='danger' @placeholder='Danger' @items={{options}} />
+  <div class='demo-stack'>
+    <div class='grid grid-cols-2 gap-4'>
+      <Select @intent='default' @placeholder='Default' @items={{options}} />
+      <Select @intent='primary' @placeholder='Primary' @items={{options}} />
+      <Select @intent='secondary' @placeholder='Secondary' @items={{options}} />
+      <Select @intent='tertiary' @placeholder='Tertiary' @items={{options}} />
+      <Select @intent='success' @placeholder='Success' @items={{options}} />
+      <Select @intent='warning' @placeholder='Warning' @items={{options}} />
+      <Select @intent='danger' @placeholder='Danger' @items={{options}} />
+    </div>
   </div>
 </template>
 ```
@@ -74,7 +78,7 @@ export default class DataBoundSingleSelect extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -173,7 +177,7 @@ export default class SelectFormValidation extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-6'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -258,7 +262,7 @@ export default class FilterableSelect extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -313,30 +317,32 @@ export default class CustomUserSelect extends Component {
   };
 
   <template>
-    <Select
-      @isFilterable={{true}}
-      @placeholder='Select a user'
-      @items={{users}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:item as |o|>
-        <o.Item>
-          <div class='flex items-center space-x-4'>
-            <img
-              src='{{o.item.avatar}}'
-              alt='{{o.item.name}}'
-              class='w-10 h-10 rounded-full'
-            />
-            <div>
-              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
-              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+    <div class='demo-stack'>
+      <Select
+        @isFilterable={{true}}
+        @placeholder='Select a user'
+        @items={{users}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:item as |o|>
+          <o.Item>
+            <div class='flex items-center space-x-4'>
+              <img
+                src='{{o.item.avatar}}'
+                alt='{{o.item.name}}'
+                class='w-10 h-10 rounded-full'
+              />
+              <div>
+                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+              </div>
             </div>
-          </div>
-        </o.Item>
-      </:item>
-    </Select>
-    <p class='mt-4'>Selected: {{this.selectedKey}}</p>
+          </o.Item>
+        </:item>
+      </Select>
+      <p class='mt-4'>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 
@@ -412,80 +418,82 @@ export default class CustomSelectedItem extends Component {
   };
 
   <template>
-    <Select
-      @label='Assignee'
-      @placeholder='Select a user'
-      @items={{people}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:item as |o|>
-        <o.Item>
-          <div class='flex items-center space-x-4'>
-            <img
-              src='{{o.item.avatar}}'
-              alt=''
-              class='w-10 h-10 rounded-full'
-            />
-            <div>
-              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
-              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+    <div class='demo-stack'>
+      <Select
+        @label='Assignee'
+        @placeholder='Select a user'
+        @items={{people}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:item as |o|>
+          <o.Item>
+            <div class='flex items-center space-x-4'>
+              <img
+                src='{{o.item.avatar}}'
+                alt=''
+                class='w-10 h-10 rounded-full'
+              />
+              <div>
+                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+              </div>
             </div>
-          </div>
-        </o.Item>
-      </:item>
-      <:selectedItem as |selected|>
-        <span class='flex items-center space-x-2'>
-          {{#if selected.item}}
-            <img
-              src='{{selected.item.avatar}}'
-              alt=''
-              class='w-5 h-5 rounded-full'
-            />
-          {{/if}}
-          <span>{{selected.label}}</span>
-        </span>
-      </:selectedItem>
-    </Select>
+          </o.Item>
+        </:item>
+        <:selectedItem as |selected|>
+          <span class='flex items-center space-x-2'>
+            {{#if selected.item}}
+              <img
+                src='{{selected.item.avatar}}'
+                alt=''
+                class='w-5 h-5 rounded-full'
+              />
+            {{/if}}
+            <span>{{selected.label}}</span>
+          </span>
+        </:selectedItem>
+      </Select>
 
-    <Select
-      @label='Reviewers'
-      @selectionMode='multiple'
-      @allowEmpty={{true}}
-      @placeholder='Select reviewers'
-      @items={{people}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onMultipleSelectionChange}}
-      class='mt-6'
-    >
-      <:item as |o|>
-        <o.Item>
-          <div class='flex items-center space-x-4'>
-            <img
-              src='{{o.item.avatar}}'
-              alt=''
-              class='w-10 h-10 rounded-full'
-            />
-            <div>
-              <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
-              <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+      <Select
+        @label='Reviewers'
+        @selectionMode='multiple'
+        @allowEmpty={{true}}
+        @placeholder='Select reviewers'
+        @items={{people}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onMultipleSelectionChange}}
+        class='mt-6'
+      >
+        <:item as |o|>
+          <o.Item>
+            <div class='flex items-center space-x-4'>
+              <img
+                src='{{o.item.avatar}}'
+                alt=''
+                class='w-10 h-10 rounded-full'
+              />
+              <div>
+                <div class='font-medium text-neutral-strong'>{{o.item.name}}</div>
+                <div class='text-sm text-neutral-soft'>{{o.item.email}}</div>
+              </div>
             </div>
-          </div>
-        </o.Item>
-      </:item>
-      <:selectedItem as |selected|>
-        <span class='flex items-center space-x-1'>
-          {{#if selected.item}}
-            <img
-              src='{{selected.item.avatar}}'
-              alt=''
-              class='w-4 h-4 rounded-full'
-            />
-          {{/if}}
-          <span>{{selected.label}}</span>
-        </span>
-      </:selectedItem>
-    </Select>
+          </o.Item>
+        </:item>
+        <:selectedItem as |selected|>
+          <span class='flex items-center space-x-1'>
+            {{#if selected.item}}
+              <img
+                src='{{selected.item.avatar}}'
+                alt=''
+                class='w-4 h-4 rounded-full'
+              />
+            {{/if}}
+            <span>{{selected.label}}</span>
+          </span>
+        </:selectedItem>
+      </Select>
+    </div>
   </template>
 }
 
@@ -535,21 +543,23 @@ export default class DeclarativeItemsSelect extends Component {
   };
 
   <template>
-    <Select
-      @placeholder='Select...'
-      @onSelectionChange={{this.onSelectionChange}}
-      @selectedKeys={{this.selectedKeys}}
-      @disabledKeys={{array 'item-3' 'item-4'}}
-      @allowEmpty={{true}}
-      as |l|
-    >
-      <l.Item @key='item-1'>Item 1</l.Item>
-      <l.Item @key='item-2'>Item 2</l.Item>
-      <l.Item @key='item-3'>Item 3</l.Item>
-      <l.Item @key='item-4'>Item 4</l.Item>
-      <l.Item @key='item-5'>Item 5</l.Item>
-    </Select>
-    <p>Selected: {{this.selectedKeys}}</p>
+    <div class='demo-stack'>
+      <Select
+        @placeholder='Select...'
+        @onSelectionChange={{this.onSelectionChange}}
+        @selectedKeys={{this.selectedKeys}}
+        @disabledKeys={{array 'item-3' 'item-4'}}
+        @allowEmpty={{true}}
+        as |l|
+      >
+        <l.Item @key='item-1'>Item 1</l.Item>
+        <l.Item @key='item-2'>Item 2</l.Item>
+        <l.Item @key='item-3'>Item 3</l.Item>
+        <l.Item @key='item-4'>Item 4</l.Item>
+        <l.Item @key='item-5'>Item 5</l.Item>
+      </Select>
+      <p>Selected: {{this.selectedKeys}}</p>
+    </div>
   </template>
 }
 ```
@@ -579,14 +589,16 @@ export default class ClearableSelectExample extends Component {
   };
 
   <template>
-    <Select
-      @placeholder='Select a color'
-      @items={{colors}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-      @isClearable={{true}}
-    />
-    <p>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <Select
+        @placeholder='Select a color'
+        @items={{colors}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+        @isClearable={{true}}
+      />
+      <p>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -612,14 +624,16 @@ export default class LoadingSelectExample extends Component {
   };
 
   <template>
-    <Select
-      @placeholder='Select a size'
-      @items={{sizes}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-      @isLoading={{true}}
-    />
-    <p>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <Select
+        @placeholder='Select a size'
+        @items={{sizes}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+        @isLoading={{true}}
+      />
+      <p>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -645,26 +659,28 @@ export default class CustomContentBlocksSelect extends Component {
   };
 
   <template>
-    <Select
-      @isFilterable={{true}}
-      @placeholder='Search fruits...'
-      @items={{fruits}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    >
-      <:startContent>
-        <span class='mr-2'>🔍</span>
-      </:startContent>
-      <:endContent>
-        <span class='ml-2'>▼</span>
-      </:endContent>
-      <:emptyContent>
-        <div class='p-2 text-center text-neutral'>
-          No fruits found.
-        </div>
-      </:emptyContent>
-    </Select>
-    <p>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <Select
+        @isFilterable={{true}}
+        @placeholder='Search fruits...'
+        @items={{fruits}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      >
+        <:startContent>
+          <span class='mr-2'>🔍</span>
+        </:startContent>
+        <:endContent>
+          <span class='ml-2'>▼</span>
+        </:endContent>
+        <:emptyContent>
+          <div class='p-2 text-center text-neutral'>
+            No fruits found.
+          </div>
+        </:emptyContent>
+      </Select>
+      <p>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -688,14 +704,16 @@ export default class NativeSelectExample extends Component {
   };
 
   <template>
-    <NativeSelect
-      @allowEmpty={{true}}
-      @placeholder='Select an option'
-      @items={{options}}
-      @selectedKey={{this.selectedKey}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4'>Selected: {{this.selectedKey}}</p>
+    <div class='demo-stack'>
+      <NativeSelect
+        @allowEmpty={{true}}
+        @placeholder='Select an option'
+        @items={{options}}
+        @selectedKey={{this.selectedKey}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+      <p class='mt-4'>Selected: {{this.selectedKey}}</p>
+    </div>
   </template>
 }
 ```
@@ -730,15 +748,17 @@ export default class BasicMultipleSelect extends Component {
   };
 
   <template>
-    <Select
-      @selectionMode='multiple'
-      @label='Languages'
-      @placeholder='Select languages'
-      @items={{languages}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
-    <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+    <div class='demo-stack'>
+      <Select
+        @selectionMode='multiple'
+        @label='Languages'
+        @placeholder='Select languages'
+        @items={{languages}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+      <p class='mt-4'>Selected: {{this.selectedKeys}}</p>
+    </div>
   </template>
 }
 ```
@@ -781,25 +801,27 @@ export default class RemovableChipsSelect extends Component {
   };
 
   <template>
-    <div class='grid gap-4 md:grid-cols-2'>
-      <Select
-        @selectionMode='multiple'
-        @label='At least one topping'
-        @placeholder='Select toppings'
-        @items={{toppings}}
-        @selectedKeys={{this.required}}
-        @onSelectionChange={{this.onRequiredChange}}
-      />
-      <Select
-        @selectionMode='multiple'
-        @label='Any number of toppings'
-        @placeholder='Select toppings'
-        @items={{toppings}}
-        @selectedKeys={{this.optional}}
-        @onSelectionChange={{this.onOptionalChange}}
-        @allowEmpty={{true}}
-        @isClearable={{true}}
-      />
+    <div class='demo-stack'>
+      <div class='grid gap-4 md:grid-cols-2'>
+        <Select
+          @selectionMode='multiple'
+          @label='At least one topping'
+          @placeholder='Select toppings'
+          @items={{toppings}}
+          @selectedKeys={{this.required}}
+          @onSelectionChange={{this.onRequiredChange}}
+        />
+        <Select
+          @selectionMode='multiple'
+          @label='Any number of toppings'
+          @placeholder='Select toppings'
+          @items={{toppings}}
+          @selectedKeys={{this.optional}}
+          @onSelectionChange={{this.onOptionalChange}}
+          @allowEmpty={{true}}
+          @isClearable={{true}}
+        />
+      </div>
     </div>
   </template>
 }
@@ -835,31 +857,33 @@ export default class ChipOptionsSelect extends Component {
   };
 
   <template>
-    <div class='grid gap-4 md:grid-cols-2'>
-      <Select
-        @selectionMode='multiple'
-        @intent='primary'
-        @label='Inherits @intent'
-        @placeholder='Select tags'
-        @items={{tags}}
-        @selectedKeys={{this.inherited}}
-        @onSelectionChange={{this.onInheritedChange}}
-      />
-      <Select
-        @selectionMode='multiple'
-        @label='Custom @chip'
-        @placeholder='Select tags'
-        @items={{tags}}
-        @selectedKeys={{this.customized}}
-        @onSelectionChange={{this.onCustomizedChange}}
-        @chip={{hash
-          appearance='outlined'
-          intent='success'
-          size='md'
-          radius='full'
-          withDot=true
-        }}
-      />
+    <div class='demo-stack'>
+      <div class='grid gap-4 md:grid-cols-2'>
+        <Select
+          @selectionMode='multiple'
+          @intent='primary'
+          @label='Inherits @intent'
+          @placeholder='Select tags'
+          @items={{tags}}
+          @selectedKeys={{this.inherited}}
+          @onSelectionChange={{this.onInheritedChange}}
+        />
+        <Select
+          @selectionMode='multiple'
+          @label='Custom @chip'
+          @placeholder='Select tags'
+          @items={{tags}}
+          @selectedKeys={{this.customized}}
+          @onSelectionChange={{this.onCustomizedChange}}
+          @chip={{hash
+            appearance='outlined'
+            intent='success'
+            size='md'
+            radius='full'
+            withDot=true
+          }}
+        />
+      </div>
     </div>
   </template>
 }
@@ -887,15 +911,17 @@ export default class TextDisplayMultipleSelect extends Component {
   };
 
   <template>
-    <Select
-      @selectionMode='multiple'
-      @selectedItemsDisplay='text'
-      @label='Permissions'
-      @placeholder='Select permissions'
-      @items={{permissions}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
+    <div class='demo-stack'>
+      <Select
+        @selectionMode='multiple'
+        @selectedItemsDisplay='text'
+        @label='Permissions'
+        @placeholder='Select permissions'
+        @items={{permissions}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -937,16 +963,18 @@ export default class FilterableMultipleSelect extends Component {
   };
 
   <template>
-    <Select
-      @selectionMode='multiple'
-      @isFilterable={{true}}
-      @allowEmpty={{true}}
-      @label='Countries'
-      @placeholder='Search countries'
-      @items={{countries}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-    />
+    <div class='demo-stack'>
+      <Select
+        @selectionMode='multiple'
+        @isFilterable={{true}}
+        @allowEmpty={{true}}
+        @label='Countries'
+        @placeholder='Search countries'
+        @items={{countries}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onSelectionChange}}
+      />
+    </div>
   </template>
 }
 ```
@@ -973,20 +1001,22 @@ export default class StyledChipsSelect extends Component {
   };
 
   <template>
-    <Select
-      @selectionMode='multiple'
-      @label='Teams'
-      @placeholder='Select teams'
-      @items={{teams}}
-      @selectedKeys={{this.selectedKeys}}
-      @onSelectionChange={{this.onSelectionChange}}
-      @allowEmpty={{true}}
-      @classes={{hash
-        chipsField='border-primary-soft'
-        chipsContainer='gap-2'
-        chip='bg-primary-subtle text-primary-strong'
-      }}
-    />
+    <div class='demo-stack'>
+      <Select
+        @selectionMode='multiple'
+        @label='Teams'
+        @placeholder='Select teams'
+        @items={{teams}}
+        @selectedKeys={{this.selectedKeys}}
+        @onSelectionChange={{this.onSelectionChange}}
+        @allowEmpty={{true}}
+        @classes={{hash
+          chipsField='border-primary-soft'
+          chipsContainer='gap-2'
+          chip='bg-primary-subtle text-primary-strong'
+        }}
+      />
+    </div>
   </template>
 }
 ```

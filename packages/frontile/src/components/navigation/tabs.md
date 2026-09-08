@@ -28,17 +28,19 @@ one renders.
 import { Tabs } from 'frontile';
 
 <template>
-  <Tabs @defaultValue='account' as |t|>
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-      <t.Tab @value='billing'>Billing</t.Tab>
-    </t.List>
+  <div class='demo-stack items-center'>
+    <Tabs @defaultValue='account' as |t|>
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+        <t.Tab @value='billing'>Billing</t.Tab>
+      </t.List>
 
-    <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
-    <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
-    <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
-  </Tabs>
+      <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
+      <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
+      <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
+    </Tabs>
+  </div>
 </template>
 ```
 
@@ -68,7 +70,7 @@ export default class Example extends Component {
   };
 
   <template>
-    <div class='flex flex-col items-start gap-3'>
+    <div class='demo-stack items-center'>
       <Tabs @value={{this.section}} @onChange={{this.onChange}} as |t|>
         <t.List @label='Settings'>
           <t.Tab @value='account'>Account</t.Tab>
@@ -96,7 +98,7 @@ header, where the solid track would compete with surrounding content.
 import { Tabs } from 'frontile';
 
 <template>
-  <div class='flex flex-col items-start gap-6'>
+  <div class='demo-stack items-center'>
     <Tabs @defaultValue='account' @variant='solid' as |t|>
       <t.List @label='Solid'>
         <t.Tab @value='account'>Account</t.Tab>
@@ -128,7 +130,7 @@ import { Tabs } from 'frontile';
 import { array } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col items-start gap-3'>
+  <div class='demo-stack items-center'>
     {{#each
       (array
         'default' 'primary' 'secondary' 'tertiary' 'success' 'warning' 'danger'
@@ -153,7 +155,7 @@ import { Tabs } from 'frontile';
 import { array } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col items-start gap-3'>
+  <div class='demo-stack items-center'>
     {{#each (array 'sm' 'md' 'lg') as |size|}}
       <Tabs @defaultValue='account' @size={{size}} as |t|>
         <t.List @label='{{size}} size'>
@@ -176,17 +178,19 @@ list rather than beneath it.
 import { Tabs } from 'frontile';
 
 <template>
-  <Tabs @defaultValue='account' @orientation='vertical' as |t|>
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-      <t.Tab @value='billing'>Billing</t.Tab>
-    </t.List>
+  <div class='demo-stack items-center'>
+    <Tabs @defaultValue='account' @orientation='vertical' as |t|>
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+        <t.Tab @value='billing'>Billing</t.Tab>
+      </t.List>
 
-    <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
-    <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
-    <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
-  </Tabs>
+      <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
+      <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
+      <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
+    </Tabs>
+  </div>
 </template>
 ```
 
@@ -198,22 +202,24 @@ sidebar where a filled track would compete with the panel beside it.
 import { Tabs } from 'frontile';
 
 <template>
-  <Tabs
-    @defaultValue='account'
-    @orientation='vertical'
-    @variant='underline'
-    as |t|
-  >
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-      <t.Tab @value='billing'>Billing</t.Tab>
-    </t.List>
+  <div class='demo-stack items-center'>
+    <Tabs
+      @defaultValue='account'
+      @orientation='vertical'
+      @variant='underline'
+      as |t|
+    >
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+        <t.Tab @value='billing'>Billing</t.Tab>
+      </t.List>
 
-    <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
-    <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
-    <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
-  </Tabs>
+      <t.Panel @value='account'>Update your name, email, and photo.</t.Panel>
+      <t.Panel @value='security'>Manage passwords and two-factor auth.</t.Panel>
+      <t.Panel @value='billing'>View invoices and update your plan.</t.Panel>
+    </Tabs>
+  </div>
 </template>
 ```
 
@@ -226,22 +232,24 @@ every tab equal width.
 import { Tabs } from 'frontile';
 
 <template>
-  <div
-    class='flex w-96 max-w-full flex-col items-start gap-3 rounded-lg border border-neutral-soft p-4'
-  >
-    <Tabs @defaultValue='account' as |t|>
-      <t.List @label='Default width'>
-        <t.Tab @value='account'>Account</t.Tab>
-        <t.Tab @value='security'>Security</t.Tab>
-      </t.List>
-    </Tabs>
+  <div class='demo-stack items-center'>
+    <div
+      class='flex w-96 max-w-full flex-col items-start gap-3 rounded-lg border border-neutral-soft p-4'
+    >
+      <Tabs @defaultValue='account' as |t|>
+        <t.List @label='Default width'>
+          <t.Tab @value='account'>Account</t.Tab>
+          <t.Tab @value='security'>Security</t.Tab>
+        </t.List>
+      </Tabs>
 
-    <Tabs @defaultValue='account' @isFullWidth={{true}} as |t|>
-      <t.List @label='Full width'>
-        <t.Tab @value='account'>Account</t.Tab>
-        <t.Tab @value='security'>Security</t.Tab>
-      </t.List>
-    </Tabs>
+      <Tabs @defaultValue='account' @isFullWidth={{true}} as |t|>
+        <t.List @label='Full width'>
+          <t.Tab @value='account'>Account</t.Tab>
+          <t.Tab @value='security'>Security</t.Tab>
+        </t.List>
+      </Tabs>
+    </div>
   </div>
 </template>
 ```
@@ -256,13 +264,15 @@ navigation skips it and it cannot be clicked or selected. `@isDisabled` on
 import { Tabs } from 'frontile';
 
 <template>
-  <Tabs @defaultValue='account' as |t|>
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='billing' @isDisabled={{true}}>Billing</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-    </t.List>
-  </Tabs>
+  <div class='demo-stack items-center'>
+    <Tabs @defaultValue='account' as |t|>
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='billing' @isDisabled={{true}}>Billing</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+      </t.List>
+    </Tabs>
+  </div>
 </template>
 ```
 
@@ -279,17 +289,19 @@ shouldn't trigger it each time.
 import { Tabs } from 'frontile';
 
 <template>
-  <Tabs @defaultValue='account' @activationMode='manual' as |t|>
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-      <t.Tab @value='billing'>Billing</t.Tab>
-    </t.List>
+  <div class='demo-stack items-center'>
+    <Tabs @defaultValue='account' @activationMode='manual' as |t|>
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+        <t.Tab @value='billing'>Billing</t.Tab>
+      </t.List>
 
-    <t.Panel @value='account'>Account panel</t.Panel>
-    <t.Panel @value='security'>Security panel</t.Panel>
-    <t.Panel @value='billing'>Billing panel</t.Panel>
-  </Tabs>
+      <t.Panel @value='account'>Account panel</t.Panel>
+      <t.Panel @value='security'>Security panel</t.Panel>
+      <t.Panel @value='billing'>Billing panel</t.Panel>
+    </Tabs>
+  </div>
 </template>
 ```
 
@@ -305,19 +317,21 @@ import { Tabs } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <Tabs
-    @defaultValue='account'
-    @classes={{hash
-      tab='data-[selected=true]:text-on-primary'
-      indicator='bg-primary'
-    }}
-    as |t|
-  >
-    <t.List @label='Settings'>
-      <t.Tab @value='account'>Account</t.Tab>
-      <t.Tab @value='security'>Security</t.Tab>
-    </t.List>
-  </Tabs>
+  <div class='demo-stack items-center'>
+    <Tabs
+      @defaultValue='account'
+      @classes={{hash
+        tab='data-[selected=true]:text-on-primary'
+        indicator='bg-primary'
+      }}
+      as |t|
+    >
+      <t.List @label='Settings'>
+        <t.Tab @value='account'>Account</t.Tab>
+        <t.Tab @value='security'>Security</t.Tab>
+      </t.List>
+    </Tabs>
+  </div>
 </template>
 ```
 

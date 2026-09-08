@@ -35,6 +35,15 @@
   @apply w-full;
 }
 
+/* Wide demos — data tables, side-by-side comparisons — need more than the
+   `max-w-xl` reading measure that suits a column of form controls. This
+   modifier is declared after `.demo-stack` so, at equal specificity, its
+   `max-width` deterministically wins; it is used as `class='demo-stack
+   demo-stack--wide'` so the `:has()` opt-in above still applies. */
+.demo-stack--wide {
+  @apply max-w-none;
+}
+
 .docfy-demo__description {
   @apply pb-5;
 }
