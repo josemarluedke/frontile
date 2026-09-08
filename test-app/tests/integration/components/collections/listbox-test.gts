@@ -765,7 +765,8 @@ module(
               label: 'label',
               description: ['description'],
               selectedIcon: ['selectedIcon'],
-              shortcut: ['shortcut']
+              shortcut: ['shortcut'],
+              submenuIndicator: ['submenu-indicator']
             },
             variants: {
               appearance: {

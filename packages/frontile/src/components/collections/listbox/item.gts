@@ -161,14 +161,47 @@ class ListboxItem extends Component<ListboxItemSignature> {
   get classNames() {
     const { listboxItem } = useStyles();
 
-    const {
-      base,
-      descriptionWrapper,
-      label,
-      description,
-      selectedIcon,
-      submenuIndicator
-    } = listboxItem({
+    const { base, descriptionWrapper, label, description, selectedIcon } =
+      listboxItem({
+        appearance: this.args.appearance || 'default',
+        intent: this.args.intent || 'default',
+        isDisabled: this.listItem?.isDisabled,
+        isSelected: this.listItem?.isSelected,
+        isActive: this.listItem?.isActive,
+        withDivider: this.args.withDivider
+      });
+
+    return {
+      base: base({ class: this.args.class }),
+      descriptionWrapper: descriptionWrapper(),
+      label: label(),
+      description: description(),
+      selectedIcon: selectedIcon()
+    };
+  }
+
+  /**
+   * The `submenuIndicator` slot is only ever rendered on a sub-trigger, so it
+   * is looked up here rather than in `classNames`, and only when
+   * `@hasSubmenu` is set — a plain item never pays for it.
+   *
+   * `registerCustomStyles` (`packages/theme/src/index.ts`) shallow-replaces:
+   * a consumer supplying their own `listboxItem` via `tv({...})` swaps out
+   * the whole config, not just the slots they mention. `tv()` in turn only
+   * produces a function for a slot it was actually given. So a third-party
+   * override written before this slot existed has no `submenuIndicator` key
+   * at all, and calling it would throw. A published component library must
+   * not crash a consumer's app over a stale override, so this stays
+   * defensive — but the check now only runs for sub-triggers, not for every
+   * item on every render.
+   */
+  get submenuIndicatorClass(): string | undefined {
+    if (!this.args.hasSubmenu) {
+      return undefined;
+    }
+
+    const { listboxItem } = useStyles();
+    const { submenuIndicator } = listboxItem({
       appearance: this.args.appearance || 'default',
       intent: this.args.intent || 'default',
       isDisabled: this.listItem?.isDisabled,
@@ -177,21 +210,9 @@ class ListboxItem extends Component<ListboxItemSignature> {
       withDivider: this.args.withDivider
     });
 
-    return {
-      base: base({ class: this.args.class }),
-      descriptionWrapper: descriptionWrapper(),
-      label: label(),
-      description: description(),
-      selectedIcon: selectedIcon(),
-      // Guarded rather than called unconditionally: a consumer's
-      // `registerCustomStyles` override may replace `listboxItem` with a
-      // `tv()` config that predates this slot and so never defines it. `tv()`
-      // only produces functions for slots it was actually given, so an older
-      // override has no `submenuIndicator` key at all -- calling it
-      // unconditionally would throw for every item, not just sub-triggers.
-      submenuIndicator:
-        typeof submenuIndicator === 'function' ? submenuIndicator() : undefined
-    };
+    return typeof submenuIndicator === 'function'
+      ? submenuIndicator()
+      : undefined;
   }
 
   get shortcutAppearance() {
@@ -320,7 +341,7 @@ class ListboxItem extends Component<ListboxItemSignature> {
         {{#unless (has-block "end")}}
           <span
             data-test-id="listbox-item-submenu-indicator"
-            class={{this.classNames.submenuIndicator}}
+            class={{this.submenuIndicatorClass}}
           >
             <ChevronRightIcon class="h-full w-full" />
           </span>
