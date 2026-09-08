@@ -384,7 +384,7 @@ module(
       // group-disabled (deleting its guard fails the test). `Accordion#toggle`'s
       // own `isDisabled` guard is unreachable via public API due to the OR'd
       // short-circuit in `AccordionItem#isDisabled`, making it defense in depth.
-      triggers[0]!.click();
+      (triggers[0] as HTMLElement).click();
       await settled();
 
       assert.dom(triggers[0]!).hasAria('expanded', 'false');
@@ -545,7 +545,9 @@ module(
 
       const triggers = findAll('[data-fr-accordion-trigger]');
       const byLabel = (label: string): HTMLElement =>
-        triggers.find((trigger) => trigger.textContent?.includes(label))!;
+        triggers.find((trigger) =>
+          trigger.textContent?.includes(label)
+        )! as HTMLElement;
 
       const outerOne = byLabel('Outer one');
       const outerTwo = byLabel('Outer two');
