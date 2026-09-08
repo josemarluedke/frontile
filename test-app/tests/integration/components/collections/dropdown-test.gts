@@ -678,5 +678,101 @@ module(
         .dom('[data-key="nested"]')
         .doesNotExist('submenu did not open');
     });
+
+    test('submenus nest to arbitrary depth', async function (assert) {
+      const actions: string[] = [];
+      const onAction = (key: string) => {
+        actions.push(key);
+      };
+
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Share</d.Trigger>
+            <d.Menu
+              @onAction={{onAction}}
+              @disableTransitions={{true}}
+              as |Item Sub|
+            >
+              <Item @key="copy-link">Copy Link</Item>
+
+              <Sub as |s1|>
+                <s1.Trigger data-test-id="sub-1">Other</s1.Trigger>
+                <s1.Menu as |Item Sub|>
+                  <Item @key="whatsapp">WhatsApp</Item>
+
+                  <Sub as |s2|>
+                    <s2.Trigger data-test-id="sub-2">Email</s2.Trigger>
+                    <s2.Menu as |Item|>
+                      <Item @key="work-email">Work email</Item>
+                      <Item @key="personal-email">Personal email</Item>
+                    </s2.Menu>
+                  </Sub>
+                </s1.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="sub-1"]');
+      await settled();
+      assert.dom('[data-key="whatsapp"]').exists('level 1 opened');
+
+      await click('[data-test-id="sub-2"]');
+      await settled();
+      assert.dom('[data-key="work-email"]').exists('level 2 opened');
+      assert.dom('[data-key="whatsapp"]').exists('level 1 stayed open');
+      assert.dom('[data-key="copy-link"]').exists('the root stayed open');
+
+      await click('[data-key="work-email"]');
+      await settled();
+
+      assert.deepEqual(actions, ['work-email'], 'the root onAction saw depth 2');
+      assert.dom('[data-key="copy-link"]').doesNotExist('all three levels closed');
+    });
+
+    test('Escape at depth 2 closes one level at a time', async function (assert) {
+      await render(
+        <template>
+          <Dropdown as |d|>
+            <d.Trigger>Share</d.Trigger>
+            <d.Menu @disableTransitions={{true}} as |Item Sub|>
+              <Item @key="copy-link">Copy Link</Item>
+              <Sub as |s1|>
+                <s1.Trigger data-test-id="sub-1">Other</s1.Trigger>
+                <s1.Menu as |Item Sub|>
+                  <Item @key="whatsapp">WhatsApp</Item>
+                  <Sub as |s2|>
+                    <s2.Trigger data-test-id="sub-2">Email</s2.Trigger>
+                    <s2.Menu as |Item|>
+                      <Item @key="work-email">Work email</Item>
+                    </s2.Menu>
+                  </Sub>
+                </s1.Menu>
+              </Sub>
+            </d.Menu>
+          </Dropdown>
+        </template>
+      );
+
+      await click('[data-test-id="dropdown-trigger"]');
+      await click('[data-test-id="sub-1"]');
+      await settled();
+      await click('[data-test-id="sub-2"]');
+      await settled();
+
+      const deepestId = document
+        .querySelector('[data-test-id="sub-2"]')
+        ?.getAttribute('aria-controls') as string;
+
+      await triggerKeyEvent(`#${deepestId}`, 'keydown', 'Escape');
+      await settled();
+
+      assert.dom('[data-key="work-email"]').doesNotExist('depth 2 closed');
+      assert.dom('[data-key="whatsapp"]').exists('depth 1 survived');
+      assert.dom('[data-key="copy-link"]').exists('the root survived');
+    });
   }
 );
