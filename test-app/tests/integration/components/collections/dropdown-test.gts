@@ -466,13 +466,20 @@ module(
         .dom('[data-test-id="dropdown-submenu-trigger"]')
         .hasAttribute('data-active', 'true', 'the sub-trigger is active');
 
-      await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowRight');
-      await settled();
+      await triggerKeyEvent(
+        '[data-test-id="listbox"]',
+        'keydown',
+        'ArrowRight'
+      );
 
       assert.dom('[data-key="first-nested"]').exists('ArrowRight opened it');
       assert
         .dom('[data-key="first-nested"]')
-        .hasAttribute('data-active', 'true', 'keyboard open highlights the first row');
+        .hasAttribute(
+          'data-active',
+          'true',
+          'keyboard open highlights the first row'
+        );
     });
 
     test('ArrowLeft closes the submenu and leaves the parent open', async function (assert) {
@@ -495,7 +502,7 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       await click('[data-test-id="dropdown-submenu-trigger"]');
-      await settled();
+
       assert.dom('[data-key="nested"]').exists('open to begin with');
 
       const submenuId = document
@@ -503,7 +510,6 @@ module(
         ?.getAttribute('aria-controls') as string;
 
       await triggerKeyEvent(`#${submenuId}`, 'keydown', 'ArrowLeft');
-      await settled();
 
       assert.dom('[data-key="nested"]').doesNotExist('the submenu closed');
       assert.dom('[data-key="edit"]').exists('the parent stayed open');
@@ -529,14 +535,12 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       await click('[data-test-id="dropdown-submenu-trigger"]');
-      await settled();
 
       const submenuId = document
         .querySelector('[data-test-id="dropdown-submenu-trigger"]')
         ?.getAttribute('aria-controls') as string;
 
       await triggerKeyEvent(`#${submenuId}`, 'keydown', 'Escape');
-      await settled();
 
       assert.dom('[data-key="nested"]').doesNotExist('the submenu closed');
       assert.dom('[data-key="edit"]').exists('the parent survived Escape');
@@ -562,7 +566,6 @@ module(
       await click('[data-test-id="dropdown-trigger"]');
       await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowDown');
       await triggerKeyEvent('[data-test-id="listbox"]', 'keypress', 'Enter');
-      await settled();
 
       assert.dom('[data-key="nested"]').exists('Enter opened the submenu');
     });
@@ -587,11 +590,14 @@ module(
       await click('[data-test-id="dropdown-trigger"]');
       // A click is a pointer open, like a hover.
       await click('[data-test-id="dropdown-submenu-trigger"]');
-      await settled();
 
       assert
         .dom('[data-key="nested"]')
-        .hasAttribute('data-active', 'false', 'pointer open highlights nothing');
+        .hasAttribute(
+          'data-active',
+          'false',
+          'pointer open highlights nothing'
+        );
     });
 
     test('closing a submenu returns focus to the parent level', async function (assert) {
@@ -618,14 +624,12 @@ module(
       ) as HTMLElement;
 
       await click('[data-test-id="dropdown-submenu-trigger"]');
-      await settled();
 
       const submenuId = document
         .querySelector('[data-test-id="dropdown-submenu-trigger"]')
         ?.getAttribute('aria-controls') as string;
 
       await triggerKeyEvent(`#${submenuId}`, 'keydown', 'ArrowLeft');
-      await settled();
 
       assert.ok(
         parentListbox.contains(document.activeElement),
@@ -633,14 +637,12 @@ module(
       );
 
       await click('[data-test-id="dropdown-submenu-trigger"]');
-      await settled();
 
       const submenuId2 = document
         .querySelector('[data-test-id="dropdown-submenu-trigger"]')
         ?.getAttribute('aria-controls') as string;
 
       await triggerKeyEvent(`#${submenuId2}`, 'keydown', 'Escape');
-      await settled();
 
       assert.ok(
         parentListbox.contains(document.activeElement),
@@ -671,12 +673,9 @@ module(
       assert.dom('[data-key="nested"]').doesNotExist('submenu is closed');
 
       await triggerKeyEvent('[data-test-id="listbox"]', 'keydown', 'ArrowLeft');
-      await settled();
 
       assert.dom('[data-key="edit"]').exists('root menu stayed open');
-      assert
-        .dom('[data-key="nested"]')
-        .doesNotExist('submenu did not open');
+      assert.dom('[data-key="nested"]').doesNotExist('submenu did not open');
     });
 
     test('submenus nest to arbitrary depth', async function (assert) {
@@ -717,20 +716,25 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       await click('[data-test-id="sub-1"]');
-      await settled();
+
       assert.dom('[data-key="whatsapp"]').exists('level 1 opened');
 
       await click('[data-test-id="sub-2"]');
-      await settled();
+
       assert.dom('[data-key="work-email"]').exists('level 2 opened');
       assert.dom('[data-key="whatsapp"]').exists('level 1 stayed open');
       assert.dom('[data-key="copy-link"]').exists('the root stayed open');
 
       await click('[data-key="work-email"]');
-      await settled();
 
-      assert.deepEqual(actions, ['work-email'], 'the root onAction saw depth 2');
-      assert.dom('[data-key="copy-link"]').doesNotExist('all three levels closed');
+      assert.deepEqual(
+        actions,
+        ['work-email'],
+        'the root onAction saw depth 2'
+      );
+      assert
+        .dom('[data-key="copy-link"]')
+        .doesNotExist('all three levels closed');
     });
 
     test('Escape at depth 2 closes one level at a time', async function (assert) {
@@ -759,16 +763,14 @@ module(
 
       await click('[data-test-id="dropdown-trigger"]');
       await click('[data-test-id="sub-1"]');
-      await settled();
+
       await click('[data-test-id="sub-2"]');
-      await settled();
 
       const deepestId = document
         .querySelector('[data-test-id="sub-2"]')
         ?.getAttribute('aria-controls') as string;
 
       await triggerKeyEvent(`#${deepestId}`, 'keydown', 'Escape');
-      await settled();
 
       assert.dom('[data-key="work-email"]').doesNotExist('depth 2 closed');
       assert.dom('[data-key="whatsapp"]').exists('depth 1 survived');
