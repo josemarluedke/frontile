@@ -1,17 +1,16 @@
 import Component from '@glimmer/component';
-import { Button, type ButtonSignature } from '../buttons/button';
-import { Listbox, type ListboxSignature } from './listbox';
+import { Button, type ButtonSignature } from '../../buttons/button';
+import { Listbox, type ListboxSignature } from '../listbox';
 import {
   Popover,
   type PopoverSignature,
   type ContentSignature
-} from '../overlays/popover';
+} from '../../overlays/popover';
 import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { on } from '@ember/modifier';
-import { useStyles } from '@frontile/theme';
 import type { ModifierLike } from '@glint/template';
-import type { ListboxItem } from './listbox/item';
+import type { ListboxItem } from '../listbox/item';
 import type { WithBoundArgs } from '@glint/template';
 
 interface DropdownArgs extends Pick<
@@ -235,11 +234,6 @@ export interface MenuSignature {
 }
 
 class Menu extends Component<MenuSignature> {
-  get classNames() {
-    const { dropdownContent } = useStyles();
-    return dropdownContent({ class: this.args.class });
-  }
-
   onAction = (key: string) => {
     if (typeof this.args.onAction === 'function') {
       this.args.onAction(key);
