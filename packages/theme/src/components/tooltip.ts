@@ -24,7 +24,9 @@ const tooltip = tv({
     // `bg-inherit` on the arrow (see `overlayArrow`) means each intent only
     // has to state the background once, on `base`.
     intent: {
-      default: { base: 'bg-surface-input text-on-surface-input border border-neutral-subtle' },
+      default: {
+        base: 'bg-surface-input text-on-surface-input border border-neutral-subtle'
+      },
       primary: { base: 'bg-primary text-on-primary' },
       secondary: { base: 'bg-secondary text-on-secondary' },
       tertiary: { base: 'bg-tertiary text-on-tertiary' },

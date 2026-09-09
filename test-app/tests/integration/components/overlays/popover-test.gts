@@ -1341,7 +1341,9 @@ module(
       assert
         .dom('[data-test-id="trigger"]')
         .doesNotHaveAttribute('aria-haspopup', 'a description is not a popup');
-      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-expanded');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-expanded');
       assert
         .dom('[data-test-id="trigger"]')
         .doesNotHaveAttribute(
@@ -1358,7 +1360,9 @@ module(
         .hasAttribute('aria-describedby', contentId);
 
       await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
-      await waitUntil(() => !find('[data-test-id="content"]'), { timeout: 2000 });
+      await waitUntil(() => !find('[data-test-id="content"]'), {
+        timeout: 2000
+      });
 
       assert
         .dom('[data-test-id="trigger"]')
@@ -1385,10 +1389,18 @@ module(
         </template>
       );
 
-      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-haspopup');
-      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-expanded');
-      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-controls');
-      assert.dom('[data-test-id="trigger"]').doesNotHaveAttribute('aria-describedby');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-haspopup');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-expanded');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-controls');
+      assert
+        .dom('[data-test-id="trigger"]')
+        .doesNotHaveAttribute('aria-describedby');
     });
 
     test('it renders an arrow and exposes the resolved placement', async function (assert) {
