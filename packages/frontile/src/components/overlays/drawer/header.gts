@@ -114,6 +114,16 @@ export interface DrawerHeaderArgs {
   descriptionClass?: string;
 
   /**
+   * @internal
+   */
+  contentClass?: string;
+
+  /**
+   * @internal
+   */
+  actionsClass?: string;
+
+  /**
    * Called with `true` when this header is rendered and `false` when it is
    * removed, so the Drawer knows whether it may point `aria-labelledby` at us.
    *
@@ -142,6 +152,13 @@ export interface DrawerHeaderSignature {
         Description: ComponentLike<DrawerHeaderDescriptionSignature>;
       }
     ];
+
+    /**
+     * Controls placed beside the close button. Rendered in flow, so a taller
+     * control makes the header band taller -- unlike the close button, which
+     * is positioned out of flow precisely so it never does.
+     */
+    actions: [];
   };
 }
 
@@ -161,27 +178,38 @@ export default class DrawerHeader extends Component<DrawerHeaderSignature> {
       {{this.register}}
       ...attributes
     >
-      {{#if (has-block)}}
-        {{yield
-          (hash
-            Icon=(component DrawerHeaderIcon classFromParent=@iconClass)
-            Title=(component
-              DrawerHeaderTitle classFromParent=@titleClass value=@title
+      <div class={{@contentClass}}>
+        {{#if (has-block)}}
+          {{yield
+            (hash
+              Icon=(component DrawerHeaderIcon classFromParent=@iconClass)
+              Title=(component
+                DrawerHeaderTitle classFromParent=@titleClass value=@title
+              )
+              Description=(component
+                DrawerHeaderDescription
+                classFromParent=@descriptionClass
+                value=@description
+              )
             )
-            Description=(component
-              DrawerHeaderDescription
-              classFromParent=@descriptionClass
-              value=@description
-            )
-          )
-        }}
-      {{else}}
-        {{#if @title}}
-          <div class={{@titleClass}}>{{@title}}</div>
+          }}
+        {{else}}
+          {{#if @title}}
+            <div class={{@titleClass}}>{{@title}}</div>
+          {{/if}}
+          {{#if @description}}
+            <div class={{@descriptionClass}}>{{@description}}</div>
+          {{/if}}
         {{/if}}
-        {{#if @description}}
-          <div class={{@descriptionClass}}>{{@description}}</div>
-        {{/if}}
+      </div>
+
+      {{! Only rendered when there is something to put in it: an empty flex
+      child would still consume the header's gap, leaving a phantom space to
+      the right of the title on every plain header. }}
+      {{#if (has-block "actions")}}
+        <div class={{@actionsClass}}>
+          {{yield to="actions"}}
+        </div>
       {{/if}}
 
       {{#if @closeButton}}

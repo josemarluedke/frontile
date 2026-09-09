@@ -37,6 +37,8 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
         base: '',
         closeButton: 'drawer__close-btn',
         headerCloseButton: 'drawer__header-close-btn',
+        headerContent: 'drawer__header-content',
+        headerActions: 'drawer__header-actions',
         header: 'drawer__header',
         body: 'drawer__body',
         footer: 'drawer__footer',
@@ -50,6 +52,9 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
         appearance: {
           default: 'drawer--default',
           ghost: 'drawer--ghost'
+        },
+        hasCloseButton: {
+          true: { header: 'drawer__header--has-close-btn' }
         },
         size: {
           xs: '',
@@ -949,6 +954,43 @@ module('Integration | Component | @frontile/overlays/Drawer', function (hooks) {
 
     assert.dom('[data-test-id="drawer"]').hasClass('drawer--ghost');
     assert.dom('[data-test-id="drawer"]').doesNotHaveClass('drawer--default');
+  });
+
+  test('the header reserves the close-button lane only when it has one', async function (assert) {
+    const isOpen = cell(true);
+    const allowCloseButton = cell<boolean | undefined>(undefined);
+
+    await render(
+      <template>
+        <Drawer
+          @isOpen={{isOpen.current}}
+          @allowCloseButton={{allowCloseButton.current}}
+          @disableTransitions={{true}}
+          data-test-id="drawer"
+          as |m|
+        >
+          <m.Header>My Header</m.Header>
+          <m.Body>My Content</m.Body>
+        </Drawer>
+      </template>
+    );
+
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header')
+      .hasClass(
+        'drawer__header--has-close-btn',
+        'reserves the lane while a close button is rendered'
+      );
+
+    allowCloseButton.current = false;
+    await settled();
+
+    assert
+      .dom('[data-test-id="drawer"] .drawer__header')
+      .doesNotHaveClass(
+        'drawer__header--has-close-btn',
+        'drops the reservation when there is no close button to reserve for'
+      );
   });
 
   test('it renders the drag handle per placement and @allowDragToClose', async function (assert) {

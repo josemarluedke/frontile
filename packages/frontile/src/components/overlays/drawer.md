@@ -285,6 +285,74 @@ export default class DrawerHeaderBlock extends Component {
 }
 ```
 
+### Header actions
+
+Use the `:actions` named block to put controls beside the close button.
+
+```gts preview
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { Drawer, Button } from 'frontile';
+
+export default class DrawerHeaderActions extends Component {
+  @tracked isOpen = false;
+  @tracked onlyStarred = false;
+
+  @action toggle() {
+    this.isOpen = !this.isOpen;
+  }
+
+  @action toggleStarred() {
+    this.onlyStarred = !this.onlyStarred;
+  }
+
+  <template>
+    <Button @onPress={{this.toggle}}>Open Drawer</Button>
+
+    <Drawer @isOpen={{this.isOpen}} @onClose={{this.toggle}} as |d|>
+      <d.Header @title='Filters' @description='Narrow the results below.'>
+        <:actions>
+          <Button @size='sm' @intent='primary' @onPress={{this.toggleStarred}}>
+            {{if this.onlyStarred 'Show all' 'Only starred'}}
+          </Button>
+        </:actions>
+      </d.Header>
+      <d.Body>
+        <p>{{if
+            this.onlyStarred
+            'Showing starred results.'
+            'Showing all results.'
+          }}</p>
+      </d.Body>
+    </Drawer>
+  </template>
+}
+```
+
+Actions are laid out **in flow**, so a taller control makes the header band taller — that
+is deliberate. The close button is the exception: it is positioned out of flow precisely
+so component chrome never changes the band's height. A title-only header stays 72px tall
+with no actions, and grows to fit whatever you add.
+
+The header reserves a lane on its right for the close button, since an absolutely
+positioned element cannot push text out of its own way. That reservation is dropped
+automatically when `@allowCloseButton={{false}}`, so you do not pay for whitespace you
+are not using.
+
+Using `:actions` means your main header content moves into an explicit `:default` block:
+
+```gjs
+<d.Header as |h|>
+  <:default>
+    <h.Title>Filters</h.Title>
+  </:default>
+  <:actions>
+    <Button @size="sm">Reset</Button>
+  </:actions>
+</d.Header>
+```
+
 ### Placement
 
 Drawers can slide in from any edge of the screen.

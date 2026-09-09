@@ -101,6 +101,72 @@ module(
         .hasText('Arg description');
     });
 
+    test('it renders an actions region only when the :actions block is given', async function (assert) {
+      await render(
+        <template>
+          <Header
+            @labelledById="hello"
+            @title="Plain"
+            @actionsClass="drawer__header-actions"
+            data-test-id="plain"
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="plain"] .drawer__header-actions')
+        .doesNotExist('no actions region without the block');
+
+      await render(
+        <template>
+          <Header
+            @labelledById="hello"
+            @title="With actions"
+            @actionsClass="drawer__header-actions"
+            data-test-id="withActions"
+          >
+            <:actions>
+              <button type="button" data-test-id="action">Reset</button>
+            </:actions>
+          </Header>
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="withActions"] .drawer__header-actions')
+        .exists('actions region rendered');
+      assert
+        .dom(
+          '[data-test-id="withActions"] .drawer__header-actions [data-test-id="action"]'
+        )
+        .hasText('Reset');
+    });
+
+    test('the args form still renders inside the content region', async function (assert) {
+      await render(
+        <template>
+          <Header
+            @labelledById="hello"
+            @title="Drawer title"
+            @description="Supporting text"
+            @contentClass="drawer__header-content"
+            @titleClass="drawer__title"
+            @descriptionClass="drawer__description"
+            data-test-id="header"
+          />
+        </template>
+      );
+
+      assert
+        .dom('[data-test-id="header"] .drawer__header-content .drawer__title')
+        .hasText('Drawer title');
+      assert
+        .dom(
+          '[data-test-id="header"] .drawer__header-content .drawer__description'
+        )
+        .hasText('Supporting text');
+    });
+
     test('a block suppresses the args form', async function (assert) {
       await render(
         <template>

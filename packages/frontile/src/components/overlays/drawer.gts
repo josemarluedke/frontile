@@ -132,6 +132,8 @@ export interface DrawerSignature {
           | 'iconClass'
           | 'titleClass'
           | 'descriptionClass'
+          | 'contentClass'
+          | 'actionsClass'
           | 'closeButton'
         >;
         Body: WithBoundArgs<
@@ -284,7 +286,8 @@ export default class Drawer extends Component<DrawerSignature> {
     return drawer({
       placement: this.placement,
       size: this.args.size || 'md',
-      appearance: this.appearance
+      appearance: this.appearance,
+      hasCloseButton: this.showCloseButton
     });
   }
   get transition() {
@@ -371,6 +374,12 @@ export default class Drawer extends Component<DrawerSignature> {
               titleClass=(this.classes.title class=@classes.title)
               descriptionClass=(this.classes.description
                 class=@classes.description
+              )
+              contentClass=(this.classes.headerContent
+                class=@classes.headerContent
+              )
+              actionsClass=(this.classes.headerActions
+                class=@classes.headerActions
               )
               closeButton=(if
                 this.showCloseButton

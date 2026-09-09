@@ -78,7 +78,23 @@ const drawer = tv({
     // body text below it. Offsetting by that padding (32 - 12 = 20px) lines
     // the glyph's edge up with the content instead of the box's.
     headerCloseButton: 'absolute top-1/2 right-5 -translate-y-1/2 shrink-0',
-    header: '',
+    // The header is a flex row of two regions, not a grid: the grid lives one
+    // level down in `headerContent`. Consumer actions have to be able to sit
+    // beside the close button and be centred against a header that may be one
+    // or two text rows tall, and a grid item that spans both rows forces the
+    // row track count up -- which is what previously made a title-only header
+    // grow a phantom second row. As a flex sibling there are no row tracks to
+    // inflate.
+    header: 'relative flex items-center gap-4',
+    // `min-w-0` lets a long title shrink (and truncate, if the consumer asks
+    // for it) instead of shoving the actions past the edge -- a flex item's
+    // default `min-width: auto` refuses to shrink below its content.
+    headerContent: 'grid grid-cols-[auto_1fr] items-center grow min-w-0',
+    // Actions are in flow, deliberately, unlike the close button. The close
+    // button is chrome this component owns and should not dictate the band's
+    // height; whatever a consumer puts here is content, so a taller control
+    // legitimately makes the band taller.
+    headerActions: 'flex items-center gap-2 shrink-0',
     // `touch-pan-y` (not `touch-none`) tells the browser it may still handle
     // vertical panning natively -- matching `overflow-y-auto` above -- while
     // continuing to deliver pointer events to `dragToDismiss` for the first
@@ -107,8 +123,7 @@ const drawer = tv({
       default: {
         base: 'bg-surface-drawer text-on-surface-drawer',
         body: 'bg-surface-drawer px-8 py-6',
-        header:
-          'relative grid grid-cols-[auto_1fr] items-center bg-black text-white px-8 py-6 pr-24',
+        header: 'bg-black text-white px-8 py-6',
         footer:
           'bg-surface-app text-on-surface-app border-t border-neutral-muted px-8 py-6',
         // The close button's own `transparent` variant hovers to
@@ -138,8 +153,7 @@ const drawer = tv({
         // Same grid layout as `default` (left-aligned, icon column) but
         // ghost's own colours -- no `bg-black`/`text-white` here, this stays
         // on `surface-modal`.
-        header:
-          'relative grid grid-cols-[auto_1fr] items-center font-header px-8 py-6 pr-24',
+        header: 'font-header px-8 py-6',
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal px-8 py-6`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
@@ -154,6 +168,13 @@ const drawer = tv({
         // contrasts against this one level.
         dragHandleBar: 'bg-neutral'
       }
+    },
+    // The close button is absolutely positioned, so it cannot reserve its own
+    // space -- the header pads a lane for it instead. That lane is only worth
+    // paying for when the button is actually rendered; with
+    // `@allowCloseButton={{false}}` it would be dead whitespace.
+    hasCloseButton: {
+      true: { header: 'pr-24' }
     },
     size: {
       xs: '',
