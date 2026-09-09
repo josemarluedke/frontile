@@ -56,6 +56,11 @@ const dragToDismiss = modifier<{
   let samples: Sample[] = [];
   let isDestroyed = false;
   let exitTimeoutId: number | undefined;
+  // Set once the gesture has committed to dismissing. After that point the
+  // off-screen transform must survive teardown -- see the note in the
+  // destructor for why clearing it is visible even though the element is on
+  // its way out.
+  let hasCommitted = false;
 
   const axisPosition = (event: PointerEvent): number =>
     named.axis === 'y' ? event.clientY : event.clientX;
@@ -203,6 +208,8 @@ const dragToDismiss = modifier<{
     // go, and by the time onDismiss finally runs the element is already
     // off-screen, so whatever the wrapper's leave animation does next is
     // invisible.
+    hasCommitted = true;
+
     if (prefersReducedMotion()) {
       named.onDismiss();
       return;
@@ -307,17 +314,21 @@ const dragToDismiss = modifier<{
     // logic that no longer expects it.
     isDestroyed = true;
 
-    // Because commit() defers onDismiss() until the exit animation finishes,
-    // isOpen is still true (and this element still mounted) for the whole
-    // animation -- so teardown here only ever runs for a drag that never
-    // committed (disabled mid-drag, spring-back, or the consumer unmounting
-    // the drawer some other way), or for a rare unmount that races an
-    // in-flight exit animation. Only reset the drag styling when there is no
-    // exit animation pending -- clearing `transform`/`transition` out from
-    // under a pending one would abort it visibly (snap the element back)
-    // for no reason, since finish() above already made sure onDismiss()
-    // itself is a no-op after teardown.
-    if (exitTimeoutId === undefined) {
+    // Never clear the transform once the gesture has committed. It looks
+    // safe to -- the element is being destroyed -- but ember-css-transitions
+    // does not animate this element out, it animates a CLONE of it, and the
+    // clone is taken during teardown. Measured: with the reset in place, the
+    // drawer slid off-screen under its own exit animation, then the clone
+    // appeared back at the resting position and slid out a second time. That
+    // is the "jumps back to the open position, then closes" report; the
+    // transform has to still be on the element at the moment it is cloned.
+    //
+    // The remaining case is a drag that never committed -- disabled
+    // mid-drag, spring-back, or the consumer unmounting the drawer some
+    // other way -- where the drag styling should indeed be undone. The
+    // `exitTimeoutId` guard additionally covers an unmount racing an
+    // in-flight exit animation, where clearing would abort it visibly.
+    if (!hasCommitted && exitTimeoutId === undefined) {
       element.style.transform = '';
       element.style.transition = '';
     }
