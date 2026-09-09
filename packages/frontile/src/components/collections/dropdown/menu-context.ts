@@ -77,6 +77,15 @@ interface RootMenuContextArgs extends Omit<
  * render, and a map created here would drop every `Sub` that had already
  * registered. The component owns one stable map for the life of the level.
  */
+function bindSubRegistry(
+  subs: Map<string, SubHandle>
+): Pick<MenuContext, 'registerSub' | 'unregisterSub'> {
+  return {
+    registerSub: (key, handle) => subs.set(key, handle),
+    unregisterSub: (key) => subs.delete(key)
+  };
+}
+
 function createRootMenuContext(args: RootMenuContextArgs): MenuContext {
   const { close, subs, ...shared } = args;
 
@@ -86,8 +95,7 @@ function createRootMenuContext(args: RootMenuContextArgs): MenuContext {
     subs,
     closeRoot: close,
     closeSelf: close,
-    registerSub: (key, handle) => subs.set(key, handle),
-    unregisterSub: (key) => subs.delete(key)
+    ...bindSubRegistry(subs)
   };
 }
 
@@ -102,8 +110,7 @@ function createChildMenuContext(
     depth: parent.depth + 1,
     subs,
     closeSelf,
-    registerSub: (key, handle) => subs.set(key, handle),
-    unregisterSub: (key) => subs.delete(key)
+    ...bindSubRegistry(subs)
   };
 }
 
