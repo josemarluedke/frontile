@@ -355,7 +355,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
       .hasAttribute('data-active', 'false');
 
     await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'ArrowDown');
-    await triggerKeyEvent('[data-component="listbox"]', 'keypress', 'Enter');
+    await triggerKeyEvent('[data-component="listbox"]', 'keydown', 'Enter');
     assert.dom('[data-component="listbox"]').doesNotExist();
 
     assert.equal(selectedKey.current, 'item-2');
@@ -2134,7 +2134,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
   });
 
   /**
-   * Bug B. Driven through a real keypress on the trigger — the event the
+   * Bug B. Driven through a real keydown on the trigger — the event the
    * Listbox actually listens to for Enter — rather than by calling internals.
    */
   test('Filterable multiple mode: Enter on a filtered option adds to the selection', async function (assert) {
@@ -2165,7 +2165,7 @@ module('Integration | Component | Select | @frontile/forms', function (hooks) {
 
     await triggerKeyEvent(
       '[data-component="select-trigger"]',
-      'keypress',
+      'keydown',
       'Enter'
     );
 
