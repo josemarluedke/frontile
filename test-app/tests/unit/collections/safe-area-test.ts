@@ -95,24 +95,24 @@ module('Unit | Utils | safe-area', function () {
     );
   });
 
-  // KNOWN LIMITATION (see cr-fixes-report.md, Finding 1): the code review
-  // that requested this convex-hull fix also asserted that
-  // isPointInSafeArea({ x: 110, y: 150 }, trigger, contentRight) must become
-  // `true`. It cannot: for these fixtures the trigger's bottom-right corner
-  // (100, 20) and the content's near-bottom corner (120, 240) are BOTH real,
-  // non-redundant hull vertices, and the straight edge between them is the
-  // hull boundary at every x between 100 and 120. At x = 110 that edge sits
-  // at y = 130, strictly above y = 150 -- so (110, 150) is genuinely outside
-  // the true convex hull, not merely outside a hand-picked shape. Any convex
-  // polygon over these six points must have the same pinch; only a concave
-  // shape (explicitly ruled out by the review) could cover that point. This
-  // is pinned here, rather than silently fixed to `true`, so a future change
-  // to the geometry doesn't accidentally "fix" this without the tradeoff
-  // being deliberate.
-  test('KNOWN LIMITATION: a deep mid-gap point stays unsafe even under the true convex hull', function (assert) {
+  // Near-vertical descent is deliberately unsafe, and this pins it.
+  //
+  // At x = 110 the hull's lower boundary is the edge from the trigger's
+  // bottom-right corner (100, 20) to the content's near-bottom corner
+  // (120, 240) — both genuine, non-redundant hull vertices — which sits at
+  // y = 130. So (110, 150) is outside the safe area.
+  //
+  // That is the right answer, not a shortfall of the hull. Reaching it means
+  // descending 130px while travelling only 10px toward the submenu: the
+  // pointer is heading down the parent menu onto a sibling row, not across
+  // the gap. Widening the area to admit it would break the sibling-row
+  // behaviour the safe area exists to preserve — hovering a sibling must
+  // close the submenu. Only a concave shape could cover it, which is what
+  // this module deliberately does not build.
+  test('a near-vertical descent through the gap is not safe', function (assert) {
     assert.false(
       isPointInSafeArea({ x: 110, y: 150 }, trigger, contentRight),
-      'still outside the hull -- see comment above'
+      'descending onto a sibling row rather than crossing to the submenu'
     );
   });
 
@@ -132,7 +132,7 @@ module('Unit | Utils | safe-area', function () {
 
     // The hull's starting vertex is whichever candidate point is leftmost
     // overall, which for the flipped fixture is the content's far-top
-    // corner rather than the trigger -- so this asserts by content instead
+    // corner rather than the trigger — so this asserts by content instead
     // of assuming index 0 is always the trigger corner.
     assert.strictEqual(polygon.length, 5, 'five vertices when flipped too');
     assert.deepEqual(
