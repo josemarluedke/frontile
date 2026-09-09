@@ -9,6 +9,41 @@
 /* sm:py-24 lg:max-h-120 lg:min-h-120 */
 }
 
+/* The stage above (`.docfy-demo__example__container`) is a centered flex
+   container, so its single child shrink-wraps to its content's width — a
+   demo component sized with `w-full` resolves against that shrunk box
+   instead of the stage. Demos should wrap their content in `.demo-stack` to
+   give the box its own explicit width (capped at `max-w-xl`, same convention
+   shadcn/ui and HeroUI use), so `w-full` children fill it predictably and
+   the box doesn't resize when interactive content changes. */
+.demo-stack {
+  @apply flex flex-col gap-4 w-full max-w-xl mx-auto;
+}
+
+/* `.demo-stack`'s `w-full` above still shrink-wraps: per the CSS flexbox
+   shrink-to-fit algorithm, a descendant's `width: 100%` is treated as `auto`
+   when sizing its flex-item ancestor, so `.docfy-demo__example` (the actual
+   flex item inside the stage) never grows to give it a real percentage base.
+   The fix is to make `.docfy-demo__example` itself full-width — but doing
+   that unconditionally would also stretch every demo on every other page
+   that hasn't opted into `.demo-stack`, flipping their shrink-to-fit,
+   centered layout to left-aligned. Scoping the rule with `:has(> .demo-stack)`
+   means the stage stays shrink-to-fit-centered for every un-converted demo,
+   and only demos that have opted in via `.demo-stack` get the full-width
+   treatment — so pages can be migrated to `.demo-stack` one at a time. */
+.docfy-demo__example:has(> .demo-stack) {
+  @apply w-full;
+}
+
+/* Wide demos — data tables, side-by-side comparisons — need more than the
+   `max-w-xl` reading measure that suits a column of form controls. This
+   modifier is declared after `.demo-stack` so, at equal specificity, its
+   `max-width` deterministically wins; it is used as `class='demo-stack
+   demo-stack--wide'` so the `:has()` opt-in above still applies. */
+.demo-stack--wide {
+  @apply max-w-none;
+}
+
 .docfy-demo__description {
   @apply pb-5;
 }

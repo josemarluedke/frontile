@@ -22,7 +22,11 @@ The most basic usage of the Textarea component with only a label.
 ```gts preview
 import { Textarea } from 'frontile';
 
-<template><Textarea @label='Message' /></template>
+<template>
+  <div class='demo-stack'>
+    <Textarea @label='Message' />
+  </div>
+</template>
 ```
 
 ### Controlled Textarea
@@ -44,7 +48,7 @@ export default class ControlledTextarea extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -78,7 +82,7 @@ import { Textarea } from 'frontile';
 
 export default class DisabledTextarea extends Component {
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Textarea
         @label='Disabled Basic Textarea'
         @value='This text cannot be edited or modified. The textarea is in a disabled state.'
@@ -117,7 +121,7 @@ export default class TextareaWithFormChange extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @onChange={{this.handleFormChange}}
@@ -203,7 +207,7 @@ export default class ValidatedTextarea extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -289,41 +293,43 @@ export default class CompleteFormWithTextarea extends Component {
   };
 
   <template>
-    <Form
-      @data={{this.formData}}
-      @schema={{schema}}
-      @onChange={{this.handleFormChange}}
-      @onSubmit={{this.handleFormSubmit}}
-      @validateOn={{array 'change' 'submit'}}
-      as |form|
-    >
-      <form.Field @name='email' as |field|>
-        <field.Input
-          @label='Email Address'
-          @type='email'
-          @isRequired={{true}}
-        />
-      </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @validateOn={{array 'change' 'submit'}}
+        as |form|
+      >
+        <form.Field @name='email' as |field|>
+          <field.Input
+            @label='Email Address'
+            @type='email'
+            @isRequired={{true}}
+          />
+        </form.Field>
 
-      <form.Field @name='subject' as |field|>
-        <field.Input
-          @label='Subject'
-          @isRequired={{true}}
-        />
-      </form.Field>
+        <form.Field @name='subject' as |field|>
+          <field.Input
+            @label='Subject'
+            @isRequired={{true}}
+          />
+        </form.Field>
 
-      <form.Field @name='message' as |field|>
-        <field.Textarea
-          @label='Message'
-          @isRequired={{true}}
-          rows='6'
-        />
-      </form.Field>
+        <form.Field @name='message' as |field|>
+          <field.Textarea
+            @label='Message'
+            @isRequired={{true}}
+            rows='6'
+          />
+        </form.Field>
 
-      <Button type='submit'>
-        Send Message
-      </Button>
-    </Form>
+        <Button type='submit'>
+          Send Message
+        </Button>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -337,7 +343,7 @@ import { Textarea } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Size variants }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Size Variants</h4>

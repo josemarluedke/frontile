@@ -93,6 +93,17 @@ class Radio<T extends string | boolean | number> extends Component<
       @preventErrorFeedback={{true}}
       as |c|
     >
+      {{! Under ARIA 1.2 aria-invalid is not in role=radio's supported
+          property set: invalidity for a radio group formally belongs on a
+          role="radiogroup" ancestor, which FormControl does not currently
+          render (see RadioGroup). We keep it on the input anyway, because
+          Radio is a public component that is usable standalone, browsers and
+          screen readers do expose aria-invalid on a radio input, and
+          radio-test.gts asserts it. The rule is disabled for this element
+          only, so its autofixer cannot silently delete the attribute when
+          someone runs pnpm lint:hbs --fix. Revisit if RadioGroup grows a real
+          role="radiogroup" wrapper. }}
+      {{! template-lint-disable no-unsupported-role-attributes }}
       <input
         {{on "change" this.handleChange}}
         {{on "blur" this.handleBlur}}
@@ -108,9 +119,10 @@ class Radio<T extends string | boolean | number> extends Component<
         aria-describedby={{c.describedBy @description c.isInvalid}}
         ...attributes
       />
+      {{! template-lint-enable no-unsupported-role-attributes }}
       <div class={{this.classes.labelContainer class=@classes.labelContainer}}>
         {{#if @label}}
-          <c.Label @class={{(this.classes.label class=@classes.label)}}>
+          <c.Label @class={{this.classes.label class=@classes.label}}>
             {{@label}}
           </c.Label>
         {{/if}}

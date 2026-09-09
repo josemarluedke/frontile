@@ -35,7 +35,7 @@ export default class BasicDrawer extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Drawer
       </Button>
@@ -201,7 +201,7 @@ export default class DrawerPlacements extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.placements as |placement|}}
           <Button @onPress={{fn this.openDrawer placement.key}}>
@@ -296,7 +296,7 @@ export default class DrawerSizes extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-3 gap-2'>
         {{#each this.sizeOptions as |option|}}
           <Button @onPress={{fn this.openDrawer option.key}}>
@@ -515,7 +515,7 @@ export default class DrawerBackdrops extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='grid grid-cols-2 gap-2'>
         {{#each this.backdropOptions as |option|}}
           <Button @onPress={{fn this.openDrawer option.key}}>
@@ -576,7 +576,7 @@ export default class DrawerCloseButton extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <div class='flex gap-2'>
         <Button @onPress={{this.toggleNormal}}>
           Normal Close Button
@@ -681,7 +681,7 @@ export default class DrawerForm extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Contact Form
       </Button>
@@ -778,7 +778,7 @@ export default class NonDismissibleDrawer extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Processing Drawer
       </Button>
@@ -857,7 +857,7 @@ export default class NavigationDrawer extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack demo-stack--wide items-center'>
       <Button @onPress={{this.toggle}}>
         Open Navigation
       </Button>

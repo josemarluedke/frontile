@@ -27,13 +27,15 @@ associates the rendered `<label>` with your control.
 import { FormControl } from 'frontile';
 
 <template>
-  <FormControl @label='Attachment' as |c|>
-    <input
-      type='file'
-      id={{c.id}}
-      class='text-neutral-strong font-body text-base'
-    />
-  </FormControl>
+  <div class='demo-stack'>
+    <FormControl @label='Attachment' as |c|>
+      <input
+        type='file'
+        id={{c.id}}
+        class='text-neutral-strong font-body text-base'
+      />
+    </FormControl>
+  </div>
 </template>
 ```
 
@@ -52,21 +54,23 @@ ARIA, using the two values FormControl yields for exactly that.
 import { FormControl } from 'frontile';
 
 <template>
-  <FormControl
-    @label='Budget'
-    @description='Whole dollars, no separators.'
-    @errors='Enter an amount above 0'
-    as |c|
-  >
-    <input
-      type='number'
-      id={{c.id}}
-      value='0'
-      aria-invalid={{if c.isInvalid 'true'}}
-      aria-describedby={{c.describedBy true c.isInvalid}}
-      class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
-    />
-  </FormControl>
+  <div class='demo-stack'>
+    <FormControl
+      @label='Budget'
+      @description='Whole dollars, no separators.'
+      @errors='Enter an amount above 0'
+      as |c|
+    >
+      <input
+        type='number'
+        id={{c.id}}
+        value='0'
+        aria-invalid={{if c.isInvalid 'true'}}
+        aria-describedby={{c.describedBy true c.isInvalid}}
+        class='bg-surface-input text-neutral-strong border-neutral-soft aria-invalid:border-danger-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+      />
+    </FormControl>
+  </div>
 </template>
 ```
 
@@ -96,22 +100,24 @@ invocation site wins over the one FormControl bound.
 import { FormControl } from 'frontile';
 
 <template>
-  <FormControl
-    @errors='Accept the terms to continue'
-    @preventErrorFeedback={{true}}
-    as |c|
-  >
-    <c.Feedback />
-    <div class='flex items-center gap-2'>
-      <input
-        type='checkbox'
-        id={{c.id}}
-        aria-invalid={{if c.isInvalid 'true'}}
-        aria-describedby={{c.describedBy false c.isInvalid}}
-      />
-      <c.Label>I accept the terms</c.Label>
-    </div>
-  </FormControl>
+  <div class='demo-stack'>
+    <FormControl
+      @errors='Accept the terms to continue'
+      @preventErrorFeedback={{true}}
+      as |c|
+    >
+      <c.Feedback />
+      <div class='flex items-center gap-2'>
+        <input
+          type='checkbox'
+          id={{c.id}}
+          aria-invalid={{if c.isInvalid 'true'}}
+          aria-describedby={{c.describedBy false c.isInvalid}}
+        />
+        <c.Label>I accept the terms</c.Label>
+      </div>
+    </FormControl>
+  </div>
 </template>
 ```
 
@@ -122,19 +128,21 @@ it renders inside the same `<label>` element that `@label` would have produced.
 import { FormControl } from 'frontile';
 
 <template>
-  <FormControl @isRequired={{true}}>
-    <:label>
-      API token
-      <a href='#docs' class='text-primary underline'>Where do I find this?</a>
-    </:label>
-    <:default as |c|>
-      <input
-        id={{c.id}}
-        required
-        class='bg-surface-input text-neutral-strong border-neutral-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
-      />
-    </:default>
-  </FormControl>
+  <div class='demo-stack'>
+    <FormControl @isRequired={{true}}>
+      <:label>
+        API token
+        <a href='#docs' class='text-primary underline'>Where do I find this?</a>
+      </:label>
+      <:default as |c|>
+        <input
+          id={{c.id}}
+          required
+          class='bg-surface-input text-neutral-strong border-neutral-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+        />
+      </:default>
+    </FormControl>
+  </div>
 </template>
 ```
 
@@ -146,19 +154,21 @@ renders inside the same description element that `@description` would have produ
 import { FormControl } from 'frontile';
 
 <template>
-  <FormControl @label='Webhook URL'>
-    <:description>
-      Must be publicly reachable over HTTPS.
-      <a href='#docs' class='text-primary underline'>Read the requirements</a>
-    </:description>
-    <:default as |c|>
-      <input
-        id={{c.id}}
-        aria-describedby={{c.describedBy true false}}
-        class='bg-surface-input text-neutral-strong border-neutral-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
-      />
-    </:default>
-  </FormControl>
+  <div class='demo-stack'>
+    <FormControl @label='Webhook URL'>
+      <:description>
+        Must be publicly reachable over HTTPS.
+        <a href='#docs' class='text-primary underline'>Read the requirements</a>
+      </:description>
+      <:default as |c|>
+        <input
+          id={{c.id}}
+          aria-describedby={{c.describedBy true false}}
+          class='bg-surface-input text-neutral-strong border-neutral-soft focus:ring-focus w-full rounded-xl border p-3 leading-tight focus:ring-3 focus:outline-hidden'
+        />
+      </:default>
+    </FormControl>
+  </div>
 </template>
 ```
 
@@ -172,7 +182,7 @@ import { array } from '@ember/helper';
 import { FormControl } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{#each (array 'sm' 'md' 'lg') as |size|}}
       <FormControl
         @size={{size}}

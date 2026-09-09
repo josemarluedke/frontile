@@ -7,7 +7,12 @@ import { fn } from '@ember/helper';
 import { CloseButton } from '../buttons/close-button';
 import { Button } from '../buttons/button';
 import { Spinner } from '../utilities/spinner';
-import { IconInfo, IconSuccess, IconWarning, IconDanger } from './icons';
+import {
+  IconInfo,
+  IconSuccess,
+  IconWarning,
+  IconDanger
+} from '../../-private/intent-icons';
 import { useStyles } from '@frontile/theme';
 
 import type NotificationsService from '../../services/notifications';

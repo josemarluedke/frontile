@@ -1823,7 +1823,7 @@ module('Integration | Component | @frontile/forms/Form', function (hooks) {
       <template>
         <Form
           @schema={{schema}}
-          @validateOn={{(array "submit")}}
+          @validateOn={{array "submit"}}
           @onSubmit={{onSubmitSpy}}
           as |form|
         >
