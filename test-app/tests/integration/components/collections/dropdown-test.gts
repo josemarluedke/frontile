@@ -549,6 +549,22 @@ module(
 
       assert.dom('[data-key="nested"]').doesNotExist('the submenu closed');
       assert.dom('[data-key="edit"]').exists('the parent stayed open');
+
+      // The sub-trigger was made active when ArrowRight navigated onto it
+      // (before the submenu even opened), and nothing on the submenu's own,
+      // separate ListManager ever deactivates it — so it should still be
+      // the parent level's active row, keeping the roving tabindex and the
+      // highlight in agreement with where focus actually returns to.
+      assert
+        .dom('[data-test-id="dropdown-submenu-trigger"]')
+        .hasAttribute(
+          'data-active',
+          'true',
+          'the sub-trigger is still active after ArrowLeft'
+        );
+      assert
+        .dom('[data-test-id="dropdown-submenu-trigger"]')
+        .isFocused('and focus returned to it');
     });
 
     test('Escape closes only the innermost level', async function (assert) {
