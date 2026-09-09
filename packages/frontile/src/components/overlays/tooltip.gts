@@ -132,17 +132,56 @@ interface TooltipSignature {
      */
     isDisabled?: boolean;
 
+    /**
+     * Whether the tooltip is open. Pair with `onOpenChange` to control it;
+     * leave it unset to let the tooltip manage its own state. Passing
+     * `isOpen` alone, without `onOpenChange`, falls back to uncontrolled
+     * behavior.
+     */
     isOpen?: boolean;
+
+    /**
+     * Callback when the tooltip opens or closes, receiving the new state.
+     */
     onOpenChange?: (isOpen: boolean) => void;
+
+    /**
+     * Callback when closing has finished, including any exit transition.
+     */
     didClose?: () => void;
 
     /**
      * @defaultValue 8
      */
     offsetOptions?: PopoverSignature['Args']['offsetOptions'];
+
+    /**
+     * Options for the floating-ui flip middleware, which moves the tooltip
+     * to the opposite side when it would overflow the viewport. Forwarded
+     * to the underlying `Popover`.
+     */
     flipOptions?: PopoverSignature['Args']['flipOptions'];
+
+    /**
+     * Options for the floating-ui shift middleware, which nudges the
+     * tooltip along its axis to keep it in view. Forwarded to the
+     * underlying `Popover`.
+     */
     shiftOptions?: PopoverSignature['Args']['shiftOptions'];
+
+    /**
+     * Additional floating-ui middleware, for positioning behavior beyond
+     * what `placement`, `offsetOptions`, `flipOptions`, and `shiftOptions`
+     * cover. Forwarded to the underlying `Popover`.
+     */
     middleware?: PopoverSignature['Args']['middleware'];
+
+    /**
+     * The CSS positioning strategy, forwarded to the underlying
+     * `Popover`/floating-ui.
+     *
+     * @defaultValue 'absolute'
+     */
     strategy?: PopoverSignature['Args']['strategy'];
 
     /**
@@ -160,6 +199,11 @@ interface TooltipSignature {
   Blocks: {
     default: [
       {
+        /**
+         * The modifier to apply to the element the tooltip describes. Installs
+         * the hover/focus listeners that open and close the tooltip, and keeps
+         * `aria-describedby` in sync while it does.
+         */
         trigger: ModifierLike<{ Element: HTMLElement }>;
         Content: WithBoundArgs<
           typeof TooltipContent,
@@ -169,8 +213,20 @@ interface TooltipSignature {
           | 'disableInteractive'
           | 'hasContentArg'
         >;
+
+        /**
+         * Whether the tooltip is currently open.
+         */
         isOpen: boolean;
+
+        /**
+         * Opens the tooltip.
+         */
         open: () => void;
+
+        /**
+         * Closes the tooltip.
+         */
         close: () => void;
       }
     ];
