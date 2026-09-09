@@ -5,7 +5,15 @@ imports:
 
 # Collapsible
 
-An unstyled wrapper that animates its content's height and opacity as it opens and closes, for building accordions, FAQ sections, expandable cards, and other disclosure patterns.
+An unstyled wrapper that animates its content's height and opacity as it opens
+and closes. It is the primitive behind [Accordion](../disclosure/accordion) —
+reach for this when you need a single expandable region and want to own the
+trigger, the state and the markup yourself.
+
+Building a set of coordinated sections? Use
+[Accordion](../disclosure/accordion) instead. It handles the open-item state,
+the WAI-ARIA wiring, the keyboard pattern and focus containment, all of which
+are easy to get wrong by hand.
 
 ## Import
 
@@ -89,152 +97,6 @@ export default class PreviewCollapsible extends Component {
           {{if this.isOpen 'Read Less' 'Read More'}}
         </Button>
       </div>
-    </div>
-  </template>
-}
-```
-
-## Accordion
-
-For an accordion, hold a single open id in the parent so opening one panel closes the others.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { fn } from '@ember/helper';
-import { Collapsible, Button } from 'frontile';
-
-export default class FaqAccordion extends Component {
-  @tracked openItem: string | null = null;
-
-  faqs = [
-    {
-      id: 'shipping',
-      question: 'What are the shipping options?',
-      answer:
-        'Standard shipping takes 5-7 business days and express shipping 2-3. Free standard shipping on orders over $50.'
-    },
-    {
-      id: 'returns',
-      question: 'What is your return policy?',
-      answer:
-        'Returns are accepted within 30 days of purchase, unused and in original packaging. Refunds are processed within 5-10 business days.'
-    },
-    {
-      id: 'warranty',
-      question: 'Do you offer a warranty?',
-      answer:
-        'All products come with a 1-year manufacturer warranty covering defects in materials and workmanship.'
-    }
-  ];
-
-  toggleItem = (id: string) => {
-    this.openItem = this.openItem === id ? null : id;
-  };
-
-  isOpen = (id: string) => {
-    return this.openItem === id;
-  };
-
-  <template>
-    <div class='max-w-2xl space-y-2'>
-      {{#each this.faqs as |faq|}}
-        <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-          <h3>
-            <Button
-              @appearance='minimal'
-              @class='w-full text-left px-6 py-4 hover:bg-neutral-subtle'
-              @onPress={{fn this.toggleItem faq.id}}
-              aria-expanded='{{this.isOpen faq.id}}'
-              aria-controls='faq-panel-{{faq.id}}'
-            >
-              <div class='flex items-center justify-between'>
-                <span class='font-semibold'>{{faq.question}}</span>
-                <span class='text-neutral-soft'>
-                  {{if (this.isOpen faq.id) '−' '+'}}
-                </span>
-              </div>
-            </Button>
-          </h3>
-
-          <Collapsible
-            @isOpen={{this.isOpen faq.id}}
-            id='faq-panel-{{faq.id}}'
-            role='region'
-          >
-            <div class='px-6 pb-4 text-neutral'>
-              {{faq.answer}}
-            </div>
-          </Collapsible>
-        </div>
-      {{/each}}
-    </div>
-  </template>
-}
-```
-
-## Independent Panels
-
-Track one flag per panel instead of a single id and any number of them can be open at once.
-
-```gts preview
-import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { fn } from '@ember/helper';
-import { Collapsible, Button } from 'frontile';
-
-export default class IndependentPanels extends Component {
-  @tracked openPanels: Record<string, boolean> = {};
-
-  panels = [
-    {
-      id: 'features',
-      title: 'Features',
-      body: 'Smooth animations, fully customizable markup, and no styling to fight.'
-    },
-    {
-      id: 'pricing',
-      title: 'Pricing',
-      body: 'Starting at $9.99/month with a 14-day free trial.'
-    },
-    {
-      id: 'support',
-      title: 'Support',
-      body: '24/7 email support with an average response time of 2 hours.'
-    }
-  ];
-
-  toggle = (id: string) => {
-    this.openPanels = { ...this.openPanels, [id]: !this.openPanels[id] };
-  };
-
-  isOpen = (id: string) => {
-    return !!this.openPanels[id];
-  };
-
-  <template>
-    <div class='max-w-md space-y-4'>
-      {{#each this.panels as |panel|}}
-        <div class='border border-neutral-subtle rounded-lg overflow-hidden'>
-          <div class='p-4 bg-neutral-subtle border-b border-neutral-subtle'>
-            <Button
-              @appearance='minimal'
-              @class='w-full text-left font-semibold'
-              @onPress={{fn this.toggle panel.id}}
-              aria-expanded='{{this.isOpen panel.id}}'
-            >
-              {{panel.title}}
-              <span class='float-right'>
-                {{if (this.isOpen panel.id) '▲' '▼'}}
-              </span>
-            </Button>
-          </div>
-
-          <Collapsible @isOpen={{this.isOpen panel.id}}>
-            <p class='p-4 text-neutral'>{{panel.body}}</p>
-          </Collapsible>
-        </div>
-      {{/each}}
     </div>
   </template>
 }
@@ -372,8 +234,13 @@ Collapsible renders a plain `<div>` with no roles or ARIA of its own, and it has
 - Use a real `<button>` (or Frontile's `Button`) as the trigger, so Enter, Space, and focus work without extra code.
 - Put `aria-expanded` on the trigger, mirroring the same state you pass to `@isOpen`.
 - Point `aria-controls` at the Collapsible's `id`, and give the Collapsible `role="region"` when it holds a self-contained chunk of content.
-- In an accordion, wrap each trigger in a heading (`<h3>` and so on) at the right level for the surrounding page.
-- Collapsed content stays in the DOM and remains focusable, so avoid interactive elements inside a panel that is expected to read as hidden.
+- `Collapsible` animates a box; it does not manage focus. While collapsed its
+  content is `height: 0` but still in the tab order, so add `inert` yourself
+  when the content holds anything focusable — or use
+  [Accordion](../disclosure/accordion), which does it for you.
+- Building an accordion by hand also means owning the heading structure, the
+  `aria-expanded`/`aria-controls` round trip and the arrow-key pattern.
+  [Accordion](../disclosure/accordion) implements all of it.
 
 ```gts
 <button

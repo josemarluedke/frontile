@@ -62,6 +62,8 @@ import type {
   Pagination
 } from './components/navigation';
 
+import type { Accordion } from './components/disclosure';
+
 export default interface Registry {
   // Buttons
   Button: typeof Button;
@@ -121,4 +123,7 @@ export default interface Registry {
   TabNav: typeof TabNav;
   ExternalLink: typeof ExternalLink;
   Pagination: typeof Pagination;
+
+  // Disclosure
+  Accordion: typeof Accordion;
 }
