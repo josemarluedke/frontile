@@ -252,18 +252,24 @@ class ListboxItem extends Component<ListboxItemSignature> {
    * `aria-expanded` on a plain `menuitem` would be invalid ARIA, so this is
    * undefined -- and therefore omitted -- unless `@hasSubmenu` is set.
    */
-  get ariaExpanded(): 'true' | 'false' | undefined {
+  /**
+   * `aria-expanded` and `data-submenu-open` share this same value — one is
+   * the ARIA state for assistive tech, the other a styling hook for the
+   * template's own resting/hover state — so both getters delegate here.
+   */
+  get submenuOpenState(): 'true' | 'false' | undefined {
     if (!this.args.hasSubmenu) {
       return undefined;
     }
     return this.args.isSubmenuOpen ? 'true' : 'false';
   }
 
+  get ariaExpanded(): 'true' | 'false' | undefined {
+    return this.submenuOpenState;
+  }
+
   get dataSubmenuOpen(): 'true' | 'false' | undefined {
-    if (!this.args.hasSubmenu) {
-      return undefined;
-    }
-    return this.args.isSubmenuOpen ? 'true' : 'false';
+    return this.submenuOpenState;
   }
 
   <template>
