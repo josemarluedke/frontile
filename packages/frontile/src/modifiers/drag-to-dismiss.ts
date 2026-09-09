@@ -45,6 +45,17 @@ const RUBBER_BAND = 0.2;
  */
 const CLAIM_THRESHOLD_PX = 10;
 
+/**
+ * How long after the scroll container last scrolled a press is refused the
+ * gesture. A fling that decelerates and comes to rest against the edge leaves
+ * the scroller reporting "at the edge", so the very next touch -- or the
+ * follow-through of the same one -- would otherwise read as a dismiss drag and
+ * close the panel the user was only trying to scroll. Checking the scroll
+ * position alone cannot tell those apart; it has no memory of having just
+ * moved. Vaul solves it the same way, with a lock in the same range.
+ */
+const SCROLL_LOCK_MS = 150;
+
 function prefersReducedMotion(): boolean {
   return (
     typeof window.matchMedia === 'function' &&
@@ -81,6 +92,7 @@ const dragToDismiss = modifier<{
   // destructor for why clearing it is visible even though the element is on
   // its way out.
   let hasCommitted = false;
+  let lastScrollAt = -Infinity;
 
   const axisPosition = (event: PointerEvent): number =>
     named.axis === 'y' ? event.clientY : event.clientX;
@@ -247,7 +259,14 @@ const dragToDismiss = modifier<{
       pendingPointerId = null;
       pendingTarget = null;
 
-      if (!isAlongAxis || !movesTowardDismiss || !scrollerAllowsDrag(target)) {
+      const isScrollSettling = event.timeStamp - lastScrollAt < SCROLL_LOCK_MS;
+
+      if (
+        !isAlongAxis ||
+        !movesTowardDismiss ||
+        isScrollSettling ||
+        !scrollerAllowsDrag(target)
+      ) {
         // Abandoned permanently for this gesture: never preventDefault, let
         // the browser scroll (or do nothing) natively. Nothing was ever
         // claimed or captured, so there's nothing to undo.
@@ -341,7 +360,20 @@ const dragToDismiss = modifier<{
   };
 
   const velocity = (event: PointerEvent): number => {
-    const oldest = samples[0];
+    // Re-window here rather than trusting the filtering done on the last
+    // move. Between that move and this event the pointer may have rested --
+    // a drag, a pause, then a flick is an ordinary gesture -- and a stale
+    // `samples[0]` would average the pause in and under-report the flick.
+    // With no sample inside the trailing window the pointer has not moved
+    // recently, which is a velocity of zero, not an unknown.
+    // Re-window here rather than trusting the filtering done on the last
+    // move. Between that move and this event the pointer may have rested --
+    // a drag, a pause, then a flick is an ordinary gesture -- and a stale
+    // `samples[0]` would average the pause in and under-report the flick.
+    // With no sample inside the trailing window the pointer has not moved
+    // recently, which is a velocity of zero, not an unknown.
+    const cutoff = event.timeStamp - VELOCITY_WINDOW_MS;
+    const oldest = samples.find((sample) => sample.time >= cutoff);
     if (!oldest) {
       return 0;
     }
@@ -398,6 +430,17 @@ const dragToDismiss = modifier<{
     }
   };
 
+  // `scroll` does not bubble, but it does propagate to capture-phase
+  // listeners on ancestors, which is how one listener here sees any scroll
+  // container inside the element.
+  const handleScroll = (event: Event): void => {
+    lastScrollAt = event.timeStamp;
+  };
+
+  element.addEventListener('scroll', handleScroll, {
+    capture: true,
+    passive: true
+  });
   element.addEventListener('pointerdown', handlePointerDown);
   element.addEventListener('pointermove', handlePointerMove, {
     passive: false
@@ -406,6 +449,7 @@ const dragToDismiss = modifier<{
   element.addEventListener('pointercancel', handlePointerUp);
 
   return () => {
+    element.removeEventListener('scroll', handleScroll, { capture: true });
     element.removeEventListener('pointerdown', handlePointerDown);
     element.removeEventListener('pointermove', handlePointerMove);
     element.removeEventListener('pointerup', handlePointerUp);

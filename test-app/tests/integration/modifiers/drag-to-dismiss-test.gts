@@ -406,6 +406,208 @@ module('Integration | Modifier | dragToDismiss', function (hooks) {
     );
   });
 
+  test('a drag is refused while the scroll container is still settling', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            scrollSelector="[data-test-id='scroller']"
+          }}
+        >
+          <div data-test-id="scroller" style="height: 100%; overflow-y: auto;">
+            content
+          </div>
+        </div>
+      </template>
+    );
+
+    const scroller = find("[data-test-id='scroller']")!;
+
+    // A fling that decelerates to rest against the edge leaves the scroller
+    // reporting "at the edge", so without a lock the very next press reads as
+    // a dismiss drag. This drag would otherwise dismiss outright: it is along
+    // the axis, toward the dismiss direction, and past the 25% threshold.
+    scroller.dispatchEvent(new Event('scroll', { bubbles: false }));
+    pointer(scroller, 'pointerdown', 0, 0);
+    pointer(scroller, 'pointermove', 0, 80);
+    pointer(scroller, 'pointerup', 0, 80);
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await settled();
+
+    assert.strictEqual(dismissed, 0, 'the drag was refused while settling');
+
+    // Once the lock has expired the identical gesture is honoured again, so
+    // the lock delays the gesture rather than disabling it.
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    pointer(scroller, 'pointerdown', 0, 0);
+    pointer(scroller, 'pointermove', 0, 80);
+    pointer(scroller, 'pointerup', 0, 80);
+
+    await waitUntil(() => dismissed === 1);
+    await settled();
+
+    assert.strictEqual(dismissed, 1, 'the same drag dismissed once settled');
+  });
+
+  test('a short but fast flick dismisses on velocity alone', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 200px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            handleSelector="[data-test-id='handle']"
+          }}
+        >
+          <div data-test-id="handle" style="height: 20px;"></div>
+        </div>
+      </template>
+    );
+
+    const handle = find("[data-test-id='handle']")!;
+
+    // 40px is well under the distance threshold (25% of 200px = 50px), so a
+    // dismiss here can only come from the velocity path. Real time has to
+    // pass between the events: PointerEvent.timeStamp is set by the browser,
+    // and without a gap the elapsed time falls under MIN_VELOCITY_ELAPSED_MS
+    // and velocity() deliberately reports zero.
+    pointer(handle, 'pointerdown', 0, 0);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    pointer(handle, 'pointermove', 0, 40);
+    pointer(handle, 'pointerup', 0, 40);
+
+    await waitUntil(() => dismissed === 1);
+    await settled();
+
+    assert.strictEqual(dismissed, 1, 'the flick dismissed on velocity');
+  });
+
+  test('a pause before release does not count toward velocity', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    await render(
+      <template>
+        <div
+          data-test-id="panel"
+          style="height: 600px; width: 200px;"
+          {{dragToDismiss
+            axis="y"
+            direction=1
+            isEnabled=true
+            onDismiss=onDismiss
+            handleSelector="[data-test-id='handle']"
+          }}
+        >
+          <div data-test-id="handle" style="height: 20px;"></div>
+        </div>
+      </template>
+    );
+
+    const handle = find("[data-test-id='handle']")!;
+
+    // 100px stays under the distance threshold (25% of 600px = 150px), so
+    // only velocity could dismiss here. The pointer then rests well past the
+    // trailing window before lifting, and holding still is not a flick.
+    //
+    // The numbers are chosen so this discriminates. Averaging the whole
+    // gesture -- 100px over the ~170ms since pointerdown -- yields 0.59px/ms,
+    // over the 0.4 threshold, so a velocity() that reuses the first sample
+    // dismisses here. Re-windowing against the release finds no sample in the
+    // trailing 100ms and correctly reports no recent motion at all.
+    pointer(handle, 'pointerdown', 0, 0);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    pointer(handle, 'pointermove', 0, 100);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    pointer(handle, 'pointerup', 0, 100);
+
+    // Wait past the exit animation's own timeout (SETTLE_MS + 50) before
+    // asserting. A commit defers onDismiss until that fires, and `settled()`
+    // does not wait on a raw setTimeout -- so asserting immediately would
+    // report zero dismissals even when one had been scheduled.
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await settled();
+
+    assert.strictEqual(dismissed, 0, 'a held pointer did not dismiss');
+  });
+
+  test('prefers-reduced-motion dismisses without an exit animation', async function (assert) {
+    let dismissed = 0;
+    const onDismiss = () => {
+      dismissed += 1;
+    };
+
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = ((query: string) =>
+      ({
+        matches: query.includes('prefers-reduced-motion'),
+        media: query
+      }) as MediaQueryList) as typeof window.matchMedia;
+
+    try {
+      await render(
+        <template>
+          <div
+            data-test-id="panel"
+            style="height: 200px; width: 200px;"
+            {{dragToDismiss
+              axis="y"
+              direction=1
+              isEnabled=true
+              onDismiss=onDismiss
+              handleSelector="[data-test-id='handle']"
+            }}
+          >
+            <div data-test-id="handle" style="height: 20px;"></div>
+          </div>
+        </template>
+      );
+
+      const handle = find("[data-test-id='handle']")!;
+      const panel = find("[data-test-id='panel']") as HTMLElement;
+
+      pointer(handle, 'pointerdown', 0, 0);
+      pointer(handle, 'pointermove', 0, 80);
+      pointer(handle, 'pointerup', 0, 80);
+
+      // No waitUntil: under reduced motion the dismiss is immediate rather
+      // than deferred until an exit animation finishes.
+      assert.strictEqual(dismissed, 1, 'onDismiss fired synchronously');
+      assert.notOk(
+        panel.style.transition.includes('transform'),
+        `no exit transition was set (transition: "${panel.style.transition}")`
+      );
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
+
+    await settled();
+  });
+
   test('pointercancel on a pending (unclaimed) gesture resets cleanly without dismissing', async function (assert) {
     let dismissed = 0;
     const onDismiss = () => {
