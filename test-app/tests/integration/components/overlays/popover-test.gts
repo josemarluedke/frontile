@@ -109,7 +109,7 @@ module(
         );
     });
 
-    test('it works with trigger hover mode, prevents focus restore', async function (assert) {
+    test('it works with trigger hover mode, never steals focus', async function (assert) {
       await render(
         <template>
           <button type="button" data-test-id="focused-element">Button</button>

@@ -6,6 +6,8 @@ import {
   triggerKeyEvent,
   find,
   settled,
+  setupOnerror,
+  resetOnerror,
   waitUntil
 } from '@ember/test-helpers';
 import { Tooltip } from 'frontile/overlays';
@@ -15,6 +17,10 @@ module(
   'Integration | Component | Tooltip | @frontile/overlays',
   function (hooks) {
     setupRenderingTest(hooks);
+
+    hooks.afterEach(function () {
+      resetOnerror();
+    });
 
     test('it renders @content on hover and closes on leave', async function (assert) {
       await render(
@@ -441,6 +447,38 @@ module(
       } finally {
         Tooltip.prototype.ensureAnchor = originalEnsureAnchor;
       }
+    });
+
+    test('it asserts when both @content and a <t.Content> block are used', async function (assert) {
+      const errors: unknown[] = [];
+      setupOnerror((error: unknown) => {
+        errors.push(error);
+      });
+
+      await render(
+        <template>
+          <Tooltip @content="Add to library" as |t|>
+            <button
+              data-test-id="trigger"
+              type="button"
+              {{t.trigger}}
+            >Top</button>
+            <t.Content>Also here</t.Content>
+          </Tooltip>
+        </template>
+      );
+
+      assert.strictEqual(
+        errors.length,
+        1,
+        'rendering both @content and a <t.Content> block raised exactly one error'
+      );
+      assert.ok(
+        String((errors[0] as Error)?.message ?? errors[0]).includes(
+          'received both @content and a <t.Content> block'
+        ),
+        'the raised error is the mutual-exclusion assertion, not some other failure'
+      );
     });
   }
 );

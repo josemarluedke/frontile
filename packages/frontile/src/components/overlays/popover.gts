@@ -485,10 +485,12 @@ class Popover extends Component<PopoverSignature> {
         this.preventFocusRestore = true;
         this.isHoverTrigger = true;
         // The modifier body re-runs on every open/close (it reads
-        // `this.isOpen` below to keep `aria-expanded` in sync), and the
-        // returned cleanup below always tears the listener down first -- so
-        // gating the install on `isOpen` here is what keeps the document
-        // listener attached only while open, matching the doc comment on
+        // `this.isOpen` below to keep whichever ARIA attribute the trigger's
+        // `aria` mode owns in sync -- `aria-expanded` in `'menu'` mode,
+        // `aria-describedby` in `'describedby'` mode), and the returned
+        // cleanup below always tears the listener down first -- so gating
+        // the install on `isOpen` here is what keeps the document listener
+        // attached only while open, matching the doc comment on
         // `escapeListener`.
         if (this.isOpen) {
           this.setupEscapeListener();

@@ -79,6 +79,10 @@ interface TooltipSignature {
     content?: string;
 
     /**
+     * The requested placement of the tooltip relative to its trigger. This is
+     * a preference, not a guarantee: the flip middleware may resolve it to
+     * the opposite side when there is no room for it in the requested spot.
+     *
      * @defaultValue 'top'
      */
     placement?: PopoverSignature['Args']['placement'];
@@ -91,11 +95,16 @@ interface TooltipSignature {
     arrow?: boolean;
 
     /**
+     * The tooltip's size, which scales its padding and label text.
+     *
      * @defaultValue 'md'
      */
     size?: TooltipVariants['size'];
 
     /**
+     * The tooltip's semantic color role. The arrow inherits the body's
+     * background, so it follows the chosen intent automatically.
+     *
      * @defaultValue 'default'
      */
     intent?: TooltipVariants['intent'];
@@ -151,6 +160,9 @@ interface TooltipSignature {
     didClose?: () => void;
 
     /**
+     * The gap, in pixels, between the trigger and the tooltip. The default
+     * leaves room for the arrow when `@arrow` is enabled.
+     *
      * @defaultValue 8
      */
     offsetOptions?: PopoverSignature['Args']['offsetOptions'];
