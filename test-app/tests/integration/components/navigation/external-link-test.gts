@@ -93,6 +93,21 @@ module(
           .hasAttribute('rel', 'noopener noreferrer');
       });
 
+      // The whole reason the implementation uses `??` rather than `||`: an
+      // explicit empty string has to clear the default, not fall back to it.
+      test('an empty @rel clears the default', async function (assert) {
+        await render(
+          <template>
+            <ExternalLink
+              @href="https://frontile.dev"
+              @rel=""
+            >Frontile</ExternalLink>
+          </template>
+        );
+
+        assert.dom('[data-test-id="external-link"]').hasAttribute('rel', '');
+      });
+
       test('@rel replaces the default verbatim', async function (assert) {
         await render(
           <template>
@@ -125,6 +140,27 @@ module(
           .hasClass('sr-only');
       });
 
+      // The space between the link text and the announcement lives inside the
+      // out-of-flow span, on a `prettier-ignore` line where it is invisible.
+      // Without it a screen reader runs the two together as "Frontile(opens".
+      test('the announcement is separated from the link text', async function (assert) {
+        await render(
+          <template>
+            <ExternalLink @href="https://frontile.dev">Frontile</ExternalLink>
+          </template>
+        );
+
+        const label = document.querySelector(
+          '[data-test-id="external-link-new-tab-label"]'
+        );
+
+        assert.strictEqual(
+          label?.textContent,
+          ' (opens in a new tab)',
+          'the label carries its own leading space'
+        );
+      });
+
       test('@newTabLabel customises the wording', async function (assert) {
         await render(
           <template>
@@ -146,6 +182,21 @@ module(
             <ExternalLink
               @href="https://frontile.dev"
               @newTabLabel=""
+            >Frontile</ExternalLink>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-id="external-link-new-tab-label"]')
+          .doesNotExist();
+      });
+
+      test('a blank @newTabLabel suppresses the announcement', async function (assert) {
+        await render(
+          <template>
+            <ExternalLink
+              @href="https://frontile.dev"
+              @newTabLabel="   "
             >Frontile</ExternalLink>
           </template>
         );
@@ -243,16 +294,60 @@ module(
         const atEnd = document.querySelector('[data-test-end]');
         const atStart = document.querySelector('[data-test-start]');
 
+        // Both ends are asserted for each link: checking only the end the
+        // glyph is expected at passes even if it renders on both sides, or if
+        // the opposite end simply holds no element.
         assert.strictEqual(
           atEnd?.lastElementChild?.getAttribute('data-test-id'),
           'external-link-icon',
           'the glyph is the last element when placed at the end'
         );
         assert.strictEqual(
+          atEnd?.firstElementChild?.getAttribute('data-test-id'),
+          'external-link-new-tab-label',
+          'and is not also at the start'
+        );
+        assert.strictEqual(
           atStart?.firstElementChild?.getAttribute('data-test-id'),
           'external-link-icon',
           'the glyph is the first element when placed at the start'
         );
+        assert.strictEqual(
+          atStart?.lastElementChild?.getAttribute('data-test-id'),
+          'external-link-new-tab-label',
+          'and is not also at the end'
+        );
+      });
+
+      // The spec calls for the placement variant's classes, not just DOM order:
+      // without this the theme's `iconPlacement` variant could be deleted and
+      // the suite would stay green.
+      test('@iconPlacement applies the variant classes', async function (assert) {
+        await render(
+          <template>
+            <ExternalLink @href="https://frontile.dev" data-test-end>
+              Frontile
+            </ExternalLink>
+            <ExternalLink
+              @href="https://frontile.dev"
+              @iconPlacement="start"
+              data-test-start
+            >Frontile</ExternalLink>
+          </template>
+        );
+
+        assert
+          .dom('[data-test-end] [data-test-id="external-link-icon"]')
+          .hasClass('ml-0.5', 'a trailing glyph is spaced on its left');
+        assert
+          .dom('[data-test-end] [data-test-id="external-link-icon"]')
+          .doesNotHaveClass('mr-0.5');
+        assert
+          .dom('[data-test-start] [data-test-id="external-link-icon"]')
+          .hasClass('mr-0.5', 'a leading glyph is spaced on its right');
+        assert
+          .dom('[data-test-start] [data-test-id="external-link-icon"]')
+          .doesNotHaveClass('ml-0.5');
       });
     });
 

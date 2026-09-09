@@ -36,14 +36,15 @@ const IconExternalLink: TOC<{ Element: SVGElement }> = <template>
  * be nudged off-centre by template formatting.
  */
 const Glyph: TOC<{
-  Args: { class: string };
+  Args: { class: string; hasCustomIcon: boolean };
   Blocks: { default: [] };
 }> = <template>
-  <span
-    class={{@class}}
-    aria-hidden="true"
-    data-test-id="external-link-icon"
-  >{{yield}}</span>
+  <span class={{@class}} aria-hidden="true" data-test-id="external-link-icon">
+    {{! The has-block keyword cannot be read from a getter, so the caller
+        decides and passes the answer in. Whitespace here is free: flex layout
+        discards whitespace-only children. }}
+    {{#if @hasCustomIcon}}{{yield}}{{else}}<IconExternalLink />{{/if}}
+  </span>
 </template>;
 
 export interface ExternalLinkSignature {
@@ -52,12 +53,12 @@ export interface ExternalLinkSignature {
     href: string;
 
     /**
-     * The browsing context to open in: `_blank`, `_self`, `_parent`, `_top`,
-     * or a frame name.
+     * The browsing context to open in. Any frame name is accepted; the four
+     * keywords are listed so editors can complete them.
      *
      * @defaultValue '_blank'
      */
-    target?: string;
+    target?: '_blank' | '_self' | '_parent' | '_top' | (string & {});
 
     /**
      * Replaces the default `rel`. Left off, `noopener noreferrer` is applied
@@ -87,7 +88,7 @@ export interface ExternalLinkSignature {
 
     /**
      * The visually-hidden text announced when the link opens a new tab. Pass
-     * an empty string to suppress it.
+     * an empty or blank string to suppress it.
      *
      * @defaultValue '(opens in a new tab)'
      */
@@ -156,15 +157,9 @@ class ExternalLink extends Component<ExternalLinkSignature> {
 
     const label = this.args.newTabLabel ?? '(opens in a new tab)';
 
-    if (label === '') {
-      return undefined;
-    }
-
-    // The leading space separates the label from the link text for a screen
-    // reader. It sits inside the `sr-only` span, which is out of flow, so it
-    // costs no layout -- whereas whitespace in the template would land between
-    // the text and the glyph and get underlined with them.
-    return ` ${label}`;
+    // Trimmed, so a whitespace-only label is suppressed like an empty one --
+    // it would announce nothing while still adding a node.
+    return label.trim() === '' ? undefined : label;
   }
 
   get showIcon(): boolean {
@@ -176,7 +171,7 @@ class ExternalLink extends Component<ExternalLinkSignature> {
   }
 
   get iconAtEnd(): boolean {
-    return this.showIcon && this.args.iconPlacement !== 'start';
+    return this.showIcon && !this.iconAtStart;
   }
 
   @cached
@@ -197,8 +192,11 @@ class ExternalLink extends Component<ExternalLinkSignature> {
 
   <template>
     {{! No whitespace anywhere inside the anchor: a stray newline collapses to
-        a space that the anchor's own underline then draws. The announcement
-        carries its own leading space instead, inside its out-of-flow span. }}
+        a space that the anchor's own underline then draws. The one space that
+        is wanted -- separating the link text from the announcement for a
+        screen reader -- sits inside the sr-only span, which is out of flow and
+        so costs no layout. It is covered by a test, since prettier is told to
+        leave this line alone and the space is invisible in review. }}
     {{! prettier-ignore }}
     <a
       href={{@href}}
@@ -208,7 +206,7 @@ class ExternalLink extends Component<ExternalLinkSignature> {
       data-test-id="external-link"
       data-component="external-link"
       ...attributes
-    >{{#if this.iconAtStart}}<Glyph @class={{this.classNames.icon}}>{{#if (has-block "icon")}}{{yield to="icon"}}{{else}}<IconExternalLink />{{/if}}</Glyph>{{/if}}{{yield}}{{#if this.newTabLabel}}<span class="sr-only" data-test-id="external-link-new-tab-label">{{this.newTabLabel}}</span>{{/if}}{{#if this.iconAtEnd}}<Glyph @class={{this.classNames.icon}}>{{#if (has-block "icon")}}{{yield to="icon"}}{{else}}<IconExternalLink />{{/if}}</Glyph>{{/if}}</a>
+    >{{#if this.iconAtStart}}<Glyph @class={{this.classNames.icon}} @hasCustomIcon={{has-block "icon"}}>{{yield to="icon"}}</Glyph>{{/if}}{{yield}}{{#if this.newTabLabel}}<span class="sr-only" data-test-id="external-link-new-tab-label"> {{this.newTabLabel}}</span>{{/if}}{{#if this.iconAtEnd}}<Glyph @class={{this.classNames.icon}} @hasCustomIcon={{has-block "icon"}}>{{yield to="icon"}}</Glyph>{{/if}}</a>
   </template>
 }
 

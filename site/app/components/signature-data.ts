@@ -9717,7 +9717,7 @@ const data: ComponentDoc[] = [
         isRequired: false,
         isInternal: false,
         description:
-          'The visually-hidden text announced when the link opens a new tab. Pass\nan empty string to suppress it.',
+          'The visually-hidden text announced when the link opens a new tab. Pass\nan empty or blank string to suppress it.',
         tags: {
           defaultValue: {
             name: 'defaultValue',
@@ -9754,12 +9754,14 @@ const data: ComponentDoc[] = [
       {
         identifier: 'target',
         type: {
-          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">string</span></span>',
+          type: '<span class="shiki"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">enum</span></span>',
+          raw: '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'_blank\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'_self\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'_parent\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF"> \'_top\'</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> |</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (string </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x26;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {})</span></span>',
+          items: ["'_blank'", "'_self'", "'_parent'", "'_top'", 'string & {}'],
         },
         isRequired: false,
         isInternal: false,
         description:
-          'The browsing context to open in: <code>_blank</code>, <code>_self</code>, <code>_parent</code>, <code>_top</code>,\nor a frame name.',
+          'The browsing context to open in. Any frame name is accepted; the four\nkeywords are listed so editors can complete them.',
         tags: { defaultValue: { name: 'defaultValue', value: "'_blank'" } },
         defaultValue:
           '<span class="shiki"><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">\'_blank\'</span></span>',
