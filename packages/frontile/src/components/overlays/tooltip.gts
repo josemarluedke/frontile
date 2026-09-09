@@ -2,6 +2,9 @@ import Component from '@glimmer/component';
 import { assert } from '@ember/debug';
 import { hash } from '@ember/helper';
 import { modifier } from 'ember-modifier';
+/* eslint-disable ember/no-runloop */
+import { next, cancel } from '@ember/runloop';
+import type { Timer as EmberTimer } from '@ember/runloop';
 import { useStyles } from '@frontile/theme';
 import { Popover, type PopoverSignature } from './popover';
 import type {
@@ -271,13 +274,31 @@ class Tooltip extends Component<TooltipSignature> {
    * re-run: `ensureAnchor` below only calls `anchor(element)` when the
    * element actually changes. The wrapper's own destructor -- called by
    * `ember-modifier` before *every* re-run, same-element re-runs included --
-   * must therefore never touch the anchor; it only tears down `trigger`,
-   * which is the half that legitimately needs to re-run on every open/close
-   * (that's what keeps `aria-describedby` in sync, and Task 5 documented it
-   * as required for controlled mode). The anchor is torn down only when
-   * `ensureAnchor` sees a different element arrive, or when the component
-   * itself is destroyed (`willDestroy`, below) -- never on a same-element
-   * wrapper re-run.
+   * therefore does not tear the anchor down synchronously; it only tears
+   * down `trigger` immediately (the half that legitimately needs to re-run on
+   * every open/close -- that's what keeps `aria-describedby` in sync, and
+   * Task 5 documented it as required for controlled mode) and *defers* the
+   * anchor decision via `scheduleAnchorTeardownCheck`.
+   *
+   * FIX ROUND 2 -- the leak this guard introduced, and why a deferred check:
+   * `ember-modifier` gives the destructor no way to tell "about to re-run for
+   * the same element" apart from "genuinely destroyed" -- both call the same
+   * returned closure. Guarding the anchor by comparing `element` identity (as
+   * fix round 1 did) is correct for the re-run case but has no destructor
+   * path left for the case where `element` is removed entirely while
+   * `Tooltip` itself keeps living (e.g. `{{#if this.show}}<button
+   * {{t.trigger}}>{{/if}}`) -- nothing ever calls `ensureAnchor` again to
+   * notice the change, and `willDestroy` only runs when `Tooltip` itself is
+   * torn down. `scheduleAnchorTeardownCheck`/`confirmAnchorTeardown` resolve
+   * the ambiguity by deferring one runloop turn (`@ember/runloop`'s `next`):
+   * if the wrapper re-runs for the same element, `ensureAnchor` cancels the
+   * pending check synchronously, before it fires; if `element` was genuinely
+   * removed, nothing cancels it and the anchor is torn down for real one turn
+   * later. The anchor is therefore torn down in exactly three places:
+   * `ensureAnchor` (a different element arrived), `confirmAnchorTeardown`
+   * (the deferred check fired unchallenged), and `willDestroy` (the component
+   * itself is destroyed) -- never synchronously inside the wrapper's own
+   * destructor.
    */
   cachedTrigger?: {
     anchor: unknown;
@@ -295,6 +316,30 @@ class Tooltip extends Component<TooltipSignature> {
   anchorTeardown?: () => void;
 
   /**
+   * A scheduled-but-not-yet-confirmed anchor teardown, set by the wrapper
+   * modifier's destructor (see `makeTrigger`) and cancelled by `ensureAnchor`
+   * if the wrapper turns out to have just re-run for the same element.
+   *
+   * WHY THIS EXISTS: `ember-modifier` calls the wrapper's destructor before
+   * *every* re-run (same-element open/close churn included) as well as on
+   * genuine removal, and does not tell us which. So the destructor alone
+   * cannot decide whether to tear the anchor down. Deferring the decision by
+   * one runloop turn resolves the ambiguity: if the wrapper is only
+   * re-running, `ensureAnchor` runs synchronously afterwards (same tick,
+   * before the deferred check fires) and cancels this; if the element was
+   * genuinely removed, nothing calls `ensureAnchor` again, so the deferred
+   * check fires and the anchor is torn down for real.
+   *
+   * Scheduled with `@ember/runloop`'s `next`/`cancel`, like the rest of this
+   * codebase's timer usage (see `popover.gts`'s `hoverTimer`), rather than a
+   * bespoke `setTimeout`.
+   */
+  pendingAnchorTeardown?: {
+    element: HTMLElement | SVGElement;
+    timer: EmberTimer;
+  };
+
+  /**
    * Installs `anchor` on `element` only if it is not already installed
    * there. Called on every wrapper re-run (every open/close), but is a no-op
    * on all but the first call and any call where the element genuinely
@@ -308,6 +353,18 @@ class Tooltip extends Component<TooltipSignature> {
    * (see `tooltip-test.gts`'s anchor-churn-guard test).
    */
   ensureAnchor(anchor: unknown, element: HTMLElement | SVGElement) {
+    // The wrapper modifier re-ran for this same element -- any anchor
+    // teardown its destructor speculatively scheduled (see
+    // `scheduleAnchorTeardownCheck`) is stale: the element didn't actually go
+    // away, so cancel the pending check before it can fire.
+    if (
+      this.pendingAnchorTeardown &&
+      this.pendingAnchorTeardown.element === element
+    ) {
+      cancel(this.pendingAnchorTeardown.timer);
+      this.pendingAnchorTeardown = undefined;
+    }
+
     if (this.anchoredElement === element) {
       return;
     }
@@ -328,8 +385,60 @@ class Tooltip extends Component<TooltipSignature> {
     this.anchorTeardown = teardown ?? undefined;
   }
 
+  /**
+   * Called from the wrapper modifier's destructor -- i.e. on *every*
+   * re-run of the wrapper, not only on genuine removal of `element`. Defers
+   * the decision by one runloop turn: schedules `confirmAnchorTeardown` via
+   * `next()`, which only actually tears the anchor down if nothing cancels
+   * it first. `ensureAnchor` (above) is what cancels it, synchronously,
+   * within the same runloop turn, if the wrapper turns out to have simply
+   * re-run for the same element.
+   */
+  scheduleAnchorTeardownCheck(element: HTMLElement | SVGElement) {
+    // Superseding an earlier pending check for a different element should
+    // not normally happen (a new one would already have been resolved by an
+    // intervening `ensureAnchor` call), but cancel defensively rather than
+    // leak the earlier timer.
+    if (this.pendingAnchorTeardown) {
+      cancel(this.pendingAnchorTeardown.timer);
+    }
+
+    const timer = next(() => this.confirmAnchorTeardown(element));
+    this.pendingAnchorTeardown = { element, timer };
+  }
+
+  /**
+   * Runs one runloop turn after the wrapper modifier's destructor scheduled
+   * it. If it gets here at all (i.e. `ensureAnchor` did not cancel it in the
+   * meantime), the wrapper never re-ran for `element` -- the element was
+   * genuinely removed -- so the anchor installed on it is torn down for
+   * real.
+   */
+  confirmAnchorTeardown(element: HTMLElement | SVGElement) {
+    if (
+      !this.pendingAnchorTeardown ||
+      this.pendingAnchorTeardown.element !== element
+    ) {
+      // Already superseded/cancelled (or, in principle, stale) -- nothing to
+      // do.
+      return;
+    }
+
+    this.pendingAnchorTeardown = undefined;
+
+    if (this.anchoredElement === element) {
+      this.anchorTeardown?.();
+      this.anchoredElement = undefined;
+      this.anchorTeardown = undefined;
+    }
+  }
+
   willDestroy() {
     super.willDestroy();
+    if (this.pendingAnchorTeardown) {
+      cancel(this.pendingAnchorTeardown.timer);
+      this.pendingAnchorTeardown = undefined;
+    }
     this.anchorTeardown?.();
     this.anchoredElement = undefined;
     this.anchorTeardown = undefined;
@@ -365,14 +474,22 @@ class Tooltip extends Component<TooltipSignature> {
             { aria: 'describedby' }
           );
 
-          // Only the trigger half is torn down here. `ember-modifier` calls
-          // this destructor before *every* re-run -- including a same-element
-          // re-run driven by `this.isOpen` churn -- so tearing the anchor
-          // down here would defeat the guard above. The anchor's teardown is
-          // handled by `ensureAnchor` (on a genuine element change) and by
-          // `willDestroy` (on real component destruction).
+          // `ember-modifier` calls this destructor before *every* re-run --
+          // including a same-element re-run driven by `this.isOpen` churn --
+          // and on genuine removal of `element`, with no way to tell which
+          // from here. The trigger half always tears down and reinstalls
+          // (that's what keeps `aria-describedby` in sync). The anchor half
+          // cannot follow the same rule -- unconditionally tearing it down
+          // here would reintroduce the churn this guard exists to prevent --
+          // so it's handled by deferred confirmation: `scheduleAnchorTeardownCheck`
+          // only *actually* tears the anchor down one runloop turn later, and
+          // only if `ensureAnchor` doesn't cancel it first because the
+          // wrapper turned out to just be re-running for the same element.
+          // See the doc comments on `pendingAnchorTeardown` /
+          // `scheduleAnchorTeardownCheck` / `confirmAnchorTeardown` above.
           return () => {
             teardownTrigger?.();
+            this.scheduleAnchorTeardownCheck(element);
           };
         }) as unknown as ModifierLike<{ Element: HTMLElement }>
       };

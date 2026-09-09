@@ -363,5 +363,84 @@ module(
         Tooltip.prototype.ensureAnchor = originalEnsureAnchor;
       }
     });
+
+    test('the anchor is torn down when the trigger element is removed while Tooltip survives', async function (assert) {
+      // Proves fix round 2: fix round 1's anchor-churn guard (above) stopped
+      // the anchor from being reinstalled on every open/close, but the only
+      // teardown paths left reachable were `ensureAnchor` (a *different*
+      // element arrives) and `Tooltip.willDestroy` (the whole component is
+      // destroyed). Neither fires when the trigger element itself is removed
+      // out from under a *surviving* `Tooltip` -- e.g. `{{#if this.show}}`
+      // toggling to false -- so the anchor's `autoUpdate` loop leaked,
+      // pointing at a detached element, until `Tooltip` itself unmounted.
+      //
+      // Same technique as the churn test above: `ensureAnchor` is the one
+      // place that ever calls the real anchor function, so it's wrapped to
+      // substitute `anchor` with a proxy. This time the proxy still invokes
+      // the real anchor function (to preserve its real side effects -- it
+      // sets `ember-velcro`'s tracked `hook` field), but discards whatever it
+      // returns (in practice, nothing: `ember-velcro`'s `hook` returns no
+      // cleanup at all) and substitutes a synthetic counting teardown of its
+      // own. That measures the thing this test actually cares about --
+      // whether `Tooltip`'s own bookkeeping (`ensureAnchor` /
+      // `confirmAnchorTeardown` / `willDestroy`) calls whatever teardown it
+      // was handed at the right time -- independent of what the real anchor
+      // function happens to return.
+      const originalEnsureAnchor = Tooltip.prototype.ensureAnchor;
+      let anchorTeardownCount = 0;
+
+      Tooltip.prototype.ensureAnchor = function (
+        this: InstanceType<typeof Tooltip>,
+        anchor: unknown,
+        element: HTMLElement | SVGElement
+      ) {
+        const countingAnchor = (el: HTMLElement | SVGElement) => {
+          (anchor as (el: HTMLElement | SVGElement) => unknown)(el);
+
+          return () => {
+            anchorTeardownCount++;
+          };
+        };
+
+        originalEnsureAnchor.call(this, countingAnchor, element);
+      };
+
+      try {
+        const show = cell(true);
+
+        await render(
+          <template>
+            <Tooltip @content="Hi" @openDelay={{0}} @closeDelay={{0}} as |t|>
+              {{#if show.current}}
+                <button
+                  data-test-id="trigger"
+                  type="button"
+                  {{t.trigger}}
+                >Trigger</button>
+              {{/if}}
+            </Tooltip>
+          </template>
+        );
+
+        assert.dom('[data-test-id="trigger"]').exists();
+        assert.strictEqual(
+          anchorTeardownCount,
+          0,
+          'the anchor has not been torn down while the trigger is still mounted'
+        );
+
+        show.current = false;
+        await settled();
+
+        assert.dom('[data-test-id="trigger"]').doesNotExist();
+        assert.strictEqual(
+          anchorTeardownCount,
+          1,
+          'the anchor is torn down once the trigger element is removed, even though Tooltip itself keeps rendering'
+        );
+      } finally {
+        Tooltip.prototype.ensureAnchor = originalEnsureAnchor;
+      }
+    });
   }
 );
