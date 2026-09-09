@@ -675,15 +675,19 @@ module(
 
       // Leave the trigger, then move onto a point inside the submenu itself.
       //
-      // The first `triggerEvent` is deliberately NOT awaited: awaiting it
-      // would resolve only once `settled()` sees no pending timers, which
-      // means waiting out the full `SUBMENU_CLOSE_DELAY` for the scheduled
-      // close to actually fire -- defeating the point of this test, which is
-      // to move the pointer into the submenu *before* that happens.
-      // `triggerEvent` dispatches its DOM event synchronously before
-      // returning its promise, so the `pointerleave` (and the close it
-      // schedules) still lands before the `pointermove` below runs.
-      triggerEvent('[data-test-id="dropdown-submenu-trigger"]', 'pointerleave');
+      // The `pointerleave` is dispatched natively and synchronously, not via
+      // an awaited `triggerEvent`: `triggerEvent` chains `settled()`, which
+      // would not resolve until the pending `SUBMENU_CLOSE_DELAY` timer has
+      // actually fired — defeating the point of this test, which is to move
+      // the pointer into the submenu *before* that timer elapses. A native
+      // dispatch reaches the same listener synchronously, with no floating
+      // promise and no dependence on the relative timing of test-helper hooks.
+      const trigger = document.querySelector(
+        '[data-test-id="dropdown-submenu-trigger"]'
+      ) as HTMLElement;
+      trigger.dispatchEvent(
+        new PointerEvent('pointerleave', { bubbles: true })
+      );
       await triggerEvent(document, 'pointermove', {
         clientX: box.left + box.width / 2,
         clientY: box.top + box.height / 2
