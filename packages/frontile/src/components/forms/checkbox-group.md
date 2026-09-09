@@ -23,11 +23,13 @@ The most basic usage of the CheckboxGroup component with a label and options.
 import { CheckboxGroup } from 'frontile';
 
 <template>
-  <CheckboxGroup @label='Interests' as |Checkbox|>
-    <Checkbox @label='Music' />
-    <Checkbox @label='Sports' />
-    <Checkbox @label='Technology' />
-  </CheckboxGroup>
+  <div class='demo-stack'>
+    <CheckboxGroup @label='Interests' as |Checkbox|>
+      <Checkbox @label='Music' />
+      <Checkbox @label='Sports' />
+      <Checkbox @label='Technology' />
+    </CheckboxGroup>
+  </div>
 </template>
 ```
 
@@ -77,7 +79,7 @@ export default class ControlledCheckboxGroup extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <CheckboxGroup @label='What are your interests?' as |Checkbox|>
         <Checkbox
           value='music'
@@ -187,7 +189,7 @@ export default class ValidatedCheckboxGroup extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -315,7 +317,7 @@ export default class CompleteFormWithCheckbox extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -430,7 +432,7 @@ import { CheckboxGroup } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Horizontal Orientation }}
     <CheckboxGroup
       @label='Horizontal Layout'

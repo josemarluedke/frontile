@@ -21,7 +21,11 @@ The most basic usage of the Input component with only a label.
 
 ```gts preview
 import { Input } from 'frontile';
-<template><Input @label='Full Name' /></template>
+<template>
+  <div class='demo-stack'>
+    <Input @label='Full Name' />
+  </div>
+</template>
 ```
 
 ### Controlled Input
@@ -41,7 +45,7 @@ export default class ControlledInput extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
         <form.Field @name='name' as |field|>
           <field.Input @label='Your Name' />
@@ -63,7 +67,7 @@ import { Input } from 'frontile';
 
 export default class InputTypes extends Component {
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Input @label='Email' @type='email' />
       <Input @label='Password' @type='password' />
       <Input @label='Phone Number' @type='tel' />
@@ -86,7 +90,7 @@ import { SearchIcon } from 'site/components/icons';
 
 export default class InputWithContent extends Component {
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Input @label='Price'>
         <:startContent>
           <span class='text-neutral-soft'>$</span>
@@ -125,20 +129,22 @@ export default class SearchInput extends Component {
   };
 
   <template>
-    <Input
-      @label='Search with Button'
-      @startContentPointerEvents='none'
-      @endContentPointerEvents='auto'
-    >
-      <:startContent>
-        <SearchIcon />
-      </:startContent>
-      <:endContent>
-        <button type='button' {{on 'click' this.handleSearch}}>
-          Search
-        </button>
-      </:endContent>
-    </Input>
+    <div class='demo-stack'>
+      <Input
+        @label='Search with Button'
+        @startContentPointerEvents='none'
+        @endContentPointerEvents='auto'
+      >
+        <:startContent>
+          <SearchIcon />
+        </:startContent>
+        <:endContent>
+          <button type='button' {{on 'click' this.handleSearch}}>
+            Search
+          </button>
+        </:endContent>
+      </Input>
+    </div>
   </template>
 }
 ```
@@ -160,15 +166,17 @@ export default class ClearableInput extends Component {
   };
 
   <template>
-    <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
-      <form.Field @name='searchQuery' as |field|>
-        <field.Input
-          @label='Search Query'
-          @isClearable={{true}}
-          placeholder='Type to search...'
-        />
-      </form.Field>
-    </Form>
+    <div class='demo-stack'>
+      <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
+        <form.Field @name='searchQuery' as |field|>
+          <field.Input
+            @label='Search Query'
+            @isClearable={{true}}
+            placeholder='Type to search...'
+          />
+        </form.Field>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -219,28 +227,30 @@ export default class ValidatedInput extends Component {
   };
 
   <template>
-    <Form
-      @data={{this.formData}}
-      @schema={{schema}}
-      @onChange={{this.handleFormChange}}
-      @onSubmit={{this.handleFormSubmit}}
-      @onError={{this.handleFormError}}
-      as |form|
-    >
-      <form.Field @name='name' as |field|>
-        <field.Input @label='Name' @isRequired={{true}} />
-      </form.Field>
+    <div class='demo-stack'>
+      <Form
+        @data={{this.formData}}
+        @schema={{schema}}
+        @onChange={{this.handleFormChange}}
+        @onSubmit={{this.handleFormSubmit}}
+        @onError={{this.handleFormError}}
+        as |form|
+      >
+        <form.Field @name='name' as |field|>
+          <field.Input @label='Name' @isRequired={{true}} />
+        </form.Field>
 
-      <form.Field @name='email' as |field|>
-        <field.Input
-          @label='Email Address'
-          @type='email'
-          @isRequired={{true}}
-        />
-      </form.Field>
+        <form.Field @name='email' as |field|>
+          <field.Input
+            @label='Email Address'
+            @type='email'
+            @isRequired={{true}}
+          />
+        </form.Field>
 
-      <Button type='submit'>Submit</Button>
-    </Form>
+        <Button type='submit'>Submit</Button>
+      </Form>
+    </div>
   </template>
 }
 ```
@@ -254,7 +264,7 @@ import { Input } from 'frontile';
 import { hash } from '@ember/helper';
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{! Size variants }}
     <div>
       <h4 class='text-sm font-medium mb-2'>Size Variants</h4>

@@ -88,41 +88,43 @@ export default class CommandDialogExample extends Component {
   };
 
   <template>
-    <div class='flex items-center gap-4'>
-      <Button @appearance='outlined' {{on 'click' this.open}}>
-        Open palette
-        <Kbd @keys='mod+k' @size='sm' @appearance='outlined' @class='ml-2' />
-      </Button>
-      {{#if this.lastSelected}}
-        <span class='font-body text-body-sm text-neutral'>Selected:
-          {{this.lastSelected}}</span>
-      {{/if}}
-    </div>
+    <div class='demo-stack items-center'>
+      <div class='flex items-center gap-4'>
+        <Button @appearance='outlined' {{on 'click' this.open}}>
+          Open palette
+          <Kbd @keys='mod+k' @size='sm' @appearance='outlined' @class='ml-2' />
+        </Button>
+        {{#if this.lastSelected}}
+          <span class='font-body text-body-sm text-neutral'>Selected:
+            {{this.lastSelected}}</span>
+        {{/if}}
+      </div>
 
-    <CommandDialog
-      @isOpen={{this.isOpen}}
-      @onOpen={{this.open}}
-      @onClose={{this.close}}
-      @onSelect={{this.select}}
-      @shortcut='mod+k'
-      @items={{commands}}
-      @groupBy='section'
-      @label='Search commands'
-      @placeholder='Type a command or search…'
-      as |c|
-    >
-      <c.Input />
-      <c.List>
-        <:item as |ctx|>
-          <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
-            <:start><ctx.item.Icon /></:start>
-            <:default>{{ctx.label}}</:default>
-          </ctx.Item>
-        </:item>
-        <:empty>No results for "{{c.query}}"</:empty>
-      </c.List>
-      <c.Footer />
-    </CommandDialog>
+      <CommandDialog
+        @isOpen={{this.isOpen}}
+        @onOpen={{this.open}}
+        @onClose={{this.close}}
+        @onSelect={{this.select}}
+        @shortcut='mod+k'
+        @items={{commands}}
+        @groupBy='section'
+        @label='Search commands'
+        @placeholder='Type a command or search…'
+        as |c|
+      >
+        <c.Input />
+        <c.List>
+          <:item as |ctx|>
+            <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
+              <:start><ctx.item.Icon /></:start>
+              <:default>{{ctx.label}}</:default>
+            </ctx.Item>
+          </:item>
+          <:empty>No results for "{{c.query}}"</:empty>
+        </c.List>
+        <c.Footer />
+      </CommandDialog>
+    </div>
   </template>
 }
 ```
@@ -145,25 +147,27 @@ const commands = [
 ];
 
 <template>
-  <Command @items={{commands}} @isBordered={{true}} as |c|>
-    {{! the search field — carries the combobox semantics }}
-    <c.Input @placeholder='Search…' />
+  <div class='demo-stack'>
+    <Command @items={{commands}} @isBordered={{true}} as |c|>
+      {{! the search field — carries the combobox semantics }}
+      <c.Input @placeholder='Search…' />
 
-    {{! the results — ranked, grouped, keyboard navigable }}
-    <c.List>
-      <:item as |ctx|>
-        {{! ctx yields the item, its key, its label, and a bound Item component }}
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-      <:empty>Nothing matched.</:empty>
-      <:loading>Searching…</:loading>
-      {{! async only: shown before anything has been typed }}
-      <:prompt>Start typing to search.</:prompt>
-    </c.List>
+      {{! the results — ranked, grouped, keyboard navigable }}
+      <c.List>
+        <:item as |ctx|>
+          {{! ctx yields the item, its key, its label, and a bound Item component }}
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+        <:empty>Nothing matched.</:empty>
+        <:loading>Searching…</:loading>
+        {{! async only: shown before anything has been typed }}
+        <:prompt>Start typing to search.</:prompt>
+      </c.List>
 
-    {{! keyboard hints; c.query, c.resultCount and c.isLoading are yielded too }}
-    <c.Footer />
-  </Command>
+      {{! keyboard hints; c.query, c.resultCount and c.isLoading are yielded too }}
+      <c.Footer />
+    </Command>
+  </div>
 </template>
 ```
 
@@ -184,19 +188,21 @@ const commands = [
 ];
 
 <template>
-  <Command
-    @items={{commands}}
-    @isBordered={{true}}
-    @placeholder='Type a command or search…'
-    as |c|
-  >
-    <c.Input />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command
+      @items={{commands}}
+      @isBordered={{true}}
+      @placeholder='Type a command or search…'
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -220,19 +226,21 @@ const components = [
 ];
 
 <template>
-  <Command
-    @items={{components}}
-    @isBordered={{true}}
-    @placeholder="Try 'button' or 'bg'…"
-    as |c|
-  >
-    <c.Input />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command
+      @items={{components}}
+      @isBordered={{true}}
+      @placeholder="Try 'button' or 'bg'…"
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -252,22 +260,24 @@ const components = [
 const searchFields = (item) => [item.label, item.section];
 
 <template>
-  <Command
-    @items={{components}}
-    @searchFields={{searchFields}}
-    @isBordered={{true}}
-    @placeholder="Try 'overlays'…"
-    as |c|
-  >
-    <c.Input />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
-          {{ctx.label}}
-        </ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command
+      @items={{components}}
+      @searchFields={{searchFields}}
+      @isBordered={{true}}
+      @placeholder="Try 'overlays'…"
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
+            {{ctx.label}}
+          </ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -288,20 +298,22 @@ const components = [
 ];
 
 <template>
-  <Command
-    @items={{components}}
-    @filter={{looseFilter}}
-    @isBordered={{true}}
-    @placeholder="Try 'btn'…"
-    as |c|
-  >
-    <c.Input />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command
+      @items={{components}}
+      @filter={{looseFilter}}
+      @isBordered={{true}}
+      @placeholder="Try 'btn'…"
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -329,22 +341,24 @@ const commands = [
 ];
 
 <template>
-  <Command
-    @items={{commands}}
-    @groupBy='section'
-    @groups={{array 'Suggestions' 'Settings'}}
-    @disabledKeys={{array 'calculator'}}
-    @isBordered={{true}}
-    @placeholder='Type a command or search…'
-    as |c|
-  >
-    <c.Input />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command
+      @items={{commands}}
+      @groupBy='section'
+      @groups={{array 'Suggestions' 'Settings'}}
+      @disabledKeys={{array 'calculator'}}
+      @isBordered={{true}}
+      @placeholder='Type a command or search…'
+      as |c|
+    >
+      <c.Input />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -364,17 +378,19 @@ const commands = [
 ];
 
 <template>
-  <Command @items={{commands}} @isBordered={{true}} as |c|>
-    <c.Input @placeholder='Search…' />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
-          <:start><ctx.item.Icon /></:start>
-          <:default>{{ctx.label}}</:default>
-        </ctx.Item>
-      </:item>
-    </c.List>
-  </Command>
+  <div class='demo-stack'>
+    <Command @items={{commands}} @isBordered={{true}} as |c|>
+      <c.Input @placeholder='Search…' />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}} @shortcut={{ctx.item.shortcut}}>
+            <:start><ctx.item.Icon /></:start>
+            <:default>{{ctx.label}}</:default>
+          </ctx.Item>
+        </:item>
+      </c.List>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -393,18 +409,20 @@ const commands = [
 ];
 
 <template>
-  <Command @items={{commands}} @isBordered={{true}} @size='sm' as |c|>
-    <c.Input @placeholder='Search components…' />
-    <c.List>
-      <:item as |ctx|>
-        <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-      </:item>
-    </c.List>
-    <c.Footer as |f|>
-      <f.Hint><f.Kbd @keys='enter' /> Go to page</f.Hint>
-      <f.Hint><f.Kbd @keys='mod+c' /> Copy link</f.Hint>
-    </c.Footer>
-  </Command>
+  <div class='demo-stack'>
+    <Command @items={{commands}} @isBordered={{true}} @size='sm' as |c|>
+      <c.Input @placeholder='Search components…' />
+      <c.List>
+        <:item as |ctx|>
+          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+        </:item>
+      </c.List>
+      <c.Footer as |f|>
+        <f.Hint><f.Kbd @keys='enter' /> Go to page</f.Hint>
+        <f.Hint><f.Kbd @keys='mod+c' /> Copy link</f.Hint>
+      </c.Footer>
+    </Command>
+  </div>
 </template>
 ```
 
@@ -455,22 +473,24 @@ export default class AsyncCommandExample extends Component {
   };
 
   <template>
-    <Command
-      @onSearch={{this.search}}
-      @isBordered={{true}}
-      @placeholder='Search countries…'
-      as |c|
-    >
-      <c.Input />
-      <c.List>
-        <:item as |ctx|>
-          <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
-        </:item>
-        <:loading>Searching…</:loading>
-        <:prompt>Search for a country…</:prompt>
-        <:empty>No matches for "{{c.query}}"</:empty>
-      </c.List>
-    </Command>
+    <div class='demo-stack'>
+      <Command
+        @onSearch={{this.search}}
+        @isBordered={{true}}
+        @placeholder='Search countries…'
+        as |c|
+      >
+        <c.Input />
+        <c.List>
+          <:item as |ctx|>
+            <ctx.Item @key={{ctx.key}}>{{ctx.label}}</ctx.Item>
+          </:item>
+          <:loading>Searching…</:loading>
+          <:prompt>Search for a country…</:prompt>
+          <:empty>No matches for "{{c.query}}"</:empty>
+        </c.List>
+      </Command>
+    </div>
   </template>
 }
 ```
@@ -542,28 +562,30 @@ export default class MixedCommandExample extends Component {
   }
 
   <template>
-    <Command
-      @items={{this.items}}
-      @query={{this.query}}
-      @onQueryChange={{this.updateQuery}}
-      @isLoading={{this.isLoading}}
-      @disableFiltering={{true}}
-      @groupBy='section'
-      @groups={{array 'Recent' 'Navigation' 'Accounts'}}
-      @isBordered={{true}}
-      @placeholder="Try 'acme'…"
-      as |c|
-    >
-      <c.Input />
-      <c.List>
-        <:item as |ctx|>
-          <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
-            {{ctx.label}}
-          </ctx.Item>
-        </:item>
-        <:empty>No results for "{{c.query}}"</:empty>
-      </c.List>
-    </Command>
+    <div class='demo-stack'>
+      <Command
+        @items={{this.items}}
+        @query={{this.query}}
+        @onQueryChange={{this.updateQuery}}
+        @isLoading={{this.isLoading}}
+        @disableFiltering={{true}}
+        @groupBy='section'
+        @groups={{array 'Recent' 'Navigation' 'Accounts'}}
+        @isBordered={{true}}
+        @placeholder="Try 'acme'…"
+        as |c|
+      >
+        <c.Input />
+        <c.List>
+          <:item as |ctx|>
+            <ctx.Item @key={{ctx.key}} @description={{ctx.item.section}}>
+              {{ctx.label}}
+            </ctx.Item>
+          </:item>
+          <:empty>No results for "{{c.query}}"</:empty>
+        </c.List>
+      </Command>
+    </div>
   </template>
 }
 ```
@@ -600,7 +622,7 @@ const commands = [
 ];
 
 <template>
-  <div class='flex flex-col gap-6'>
+  <div class='demo-stack'>
     {{#each (array 'sm' 'md' 'lg') as |size|}}
       <Command @items={{commands}} @size={{size}} @isBordered={{true}} as |c|>
         <c.Input @placeholder='size={{size}}' />

@@ -46,7 +46,7 @@ export default class BasicListbox extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
@@ -96,7 +96,7 @@ export default class MultipleSelection extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
@@ -259,7 +259,7 @@ export default class Appearances extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <ButtonGroup @size='xs' @intent='primary' as |g|>
         <g.ToggleButton
           @isSelected={{this.isSelected 'default'}}
@@ -345,7 +345,7 @@ export default class DisabledItems extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='w-[260px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
@@ -411,7 +411,7 @@ export default class CustomItems extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='w-[320px] border px-1 py-2 rounded border-neutral-subtle'>
         <Listbox
           @isKeyboardEventsEnabled={{true}}
@@ -506,7 +506,7 @@ export default class EmptySelection extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack items-center'>
       <div class='flex items-center gap-2'>
         <Button @size='xs' @onPress={{this.toggleAllowEmpty}}>
           Toggle Allow Empty ({{if this.allowEmpty 'ON' 'OFF'}})
@@ -551,17 +551,19 @@ import { Listbox } from 'frontile';
 import { array } from '@ember/helper';
 
 <template>
-  <Listbox @selectionMode='single' @disabledKeys={{array 'calculator'}} as |l|>
-    <l.Group @title='Suggestions' @withDivider={{true}} as |g|>
-      <g.Item @key='calendar'>Calendar</g.Item>
-      <g.Item @key='emoji'>Search Emoji</g.Item>
-      <g.Item @key='calculator'>Calculator</g.Item>
-    </l.Group>
-    <l.Group @title='Settings' as |g|>
-      <g.Item @key='profile' @shortcut='mod+p'>Profile</g.Item>
-      <g.Item @key='billing' @shortcut='mod+b'>Billing</g.Item>
-    </l.Group>
-  </Listbox>
+  <div class='demo-stack'>
+    <Listbox @selectionMode='single' @disabledKeys={{array 'calculator'}} as |l|>
+      <l.Group @title='Suggestions' @withDivider={{true}} as |g|>
+        <g.Item @key='calendar'>Calendar</g.Item>
+        <g.Item @key='emoji'>Search Emoji</g.Item>
+        <g.Item @key='calculator'>Calculator</g.Item>
+      </l.Group>
+      <l.Group @title='Settings' as |g|>
+        <g.Item @key='profile' @shortcut='mod+p'>Profile</g.Item>
+        <g.Item @key='billing' @shortcut='mod+b'>Billing</g.Item>
+      </l.Group>
+    </Listbox>
+  </div>
 </template>
 ```
 

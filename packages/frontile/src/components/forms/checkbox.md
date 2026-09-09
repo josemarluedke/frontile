@@ -22,7 +22,11 @@ The most basic usage of a Checkbox component with a label.
 ```gts preview
 import { Checkbox } from 'frontile';
 
-<template><Checkbox @label='Subscribe to newsletter' /></template>
+<template>
+  <div class='demo-stack'>
+    <Checkbox @label='Subscribe to newsletter' />
+  </div>
+</template>
 ```
 
 ### Controlled Checkbox
@@ -42,7 +46,7 @@ export default class ControlledCheckbox extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Checkbox
         @label='Subscribe to newsletter'
         @checked={{this.isSubscribed}}
@@ -96,7 +100,7 @@ export default class IndependentCheckboxes extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Checkbox
         @name='email-notifications'
         @label='Email notifications'
@@ -162,7 +166,7 @@ export default class CheckboxSizes extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Checkbox
         @name='small-checkbox'
         @label='Small Checkbox'
@@ -201,7 +205,7 @@ import { Checkbox } from 'frontile';
 
 export default class DisabledCheckbox extends Component {
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Checkbox
         @name='disabled-checked'
         @label='Disabled Checked Checkbox'
@@ -274,7 +278,7 @@ export default class IndeterminateCheckbox extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-2'>
+    <div class='demo-stack'>
       <Checkbox
         @name='select-all'
         @label='Select All'
@@ -322,7 +326,7 @@ export default class CheckboxWithDescription extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Checkbox
         @name='terms-acceptance'
         @label='I agree to the terms and conditions'
@@ -386,7 +390,7 @@ export default class ValidatedCheckbox extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -452,7 +456,7 @@ export default class HorizontalCheckboxes extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <fieldset>
         <legend class='text-lg font-medium mb-3'>Email Preferences</legend>
         <div class='flex gap-4'>
@@ -539,7 +543,7 @@ export default class CompleteFormWithCheckbox extends Component {
   }
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form
         @data={{this.formData}}
         @schema={{schema}}
@@ -617,19 +621,21 @@ export default class CustomStyledCheckbox extends Component {
   };
 
   <template>
-    <Checkbox
-      @name='custom-styled'
-      @label='Custom Styled Checkbox'
-      @description='This checkbox has custom styling applied'
-      @checked={{this.customChecked}}
-      @onChange={{this.updateCustomChecked}}
-      @classes={{hash
-        base='my-custom-checkbox-base'
-        input='my-custom-checkbox-input'
-        labelContainer='my-custom-label-container'
-        label='my-custom-checkbox-label'
-      }}
-    />
+    <div class='demo-stack'>
+      <Checkbox
+        @name='custom-styled'
+        @label='Custom Styled Checkbox'
+        @description='This checkbox has custom styling applied'
+        @checked={{this.customChecked}}
+        @onChange={{this.updateCustomChecked}}
+        @classes={{hash
+          base='my-custom-checkbox-base'
+          input='my-custom-checkbox-input'
+          labelContainer='my-custom-label-container'
+          label='my-custom-checkbox-label'
+        }}
+      />
+    </div>
   </template>
 }
 ```

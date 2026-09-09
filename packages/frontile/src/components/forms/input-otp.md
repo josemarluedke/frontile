@@ -21,7 +21,11 @@ import { InputOtp } from 'frontile';
 ```gts preview
 import { InputOtp } from 'frontile';
 
-<template><InputOtp @label='Verification code' /></template>
+<template>
+  <div class='demo-stack'>
+    <InputOtp @label='Verification code' />
+  </div>
+</template>
 ```
 
 ## Groups
@@ -38,7 +42,9 @@ import { InputOtp } from 'frontile';
 import { array } from '@ember/helper';
 
 <template>
-  <InputOtp @label='Card verification' @length={{6}} @groups={{array 3 3}} @separator='-' />
+  <div class='demo-stack'>
+    <InputOtp @label='Card verification' @length={{6}} @groups={{array 3 3}} @separator='-' />
+  </div>
 </template>
 ```
 
@@ -60,7 +66,7 @@ export default class VerifyCodeExample extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-2'>
+    <div class='demo-stack'>
       <InputOtp @label='Verification code' @onComplete={{this.handleComplete}} />
       <p>Submitted: {{this.submittedCode}}</p>
     </div>
@@ -87,7 +93,7 @@ export default class ControlledOtpExample extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-2'>
+    <div class='demo-stack'>
       <InputOtp @label='Verification code' @value={{this.code}} @onInput={{this.handleInput}} />
       <p>Current value: {{this.code}}</p>
     </div>
@@ -113,7 +119,7 @@ export default class OtpFormExample extends Component {
   };
 
   <template>
-    <div class='flex flex-col gap-4'>
+    <div class='demo-stack'>
       <Form @data={{this.formData}} @onChange={{this.handleFormChange}} as |form|>
         <form.Field @name='code' as |field|>
           <field.InputOtp @label='Verification code' />
@@ -139,7 +145,7 @@ first `@length` characters, and those are what the rule checks.
 import { InputOtp } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <InputOtp @label='Digits' @allowedChars='digits' @length={{4}} />
     <InputOtp @label='Letters' @allowedChars='letters' @length={{4}} />
     <InputOtp @label='Alphanumeric' @allowedChars='alphanumeric' @length={{4}} />
@@ -167,7 +173,9 @@ export default class EvenDigitsExample extends Component {
   evenDigitsPattern = /^[02468]*$/;
 
   <template>
-    <InputOtp @label='Even digits only' @length={{4}} @pattern={{this.evenDigitsPattern}} />
+    <div class='demo-stack'>
+      <InputOtp @label='Even digits only' @length={{4}} @pattern={{this.evenDigitsPattern}} />
+    </div>
   </template>
 }
 ```
@@ -180,7 +188,11 @@ display changes: autofill and password managers keep working.
 ```gts preview
 import { InputOtp } from 'frontile';
 
-<template><InputOtp @label='PIN' @length={{4}} @isMasked={{true}} /></template>
+<template>
+  <div class='demo-stack'>
+    <InputOtp @label='PIN' @length={{4}} @isMasked={{true}} />
+  </div>
+</template>
 ```
 
 ## Placeholder
@@ -193,7 +205,9 @@ in the demo below to watch it go.
 import { InputOtp } from 'frontile';
 
 <template>
-  <InputOtp @label='Verification code' @length={{6}} @placeholder='000000' />
+  <div class='demo-stack'>
+    <InputOtp @label='Verification code' @length={{6}} @placeholder='000000' />
+  </div>
 </template>
 ```
 
@@ -203,7 +217,7 @@ import { InputOtp } from 'frontile';
 import { InputOtp } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <InputOtp @label='Small' @size='sm' />
     <InputOtp @label='Medium' @size='md' />
     <InputOtp @label='Large' @size='lg' />
@@ -217,7 +231,7 @@ import { InputOtp } from 'frontile';
 import { InputOtp } from 'frontile';
 
 <template>
-  <div class='flex flex-col gap-4'>
+  <div class='demo-stack'>
     <InputOtp @label='Disabled' @isDisabled={{true}} @value='123' />
     <InputOtp @label='Verification code' @isRequired={{true}} />
     <InputOtp
