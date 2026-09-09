@@ -44,7 +44,7 @@ module(
           <NativeSelect
             @onSelectionChange={{onSelectionChange}}
             @selectedKey={{selectedKey.current}}
-            @disabledKeys={{(array "item-3" "item-4")}}
+            @disabledKeys={{array "item-3" "item-4"}}
             @allowEmpty={{true}}
             as |l|
           >

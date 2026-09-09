@@ -431,7 +431,7 @@ module(
               data-test-id="progress-bar"
               @progress={{50}}
               @label="Progress"
-              @formatOptions={{(hash style="currency" currency="USD")}}
+              @formatOptions={{hash style="currency" currency="USD"}}
             />
           </template>
         );
@@ -449,7 +449,7 @@ module(
               @label="Progress"
               @minValue={{10}}
               @maxValue={{30}}
-              @formatOptions={{(hash style="currency" currency="USD")}}
+              @formatOptions={{hash style="currency" currency="USD"}}
             />
           </template>
         );
@@ -467,7 +467,7 @@ module(
               data-test-id="progress-bar"
               @progress={{50}}
               @label="Progress"
-              @formatOptions={{(hash style="percent")}}
+              @formatOptions={{hash style="percent"}}
             />
           </template>
         );
@@ -485,7 +485,7 @@ module(
               @label="Progress"
               @minValue={{10}}
               @maxValue={{30}}
-              @formatOptions={{(hash style="percent")}}
+              @formatOptions={{hash style="percent"}}
             />
           </template>
         );
