@@ -213,8 +213,18 @@ interface MenuArgs
 
   /**
    * @internal
+   *
+   * Optional rather than required: the root `Dropdown` binds this, but a
+   * `Sub`-rendered `Menu` never does (a submenu is dismissed through `close`,
+   * not `toggle` -- see `Sub`'s `Menu=(component @menu ...)` invocation, which
+   * has no `toggle=` at all). `closeRoot` below already guards this with a
+   * `typeof this.args.toggle === 'function'` check, so this only makes the
+   * type match the runtime behavior that was already there; it does not
+   * change it. Leaving this required was what made every `Sub`-bound `Menu`
+   * require a fully-populated args hash at the type level, even though every
+   * other remaining arg is optional.
    */
-  toggle: () => void;
+  toggle?: () => void;
 
   /**
    * Callback when a menu item is selected, receiving that item's `@key`.
