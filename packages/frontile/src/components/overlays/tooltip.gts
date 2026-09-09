@@ -31,6 +31,21 @@ type BoundPopoverContent = PopoverSignature['Blocks']['default'][0]['Content'];
  * MANAGER, fn); return fn;` with no wrapping), so at runtime `p.trigger`
  * *is* that function. `(el, positional, named) => teardown` is how
  * `Popover`'s own `trigger` is declared.
+ *
+ * WARNING FOR A FUTURE UPGRADER: this cast is verified against
+ * `ember-modifier@4.3.0`'s *function-based* modifier manager, whose
+ * `createModifier`/`updateModifier`/`installModifier` call the given function
+ * directly as `instance(element, positional, named)` -- i.e. the manager adds
+ * no wrapping of its own, so invoking `p.trigger`/`p.anchor` here as plain
+ * functions is genuinely calling the same code the manager would call.
+ * `ModifierLike` has no call signature *by design* (it exists specifically to
+ * stop application code from doing this), so there is no type-safe
+ * alternative to the cast. A major `ember-modifier` upgrade could change the
+ * manager's calling convention (or start wrapping the function) with no
+ * compiler signal at this cast site -- re-verify against the new
+ * `dist/index.js` before assuming this still holds. The runtime `assert`
+ * calls at the call sites below exist so a break here fails loudly (a thrown
+ * dev-mode assertion) instead of silently (a tooltip that never opens).
  */
 type PopoverTriggerFn = (
   element: HTMLElement,
@@ -44,7 +59,9 @@ type PopoverTriggerFn = (
  * resolve at all. A consumer normally applies `{{p.anchor}}` and
  * `{{p.trigger}}` as two separate modifiers on the trigger element (see
  * `popover-test.gts`); a tooltip's single yielded `t.trigger` has to install
- * both.
+ * both. Same upgrade warning as `PopoverTriggerFn` above: `ember-velcro`'s
+ * `hook` is built with the identical `setModifierManager(() => MANAGER, fn)`
+ * pattern, so the same function-based-modifier assumption applies here too.
  */
 type PopoverAnchorFn = (
   element: HTMLElement | SVGElement
@@ -237,12 +254,86 @@ class Tooltip extends Component<TooltipSignature> {
    * the QUnit test timeout (confirmed: the test hung at exactly 60000ms).
    * Skipping the hover installation entirely while disabled avoids ever
    * scheduling that timer in the first place.
+   *
+   * ANCHOR CHURN GUARD: the wrapper function below reads `this.isOpen`
+   * *transitively* -- not directly, but through `trigger`'s own autotracking
+   * of `aria-describedby` -- so `ember-modifier` tears the whole wrapper down
+   * and reinstalls it on every open/close. Without a guard, that would call
+   * `anchor(element)` again on every cycle, and `Velcro`'s `hook` reassigns
+   * its own `@tracked hook` field each time it runs, which tears down and
+   * restarts floating-ui's `autoUpdate` positioning loop for no reason -- a
+   * normal `Popover` consumer never pays this cost, because there `anchor`
+   * and `trigger` are two separate modifiers and `anchor`'s body reads
+   * nothing tracked, so it installs once and never re-runs.
+   *
+   * The fix keys the anchor's lifecycle on the *element* in instance state
+   * (`anchoredElement`/`anchorTeardown`), not on the wrapper modifier's own
+   * re-run: `ensureAnchor` below only calls `anchor(element)` when the
+   * element actually changes. The wrapper's own destructor -- called by
+   * `ember-modifier` before *every* re-run, same-element re-runs included --
+   * must therefore never touch the anchor; it only tears down `trigger`,
+   * which is the half that legitimately needs to re-run on every open/close
+   * (that's what keeps `aria-describedby` in sync, and Task 5 documented it
+   * as required for controlled mode). The anchor is torn down only when
+   * `ensureAnchor` sees a different element arrive, or when the component
+   * itself is destroyed (`willDestroy`, below) -- never on a same-element
+   * wrapper re-run.
    */
   cachedTrigger?: {
     anchor: unknown;
     trigger: unknown;
     modifier: ModifierLike<{ Element: HTMLElement }>;
   };
+
+  /**
+   * The element the anchor is currently installed on, and the teardown
+   * `anchor(element)` handed back for it. Lives on the component instance
+   * (not in the modifier's own closure) so it survives every open/close
+   * re-run of the wrapper modifier -- see the churn-guard note above.
+   */
+  anchoredElement?: HTMLElement | SVGElement;
+  anchorTeardown?: () => void;
+
+  /**
+   * Installs `anchor` on `element` only if it is not already installed
+   * there. Called on every wrapper re-run (every open/close), but is a no-op
+   * on all but the first call and any call where the element genuinely
+   * changed.
+   *
+   * Declared as a regular (prototype) method rather than an arrow-function
+   * class field -- unlike `makeTrigger`, it is only ever called as
+   * `this.ensureAnchor(...)`, never passed by reference, so it doesn't need
+   * per-instance `this`-binding. Living on the prototype also makes it the
+   * one seam the test suite can wrap to count real anchor installations
+   * (see `tooltip-test.gts`'s anchor-churn-guard test).
+   */
+  ensureAnchor(anchor: unknown, element: HTMLElement | SVGElement) {
+    if (this.anchoredElement === element) {
+      return;
+    }
+
+    // A different element arrived (or this is the first install for this
+    // wrapper): tear down whatever anchor is currently installed before
+    // installing the new one, so we never leak a stale `autoUpdate` loop.
+    this.anchorTeardown?.();
+
+    assert(
+      "Expected `p.anchor` to be a callable function (ember-velcro's `hook`, built the same way `ember-modifier`'s `modifier()` builds a callable function-based modifier). If this fires, an `ember-modifier` or `ember-velcro` upgrade likely changed how modifier values are constructed -- see the `PopoverAnchorFn`/`PopoverTriggerFn` comments above.",
+      typeof anchor === 'function'
+    );
+
+    const teardown = (anchor as unknown as PopoverAnchorFn)(element);
+
+    this.anchoredElement = element;
+    this.anchorTeardown = teardown ?? undefined;
+  }
+
+  willDestroy() {
+    super.willDestroy();
+    this.anchorTeardown?.();
+    this.anchoredElement = undefined;
+    this.anchorTeardown = undefined;
+  }
 
   makeTrigger = (
     anchor: unknown,
@@ -257,13 +348,16 @@ class Tooltip extends Component<TooltipSignature> {
         anchor,
         trigger,
         modifier: modifier((element: HTMLElement) => {
-          const teardownAnchor = (anchor as unknown as PopoverAnchorFn)(
-            element
-          );
+          this.ensureAnchor(anchor, element);
 
           if (this.args.isDisabled) {
-            return () => teardownAnchor?.();
+            return undefined;
           }
+
+          assert(
+            "Expected `p.trigger` to be a callable function (a modifier built by `ember-modifier`'s `modifier()`). If this fires, an `ember-modifier` upgrade likely changed how function-based modifiers are constructed -- see the `PopoverTriggerFn` comment above.",
+            typeof trigger === 'function'
+          );
 
           const teardownTrigger = (trigger as unknown as PopoverTriggerFn)(
             element,
@@ -271,8 +365,13 @@ class Tooltip extends Component<TooltipSignature> {
             { aria: 'describedby' }
           );
 
+          // Only the trigger half is torn down here. `ember-modifier` calls
+          // this destructor before *every* re-run -- including a same-element
+          // re-run driven by `this.isOpen` churn -- so tearing the anchor
+          // down here would defeat the guard above. The anchor's teardown is
+          // handled by `ensureAnchor` (on a genuine element change) and by
+          // `willDestroy` (on real component destruction).
           return () => {
-            teardownAnchor?.();
             teardownTrigger?.();
           };
         }) as unknown as ModifierLike<{ Element: HTMLElement }>
@@ -369,6 +468,16 @@ interface TooltipContentSignature {
  * trap, no autofocus, no scroll lock, `role="tooltip"`, and `tabindex="-1"` so
  * it is never a tab stop -- `Overlay` sets `tabindex="0"` but spreads
  * `...attributes` after it, so this wins.
+ *
+ * Its constructor also asserts that `@content` and a `<t.Content>` block are
+ * never used together: `hasContentArg` is set only on the bound `Content`
+ * yielded to the consumer (see `TooltipContentSignature['Args']`), so this
+ * component renders with it `true` exactly when the consumer both passed
+ * `@content` to `Tooltip` *and* invoked the yielded `Content` block. The
+ * check has to live here, on the content side, rather than on `Tooltip`
+ * itself, because a Glimmer component has no way to observe whether a
+ * consumer invoked one of its yielded blocks -- `Tooltip` cannot tell
+ * `<t.Content>` was used at all until this component actually renders.
  */
 class TooltipContent extends Component<TooltipContentSignature> {
   constructor(owner: Owner, args: TooltipContentSignature['Args']) {

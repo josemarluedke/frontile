@@ -294,5 +294,74 @@ module(
       await settled();
       assert.dom('[role="tooltip"]').doesNotExist();
     });
+
+    test('the anchor installs once across multiple open/close cycles', async function (assert) {
+      // Proves the anchor-churn guard in `Tooltip.ensureAnchor`: without it,
+      // `makeTrigger`'s wrapper modifier reinstalls `p.anchor` on every open
+      // and close (because it also re-runs `p.trigger`, whose body reads
+      // `this.isOpen` transitively to keep `aria-describedby` in sync), which
+      // tears down and restarts floating-ui's `autoUpdate` loop each time.
+      //
+      // `ensureAnchor` is the one place that ever calls the real anchor
+      // function, and it's declared as a regular (prototype) method
+      // specifically so it can be wrapped here. Rather than inferring "did a
+      // real install happen" from `this.anchoredElement` (which would just
+      // re-implement the guard's own logic in the test and pass regardless of
+      // whether the guard is actually there), the wrapper below substitutes
+      // the `anchor` argument itself with a counting proxy before delegating
+      // to the original method unconditionally -- so the counter increments
+      // once for every *actual* invocation of the real anchor function, no
+      // matter what `ensureAnchor`'s internals do.
+      const originalEnsureAnchor = Tooltip.prototype.ensureAnchor;
+      let anchorInvocationCount = 0;
+
+      Tooltip.prototype.ensureAnchor = function (
+        this: InstanceType<typeof Tooltip>,
+        anchor: unknown,
+        element: HTMLElement | SVGElement
+      ) {
+        const countingAnchor = (el: HTMLElement | SVGElement) => {
+          anchorInvocationCount++;
+          return (anchor as (el: HTMLElement | SVGElement) => unknown)(el);
+        };
+
+        originalEnsureAnchor.call(this, countingAnchor, element);
+      };
+
+      try {
+        await render(
+          <template>
+            <Tooltip @content="Hi" @openDelay={{0}} @closeDelay={{0}} as |t|>
+              <button
+                data-test-id="trigger"
+                type="button"
+                {{t.trigger}}
+              >Trigger</button>
+            </Tooltip>
+          </template>
+        );
+
+        // Two full open/close cycles -- the second is what would expose
+        // churn: the guard must not call the real anchor again for an
+        // element it already anchored.
+        await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+        assert.dom('[role="tooltip"]').exists('first cycle: open');
+        await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+        await waitUntil(() => !find('[role="tooltip"]'), { timeout: 2000 });
+
+        await triggerEvent('[data-test-id="trigger"]', 'mouseenter');
+        assert.dom('[role="tooltip"]').exists('second cycle: open');
+        await triggerEvent('[data-test-id="trigger"]', 'mouseleave');
+        await waitUntil(() => !find('[role="tooltip"]'), { timeout: 2000 });
+
+        assert.strictEqual(
+          anchorInvocationCount,
+          1,
+          'the anchor is installed exactly once across multiple open/close cycles'
+        );
+      } finally {
+        Tooltip.prototype.ensureAnchor = originalEnsureAnchor;
+      }
+    });
   }
 );
