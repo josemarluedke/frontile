@@ -625,6 +625,103 @@ export default class DropdownWithCallback extends Component {
 }
 ```
 
+### With Submenus
+
+Group related actions behind a nested menu. `d.Menu` yields a second block
+param, `Sub`, which in turn yields its own `Trigger` and `Menu`. Submenus open
+on hover, on click, or with <kbd>→</kbd>, and close with <kbd>←</kbd> or
+<kbd>Esc</kbd>.
+
+`@onAction`, `@selectionMode` and `@selectedKeys` are declared once on the root
+`d.Menu` and apply at every depth — a sub-trigger itself never fires
+`@onAction`.
+
+```gts preview
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { Dropdown } from 'frontile';
+
+export default class SubmenuDropdown extends Component {
+  @action
+  onAction(key: string) {
+    // eslint-disable-next-line
+    console.log('Action triggered:', key);
+  }
+
+  <template>
+    <Dropdown as |d|>
+      <d.Trigger @appearance='outlined' @size='sm'>Options</d.Trigger>
+
+      <d.Menu @onAction={{this.onAction}} as |Item Sub|>
+        <Item @key='edit' @shortcut='mod+e'>Edit</Item>
+        <Item @key='duplicate' @shortcut='mod+d' @withDivider={{true}}>
+          Duplicate
+        </Item>
+
+        <Sub as |s|>
+          <s.Trigger>More</s.Trigger>
+          <s.Menu as |Item|>
+            <Item @key='move-project'>Move to project…</Item>
+            <Item @key='move-folder' @withDivider={{true}}>Move to folder…</Item>
+            <Item @key='advanced'>Advanced options…</Item>
+          </s.Menu>
+        </Sub>
+
+        <Item @key='share'>Share</Item>
+        <Item @key='delete' @intent='danger' @shortcut='mod+backspace'>
+          Delete
+        </Item>
+      </d.Menu>
+    </Dropdown>
+  </template>
+}
+```
+
+### Nested Submenus
+
+Submenus nest to any depth: a `Sub`'s `Menu` yields `Sub` again.
+
+```gts preview
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { Dropdown } from 'frontile';
+
+export default class NestedSubmenuDropdown extends Component {
+  @action
+  onAction(key: string) {
+    // eslint-disable-next-line
+    console.log('Action triggered:', key);
+  }
+
+  <template>
+    <Dropdown as |d|>
+      <d.Trigger @appearance='outlined' @size='sm'>Share</d.Trigger>
+
+      <d.Menu @onAction={{this.onAction}} as |Item Sub|>
+        <Item @key='copy-link'>Copy Link</Item>
+        <Item @key='facebook'>Facebook</Item>
+
+        <Sub as |s|>
+          <s.Trigger>Other</s.Trigger>
+          <s.Menu as |Item Sub|>
+            <Item @key='whatsapp'>WhatsApp</Item>
+            <Item @key='telegram'>Telegram</Item>
+
+            <Sub as |s|>
+              <s.Trigger>Email</s.Trigger>
+              <s.Menu as |Item|>
+                <Item @key='work-email'>Work email</Item>
+                <Item @key='personal-email'>Personal email</Item>
+              </s.Menu>
+            </Sub>
+          </s.Menu>
+        </Sub>
+      </d.Menu>
+    </Dropdown>
+  </template>
+}
+```
+
 ## Accessibility
 
 Dropdown is a Popover wrapping a Listbox with `@type="menu"`, and inherits from both.
@@ -653,17 +750,40 @@ Which keys are handled depends on where focus is:
 
 Once open, focus moves into the menu and the list takes over:
 
-| Focus is in the menu                  | Behavior                                                                     |
-| ------------------------------------- | ---------------------------------------------------------------------------- |
-| `ArrowDown` / `ArrowUp`               | Move the active item                                                         |
-| `Home` / `PageUp`, `End` / `PageDown` | First / last item                                                            |
-| `Enter`, `Space`                      | Runs the active item's action                                                |
-| any single character                  | Type-ahead to a matching item                                                |
-| `Escape`                              | Closes — handled by the underlying Overlay, and focus returns to the trigger |
+| Focus is in the menu                  | Behavior                                                                          |
+| ------------------------------------- | ---------------------------------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp`               | Move the active item, within the open level                                        |
+| `ArrowRight`                          | Opens the active row's submenu and moves to its first item                         |
+| `ArrowLeft`                           | Closes the current submenu and returns focus to its trigger; does nothing at the root level |
+| `Home` / `PageUp`, `End` / `PageDown` | First / last item, within the open level                                           |
+| `Enter`, `Space`                      | Runs the active item's action, or opens its submenu                                |
+| any single character                  | Type-ahead to a matching item, scoped to the open level                            |
+| `Escape`                              | Closes the innermost open menu — at the root, focus returns to the trigger         |
 
 Because the content is inside an Overlay with a focus trap, `Tab` from within the menu cycles
 inside it rather than leaving. `@autoActivateMode="none"` means no item is active when the
 menu opens, so the first `ArrowDown` lands on the first item rather than the second.
+
+### Submenus
+
+`d.Menu` yields a second block param, `Sub`, next to the item component. A `Sub`
+yields its own `Trigger` and `Menu` — and that `Menu` yields `Sub` again, so
+menus can nest to any depth. The arguments declared once on the root `d.Menu`
+(`@onAction`, `@selectionMode`, `@selectedKeys`, `@disabledKeys`,
+`@allowEmpty`, `@onSelectionChange`, `@appearance`, `@intent`,
+`@shortcutAppearance`, `@closeOnItemSelect`, `@disableTransitions`,
+`@transitionDuration`) apply at every depth, so a nested `s.Menu` only needs
+its own items.
+
+`s.Trigger` needs no `@key` — `Sub` generates one, and a sub-trigger never
+fires `@onAction`. `Sub` positions its menu with `@placement`,
+`@offsetOptions`, `@flipOptions`, `@shiftOptions`, `@middleware` and
+`@strategy`, defaulting to `@placement="right-start"`.
+
+A submenu also opens on hovering its trigger, after a short delay, and stays
+open while the pointer travels toward it; moving onto a sibling row closes it.
+Opening a submenu by hover or click highlights nothing inside it — only
+opening it with the keyboard highlights its first row.
 
 ## API
 
