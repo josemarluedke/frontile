@@ -9,6 +9,10 @@ import DrawerBody, { type DrawerBodySignature } from './drawer/body';
 import DrawerFooter, { type DrawerFooterSignature } from './drawer/footer';
 import DrawerHeader, { type DrawerHeaderSignature } from './drawer/header';
 import DrawerDragHandle from './drawer/drag-handle';
+import {
+  DRAWER_BODY_SELECTOR,
+  DRAWER_DRAG_HANDLE_SELECTOR
+} from './drawer/selectors';
 import dragToDismiss, {
   type DragAxis,
   type DragDirection
@@ -333,8 +337,8 @@ export default class Drawer extends Component<DrawerSignature> {
           direction=this.dragDirection
           isEnabled=this.allowDragToClose
           onDismiss=this.handleDragDismiss
-          handleSelector="[data-drawer-drag-handle]"
-          scrollSelector="[data-drawer-body]"
+          handleSelector=DRAWER_DRAG_HANDLE_SELECTOR
+          scrollSelector=DRAWER_BODY_SELECTOR
         }}
         {{this.warnIfUnnamed}}
         ...attributes
