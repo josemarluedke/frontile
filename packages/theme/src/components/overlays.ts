@@ -78,7 +78,14 @@ const drawer = tv({
           'grid grid-cols-[auto_1fr] items-center gap-x-3 bg-black text-white px-6 py-4 pr-14',
         footer:
           'bg-surface-app text-on-surface-app border-t border-neutral-muted px-6 py-4',
-        closeButton: 'text-white',
+        // The close button's own `transparent` variant hovers to
+        // `surface-overlay-subtle` (black at 3% opacity), which is invisible
+        // against this band's `bg-black` (itself black in both schemes, by
+        // design). A fixed white tint reads against black in both light and
+        // dark, matching the `text-white` / `text-white/70` treatment already
+        // used here -- unlike `surface-lift-*`, which is white in light mode
+        // but black in dark mode and would vanish on this band in dark.
+        closeButton: 'text-white hover:bg-white/10',
         icon: 'text-white',
         title: 'text-header-sm font-semibold text-white',
         description: 'text-sm text-white/70',
@@ -94,7 +101,12 @@ const drawer = tv({
       ghost: {
         base: 'bg-surface-modal text-on-surface-modal',
         body: 'px-8 py-4',
-        header: 'font-header text-header-lg text-center px-8 pt-10 pb-2',
+        // Same grid layout as `default` (left-aligned, icon column, room
+        // reserved for the close button) but ghost's own colours -- no
+        // `bg-black`/`text-white` here, this stays on `surface-modal` -- and
+        // its more generous padding scale.
+        header:
+          'grid grid-cols-[auto_1fr] items-center gap-x-3 font-header px-8 pt-10 pb-2 pr-14',
         footer: `${obscurer} border-t border-surface-overlay-mild bg-surface-modal p-8`,
         title: 'text-header-lg',
         description: 'text-sm text-neutral',
