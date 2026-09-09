@@ -65,49 +65,63 @@ import { Alert } from 'frontile';
 
 ## Variants
 
+`@variant` decides how much of the alert the intent colors, from a neutral
+surface with a colored icon and title through to a fully filled one. Set it
+alongside `@intent` — the three below are shown across all five intents.
+
+### Default
+
+A neutral surface; the intent shows in the icon and title only. Quiet enough to
+sit in a page without competing with the content around it.
+
 ```gts preview
 import { Alert } from 'frontile';
 
 <template>
   <div class='demo-stack'>
-    <Alert
-      @variant='default'
-      @intent='info'
-      @title='Default'
-      @description='The outer surface carries the color.'
-    />
-    <Alert
-      @variant='default'
-      @intent='danger'
-      @title='Default'
-      @description='The outer surface carries the color.'
-    />
+    <Alert @intent='default' @title='Default' />
+    <Alert @intent='info' @title='Info' />
+    <Alert @intent='success' @title='Success' />
+    <Alert @intent='warning' @title='Warning' />
+    <Alert @intent='danger' @title='Danger' />
+  </div>
+</template>
+```
 
-    <Alert
-      @variant='tonal'
-      @intent='info'
-      @title='Tonal'
-      @description='A translucent tint fills the alert.'
-    />
-    <Alert
-      @variant='tonal'
-      @intent='danger'
-      @title='Tonal'
-      @description='A translucent tint fills the alert.'
-    />
+### Tonal
 
-    <Alert
-      @variant='solid'
-      @intent='info'
-      @title='Solid'
-      @description='A fully filled surface.'
-    />
-    <Alert
-      @variant='solid'
-      @intent='danger'
-      @title='Solid'
-      @description='A fully filled surface.'
-    />
+A translucent tint of the intent fills the alert, over an opaque surface. More
+presence than `default` without the weight of `solid`.
+
+```gts preview
+import { Alert } from 'frontile';
+
+<template>
+  <div class='demo-stack'>
+    <Alert @variant='tonal' @intent='default' @title='Default' />
+    <Alert @variant='tonal' @intent='info' @title='Info' />
+    <Alert @variant='tonal' @intent='success' @title='Success' />
+    <Alert @variant='tonal' @intent='warning' @title='Warning' />
+    <Alert @variant='tonal' @intent='danger' @title='Danger' />
+  </div>
+</template>
+```
+
+### Solid
+
+The intent fills the surface, with contrast ink on top. The loudest of the
+three — worth reserving for something the reader should not miss.
+
+```gts preview
+import { Alert } from 'frontile';
+
+<template>
+  <div class='demo-stack'>
+    <Alert @variant='solid' @intent='default' @title='Default' />
+    <Alert @variant='solid' @intent='info' @title='Info' />
+    <Alert @variant='solid' @intent='success' @title='Success' />
+    <Alert @variant='solid' @intent='warning' @title='Warning' />
+    <Alert @variant='solid' @intent='danger' @title='Danger' />
   </div>
 </template>
 ```

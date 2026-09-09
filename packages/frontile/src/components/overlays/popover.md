@@ -101,6 +101,37 @@ import { Button } from 'frontile';
 </template>
 ```
 
+## Hover Trigger
+
+`{{p.trigger "hover"}}` installs a trigger that opens on pointer hover or keyboard
+`focus-visible`, rather than on click. It opens after `@openDelay` (default `100`ms) and
+closes after `@closeDelay` (default `100`ms) once the pointer or focus has left both the
+trigger and the content. `@closeDelay` is also the window the pointer has to cross the gap
+between the trigger and the content, so a very small value makes the content practically
+unreachable by pointer — moving onto the content otherwise keeps the popover open. Pass
+`@disableInteractive={{true}}` to `Content` to close as soon as the pointer leaves the
+trigger instead.
+
+```gts preview
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+
+<template>
+  <Popover @openDelay={{100}} @closeDelay={{300}} as |p|>
+    <Button {{p.trigger 'hover'}} {{p.anchor}}>
+      Hover me
+    </Button>
+
+    <p.Content @class='p-2'>
+      You can move the pointer onto this content without it closing.
+    </p.Content>
+  </Popover>
+</template>
+```
+
+The `aria=` option passed alongside `"hover"` (or `"click"`) controls which ARIA
+relationship the trigger element carries — see [Accessibility](#accessibility).
+
 ## Blocking Window Scroll
 
 Prevent scrolling of the main window when the popover is open, focusing the
@@ -196,6 +227,30 @@ const placements = [
       </Popover>
     {{/each}}
   </div>
+</template>
+```
+
+## Arrow
+
+`@arrow={{true}}` on `Content` renders an arrow pointing at the trigger. `Content` also
+carries a `data-placement` attribute with the side floating-ui actually resolved for the
+current position (after any flip), which the yielded `data` exposes too, for styling or
+logic that needs to know which side the popover ended up on.
+
+```gts preview
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+
+<template>
+  <Popover @placement='top' as |p|>
+    <Button {{p.trigger}} {{p.anchor}}>
+      Toggle Popover
+    </Button>
+
+    <p.Content @arrow={{true}} @class='p-2'>
+      Resolved placement: {{p.data.placement}}
+    </p.Content>
+  </Popover>
 </template>
 ```
 
@@ -369,10 +424,39 @@ the moment the popover is asked to close. That makes it the right place to unmou
 whatever the content was showing, and it will not fire at all for a `close()` on a popover
 that was not open.
 
-**`{{p.trigger "hover"}}` is mouse-only.** The hover branch attaches `mouseenter` and
-`mouseleave` and no key handling at all, so none of the keys above work and focus is not
-restored on close. A hover popover is fine for supplementary content that is also reachable
-another way; don't put anything a keyboard or screen-reader user needs behind one.
+**`{{p.trigger "hover"}}`** opens on pointer hover, and also on keyboard `focus-visible` —
+so it is reachable without a mouse. `Escape` closes it while it's open. The pointer, and
+keyboard focus, may both move off the trigger and onto the content without the popover
+closing (see [Hover Trigger](#hover-trigger)). Unlike the click trigger, a hover popover
+never moves focus into its content — focus stays wherever it already was, avoiding the page
+jump that comes from a portaled overlay being scrolled into view. Consequently there is
+nothing to restore on close either.
+
+The `aria=` option, passed alongside the trigger type, chooses which relationship the
+trigger element carries:
+
+| Value | Effect |
+| --- | --- |
+| `'menu'` (default) | Sets `aria-haspopup`, `aria-controls`, and `aria-expanded`, as described above |
+| `'describedby'` | Sets `aria-describedby` instead, present only while open — appropriate when the content describes the trigger rather than acting as a menu or panel |
+| `'none'` | Sets none of the above, for a fully custom ARIA setup |
+
+```gts preview
+import { Button } from 'frontile';
+import { Popover } from 'frontile';
+
+<template>
+  <Popover as |p|>
+    <Button {{p.trigger 'hover' aria='describedby'}} {{p.anchor}}>
+      Hover me
+    </Button>
+
+    <p.Content @class='p-2'>
+      Announced as this button's description.
+    </p.Content>
+  </Popover>
+</template>
+```
 
 ## API
 

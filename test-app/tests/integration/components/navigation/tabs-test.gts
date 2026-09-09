@@ -711,21 +711,19 @@ module(
         '0px',
         'the bar has a height of its own rather than the tab height'
       );
-      // The width passes through two independent roundings, so the two sides
-      // can legitimately land a pixel apart. The component publishes the
-      // tab's `offsetWidth` (already rounded) into a CSS variable, and
-      // reading `offsetWidth` back off the indicator rounds the used width a
-      // second time. Under the zoom the ember-testing container applies,
-      // those roundings can fall on opposite sides: CI measured the indicator
-      // at 116 (117 * 0.9928 = 116.156) against the tab's 117 (117.37 *
-      // 0.9928 = 116.53). One pixel is the most that double rounding can
-      // produce, and a bar sized from the wrong tab would be out by far more.
+      // `getComputedStyle` reports a sub-pixel width (`116.156px`) while
+      // `offsetWidth` is rounded to an integer (`117`), so comparing the two
+      // as strings only passes when the tab happens to measure a whole number
+      // of pixels -- which depends on the platform's font metrics, and does
+      // not hold on CI. Compare numerically, allowing for that rounding.
+      // `offsetWidth` (not `getBoundingClientRect`) is the right reference:
+      // the test container is scaled, and only `offsetWidth` is untransformed,
+      // matching the coordinate space `computed.width` is reported in.
       assert.ok(
-        Math.abs(indicator.offsetWidth - secondTab.offsetWidth) <= 1,
-        `the bar is as wide as the selected tab ` +
-          `(bar ${indicator.offsetWidth}px, tab ${secondTab.offsetWidth}px)`
+        Math.abs(parseFloat(computed.width) - secondTab.offsetWidth) < 2,
+        `the bar (${computed.width}) is as wide as the selected tab ` +
+          `(${secondTab.offsetWidth}px)`
       );
-
       assert.ok(
         computed.translate.includes(`${secondTab.offsetLeft}px`),
         `the bar's translate (${computed.translate}) reflects the selected ` +
@@ -780,11 +778,11 @@ module(
         '2px',
         'the bar is the thin vertical accent (w-0.5), not the full tab width'
       );
-      // Same double-rounding reasoning as the width assertion above.
+      // Same sub-pixel-vs-rounded mismatch as the horizontal case above.
       assert.ok(
-        Math.abs(indicator.offsetHeight - secondTab.offsetHeight) <= 1,
-        `the bar is as tall as the selected tab ` +
-          `(bar ${indicator.offsetHeight}px, tab ${secondTab.offsetHeight}px)`
+        Math.abs(parseFloat(computed.height) - secondTab.offsetHeight) < 2,
+        `the bar (${computed.height}) is as tall as the selected tab ` +
+          `(${secondTab.offsetHeight}px)`
       );
       assert.ok(
         computed.translate.includes(`${secondTab.offsetTop}px`),

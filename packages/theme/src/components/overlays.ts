@@ -303,6 +303,20 @@ const slideTransition = {
   }
 };
 
+/**
+ * The arrow shared by `Popover.Content` and `Tooltip`.
+ *
+ * A rotated square rather than a border triangle, so it can carry the
+ * content's own border. `bg-inherit` is the point: the arrow takes whatever
+ * background the content has, so intents and custom classes never have to be
+ * restated here. Its offset along the content's edge comes from the
+ * floating-ui `arrow` middleware and is written as inline `left`/`top`; the
+ * static side is pinned by the component from the resolved placement.
+ */
+const overlayArrow = tv({
+  base: 'absolute w-2 h-2 rotate-45 bg-inherit border border-neutral-subtle pointer-events-none'
+});
+
 const overlayTransitions = {
   fade: {
     enter: {
@@ -419,6 +433,55 @@ const overlayTransitions = {
       }
     }
   },
+  /**
+   * Tooltip: a short scale-and-approach. Deliberately faster than `scale` --
+   * a tooltip fires on every mouse pass, so a 200ms reveal reads as lag. The
+   * translate is toward the anchor and the origin is set from the resolved
+   * placement (see the `tooltip` component's `data-placement` classes), so it
+   * grows out of the trigger rather than appearing in space.
+   */
+  tooltip: {
+    enter: {
+      opacity: '0',
+      transform: 'scale(0.95) translateY(3px)',
+      // Reduced motion keeps the fade and drops the travel, rather than
+      // removing the transition -- the tooltip should still read as appearing.
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    },
+    enterActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '120ms',
+      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    enterTo: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leave: {
+      opacity: '1',
+      transform: 'scale(1) translateY(0)'
+    },
+    leaveActive: {
+      transitionProperty: 'transform, opacity',
+      transitionDuration: '80ms',
+      transitionTimingFunction: 'cubic-bezier(0.4, 0, 1, 1)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transitionProperty: 'opacity'
+      }
+    },
+    leaveTo: {
+      opacity: '0',
+      transform: 'scale(0.95) translateY(3px)',
+      '@media (prefers-reduced-motion: reduce)': {
+        transform: 'none'
+      }
+    }
+  },
   scale: {
     enter: {
       opacity: '0',
@@ -431,11 +494,11 @@ const overlayTransitions = {
     },
     enterTo: {
       opacity: '1',
-      transform: 'translate(scaleX(1) scaleY(1))'
+      transform: 'scale(1)'
     },
     leave: {
       opacity: '1',
-      transform: 'translate(scaleX(1) scaleY(1))'
+      transform: 'scale(1)'
     },
     leaveActive: {
       transitionProperty: 'transform, opacity',
@@ -457,5 +520,6 @@ export type ModalVariants = VariantProps<typeof modal>;
 export type ModalSlots = keyof ReturnType<typeof modal>;
 export type BackdropVariants = VariantProps<typeof backdrop>;
 export type BackdropSlots = keyof ReturnType<typeof backdrop>;
+export type OverlayArrowVariants = VariantProps<typeof overlayArrow>;
 
-export { overlay, drawer, modal, overlayTransitions, backdrop };
+export { overlay, drawer, modal, overlayTransitions, backdrop, overlayArrow };

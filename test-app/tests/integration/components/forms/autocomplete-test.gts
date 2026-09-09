@@ -693,6 +693,29 @@ module(
       assert.dom('[data-test-id="trigger"]').hasValue('Apple');
     });
 
+    test('Enter selects the active item exactly once', async function (assert) {
+      // Autocomplete used to select by clicking the active item's element,
+      // because its own `preventDefault()` on keydown (the form-submission
+      // guard above) suppressed the `keypress` event Listbox listened to.
+      // Listbox now handles Enter on keydown itself, so the click was a
+      // second, redundant selection path -- this pins the count so neither
+      // path can be reintroduced alongside the other.
+      const items = ['Apple', 'Banana'];
+      const actions: string[] = [];
+      const onAction = (key: string) => actions.push(key);
+
+      await render(
+        <template>
+          <Autocomplete @items={{items}} @onAction={{onAction}} />
+        </template>
+      );
+
+      await fillIn('[data-test-id="trigger"]', 'App');
+      await triggerKeyEvent('[data-test-id="trigger"]', 'keydown', 'Enter');
+
+      assert.deepEqual(actions, ['Apple'], 'onAction fired once, not twice');
+    });
+
     test('it renders named blocks startContent and endContent', async function (assert) {
       const items = ['Apple'];
       const classes = { innerContainer: 'input-container' };

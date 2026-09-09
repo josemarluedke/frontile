@@ -8,8 +8,12 @@
 @custom-variant focus-visible (&[data-focus-visible-added]);
 
 /* Data state variants */
-@custom-variant data-is-active (&[data-active=true]);
-@custom-variant group-data-is-active (:merge(.group)[data-active="true"] &);
+/* An open submenu trigger reads as highlighted for the same reason an active
+   row does -- it is the row the user is currently on -- so both states drive
+   the same variant, and every intent/appearance compound variant that already
+   targets `data-is-active:` covers it with no further work. */
+@custom-variant data-is-active (&:is([data-active=true], [data-submenu-open=true]));
+@custom-variant group-data-is-active (:merge(.group)[data-active="true"] &, :merge(.group)[data-submenu-open="true"] &);
 
 /* ARIA variants */
 @custom-variant aria-invalid (&[aria-invalid="true"]);

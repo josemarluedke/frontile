@@ -32,3 +32,4 @@ export {
 export * from './portal';
 export * from './portal-target';
 export * from './popover';
+export * from './tooltip';

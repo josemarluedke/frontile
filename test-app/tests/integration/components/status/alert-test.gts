@@ -293,6 +293,23 @@ module('Integration | Component | Alert | @frontile/status', function (hooks) {
         `expected the shipped icon slot to clamp yielded content with [&>*]:size-full, got: ${classes}`
       );
     });
+
+    test('the real base recipe clips the tonal tint to its rounded corners', function (assert) {
+      // `base` owns the radius, but `tonal` paints its tint on `inner`,
+      // which has square corners. Without `overflow-hidden` on `base` that
+      // tint paints over all four corners and a tonal Alert renders as a
+      // rectangle with a rounded border drawn through it. That regressed
+      // once already, and it is invisible to every other test here: they
+      // render against the placeholder recipe, so only the shipped string
+      // can be checked. Asserted against `shippedAlert` for the same reason
+      // the icon-clamp test above is.
+      const classes = shippedAlert().base();
+
+      assert.true(
+        classes.includes('overflow-hidden'),
+        `expected the shipped base slot to clip the tonal tint with overflow-hidden, got: ${classes}`
+      );
+    });
   });
 
   module('actions and closing', function () {
